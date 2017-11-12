@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="240dp"
+    android:id="@+id/main_holder">
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/gray_30">
+
+        <ImageView
+            android:id="@+id/category_item_fan_page_img_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/category_item_fan_page_img_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/category_item_fan_page_img"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp" />
+
+        <com.gamves.gamvescommunity.utils.CustomFontTextView
+            android:id="@+id/category_item_fan_page_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/category_item_fan_page_img"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:gravity="center_vertical"
+            app:fontName="RobotoRegular.ttf"/>
+
+        <!--<ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:id="@+id/category_item_fan_page_select"
+            android:src="@drawable/select_arrow"
+            android:layout_marginRight="10dp" />-->
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:id="@+id/category_item_fan_page_videos"
+        android:orientation="horizontal"/>
+
+</LinearLayout>

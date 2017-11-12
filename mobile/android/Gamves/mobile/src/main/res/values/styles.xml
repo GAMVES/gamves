@@ -1,0 +1,41 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="PopupWindowAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/alpha</item>
+        <item name="android:windowExitAnimation">@anim/exit</item>
+    </style>
+
+    <style name="AppTheme.Player" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@android:color/holo_red_light</item>
+    </style>
+
+    <style name="barGrapButtons">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">@dimen/small_text</item>
+        <item name="android:gravity">center|center_horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:padding">@dimen/padding_five_dp</item>
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:layout_marginLeft">1dp</item>
+    </style>
+
+
+</resources>

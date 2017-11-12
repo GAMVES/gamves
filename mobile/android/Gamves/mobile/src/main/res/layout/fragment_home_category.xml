@@ -1,0 +1,42 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.gamves.gamvescommunity.fragment.HomeCategoryFragment">
+
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/progress_balls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/fan_page_list"
+        android:layout_alignTop="@+id/fan_page_list"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:indicator="BallPulse"
+        app:indicator_color="@color/purple" />
+
+    <com.gamves.gamvescommunity.utils.RippleBackground
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="false"
+        android:layout_centerInParent="true"
+        app:rb_color="#FFFFFF"
+        app:rb_duration="2500"
+        app:rb_radius="15dp"
+        app:rb_rippleAmount="4"
+        app:rb_scale="4" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/category_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"/>
+
+</FrameLayout>

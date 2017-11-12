@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="100dp"
+    android:layout_height="160dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:id="@+id/main_holder_fanpage_horizontal">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center">
+
+        <com.gamves.gamvescommunity.utils.SelectableRoundedImageView
+            android:id="@+id/item_fanpage_horizontal_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
+
+        <com.gamves.gamvescommunity.utils.CustomFontTextView
+            android:id="@+id/item_fanpage_horizontal_text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="13sp"
+            android:gravity="center_vertical"
+            app:fontName="RobotoRegular.ttf"
+            android:layout_below="@+id/item_fanpage_horizontal_thumbnail"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

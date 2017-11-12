@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/bg_login"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical"
+    android:fillViewport="true"
+    android:paddingTop="50dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp" >
+
+    <info.hoang8f.android.segmented.SegmentedGroup
+        xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/segmented_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        segmentedgroup:sc_border_width="2dp"
+        segmentedgroup:sc_corner_radius="10dp">
+
+        <RadioButton
+            android:id="@+id/btn_login_segmented"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="@string/login_segmented_button"
+            android:textSize="20dp"
+            style="@style/RadioButton" />
+
+        <RadioButton
+            android:id="@+id/btn_register_segmented"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:text="@string/register_segmented_button"
+            android:textSize="20dp"
+            style="@style/RadioButton" />
+
+    </info.hoang8f.android.segmented.SegmentedGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/login_input_layout_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="40dp">
+
+        <EditText
+            android:id="@+id/login_input_username"
+            android:textColor="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="@string/hint_user" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/login_input_layout_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/login_input_password"
+            android:textColor="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="@string/hint_password"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/register_message"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/register_textview_background"
+        android:visibility="gone"
+        android:text="@string/register_message"
+        android:textColor="@color/white"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:textSize="20dp"
+        android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <Button android:id="@+id/btn_login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_login"
+        android:background="@drawable/login_button_background"
+        android:layout_marginTop="20dp"
+        android:textColor="@android:color/white"
+        android:textSize="20dp"/>
+
+</LinearLayout>
