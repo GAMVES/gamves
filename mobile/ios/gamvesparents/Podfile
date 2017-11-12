@@ -1,0 +1,32 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'gamvesparents' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for gamvesparents
+
+  pod 'ParseLiveQuery'
+  
+  #pod 'Parse'
+
+  pod 'DeviceKit'
+  
+  pod 'DownPicker'
+
+  pod 'SwiftValidator', :git => 'https://github.com/jpotts18/SwiftValidator.git', :branch => 'master'
+  
+  pod 'BEMCheckBox'
+  
+  pod 'NVActivityIndicatorView'
+
+  pod 'RSKImageCropper'
+  
+  pod 'Floaty', :git => 'https://github.com/kciter/Floaty.git', :tag => '4.0.0'
+
+  pod 'PopupDialog'
+
+  pod 'TaskQueue'
+    
+end

@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "B8BBF752AA93C967D44421C46145707505283E38",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "0F56D1D4F73541D1AEB5950AFF82FE0343D1D579" : 9223372036854775807,
+    "B8BBF752AA93C967D44421C46145707505283E38" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "8CB51AED-85D8-443B-BD5F-4090D6C96F5A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "0F56D1D4F73541D1AEB5950AFF82FE0343D1D579" : "..",
+    "B8BBF752AA93C967D44421C46145707505283E38" : "gamvesparents\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "gamvesparents",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "gamvesparents.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "roamtouch.unfuddle.com:roamtouch\/gamvesios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0F56D1D4F73541D1AEB5950AFF82FE0343D1D579"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:bhlvoong\/audible.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B8BBF752AA93C967D44421C46145707505283E38"
+    }
+  ]
+}

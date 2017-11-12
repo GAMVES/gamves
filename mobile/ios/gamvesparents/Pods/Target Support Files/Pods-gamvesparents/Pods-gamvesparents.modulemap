@@ -1,0 +1,6 @@
+framework module Pods_gamvesparents {
+  umbrella header "Pods-gamvesparents-umbrella.h"
+
+  export *
+  module * { export * }
+}
