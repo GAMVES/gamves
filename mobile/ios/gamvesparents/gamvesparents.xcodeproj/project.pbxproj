@@ -29,6 +29,8 @@
 		8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */; };
 		8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */; };
 		827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827FE2F61FAE599100A32994 /* CheckBoxView.swift */; };
+		828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */; };
+		828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */; };
 		82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7EB7C1FAB6FA700C61A6B /* LoginViewController.swift */; };
 		82B7EB7F1FAB772600C61A6B /* LoginViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7EB7E1FAB772600C61A6B /* LoginViewController+Extensions.swift */; };
 		82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift */; };
@@ -86,6 +88,8 @@
 		8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		8212D72F1F7C0A8400F2A121 /* gamvesparents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = gamvesparents.entitlements; sourceTree = "<group>"; };
 		827FE2F61FAE599100A32994 /* CheckBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxView.swift; sourceTree = "<group>"; };
+		828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMethods.swift; sourceTree = "<group>"; };
+		828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatFeedMethods.swift; sourceTree = "<group>"; };
 		82B7EB7C1FAB6FA700C61A6B /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		82B7EB7E1FAB772600C61A6B /* LoginViewController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginViewController+Extensions.swift"; sourceTree = "<group>"; };
 		82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProfileViewController+Extensions copy.swift"; sourceTree = "<group>"; };
@@ -188,6 +192,8 @@
 				8212D7091F78490C00F2A121 /* Colors.swift */,
 				8212D6F01F73707800F2A121 /* Reachability.swift */,
 				827FE2F61FAE599100A32994 /* CheckBoxView.swift */,
+				828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */,
+				828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -452,6 +458,7 @@
 				82E3722D1FB16109000AD7EB /* SelectContactViewController.swift in Sources */,
 				82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift in Sources */,
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
+				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
 				C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */,
 				C7B402011D78C167001D8ED4 /* TutorialController.swift in Sources */,
@@ -480,6 +487,7 @@
 				82E372391FB1665A000AD7EB /* Protocols.swift in Sources */,
 				82E372431FB169D0000AD7EB /* UIImage+Extension.swift in Sources */,
 				8212D7061F78439400F2A121 /* Color+Extensions.swift in Sources */,
+				828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */,
 				8212D7081F7843B600F2A121 /* ImageView+Extensions.swift in Sources */,
 				82E372351FB16520000AD7EB /* ChatViewController.swift in Sources */,
 				C73A31991DA3078D00C86C96 /* UserDefaults+helpers.swift in Sources */,

@@ -12,15 +12,21 @@ import Parse
 class TabBarViewController: UITabBarController {
     
     var tutorialController = TutorialController()
+    
+    var chatFeedViewController:ChatFeedViewController!
 
     var blurVisualEffectView:UIVisualEffectView?
+    
+    lazy var chatLauncher: ChatViewController = {
+        let launcher = ChatViewController()
+        return launcher
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationController?.navigationBar.isTranslucent = false
-        
-        //navigationController?.navigationBar.topItem?.title = "Home"
+    
+        self.tabBarController?.tabBar.tintColor = UIColor.gamvesColor
+    
         
         if let user = PFUser.current()
         {
@@ -33,48 +39,44 @@ class TabBarViewController: UITabBarController {
         {
             perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
         }
+        
+        
 
         let homeViewController = HomeViewController()
         homeViewController.tabBarViewController = self
+        
         let homeNavController = UINavigationController(rootViewController: homeViewController)
-        let homeTitle = "Home"
-        homeNavController.tabBarItem.title = homeTitle
         homeNavController.tabBarItem.image = UIImage(named: "home")
-        homeViewController.title = homeTitle
         
         let layout = UICollectionViewFlowLayout()
-        let chatViewController = ChatFeedViewController(collectionViewLayout: layout)
-        chatViewController.tabBarViewController = self
-        let charNavController = UINavigationController(rootViewController: chatViewController)
+        self.chatFeedViewController = ChatFeedViewController(collectionViewLayout: layout)
+        self.chatFeedViewController.tabBarViewController = self
+        
+        let homeTitle = "Home"
+        homeViewController.title = homeTitle
+        
+        let chatFeedNavController = UINavigationController(rootViewController: chatFeedViewController)
+        self.chatFeedViewController.tabBarItem.image = UIImage(named: "community")
         let activiyTitle = "Activity"
-        charNavController.tabBarItem.title = activiyTitle
-        charNavController.tabBarItem.image = UIImage(named: "activity")
-        chatViewController.title = activiyTitle
-
+        self.chatFeedViewController.title = activiyTitle
+        
         let profileViewController = ProfileViewController()
         profileViewController.tabBarViewController = self
         let profileNavController = UINavigationController(rootViewController: profileViewController)
-        let profileTitle = "Profile"
-        profileNavController.tabBarItem.title = profileTitle
         profileNavController.tabBarItem.image = UIImage(named: "profile")
+        let profileTitle = "Profile"
         profileViewController.title = profileTitle
 
-        /*let settingsViewController = SettingsViewController()
-        settingsViewController.tabBarViewController = self
-        let settingsNavController = UINavigationController(rootViewController: settingsViewController)
-        settingsNavController.tabBarItem.title = "Settings"
-        settingsNavController.tabBarItem.image = UIImage(named: "settings")*/
-
-        //viewControllers = [homeNavController, charNavController, profileNavController, settingsNavController]
         
-        viewControllers = [homeNavController, charNavController, profileNavController]
+        viewControllers = [homeNavController, chatFeedNavController, profileNavController]
 
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
         blurVisualEffectView?.frame = view.bounds
         self.view.addSubview(blurVisualEffectView!)
 
-    }
+    }   
+    
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -132,6 +134,23 @@ class TabBarViewController: UITabBarController {
         let tutorialController = TutorialController()
         present(tutorialController, animated: true, completion: nil)
     }
+    
+    func openChat(room: String, chatId:Int64, users:[GamvesParseUser])
+    {
+        
+        self.chatLauncher.chatId = chatId
+        self.chatLauncher.gamvesUsers = users
+        self.chatLauncher.room = room
+        self.chatLauncher.isStandAlone = true
+        self.chatLauncher.view.backgroundColor = UIColor.white
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window!.rootViewController = self.chatLauncher
+
+        
+        
+    }
+       
 
 }
 

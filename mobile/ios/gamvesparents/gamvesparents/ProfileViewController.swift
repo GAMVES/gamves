@@ -6,6 +6,7 @@
 //  Copyright © 2017 Lets Build That App. All rights reserved.
 //
 
+import Foundation
 import UIKit
 import DownPicker
 import Parse
@@ -43,8 +44,6 @@ class ProfileViewController: UIViewController,
     var spouseType:PFObject!
     var spouseTypeId = Int()
 
-    let defaults = UserDefaults.standard
-
     let validator = Validator()
 
     let imagePicker = UIImagePickerController()
@@ -60,16 +59,15 @@ class ProfileViewController: UIViewController,
     var sonPhotoImageSmall:UIImage!
     var spousePhotoImageSmall:UIImage!
 
-    var keySpouse = "spousePhotoImage"
     var keySpouseSmall = String()
-
-    var keyYour = "yourPhotoImage"
     var keyYourSmall = String()
-
-    let keySon = "sonPhotoImage"
     var keySonSmall = String()
 
     let schoolsArray: NSMutableArray = []
+
+    var familyChatId = Int64() //Global.getRandomInt64()
+    var sonChatId = Int64() //Global.getRandomInt64()
+    var spouseChatId = Int64() //Global.getRandomInt64()
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -376,17 +374,13 @@ class ProfileViewController: UIViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.loaUserTypes()
+        //self.loaUserTypes()
         self.loadAdminRole()
         
         self.you = PFUser.current()
 
         self.imagePicker.delegate = self
         
-        self.keySpouseSmall  = "\(self.keySpouse)Small"
-        self.keyYourSmall    = "\(self.keyYour)Small"
-        self.keySonSmall = "\(self.keySon)Small"
-
         self.view.addSubview(self.scrollView)
 
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)   
@@ -481,7 +475,7 @@ class ProfileViewController: UIViewController,
         metricsProfile["saveButtonHeight"]      = saveButtonHeight 
 
         self.boyConstraints()     
-        self.loaUserTypes()
+        //self.loaUserTypes()
         self.loadSonDataIfFamilyDontExist()
         self.loaLevels()
 
@@ -491,42 +485,34 @@ class ProfileViewController: UIViewController,
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)       
         
-        NotificationCenter.default.addObserver(self, selector: #selector(loadUmagesFromDefault), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
-  
-        //self.activityIndicatorView?.startAnimating()
+        NotificationCenter.default.addObserver(self, selector: #selector(loadUmagesFromDefault), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)             
+         
+        if self.isKeyPresentInUserDefaults(key: "profile_completed")
+        {
+            let profile_completed = Global.defaults.bool(forKey: "profile_completed")
 
-        
+            if profile_completed
+            {                
+                self.hideShowTabBar(status:false)
+            }
+        } else
+        {
+            self.hideShowTabBar(status:true)            
+        } 
+
+        self.familyChatId = Global.getRandomInt64()
+        self.sonChatId       = Global.getRandomInt64()
+        self.spouseChatId    = Global.getRandomInt64()
+
     }
 
-    func loaUserTypes()
+    func hideShowTabBar(status: Bool)
     {
-        let queryUserType = PFQuery(className:"UserType")
-        queryUserType.order(byAscending: "order")    
-         
-        queryUserType.findObjectsInBackground { (typesObjects, error) in
-             
-            if error != nil
-            {
-             
-                print("error")
-             
-            } else 
-            {             
-  
-                if let userTypes = typesObjects
-                {
-  
-                    for type in userTypes
-                    {
-  
-                        let id = type["idUserType"] as! Int
+        tabBarController?.tabBar.isHidden = false
+    }
 
-                        self.types[id] = type   
-                        
-                    }                        
-                }
-            }
-        }
+    func isKeyPresentInUserDefaults(key: String) -> Bool {
+        return UserDefaults.standard.object(forKey: key) != nil
     }
     
     func loadAdminRole()
@@ -574,80 +560,10 @@ class ProfileViewController: UIViewController,
             }
         })
     }
-
-
+    
     func loadUmagesFromDefault()
     {
-        
-        //self.son = Global.gamvesFamily.sonUser.gamvesUser
-        //print(self.son.username)
-        //self.you = Global.gamvesFamily.youUser.gamvesUser
-        //print(self.you.username)
-        //self.spouse = Global.gamvesFamily.spouseUser.gamvesUser
-        //print(self.spouse.username)
 
-        if isKeyPresentInUserDefaults(key:self.keyYour)
-        {
-            
-            self.yourTypeId = self.yourType["typeId"] as! Int
-            
-            let yourImages = self.loadImagesForUser(id: 0)
-            self.yourPhotoImageView.image = yourImages.image
-            self.makeRounded(imageView:self.yourPhotoImageView)
-            
-            self.yourPhotoImage = yourImages.image
-            self.yourPhotoImageSmall = yourImages.imageSmall
-            
-            //DispatchQueue.main.async()
-            //{
-            //    self.saveUserImages(id:0)
-            //}
-            
-            
-        }
-
-        if isKeyPresentInUserDefaults(key:self.keySon)
-        {
-            
-            self.sonTypeId = self.sonType["typeId"] as! Int
-            
-            let sonImages = self.loadImagesForUser(id: 1)
-            self.sonPhotoImageView.image = sonImages.image
-            self.makeRounded(imageView:self.sonPhotoImageView)
-            
-            self.sonPhotoImage = sonImages.image
-            self.sonPhotoImageSmall = sonImages.imageSmall
-            
-            //DispatchQueue.main.async()
-            //{
-            //    self.saveUserImages(id:1)
-            //}
-        }
-
-        if isKeyPresentInUserDefaults(key:self.keySpouse)
-        {
-            
-            self.spouseTypeId = self.spouseType["typeId"] as! Int
-            
-            let spouseImages = self.loadImagesForUser(id: 2)
-            self.spousePhotoImageView.image = spouseImages.image
-            self.makeRounded(imageView:self.spousePhotoImageView)
-            
-            self.spousePhotoImage = spouseImages.image
-            self.spousePhotoImageSmall = spouseImages.imageSmall
-            
-            //DispatchQueue.main.async()
-            //{
-            //   self.saveUserImages(id:2)
-            //}
-        }
-
-        //self.activityIndicatorView?.stopAnimating()
-
-    }
-
-    func isKeyPresentInUserDefaults(key: String) -> Bool {
-        return UserDefaults.standard.object(forKey: key) != nil
     }
 
     func loadImagesForUser(id:Int) -> (image: UIImage, imageSmall: UIImage)
@@ -659,15 +575,15 @@ class ProfileViewController: UIViewController,
         switch id
         {
         case 0:
-            key = self.keyYour
+            key = Global.keyYour
             keySmall = self.keyYourSmall
             break
         case 1:
-            key = self.keySon
+            key = Global.keySon
             keySmall = self.keySonSmall
             break
         case 2:
-            key = self.keySpouse
+            key = Global.keySpouse
             keySmall = self.keySpouseSmall
             break
             
@@ -675,10 +591,10 @@ class ProfileViewController: UIViewController,
             break
         }
 
-        let data = self.defaults.object(forKey: key) as! NSData
+        let data = Global.defaults.object(forKey: key) as! NSData
         let image:UIImage = UIImage(data: data as Data)!
         
-        let dataSmall = self.defaults.object(forKey: keySmall) as! NSData
+        let dataSmall = Global.defaults.object(forKey: keySmall) as! NSData
         let imageSmall:UIImage = UIImage(data: dataSmall as Data)!
         
         return (image,imageSmall)
@@ -871,9 +787,11 @@ class ProfileViewController: UIViewController,
     func loadSonDataIfFamilyDontExist()
     {
         
-        let family_exist = self.defaults.bool(forKey: "family_exist")
+        let family_exist = Global.defaults.bool(forKey: "family_exist")
 
-        let son_exist = self.defaults.bool(forKey: "son_exist")
+        let son_exist = Global.defaults.bool(forKey: "son_exist")
+        
+        Global.defaults.synchronize()
 
         if son_exist && !family_exist
         {
@@ -882,7 +800,7 @@ class ProfileViewController: UIViewController,
 
             let queryUser = PFUser.query()
             
-            let son_object_id = self.defaults.string(forKey: "son_object_id")
+            let son_object_id = Global.defaults.string(forKey: "son_object_id")
 
             queryUser?.whereKey("objectId", equalTo: son_object_id)          
             
@@ -927,66 +845,50 @@ class ProfileViewController: UIViewController,
 
                             self.sonUserTextField.text = user["username"] as! String
                             
-                            self.sonTypeId = user["typeId"] as! Int
-
-                            let userTypeRel:PFRelation = user.relation(forKey: "userType")
-                                
-                            let queryType:PFQuery = userTypeRel.query()
-
-                            queryType.findObjectsInBackground(block: { (typesObjects, error) in
+                            self.sonTypeId = user["userType"] as! Int
+                            
+                            //No me insteresa
+                            //self.sonType = type
+                            
+                            let sonTypeDesc = user["description"] as! String
+                            
+                            self.sonUserTypeTextField.text = sonTypeDesc
+                            
+                            let son_school = Global.defaults.string(forKey: "son_school")
+                            
+                            self.sonSchoolTextField.text = son_school
+                            
+                            let levelRel:PFRelation = user.relation(forKey: "level")
+                            
+                            let queryLevel:PFQuery = levelRel.query()
+                            
+                            queryLevel.findObjectsInBackground(block: { (levelObjects, error) in
                                 
                                 
                                 if error != nil
                                 {
                                     print("error")
+                                    
                                 } else {
+                                    
+                                    for levels in levelObjects!
+                                    {
                                         
-                                    for type in typesObjects!
-                                    {                                        
-                                        self.sonType = type
+                                        let grade = levels["grade"] as! Int
+                                        let description = levels["description"] as! String
                                         
-                                        let sonTypeDesc = user["description"] as! String
+                                        self.sonGradeTextField.text = "\(grade) - \(description)"
                                         
-                                        self.sonUserTypeTextField.text = sonTypeDesc
-
-                                        let son_school = self.defaults.string(forKey: "son_school")               
-
-                                        self.sonSchoolTextField.text = son_school
-
-                                        let levelRel:PFRelation = user.relation(forKey: "level")
-                                
-                                        let queryLevel:PFQuery = levelRel.query()
-
-                                        queryLevel.findObjectsInBackground(block: { (levelObjects, error) in
-                                            
-                                            
-                                            if error != nil
-                                            {
-                                                print("error")
-
-                                            } else {
-                                                    
-                                                for levels in levelObjects!
-                                                {                                        
-                                                    
-                                                    let grade = levels["grade"] as! Int
-                                                    let description = levels["description"] as! String
-
-                                                    self.sonGradeTextField.text = "\(grade) - \(description)" 
-
-                                                    self.activityIndicatorView?.stopAnimating()
-
-                                                    self.segmentedControl.selectedSegmentIndex = 1
-                                                    self.segmentedControl.setEnabled(true, forSegmentAt: 1)
-                                                    self.handleSegmentedChange()
-
-                                                }                                  
-                                            }                            
-                                        })
-
-                                    }                                
-                                }                            
+                                        self.activityIndicatorView?.stopAnimating()
+                                        
+                                        self.segmentedControl.selectedSegmentIndex = 1
+                                        self.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                                        self.handleSegmentedChange()
+                                        
+                                    }
+                                }
                             })
+            
                         }
                     }
                 }
@@ -1043,15 +945,15 @@ class ProfileViewController: UIViewController,
 
             if !checkForSonErrors()
             {
-                defaults.set(self.sonNameTextField.text!, forKey: "son_name")
-                defaults.set(self.sonUserTextField.text!, forKey: "son_username")
-                defaults.set(self.sonPasswordTextField.text!, forKey: "son_password")
+                Global.defaults.set(self.sonNameTextField.text!, forKey: "son_name")
+                Global.defaults.set(self.sonUserTextField.text!, forKey: "son_username")
+                Global.defaults.set(self.sonPasswordTextField.text!, forKey: "son_password")
 
-                defaults.set(self.sonUserTypeTextField.text!, forKey: "son_type")
-                defaults.set(self.sonSchoolTextField.text!, forKey: "son_school")
-                defaults.set(self.sonGradeTextField.text!, forKey: "son_grade")
+                Global.defaults.set(self.sonUserTypeTextField.text!, forKey: "son_type")
+                Global.defaults.set(self.sonSchoolTextField.text!, forKey: "son_school")
+                Global.defaults.set(self.sonGradeTextField.text!, forKey: "son_grade")
 
-                defaults.synchronize()
+                Global.defaults.synchronize()
 
                 self.saveSon(completionHandler: { ( result ) -> () in
                     
@@ -1078,28 +980,38 @@ class ProfileViewController: UIViewController,
             if !checkForFamilyErrors()
             {
                 
-                defaults.set(self.yourUserTextField.text!, forKey: "your_username")
-                defaults.set(self.yourFamilyTextField.text!, forKey: "your_family_name")
+                Global.defaults.set(self.yourUserTextField.text!, forKey: "your_username")
+                Global.defaults.set(self.yourFamilyTextField.text!, forKey: "your_family_name")
 
-                defaults.set(self.spouseNameTextField.text!, forKey: "spouse_username")
-                defaults.set(self.spouseEmailTextField.text!, forKey: "spouse_email")
-                defaults.set(self.spousePasswordTextField.text!, forKey: "spouse_password")
+                Global.defaults.set(self.spouseNameTextField.text!, forKey: "spouse_username")
+                Global.defaults.set(self.spouseEmailTextField.text!, forKey: "spouse_email")
+                Global.defaults.set(self.spousePasswordTextField.text!, forKey: "spouse_password")
                 
-                defaults.synchronize()
+                Global.defaults.synchronize()
 
                 self.saveSpouse(completionHandler: { ( resutl ) -> () in
 
-
                     if resutl
-                    {
-                        self.activityIndicatorView?.stopAnimating()                    
-                    
-                        self.tabBarViewController?.selectedIndex = 0
-                        
+                    {                        
+
                         DispatchQueue.main.async()
                         {
-                            self.saveFamilyImagesToServer()
-                        }
+                            self.saveFamilyImagesToServer(completionHandlerFamilySave: { ( resutl ) -> () in
+
+                                self.activityIndicatorView?.stopAnimating() 
+
+                                self.hideShowTabBar(status:false)   
+                                self.tabBarViewController?.selectedIndex = 0
+
+                                Global.defaults.set(true, forKey: "profile_completed")
+                                
+                                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                
+                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
+
+                            })
+                        }          
+                        
                     
                     } else 
                     {
@@ -1296,9 +1208,9 @@ class ProfileViewController: UIViewController,
    func saveSon(completionHandler : @escaping (_ resutl:Bool) -> ())
    {
 
-        let son_name = self.defaults.string(forKey: "son_name") 
-        let son_user_name = self.defaults.string(forKey: "son_username")
-        let son_password = self.defaults.string(forKey: "son_password")
+        let son_name = Global.defaults.string(forKey: "son_name")
+        let son_user_name = Global.defaults.string(forKey: "son_username")
+        let son_password = Global.defaults.string(forKey: "son_password")
     
         let full_name = son_name?.components(separatedBy: " ")
 
@@ -1308,26 +1220,19 @@ class ProfileViewController: UIViewController,
         self.son.password = son_password
         self.son["firstName"] = full_name?[0]
         self.son["lastName"] = full_name?[1]
-
-        let userTypeRel:PFRelation = self.son.relation(forKey: "userType")
-        let son_type = self.defaults.string(forKey: "son_type")
+    
+        let son_type = Global.defaults.string(forKey: "son_type")
         if son_type == "Son"
         {
-            let sontype = self.types[2] as! PFObject
-            userTypeRel.add(sontype)
-            
-            self.son["typeId"] = 2
+            self.son["userType"] = 2
             
         } else if son_type == "Daughter"
         {
-            let doughtertype = self.types[3] as! PFObject
-            userTypeRel.add(doughtertype)
-            
-            self.son["typeId"] = 3
+            self.son["userType"] = 3
         }   
 
         let levelRel:PFRelation = self.son.relation(forKey: "level")
-        var son_grade:String = self.defaults.string(forKey: "son_grade") as! String
+        var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
     
         print(son_grade)
     
@@ -1349,10 +1254,9 @@ class ProfileViewController: UIViewController,
 
             } else {
                 
-                self.defaults.set(true, forKey: "son_exist")
-                self.defaults.set(self.son.objectId, forKey: "son_object_id")
-
-                self.defaults.synchronize()
+                Global.defaults.set(true, forKey: "son_exist")
+                Global.defaults.set(self.son.objectId, forKey: "son_object_id")
+                Global.defaults.synchronize()
 
                 //PERMISSIONS
                 
@@ -1383,9 +1287,9 @@ class ProfileViewController: UIViewController,
    func saveSpouse(completionHandler : @escaping (_ resutl:Bool) -> ())
    {            
 
-        let spouse_username = self.defaults.string(forKey: "spouse_username")
-        let spouse_password = self.defaults.string(forKey: "spouse_password")
-        let spouse_email = self.defaults.string(forKey: "spouse_email")
+        let spouse_username = Global.defaults.string(forKey: "spouse_username")
+        let spouse_password = Global.defaults.string(forKey: "spouse_password")
+        let spouse_email = Global.defaults.string(forKey: "spouse_email")
     
         let spouseUser = PFUser()
         spouseUser["Name"]  = spouse_username
@@ -1396,27 +1300,19 @@ class ProfileViewController: UIViewController,
         let full_name = spouse_username?.components(separatedBy: " ")
 
         spouseUser["firstName"] = full_name?[0]
-        spouseUser["lastName"] = full_name?[1]                   
-               
-        let spouseTypeRel:PFRelation = spouseUser.relation(forKey: "userType")
+        spouseUser["lastName"] = full_name?[1]
     
         if self.yourTypeId == 4 //"Father"
-        {           
-            let mothertype = self.types[1] as! PFObject
-            spouseTypeRel.add(mothertype)
-            
-            spouseUser["typeId"] = 1
+        {
+            spouseUser["userType"] = 1
             
         } else if self.yourTypeId == 0 //"Mother"
         {
-            let fathertype = self.types[5] as! PFObject
-            spouseTypeRel.add(fathertype)
-            
-            spouseUser["typeId"] = 5
+            spouseUser["userType"] = 5
         } 
 
         let levelRel:PFRelation = spouseUser.relation(forKey: "level")
-        var son_grade:String = self.defaults.string(forKey: "son_grade") as! String
+        var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
     
         print(son_grade)
     
@@ -1440,6 +1336,10 @@ class ProfileViewController: UIViewController,
             } else {
                 
                 self.spouse = spouseUser
+                
+                Global.defaults.set(self.spouse.objectId, forKey: "spouse_object_id")
+                
+                Global.defaults.synchronize()
                 
                 //PERMISSIONS 
                 
@@ -1465,10 +1365,10 @@ class ProfileViewController: UIViewController,
                 
             }
         }
-    }
+    }   
   
 
-    func saveFamilyImagesToServer()
+    func saveFamilyImagesToServer(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())
     {
         
         self.saveYou(completionHandler: { ( resutl ) -> () in
@@ -1481,40 +1381,23 @@ class ProfileViewController: UIViewController,
 
                     print("FAMILY SAVED")
                     
-                    self.defaults.setHasProfileInfo(value: true)
+                    Global.defaults.setHasProfileInfo(value: true)
 
                     var queue = TaskQueue()
 
-                    if self.yourPhotoImage != nil
-                    {
+                    var gYou = GamvesParseUser()
+                    var gSpouse = GamvesParseUser()
+                    var gSon = GamvesParseUser()
 
-                        if self.sonPhotoImage != nil
-                        {
-                            
-                            queue.tasks +=~ { resutl, next in
-                                
-                                //Store Son Imagea Thread
-                                
-                                let sonPhotoImageData:NSData = UIImagePNGRepresentation(self.sonPhotoImage!)! as NSData
-                                self.defaults.set(sonPhotoImageData, forKey: self.keySon)
-                                
-                                let sonPhotoImageSmallData:NSData = UIImagePNGRepresentation(self.sonPhotoImageSmall!)! as NSData
-                                self.defaults.set(sonPhotoImageSmallData, forKey: self.keySonSmall)
-                                
-                                self.defaults.synchronize()
-                                
-                                self.saveUserImages(id: 1, completionHandler: { ( resutl ) -> () in
-                                    
-                                    if resutl
-                                    {
-                                        next(nil)
-                                    }
-                                    
-                                })
-                                
-                                
-                            }
-                        }
+                    if Global.userDictionary[self.you.objectId!] != nil
+                    {                        
+                        Global.userDictionary[self.you.objectId!]?.gamvesUser = self.you                        
+                        gYou = Global.userDictionary[self.you.objectId!]!                        
+                    }
+
+
+                    if self.yourPhotoImage != nil
+                    {                        
                         
                         if self.spousePhotoImage != nil
                         {
@@ -1522,25 +1405,86 @@ class ProfileViewController: UIViewController,
                             queue.tasks +=~ { resutl, next in
                                 
                                 
-                                let spousePhotoImageData:NSData = UIImagePNGRepresentation(self.spousePhotoImage!)! as NSData
-                                self.defaults.set(spousePhotoImageData, forKey: self.keySpouse)
-                                
-                                let spousePhotoImageSmallData:NSData = UIImagePNGRepresentation(self.spousePhotoImageSmall!)! as NSData
-                                
-                                self.defaults.set(spousePhotoImageSmallData, forKey: self.keySpouseSmall)
-                                
-                                self.defaults.synchronize()
-                                
                                 self.saveUserImages(id: 2, completionHandler: { ( resutl ) -> () in
                                     
                                     if resutl
                                     {
-                                        next(nil)
+
+                                        Global.addUserToDictionary(user: self.spouse as! PFUser, isFamily: true, completionHandler: { ( spouseGamvesUser ) -> () in
+
+
+                                            if spouseGamvesUser != nil
+                                            {
+                                                
+                                                spouseGamvesUser.gamvesUser = self.spouse
+                                                
+                                                gSpouse = spouseGamvesUser
+                                                
+                                                var youSpouse = [GamvesParseUser]()
+
+                                                youSpouse.append(gYou)
+                                                youSpouse.append(gSpouse)
+
+                                                ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseChatId, completionHandler: { ( result ) -> () in
+
+                                                    print("done youSpouse")
+
+                                                    if (resutl != nil)
+                                                    {                                               
+                                                        next(nil)
+                                                    }
+
+                                                })
+                                                
+                                            }
+
+                                        })
+                                    }
+                                })                               
+                                
+                            }
+                        }
+
+
+                        if self.sonPhotoImage != nil
+                        {
+                            
+                            queue.tasks +=~ { resutl, next in
+                                
+                                self.saveUserImages(id: 1, completionHandler: { ( resutl ) -> () in
+                                    
+                                    if resutl
+                                    {
+
+                                         Global.addUserToDictionary(user: self.son as! PFUser, isFamily: true, completionHandler: { ( sonGamvesUser ) -> () in
+
+
+                                            if sonGamvesUser != nil
+                                            {
+                                                
+                                                sonGamvesUser.gamvesUser = self.son
+                                                
+                                                gSon = sonGamvesUser
+                                                
+                                                var youSon = [GamvesParseUser]()
+
+                                                youSon.append(gYou)
+                                                youSon.append(gSon)
+
+                                                ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonChatId, completionHandler: { ( result ) -> () in
+
+                                                    print("done youSon")
+
+                                                    if (resutl != nil)
+                                                    {                                                
+                                                        next(nil)
+                                                    }
+
+                                                })
+                                            }
+                                         })
                                     }
                                 })
-
-                                
-                                
                             }
                         }
                         
@@ -1549,13 +1493,31 @@ class ProfileViewController: UIViewController,
                             
                             print("FINISH")
                             
-                            let your_email = self.defaults.string(forKey: "your_email")
-                            let your_password = self.defaults.string(forKey: "your_password")
+                            let your_email = Global.defaults.string(forKey: "your_email")
+                            let your_password = Global.defaults.string(forKey: "your_password")
                             
                             self.logOutLogIn(username: your_email!, password: your_password!, completionHandler: { ( user ) -> () in
                                 
                                 
                                 print("BACK AGAIN LOGIN AS: \(PFUser.current()?.username)")
+
+                                    var youSpouseSon = [GamvesParseUser]()                                  
+                                   
+                                    youSpouseSon.append(gYou)
+                                    youSpouseSon.append(gSpouse)
+                                    youSpouseSon.append(gSon)
+
+                                    ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouseSon, chatId: self.familyChatId, completionHandler: { ( result ) -> () in
+
+                                        print("done youSpouseSon")
+
+                                        if (resutl != nil)
+                                        {                                                                                                                                                                                    
+                                         
+                                            completionHandlerFamilySave(true)
+                                        }
+
+                                    })
         
                             })
                             
@@ -1576,23 +1538,14 @@ class ProfileViewController: UIViewController,
     func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
         
-        let your_email = self.defaults.string(forKey: "your_email")
-        let your_password = self.defaults.string(forKey: "your_password")
+        let your_email = Global.defaults.string(forKey: "your_email")
+        let your_password = Global.defaults.string(forKey: "your_password")
                         
         self.logOutLogIn(username: your_email!, password: your_password!, completionHandler: { ( user ) -> () in
             
             print(user.username)
             
-            self.you = user
-
-            //Store Locally         
-            let yourPhotoImageData:NSData = UIImagePNGRepresentation(self.yourPhotoImage!)! as NSData
-            self.defaults.set(yourPhotoImageData, forKey: self.keyYour)
-            
-            let yourPhotoImageSmallData:NSData = UIImagePNGRepresentation(self.yourPhotoImageSmall!)! as NSData
-            self.defaults.set(yourPhotoImageSmallData, forKey: self.keyYourSmall)
-            
-            self.defaults.synchronize()          
+            self.you = user                   
             
             var reusername = self.you["firstName"] as! String
             reusername = reusername.lowercased()
@@ -1610,7 +1563,7 @@ class ProfileViewController: UIViewController,
             self.you.setObject(yourimageSmall!, forKey: "pictureSmall")
 
             let levelRel:PFRelation = self.you.relation(forKey: "level")
-            var son_grade:String = self.defaults.string(forKey: "son_grade") as! String
+            var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
         
             print(son_grade)
         
@@ -1628,7 +1581,12 @@ class ProfileViewController: UIViewController,
                     completionHandler(false)
                 } else
                 {
-                    completionHandler(true)
+
+                    Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+
+                        completionHandler(true)
+
+                    })
                 }
             })  
 
@@ -1638,7 +1596,7 @@ class ProfileViewController: UIViewController,
 
     func saveFamily(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
-        let your_family_name = self.defaults.string(forKey: "your_family_name")
+        let your_family_name = Global.defaults.string(forKey: "your_family_name")
         
         var family = PFObject(className: "Family")
         family.setObject(your_family_name, forKey: "description")
@@ -1654,6 +1612,10 @@ class ProfileViewController: UIViewController,
         userRel.add(self.spouse!)
         userRel.add(self.son!)
         userRel.add(self.you!)
+
+        family["familyChatId"]  = self.familyChatId
+        family["sonChatId"]     = self.sonChatId
+        family["spouseChatId"]  = self.spouseChatId
         
         family.saveInBackground { (success, error) in
             
@@ -1667,7 +1629,13 @@ class ProfileViewController: UIViewController,
             }
             else
             {
-                self.defaults.set(true, forKey: "family_exist")
+                Global.gamvesFamily.familyName = your_family_name!
+               
+                Global.gamvesFamily.sonChatId = self.sonChatId
+                Global.gamvesFamily.spouseChatId = self.spouseChatId
+                Global.gamvesFamily.familyChatId = self.familyChatId
+
+                Global.defaults.set(true, forKey: "family_exist")
                 completionHandler(true)                
                
             }
@@ -1698,8 +1666,8 @@ class ProfileViewController: UIViewController,
                 image = self.yourPhotoImage
                 imageSmall = self.yourPhotoImageSmall
                 
-                username = self.defaults.string(forKey: "your_email")!
-                password = self.defaults.string(forKey: "your_password")!
+                username = Global.defaults.string(forKey: "your_email")!
+                password = Global.defaults.string(forKey: "your_password")!
                 
                 break
                 
@@ -1710,8 +1678,8 @@ class ProfileViewController: UIViewController,
                 image = self.sonPhotoImage
                 imageSmall = self.sonPhotoImageSmall
                 
-                username = self.defaults.string(forKey: "son_username")!
-                password = self.defaults.string(forKey: "son_password")!
+                username = Global.defaults.string(forKey: "son_username")!
+                password = Global.defaults.string(forKey: "son_password")!
                 
                 break
                 
@@ -1722,8 +1690,8 @@ class ProfileViewController: UIViewController,
                 image = self.spousePhotoImage
                 imageSmall = self.spousePhotoImageSmall
                 
-                username = self.defaults.string(forKey: "spouse_email")!
-                password = self.defaults.string(forKey: "spouse_password")!                
+                username = Global.defaults.string(forKey: "spouse_email")!
+                password = Global.defaults.string(forKey: "spouse_password")!
                 
                 break
                 
@@ -1764,123 +1732,10 @@ class ProfileViewController: UIViewController,
                 }
             }
             
-        })
-        
-        //let data = self.defaults.object(forKey: key) as! NSData
-        
-        //let dataSmall = self.defaults.object(forKey: keySmall) as! NSData
-
-        //let nsimage = NSData(data: UIImageJPEGRepresentation(image, 1.0)!)
-
-        //let nsimageSmall = NSData(data: UIImageJPEGRepresentation(imageSmall, 1.0)!)
-        
-        //let pfimage = PFFile(name: reusername, data: UIImageJPEGRepresentation(image, 1.0)!)
-
-        // Turn UIImage into Base64
-        //let imageNSData = UIImageJPEGRepresentation(image, 0.05) as! NSData
-        //let base64String = imageNSData.base64EncodedData()
-            
-            //.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
-
-        //let reusernameSmall = "\(reusername)_small"
-        
-        //let pfimageSmall = PFFile(name: reusernameSmall, data: UIImageJPEGRepresentation(imageSmall, 1.0)!)
-        
-        //let params = [  "userId": "\(_user.objectId)", "imagename": "\(reusername)", "image": "\(base64String)" ] as [String : Any]
-            
-        //print(params)
-        
-        //PFCloud.callFunction(inBackground: "saveImageForUser", withParameters: params) { (resutls, error) in
-            
-        //    print(resutls)
-        //}
+        })  
         
         
-    }
-
-
-    /*func storeUserImages(id: Int)
-    {
-     
-        var _user = PFUser()
-        var key = String()
-        var keySmall = String()
-     
-        switch id
-        {
-        case 0:
-            _user = self.you
-            key = self.keyYour
-            keySmall = self.keyYourSmall
-            break
-        case 1:
-            _user = self.son
-            key = self.keySon
-            keySmall = self.keySonSmall
-            break
-        case 2:
-            _user = self.spouse
-            key = self.keySpouse
-            keySmall = self.keySpouseSmall
-            break
-            
-            default:
-                break
-        }
-        
-        let data = self.defaults.object(forKey: key) as! NSData
-        let image:UIImage = UIImage(data: data as Data)!
-        
-        var reusername = _user["firstName"] as! String
-        reusername = reusername.lowercased()
-
-        let yourimage = PFFile(name: reusername, data: UIImageJPEGRepresentation(image, 1.0)!)
-        _user.setObject(yourimage!, forKey: "picture")
-        
-        let dataSmall = self.defaults.object(forKey: keySmall) as! NSData
-        let imageSmall:UIImage = UIImage(data: dataSmall as Data)!
-        
-        let yourImgName = "\(reusername)_small"
-        
-        print("--------------")
-        print(key)
-        print(keySmall)
-        print(yourImgName)
-        print(_user.objectId)
-        print(_user.username)
-        print("--------------")
-        
-        let yourimageSmall = PFFile(name: yourImgName, data: UIImageJPEGRepresentation(imageSmall, 1.0)!)
-        _user.setObject(yourimageSmall!, forKey: "pictureSmall")
-        
-        _user.saveInBackground(block: { (resutl, error) in
-            
-            if error != nil
-            {
-                print(error)
-            } else
-            {
-                let keySaved = "\(key)SavedOnServer"
-                print()
-                self.defaults.set(true, forKey: keySaved)
-                
-                if id == 2
-                {
-                    let your_username = self.defaults.string(forKey: "your_username")
-                    let your_password = self.defaults.string(forKey: "your_password")
-                    
-                    self.logOutLogIn(username: your_username!, password: your_password!, completionHandler: { ( counter ) -> () in
-
-                        print("READY")
-                        
-                    })
-                    
-                }
-                
-                
-            }
-        })   
-    }*/
+    } 
 
    
     func handlePhotoImageView(sender: UITapGestureRecognizer)

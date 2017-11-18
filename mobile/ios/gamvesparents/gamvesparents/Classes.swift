@@ -130,34 +130,48 @@ struct Page {
 
 class GamvesFamily
 {
-    var sonUser:GamvesParseUser!
+    var sonsUsers:[GamvesParseUser]!
     var youUser:GamvesParseUser!
-    var spouseUser:GamvesParseUser!
-    var doughterUser:GamvesParseUser!
+    var spouseUser:GamvesParseUser!    
     
     var familyName = String()
     var objectId = String()
     var school = String()
     
-    func getFamilyUserById(userId : String) -> GamvesParseUser
+    var sonChatId = Int64()
+    var spouseChatId = Int64()
+    var familyChatId = Int64()
+    
+    init()
     {
-        if sonUser.userId == userId
-        {
-            return sonUser
-        } else if youUser.userId == userId
+        self.sonsUsers = [GamvesParseUser]()
+    }
+    
+    func getFamilyUserById(userId : String) -> GamvesParseUser?
+    {
+        if youUser.userId == userId
         {
             return youUser
+       
         } else if spouseUser.userId == userId
         {
             return spouseUser
-        } else if doughterUser.userId == userId
-        {
-            return doughterUser
-        } else
-        {
-            return sonUser
         }
+        
+        var sonwithId = GamvesParseUser()
+        
+        for son in sonsUsers
+        {
+            if son.userId == userId
+            {
+                sonwithId = son
+            
+            }
+        }
+        
+        return sonwithId
     }
+    
 }
 
 

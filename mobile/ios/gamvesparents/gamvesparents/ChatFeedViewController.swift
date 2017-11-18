@@ -41,11 +41,11 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         let groupName = GroupNameViewController()
         return groupName
     }()
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.collectionView?.backgroundColor = UIColor.white
         
         self.collectionView?.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
         
@@ -66,8 +66,21 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         floaty.paddingY = 70
         
         self.view.addSubview(floaty)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(loadChatFeed), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
 
     }
+    
+    
+    func loadChatFeed()
+    {
+        self.collectionView?.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = false
+    }
+    
     
     func registerLiveQuery()
     {
@@ -81,7 +94,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.created) { _, chatFeed in
             
-            Global.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Bool ) -> () in
+            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int64 ) -> () in
                 
                 self.collectionView?.reloadData()
                 
@@ -92,7 +105,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.updated) { _, chatFeed in
             
-            Global.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Bool ) -> () in
+            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int64 ) -> () in
                 
                 self.collectionView?.reloadData()
                 
@@ -122,7 +135,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
                 {
                     let chatfeedsCount =  chatfeeds?.count
                     
-                    Global.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Bool ) -> () in
+                    ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Int64 ) -> () in
                         
                         self.collectionView?.reloadData()
                         self.activityView.stopAnimating()
@@ -145,7 +158,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     
     func reloadCollectionView()
     {
-        Global.sortFeedByDate()
+        ChatFeedMethods.sortFeedByDate()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
         {
@@ -156,8 +169,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        print(Global.chatFeeds.count)
-        return Global.chatFeeds.count
+        print(ChatFeedMethods.chatFeeds.count)
+        return ChatFeedMethods.chatFeeds.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -166,8 +179,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MessageCell
         
         let index = indexPath.item
-        let key: Int64 = Array(Global.chatFeeds)[index].key
-        let chatfeed:ChatFeed = Global.chatFeeds[key]!
+        let key: Int64 = Array(ChatFeedMethods.chatFeeds)[index].key
+        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
         
         cell.nameLabel.text = chatfeed.room
         cell.messageLabel.text = chatfeed.text
@@ -248,8 +261,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         let layout = UICollectionViewFlowLayout()
         
         let index = indexPath.item
-        let key: Int64 = Array(Global.chatFeeds)[index].key
-        let chatfeed:ChatFeed = Global.chatFeeds[key]!
+        let key: Int64 = Array(ChatFeedMethods.chatFeeds)[index].key
+        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
         
         print(chatfeed.chatId)
         
@@ -286,6 +299,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]        
         navigationController?.pushViewController(selectContactViewController, animated: true)
+        tabBarController?.tabBar.isHidden = true
     }
     
     
@@ -293,7 +307,6 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     {
         self.chatLauncher.chatId = chatId
         self.chatLauncher.gamvesUsers = users
-        //self.chatLauncher.delegateFeed = self as! FeedDelegate
         self.chatLauncher.room = room
         chatLauncher.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white

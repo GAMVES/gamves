@@ -28,12 +28,14 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     var room = String()
     
+    var isStandAlone = Bool()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         let imageUser:UIImage!
         
-        self.title = ""
+        self.title = "Home"
         
         if gamvesUsers.count>2
         {
@@ -41,35 +43,14 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         } else
         {
             imageUser = gamvesUsers[0].avatar
-
         }
     
-        print(gamvesUsers[0].name)
+        self.setNavBar(image: imageUser)
         
-        let buttonArrowBack: UIButton = UIButton (type: UIButtonType.custom)
-        buttonArrowBack.setImage(UIImage(named: "arrow_back"), for: UIControlState.normal)
-        buttonArrowBack.frame = CGRect(x:0, y:0, width:40, height:40)
-        buttonArrowBack.addTarget(self, action: #selector(backButtonPressed(sender:)), for: .touchUpInside)
+        print(gamvesUsers[0].name)           
         
-        buttonAvatar = UIButton (type: UIButtonType.custom)
+        tabBarController?.tabBar.isHidden = true
         
-        buttonAvatar.setImage(imageUser, for: UIControlState.normal)
-        buttonAvatar.addTarget(self, action: #selector(backButtonPressed(sender:)), for: .touchUpInside)
-        
-        buttonAvatar.frame = CGRect(x:0, y:0, width:30, height:30)
-        buttonAvatar.layer.cornerRadius = 15
-        buttonAvatar.clipsToBounds = true
-        
-        let avatarButton = UIBarButtonItem(customView: buttonAvatar)
-        let arrowButton = UIBarButtonItem(customView: buttonArrowBack)
-        
-        let negativeSpacer = UIBarButtonItem.init(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        negativeSpacer.width = -15
-        
-        self.navigationItem.leftBarButtonItems = [negativeSpacer, arrowButton, avatarButton]
-        
-        var widthLeft = CGFloat()
-        widthLeft = self.view.frame.width - (arrowButton.width + avatarButton.width)
         
     }
     
@@ -82,6 +63,8 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+         tabBarController?.tabBar.isHidden = true
         
         if loaded
         {
@@ -97,8 +80,20 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
                 imageUser = gamvesUsers[0].avatar
             }
             
-            self.buttonAvatar.setImage(imageUser, for: UIControlState.normal)
-        }
+            if self.buttonAvatar == nil
+            {
+                print("not nil")
+            }
+            
+            self.setNavBar(image: imageUser)
+            
+            if imageUser != nil
+            {            
+                self.buttonAvatar.setImage(imageUser, for: UIControlState.normal)
+            }
+            
+        }      
+        
     
     }
     
@@ -108,8 +103,57 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         {
             self.loadChatView()
             loaded = true
-        }
+            
+            if isStandAlone
+            {
+                
+                let imageUser:UIImage = gamvesUsers[0].avatar
+                self.setNavBar(image: imageUser)
+                
+            }
 
+        }
+        
+        
+    }
+    
+    func setNavBar(image:UIImage)
+    {
+        //let height: CGFloat = 80
+        //let navbar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: height))
+        
+        let navItem = UINavigationItem()
+        navItem.title = "Title"
+        
+        let buttonArrowBack: UIButton = UIButton (type: UIButtonType.custom)
+        buttonArrowBack.setImage(UIImage(named: "arrow_back_white"), for: UIControlState.normal)
+        buttonArrowBack.frame = CGRect(x:0, y:0, width:30, height:30)
+        buttonArrowBack.addTarget(self, action: #selector(backButtonPressed(sender:)), for: .touchUpInside)
+        
+        buttonAvatar = UIButton (type: UIButtonType.custom)
+        
+        buttonAvatar.setImage(image, for: UIControlState.normal)
+        buttonAvatar.addTarget(self, action: #selector(backButtonPressed(sender:)), for: .touchUpInside)
+        
+        buttonAvatar.frame = CGRect(x:0, y:0, width:30, height:30)
+        buttonAvatar.layer.cornerRadius = 15
+        buttonAvatar.clipsToBounds = true
+        
+        let avatarButton = UIBarButtonItem(customView: buttonAvatar)
+        let arrowButton = UIBarButtonItem(customView: buttonArrowBack)
+        
+        let negativeSpacer = UIBarButtonItem.init(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        negativeSpacer.width = -15
+        
+        navigationItem.leftBarButtonItems = [negativeSpacer, arrowButton, avatarButton]
+        
+        //var widthLeft = CGFloat()
+        //widthLeft = self.view.frame.width - (arrowButton.width + avatarButton.width)
+        
+        //navbar.items = [navItem]
+        
+        
+        //self.view.addSubview(navbar)
     }
     
     func loadChatView()
@@ -145,7 +189,8 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         
         chatView.loadChatFeed()
         
-        view.addSubview(chatView)
+        self.view.addSubview(chatView)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -179,5 +224,6 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
 
 }
+
 
 

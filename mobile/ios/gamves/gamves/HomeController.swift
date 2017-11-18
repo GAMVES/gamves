@@ -19,7 +19,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     let profileCellId = "profileCellId"
     
     //let titles = ["Home", "Trending", "Community", "Profile"]
-    let titles = ["Home", "Community", "Profile"]
+    let titles = ["Home", "Activity", "Profile"]
     
     var cellFree:FeedCell!
     
@@ -199,24 +199,6 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: view.frame.height - 50)
     }
-    
-    /*override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
-        
-        if indexPath.item == 1
-        {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: feedCellId, for: indexPath) as! FeedCell
-            
-            DispatchQueue.main.async
-            {
-                //cell.collectionView.reloadData()
-                cell.reloadCollectionView()
-            }
-        
-        }
-        
-    }*/
-    
     
     lazy var chatLauncher: ChatViewController = {
         let launcher = ChatViewController()

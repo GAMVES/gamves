@@ -189,7 +189,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let installation = PFInstallation.current()
         installation?.setDeviceTokenFrom(deviceToken)
         
-        let channelName = "GamvesChannel"
+        /*let channelName = "GamvesChannel"
         
         var hasChannel = Bool()
         var i = Int()
@@ -210,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 installation?.channels?.append(channelName)
             }
         
-        }
+        }*/
         
         let deviceobj = Device()
         let device:String = "\(deviceobj)"

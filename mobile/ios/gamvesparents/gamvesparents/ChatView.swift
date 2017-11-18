@@ -239,12 +239,12 @@ class ChatView: UIView,
         
         print(self.chatId)
         
-        if Global.chatFeeds[self.chatId] != nil
+        if ChatFeedMethods.chatFeeds[self.chatId] != nil
         {
             
-            if Global.chatFeeds[self.chatId]?.badgeNumber != nil
+            if ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber != nil
             {
-                if (Global.chatFeeds[self.chatId]?.badgeNumber)! > 0
+                if (ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber)! > 0
                 {
                     self.clearBargesForChatId()
                 }
@@ -388,13 +388,15 @@ class ChatView: UIView,
                         if !self.isVideo
                         {
                         
-                            self.addNewFeedAppendUser(completionHandler: { ( result ) -> () in
+                            /*self.addNewFeedAppendUser(completionHandler: { ( result ) -> () in
                             
                                 if self.isSingleUser()
                                 {
                                     self.initializeOnlineSubcritpion()
                                 }
-                            })
+                            })*/
+                            
+                            self.initializeOnlineSubcritpion()
                         }
                     }
                 }
@@ -487,7 +489,9 @@ class ChatView: UIView,
         
         //Channel exists and isVideo
         
-        if self.isVideo && Global.chatFeeds[self.chatId] == nil
+        //if self.isVideo && Global.chatFeeds[self.chatId] == nil
+        
+        if ChatFeedMethods.chatFeeds[self.chatId] == nil
         {
          
             if self.chatFeed == nil
@@ -529,7 +533,7 @@ class ChatView: UIView,
                         
                         self.chatFeed.saveInBackground(block: { (resutl, error) in
                             
-                            Global.queryFeed()
+                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
                             
                             self.sendMessage(sendPush: false)
                             
@@ -668,9 +672,9 @@ class ChatView: UIView,
             
             self.messages.append(message)
             
-            if Global.chatFeeds[self.chatId] != nil
+            if ChatFeedMethods.chatFeeds[self.chatId] != nil
             {
-                Global.chatFeeds[self.chatId]?.text = textMessage
+                ChatFeedMethods.chatFeeds[self.chatId]?.text = textMessage
             }
             
             self.collectionView.reloadData()
@@ -885,12 +889,18 @@ class ChatView: UIView,
                 
                 Global.addChannels(userIds:userIdArray, channel: self.chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
                     
-                    if resutl && !self.isVideo
+                    if resutl
                     {
-                        self.sendPushWithCoud(message: message!)
+                        if !self.isVideo
+                        {
+                            self.sendPushWithCoud(message: message!)
+                        }
+                        
+                        completionHandlerSave(resutl)
+                        
                     } else
                     {
-                        completionHandlerSave(resutl)
+                        completionHandlerSave(false)
                     }
                     
                 })
@@ -988,7 +998,7 @@ class ChatView: UIView,
                                 
                                 print("")
                                 
-                                Global.chatFeeds[self.chatId]?.badgeNumber = 0
+                                ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber = 0
                                 
                                 Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
                                     

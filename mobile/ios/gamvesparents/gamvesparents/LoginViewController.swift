@@ -14,8 +14,6 @@ import NVActivityIndicatorView
 
 class LoginViewController: UIViewController
 {
-
-    let defaults = UserDefaults.standard
     
     var userTypes = Dictionary<Int, PFObject>()
     
@@ -462,24 +460,18 @@ class LoginViewController: UIViewController
             user["firstName"] = full_name?[0]
             user["lastName"] = full_name?[1]
             
-            let userTypeRel:PFRelation = user.relation(forKey: "userType")
+            //let userTypeRel:PFRelation = user.relation(forKey: "userType")
+            
+            var type = Int()
             
             if relationship == "Father"
             {
-                let typeFatherRegister = userTypes[4] as! PFObject
-
-                userTypeRel.add(typeFatherRegister)
-                
-                user["typeId"] = 4
+                type = 4
 
             } else if relationship == "Mother"
             {
-                let typeMotherRegister = userTypes[0] as! PFObject
-
-                userTypeRel.add(typeMotherRegister)
-                
-                user["typeId"] = 0
-            } 
+                type = 0
+            }
             
             user.signUpInBackground {
                 (success, error) -> Void in
@@ -495,7 +487,9 @@ class LoginViewController: UIViewController
                     
                 } else {
                     // Everything went ok
-
+                    
+                    user["userType"] = type                   
+                   
                     self.activityIndicatorView?.stopAnimating()
                     
                     self.message="An email has been sent to your inbox. Please confirm, once then press the Login."
@@ -503,20 +497,33 @@ class LoginViewController: UIViewController
                     self.okLogin = true
                     self.loginRegisterButton.setTitle("Ok", for: UIControlState())
                     
-                    self.defaults.set(email, forKey: "your_email")
-                    self.defaults.set(password, forKey: "your_password")
+                    Global.defaults.set(email, forKey: "your_email")
+                    Global.defaults.set(password, forKey: "your_password")
                     
-                    self.defaults.synchronize()
+                    Global.defaults.synchronize()
                     
                     Global.registerInstallationAndRole(completionHandlerRole: { ( resutl ) -> () in
                         
                         if resutl
                         {
-                            PFUser.logOut()    
+
+                             user.saveInBackground(block: { (resutl, error) in
+                
+                                if error == nil
+                                {
+
+                                    PFUser.logOut()
+                                    
+                                } else
+                                {
+                                    print(error)
+                                }
+
+                            })
                         }
                         
                     })
-                
+
                 }
                 
                 self.isMessage=true
@@ -609,7 +616,7 @@ class LoginViewController: UIViewController
     func checkForErrors() -> Bool
     {
         var errors = false
-        let title = "Error"
+        let title = "Validation error"
         var message = ""
 
         if (self.nameTextField.text?.isEmpty)! {
@@ -651,7 +658,7 @@ class LoginViewController: UIViewController
         else if (userTypeTextField.text?.isEmpty)!
         {
             errors = true
-            message += "User relationship is empty"
+            message += "Tap to choose a relationship..."
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.userTypeTextField)
             
             self.emailTextField.becomeFirstResponder()

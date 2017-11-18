@@ -16,14 +16,19 @@ import DeviceKit
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
-
-    let defaults = UserDefaults.standard
     
     var gamvesParentsApplication:UIApplication?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        
+        UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
+        
+        //application.statusBarStyle = .lightContent
+      
         var reached = false
         
         if Reachability.isConnectedToNetwork() == true
@@ -41,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        window?.rootViewController = TabBarViewController()
+        window?.rootViewController = TabBarViewController()   
         
         if #available(iOS 10.0, *)
         {
@@ -67,7 +72,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         if PFUser.current() != nil
         {
-            self.getFamilyData()
+            Global.getFamilyData()
+            
+            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
         }
         
         return true
@@ -104,7 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         {
             self.userInstallation()
         }
-        
+ 
     }
 
     func userInstallation()
@@ -115,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
   
             let currentInstall:PFInstallation = PFInstallation.current()!
 
-            let installed = defaults.bool(forKey: "installed")
+            let installed = Global.defaults.bool(forKey: "installed")
             if !installed
             {               
                 
@@ -133,7 +140,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             } else 
             {
 
-                let installed_user = defaults.bool(forKey: "installed_user")
+                let installed_user = Global.defaults.bool(forKey: "installed_user")
                 if !installed_user
                 {
                     
@@ -160,22 +167,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
        
-        // Store the deviceToken in the current installation and save it to Parse. 
+        // Store the deviceToken in the current installation and save it to Parse.     
     
-        let currentInstallation: PFInstallation = PFInstallation.current()!
+        let installation = PFInstallation.current()
+        installation?.setDeviceTokenFrom(deviceToken as Data)
+        
+        let channelName = "Gamvesparents"
+         
+         var hasChannel = Bool()
+         var i = Int()
+         
+         if installation?.channels != nil
+         {
+         
+             for channel in (installation?.channels)!
+             {
+                 if channel == channelName
+                 {
+                    hasChannel = true
+                 }
+             }
+             
+             if !hasChannel
+             {
+                installation?.channels?.append(channelName)
+             }
+             
+         }
+        
+        let deviceobj = Device()
+        let device:String = "\(deviceobj)"
+        installation?["device"] = device
+        
+        installation?.saveInBackground()
     
-        currentInstallation.setDeviceTokenFrom(deviceToken as Data)
-    
-        currentInstallation.saveInBackground()
-        // We want to register the installation in the back4app channel.
-    
-        //currentInstallation.addUniqueObject("back4app", forKey: "channels")
-    
-        //PFPush.subscribeToChannel(inBackground: "globalChannel")
-
-        let currentChannels = currentInstallation.channels
-        print(currentChannels)        
-           
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -231,74 +256,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     
     
-    func getFamilyData()
-    {
-        
-        DispatchQueue.global().async {
-            
-            let familyQuery = PFQuery(className:"Family")
-            familyQuery.whereKey("members", equalTo: PFUser.current())
-            familyQuery.cachePolicy = .cacheElseNetwork
-            familyQuery.findObjectsInBackground(block: { (families, error) in
-                
-                if error == nil
-                {
-                    
-                    for family in families!
-                    {
-                        
-                        Global.gamvesFamily.familyName = family["description"] as! String
-                        
-                        let membersRelation = family.relation(forKey: "members") as PFRelation
-                        
-                        let queryMembers = membersRelation.query()
-                        
-                        queryMembers.findObjectsInBackground(block: { (members, error) in
-                            
-                            if error == nil
-                            {
-
-                                var memberCount = members?.count
-                                var count = 0
-
-                                for member in members!
-                                {
-                                    Global.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
-                                        
-                                        print(gamvesUser.userName)
-                                        
-                                        Global.userDictionary[gamvesUser.userId] = gamvesUser
-
-                                        if count == (memberCount!-1)
-                                        {
-                                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
-                                        }
-                                        count = count + 1
-                                    })
-                                }
-                            }
-                        })
-                        
-                        let schoolRelation = family.relation(forKey: "school") as PFRelation
-                        
-                        let querySchool = schoolRelation.query()
-                        
-                        querySchool.findObjectsInBackground(block: { (schools, error) in
-                            
-                            if error == nil
-                            {
-                                for school in schools!
-                                {
-                                    Global.gamvesFamily.school = school["name"] as! String
-                                }
-                            }
-                        })
-                    }
-                }
-            })
-        }
-    }
-   
+    
 
 }
 

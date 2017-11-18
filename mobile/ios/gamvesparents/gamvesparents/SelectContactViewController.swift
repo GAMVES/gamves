@@ -38,9 +38,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
 
         //self.navigationItem.titleView = Global.setTitle(title: "Select friend or family", subtitle: "                          ")
         
-        //self.navigationItem.title = "Select contact"
-        
-        self.navigationItem.title = "HOLA"
+        //self.navigationItem.title = "Select contact"    
         
         self.view.addSubview(self.collectionView)
         

@@ -266,7 +266,7 @@ class Global: NSObject
             installation?["user"] = PFUser.current()
             installation?.saveInBackground(block: { (resutl, error) in
                 
-                PFPush.subscribeToChannel(inBackground: "GamvesChannel")
+                PFPush.subscribeToChannel(inBackground: "Gamves")
                 
                 var queryRole = PFRole.query() // You need to get role object
                 queryRole?.whereKey("name", equalTo:"admin")

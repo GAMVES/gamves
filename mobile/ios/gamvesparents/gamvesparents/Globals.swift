@@ -11,14 +11,28 @@ import Parse
 import NVActivityIndicatorView
 import PopupDialog
 
-
-
-
 class Global: NSObject
 {
+    
+    static var defaults = UserDefaults.standard
+    
+    static var keySpouse = "spousePhotoImage"
+    static var keyYour = "yourPhotoImage"
+    static var keySon = "sonPhotoImage"
 
+
+    static var key_you_spouse_chat_id = "you_spouse_chat_id"
+    static var key_you_son_chat_id = "you_son_chat_id"
+    static var key_you_spouse_son_chat_id = "you_spouse_son_chat_id"
+
+    
+    static var keySpouseSmall   = String() //"\(Global.keySpouse)Small"
+    static var keyYourSmall     = String() //"\(Global.keyYour)Small"
+    static var keySonSmall      = String() //"\(Global.keySon)Small"
+    
     //Notifications
-    static var notificationKeyFamilyLoaded = "com.gamves.gamvesparent.familyLoaded"
+    static var notificationKeyFamilyLoaded  = "com.gamves.gamvesparent.familyLoaded"
+    static var notificationKeyChatFeed      = "com.gamves.gamvesparent.chatfeed"
     
     static var badgeNumber = Bool()
     
@@ -26,20 +40,13 @@ class Global: NSObject
     
     static var gamvesFamily = GamvesFamily()
     
-    static var chatFeeds = Dictionary<Int64, ChatFeed>()
-    
     static var chatVideos = Dictionary<Int64, VideoGamves>()
     
     static var hasNewFeed = Bool()
     
-    static func sortFeedByDate()
-    {
-        self.chatFeeds.sorted(by: {$0.value.date! > $1.value.date! })
-    }
-    
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
     {
-        var userId = user.objectId as! String
+        var userId = user.objectId!
         
         if self.userDictionary[userId] == nil
         {
@@ -89,35 +96,90 @@ class Global: NSObject
                             
                             picture.getDataInBackground(block: { (data, error) in
                                 
-                                let image = UIImage(data: data!)
-                                gamvesUser.avatar = image!
-                                gamvesUser.isAvatarDownloaded = true
-                                gamvesUser.isAvatarQuened = false
+                                if (error != nil)
+                                {
+                                    print(error)
+                                } else
+                                {
                                 
-                                Global.getLevelsInRelation(user:user, gamvesUser:gamvesUser, userId:userId, isFamily:isFamily, completionHandler: { ( gamvesUser ) -> () in
+                                    let image = UIImage(data: data!)
+                                    gamvesUser.avatar = image!
+                                    gamvesUser.isAvatarDownloaded = true
+                                    gamvesUser.isAvatarQuened = false
                                     
-                                    completionHandler(gamvesUser)
+                                    var typeNumber = user["userType"] as! Int
                                     
-                                })
-                            })
-            
-                        }
-                        else
-                        {
-                            Global.getLevelsInRelation(user:user, gamvesUser:gamvesUser, userId:userId, isFamily:isFamily, completionHandler: { ( gamvesUser ) -> () in
+                                    print(gamvesUser.firstName)
+                                    
+                                    gamvesUser.typeNumber = typeNumber
+                                    
+                                    print(gamvesUser.typeNumber)
+                                    
+                                    //No me interesa
+                                    //gamvesUser.typeDescription = user["description"] as! String
+                                    
+                                    if isFamily
+                                    {
+                                        var gender = GamvesGender()
+                                        
+                                        if typeNumber == 0 || typeNumber == 4
+                                        {
+                                            if typeNumber == 0
+                                            {
+                                                gender.female = true
+                                            } else if typeNumber == 4
+                                            {
+                                                gender.male = true
+                                            }
+                                            gamvesUser.gender = gender
+                                            
+                                            Global.gamvesFamily.youUser = gamvesUser
+                                            
+                                        } else if typeNumber == 1 || typeNumber == 5
+                                        {
+                                            if typeNumber == 1
+                                            {
+                                                gender.female = true
+                                            } else if typeNumber == 5
+                                            {
+                                                gender.male = true
+                                            }
+                                            
+                                            gamvesUser.gender = gender
+                                            
+                                            Global.gamvesFamily.spouseUser = gamvesUser
+                                            
+                                        } else if typeNumber == 2 || typeNumber == 3
+                                        {
+                                            
+                                            if typeNumber == 2
+                                            {
+                                                gender.male = true
+                                            } else if typeNumber == 3
+                                            {
+                                                gender.male = false
+                                            }
+                                            gamvesUser.gender = gender
+                                            
+                                            Global.gamvesFamily.sonsUsers.append(gamvesUser)
+                                        }
+                                    }
+                                    
+                                    if count == (countLevels!-1)
+                                    {
+                                        
+                                        self.userDictionary[userId] = gamvesUser
+                                        
+                                        completionHandler(gamvesUser)
+                                        
+                                    }
+                                    
+                                    count = count + 1
+                                    
+                                }
                                 
-                                completionHandler(gamvesUser)
-                                
                             })
                         }
-            
-                        /*if (countLevels!-1) == count
-                        {
-                            completionHandler(gamvesUser)
-                        }
-                        count = count + 1*/
-                        
-                        
                     }
                 }
             })
@@ -126,85 +188,6 @@ class Global: NSObject
             
             completionHandler(self.userDictionary[userId]!)
         }
-    }
-        
-        
-    static func getLevelsInRelation(user:PFUser, gamvesUser:GamvesParseUser, userId:String, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
-    {
-        
-        let typeRelation = user.relation(forKey: "userType") as PFRelation
-        let queryType = typeRelation.query()
-        
-        queryType.findObjectsInBackground(block: { (types, error) in
-            
-            if error == nil
-            {
-                for type in types!
-                {
-                    var typeNumber = type["idUserType"] as! Int
-                    
-                    gamvesUser.typeNumber = typeNumber
-                    
-                    gamvesUser.typeDescription = type["description"] as! String
-
-                    if isFamily
-                    {
-                        //Global.gamvesFamily.familyUsers.append(gamvesUser)
-                        
-                        var gender = GamvesGender()
-                        
-                        if typeNumber == 0 || typeNumber == 4
-                        {
-                            if typeNumber == 0
-                            {
-                                gender.female = true
-                            } else if typeNumber == 4
-                            {
-                                gender.male = true
-                            }
-                            gamvesUser.gender = gender
-                            
-                            Global.gamvesFamily.youUser = gamvesUser
-                            
-                        } else if typeNumber == 1 || typeNumber == 5
-                        {
-                            if typeNumber == 1
-                            {
-                                gender.female = true
-                            } else if typeNumber == 5
-                            {
-                                gender.male = true
-                            }
-                            
-                            gamvesUser.gender = gender
-                            
-                            Global.gamvesFamily.spouseUser = gamvesUser
-                            
-                        } else if typeNumber == 2
-                        {
-                            gender.male = true
-                            gamvesUser.gender = gender
-                            
-                            Global.gamvesFamily.sonUser = gamvesUser
-                            
-                        } else if typeNumber == 3
-                        {
-                            gender.female = true
-                            gamvesUser.gender = gender
-                            
-                            Global.gamvesFamily.doughterUser = gamvesUser
-                        }
-                        
-                    }
-                }
-                
-                Global.userDictionary[userId] = gamvesUser
-                
-                completionHandler(gamvesUser)
-                
-            }
-        })
-        
     }
     
     static func getImageVideo(videothumburl: String, video:VideoGamves, completionHandler : (_ video:VideoGamves) -> Void)
@@ -230,7 +213,6 @@ class Global: NSObject
         titleLabel.textColor = UIColor.white
         titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
         titleLabel.text = title
-        //titleLabel.textAlignment = .left
         titleLabel.sizeToFit()
         titleLabel.tag = 0
         
@@ -239,13 +221,10 @@ class Global: NSObject
         subtitleLabel.textColor = UIColor.white
         subtitleLabel.font = UIFont.systemFont(ofSize: 12)
         subtitleLabel.text = subtitle
-        //subtitleLabel.textAlignment = .left
         subtitleLabel.sizeToFit()
         subtitleLabel.tag = 1
         
         let titleView = UIView(frame: CGRect(x:0, y:0, width:max(titleLabel.frame.size.width, subtitleLabel.frame.size.width), height:30))
-        
-        //let titleView = UIView(frame: CGRect(x:0, y:0, width:250, height:30))
         
         titleView.addSubview(titleLabel)
         titleView.addSubview(subtitleLabel)
@@ -259,8 +238,6 @@ class Global: NSObject
             let newX = widthDiff / 2
             titleLabel.frame.origin.x = newX
         }
-        
-        //titleView.backgroundColor = UIColor.blue
         
         return titleView
     }
@@ -475,8 +452,7 @@ class Global: NSObject
     {
         image.layer.borderWidth = boderWidth
         image.layer.masksToBounds = false
-        image.layer.borderColor = boderColor.cgColor
-        //let radius:CGFloat = image.frame.size.height/2
+        image.layer.borderColor = boderColor.cgColor        
         image.layer.cornerRadius = CGFloat(cornerRadius)
         image.clipsToBounds = true
     }
@@ -534,224 +510,10 @@ class Global: NSObject
             _ = randomNumberPointer.withMemoryRebound(to: UInt8.self, capacity: 8, { SecRandomCopyBytes(kSecRandomDefault, 8, $0) })
         })
         return abs(randomNumber)
-    }
+    }    
+   
     
-    /// FEED
     
-    static func queryFeed()
-    {
-        let queryChatFeed = PFQuery(className: "ChatFeed")
-        
-        if let userId = PFUser.current()?.objectId
-        {
-            queryChatFeed.whereKey("members", contains: userId)
-        }
-        
-        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
-            
-            let chatFeddsCount = chatfeeds?.count
-            
-            if chatFeddsCount! > 0
-            {
-                let chatfeedsCount =  chatfeeds?.count
-                
-                self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Bool ) -> () in })
-                
-            }
-            
-        })
-    }
-
-    static func parseChatFeed(chatFeedObjs: [PFObject], completionHandler : @escaping (_ resutl:Bool) -> ()?)
-    {
-        var chatfeedsCount = chatFeedObjs.count
-        
-        print(chatfeedsCount)
-        var fcount = 0
-        
-        for chatFeedObj in chatFeedObjs
-        {
-            
-            let chatfeed = ChatFeed()
-            chatfeed.text = chatFeedObj["lastMessage"] as? String
-            
-            var room = chatFeedObj["room"] as? String
-            
-            chatfeed.room = room
-            
-            chatfeed.date = chatFeedObj.updatedAt
-            chatfeed.userId = chatFeedObj["lastPoster"] as? String
-            let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
-            chatfeed.isVideoChat = isVideoChat
-            var chatId = chatFeedObj["chatId"] as! Int64
-            chatfeed.chatId = chatId
-            
-            let picture = chatFeedObj["thumbnail"] as! PFFile
-            picture.getDataInBackground(block: { (imageData, error) in
-                
-                if error == nil
-                {
-                    if let imageData = imageData
-                    {
-                        chatfeed.chatThumbnail = UIImage(data:imageData)
-                        
-                        self.getParticipants(chatFeedObj : chatFeedObj, chatfeed: chatfeed, isVideoChat: isVideoChat, chatId : chatId, completionHandler: { ( chatfeed ) -> () in
-                            
-                            var chatFeedRoom = String()
-                            
-                            if (room?.contains("____"))!
-                            {
-                                let roomArr : [String] = room!.components(separatedBy: "____")
-                                
-                                var first : String = roomArr[0]
-                                var second : String = roomArr[1]
-                                
-                                if first == PFUser.current()?.objectId
-                                {
-                                    chatFeedRoom = (self.userDictionary[second]?.name)!
-                                } else {
-                                    chatFeedRoom = (self.userDictionary[first]?.name)!
-                                }
-                                
-                                chatfeed.room = chatFeedRoom
-
-                            }
-                            
-                            if (chatfeedsCount-1) == fcount
-                            {
-                                self.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
-                                    
-                                    chatfeed.badgeNumber = counter
-                                    
-                                    print(chatId)
-                                    
-                                    self.chatFeeds[chatId] = chatfeed
-                                    
-                                    self.sortFeedByDate()
-                                    
-                                    completionHandler(true)
-                                    
-                                    //self.collectionView.reloadData()
-                                    //self.activityView.stopAnimating()
-                                    
-                                })
-                            }
-                            fcount = fcount + 1
-                        })
-                    }
-                } else
-                {
-                    completionHandler(false)
-                }
-                
-                //self.collectionView.reloadData()
-            })
-            
-            if chatfeed.isVideoChat!
-            {
-                let videoId = "\(chatfeed.chatId!)" //String(message.chatId)
-                
-                let videosQuery = PFQuery(className:"Videos")
-                videosQuery.whereKey("videoId", equalTo: videoId)
-                videosQuery.findObjectsInBackground(block: { (videos, error) in
-                    
-                    if error != nil
-                    {
-                        
-                        print("error")
-                        
-                    } else {
-                        
-                        if (videos?.count)! > 0
-                        {
-                            var videosGamves = [VideoGamves]()
-                            
-                            if let videos = videos
-                            {
-                                for video in videos
-                                {
-                                    let videoGamves = VideoGamves()
-                                    let videothumburl:String = video["thumbnailUrl"] as! String
-                                    let videoDescription:String = video["description"] as! String
-                                    let videoCategory:String = video["category"] as! String
-                                    let videoUrl:String = video["source"] as! String
-                                    let videoTitle:String = video["title"] as! String
-                                    let videoFromName:String = video["fromName"] as! String
-                                    
-                                    videoGamves.video_title = videoTitle
-                                    videoGamves.thumb_url = videothumburl
-                                    videoGamves.description = videoDescription
-                                    videoGamves.video_category = videoCategory
-                                    videoGamves.video_url = videoUrl
-                                    videoGamves.video_fromName = videoFromName
-                                    videoGamves.videoobj = video
-                                    
-                                    if let vurl = URL(string: videothumburl)
-                                    {
-                                        if let data = try? Data(contentsOf: vurl)
-                                        {
-                                            videoGamves.thum_image = UIImage(data: data)!
-                                        }
-                                    }
-                                    self.chatVideos[chatId] = videoGamves
-                                }
-                            }
-                        }
-                    }
-                })
-            }
-        }
-    }
-    
-    static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int64, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
-    {
-        
-        var members = chatFeedObj["members"] as! String
-        
-        let participantQuery = PFQuery(className:"_User")
-        participantQuery.whereKey("objectId", containedIn: self.parseUsersStringToArray(separated: members))
-        participantQuery.findObjectsInBackground(block: { (users, error) in
-            
-            if error == nil
-            {
-                
-                let countUsers = users?.count
-                var count = 0
-                var usersArray = [GamvesParseUser]()
-                
-                for user in users!
-                {
-                    //Add single chat flag, avoided query users alone participant
-                    
-                    if users?.count == 2 && user.objectId != PFUser.current()?.objectId && !isVideoChat
-                    {
-                        user.add(chatId, forKey: "chatId")
-                        
-                        if self.userDictionary[user.objectId!] != nil
-                        {
-                            self.userDictionary[user.objectId!]?.chatId = chatId
-                        }
-                    }
-                    
-                    self.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
-                        
-                        if user.objectId != PFUser.current()?.objectId
-                        {
-                            usersArray.append(gamvesUser)
-                        }
-                        
-                        if (countUsers!-1) == count
-                        {
-                            chatfeed.users = usersArray
-                            completionHandler(chatfeed)
-                        }
-                        
-                        count = count + 1
-                    })
-                }
-            }
-        })
-    }
     
     static func getBadges(chatId:Int64, completionHandler : @escaping (_ resutl:Int) -> ())
     {
@@ -806,6 +568,91 @@ class Global: NSObject
         // your email validation here...
         return true
     }
+    
+    
+    static func getFamilyData()
+    {
+        
+        self.keySpouseSmall   = "\(self.keySpouse)Small"
+        self.keyYourSmall     = "\(self.keyYour)Small"
+        self.keySonSmall      = "\(self.keySon)Small"
+        
+        DispatchQueue.global().async {
+            
+            let familyQuery = PFQuery(className:"Family")
+            familyQuery.whereKey("members", equalTo: PFUser.current())
+            familyQuery.cachePolicy = .cacheElseNetwork
+            familyQuery.findObjectsInBackground(block: { (families, error) in
+                
+                if error == nil
+                {
+                    
+                    for family in families!
+                    {
+                        
+                        self.gamvesFamily.familyName = family["description"] as! String
+                        
+                        self.gamvesFamily.familyChatId = family["familyChatId"] as! Int64
+                        self.gamvesFamily.sonChatId = family["sonChatId"] as! Int64
+                        self.gamvesFamily.spouseChatId = family["spouseChatId"] as! Int64
+                        
+                        let membersRelation = family.relation(forKey: "members") as PFRelation
+                        
+                        let queryMembers = membersRelation.query()
+                        
+                        queryMembers.findObjectsInBackground(block: { (members, error) in
+                            
+                            if error == nil
+                            {
+                                
+                                var memberCount = members?.count
+                                var count = 0
+                                
+                                for member in members!
+                                {
+                                    
+                                    DispatchQueue.main.async
+                                        {
+                                            
+                                            self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                                                
+                                                print(gamvesUser.userName)
+                                                
+                                                self.userDictionary[gamvesUser.userId] = gamvesUser
+                                                
+                                                if count == (memberCount!-1)
+                                                {
+                                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                }
+                                                count = count + 1
+                                            })
+                                    }
+                                }
+                            }
+                        })
+                        
+                        let schoolRelation = family.relation(forKey: "school") as PFRelation
+                        
+                        let querySchool = schoolRelation.query()
+                        
+                        querySchool.findObjectsInBackground(block: { (schools, error) in
+                            
+                            if error == nil
+                            {
+                                for school in schools!
+                                {
+                                    self.gamvesFamily.school = school["name"] as! String
+                                }
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    }
+    
+    
+    
 
 }
 

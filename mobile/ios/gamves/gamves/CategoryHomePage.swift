@@ -310,7 +310,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         
         queryFanpage.whereKey("category", equalTo: category)
         
-        queryFanpage.cachePolicy = .cacheElseNetwork
+        //queryFanpage.cachePolicy = .cacheElseNetwork
 
         queryFanpage.findObjectsInBackground { (fanpagesArray, error) in
             
