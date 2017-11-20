@@ -103,7 +103,6 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
                 
             })
             
-            
         }
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.updated) { _, chatFeed in

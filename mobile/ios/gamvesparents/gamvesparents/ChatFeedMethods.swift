@@ -122,6 +122,8 @@ class ChatFeedMethods: NSObject
                                 
                                 self.sortFeedByDate()
                                 
+                                self.chatFeeds[chatId] = chatfeed
+                                
                                 if (chatfeedsCount-1) == fcount
                                 {
                                     completionHandler(chatId)
@@ -131,7 +133,7 @@ class ChatFeedMethods: NSObject
                                 
                             })
                             
-                            self.chatFeeds[chatId] = chatfeed
+                            
                             
                             
                         })

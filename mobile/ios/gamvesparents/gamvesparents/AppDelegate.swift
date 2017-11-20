@@ -215,7 +215,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                         print(error)
                     }
 
-                }         
+                }
             
             }
             

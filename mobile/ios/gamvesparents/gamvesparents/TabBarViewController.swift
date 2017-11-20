@@ -18,7 +18,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
     var blurVisualEffectView:UIVisualEffectView?
     
     var locationManager : CLLocationManager = CLLocationManager()
-    
+        
     var didFindLocation = Bool()
     
     lazy var chatLauncher: ChatViewController = {
@@ -92,7 +92,8 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
         blurVisualEffectView?.frame = view.bounds
-        self.view.addSubview(blurVisualEffectView!)
+        self.view.addSubview(blurVisualEffectView!)      
+        
 
     }   
     
@@ -238,6 +239,10 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    
+   
+    
 
 }
 

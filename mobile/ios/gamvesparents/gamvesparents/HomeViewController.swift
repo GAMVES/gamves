@@ -10,12 +10,24 @@ import UIKit
 import Foundation
 import Parse
 import NVActivityIndicatorView
+import MapKit
+import ParseLiveQuery
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController,
+    UICollectionViewDataSource,
+    UICollectionViewDelegate, 
+    UICollectionViewDelegateFlowLayout  {    
+
+    var userStatistics = [UserStatistics]()
 
 	var metricsHome = [String:Int]()
     
-    var tabBarViewController:TabBarViewController?    
+    var tabBarViewController:TabBarViewController?
+    
+    private var sonSubscription: Subscription<PFObject>!
+    
+    let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
+
     
     var youSonChatId = Int64()
     var youSpouseChatId = Int64()
@@ -24,13 +36,22 @@ class HomeViewController: UIViewController {
     let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesColor
+        v.backgroundColor = UIColor.white
         return v
     }()
     
+
+    var familyLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.backgroundColor = UIColor.white        
+        label.font = UIFont.systemFont(ofSize: 20)
+        return label
+    }()
+
     let photosContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
         return view
@@ -38,7 +59,7 @@ class HomeViewController: UIViewController {
     
     let homeBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.red
+        view.backgroundColor = UIColor.white
         return view
     }()
 	
@@ -89,14 +110,33 @@ class HomeViewController: UIViewController {
         let label = UILabel()
         return label
     }()
+
+    var sonLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.backgroundColor = UIColor.white
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        return label
+    }()   
     
-    let detailsView: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.lightGray
-        return v
+
+     lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = UIColor.white
+        cv.dataSource = self
+        cv.delegate = self
+        return cv
     }()
 
+    let footerView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor.red
+        return v
+    }()
 
     lazy var chatViewController: ChatViewController = {
         let launcher = ChatViewController()
@@ -104,38 +144,57 @@ class HomeViewController: UIViewController {
     }()
 
     var activityIndicatorView:NVActivityIndicatorView?
+    
+    var cellId = String()
+    
+    var sonOnline = Bool()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
          tabBarController?.tabBar.isHidden = false
+        
+        self.cellId = "homeCellId"
 
          self.view.backgroundColor = UIColor.blue
 
         self.view.addSubview(self.scrollView)
+        self.scrollView.addSubview(self.familyLabel)
         self.scrollView.addSubview(self.photosContainerView)
-        self.scrollView.addSubview(self.detailsView)
+        self.scrollView.addSubview(self.sonLabel)        
+        self.scrollView.addSubview(self.collectionView)
+        self.scrollView.addSubview(self.footerView)
 
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)
         self.view.addConstraintsWithFormat("V:|[v0]-50-|", views: self.scrollView)
         
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.familyLabel)
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.detailsView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
+        self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)
         
         let width:Int = Int(view.frame.size.width)
         
         let topPadding = 40
+        let midPadding =  topPadding / 2
+        let smallPadding =  midPadding / 2
         let photoSize = width / 4
-        let padding = photoSize / 4
-        
-        self.metricsHome["topPadding"]  = topPadding
-        self.metricsHome["photoSize"]   = photoSize
-        self.metricsHome["padding"]     = padding
+        let padding = photoSize / 4        
+
+        self.metricsHome["topPadding"]      = topPadding
+        self.metricsHome["midPadding"]      = midPadding
+        self.metricsHome["smallPadding"]    = smallPadding
+        self.metricsHome["photoSize"]       = photoSize
+        self.metricsHome["padding"]         = padding
         
         self.scrollView.addConstraintsWithFormat(
-            "V:|-topPadding-[v0(photoSize)]-topPadding-[v1]-20-|", views:
+            "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-midPadding-[v2(midPadding)][v3(300)][v4(30)]|", views:
+            self.familyLabel,
             self.photosContainerView,
-            self.detailsView,
+            self.sonLabel,
+            self.collectionView,
+            self.footerView,
             metrics: metricsHome)
 
         self.checkLabelSon =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.red)
@@ -188,12 +247,62 @@ class HomeViewController: UIViewController {
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
         
+        self.collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
+        
         self.activityIndicatorView?.startAnimating()
         
         self.checkLabelSon.isHidden = true
         self.checkLabelSpouse.isHidden = true
         self.checkLabelGroup.isHidden = true
         
+
+        let _status = UserStatistics()
+        _status.desc = "Offline"
+        _status.icon = UIImage(named: "status_offline")!
+        self.userStatistics.append(_status)
+
+        let _location = UserStatistics()
+        _location.desc = "Current location"
+        _location.data = "5 Km"
+        _location.icon = UIImage(named: "map")!
+        self.userStatistics.append(_location)
+
+        let _time = UserStatistics()
+        _time.desc = "Week count"
+        _time.data = "04:50 hs"
+        _time.icon = UIImage(named: "time")!
+        self.userStatistics.append(_time)
+
+        let _videos = UserStatistics()
+        _videos.desc = "Videos watched"
+        _videos.data = "12 videos"
+        _videos.icon = UIImage(named: "movie")!
+        self.userStatistics.append(_videos)
+
+        let _chats = UserStatistics()
+        _chats.desc = "Chats talked"
+        _chats.data = "22 chats"
+        _chats.icon = UIImage(named: "chat_room_black")!
+        self.userStatistics.append(_chats)
+
+    }
+
+     func openMapForPlace() {
+
+        let latitude: CLLocationDegrees = 37.2
+        let longitude: CLLocationDegrees = 22.9
+
+        let regionDistance:CLLocationDistance = 10000
+        let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
+        let regionSpan = MKCoordinateRegionMakeWithDistance(coordinates, regionDistance, regionDistance)
+        let options = [
+            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
+        ]
+        let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = "Place Name"
+        mapItem.openInMaps(launchOptions: options)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -249,15 +358,20 @@ class HomeViewController: UIViewController {
             }
             
         }
+        
+        self.familyLoaded()
     }
     
     func familyLoaded()
     {
+        self.familyLabel.text = Global.gamvesFamily.familyName
+
         if self.isKeyPresentInUserDefaults(key:"son_object_id")
         {
             let sonId = Global.defaults.object(forKey: "son_object_id") as! String
             if Global.userDictionary[sonId] != nil
             {
+                self.sonLabel.text = Global.userDictionary[sonId]?.firstName
                 self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
                 Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.black)
             }
@@ -274,10 +388,12 @@ class HomeViewController: UIViewController {
             }
         }
         
-        self.groupPhotoImageView.image = Global.gamvesFamily.familyImage //self.generateGroupImage()
+        self.groupPhotoImageView.image = self.generateGroupImage() //Global.gamvesFamily.familyImage
         Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.black)
         
         self.activityIndicatorView?.stopAnimating()
+        
+        self.initializeOnlineSubcritpion()
         
     }
     
@@ -387,9 +503,119 @@ class HomeViewController: UIViewController {
     
     }
     
+    ////collectionView
+
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return userStatistics.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HomeCollectionViewCell
+        
+        let id = indexPath.row
+        
+        var stats = self.userStatistics[id]
+        
+        
+        cell.descLabel.text = stats.desc
+        cell.dataLabel.text = stats.data
+
+        if id == 0
+        {
+            if self.sonOnline
+            {
+                stats.icon = UIImage(named: "status_online")!
+            } else 
+            {
+                stats.icon = UIImage(named: "status_offline")!
+            }
+
+            cell.dataLabel.isHidden = true
+        }
+   
+        cell.iconImageView.image = stats.icon
+        
+        return cell
+    }    
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let userStatistic = userStatistics[indexPath.row]
+
+
+        /*if let description = userStatistic.description {
+            
+            let size = CGSize(width:250, height:1000)
+            
+            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+            
+            return CGSize(width:self.frame.width, height:estimatedFrame.height + 20)
+        }*/
+        
+        return CGSize(width:self.collectionView.frame.width, height:50)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(8, 0, 0, 0)
+    }
    
     
+    func initializeOnlineSubcritpion()
+    {
+        let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+        if Global.userDictionary[sonId] != nil
+        {
+            let userId = Global.userDictionary[sonId]?.userId
+            
+            let onlineQuery = PFQuery(className: "UserOnline").whereKey("userId", equalTo: userId)
+            
+            self.sonSubscription = liveQueryClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
+                
+                self.changeSingleUserStatus(onlineMessage:onlineMessage)
+                
+            }
+            
+            let queryOnine = PFQuery(className:"UserOnline")
+            queryOnine.whereKey("userId", equalTo: userId)
+            queryOnine.findObjectsInBackground { (usersOnline, error) in
+                
+                if error != nil
+                {
+                    print("error")
+                    
+                } else {
+                    
+                    if (usersOnline?.count)!>0
+                    {
+                        for monline in usersOnline!
+                        {
+                            self.changeSingleUserStatus(onlineMessage:monline)
+                        }
+                    }
+                }
+            }
+        }
+    }
     
+    func changeSingleUserStatus(onlineMessage:PFObject)
+    {
+        let isOnline = onlineMessage["isOnline"] as! Bool
+        
+        if isOnline
+        {
+            self.sonOnline = true
+        } else
+        {
+            self.sonOnline = false
+        }
+        
+        self.collectionView.reloadData()
+        
+    }
 
     
 }

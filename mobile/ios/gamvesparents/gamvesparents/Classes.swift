@@ -187,3 +187,9 @@ class LevelsGamves
 }
 
 
+class UserStatistics
+{
+    var desc = String()
+    var data = String()
+    var icon = UIImage()
+}
