@@ -75,6 +75,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             Global.getFamilyData()
             
             ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
+
+            self.loadChatChannels()
         }
         
         return true
@@ -165,6 +167,61 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 
 
+  func loadChatChannels()
+  {
+
+        var queryChatFeed = PFQuery(className: "ChatFeed")
+        
+        queryChatFeed = PFQuery(className: "ChatFeed")
+        
+        if let userId = PFUser.current()?.objectId
+        {
+            queryChatFeed.whereKey("members", contains: userId)
+        }      
+        
+        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
+            
+            let chatFeddsCount = chatfeeds?.count
+            
+            print(chatFeddsCount)
+            
+            if chatFeddsCount! > 0
+            {
+                let chatfeedsCount =  chatfeeds?.count
+
+                print(chatfeedsCount)
+
+                if chatfeedsCount! > 0
+                {
+                    
+                    var installation:PFInstallation = PFInstallation.current()!
+
+                    for feed in chatfeeds!
+                    {
+                        let chatId:Int64 = feed["chatId"] as! Int64
+                        
+                        let chatIdStr = String(chatId) as String
+                        
+                        installation.channels?.append(chatIdStr)
+                    }
+                    
+                    do
+                    {
+                    
+                        try installation.save()
+                    
+                    } catch
+                    {
+                        print(error)
+                    }
+
+                }         
+            
+            }
+            
+        })
+    }
+
    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
        
         // Store the deviceToken in the current installation and save it to Parse.     
@@ -253,8 +310,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return urls[urls.count-1]
     }()
-    
-    
+  
+
+
+
     
     
 

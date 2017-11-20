@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import PopupDialog
 
-class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CLLocationManagerDelegate {
     
     var popup:PopupDialog! = nil
     
@@ -23,10 +23,30 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     var cellFree:FeedCell!
     
+    var locationManager : CLLocationManager = CLLocationManager()
+    
+    var didFindLocation = Bool()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationController?.navigationBar.isTranslucent = false
+        
+        locationManager.delegate = self
+        
+        // For use when the app is open & in the background
+        locationManager.requestAlwaysAuthorization()
+        
+        // For use when the app is open
+        //locationManager.requestWhenInUseAuthorization()
+        
+        // If location services is enabled get the users location
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest // You can change the locaiton accuary here.
+            locationManager.startUpdatingLocation()
+            didFindLocation = false
+        }
         
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width - 32, height: view.frame.height))
         titleLabel.text = "  Home"
@@ -247,7 +267,77 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(groupNameViewController, animated: true)
     }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
+        if let location = locations.first
+        {
+            if !didFindLocation
+            {
+                didFindLocation = true
+                
+                print(location.coordinate)
+                
+                let userLocation = PFObject(className: "Location")
+                
+                if let userId = PFUser.current()?.objectId
+                {
+                    userLocation["userId"] = userId
+                }
+                
+                let lat = Double(location.coordinate.latitude)
+                let lng = Double(location.coordinate.longitude)
+                
+                let geoPoint = PFGeoPoint(latitude: lat, longitude: lng)
+                userLocation["geolocation"] = geoPoint
+                
+                
+                userLocation.saveInBackground(block: { (resutl, error) in
+                    
+                    if error != nil
+                    {
+                        print(error)
+                    } else
+                    {
+                        print(resutl)
+                    }
+                    
+                })
+            }
+        }
+    }
+    
+    // If we have been deined access give the user the option to change it
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if(status == CLAuthorizationStatus.denied) {
+            showLocationDisabledPopUp()
+        }
+    }
+    
+    // Show the popup to the user if we have been deined access
+    func showLocationDisabledPopUp()
+    {
+        let alertController = UIAlertController(title: "Background Location Access Disabled",
+                                                message: "In order to deliver pizza we need your location",
+                                                preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        let openAction = UIAlertAction(title: "Open Settings", style: .default) { (action) in
+            if let url = URL(string: UIApplicationOpenSettingsURLString) {
+                if #available(iOS 10.0, *) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                } else {
+                    // Fallback on earlier versions
+                }
+            }
+        }
+        alertController.addAction(openAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
 }
 
 

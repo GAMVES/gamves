@@ -43,5 +43,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Gamves tracks your position near your family</string>
 </dict>
 </plist>

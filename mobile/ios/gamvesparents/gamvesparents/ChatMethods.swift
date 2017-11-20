@@ -72,7 +72,10 @@ class ChatMethods: NSObject
 
             count = count + 1
         }
-        chatFeed["lastMessage"] = "---is_admin_chat---New chat with \(chatMembers)"      
+
+        var message = "---is_admin_chat---New chat with \(chatMembers)"      
+        
+        chatFeed["lastMessage"] = message
         
         chatFeed.saveInBackground(block: { (saved, error) in
             
@@ -97,6 +100,8 @@ class ChatMethods: NSObject
                     if resutl
                     {                        
                         
+                    	ChatMethods.sendMessage(sendPush: false, chatId: chatId, text: message, textField: nil)
+
                         completionHandler(resutl)
                         
                     } else
@@ -143,6 +148,78 @@ class ChatMethods: NSObject
             } else
             {
                 completionHandlerChannel(true)
+            }
+        }
+    }
+
+    static func sendMessage(sendPush:Bool, chatId:Int64, text:String, textField:UITextField?)
+    {
+        print(text)
+        
+        let messagePF: PFObject = PFObject(className: "ChatVideo")
+        
+        var userId = String()
+        
+        var textMessage = String()
+        
+        if PFUser.current() != nil
+        {
+            userId = (PFUser.current()?.objectId)!
+            messagePF["userId"] = userId
+        }
+        
+        messagePF["chatId"] = chatId
+        
+        messagePF["message"] = text
+        
+        UserDefaults.standard.set(text, forKey: "last_message")
+        
+        var message = text
+        
+        messagePF.saveInBackground { (resutl, error) in
+            
+            if error == nil
+            {
+                
+                if textField != nil
+                {
+                    textField?.text = ""
+                }
+                
+                if sendPush
+                {
+                    self.sendPushWithCoud(message: message, chatId: chatId)
+                }
+            }
+        }
+
+    }
+
+    static func sendPushWithCoud(message: String, chatId:Int64)
+    {
+        
+        if var username = Global.userDictionary[(PFUser.current()?.objectId)!]?.name
+        {
+            
+            if let name = UserDefaults.standard.object(forKey: "last_message")
+            {
+                
+                let jsonObject: [String: Any] = [ "message": "\(message)", "chatId": "\(chatId)" ]
+                
+                let valid = JSONSerialization.isValidJSONObject(jsonObject)
+                
+                if valid
+                {
+            
+                    let params = ["channels": String(chatId), "title": "\(username)", "alert": "\(name)", "data":jsonObject] as [String : Any]
+                    
+                    print(params)
+                    
+                    PFCloud.callFunction(inBackground: "push", withParameters: params) { (resutls, error) in
+                     
+                        print(resutls)
+                    }
+                }
             }
         }
     }

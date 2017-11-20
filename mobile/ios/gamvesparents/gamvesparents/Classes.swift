@@ -142,6 +142,8 @@ class GamvesFamily
     var spouseChatId = Int64()
     var familyChatId = Int64()
     
+    var familyImage = UIImage()
+    
     init()
     {
         self.sonsUsers = [GamvesParseUser]()

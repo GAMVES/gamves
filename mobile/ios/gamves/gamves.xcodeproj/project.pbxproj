@@ -40,6 +40,7 @@
 		828DB5DF1EFE408500403C66 /* Gradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828DB5DE1EFE408500403C66 /* Gradients.swift */; };
 		82970BA41F1DBFF000F6ABAD /* VideoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82970BA31F1DBFF000F6ABAD /* VideoPage.swift */; };
 		82970BA61F1DC7CB00F6ABAD /* CategoryPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82970BA51F1DC7CB00F6ABAD /* CategoryPage.swift */; };
+		829F01121FC09ED800B8F2BD /* ChatFeedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829F01111FC09ED800B8F2BD /* ChatFeedMethods.swift */; };
 		82BAAF2E1EFE453E0021C405 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BAAF2D1EFE453E0021C405 /* Globals.swift */; };
 		82BD5EF91F915D1E00BD8760 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BD5EF81F915D1E00BD8760 /* ChatViewController.swift */; };
 		82BD5EFB1F91635400BD8760 /* SelectContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BD5EFA1F91635400BD8760 /* SelectContactViewController.swift */; };
@@ -110,6 +111,7 @@
 		828DB5DE1EFE408500403C66 /* Gradients.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gradients.swift; sourceTree = "<group>"; };
 		82970BA31F1DBFF000F6ABAD /* VideoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPage.swift; sourceTree = "<group>"; };
 		82970BA51F1DC7CB00F6ABAD /* CategoryPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryPage.swift; sourceTree = "<group>"; };
+		829F01111FC09ED800B8F2BD /* ChatFeedMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatFeedMethods.swift; sourceTree = "<group>"; };
 		82BAAF2D1EFE453E0021C405 /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		82BD5EF81F915D1E00BD8760 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		82BD5EFA1F91635400BD8760 /* SelectContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectContactViewController.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 		828DB5DB1EFE406700403C66 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				829F01111FC09ED800B8F2BD /* ChatFeedMethods.swift */,
 				82BAAF2D1EFE453E0021C405 /* Globals.swift */,
 				828DB5DE1EFE408500403C66 /* Gradients.swift */,
 				828DB5DC1EFE407400403C66 /* Reachability.swift */,
@@ -543,6 +546,7 @@
 				828DB5DF1EFE408500403C66 /* Gradients.swift in Sources */,
 				825568D91FA3FA2F0074C49C /* Array+Extension.swift in Sources */,
 				C75742B71D5D93FA001C066C /* VideoLauncher.swift in Sources */,
+				829F01121FC09ED800B8F2BD /* ChatFeedMethods.swift in Sources */,
 				82C9084B1FA0FD790059FAB8 /* Downloader.swift in Sources */,
 				82E372291FAFD5CF000AD7EB /* Classes.swift in Sources */,
 				8272C9531EFF755B005D1C9A /* CategoryTableViewSectionCell.swift in Sources */,

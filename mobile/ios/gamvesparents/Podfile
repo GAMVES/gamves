@@ -7,7 +7,7 @@ target 'gamvesparents' do
 
   # Pods for gamvesparents
 
-  pod 'ParseLiveQuery'
+
   
   #pod 'Parse'
 
@@ -16,6 +16,8 @@ target 'gamvesparents' do
   pod 'DownPicker'
 
   pod 'SwiftValidator', :git => 'https://github.com/jpotts18/SwiftValidator.git', :branch => 'master'
+  
+  pod 'ParseLiveQuery', :git => 'https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git', :branch => 'master'
   
   pod 'BEMCheckBox'
   

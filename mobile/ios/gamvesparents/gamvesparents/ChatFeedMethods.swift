@@ -29,8 +29,7 @@ class ChatFeedMethods: NSObject
         {
             queryChatFeed.whereKey("chatId", equalTo: chatId)
         } else 
-        {
-            queryChatFeed = PFQuery(className: "ChatFeed")
+        {            
             
             if let userId = PFUser.current()?.objectId
             {
@@ -113,27 +112,28 @@ class ChatFeedMethods: NSObject
                                 }
                                 
                                 chatfeed.room = chatFeedRoom
-                                
                             }
                             
-                            if (chatfeedsCount-1) == fcount
-                            {
-                                Global.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
-                                    
-                                    chatfeed.badgeNumber = counter
-                                    
-                                    print(chatId)
-                                    
-                                    self.sortFeedByDate()
-                                    
+                            Global.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
+                                
+                                chatfeed.badgeNumber = counter
+                                
+                                print(chatId)
+                                
+                                self.sortFeedByDate()
+                                
+                                if (chatfeedsCount-1) == fcount
+                                {
                                     completionHandler(chatId)
-                                    
-                                })
-                            }
+                                }
+                                
+                                fcount = fcount + 1
+                                
+                            })
                             
                             self.chatFeeds[chatId] = chatfeed
                             
-                            fcount = fcount + 1
+                            
                         })
                     }
                 }
@@ -245,6 +245,62 @@ class ChatFeedMethods: NSObject
                     })
                 }
             }
+        })
+    }
+    
+    
+    static func loadChatChannels()
+    {
+
+        var queryChatFeed = PFQuery(className: "ChatFeed")
+        
+        queryChatFeed = PFQuery(className: "ChatFeed")
+        
+        if let userId = PFUser.current()?.objectId
+        {
+            queryChatFeed.whereKey("members", contains: userId)
+        }      
+        
+        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
+            
+            let chatFeddsCount = chatfeeds?.count
+            
+            print(chatFeddsCount)
+            
+            if chatFeddsCount! > 0
+            {
+                let chatfeedsCount =  chatfeeds?.count
+
+                print(chatfeedsCount)
+
+                if chatfeedsCount! > 0
+                {
+                    
+                    var installation:PFInstallation = PFInstallation.current()!
+
+                    for feed in chatfeeds!
+                    {
+                        let chatId:Int64 = feed["chatId"] as! Int64
+                        
+                        let chatIdStr = String(chatId) as String
+                        
+                        installation.channels?.append(chatIdStr)
+                    }
+                    
+                    do
+                    {
+                    
+                        try installation.save()
+                    
+                    } catch
+                    {
+                        
+                    }
+
+                }         
+            
+            }
+            
         })
     }
 

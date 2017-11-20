@@ -420,7 +420,6 @@ class ProfileViewController: UIViewController,
 
         //let schools: NSMutableArray = ["St Paul's", "St Hilda's"]
         
-        
         self.loadSchools(completionHandler: { ( user ) -> () in
             
             self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
@@ -485,30 +484,45 @@ class ProfileViewController: UIViewController,
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)       
         
-        NotificationCenter.default.addObserver(self, selector: #selector(loadUmagesFromDefault), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)             
-         
-        if self.isKeyPresentInUserDefaults(key: "profile_completed")
-        {
-            let profile_completed = Global.defaults.bool(forKey: "profile_completed")
-
-            if profile_completed
-            {                
-                self.hideShowTabBar(status:false)
-            }
-        } else
-        {
-            self.hideShowTabBar(status:true)            
-        } 
+        NotificationCenter.default.addObserver(self, selector: #selector(loadUmagesFromDefault), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
 
         self.familyChatId = Global.getRandomInt64()
         self.sonChatId       = Global.getRandomInt64()
         self.spouseChatId    = Global.getRandomInt64()
 
     }
-
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        if self.isKeyPresentInUserDefaults(key: "profile_completed")
+        {
+            let profile_completed = Global.defaults.bool(forKey: "profile_completed")
+            
+            if profile_completed
+            {
+                self.hideShowTabBar(status:false)
+            }
+            
+        } else
+        {
+            self.hideShowTabBar(status:true)
+        }
+    }
+    
+    func scrollViewGoTop()
+    {
+        scrollView.setContentOffset(CGPoint(x:0, y:0), animated: false)
+    }
+    
     func hideShowTabBar(status: Bool)
     {
-        tabBarController?.tabBar.isHidden = false
+        tabBarController?.tabBar.isHidden = status
+        
+        if status
+        {
+            navigationController?.navigationBar.tintColor = UIColor.white
+        } 
     }
 
     func isKeyPresentInUserDefaults(key: String) -> Bool {
@@ -964,6 +978,7 @@ class ProfileViewController: UIViewController,
                         self.segmentedControl.setEnabled(true, forSegmentAt: 1)
                         self.segmentedControl.selectedSegmentIndex = 1
                         self.handleSegmentedChange()
+                        self.scrollViewGoTop()
 
                     }
 
@@ -1616,6 +1631,11 @@ class ProfileViewController: UIViewController,
         family["familyChatId"]  = self.familyChatId
         family["sonChatId"]     = self.sonChatId
         family["spouseChatId"]  = self.spouseChatId
+
+        let imageFamily = UIImage(named: "family");
+
+        let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily!, 1.0)!)
+        family.setObject(pfimage!, forKey: "picture")
         
         family.saveInBackground { (success, error) in
             
@@ -1629,6 +1649,7 @@ class ProfileViewController: UIViewController,
             }
             else
             {
+
                 Global.gamvesFamily.familyName = your_family_name!
                
                 Global.gamvesFamily.sonChatId = self.sonChatId

@@ -53,6 +53,11 @@ class HomeViewController: UIViewController {
         return imageView
     }()   
 
+    var checkLabelSon: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+
     lazy var spousePhotoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "spouse_photo")
@@ -64,6 +69,11 @@ class HomeViewController: UIViewController {
         return imageView
     }()
 
+    var checkLabelSpouse: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+
     lazy var groupPhotoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "your_photo")
@@ -73,6 +83,11 @@ class HomeViewController: UIViewController {
         imageView.isUserInteractionEnabled = true     
         imageView.tag = 0           
         return imageView
+    }()
+
+    var checkLabelGroup: UILabel = {
+        let label = UILabel()
+        return label
     }()
     
     let detailsView: UIView = {
@@ -123,13 +138,30 @@ class HomeViewController: UIViewController {
             self.detailsView,
             metrics: metricsHome)
 
+        self.checkLabelSon =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.red)
+        self.checkLabelSpouse =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.red)
+        self.checkLabelGroup =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.red)        
+
         self.photosContainerView.addSubview(self.sonPhotoImageView)
+        self.photosContainerView.addSubview(self.checkLabelSon)
+
         self.photosContainerView.addSubview(self.spousePhotoImageView)
+        self.photosContainerView.addSubview(self.checkLabelSpouse)
+
         self.photosContainerView.addSubview(self.groupPhotoImageView)
+        self.photosContainerView.addSubview(self.checkLabelGroup)
         
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonPhotoImageView)
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.spousePhotoImageView)
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.groupPhotoImageView)
+
+        var metricsVerBudge = [String:Int]()
+
+        metricsVerBudge["verPadding"] = photoSize - 25 
+        
+        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelSon, metrics: metricsVerBudge)    
+        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelSpouse, metrics: metricsVerBudge)
+        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelGroup, metrics: metricsVerBudge)
         
         self.photosContainerView.addConstraintsWithFormat(
             "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-[v2(photoSize)]-padding-|", views:
@@ -137,6 +169,18 @@ class HomeViewController: UIViewController {
             self.spousePhotoImageView,
             self.groupPhotoImageView,
             metrics: metricsHome)
+
+        var metricsHorBudge = [String:Int]()
+
+        let paddingBudge = (padding + photoSize) - 25
+
+        metricsHorBudge["sonPadding"]      = paddingBudge 
+        metricsHorBudge["spousePadding"]   = (paddingBudge * 2) + 25
+        metricsHorBudge["groupPadding"]    = (paddingBudge * 3) + 50
+
+        self.photosContainerView.addConstraintsWithFormat("H:|-sonPadding-[v0(25)]", views: self.checkLabelSon, metrics: metricsHorBudge)
+        self.photosContainerView.addConstraintsWithFormat("H:|-spousePadding-[v0(25)]", views: self.checkLabelSpouse, metrics: metricsHorBudge)
+        self.photosContainerView.addConstraintsWithFormat("H:|-groupPadding-[v0(25)]", views: self.checkLabelGroup, metrics: metricsHorBudge)
         
         NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
         
@@ -144,7 +188,11 @@ class HomeViewController: UIViewController {
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
         
-        self.activityIndicatorView?.startAnimating()        
+        self.activityIndicatorView?.startAnimating()
+        
+        self.checkLabelSon.isHidden = true
+        self.checkLabelSpouse.isHidden = true
+        self.checkLabelGroup.isHidden = true
         
     }
     
@@ -155,7 +203,52 @@ class HomeViewController: UIViewController {
     
     func chatFeedLoaded()
     {
-        print("llega")
+        let sonChatId:Int64 = Global.gamvesFamily.sonChatId
+        if ChatFeedMethods.chatFeeds[sonChatId]! != nil
+        {
+            let sonBadge = ChatFeedMethods.chatFeeds[sonChatId]?.badgeNumber
+            
+            if sonBadge! > 0
+            {
+                self.checkLabelSpouse.isHidden = false
+                
+                let sob = "\(sonBadge!)"
+                
+                self.checkLabelSon.text = sob
+            }
+            
+        }
+        
+        let spouseChatId:Int64 = Global.gamvesFamily.spouseChatId
+        if ChatFeedMethods.chatFeeds[spouseChatId]! != nil
+        {
+            let spouseBadge = ChatFeedMethods.chatFeeds[spouseChatId]?.badgeNumber
+            
+            if spouseBadge! > 0
+            {
+                self.checkLabelSpouse.isHidden = false
+                
+                let spb = "\(spouseBadge!)"
+               
+                self.checkLabelSpouse.text = spb
+            }
+        }
+        
+        let groupChatId:Int64 = Global.gamvesFamily.familyChatId
+        if ChatFeedMethods.chatFeeds[groupChatId]! != nil
+        {
+            let groupBadge = ChatFeedMethods.chatFeeds[groupChatId]?.badgeNumber       
+            
+            if groupBadge! > 0
+            {
+                self.checkLabelGroup.isHidden = false
+                
+                let grb = "\(groupBadge!)"
+                
+                self.checkLabelGroup.text = grb
+            }
+            
+        }
     }
     
     func familyLoaded()
@@ -181,7 +274,7 @@ class HomeViewController: UIViewController {
             }
         }
         
-        self.groupPhotoImageView.image = self.generateGroupImage()
+        self.groupPhotoImageView.image = Global.gamvesFamily.familyImage //self.generateGroupImage()
         Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.black)
         
         self.activityIndicatorView?.stopAnimating()

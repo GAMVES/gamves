@@ -30,6 +30,8 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     var isStandAlone = Bool()
     
+    var navHeight = CGFloat()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -177,9 +179,17 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
             subtitle = subtitle.replacingOccurrences(of: "\"", with: "")
         }
         
-        self.navigationItem.titleView = Global.setTitle(title: self.room, subtitle: subtitle)
+        self.navigationItem.titleView = Global.setTitle(title: self.room, subtitle: subtitle)                
+
+        let bounds = self.navigationController!.navigationBar.bounds
+
+        navHeight = bounds.height
         
-        let chatFrame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        print(navHeight)
+        
+        let chatHeight = self.view.frame.height-navHeight
+        
+        let chatFrame = CGRect(x: 0, y: navHeight, width: self.view.frame.width, height: chatHeight)
         
         chatView = ChatView(frame: chatFrame, isVideo: false)
         
@@ -213,13 +223,13 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     func keyboardOpened(keybordHeight keybordEditHeight: CGFloat)
     {
-        let chatHeight = self.view.frame.height - keybordEditHeight
+        let chatHeight = self.view.frame.height - keybordEditHeight - navHeight
         self.chatView.frame.size.height = chatHeight
     }
     
     func keyboardclosed()
     {
-        self.chatView.frame.size.height = self.view.frame.height
+        self.chatView.frame.size.height = self.view.frame.height - navHeight
     }
     
 

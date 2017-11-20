@@ -20,6 +20,7 @@ class MessageChat
     var userName = String()
     var date: Date?
     var isSender:Bool!
+    var isAdmin:Bool!
 }
 
 class ChatView: UIView,
@@ -31,7 +32,9 @@ class ChatView: UIView,
     
     var activityView: NVActivityIndicatorView!
 
-    let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://gamves.back4app.io")
+    let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
+        
+    //"wss://gamves.back4app.io"
     
     private var chatSubscription: Subscription<PFObject>!
     private var feedSubscription: Subscription<PFObject>!
@@ -143,7 +146,7 @@ class ChatView: UIView,
         
         self.isVideo = isVideo
         
-        self.backgroundColor = UIColor.blue
+        //self.backgroundColor = UIColor.blue
         
         if isVideo
         {
@@ -464,6 +467,8 @@ class ChatView: UIView,
     func initializeSubscription()
     {
         
+        print(self.chatId)
+        
         let videoQuery = PFQuery(className: "ChatVideo").whereKey("chatId", equalTo: self.chatId)
         
         self.chatSubscription = liveQueryClient.subscribe(videoQuery).handle(Event.created) { _, chatMessage in
@@ -502,7 +507,7 @@ class ChatView: UIView,
                     
                     if result
                     {
-                        self.sendMessage(sendPush: false)
+                        ChatMethods.sendMessage(sendPush: false, chatId: self.chatId, text:self.inputTextField.text!, textField: self.inputTextField)
                         
                         self.activityView.stopAnimating()
                     }
@@ -535,7 +540,7 @@ class ChatView: UIView,
                             
                             ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
                             
-                            self.sendMessage(sendPush: false)
+                            ChatMethods.sendMessage(sendPush: false, chatId: self.chatId, text: self.inputTextField.text!, textField: self.inputTextField)
                             
                             self.activityView.stopAnimating()
                             
@@ -548,80 +553,12 @@ class ChatView: UIView,
             
         } else
         {
-            self.sendMessage(sendPush: true)
+            ChatMethods.sendMessage(sendPush: true, chatId: self.chatId, text: self.inputTextField.text!, textField: self.inputTextField)
         }
         
     }
     
-    func sendMessage(sendPush:Bool)
-    {
-        print(inputTextField.text)
-        
-        let messagePF: PFObject = PFObject(className: "ChatVideo")
-        
-        var userId = String()
-        
-        var textMessage = String()
-        
-        if PFUser.current() != nil
-        {
-            userId = (PFUser.current()?.objectId)!
-            messagePF["userId"] = userId
-        }
-        
-        messagePF["chatId"] = self.chatId
-        
-        messagePF["message"] = self.inputTextField.text!
-        
-        UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
-        
-        var message = self.inputTextField.text!
-        
-        messagePF.saveInBackground { (resutl, error) in
-            
-            if error == nil
-            {
-                
-                self.inputTextField.text = ""
-                
-                if sendPush
-                {
-                    self.sendPushWithCoud(message: message)
-                }
-            }
-        }
-
-    }
-
     
-    func sendPushWithCoud(message: String)
-    {
-        
-        if var username = Global.userDictionary[(PFUser.current()?.objectId)!]?.name
-        {
-            
-            if let name = UserDefaults.standard.object(forKey: "last_message")
-            {
-                
-                let jsonObject: [String: Any] = [ "message": "\(message)", "chatId": "\(self.chatId)" ]
-                
-                let valid = JSONSerialization.isValidJSONObject(jsonObject)
-                
-                if valid
-                {
-            
-                    let params = ["channels": String(self.chatId), "title": "\(username)", "alert": "\(name)", "data":jsonObject] as [String : Any]
-                    
-                    print(params)
-                    
-                    PFCloud.callFunction(inBackground: "push", withParameters: params) { (resutls, error) in
-                     
-                        print(resutls)
-                    }
-                }
-            }
-        }
-    }
     
     func sendNotification() {
         
@@ -893,7 +830,7 @@ class ChatView: UIView,
                     {
                         if !self.isVideo
                         {
-                            self.sendPushWithCoud(message: message!)
+                            ChatMethods.sendPushWithCoud(message: message!, chatId: self.chatId)
                         }
                         
                         completionHandlerSave(resutl)
@@ -1075,10 +1012,30 @@ class ChatView: UIView,
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogMessageCell
         
         let message = messages[indexPath.row]
-        
-        cell.messageTextView.text = message.message
 
-        let messageText = message.message
+        var messageText:String = message.message
+        
+        print(messageText)
+
+        let delimitator = Global.admin_delimitator
+
+        if messageText.range(of:delimitator) != nil
+        { 
+            message.isAdmin = true
+            message.isSender = true
+
+            if let range = messageText.range(of: delimitator) 
+            {
+                messageText.removeSubrange(range)
+            }
+
+        } else
+        {
+            message.isAdmin = false
+        }
+        
+        
+        cell.messageTextView.text = messageText
         
         let userID = message.userId
         
@@ -1087,32 +1044,48 @@ class ChatView: UIView,
         let profileImageName = gamvesUser?.userName
         let profileImage = gamvesUser?.avatar
         
-        if let messageText = messageText, (profileImageName != nil) {
+        cell.profileImageView.image = profileImage
+        
+        let size = CGSize(width: 250, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+        
+        if message.isSender == nil || !message.isSender 
+        {
             
-            cell.profileImageView.image = profileImage
+            cell.messageTextView.frame = CGRect(x:48 + 8, y:0, width:estimatedFrame.width + 16, height: estimatedFrame.height + 20)
             
-            let size = CGSize(width: 250, height: 1000)
-            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+            cell.textBubbleView.frame = CGRect(x:48 - 10,y: -4, width:estimatedFrame.width + 16 + 8 + 16, height: estimatedFrame.height + 20 + 6)
             
-            if message.isSender == nil || !message.isSender {
+            cell.profileImageView.isHidden = false
+            
+            cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
+            cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
+            cell.messageTextView.textColor = UIColor.black
+            
+        } else {
+            
+            if message.isAdmin
+            {
                 
-                cell.messageTextView.frame = CGRect(x:48 + 8, y:0, width:estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                let x:CGFloat = 20
+                let width = self.frame.width - 40
+                let height = estimatedFrame.height + 20
+            
+                cell.textBubbleView.frame = CGRect(x: x, y: -4, width: width, height: height + 6)
                 
-                cell.textBubbleView.frame = CGRect(x:48 - 10,y: -4, width:estimatedFrame.width + 16 + 8 + 16, height: estimatedFrame.height + 20 + 6)
+                cell.messageTextView.frame = CGRect(x: x + 20, y: 0, width: width-20, height: height)
                 
-                cell.profileImageView.isHidden = false
+                cell.profileImageView.isHidden = true
                 
-                cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
-                cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
-                cell.messageTextView.textColor = UIColor.black
-                
+                cell.bubbleImageView.image = ChatLogMessageCell.adminBubbleImage
+                cell.bubbleImageView.tintColor = UIColor.lightGray
+                cell.messageTextView.textColor = UIColor.gray
+
             } else {
-                
-                //outgoing sending message
-                
+                    
                 cell.messageTextView.frame = CGRect(x:self.frame.width - estimatedFrame.width - 16 - 16 - 8,y:0, width:estimatedFrame.width + 16, height:estimatedFrame.height + 20)
-                
+            
                 cell.textBubbleView.frame = CGRect(x:self.frame.width - estimatedFrame.width - 16 - 8 - 16 - 10, y: -4, width: estimatedFrame.width + 16 + 8 + 10, height: estimatedFrame.height + 20 + 6)
                 
                 cell.profileImageView.isHidden = true
@@ -1120,12 +1093,13 @@ class ChatView: UIView,
                 cell.bubbleImageView.image = ChatLogMessageCell.blueBubbleImage
                 cell.bubbleImageView.tintColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
                 cell.messageTextView.textColor = UIColor.white
-            }
+
+            }             
             
         }
         
         return cell
-    }   
+    }    
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -1188,6 +1162,8 @@ class ChatLogMessageCell: BaseCell {
     static let grayBubbleImage = UIImage(named: "bubble_gray")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     
     static let blueBubbleImage = UIImage(named: "bubble_blue")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
+    
+    static let adminBubbleImage = UIImage(named: "bubble_admin")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     
     let bubbleImageView: UIImageView = {
         let imageView = UIImageView()

@@ -13,6 +13,15 @@ import PopupDialog
 
 class Global: NSObject
 {
+    static var admin_delimitator:String = "---is_admin_chat---"
+    
+    static var key_you_spouse_chat_id = "you_spouse_chat_id"
+    static var key_you_son_chat_id = "you_son_chat_id"
+    static var key_you_spouse_son_chat_id = "you_spouse_son_chat_id"
+    
+    //Notifications
+    static var notificationKeyFamilyLoaded  = "com.gamves.gamvesparent.familyLoaded"
+    static var notificationKeyChatFeed      = "com.gamves.gamvesparent.chatfeed"
     
     static var badgeNumber = Bool()
     
@@ -20,16 +29,9 @@ class Global: NSObject
     
     static var gamvesFamily = GamvesFamily()
     
-    static var chatFeeds = Dictionary<Int64, ChatFeed>()
-    
     static var chatVideos = Dictionary<Int64, VideoGamves>()
     
     static var hasNewFeed = Bool()
-    
-    static func sortFeedByDate()
-    {
-        self.chatFeeds.sorted(by: {$0.value.date! > $1.value.date! })
-    }
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
     {
@@ -470,172 +472,6 @@ class Global: NSObject
         return abs(randomNumber)
     }
     
-    /// FEED
-    
-    static func queryFeed()
-    {
-        let queryChatFeed = PFQuery(className: "ChatFeed")
-        
-        if let userId = PFUser.current()?.objectId
-        {
-            queryChatFeed.whereKey("members", contains: userId)
-        }
-        
-        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
-            
-            let chatFeddsCount = chatfeeds?.count
-            
-            if chatFeddsCount! > 0
-            {
-                let chatfeedsCount =  chatfeeds?.count
-                
-                self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Bool ) -> () in })
-                
-            }
-            
-        })
-    }
-
-    static func parseChatFeed(chatFeedObjs: [PFObject], completionHandler : @escaping (_ resutl:Bool) -> ()?)
-    {
-        var chatfeedsCount = chatFeedObjs.count
-        
-        print(chatfeedsCount)
-        var fcount = 0
-        
-        for chatFeedObj in chatFeedObjs
-        {
-            
-            let chatfeed = ChatFeed()
-            chatfeed.text = chatFeedObj["lastMessage"] as? String
-            
-            var room = chatFeedObj["room"] as? String
-            
-            chatfeed.room = room
-            
-            chatfeed.date = chatFeedObj.updatedAt
-            chatfeed.userId = chatFeedObj["lastPoster"] as? String
-            let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
-            chatfeed.isVideoChat = isVideoChat
-            var chatId = chatFeedObj["chatId"] as! Int64
-            chatfeed.chatId = chatId
-            
-            let picture = chatFeedObj["thumbnail"] as! PFFile
-            picture.getDataInBackground(block: { (imageData, error) in
-                
-                if error == nil
-                {
-                    if let imageData = imageData
-                    {
-                        chatfeed.chatThumbnail = UIImage(data:imageData)
-                        
-                        self.getParticipants(chatFeedObj : chatFeedObj, chatfeed: chatfeed, isVideoChat: isVideoChat, chatId : chatId, completionHandler: { ( chatfeed ) -> () in
-                            
-                            var chatFeedRoom = String()
-                            
-                            if (room?.contains("____"))!
-                            {
-                                let roomArr : [String] = room!.components(separatedBy: "____")
-                                
-                                var first : String = roomArr[0]
-                                var second : String = roomArr[1]
-                                
-                                if first == PFUser.current()?.objectId
-                                {
-                                    chatFeedRoom = (self.userDictionary[second]?.name)!
-                                } else {
-                                    chatFeedRoom = (self.userDictionary[first]?.name)!
-                                }
-                                
-                                chatfeed.room = chatFeedRoom
-
-                            }
-                            
-                            if (chatfeedsCount-1) == fcount
-                            {
-                                self.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
-                                    
-                                    chatfeed.badgeNumber = counter
-                                    
-                                    print(chatId)
-                                    
-                                    self.chatFeeds[chatId] = chatfeed
-                                    
-                                    self.sortFeedByDate()
-                                    
-                                    completionHandler(true)
-                                    
-                                    //self.collectionView.reloadData()
-                                    //self.activityView.stopAnimating()
-                                    
-                                })
-                            }
-                            fcount = fcount + 1
-                        })
-                    }
-                } else
-                {
-                    completionHandler(false)
-                }
-                
-                //self.collectionView.reloadData()
-            })
-            
-            if chatfeed.isVideoChat!
-            {
-                let videoId = "\(chatfeed.chatId!)" //String(message.chatId)
-                
-                let videosQuery = PFQuery(className:"Videos")
-                videosQuery.whereKey("videoId", equalTo: videoId)
-                videosQuery.findObjectsInBackground(block: { (videos, error) in
-                    
-                    if error != nil
-                    {
-                        
-                        print("error")
-                        
-                    } else {
-                        
-                        if (videos?.count)! > 0
-                        {
-                            var videosGamves = [VideoGamves]()
-                            
-                            if let videos = videos
-                            {
-                                for video in videos
-                                {
-                                    let videoGamves = VideoGamves()
-                                    let videothumburl:String = video["thumbnailUrl"] as! String
-                                    let videoDescription:String = video["description"] as! String
-                                    let videoCategory:String = video["category"] as! String
-                                    let videoUrl:String = video["source"] as! String
-                                    let videoTitle:String = video["title"] as! String
-                                    let videoFromName:String = video["fromName"] as! String
-                                    
-                                    videoGamves.video_title = videoTitle
-                                    videoGamves.thumb_url = videothumburl
-                                    videoGamves.description = videoDescription
-                                    videoGamves.video_category = videoCategory
-                                    videoGamves.video_url = videoUrl
-                                    videoGamves.video_fromName = videoFromName
-                                    videoGamves.videoobj = video
-                                    
-                                    if let vurl = URL(string: videothumburl)
-                                    {
-                                        if let data = try? Data(contentsOf: vurl)
-                                        {
-                                            videoGamves.thum_image = UIImage(data: data)!
-                                        }
-                                    }
-                                    self.chatVideos[chatId] = videoGamves
-                                }
-                            }
-                        }
-                    }
-                })
-            }
-        }
-    }
     
     static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int64, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
     {

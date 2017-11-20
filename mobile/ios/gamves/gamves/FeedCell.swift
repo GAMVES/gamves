@@ -94,7 +94,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.created) { _, chatFeed in
             
-            Global.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Bool ) -> () in
+            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int64 ) -> () in
                 
                 self.collectionView.reloadData()
                 
@@ -105,7 +105,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.updated) { _, chatFeed in
             
-            Global.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Bool ) -> () in
+            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int64 ) -> () in
                 
                 self.collectionView.reloadData()
                 
@@ -135,7 +135,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
                 {
                     let chatfeedsCount =  chatfeeds?.count
                     
-                    Global.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Bool ) -> () in
+                    ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Int64 ) -> () in
                         
                         self.collectionView.reloadData()
                         self.activityView.stopAnimating()
@@ -160,7 +160,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     
     func reloadCollectionView()
     {
-        Global.sortFeedByDate()
+        ChatFeedMethods.sortFeedByDate()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
         {
@@ -171,8 +171,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        print(Global.chatFeeds.count)
-        return Global.chatFeeds.count
+        print(ChatFeedMethods.chatFeeds.count)
+        return ChatFeedMethods.chatFeeds.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -181,8 +181,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MessageCell
         
         let index = indexPath.item
-        let key: Int64 = Array(Global.chatFeeds)[index].key
-        let chatfeed:ChatFeed = Global.chatFeeds[key]!
+        let key: Int64 = Array(ChatFeedMethods.chatFeeds)[index].key
+        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
         
         cell.nameLabel.text = chatfeed.room
         cell.messageLabel.text = chatfeed.text
@@ -263,8 +263,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         let layout = UICollectionViewFlowLayout()
         
         let index = indexPath.item
-        let key: Int64 = Array(Global.chatFeeds)[index].key
-        let chatfeed:ChatFeed = Global.chatFeeds[key]!
+        let key: Int64 = Array(ChatFeedMethods.chatFeeds)[index].key
+        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
     
         print(chatfeed.chatId)
         

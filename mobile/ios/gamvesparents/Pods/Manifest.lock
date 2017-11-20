@@ -26,7 +26,7 @@ DEPENDENCIES:
   - DownPicker
   - Floaty (from `https://github.com/kciter/Floaty.git`, tag `4.0.0`)
   - NVActivityIndicatorView
-  - ParseLiveQuery
+  - ParseLiveQuery (from `https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git`, branch `master`)
   - PopupDialog
   - RSKImageCropper
   - SwiftValidator (from `https://github.com/jpotts18/SwiftValidator.git`, branch `master`)
@@ -36,6 +36,9 @@ EXTERNAL SOURCES:
   Floaty:
     :git: https://github.com/kciter/Floaty.git
     :tag: 4.0.0
+  ParseLiveQuery:
+    :branch: master
+    :git: https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git
   SwiftValidator:
     :branch: master
     :git: https://github.com/jpotts18/SwiftValidator.git
@@ -44,6 +47,9 @@ CHECKOUT OPTIONS:
   Floaty:
     :git: https://github.com/kciter/Floaty.git
     :tag: 4.0.0
+  ParseLiveQuery:
+    :commit: cc1f520390edb94dfb8e92c0d2d5229b0485fd6d
+    :git: https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git
   SwiftValidator:
     :commit: 6cff6cac3e02a617f7cf11323e18526a117d5673
     :git: https://github.com/jpotts18/SwiftValidator.git
@@ -57,13 +63,13 @@ SPEC CHECKSUMS:
   Floaty: df27b72d9ed1e58d48aa3717327ffdb857268c63
   NVActivityIndicatorView: d3738df7e2e476aca0ba6bf32a8c9fbcfc33d64b
   Parse: 7daa8804b876d250a65420534c97d2d786c3b0b4
-  ParseLiveQuery: bc2321032ddae9d6ecfd4842d1b10210d453b08b
+  ParseLiveQuery: 9743983026fb94d0b43c460b2d98107e2f435abb
   PopupDialog: 75cf955693590b0cb2fdde00223fb65d99c57247
   RSKImageCropper: 356e36fc58c57c371b5d8b23d603936d6a73df6c
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
   TaskQueue: c1c02deebf2665b8e625fc46dd37a29b1de8056e
 
-PODFILE CHECKSUM: 9cb0664cd8df6b8667a799c574329ab316240c91
+PODFILE CHECKSUM: 6021fe2fc95508c802b341893468f62f01bff747
 
 COCOAPODS: 1.2.1.beta.1

@@ -19,7 +19,10 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     
     var tabBarViewController:TabBarViewController?
     
-    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: "wss://gamves.back4app.io")
+    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
+    
+    //"wss://gamves.back4app.io"
+    //"https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     private var subscription: Subscription<PFObject>!
     
@@ -183,7 +186,21 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
         
         cell.nameLabel.text = chatfeed.room
-        cell.messageLabel.text = chatfeed.text
+
+        var message:String = chatfeed.text!
+
+        let delimitator = Global.admin_delimitator
+
+        if message.range(of:delimitator) != nil
+        {            
+            if let range = message.range(of: delimitator) 
+            {
+                message.removeSubrange(range)
+            }
+
+        } 
+
+        cell.messageLabel.text = message
         cell.profileImageView.image = chatfeed.chatThumbnail
         
         if chatfeed.userId != nil

@@ -20,6 +20,7 @@ class MessageChat
     var userName = String()
     var date: Date?
     var isSender:Bool!
+    var isAdmin:Bool!
 }
 
 class ChatView: UIView,
@@ -239,12 +240,12 @@ class ChatView: UIView,
         
         print(self.chatId)
         
-        if Global.chatFeeds[self.chatId] != nil
+        if ChatFeedMethods.chatFeeds[self.chatId] != nil
         {
             
-            if Global.chatFeeds[self.chatId]?.badgeNumber != nil
+            if ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber != nil
             {
-                if (Global.chatFeeds[self.chatId]?.badgeNumber)! > 0
+                if (ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber)! > 0
                 {
                     self.clearBargesForChatId()
                 }
@@ -278,10 +279,11 @@ class ChatView: UIView,
                     
                     let chatsAmount = chatFeeds.count
                     
+                    print(chatsAmount)
+                    
                     if chatsAmount > 0
                     {
-                    
-                        print(chatsAmount)
+                        
                         
                         var total = Int()
                         total = chatsAmount - 1
@@ -487,7 +489,7 @@ class ChatView: UIView,
         
         //Channel exists and isVideo
         
-        if self.isVideo && Global.chatFeeds[self.chatId] == nil
+        if self.isVideo && ChatFeedMethods.chatFeeds[self.chatId] == nil
         {
          
             if self.chatFeed == nil
@@ -529,7 +531,7 @@ class ChatView: UIView,
                         
                         self.chatFeed.saveInBackground(block: { (resutl, error) in
                             
-                            Global.queryFeed()
+                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
                             
                             self.sendMessage(sendPush: false)
                             
@@ -668,9 +670,9 @@ class ChatView: UIView,
             
             self.messages.append(message)
             
-            if Global.chatFeeds[self.chatId] != nil
+            if ChatFeedMethods.chatFeeds[self.chatId] != nil
             {
-                Global.chatFeeds[self.chatId]?.text = textMessage
+                ChatFeedMethods.chatFeeds[self.chatId]?.text = textMessage
             }
             
             self.collectionView.reloadData()
@@ -988,7 +990,7 @@ class ChatView: UIView,
                                 
                                 print("")
                                 
-                                Global.chatFeeds[self.chatId]?.badgeNumber = 0
+                                ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber = 0
                                 
                                 Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
                                     
@@ -1068,7 +1070,26 @@ class ChatView: UIView,
         
         cell.messageTextView.text = message.message
 
-        let messageText = message.message
+        var messageText:String = message.message
+        
+        print(messageText)
+        
+        let delimitator = Global.admin_delimitator
+        
+        if messageText.range(of:delimitator) != nil
+        {
+            message.isAdmin = true
+            message.isSender = true
+            
+            if let range = messageText.range(of: delimitator)
+            {
+                messageText.removeSubrange(range)
+            }
+            
+        } else
+        {
+            message.isAdmin = false
+        }
         
         let userID = message.userId
         
@@ -1077,29 +1098,45 @@ class ChatView: UIView,
         let profileImageName = gamvesUser?.userName
         let profileImage = gamvesUser?.avatar
         
-        if let messageText = messageText, (profileImageName != nil) {
+        cell.profileImageView.image = profileImage
+        
+        let size = CGSize(width: 250, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+        
+        if message.isSender == nil || !message.isSender
+        {
             
-            cell.profileImageView.image = profileImage
+            cell.messageTextView.frame = CGRect(x:48 + 8, y:0, width:estimatedFrame.width + 16, height: estimatedFrame.height + 20)
             
-            let size = CGSize(width: 250, height: 1000)
-            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+            cell.textBubbleView.frame = CGRect(x:48 - 10,y: -4, width:estimatedFrame.width + 16 + 8 + 16, height: estimatedFrame.height + 20 + 6)
             
-            if message.isSender == nil || !message.isSender {
+            cell.profileImageView.isHidden = false
+            
+            cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
+            cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
+            cell.messageTextView.textColor = UIColor.black
+            
+        } else {
+            
+            if message.isAdmin
+            {
                 
-                cell.messageTextView.frame = CGRect(x:48 + 8, y:0, width:estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                let x:CGFloat = 20
+                let width = self.frame.width - 40
+                let height = estimatedFrame.height + 20
                 
-                cell.textBubbleView.frame = CGRect(x:48 - 10,y: -4, width:estimatedFrame.width + 16 + 8 + 16, height: estimatedFrame.height + 20 + 6)
+                cell.textBubbleView.frame = CGRect(x: x, y: -4, width: width, height: height + 6)
                 
-                cell.profileImageView.isHidden = false
+                cell.messageTextView.frame = CGRect(x: x + 20, y: 0, width: width-20, height: height)
                 
-                cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
-                cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
-                cell.messageTextView.textColor = UIColor.black
+                cell.profileImageView.isHidden = true
+                
+                cell.bubbleImageView.image = ChatLogMessageCell.adminBubbleImage
+                cell.bubbleImageView.tintColor = UIColor.lightGray
+                cell.messageTextView.textColor = UIColor.gray
                 
             } else {
-                
-                //outgoing sending message
                 
                 cell.messageTextView.frame = CGRect(x:self.frame.width - estimatedFrame.width - 16 - 16 - 8,y:0, width:estimatedFrame.width + 16, height:estimatedFrame.height + 20)
                 
@@ -1110,10 +1147,9 @@ class ChatView: UIView,
                 cell.bubbleImageView.image = ChatLogMessageCell.blueBubbleImage
                 cell.bubbleImageView.tintColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
                 cell.messageTextView.textColor = UIColor.white
+                
             }
-            
         }
-        
         return cell
     }   
     
@@ -1178,6 +1214,9 @@ class ChatLogMessageCell: BaseCell {
     static let grayBubbleImage = UIImage(named: "bubble_gray")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     
     static let blueBubbleImage = UIImage(named: "bubble_blue")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
+    
+    static let adminBubbleImage = UIImage(named: "bubble_admin")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
+
     
     let bubbleImageView: UIImageView = {
         let imageView = UIImageView()
