@@ -36,7 +36,7 @@ class HomeViewController: UIViewController,
     let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.white
+        //v.backgroundColor = UIColor.white
         return v
     }()
     
@@ -44,7 +44,7 @@ class HomeViewController: UIViewController,
     var familyLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.backgroundColor = UIColor.white        
+        //label.backgroundColor = UIColor.white        
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.gray
         return label
@@ -52,7 +52,7 @@ class HomeViewController: UIViewController,
 
     let photosContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        //view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
         return view
@@ -60,7 +60,7 @@ class HomeViewController: UIViewController,
     
     let homeBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        //view.backgroundColor = UIColor.white
         return view
     }()
 	
@@ -115,7 +115,7 @@ class HomeViewController: UIViewController,
     var sonLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.backgroundColor = UIColor.white
+        //label.backgroundColor = UIColor.white
         label.font = UIFont.boldSystemFont(ofSize: 20)
         return label
     }()   
@@ -126,7 +126,7 @@ class HomeViewController: UIViewController,
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.white
+        //cv.backgroundColor = UIColor.white
         cv.dataSource = self
         cv.delegate = self
         return cv
@@ -135,7 +135,7 @@ class HomeViewController: UIViewController,
     let footerView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.red
+        //v.backgroundColor = UIColor.red
         return v
     }()
 
@@ -157,7 +157,8 @@ class HomeViewController: UIViewController,
         
         self.cellId = "homeCellId"
 
-         self.view.backgroundColor = UIColor.blue
+         self.view.backgroundColor = UIColor.gamvesBackgoundColor
+         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
 
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.familyLabel)
@@ -320,7 +321,7 @@ class HomeViewController: UIViewController,
             
             if sonBadge! > 0
             {
-                self.checkLabelSpouse.isHidden = false
+                self.checkLabelSon.isHidden = false
                 
                 let sob = "\(sonBadge!)"
                 
@@ -374,7 +375,7 @@ class HomeViewController: UIViewController,
             {
                 self.sonLabel.text = Global.userDictionary[sonId]?.firstName
                 self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
-                Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.black)
+                Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
             }
         }
         
@@ -385,12 +386,12 @@ class HomeViewController: UIViewController,
             if Global.userDictionary[spouseId] != nil
             {
                 self.spousePhotoImageView.image = Global.userDictionary[spouseId]?.avatar
-                Global.setRoundedImage(image: self.spousePhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.black)
+                Global.setRoundedImage(image: self.spousePhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
             }
         }
         
         self.groupPhotoImageView.image = Global.gamvesFamily.familyImage //self.generateGroupImage() 
-        Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.black)
+        Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
         
         self.activityIndicatorView?.stopAnimating()
         

@@ -507,7 +507,7 @@ class ChatView: UIView,
                     
                     if result
                     {
-                        ChatMethods.sendMessage(sendPush: false, chatId: self.chatId, text:self.inputTextField.text!, textField: self.inputTextField)
+                        ChatMethods.sendMessage(sendPush: false, chatId: self.chatId, text:self.inputTextField.text!, textField: self.inputTextField, completionHandlerMessage: { ( resutl ) -> () in })
                         
                         self.activityView.stopAnimating()
                     }
@@ -540,7 +540,7 @@ class ChatView: UIView,
                             
                             ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
                             
-                            ChatMethods.sendMessage(sendPush: false, chatId: self.chatId, text: self.inputTextField.text!, textField: self.inputTextField)
+                            ChatMethods.sendMessage(sendPush: false, chatId: self.chatId, text: self.inputTextField.text!, textField: self.inputTextField, completionHandlerMessage: { ( resutl ) -> () in })
                             
                             self.activityView.stopAnimating()
                             
@@ -553,7 +553,7 @@ class ChatView: UIView,
             
         } else
         {
-            ChatMethods.sendMessage(sendPush: true, chatId: self.chatId, text: self.inputTextField.text!, textField: self.inputTextField)
+            ChatMethods.sendMessage(sendPush: true, chatId: self.chatId, text: self.inputTextField.text!, textField: self.inputTextField, completionHandlerMessage: { ( resutl ) -> () in })
         }
         
     }

@@ -152,7 +152,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Clemente Vigil"
+        //tf.text = "Clemente Vigil"
         tf.tag = 0
         return tf
     }()
@@ -168,7 +168,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "User name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Clemente"
+        //tf.text = "Clemente"
         tf.tag = 1
         return tf
     }()
@@ -187,7 +187,7 @@ class ProfileViewController: UIViewController,
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.isSecureTextEntry = true
-        tf.text = "clemente"
+        //tf.text = "clemente"
         tf.tag = 2
         return tf
     }()
@@ -257,7 +257,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Your name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Jose Vigil"
+        //tf.text = "Jose Vigil"
         tf.tag = 0
         return tf
     }()
@@ -273,7 +273,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Your user name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Jose"
+        //tf.text = "Jose"
         tf.tag = 1
         return tf
     }()  
@@ -289,7 +289,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Family name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Familia Vigil"
+        //tf.text = "Familia Vigil"
         tf.tag = 2
         return tf
     }()
@@ -311,7 +311,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Spouse name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Leda Olano"
+        //tf.text = "Leda Olano"
         tf.tag = 3
         return tf
     }()
@@ -328,7 +328,7 @@ class ProfileViewController: UIViewController,
         tf.placeholder = "Spouse email"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "ledaolano@gmail.com"
+        //tf.text = "ledaolano@gmail.com"
         tf.tag = 4
         return tf
     }()  
@@ -345,7 +345,7 @@ class ProfileViewController: UIViewController,
         tf.placeholder = "Spouse password"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "LedaOlano"
+        //tf.text = "LedaOlano"
         tf.isSecureTextEntry = true
         tf.tag = 5
         return tf
@@ -381,9 +381,8 @@ class ProfileViewController: UIViewController,
     var sonNameContainerViewHeightAnchor: NSLayoutConstraint?
 
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()        
         
-        //self.loaUserTypes()
         self.loadAdminRole()
         
         self.you = PFUser.current()
@@ -438,7 +437,7 @@ class ProfileViewController: UIViewController,
         })
         
         let grades: NSMutableArray = ["5 - Fig", "5 - Chestnut"]
-        self.sonGradeDownPicker = DownPicker(textField: sonGradeTextField, withData:grades as! [Any])
+        self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])
         sonGradeDownPicker.setPlaceholder("Tap to choose grade...")  
 
         self.scrollView.addSubview(self.yourNameContainerView)
@@ -484,8 +483,7 @@ class ProfileViewController: UIViewController,
         metricsProfile["schoolEditTextHeight"]  = schoolEditTextHeight
         metricsProfile["saveButtonHeight"]      = saveButtonHeight 
 
-        self.boyConstraints()     
-        //self.loaUserTypes()
+        self.boyConstraints()       
         self.loadSonDataIfFamilyDontExist()
         self.loaLevels()
 
@@ -496,7 +494,7 @@ class ProfileViewController: UIViewController,
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
        
       
-        self.familyChatId = Global.getRandomInt()
+        self.familyChatId    = Global.getRandomInt()
         self.sonChatId       = Global.getRandomInt()
         self.spouseChatId    = Global.getRandomInt()
 
@@ -512,6 +510,8 @@ class ProfileViewController: UIViewController,
             if profile_completed
             {
                 self.hideShowTabBar(status:false)
+                self.loadFamilyData()
+                self.segmentedControl.setEnabled(true, forSegmentAt: 1)
             }
             
         } else
@@ -520,6 +520,56 @@ class ProfileViewController: UIViewController,
         }
     }
     
+
+    func loadFamilyData()
+    {
+        DispatchQueue.main.async()
+        {
+            self.yourPhotoImageView.image     = Global.gamvesFamily.youUser.avatar
+            self.makeRounded(imageView:self.yourPhotoImageView)
+            
+            self.sonPhotoImageView.image      = Global.gamvesFamily.sonsUsers[0].avatar
+            self.makeRounded(imageView:self.sonPhotoImageView)
+            
+            self.spousePhotoImageView.image   = Global.gamvesFamily.spouseUser.avatar
+            self.makeRounded(imageView:self.spousePhotoImageView)
+            
+            self.familyPhotoImageView.image   = Global.gamvesFamily.familyImage
+            self.makeRounded(imageView:self.familyPhotoImageView)
+
+            self.sonNameTextField.text = Global.gamvesFamily.sonsUsers[0].name
+            self.sonUserTextField.text = Global.gamvesFamily.sonsUsers[0].userName
+            
+            self.yourNameTextField.text = Global.gamvesFamily.youUser.name
+            self.yourUserTextField.text = Global.gamvesFamily.youUser.userName
+            
+            self.yourFamilyTextField.text = Global.gamvesFamily.familyName
+            
+            self.spouseNameTextField.text = Global.gamvesFamily.spouseUser.name
+            self.spouseEmailTextField.text = Global.gamvesFamily.spouseUser.email
+            
+            let type = Global.gamvesFamily.sonsUsers[0].typeNumber
+
+            var typeDesc = String()
+            
+            if type == 2
+            {
+                typeDesc = "Son"
+            } else if type == 3
+            {
+                typeDesc = "Daughter"
+            }
+            self.sonUserTypeTextField.text = typeDesc            
+            
+            self.sonSchoolTextField.text = Global.gamvesFamily.school          
+            
+            self.sonGradeTextField.text = Global.gamvesFamily.sonsUsers[0].levelDescription
+
+        }
+    }
+
+
+
     func scrollViewGoTop()
     {
         scrollView.setContentOffset(CGPoint(x:0, y:0), animated: false)
@@ -1069,6 +1119,12 @@ class ProfileViewController: UIViewController,
             message += "Son image is empty please add a picture with the + button"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
 
+        } else if self.familyPhotoImage == nil
+        { 
+            errors = true
+            message += "Family image is empty please add a picture with the + button"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
+
         } else if (self.sonNameTextField.text?.isEmpty)!
         {
             errors = true
@@ -1394,7 +1450,53 @@ class ProfileViewController: UIViewController,
 
 
                     if self.yourPhotoImage != nil
-                    {                        
+                    {
+                        
+                        ///SAVE SON
+                        
+                        if self.sonPhotoImage != nil
+                        {
+                            
+                            queue.tasks +=~ { resutl, next in
+                                
+                                self.saveUserImages(id: 1, completionHandler: { ( resutl ) -> () in
+                                    
+                                    if resutl
+                                    {
+                                        
+                                        Global.addUserToDictionary(user: self.son as! PFUser, isFamily: true, completionHandler: { ( sonGamvesUser ) -> () in
+                                            
+                                            
+                                            if sonGamvesUser != nil
+                                            {
+                                                
+                                                sonGamvesUser.gamvesUser = self.son
+                                                
+                                                gSon = sonGamvesUser
+                                                
+                                                var youSon = [GamvesParseUser]()
+                                                
+                                                youSon.append(gYou)
+                                                youSon.append(gSon)
+                                                
+                                                ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonChatId, completionHandler: { ( result ) -> () in
+                                                    
+                                                    print("done youSon")
+                                                    
+                                                    if (resutl != nil)
+                                                    {
+                                                        next(nil)
+                                                    }
+                                                    
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                        
+                        //SAVE SPOUSE
                         
                         if self.spousePhotoImage != nil
                         {
@@ -1442,49 +1544,7 @@ class ProfileViewController: UIViewController,
                             }
                         }
 
-
-                        if self.sonPhotoImage != nil
-                        {
-                            
-                            queue.tasks +=~ { resutl, next in
-                                
-                                self.saveUserImages(id: 1, completionHandler: { ( resutl ) -> () in
-                                    
-                                    if resutl
-                                    {
-
-                                         Global.addUserToDictionary(user: self.son as! PFUser, isFamily: true, completionHandler: { ( sonGamvesUser ) -> () in
-
-
-                                            if sonGamvesUser != nil
-                                            {
-                                                
-                                                sonGamvesUser.gamvesUser = self.son
-                                                
-                                                gSon = sonGamvesUser
-                                                
-                                                var youSon = [GamvesParseUser]()
-
-                                                youSon.append(gYou)
-                                                youSon.append(gSon)
-
-                                                ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonChatId, completionHandler: { ( result ) -> () in
-
-                                                    print("done youSon")
-
-                                                    if (resutl != nil)
-                                                    {                                                
-                                                        next(nil)
-                                                    }
-
-                                                })
-                                            }
-                                         })
-                                    }
-                                })
-                            }
-                        }
-                        
+                        //SAVE FAMILY
                         
                         queue.tasks +=~ {
                             
@@ -1643,6 +1703,8 @@ class ProfileViewController: UIViewController,
                 Global.gamvesFamily.spouseChatId = self.spouseChatId
                 Global.gamvesFamily.familyChatId = self.familyChatId
 
+                Global.gamvesFamily.familyImage = self.familyPhotoImageSmall
+                
                 Global.defaults.set(true, forKey: "family_exist")
                 completionHandler(true)                
                

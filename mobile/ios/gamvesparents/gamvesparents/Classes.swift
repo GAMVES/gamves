@@ -37,6 +37,7 @@ class GamvesParseUser
     var lastName = String()
     var userName = String()
     var userId = String()
+    var email = String()
     var avatar = UIImage()
     var isAvatarDownloaded = Bool()
     var isAvatarQuened = Bool()

@@ -63,6 +63,8 @@ class Global: NSObject
             
             gamvesUser.userName = user["username"] as! String
             
+            //gamvesUser.email = user.email!
+            
             if user["status"] != nil
             {
                 gamvesUser.status = user["status"] as! String
@@ -593,7 +595,6 @@ class Global: NSObject
                     {
                         
                         self.gamvesFamily.familyName = family["description"] as! String
-                        
                         self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
                         self.gamvesFamily.sonChatId = family["sonChatId"] as! Int
                         self.gamvesFamily.spouseChatId = family["spouseChatId"] as! Int
@@ -636,10 +637,7 @@ class Global: NSObject
                                                         self.userDictionary[gamvesUser.userId] = gamvesUser
                                                         
                                                         if count == (memberCount!-1)
-                                                        {
-                                                            
-                                                            
-                                                            
+                                                        {                                                           
                                                             
                                                             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
                                                         }

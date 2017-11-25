@@ -24,7 +24,7 @@ class HomeCollectionViewCell: BaseCell {
         let label = UILabel()        
         label.font = UIFont.systemFont(ofSize: 16)
         label.textAlignment = .left
-        label.backgroundColor = UIColor.white
+        //label.backgroundColor = UIColor.white
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
         label.textColor = UIColor.darkGray
@@ -35,7 +35,7 @@ class HomeCollectionViewCell: BaseCell {
         let label = PaddingLabel()
         label.font = UIFont.systemFont(ofSize: 16)
         label.textAlignment = .right
-        label.backgroundColor = UIColor.white
+        //label.backgroundColor = UIColor.white
         label.textColor = UIColor.lightGray
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .left

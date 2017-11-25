@@ -29,9 +29,19 @@ class ChatMethods: NSObject
 
         if gamvesUsers.count > 2
         {
-        
-            let imageGroup = UIImage(named: "community")
-            groupImageFile = PFFile(data: UIImageJPEGRepresentation(imageGroup!, 1.0)!)
+
+            var imageGroup = UIImage()
+            
+            if chatId == Global.gamvesFamily.familyChatId
+            {
+                imageGroup = Global.gamvesFamily.familyImage
+            } else
+            {
+                imageGroup = UIImage(named: "community")!
+                
+            }
+            
+            groupImageFile = PFFile(data: UIImageJPEGRepresentation(imageGroup, 1.0)!)
             
             var array = [String]()
             
@@ -100,9 +110,13 @@ class ChatMethods: NSObject
                     if resutl
                     {                        
                         
-                    	ChatMethods.sendMessage(sendPush: false, chatId: chatId, text: message, textField: nil)
+                        ChatMethods.sendMessage(sendPush: false, chatId: chatId, text: message, textField: nil, completionHandlerMessage: { ( resutl:Bool ) -> () in
+                            
+                            completionHandler(resutl)
+                            
+                        })
 
-                        completionHandler(resutl)
+                        
                         
                     } else
                     {
@@ -152,7 +166,7 @@ class ChatMethods: NSObject
         }
     }
 
-    static func sendMessage(sendPush:Bool, chatId:Int, text:String, textField:UITextField?)
+    static func sendMessage(sendPush:Bool, chatId:Int, text:String, textField:UITextField?, completionHandlerMessage : @escaping (_ resutl:Bool) -> ())
     {
         print(text)
         
@@ -190,6 +204,12 @@ class ChatMethods: NSObject
                 {
                     self.sendPushWithCoud(message: message, chatId: chatId)
                 }
+                
+                completionHandlerMessage(true)
+                
+            } else
+            {
+                completionHandlerMessage(false)
             }
         }
 

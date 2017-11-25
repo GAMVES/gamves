@@ -48,7 +48,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.collectionView?.backgroundColor = UIColor.white
+        self.collectionView?.backgroundColor = UIColor.gamvesBackgoundColor
         
         self.collectionView?.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
         
