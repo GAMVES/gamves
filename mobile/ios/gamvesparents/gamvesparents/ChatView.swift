@@ -935,7 +935,7 @@ class ChatView: UIView,
                                 
                                 print("")
                                 
-                                ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber = 0
+                                ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber = 0                              
                                 
                                 Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
                                     
@@ -943,6 +943,8 @@ class ChatView: UIView,
                                     
                                     let appDelegate = UIApplication.shared.delegate as! AppDelegate
                                     appDelegate.gamvesParentsApplication?.applicationIconBadgeNumber = badgeNumber
+                                    
+                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyChatFeed), object: self)
                                     
                                 })
                                 

@@ -281,15 +281,15 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 var lat = Double(location.coordinate.latitude)
                 var lng = Double(location.coordinate.longitude)                
                 
-                self.getLastLocation(completionHandler: { ( point:PFGeoPoint ) -> () in
+                self.getLastLocation(completionHandler: { ( point:PFGeoPoint, has:Bool ) -> () in
                     
                     var newLocation = Bool()
                     
-                    if point != nil
+                    if has
                     {
                         
                         let current = PFGeoPoint(latitude: lat, longitude: lng)
-                        let distance = current.distanceInKilometers(to: point)
+                        let distance = current.distanceInKilometers(to: point as! PFGeoPoint)
                     
                         if distance > 0.2
                         {
@@ -331,7 +331,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     
-    func getLastLocation(completionHandler : @escaping (_ point:PFGeoPoint) -> ()?)
+    func getLastLocation(completionHandler : @escaping (_ point:PFGeoPoint, _ has:Bool) -> ()?)
     {
         let locationQuery = PFQuery(className:"Location")
         
@@ -345,19 +345,20 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             var point = PFGeoPoint()
             
-            if point == nil
+            if error != nil
             {
-                print("nil")
+                print("error: \(error)")
             }
             
-            if error != nil
+            if location != nil
             {
                 point = location?["geolocation"] as! PFGeoPoint
                 
+                completionHandler(point, true)
                 
             } else
-            {
-                completionHandler(point)
+            {                
+                completionHandler(point, false)
 
             }
         }
