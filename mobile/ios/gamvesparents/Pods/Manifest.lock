@@ -19,6 +19,7 @@ PODS:
   - Starscream (2.1.1)
   - SwiftValidator (4.0.0)
   - TaskQueue (1.0.3)
+  - youtube-ios-player-helper (0.1.6)
 
 DEPENDENCIES:
   - BEMCheckBox
@@ -31,6 +32,7 @@ DEPENDENCIES:
   - RSKImageCropper
   - SwiftValidator (from `https://github.com/jpotts18/SwiftValidator.git`, branch `master`)
   - TaskQueue
+  - youtube-ios-player-helper (~> 0.1.4)
 
 EXTERNAL SOURCES:
   Floaty:
@@ -69,7 +71,8 @@ SPEC CHECKSUMS:
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
   TaskQueue: c1c02deebf2665b8e625fc46dd37a29b1de8056e
+  youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
 
-PODFILE CHECKSUM: 6021fe2fc95508c802b341893468f62f01bff747
+PODFILE CHECKSUM: 12aa48b0a182ccc16410d44b37593af957cee470
 
 COCOAPODS: 1.2.1.beta.1

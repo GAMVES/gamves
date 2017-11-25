@@ -97,7 +97,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.created) { _, chatFeed in
             
-            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int64 ) -> () in
+            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int ) -> () in
                 
                 self.collectionView?.reloadData()
                 
@@ -107,7 +107,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.updated) { _, chatFeed in
             
-            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int64 ) -> () in
+            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int ) -> () in
                 
                 self.collectionView?.reloadData()
                 
@@ -137,7 +137,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
                 {
                     let chatfeedsCount =  chatfeeds?.count
                     
-                    ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Int64 ) -> () in
+                    ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Int ) -> () in
                         
                         self.collectionView?.reloadData()
                         self.activityView.stopAnimating()
@@ -181,7 +181,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MessageCell
         
         let index = indexPath.item
-        let key: Int64 = Array(ChatFeedMethods.chatFeeds)[index].key
+        let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
         let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
         
         cell.nameLabel.text = chatfeed.room
@@ -277,7 +277,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         let layout = UICollectionViewFlowLayout()
         
         let index = indexPath.item
-        let key: Int64 = Array(ChatFeedMethods.chatFeeds)[index].key
+        let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
         let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
         
         print(chatfeed.chatId)
@@ -287,7 +287,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         if isVideoChat
         {
             
-            let chatId = chatfeed.chatId! as Int64
+            let chatId = chatfeed.chatId! as Int
             print(chatId)
             var video = VideoGamves()
             
@@ -319,7 +319,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     }
     
     
-    func openChat(room: String, chatId:Int64, users:[GamvesParseUser])
+    func openChat(room: String, chatId:Int, users:[GamvesParseUser])
     {
         self.chatLauncher.chatId = chatId
         self.chatLauncher.gamvesUsers = users

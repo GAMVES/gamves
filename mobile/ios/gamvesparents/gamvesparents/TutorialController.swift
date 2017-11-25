@@ -14,7 +14,7 @@ import UIKit
 
 class TutorialController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var appDelegate = UIApplication.shared.delegate
     
     var tabBarViewController:TabBarViewController?
     

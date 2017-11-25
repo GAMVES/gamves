@@ -27,13 +27,14 @@ class HomeCollectionViewCell: BaseCell {
         label.backgroundColor = UIColor.white
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
+        label.textColor = UIColor.darkGray
         return label
     }()    
 
     var dataLabel: PaddingLabel = {
         let label = PaddingLabel()
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textAlignment = .left
+        label.textAlignment = .right
         label.backgroundColor = UIColor.white
         label.textColor = UIColor.lightGray
         label.lineBreakMode = .byWordWrapping

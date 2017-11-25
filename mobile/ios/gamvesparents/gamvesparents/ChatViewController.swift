@@ -14,7 +14,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     //var delegateFeed:FeedDelegate!
     
     var chatView:ChatView!
-    var chatId = Int64()
+    var chatId = Int()
     
     let avatar:UIImageView! = nil
     

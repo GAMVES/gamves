@@ -31,7 +31,7 @@ class GroupNameViewController: UIViewController,
     
     var selectedImageView = UIImageView()
     
-    var chatId = Int64()
+    var chatId = Int()
     var chatFeed:PFObject!
     var chatIdStr = String()
     
@@ -191,7 +191,7 @@ class GroupNameViewController: UIViewController,
         
         let random = Int()
         
-        self.chatId = Global.getRandomInt64() //self.randomBetween(min:10000000, max:1000000000)
+        self.chatId = Global.getRandomInt() //self.randomBetween(min:10000000, max:1000000000)
         
         self.chatFeed = PFObject(className: "ChatFeed")
         

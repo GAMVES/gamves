@@ -278,31 +278,87 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 
                 print(location.coordinate)
                 
-                let userLocation = PFObject(className: "Location")
+                var lat = Double(location.coordinate.latitude)
+                var lng = Double(location.coordinate.longitude)                
                 
-                if let userId = PFUser.current()?.objectId
-                {
-                    userLocation["userId"] = userId
-                }
-                
-                let lat = Double(location.coordinate.latitude)
-                let lng = Double(location.coordinate.longitude)
-                
-                let geoPoint = PFGeoPoint(latitude: lat, longitude: lng)
-                userLocation["geolocation"] = geoPoint
-                
-                
-                userLocation.saveInBackground(block: { (resutl, error) in
+                self.getLastLocation(completionHandler: { ( point:PFGeoPoint ) -> () in
                     
-                    if error != nil
+                    var newLocation = Bool()
+                    
+                    if point != nil
                     {
-                        print(error)
+                        
+                        let current = PFGeoPoint(latitude: lat, longitude: lng)
+                        let distance = current.distanceInKilometers(to: point)
+                    
+                        if distance > 0.2
+                        {
+                            newLocation = true
+                        }
+                    
                     } else
                     {
-                        print(resutl)
+                        newLocation = true
                     }
                     
+                    if newLocation
+                    {
+                        let userLocation = PFObject(className: "Location")
+                    
+                        if let userId = PFUser.current()?.objectId
+                        {
+                            userLocation["userId"] = userId
+                        }
+                    
+                        let geoPoint = PFGeoPoint(latitude: lat, longitude: lng)
+                        userLocation["geolocation"] = geoPoint
+                    
+                        userLocation.saveInBackground(block: { (resutl, error) in
+                    
+                            if error != nil
+                            {
+                                print(error)
+                            } else
+                            {
+                                print(resutl)
+                            }
+                    
+                        })
+                    }
                 })
+            }
+        }
+    }
+    
+    
+    func getLastLocation(completionHandler : @escaping (_ point:PFGeoPoint) -> ()?)
+    {
+        let locationQuery = PFQuery(className:"Location")
+        
+        if let userId = PFUser.current()?.objectId
+        {
+            locationQuery.whereKey("userId", equalTo: userId)
+        }
+        locationQuery.order(byDescending: "createdAt")
+        
+        locationQuery.getFirstObjectInBackground { (location, error) in
+            
+            var point = PFGeoPoint()
+            
+            if point == nil
+            {
+                print("nil")
+            }
+            
+            if error != nil
+            {
+                point = location?["geolocation"] as! PFGeoPoint
+                
+                
+            } else
+            {
+                completionHandler(point)
+
             }
         }
     }

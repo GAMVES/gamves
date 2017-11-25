@@ -155,7 +155,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         present(tutorialController, animated: true, completion: nil)
     }
     
-    func openChat(room: String, chatId:Int64, users:[GamvesParseUser])
+    func openChat(room: String, chatId:Int, users:[GamvesParseUser])
     {
         
         self.chatLauncher.chatId = chatId
@@ -164,8 +164,8 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         self.chatLauncher.isStandAlone = true
         self.chatLauncher.view.backgroundColor = UIColor.white
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.window!.rootViewController = self.chatLauncher      
+        let appDelegate = UIApplication.shared.delegate
+        appDelegate?.window!?.rootViewController = self.chatLauncher      
         
     }
     

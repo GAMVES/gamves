@@ -42,13 +42,13 @@ class Global: NSObject
     
     static var gamvesFamily = GamvesFamily()
     
-    static var chatVideos = Dictionary<Int64, VideoGamves>()
+    static var chatVideos = Dictionary<Int, VideoGamves>()
     
     static var hasNewFeed = Bool()
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
     {
-        var userId = user.objectId!
+        let userId = user.objectId!
         
         if self.userDictionary[userId] == nil
         {
@@ -506,18 +506,18 @@ class Global: NSObject
         }
     }
 
-    static func getRandomInt64() -> Int64 {
-        var randomNumber: Int64 = 0
+    static func getRandomInt() -> Int {
+        var randomNumber: Int = 0
         withUnsafeMutablePointer(to: &randomNumber, { (randomNumberPointer) -> Void in
-            _ = randomNumberPointer.withMemoryRebound(to: UInt8.self, capacity: 8, { SecRandomCopyBytes(kSecRandomDefault, 8, $0) })
+            _ = randomNumberPointer.withMemoryRebound(to: UInt8.self, capacity: 1, { SecRandomCopyBytes(kSecRandomDefault, 2, $0) })
         })
         return abs(randomNumber)
-    }    
+    }
    
     
     
     
-    static func getBadges(chatId:Int64, completionHandler : @escaping (_ resutl:Int) -> ())
+    static func getBadges(chatId:Int, completionHandler : @escaping (_ resutl:Int) -> ())
     {
         
         let badgesQuery = PFQuery(className:"Badges")
@@ -594,9 +594,9 @@ class Global: NSObject
                         
                         self.gamvesFamily.familyName = family["description"] as! String
                         
-                        self.gamvesFamily.familyChatId = family["familyChatId"] as! Int64
-                        self.gamvesFamily.sonChatId = family["sonChatId"] as! Int64
-                        self.gamvesFamily.spouseChatId = family["spouseChatId"] as! Int64
+                        self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
+                        self.gamvesFamily.sonChatId = family["sonChatId"] as! Int
+                        self.gamvesFamily.spouseChatId = family["spouseChatId"] as! Int
                         
                         let picture = family["picture"] as! PFFile
                         

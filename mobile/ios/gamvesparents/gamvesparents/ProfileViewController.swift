@@ -54,20 +54,18 @@ class ProfileViewController: UIViewController,
     var yourPhotoImage:UIImage!
     var sonPhotoImage:UIImage!
     var spousePhotoImage:UIImage!
+    var familyPhotoImage:UIImage!
 
     var yourPhotoImageSmall:UIImage!
     var sonPhotoImageSmall:UIImage!
     var spousePhotoImageSmall:UIImage!
-
-    var keySpouseSmall = String()
-    var keyYourSmall = String()
-    var keySonSmall = String()
+    var familyPhotoImageSmall:UIImage!
 
     let schoolsArray: NSMutableArray = []
 
-    var familyChatId = Int64() //Global.getRandomInt64()
-    var sonChatId = Int64() //Global.getRandomInt64()
-    var spouseChatId = Int64() //Global.getRandomInt64()
+    var familyChatId = Int() 
+    var sonChatId = Int() 
+    var spouseChatId = Int() 
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -114,6 +112,17 @@ class ProfileViewController: UIViewController,
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoImageView)))        
         imageView.isUserInteractionEnabled = true     
         imageView.tag = 2           
+        return imageView
+    }()
+
+    lazy var familyPhotoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "family_photo")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoImageView)))        
+        imageView.isUserInteractionEnabled = true     
+        imageView.tag = 3           
         return imageView
     }()
 
@@ -399,6 +408,8 @@ class ProfileViewController: UIViewController,
         self.scrollView.addSubview(self.bottomView)             
 
         self.photosContainerView.addSubview(self.sonPhotoImageView)
+        self.photosContainerView.addSubview(self.familyPhotoImageView) 
+
         self.photosContainerView.addSubview(self.yourPhotoImageView)
         self.photosContainerView.addSubview(self.spousePhotoImageView)
         
@@ -482,13 +493,12 @@ class ProfileViewController: UIViewController,
 
         self.segmentedControl.setEnabled(false, forSegmentAt: 1)
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)       
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(loadUmagesFromDefault), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
-
-        self.familyChatId = Global.getRandomInt64()
-        self.sonChatId       = Global.getRandomInt64()
-        self.spouseChatId    = Global.getRandomInt64()
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
+       
+      
+        self.familyChatId = Global.getRandomInt()
+        self.sonChatId       = Global.getRandomInt()
+        self.spouseChatId    = Global.getRandomInt()
 
     }
     
@@ -574,45 +584,7 @@ class ProfileViewController: UIViewController,
             }
         })
     }
-    
-    func loadUmagesFromDefault()
-    {
 
-    }
-
-    func loadImagesForUser(id:Int) -> (image: UIImage, imageSmall: UIImage)
-    {
-        
-        var keySmall = String()
-        var key = String()
-        
-        switch id
-        {
-        case 0:
-            key = Global.keyYour
-            keySmall = self.keyYourSmall
-            break
-        case 1:
-            key = Global.keySon
-            keySmall = self.keySonSmall
-            break
-        case 2:
-            key = Global.keySpouse
-            keySmall = self.keySpouseSmall
-            break
-            
-        default:
-            break
-        }
-
-        let data = Global.defaults.object(forKey: key) as! NSData
-        let image:UIImage = UIImage(data: data as Data)!
-        
-        let dataSmall = Global.defaults.object(forKey: keySmall) as! NSData
-        let imageSmall:UIImage = UIImage(data: dataSmall as Data)!
-        
-        return (image,imageSmall)
-    }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
@@ -637,15 +609,23 @@ class ProfileViewController: UIViewController,
         self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.segmentedControl) 
 
         self.photosContainerView.addConstraintsWithFormat(
-            "H:|-photoSize-[v0(photoSize)]-photoSize-|", views: 
-            self.sonPhotoImageView, metrics: metricsProfile)
+            "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-|", views: 
+            self.sonPhotoImageView, 
+            self.familyPhotoImageView, 
+            metrics: metricsProfile)
 
-        self.self.sonPhotoImageView.isHidden    = false
+        //self.photosContainerView.addConstraintsWithFormat(
+        //    "H:|-photoSize-[v0(photoSize)]-photoSize-|", views: 
+        //    self.sonPhotoImageView, metrics: metricsProfile)
+
+        self.sonPhotoImageView.isHidden    = false
+        self.familyPhotoImageView.isHidden    = false
+
         self.yourPhotoImageView.isHidden    = true
         self.spousePhotoImageView.isHidden  = true
         
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonPhotoImageView)
-        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.yourPhotoImageView)
+        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.familyPhotoImageView)
 
         self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.sonNameContainerView)
         self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.sonSchoolContainerView)
@@ -702,9 +682,11 @@ class ProfileViewController: UIViewController,
     func familyConstraints()
     {  
         
-        self.self.sonPhotoImageView.isHidden    = true
-        self.yourPhotoImageView.isHidden        = false
-        self.spousePhotoImageView.isHidden      = false
+        self.sonPhotoImageView.isHidden       = true
+        self.familyPhotoImageView.isHidden    = true
+
+        self.yourPhotoImageView.isHidden    = false
+        self.spousePhotoImageView.isHidden  = false
 
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.yourPhotoImageView)
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.spousePhotoImageView)
@@ -1022,7 +1004,7 @@ class ProfileViewController: UIViewController,
                                 
                                 NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
                                 
-                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
+                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
 
                             })
                         }          
@@ -1632,10 +1614,15 @@ class ProfileViewController: UIViewController,
         family["sonChatId"]     = self.sonChatId
         family["spouseChatId"]  = self.spouseChatId
 
-        let imageFamily = UIImage(named: "family");
+        let imageFamily = self.familyPhotoImage
 
         let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily!, 1.0)!)
         family.setObject(pfimage!, forKey: "picture")
+
+        let imageFamilySmall = self.familyPhotoImageSmall
+
+        let pfimageSmall = PFFile(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall!, 1.0)!)
+        family.setObject(pfimageSmall!, forKey: "pictureSmall")
         
         family.saveInBackground { (success, error) in
             
@@ -1836,6 +1823,13 @@ class ProfileViewController: UIViewController,
             self.spousePhotoImage              = croppedImage
             self.spousePhotoImageSmall         = smallImage
             self.makeRounded(imageView:self.spousePhotoImageView)                
+        
+        } else if selectedImageView.tag == 3
+        {
+            self.familyPhotoImageView.image    = croppedImage
+            self.familyPhotoImage              = croppedImage
+            self.familyPhotoImageSmall         = smallImage
+            self.makeRounded(imageView:self.familyPhotoImageView)                
         }
         
         navigationController?.popViewController(animated: true)

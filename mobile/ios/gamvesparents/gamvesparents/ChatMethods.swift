@@ -14,7 +14,7 @@ class ChatMethods: NSObject
 {
     
     
-    static func addNewFeedAppendgroup(gamvesUsers:[GamvesParseUser], chatId:Int64, completionHandler : @escaping (_ resutl:Bool) -> ())
+    static func addNewFeedAppendgroup(gamvesUsers:[GamvesParseUser], chatId:Int, completionHandler : @escaping (_ resutl:Bool) -> ())
     {
         
         let random = Int()
@@ -152,7 +152,7 @@ class ChatMethods: NSObject
         }
     }
 
-    static func sendMessage(sendPush:Bool, chatId:Int64, text:String, textField:UITextField?)
+    static func sendMessage(sendPush:Bool, chatId:Int, text:String, textField:UITextField?)
     {
         print(text)
         
@@ -195,7 +195,7 @@ class ChatMethods: NSObject
 
     }
 
-    static func sendPushWithCoud(message: String, chatId:Int64)
+    static func sendPushWithCoud(message: String, chatId:Int)
     {
         
         if var username = Global.userDictionary[(PFUser.current()?.objectId)!]?.name
@@ -222,14 +222,6 @@ class ChatMethods: NSObject
                 }
             }
         }
-    }
-
-    func getchatIdByUserId()
-    {
-
-
-
-
-    }
+    }    
     
 }

@@ -29,9 +29,9 @@ class HomeViewController: UIViewController,
     let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
 
     
-    var youSonChatId = Int64()
-    var youSpouseChatId = Int64()
-    var groupChatId = Int64()
+    var youSonChatId = Int()
+    var youSpouseChatId = Int()
+    var groupChatId = Int()
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -46,6 +46,7 @@ class HomeViewController: UIViewController,
         label.textAlignment = .center
         label.backgroundColor = UIColor.white        
         label.font = UIFont.systemFont(ofSize: 20)
+        label.textColor = UIColor.gray
         return label
     }()
 
@@ -312,7 +313,7 @@ class HomeViewController: UIViewController,
     
     func chatFeedLoaded()
     {
-        let sonChatId:Int64 = Global.gamvesFamily.sonChatId
+        let sonChatId:Int = Global.gamvesFamily.sonChatId
         if ChatFeedMethods.chatFeeds[sonChatId]! != nil
         {
             let sonBadge = ChatFeedMethods.chatFeeds[sonChatId]?.badgeNumber
@@ -328,7 +329,7 @@ class HomeViewController: UIViewController,
             
         }
         
-        let spouseChatId:Int64 = Global.gamvesFamily.spouseChatId
+        let spouseChatId:Int = Global.gamvesFamily.spouseChatId
         if ChatFeedMethods.chatFeeds[spouseChatId]! != nil
         {
             let spouseBadge = ChatFeedMethods.chatFeeds[spouseChatId]?.badgeNumber
@@ -343,7 +344,7 @@ class HomeViewController: UIViewController,
             }
         }
         
-        let groupChatId:Int64 = Global.gamvesFamily.familyChatId
+        let groupChatId:Int = Global.gamvesFamily.familyChatId
         if ChatFeedMethods.chatFeeds[groupChatId]! != nil
         {
             let groupBadge = ChatFeedMethods.chatFeeds[groupChatId]?.badgeNumber       
@@ -388,7 +389,7 @@ class HomeViewController: UIViewController,
             }
         }
         
-        self.groupPhotoImageView.image = self.generateGroupImage() //Global.gamvesFamily.familyImage
+        self.groupPhotoImageView.image = Global.gamvesFamily.familyImage //self.generateGroupImage() 
         Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.black)
         
         self.activityIndicatorView?.stopAnimating()
@@ -426,7 +427,7 @@ class HomeViewController: UIViewController,
     func handleSonPhotoImageView(sender: UITapGestureRecognizer)
     {
         
-        let sonChatId:Int64 = Global.gamvesFamily.sonChatId
+        let sonChatId:Int = Global.gamvesFamily.sonChatId
     
         if ChatFeedMethods.chatFeeds[sonChatId]! != nil
         {
@@ -451,7 +452,7 @@ class HomeViewController: UIViewController,
     func handleSpousePhotoImageView(sender: UITapGestureRecognizer)
     {
         
-        let spouseChatId:Int64 = Global.gamvesFamily.spouseChatId
+        let spouseChatId:Int = Global.gamvesFamily.spouseChatId
         
         if ChatFeedMethods.chatFeeds[spouseChatId]! != nil
         {
@@ -475,7 +476,7 @@ class HomeViewController: UIViewController,
 
     func handleGroupPhotoImageView(sender: UITapGestureRecognizer)
     {
-        let familyChatId:Int64 = Global.gamvesFamily.familyChatId
+        let familyChatId:Int = Global.gamvesFamily.familyChatId
         
         if ChatFeedMethods.chatFeeds[familyChatId]! != nil
         {
@@ -527,15 +528,23 @@ class HomeViewController: UIViewController,
             if self.sonOnline
             {
                 stats.icon = UIImage(named: "status_online")!
+                cell.descLabel.text = "Online"
             } else 
             {
                 stats.icon = UIImage(named: "status_offline")!
+                cell.descLabel.text = "Offline"
             }
 
             cell.dataLabel.isHidden = true
+            
         }
    
         cell.iconImageView.image = stats.icon
+        
+        if id > 0
+        {
+            cell.iconImageView.alpha = 0.4
+        }
         
         return cell
     }    

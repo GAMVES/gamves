@@ -19,7 +19,7 @@ class ChatFeed
     var isVideoChat: Bool?
     var chatThumbnail:UIImage?
     var userThumbnail:UIImage?
-    var chatId:Int64?
+    var chatId:Int?
     var userId: String?
     var users: [GamvesParseUser]?
     var usersLoaded:Bool?
@@ -46,7 +46,7 @@ class GamvesParseUser
     var typeNumber = Int()
     var typeDescription = String()
     var status = String()
-    var chatId = Int64()
+    var chatId = Int()
     var isChecked = Bool()
     var gender = GamvesGender()
 }
@@ -138,9 +138,9 @@ class GamvesFamily
     var objectId = String()
     var school = String()
     
-    var sonChatId = Int64()
-    var spouseChatId = Int64()
-    var familyChatId = Int64()
+    var sonChatId = Int()
+    var spouseChatId = Int()
+    var familyChatId = Int()
     
     var familyImage = UIImage()
     

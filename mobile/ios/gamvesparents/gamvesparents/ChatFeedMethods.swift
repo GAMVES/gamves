@@ -13,14 +13,14 @@ import Parse
 class ChatFeedMethods: NSObject
 {    
     
-    static var chatFeeds = Dictionary<Int64, ChatFeed>()
+    static var chatFeeds = Dictionary<Int, ChatFeed>()
 
     static func sortFeedByDate()
     {
         self.chatFeeds.sorted(by: {$0.value.date! > $1.value.date! })
     }
     
-    static func queryFeed(chatId:Int64?, completionHandlerChatId : @escaping (_ chatId:Int64) -> ()?)
+    static func queryFeed(chatId:Int?, completionHandlerChatId : @escaping (_ chatId:Int) -> ()?)
     {
 
         var queryChatFeed = PFQuery(className: "ChatFeed")
@@ -47,7 +47,7 @@ class ChatFeedMethods: NSObject
             {
                 let chatfeedsCount =  chatfeeds?.count
                 
-                self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( chatId:Int64 ) -> () in
+                self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( chatId:Int ) -> () in
                 
                         NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyChatFeed), object: self)
 
@@ -60,7 +60,7 @@ class ChatFeedMethods: NSObject
         })
     }
     
-    static func parseChatFeed(chatFeedObjs: [PFObject], completionHandler : @escaping (_ chatId:Int64) -> ()?)
+    static func parseChatFeed(chatFeedObjs: [PFObject], completionHandler : @escaping (_ chatId:Int) -> ()?)
     {
         var chatfeedsCount = chatFeedObjs.count
         
@@ -81,7 +81,7 @@ class ChatFeedMethods: NSObject
             chatfeed.userId = chatFeedObj["lastPoster"] as? String
             let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
             chatfeed.isVideoChat = isVideoChat
-            var chatId = chatFeedObj["chatId"] as! Int64
+            var chatId = chatFeedObj["chatId"] as! Int
             chatfeed.chatId = chatId
             
             let picture = chatFeedObj["thumbnail"] as! PFFile
@@ -200,7 +200,7 @@ class ChatFeedMethods: NSObject
     }
     
     
-    static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int64, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
+    static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
     {
         
         var members = chatFeedObj["members"] as! String
@@ -282,7 +282,7 @@ class ChatFeedMethods: NSObject
 
                     for feed in chatfeeds!
                     {
-                        let chatId:Int64 = feed["chatId"] as! Int64
+                        let chatId:Int = feed["chatId"] as! Int
                         
                         let chatIdStr = String(chatId) as String
                         

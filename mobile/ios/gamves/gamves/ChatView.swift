@@ -32,7 +32,9 @@ class ChatView: UIView,
     
     var activityView: NVActivityIndicatorView!
 
-    let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://gamves.back4app.io")
+    //let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://gamves.back4app.io")
+    
+    let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
     
     private var chatSubscription: Subscription<PFObject>!
     private var feedSubscription: Subscription<PFObject>!
@@ -1068,8 +1070,6 @@ class ChatView: UIView,
         
         let message = messages[indexPath.row]
         
-        cell.messageTextView.text = message.message
-
         var messageText:String = message.message
         
         print(messageText)
@@ -1090,6 +1090,8 @@ class ChatView: UIView,
         {
             message.isAdmin = false
         }
+        
+        cell.messageTextView.text = messageText
         
         let userID = message.userId
         

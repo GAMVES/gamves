@@ -16,6 +16,7 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         cv.backgroundColor = UIColor.rgb(230, green: 32, blue: 31)
         cv.dataSource = self
         cv.delegate = self
+        cv.alwaysBounceVertical = false
         return cv
     }()
     
@@ -29,6 +30,7 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         super.init(frame: frame)
         
         collectionView.register(MenuCell.self, forCellWithReuseIdentifier: cellId)
+        
         
         addSubview(collectionView)
         addConstraintsWithFormat("H:|[v0]|", views: collectionView)

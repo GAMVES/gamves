@@ -74,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         {
             Global.getFamilyData()
             
-            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
+            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
 
             self.loadChatChannels()
         }
@@ -157,10 +157,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                             }
                         })  
                     }
-
                 }
-
-                
 
             }
         //}    
@@ -198,7 +195,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
                     for feed in chatfeeds!
                     {
-                        let chatId:Int64 = feed["chatId"] as! Int64
+                        let chatId:Int = feed["chatId"] as! Int
                         
                         let chatIdStr = String(chatId) as String
                         
