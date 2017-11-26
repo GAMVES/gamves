@@ -152,7 +152,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Clemente Vigil"
+        tf.text = "Clemente Vigil"
         tf.tag = 0
         return tf
     }()
@@ -168,7 +168,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "User name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Clemente"
+        tf.text = "Clemente"
         tf.tag = 1
         return tf
     }()
@@ -187,7 +187,7 @@ class ProfileViewController: UIViewController,
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.isSecureTextEntry = true
-        //tf.text = "clemente"
+        tf.text = "clemente"
         tf.tag = 2
         return tf
     }()
@@ -257,7 +257,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Your name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Jose Vigil"
+        tf.text = "Jose Vigil"
         tf.tag = 0
         return tf
     }()
@@ -273,7 +273,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Your user name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Jose"
+        tf.text = "Jose"
         tf.tag = 1
         return tf
     }()  
@@ -289,7 +289,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Family name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Familia Vigil"
+        tf.text = "Familia Vigil"
         tf.tag = 2
         return tf
     }()
@@ -311,7 +311,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Spouse name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Leda Olano"
+        tf.text = "Leda Olano"
         tf.tag = 3
         return tf
     }()
@@ -328,7 +328,7 @@ class ProfileViewController: UIViewController,
         tf.placeholder = "Spouse email"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "ledaolano@gmail.com"
+        tf.text = "ledaolano@gmail.com"
         tf.tag = 4
         return tf
     }()  
@@ -345,7 +345,7 @@ class ProfileViewController: UIViewController,
         tf.placeholder = "Spouse password"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "LedaOlano"
+        tf.text = "LedaOlano"
         tf.isSecureTextEntry = true
         tf.tag = 5
         return tf

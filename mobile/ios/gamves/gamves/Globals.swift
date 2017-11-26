@@ -22,6 +22,7 @@ class Global: NSObject
     //Notifications
     static var notificationKeyFamilyLoaded  = "com.gamves.gamvesparent.familyLoaded"
     static var notificationKeyChatFeed      = "com.gamves.gamvesparent.chatfeed"
+    static var notificationKeyLoggedin      = "com.gamves.gamvesparent.loggedin"
     
     static var badgeNumber = Bool()
     
@@ -268,7 +269,7 @@ class Global: NSObject
             installation?["user"] = PFUser.current()
             installation?.saveInBackground(block: { (resutl, error) in
                 
-                PFPush.subscribeToChannel(inBackground: "Gamves")
+                //PFPush.subscribeToChannel(inBackground: "Gamves")
                 
                 var queryRole = PFRole.query() // You need to get role object
                 queryRole?.whereKey("name", equalTo:"admin")

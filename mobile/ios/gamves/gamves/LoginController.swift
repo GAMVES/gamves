@@ -257,6 +257,8 @@ class LoginController: UIViewController {
                      
                      }*/
                     
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoggedin), object: self)
+                    
                     
                     // Adds an admin role to the users.
                     
@@ -271,6 +273,8 @@ class LoginController: UIViewController {
                     
                     let appDelegate = UIApplication.shared.delegate as! AppDelegate
                     appDelegate.window!.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))
+                    
+                    
                     
                     
                 }

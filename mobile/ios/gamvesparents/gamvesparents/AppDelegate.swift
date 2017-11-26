@@ -164,9 +164,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 
 
-  func loadChatChannels()
-  {
-
+    func loadChatChannels()
+    {
+        
         var queryChatFeed = PFQuery(className: "ChatFeed")
         
         queryChatFeed = PFQuery(className: "ChatFeed")
@@ -174,7 +174,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if let userId = PFUser.current()?.objectId
         {
             queryChatFeed.whereKey("members", contains: userId)
-        }      
+        }
         
         queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
             
@@ -185,37 +185,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             if chatFeddsCount! > 0
             {
                 let chatfeedsCount =  chatfeeds?.count
-
+                
                 print(chatfeedsCount)
-
+                
                 if chatfeedsCount! > 0
                 {
                     
-                    var installation:PFInstallation = PFInstallation.current()!
-
                     for feed in chatfeeds!
                     {
                         let chatId:Int = feed["chatId"] as! Int
                         
                         let chatIdStr = String(chatId) as String
                         
-                        installation.channels?.append(chatIdStr)
+                        PFPush.subscribeToChannel(inBackground: chatIdStr)
+                        
                     }
-                    
-                    do
-                    {
-                    
-                        try installation.save()
-                    
-                    } catch
-                    {
-                        print(error)
-                    }
-
                 }
-            
-            }
-            
+            }            
         })
     }
 
