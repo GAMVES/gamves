@@ -170,12 +170,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
     }
     
-    /*@available(iOS 10.0, *)
-    func userNotificationCenter(_ center: UNUserNotificationCenter, UNUserNotificationCenter notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void {
-        
-        completitionHandler([.alert, .badge, .sound])
-    }*/
-    
     @available(iOS 10.0, *)
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
@@ -193,46 +187,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let installation = PFInstallation.current()
         installation?.setDeviceTokenFrom(deviceToken)
         
-        /*let channelName = "GamvesChannel"
-        
-        var hasChannel = Bool()
-        var i = Int()
-        
-        if installation?.channels != nil
-        {
-            
-            for channel in (installation?.channels)!
-            {
-                if channel == channelName
-                {
-                    hasChannel = true
-                } 
-            }
-            
-            if !hasChannel
-            {
-                installation?.channels?.append(channelName)
-            }
-        
-        }*/
-        
         let deviceobj = Device()
         let device:String = "\(deviceobj)"
         installation?["device"] = device
         
         installation?.saveInBackground()
     
-    
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
         print(userInfo)
-        
-        /*if let aps = userInfo["aps"] as? [String:Any] {
-            let badgeNumber = aps["badge"] as! Int
-            application.applicationIconBadgeNumber = badgeNumber
-        }*/
         
         if let data = userInfo["data"] as? [String:Any] {
             let message = data["message"]
@@ -246,13 +211,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             print(title)
         }
         
-        //let image = UIImage(named: "group")
-        
-        //let imageDataDict:[String: UIImage] = ["image": image!]
-        
-        // post a notification
-        //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "notificationName"), object: nil, userInfo: imageDataDict)
-        
         self.gamvesApplication = application
         
         Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
@@ -264,12 +222,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
         
-        //if self.inBackground
-        //{
-            //PFPush.handle(userInfo)
-        //}
-        
-        //PFPush.handle(userInfo)
     }
     
     

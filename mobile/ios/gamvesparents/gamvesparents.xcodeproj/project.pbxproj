@@ -374,6 +374,9 @@
 						DevelopmentTeam = YDE3D3X5DH;
 						LastSwiftMigration = 0830;
 						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 0;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};

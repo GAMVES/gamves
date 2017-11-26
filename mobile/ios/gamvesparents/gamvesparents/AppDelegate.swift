@@ -46,29 +46,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        window?.rootViewController = TabBarViewController()   
+        window?.rootViewController = TabBarViewController()
         
-        if #available(iOS 10.0, *)
-        {
-            
-            let center = UNUserNotificationCenter.current()
-            center.delegate = self
-            center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
-                if error == nil {
-                    application.registerForRemoteNotifications()
-                }
-            }
-        } else {
-            if #available(iOS 7, *) {
-                application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
-            } else {
-                let notificationTypes: UIUserNotificationType = [UIUserNotificationType.alert, UIUserNotificationType.badge, UIUserNotificationType.sound]
-                let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
-                
-                UIApplication.shared.registerUserNotificationSettings(notificationSettings)
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-        }
         
         if PFUser.current() != nil
         {
@@ -77,6 +56,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
 
             self.loadChatChannels()
+        }
+        
+        if #available(iOS 10.0, *)
+        {
+            let center = UNUserNotificationCenter.current()
+            center.delegate = self
+            center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
+                
+                if error == nil
+                {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+                
+            }
+            
+        } else {
+            
+            if #available(iOS 7, *)
+            {
+                //application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
+                registerApplicationForPushNotifications(application: application)
+            } else {
+                
+                let notificationTypes: UIUserNotificationType = [UIUserNotificationType.alert, UIUserNotificationType.badge, UIUserNotificationType.sound]
+                
+                let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
+                
+                UIApplication.shared.registerUserNotificationSettings(notificationSettings)
+                UIApplication.shared.registerForRemoteNotifications()
+            }
         }
         
         return true
@@ -164,83 +173,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 
 
-    func loadChatChannels()
-    {
-        
-        var queryChatFeed = PFQuery(className: "ChatFeed")
-        
-        queryChatFeed = PFQuery(className: "ChatFeed")
-        
-        if let userId = PFUser.current()?.objectId
-        {
-            queryChatFeed.whereKey("members", contains: userId)
-        }
-        
-        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
-            
-            let chatFeddsCount = chatfeeds?.count
-            
-            print(chatFeddsCount)
-            
-            if chatFeddsCount! > 0
-            {
-                let chatfeedsCount =  chatfeeds?.count
-                
-                print(chatfeedsCount)
-                
-                if chatfeedsCount! > 0
-                {
-                    
-                    for feed in chatfeeds!
-                    {
-                        let chatId:Int = feed["chatId"] as! Int
-                        
-                        let chatIdStr = String(chatId) as String
-                        
-                        PFPush.subscribeToChannel(inBackground: chatIdStr)
-                        
-                    }
-                }
-            }            
-        })
-    }
-
-   func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-       
-        // Store the deviceToken in the current installation and save it to Parse.     
     
+    @available(iOS 10.0, *)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        completionHandler([.alert, .badge, .sound])
+        
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        
         let installation = PFInstallation.current()
         installation?.setDeviceTokenFrom(deviceToken as Data)
-        
-        let channelName = "Gamvesparents"
-         
-         var hasChannel = Bool()
-         var i = Int()
-         
-         if installation?.channels != nil
-         {
-         
-             for channel in (installation?.channels)!
-             {
-                 if channel == channelName
-                 {
-                    hasChannel = true
-                 }
-             }
-             
-             if !hasChannel
-             {
-                installation?.channels?.append(channelName)
-             }
-             
-         }
         
         let deviceobj = Device()
         let device:String = "\(deviceobj)"
         installation?["device"] = device
         
-        installation?.saveInBackground()
-    
+        installation?.saveInBackground(block: { (resutl, error) in
+            
+            print(resutl)
+            print(error)
+            
+        })
+        
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -293,7 +249,50 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return urls[urls.count-1]
     }()
+    
+    
   
+    func loadChatChannels()
+    {
+        
+        var queryChatFeed = PFQuery(className: "ChatFeed")
+        
+        queryChatFeed = PFQuery(className: "ChatFeed")
+        
+        if let userId = PFUser.current()?.objectId
+        {
+            queryChatFeed.whereKey("members", contains: userId)
+        }
+        
+        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
+            
+            let chatFeddsCount = chatfeeds?.count
+            
+            print(chatFeddsCount)
+            
+            if chatFeddsCount! > 0
+            {
+                let chatfeedsCount =  chatfeeds?.count
+                
+                print(chatfeedsCount)
+                
+                if chatfeedsCount! > 0
+                {
+                    
+                    for feed in chatfeeds!
+                    {
+                        let chatId:Int = feed["chatId"] as! Int
+                        
+                        let chatIdStr = String(chatId) as String
+                        
+                        PFPush.subscribeToChannel(inBackground: chatIdStr)
+                        
+                    }
+                }
+            }
+        })
+    }
+
 
 
 
