@@ -19,8 +19,8 @@ class ChatFeed
     var isVideoChat: Bool?
     var chatThumbnail:UIImage?
     var userThumbnail:UIImage?
-    var chatId:Int64?
-    var userId: String?
+    var chatId:Int?
+    var lasPoster: String?
     var users: [GamvesParseUser]?
     var usersLoaded:Bool?
     var imagesLoaded:Bool?
@@ -37,6 +37,7 @@ class GamvesParseUser
     var lastName = String()
     var userName = String()
     var userId = String()
+    var email = String()
     var avatar = UIImage()
     var isAvatarDownloaded = Bool()
     var isAvatarQuened = Bool()
@@ -46,8 +47,15 @@ class GamvesParseUser
     var typeNumber = Int()
     var typeDescription = String()
     var status = String()
-    var chatId = Int64()
+    var chatId = Int()
     var isChecked = Bool()
+    var gender = GamvesGender()
+}
+
+class GamvesGender
+{
+    var male =  Bool()
+    var female =  Bool()
 }
 
 class VideoGamves
@@ -115,36 +123,74 @@ class FanpageImageGamves
     var cover_image = UIImage()
 }
 
+struct Page {
+    let title: String
+    let message: String
+    let imageName: String
+}
+
 class GamvesFamily
 {
-    var sonUser:GamvesParseUser!
-    var registerUser:GamvesParseUser!
+    var sonsUsers:[GamvesParseUser]!
+    var youUser:GamvesParseUser!
     var spouseUser:GamvesParseUser!
-    var doughterUser:GamvesParseUser!
     
     var familyName = String()
     var objectId = String()
     var school = String()
     
-    func getFamilyUserById(userId : String) -> GamvesParseUser
+    var sonChatId = Int()
+    var spouseChatId = Int()
+    var familyChatId = Int()
+    
+    var familyImage = UIImage()
+    
+    init()
     {
-        if sonUser.userId == userId
+        self.sonsUsers = [GamvesParseUser]()
+    }
+    
+    func getFamilyUserById(userId : String) -> GamvesParseUser?
+    {
+        if youUser.userId == userId
         {
-            return sonUser
-        } else if registerUser.userId == userId
-        {
-            return registerUser
+            return youUser
+            
         } else if spouseUser.userId == userId
         {
             return spouseUser
-        } else if doughterUser.userId == userId
-        {
-            return doughterUser
-        } else
-        {
-            return sonUser
         }
+        
+        var sonwithId = GamvesParseUser()
+        
+        for son in sonsUsers
+        {
+            if son.userId == userId
+            {
+                sonwithId = son
+                
+            }
+        }
+        
+        return sonwithId
     }
+    
 }
 
 
+class LevelsGamves
+{
+    var objectId = String()
+    var description = String()
+    var grade = Int()
+    var fullDesc = String()
+    var levelObj:PFObject?
+}
+
+
+class UserStatistics
+{
+    var desc = String()
+    var data = String()
+    var icon = UIImage()
+}

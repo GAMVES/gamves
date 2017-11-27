@@ -30,11 +30,11 @@ class Global: NSObject
     
     static var gamvesFamily = GamvesFamily()
     
-    static var chatVideos = Dictionary<Int64, VideoGamves>()
+    static var chatVideos = Dictionary<Int, VideoGamves>()
     
     static var hasNewFeed = Bool()
     
-    static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
+    /*static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
     {
         var userId = user.objectId as! String
         
@@ -61,13 +61,6 @@ class Global: NSObject
                 gamvesUser.isSender = true
             }
             
-            //if user["chatId"] != nil
-            //{
-                //let chatIdStr = user["chatId"] as! String
-                //let chatId:Int64 = Int64(chatIdStr)!
-                //gamvesUser.chatId = chatId
-            //}
-            
             let levelRelation = user.relation(forKey: "level") as PFRelation
             
             let queryLevel = levelRelation.query()
@@ -85,6 +78,8 @@ class Global: NSObject
                         gamvesUser.levelDescription = level["description"] as! String
                         
                         let picture = user["pictureSmall"] as! PFFile
+                        
+                        print(gamvesUser.name)
                         
                         picture.getDataInBackground(block: { (data, error) in
                             
@@ -148,6 +143,154 @@ class Global: NSObject
             })
         } else {
         
+            completionHandler(self.userDictionary[userId]!)
+        }
+    }*/
+    
+    static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
+    {
+        let userId = user.objectId!
+        
+        if self.userDictionary[userId] == nil
+        {
+            
+            let gamvesUser = GamvesParseUser()
+            
+            gamvesUser.name = user["Name"] as! String
+            gamvesUser.userId = user.objectId!
+            
+            gamvesUser.firstName = user["firstName"] as! String
+            gamvesUser.lastName = user["lastName"] as! String
+            
+            gamvesUser.userName = user["username"] as! String
+            
+            //gamvesUser.email = user.email!
+            
+            if user["status"] != nil
+            {
+                gamvesUser.status = user["status"] as! String
+            }
+            
+            if PFUser.current()?.objectId == userId
+            {
+                gamvesUser.isSender = true
+            }
+            
+            gamvesUser.gamvesUser = user
+            
+            let levelRelation = user.relation(forKey: "level") as PFRelation
+            
+            let queryLevel = levelRelation.query()
+            
+            queryLevel.findObjectsInBackground(block: { (levels, error) in
+                
+                if error == nil
+                {
+                    let countLevels = levels?.count
+                    var count = 0
+                    
+                    for level in levels!
+                    {
+                        gamvesUser.levelNumber = level["grade"] as! Int
+                        gamvesUser.levelDescription = level["description"] as! String
+                        
+                        if user["pictureSmall"] != nil
+                        {
+                            
+                            let picture = user["pictureSmall"] as! PFFile
+                            
+                            picture.getDataInBackground(block: { (data, error) in
+                                
+                                if (error != nil)
+                                {
+                                    print(error)
+                                } else
+                                {
+                                    
+                                    let image = UIImage(data: data!)
+                                    gamvesUser.avatar = image!
+                                    gamvesUser.isAvatarDownloaded = true
+                                    gamvesUser.isAvatarQuened = false
+                                    
+                                    var typeNumber = user["userType"] as! Int
+                                    
+                                    print(gamvesUser.firstName)
+                                    
+                                    gamvesUser.typeNumber = typeNumber
+                                    
+                                    print(gamvesUser.typeNumber)
+                                    
+                                    //No me interesa
+                                    //gamvesUser.typeDescription = user["description"] as! String
+                                    
+                                    if isFamily
+                                    {
+                                        var gender = GamvesGender()
+                                        
+                                        if typeNumber == 0 || typeNumber == 4
+                                        {
+                                            if typeNumber == 0
+                                            {
+                                                gender.female = true
+                                            } else if typeNumber == 4
+                                            {
+                                                gender.male = true
+                                            }
+                                            gamvesUser.gender = gender
+                                            
+                                            Global.gamvesFamily.youUser = gamvesUser
+                                            
+                                        } else if typeNumber == 1 || typeNumber == 5
+                                        {
+                                            if typeNumber == 1
+                                            {
+                                                gender.female = true
+                                            } else if typeNumber == 5
+                                            {
+                                                gender.male = true
+                                            }
+                                            
+                                            gamvesUser.gender = gender
+                                            
+                                            Global.gamvesFamily.spouseUser = gamvesUser
+                                            
+                                        } else if typeNumber == 2 || typeNumber == 3
+                                        {
+                                            
+                                            if typeNumber == 2
+                                            {
+                                                gender.male = true
+                                            } else if typeNumber == 3
+                                            {
+                                                gender.male = false
+                                            }
+                                            gamvesUser.gender = gender
+                                            
+                                            Global.gamvesFamily.sonsUsers.append(gamvesUser)
+                                        }
+                                    }
+                                    
+                                    if count == (countLevels!-1)
+                                    {
+                                        
+                                        self.userDictionary[userId] = gamvesUser
+                                        
+                                        completionHandler(gamvesUser)
+                                        
+                                    }
+                                    
+                                    count = count + 1
+                                    
+                                }
+                                
+                            })
+                        }
+                    }
+                }
+            })
+            
+        } else {
+            
             completionHandler(self.userDictionary[userId]!)
         }
     }
@@ -465,16 +608,15 @@ class Global: NSObject
         }
     }
 
-    static func getRandomInt64() -> Int64 {
-        var randomNumber: Int64 = 0
+    static func getRandomInt() -> Int {
+        var randomNumber: Int = 0
         withUnsafeMutablePointer(to: &randomNumber, { (randomNumberPointer) -> Void in
-            _ = randomNumberPointer.withMemoryRebound(to: UInt8.self, capacity: 8, { SecRandomCopyBytes(kSecRandomDefault, 8, $0) })
+            _ = randomNumberPointer.withMemoryRebound(to: UInt8.self, capacity: 1, { SecRandomCopyBytes(kSecRandomDefault, 2, $0) })
         })
         return abs(randomNumber)
     }
     
-    
-    static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int64, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
+    static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
     {
         
         var members = chatFeedObj["members"] as! String
@@ -524,7 +666,7 @@ class Global: NSObject
         })
     }
     
-    static func getBadges(chatId:Int64, completionHandler : @escaping (_ resutl:Int) -> ())
+    static func getBadges(chatId:Int, completionHandler : @escaping (_ resutl:Int) -> ())
     {
         
         let badgesQuery = PFQuery(className:"Badges")

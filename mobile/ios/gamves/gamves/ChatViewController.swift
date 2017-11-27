@@ -12,7 +12,7 @@ import NVActivityIndicatorView
 class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     var chatView:ChatView!
-    var chatId = Int64()
+    var chatId = Int()
     
     let avatar:UIImageView! = nil
     

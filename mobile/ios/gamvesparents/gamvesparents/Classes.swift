@@ -20,7 +20,7 @@ class ChatFeed
     var chatThumbnail:UIImage?
     var userThumbnail:UIImage?
     var chatId:Int?
-    var userId: String?
+    var lastPoster: String?
     var users: [GamvesParseUser]?
     var usersLoaded:Bool?
     var imagesLoaded:Bool?

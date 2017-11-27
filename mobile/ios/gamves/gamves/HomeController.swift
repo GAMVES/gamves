@@ -226,7 +226,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return launcher
     }()
     
-    func openChat(room: String, chatId:Int64, users:[GamvesParseUser])
+    func openChat(room: String, chatId:Int, users:[GamvesParseUser])
     {
         self.chatLauncher.chatId = chatId
         self.chatLauncher.gamvesUsers = users

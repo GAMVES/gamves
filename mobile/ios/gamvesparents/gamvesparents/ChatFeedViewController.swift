@@ -202,9 +202,9 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         cell.messageLabel.text = message
         cell.profileImageView.image = chatfeed.chatThumbnail
         
-        if chatfeed.userId != nil
+        if chatfeed.lastPoster != nil
         {
-            let userId = chatfeed.userId!
+            let userId = chatfeed.lastPoster!
             
             let gamvesUser = Global.userDictionary[userId]
             

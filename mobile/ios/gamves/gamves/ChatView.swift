@@ -15,7 +15,7 @@ import PopupDialog
 class MessageChat
 {
     var message:String!
-    var chatId = Int64()
+    var chatId = Int()
     var userId = String()    
     var userName = String()
     var date: Date?
@@ -41,7 +41,7 @@ class ChatView: UIView,
     private var onlineSubscription: Subscription<PFObject>!
 
     var messages = [MessageChat]()
-    var chatId = Int64()
+    var chatId = Int()
     var chatIdStr = String()
     var isVideoChat = Bool()
     var thumbnailImage = UIImage()
@@ -222,7 +222,7 @@ class ChatView: UIView,
     func setParams(parameters: [String: Any?])
     {
         if parameters["chatId"] != nil {
-            self.chatId = parameters["chatId"] as! Int64
+            self.chatId = parameters["chatId"] as! Int
         }
         if parameters["isVideoChat"] != nil {
             self.isVideoChat = parameters["isVideoChat"] as! Bool
@@ -437,7 +437,7 @@ class ChatView: UIView,
                         message.userId = userId
                         message.message = chatVideo["message"] as! String
                         message.date = chatVideo.createdAt
-                        message.chatId = chatVideo["chatId"] as! Int64
+                        message.chatId = chatVideo["chatId"] as! Int
                         
                         if PFUser.current()?.objectId == userId
                         {
@@ -533,7 +533,7 @@ class ChatView: UIView,
                         
                         self.chatFeed.saveInBackground(block: { (resutl, error) in
                             
-                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int64 ) -> () in })
+                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
                             
                             self.sendMessage(sendPush: false)
                             
@@ -655,7 +655,7 @@ class ChatView: UIView,
             
             let userId = chatMessage["userId"] as! String
             message.userId = userId
-            message.chatId = chatMessage["chatId"] as! Int64
+            message.chatId = chatMessage["chatId"] as! Int
             message.date = chatMessage.updatedAt
             
             if let gamvesUser = Global.userDictionary[userId]

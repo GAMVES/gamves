@@ -112,7 +112,7 @@ class ProfileCell: BaseCell, UIScrollViewDelegate {
         
         let userId = PFUser.current()?.objectId
         
-        if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!).avatar
+        if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.avatar
         {
             self.sonProfileImageView.image = sonImage
             Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 2, boderColor: UIColor.white)
@@ -123,7 +123,7 @@ class ProfileCell: BaseCell, UIScrollViewDelegate {
         
         self.sonViewContent.addConstraintsWithFormat("V:|-30-[v0(100)][v1(30)]-40-|", views: self.sonRowImage, self.sonLabel)
         
-        let name = Global.gamvesFamily.getFamilyUserById(userId: userId!).name
+        let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
         self.sonLabel.text = name
         self.sonLabel.textAlignment = NSTextAlignment.center
 

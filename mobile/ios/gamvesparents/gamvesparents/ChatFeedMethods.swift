@@ -78,7 +78,7 @@ class ChatFeedMethods: NSObject
             chatfeed.room = room
             
             chatfeed.date = chatFeedObj.updatedAt
-            chatfeed.userId = chatFeedObj["lastPoster"] as? String
+            chatfeed.lastPoster = chatFeedObj["lastPoster"] as? String
             let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
             chatfeed.isVideoChat = isVideoChat
             var chatId = chatFeedObj["chatId"] as! Int
@@ -104,14 +104,21 @@ class ChatFeedMethods: NSObject
                                 var first : String = roomArr[0]
                                 var second : String = roomArr[1]
                                 
+                                var chatThumbnail = UIImage()
+                                
                                 if first == PFUser.current()?.objectId
                                 {
                                     chatFeedRoom = (Global.userDictionary[second]?.name)!
+                                    chatThumbnail = (Global.userDictionary[second]?.avatar)!
                                 } else {
                                     chatFeedRoom = (Global.userDictionary[first]?.name)!
+                                    chatThumbnail = (Global.userDictionary[first]?.avatar)!
                                 }
                                 
+                                chatfeed.chatThumbnail = chatThumbnail
+                                
                                 chatfeed.room = chatFeedRoom
+                                
                             }
                             
                             Global.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
@@ -133,19 +140,15 @@ class ChatFeedMethods: NSObject
                                 
                             })
                             
-                            
-                            
-                            
                         })
                     }
                 }
                 
-                //self.collectionView.reloadData()
             })
             
             if chatfeed.isVideoChat!
             {
-                let videoId = "\(chatfeed.chatId!)" //String(message.chatId)
+                let videoId = "\(chatfeed.chatId!)"
                 
                 let videosQuery = PFQuery(className:"Videos")
                 videosQuery.whereKey("videoId", equalTo: videoId)
@@ -153,7 +156,6 @@ class ChatFeedMethods: NSObject
                     
                     if error != nil
                     {
-                        
                         print("error")
                         
                     } else {
@@ -250,60 +252,5 @@ class ChatFeedMethods: NSObject
         })
     }
     
-    
-    static func loadChatChannels()
-    {
-
-        var queryChatFeed = PFQuery(className: "ChatFeed")
-        
-        queryChatFeed = PFQuery(className: "ChatFeed")
-        
-        if let userId = PFUser.current()?.objectId
-        {
-            queryChatFeed.whereKey("members", contains: userId)
-        }      
-        
-        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
-            
-            let chatFeddsCount = chatfeeds?.count
-            
-            print(chatFeddsCount)
-            
-            if chatFeddsCount! > 0
-            {
-                let chatfeedsCount =  chatfeeds?.count
-
-                print(chatfeedsCount)
-
-                if chatfeedsCount! > 0
-                {
-                    
-                    var installation:PFInstallation = PFInstallation.current()!
-
-                    for feed in chatfeeds!
-                    {
-                        let chatId:Int = feed["chatId"] as! Int
-                        
-                        let chatIdStr = String(chatId) as String
-                        
-                        installation.channels?.append(chatIdStr)
-                    }
-                    
-                    do
-                    {
-                    
-                        try installation.save()
-                    
-                    } catch
-                    {
-                        
-                    }
-
-                }         
-            
-            }
-            
-        })
-    }
-
+   
 }

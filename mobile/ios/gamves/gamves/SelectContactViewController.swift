@@ -204,14 +204,14 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
     
             let contact = self.gamvesUsers[indexPath.item] as GamvesParseUser
             
-            var chatId = Int64()
+            var chatId = Int()
             
             if contact.chatId > 0
             {
                 chatId = contact.chatId
             } else
             {
-                chatId = Global.getRandomInt64() // self.randomBetween(min:10000000, max:1000000000)
+                chatId = Global.getRandomInt()
             }
         
             if self.homeController != nil
@@ -236,13 +236,8 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
             
             self.collectionView.reloadItems(at: [indexPath])
         
-        }
-    
+        }    
     }
-    
-    //func randomBetween(min: Int64, max: Int64) -> Int {
-    //    return GKRandomSource.sharedRandom().nextInt(upperBound: max - min) + min
-    //}
     
     func findChatWithUser(user:PFUser)
     {
@@ -272,7 +267,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
                 {
                     
                     let chatsAmount = chatFeeds.count
-                    var chatId = Int64()
+                    var chatId = Int()
                     
                     if chatsAmount>0
                     {
@@ -294,7 +289,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
                     } else
                     {
                         
-                        chatId = Global.getRandomInt64() //self.randomBetween(min:100000000, max:1000000000)
+                        chatId = Global.getRandomInt() //self.randomBetween(min:100000000, max:1000000000)
                         
                     }
                     

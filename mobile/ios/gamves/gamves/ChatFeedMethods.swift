@@ -13,14 +13,14 @@ import Parse
 class ChatFeedMethods: NSObject
 {    
     
-    static var chatFeeds = Dictionary<Int64, ChatFeed>()
+    static var chatFeeds = Dictionary<Int, ChatFeed>()
 
     static func sortFeedByDate()
     {
         self.chatFeeds.sorted(by: {$0.value.date! > $1.value.date! })
     }
     
-    static func queryFeed(chatId:Int64?, completionHandlerChatId : @escaping (_ chatId:Int64) -> ()?)
+    static func queryFeed(chatId:Int?, completionHandlerChatId : @escaping (_ chatId:Int) -> ()?)
     {
 
         var queryChatFeed = PFQuery(className: "ChatFeed")
@@ -48,7 +48,7 @@ class ChatFeedMethods: NSObject
             {
                 let chatfeedsCount =  chatfeeds?.count
                 
-                self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( chatId:Int64 ) -> () in
+                self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( chatId:Int ) -> () in
                 
                         NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyChatFeed), object: self)
 
@@ -61,7 +61,7 @@ class ChatFeedMethods: NSObject
         })
     }
     
-    static func parseChatFeed(chatFeedObjs: [PFObject], completionHandler : @escaping (_ chatId:Int64) -> ()?)
+    static func parseChatFeed(chatFeedObjs: [PFObject], completionHandler : @escaping (_ chatId:Int) -> ()?)
     {
         var chatfeedsCount = chatFeedObjs.count
         
@@ -79,13 +79,14 @@ class ChatFeedMethods: NSObject
             chatfeed.room = room
             
             chatfeed.date = chatFeedObj.updatedAt
-            chatfeed.userId = chatFeedObj["lastPoster"] as? String
+            chatfeed.lasPoster = chatFeedObj["lastPoster"] as? String
             let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
             chatfeed.isVideoChat = isVideoChat
-            var chatId = chatFeedObj["chatId"] as! Int64
+            var chatId = chatFeedObj["chatId"] as! Int
             chatfeed.chatId = chatId
             
             let picture = chatFeedObj["thumbnail"] as! PFFile
+            
             picture.getDataInBackground(block: { (imageData, error) in
                 
                 if error == nil
@@ -105,35 +106,42 @@ class ChatFeedMethods: NSObject
                                 var first : String = roomArr[0]
                                 var second : String = roomArr[1]
                                 
+                                var chatThumbnail = UIImage()
+                                
                                 if first == PFUser.current()?.objectId
                                 {
                                     chatFeedRoom = (Global.userDictionary[second]?.name)!
+                                    chatThumbnail = (Global.userDictionary[second]?.avatar)!
                                 } else {
                                     chatFeedRoom = (Global.userDictionary[first]?.name)!
+                                    chatThumbnail = (Global.userDictionary[first]?.avatar)!
                                 }
+                                
+                                chatfeed.chatThumbnail = chatThumbnail
                                 
                                 chatfeed.room = chatFeedRoom
                                 
                             }
                             
-                            if (chatfeedsCount-1) == fcount
-                            {
-                                Global.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
-                                    
-                                    chatfeed.badgeNumber = counter
-                                    
-                                    print(chatId)
-                                    
-                                    self.sortFeedByDate()
-                                    
+                            Global.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
+                                
+                                chatfeed.badgeNumber = counter
+                                
+                                print(chatId)
+                                
+                                self.sortFeedByDate()
+                                
+                                self.chatFeeds[chatId] = chatfeed
+                        
+                                if (chatfeedsCount-1) == fcount
+                                {
                                     completionHandler(chatId)
-                                    
-                                })
-                            }
-                            
-                            self.chatFeeds[chatId] = chatfeed
-                            
-                            fcount = fcount + 1
+                                }
+                                
+                                fcount = fcount + 1
+                                
+                            })
+                        
                         })
                     }
                 }
@@ -198,7 +206,7 @@ class ChatFeedMethods: NSObject
     }
     
     
-    static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int64, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
+    static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
     {
         
         var members = chatFeedObj["members"] as! String

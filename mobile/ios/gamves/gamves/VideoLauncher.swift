@@ -401,7 +401,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
         let videoObj = videoGamves.videoobj!
         let videoId = videoObj["videoId"] as! String
         //let viId:Int = NumberFormatter().number(from: videoId) as! Int
-        let viId:Int64 = Int64(videoId)!
+        let viId:Int = Int(videoId)!
         let fanpageId = videoGamves.fanpageId
         
         print("Showing video player....\(videoUrl)")
