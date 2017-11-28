@@ -200,6 +200,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         } 
 
         cell.messageLabel.text = message
+        
         cell.profileImageView.image = chatfeed.chatThumbnail
         
         if chatfeed.lastPoster != nil

@@ -129,6 +129,8 @@ class ChatFeedMethods: NSObject
                                 
                                 print(chatId)
                                 
+                                print(counter)
+                                
                                 self.sortFeedByDate()
                                 
                                 self.chatFeeds[chatId] = chatfeed

@@ -200,7 +200,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        PFPush.handle(userInfo)
+        
+        //PFPush.handle(userInfo)
+        
     }
 
     func registerApplicationForPushNotifications(application: UIApplication) {
