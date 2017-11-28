@@ -119,7 +119,6 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
 
                 if (parseUser==null)
                 {
-
                     loginInputUserName.setVisibility(View.GONE);
                     loginInputPassword.setVisibility(View.GONE);
                     btnlogin.setText("Try again");
@@ -135,9 +134,7 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
                     KeySaver.saveShare(LoginActivity.this, "password", password);
                     finish();
                 }
-
             }
-
         });
     }
 

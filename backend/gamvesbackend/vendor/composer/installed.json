@@ -1,0 +1,158 @@
+[
+    {
+        "name": "parse/php-sdk",
+        "version": "1.2.0",
+        "version_normalized": "1.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ParsePlatform/parse-php-sdk.git",
+            "reference": "1f668b97b229829f2ed05e23fd38685cc9e2c62b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ParsePlatform/parse-php-sdk/zipball/1f668b97b229829f2ed05e23fd38685cc9e2c62b",
+            "reference": "1f668b97b229829f2ed05e23fd38685cc9e2c62b",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "ext-json": "*",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "phpdocumentor/phpdocumentor": "~2.5",
+            "phpunit/phpunit": "~4.0",
+            "squizlabs/php_codesniffer": "~1.5"
+        },
+        "time": "2016-02-16 15:58:08",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.1-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Parse\\": "src/Parse/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Parse Platform License"
+        ],
+        "authors": [
+            {
+                "name": "Parse",
+                "homepage": "https://github.com/parseplatform/parse-php-sdk/contributors"
+            }
+        ],
+        "description": "Parse PHP SDK",
+        "homepage": "https://github.com/parseplatform/parse-php-sdk",
+        "keywords": [
+            "parse",
+            "sdk"
+        ]
+    },
+    {
+        "name": "facebook/php-sdk-v4",
+        "version": "5.1.4",
+        "version_normalized": "5.1.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/facebook/facebook-php-sdk-v4.git",
+            "reference": "38fd7187a6704d3ab14ded2f3a534ac4ee6f3481"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/facebook/facebook-php-sdk-v4/zipball/38fd7187a6704d3ab14ded2f3a534ac4ee6f3481",
+            "reference": "38fd7187a6704d3ab14ded2f3a534ac4ee6f3481",
+            "shasum": ""
+        },
+        "require": {
+            "ext-mbstring": "*",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "guzzlehttp/guzzle": "~5.0",
+            "mockery/mockery": "~0.8",
+            "phpunit/phpunit": "~4.0"
+        },
+        "suggest": {
+            "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client"
+        },
+        "time": "2016-05-13 17:28:30",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "5.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Facebook\\": "src/Facebook/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Facebook Platform"
+        ],
+        "authors": [
+            {
+                "name": "Facebook",
+                "homepage": "https://github.com/facebook/facebook-php-sdk-v4/contributors"
+            }
+        ],
+        "description": "Facebook SDK for PHP",
+        "homepage": "https://github.com/facebook/facebook-php-sdk-v4",
+        "keywords": [
+            "facebook",
+            "sdk"
+        ]
+    },
+    {
+        "name": "components/jquery",
+        "version": "2.2.1",
+        "version_normalized": "2.2.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/components/jquery.git",
+            "reference": "7894addbce3c4de6f82449610e6f8e168b49e9b0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/components/jquery/zipball/7894addbce3c4de6f82449610e6f8e168b49e9b0",
+            "reference": "7894addbce3c4de6f82449610e6f8e168b49e9b0",
+            "shasum": ""
+        },
+        "time": "2016-02-24 08:16:25",
+        "type": "component",
+        "extra": {
+            "component": {
+                "scripts": [
+                    "jquery.js"
+                ],
+                "files": [
+                    "jquery.min.js",
+                    "jquery.min.map",
+                    "jquery-migrate.js",
+                    "jquery-migrate.min.js"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "John Resig",
+                "email": "jeresig@gmail.com"
+            }
+        ],
+        "description": "jQuery JavaScript Library",
+        "homepage": "http://jquery.com"
+    }
+]

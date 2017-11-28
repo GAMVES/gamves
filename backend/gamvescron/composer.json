@@ -1,0 +1,14 @@
+
+{
+    "name": "jose/shalltvcron",
+    "authors": [
+        {
+            "name": "Jose Vigil",
+            "email": "jose.vigil@roamtouch.com"
+        }
+    ],
+    "require" : {
+     "facebook/php-sdk-v4": "^5.0",
+     "parse/php-sdk" : "1.2.*"
+  }
+}
