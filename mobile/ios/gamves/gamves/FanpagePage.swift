@@ -286,7 +286,11 @@ class FanpagePage: UIViewController,
         
         let videoRel:PFRelation = fan.fanpageObj!.relation(forKey: "videos")
         let queryvideos:PFQuery = videoRel.query()
-        queryvideos.cachePolicy = .cacheElseNetwork
+        
+        if !Global.hasDateChanged()
+        {
+            queryvideos.cachePolicy = .cacheElseNetwork
+        }
         queryvideos.findObjectsInBackground(block: { (videoObjects, error) in
             
             if error != nil

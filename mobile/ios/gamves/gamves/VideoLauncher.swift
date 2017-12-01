@@ -18,7 +18,7 @@ class VideoPlayerView: UIView {
 
     var yLocation = CGFloat()
     var xLocation = CGFloat()
-    var lastX = CGFloat()
+    var lastX = CGFloat()   
 
     let controlsContainerView: UIView = {
         let view = UIView()
@@ -83,12 +83,11 @@ class VideoPlayerView: UIView {
             
             self.videoLauncher.view.frame = smallFrame
             
-            self.playerLayer.frame = smallFrame
-        
-            
-            let gesture = UIPanGestureRecognizer(target: self, action:  #selector(self.wasDragged))
-            self.videoLauncher.view.addGestureRecognizer(gesture)
-            self.videoLauncher.view.isUserInteractionEnabled = true
+            self.playerLayer.frame = smallFrame            
+
+            //let gesture = UIPanGestureRecognizer(target: self, action:  #selector(self.wasDragged))
+            //self.videoLauncher.view.addGestureRecognizer(gesture)
+            //self.videoLauncher.view.isUserInteractionEnabled = true
             
             //self.playerLayer.frame = CGRect(x: 0, y: 0, width: thumbWidth, height: thumbHeight)
             
@@ -114,8 +113,8 @@ class VideoPlayerView: UIView {
             
         })
     }
-    
-    func wasDragged(gestureRecognizer: UIPanGestureRecognizer) {
+
+    /*func wasDragged(gestureRecognizer: UIPanGestureRecognizer) {
         
         if gestureRecognizer.state == UIGestureRecognizerState.began || gestureRecognizer.state ==
         UIGestureRecognizerState.changed
@@ -150,7 +149,7 @@ class VideoPlayerView: UIView {
             gestureRecognizer.setTranslation(CGPoint(x:0,y:0), in: self)
         }
         
-    }
+    }*/
 
     let activityIndicatorView: UIActivityIndicatorView = {
         let aiv = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
@@ -302,8 +301,8 @@ class VideoPlayerView: UIView {
         
         print(urlString)
 
-        DispatchQueue.main.async
-        {
+        //DispatchQueue.main.async
+        //{
         
             if let url = URL(string: urlString) {
                 
@@ -347,7 +346,7 @@ class VideoPlayerView: UIView {
                     
                 })
             }
-        }
+        //}
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -395,13 +394,18 @@ class VideoLauncher: UIView, KeyboardDelegate {
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
 
+    var panGesture = UIPanGestureRecognizer()
+
     func showVideoPlayer(videoGamves: VideoGamves){ //videoUrl :String, videoId:String, fanpageId:String) {
                 
         let videoUrl = videoGamves.video_url
         let videoObj = videoGamves.videoobj!
         let videoId = videoObj["videoId"] as! String
         //let viId:Int = NumberFormatter().number(from: videoId) as! Int
-        let viId:Int = Int(videoId)!
+
+        let first5VideoId = videoId.substring(to:videoId.index(videoId.startIndex, offsetBy: 5))
+        
+        let viId:Int = Int(first5VideoId)!
         let fanpageId = videoGamves.fanpageId
         
         print("Showing video player....\(videoUrl)")
@@ -416,11 +420,15 @@ class VideoLauncher: UIView, KeyboardDelegate {
             //16 x 9 is the aspect ratio of all HD videos
             let videoHeight = keyWindow.frame.width * 9 / 16
             let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoHeight)
-            
+
             videoPlayerView = VideoPlayerView(frame: videoPlayerFrame)
             videoPlayerView.setPlayerUrl(urlString: videoUrl)
             view.addSubview(videoPlayerView)
 
+            self.panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.draggedView))
+            videoPlayerView.isUserInteractionEnabled = true
+            videoPlayerView.addGestureRecognizer(self.panGesture)
+            
             let infoHeight = 90            
             let infoFrame = CGRect(x: 0, y: Int(videoPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
             
@@ -459,8 +467,25 @@ class VideoLauncher: UIView, KeyboardDelegate {
                     //maybe we'll do something here later...
                     UIApplication.shared.setStatusBarHidden(true, with: .fade)
                     
+                    
             })
         }
+    }
+
+
+    func draggedView(sender: UIPanGestureRecognizer)
+    {
+       
+        self.view.bringSubview(toFront: sender.view!)
+        
+        let translation = sender.translation(in: self.view)
+
+        print(translation)
+ 
+        sender.view!.center = CGPoint(x: sender.view!.center.x + translation.x, y: sender.view!.center.y + translation.y)
+ 
+        sender.setTranslation(CGPoint.zero, in: self.view) 
+
     }
     
     func keyboardOpened(keybordHeight keybordEditHeight: CGFloat)

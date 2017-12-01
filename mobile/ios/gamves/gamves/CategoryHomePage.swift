@@ -200,7 +200,12 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         
         let queryCategories = PFQuery(className:"Categories")
         queryCategories.whereKey("hasFanpage", equalTo: true)
-        queryCategories.cachePolicy = .cacheElseNetwork
+        
+        if !Global.hasDateChanged()
+        {
+            queryCategories.cachePolicy = .cacheElseNetwork
+        }
+        
         queryCategories.order(byDescending: "order")
         var count = 0
         
@@ -311,6 +316,12 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         queryFanpage.whereKey("category", equalTo: category)
         
         //queryFanpage.cachePolicy = .cacheElseNetwork
+        
+        if !Global.hasDateChanged()
+        {
+            queryFanpage.cachePolicy = .cacheElseNetwork
+        }
+
 
         queryFanpage.findObjectsInBackground { (fanpagesArray, error) in
             

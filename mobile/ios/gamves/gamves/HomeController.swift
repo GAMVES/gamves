@@ -60,10 +60,26 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         //Global.buildPopup(viewController:self, title: "Hola", message: "Este es un mensaje")
         
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        
+        //Got to Feed if there is a Badge
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        if (appDelegate.gamvesApplication?.applicationIconBadgeNumber)! > 0
+        {
+            //Move to the next index, could not do it.
+        }
+        
     }
     
     override func viewDidLayoutSubviews() {
         //print("did")
+        
+        
     }
     
     func setupCollectionView()

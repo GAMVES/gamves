@@ -32,120 +32,11 @@ class Global: NSObject
     
     static var chatVideos = Dictionary<Int, VideoGamves>()
     
-    static var hasNewFeed = Bool()
-    
-    /*static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
-    {
-        var userId = user.objectId as! String
-        
-        if self.userDictionary[userId] == nil
-        {
-            
-            let gamvesUser = GamvesParseUser()
-            
-            gamvesUser.name = user["Name"] as! String
-            gamvesUser.userId = user.objectId!
-            
-            gamvesUser.firstName = user["firstName"] as! String
-            gamvesUser.lastName = user["lastName"] as! String
-            
-            gamvesUser.userName = user["username"] as! String
-            
-            if user["status"] != nil
-            {
-                gamvesUser.status = user["status"] as! String
-            }
-            
-            if PFUser.current()?.objectId == userId
-            {
-                gamvesUser.isSender = true
-            }
-            
-            let levelRelation = user.relation(forKey: "level") as PFRelation
-            
-            let queryLevel = levelRelation.query()
-            
-            queryLevel.findObjectsInBackground(block: { (levels, error) in
-                
-                if error == nil
-                {
-                    let countLevels = levels?.count
-                    var count = 0
-                    
-                    for level in levels!
-                    {
-                        gamvesUser.levelNumber = level["grade"] as! Int
-                        gamvesUser.levelDescription = level["description"] as! String
-                        
-                        let picture = user["pictureSmall"] as! PFFile
-                        
-                        print(gamvesUser.name)
-                        
-                        picture.getDataInBackground(block: { (data, error) in
-                            
-                            let image = UIImage(data: data!)
-                            gamvesUser.avatar = image!
-                            gamvesUser.isAvatarDownloaded = true
-                            gamvesUser.isAvatarQuened = false
-                            
-                            let typeRelation = user.relation(forKey: "userType") as PFRelation
-                            
-                            let queryType = typeRelation.query()
-                            
-                            queryType.findObjectsInBackground(block: { (types, error) in
-                                
-                                if error == nil
-                                {
-                                    for type in types!
-                                    {
-                                        var typeNumber = type["idUserType"] as! Int
-                                        
-                                        gamvesUser.typeNumber = typeNumber
-                                        
-                                        gamvesUser.typeDescription = type["description"] as! String
-                                        
-                                        self.userDictionary[userId] = gamvesUser
-                                        
-                                        if isFamily
-                                        {
-                                            //Global.gamvesFamily.familyUsers.append(gamvesUser)
-                                            
-                                            if typeNumber == 0
-                                            {
-                                                self.gamvesFamily.registerUser = gamvesUser
-                                                
-                                            } else if typeNumber == 1
-                                            {
-                                                self.gamvesFamily.spouseUser = gamvesUser
-                                                
-                                            } else if typeNumber == 2
-                                            {
-                                                self.gamvesFamily.sonUser = gamvesUser
-                                                
-                                            } else if typeNumber == 3
-                                            {
-                                                self.gamvesFamily.doughterUser = gamvesUser
-                                            }
-                                            
-                                        }
-                                    }
-                                    
-                                    if (countLevels!-1) == count
-                                    {
-                                        completionHandler(gamvesUser)
-                                    }
-                                    count = count + 1
-                                }
-                            })
-                        })
-                    }
-                }
-            })
-        } else {
-        
-            completionHandler(self.userDictionary[userId]!)
-        }
-    }*/
+    static var hasNewFeed = Bool()   
+
+    //Bool to foce download and skip chache. 
+    static var forceFromNetworkCache = Bool()
+   
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
     {
@@ -705,6 +596,38 @@ class Global: NSObject
         });
         alert.addAction(action)
         viewController.present(alert, animated: true, completion:nil)
+    }
+
+    static func hasDateChanged() -> Bool
+    {
+        let last_day = "last_day";
+
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateStyle = DateFormatter.Style.short
+        let dateString = formatter.string(from: date)
+        let defaults = UserDefaults.standard
+        let changedDate = defaults.object(forKey: last_day) as? String
+        
+        var has = Bool()
+        if dateString != changedDate
+        {   
+            has = true          
+        }
+        else
+        {
+            has = false
+        }
+
+        if  forceFromNetworkCache
+        {
+            has = true
+        }
+        
+        defaults.set(dateString, forKey: last_day)
+
+        return has
+
     }
 
 }

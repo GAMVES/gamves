@@ -7,7 +7,7 @@
 //
 
 import UIKit
-    
+import Floaty
 
 
 class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDelegate, CellDelegate {
@@ -64,6 +64,17 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
         self.addSubview((self.pageController?.view)!)
 
         removeSwipeGesture()
+
+        //Floaty.global.rtlMode = true
+        
+        let floaty = Floaty()
+        floaty.addItem(title: "New Video", handler: { item in
+
+            
+            
+        })        
+        
+        self.addSubview(floaty)
         
     }
     

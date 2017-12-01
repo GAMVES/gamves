@@ -86,6 +86,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
     }
     
+    
     func registerLiveQuery()
     {
     

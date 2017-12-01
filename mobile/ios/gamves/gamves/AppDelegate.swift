@@ -27,6 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
+        Global.forceFromNetworkCache = true
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
@@ -293,7 +295,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
             let familyQuery = PFQuery(className:"Family")
             familyQuery.whereKey("members", equalTo: PFUser.current())
-            familyQuery.cachePolicy = .cacheElseNetwork
+            
+            print(familyQuery.cachePolicy.hashValue)
+            
+            if !Global.hasDateChanged()
+            {
+                familyQuery.cachePolicy = .cacheElseNetwork
+            }
             familyQuery.findObjectsInBackground(block: { (families, error) in
                 
                 if error == nil

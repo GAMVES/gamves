@@ -70,13 +70,13 @@ class ProfileViewController: UIViewController,
     let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesColor
+        v.backgroundColor = UIColor.gamvesBackgoundColor
         return v
     }()
 
     let photosContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        //view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false        
         view.layer.masksToBounds = true
         return view
