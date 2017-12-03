@@ -76,6 +76,10 @@ class VideoGamves
     var videoId = String()
     
     var videoobj:PFObject?
+    
+    var videoType = Int()
+    var youtubeId = String()
+    
 }
 
 class CategoryGamves

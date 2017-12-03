@@ -9,8 +9,9 @@
 import UIKit
 import AVFoundation
 import Parse
+import YouTubePlayer
 
-class VideoPlayerView: UIView {  
+class VideoPlayerView: UIView, YouTubePlayerDelegate {  
 
     var videoLauncher:VideoLauncher!
     var keyWindow: UIView!
@@ -48,23 +49,7 @@ class VideoPlayerView: UIView {
         button.isHidden = true
         button.addTarget(self, action: #selector(handlePause), for: .touchUpInside)
         return button
-    }()
-    
-    var isPlaying = false
-    
-    var urlVideo = String()
-    
-    func handlePause() {
-        if isPlaying {
-            player?.pause()
-            pausePlayButton.setImage(UIImage(named: "play"), for: UIControlState())
-        } else {
-            player?.play()
-            pausePlayButton.setImage(UIImage(named: "pause"), for: UIControlState())
-        }
-        
-        isPlaying = !isPlaying
-    }    
+    }() 
     
     let videoLengthLabel: UILabel = {
         let label = UILabel()
@@ -95,29 +80,30 @@ class VideoPlayerView: UIView {
         return slider
     }()
 
+    var isPlaying = false    
+    var urlVideo = String()
+    var videoType = Int()
     var gradientLayer = CAGradientLayer()
-
     var videoUrl = String()
-
-    var isVideoDown = Bool()    
+    var isVideoDown = Bool()   
+    var youtubePlayer: YouTubePlayerView! 
+    var videoFrame = CGRect()
 
     override init(frame: CGRect) {
+        self.videoFrame = frame
         super.init(frame: frame)
     }
     
-    func setViews(view:UIView, videoLauncherVidew:VideoLauncher)
-    {
+    func setViews(type: Int, view:UIView, videoLauncherVidew:VideoLauncher) {
         self.videoLauncher = videoLauncherVidew
         self.keyWindow = view
     }   
 
-    func handleDownButton() 
-    {
+    func handleDownButton() {
         self.videoLauncher.shrinkVideoDown()
     }
 
-    func hideShowControllers(status:Bool)
-    {
+    func hideShowControllers(status:Bool) {
         self.activityIndicatorView.isHidden = status
         self.arrowDownButton.isHidden = status
         self.pausePlayButton.isHidden = status
@@ -128,8 +114,8 @@ class VideoPlayerView: UIView {
     }
 
     
-    func handleSliderChange() 
-    {
+    func handleSliderChange() {
+
         print(videoSlider.value)
         
         if let duration = player?.currentItem?.duration 
@@ -144,11 +130,50 @@ class VideoPlayerView: UIView {
         }
     } 
 
+    func setPlayerUrl(url:String)
+    {
+        self.urlVideo = url
+    }
 
-    func setPlayerUrl(urlString : String)
+    func setYoutubePlayer(id:String)
+    {
+        self.youtubePlayer = YouTubePlayerView(frame: self.videoFrame)
+        self.youtubePlayer.delegate = self
+        self.addSubview(youtubePlayer)
+        self.youtubePlayer.loadVideoID(id)
+    }
+    
+    func playerReady(_ videoPlayer: YouTubePlayerView) {
+        print("ready")        
+    }
+    
+    func playerStateChanged(_ videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState) {
+     
+        print("changes: \(playerState)")
+    }
+    
+    func playerQualityChanged(_ videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality) {
+        
+        print("playbackQuality: \(playbackQuality)")
+        
+    }
+
+    func handlePause() {
+        if isPlaying {
+            player?.pause()
+            pausePlayButton.setImage(UIImage(named: "play"), for: UIControlState())
+        } else {
+            player?.play()
+            pausePlayButton.setImage(UIImage(named: "pause"), for: UIControlState())
+        }
+        
+        isPlaying = !isPlaying
+    }  
+
+
+    func setNativePlayer()
     {        
-        setupPlayerView(urlString: urlString)
-
+        setupPlayerView()
         setupGradientLayer()              
         
         controlsContainerView.frame = frame
@@ -185,72 +210,56 @@ class VideoPlayerView: UIView {
         videoSlider.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         videoSlider.leftAnchor.constraint(equalTo: currentTimeLabel.rightAnchor).isActive = true
         videoSlider.heightAnchor.constraint(equalToConstant: 30).isActive = true
-
     }
-
-    // VIDEO   
+      
 
     var player: AVPlayer?
     
-    func setupPlayerView(urlString : String) {
+    func setupPlayerView() {        
         
+        NotificationCenter.default.addObserver(self, selector: #selector(closeVideo), name: NSNotification.Name(rawValue: Global.notificationKeyCloseVideo), object: nil)            
         
-        NotificationCenter.default.addObserver(self, selector: #selector(closeVideo), name: NSNotification.Name(rawValue: Global.notificationKeyCloseVideo), object: nil)
-        
-        //warning: use your own video url here, the bandwidth for google firebase storage will run out as more and more people use this file
-        
-        //let urlString = "https://firebasestorage.googleapis.com/v0/b/gameofchats-762ca.appspot.com/o/message_movies%2F12323439-9729-4941-BA07-2BAE970967C7.mov?alt=media&token=3e37a093-3bc8-410f-84d3-38332af9c726"
-        
-        print(urlString)
-        
-        self.urlVideo = urlString
-
-        //DispatchQueue.main.async
-        //{
-        
-            if let url = URL(string: urlString) {
+        if let url = URL(string: self.videoUrl) {
+            
+            do
+            {
+                self.player = AVPlayer(url: url)
+            
+            } catch 
+            {
+                print("Error info: \(error)")
+            }            
+            
+            self.playerLayer = AVPlayerLayer(player: self.player)
+            self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect
+            self.layer.addSublayer(self.playerLayer)
+            self.playerLayer.frame = self.frame
+            
+            self.player?.play()
+            
+            self.player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
+            
+            //track player progress            
+            let interval = CMTime(value: 1, timescale: 2)
+            self.player?.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main, using: { (progressTime) in
                 
-                do
-                {
-                    self.player = AVPlayer(url: url)
+                let seconds = CMTimeGetSeconds(progressTime)
+                let secondsString = String(format: "%02d", Int(seconds.truncatingRemainder(dividingBy: 60)))
+                let minutesString = String(format: "%02d", Int(seconds / 60))
                 
-                } catch 
-                {
-                    print("Error info: \(error)")
+                self.currentTimeLabel.text = "\(minutesString):\(secondsString)"
+                
+                //lets move the slider thumb
+                if let duration = self.player?.currentItem?.duration {
+                    let durationSeconds = CMTimeGetSeconds(duration)
+                    
+                    self.videoSlider.value = Float(seconds / durationSeconds)
+                    
                 }
                 
-                
-                self.playerLayer = AVPlayerLayer(player: self.player)
-                self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect
-                self.layer.addSublayer(self.playerLayer)
-                self.playerLayer.frame = self.frame
-                
-                self.player?.play()
-                
-                self.player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
-                
-                //track player progress
-                
-                let interval = CMTime(value: 1, timescale: 2)
-                self.player?.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main, using: { (progressTime) in
-                    
-                    let seconds = CMTimeGetSeconds(progressTime)
-                    let secondsString = String(format: "%02d", Int(seconds.truncatingRemainder(dividingBy: 60)))
-                    let minutesString = String(format: "%02d", Int(seconds / 60))
-                    
-                    self.currentTimeLabel.text = "\(minutesString):\(secondsString)"
-                    
-                    //lets move the slider thumb
-                    if let duration = self.player?.currentItem?.duration {
-                        let durationSeconds = CMTimeGetSeconds(duration)
-                        
-                        self.videoSlider.value = Float(seconds / durationSeconds)
-                        
-                    }
-                    
-                })
-            }
-        //}
+            })
+        }
+        
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -354,8 +363,19 @@ class VideoLauncher: UIView, KeyboardDelegate {
             let videoHeight = keyWindow.frame.width * 9 / 16
             let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoHeight)
 
+            //REMOVE
+            videoGamves.videoType = 1
+            videoGamves.youtubeId = "FA_q7chyDAU"
+
             videoPlayerView = VideoPlayerView(frame: videoPlayerFrame)
-            videoPlayerView.setPlayerUrl(urlString: videoUrl)
+            videoPlayerView.setPlayerUrl(url: videoUrl)
+            if videoGamves.videoType == 0
+            {
+                videoPlayerView.setNativePlayer()
+            } else if videoGamves.videoType == 1
+            {
+                videoPlayerView.setYoutubePlayer(id: videoGamves.youtubeId)
+            }
             view.addSubview(videoPlayerView)
 
             //let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.draggedView))
@@ -409,7 +429,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
 
             //self.valpha = 1.0
             
-            videoPlayerView.setViews(view: view, videoLauncherVidew: self)
+            videoPlayerView.setViews(type: videoGamves.videoType, view: view, videoLauncherVidew: self)
             
             keyWindow.addSubview(view)
 
