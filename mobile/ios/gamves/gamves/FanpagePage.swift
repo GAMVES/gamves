@@ -289,7 +289,7 @@ class FanpagePage: UIViewController,
         
         if !Global.hasDateChanged()
         {
-            queryvideos.cachePolicy = .cacheElseNetwork
+            queryvideos.cachePolicy = .cacheThenNetwork
         }
         queryvideos.findObjectsInBackground(block: { (videoObjects, error) in
             
@@ -439,6 +439,8 @@ class FanpagePage: UIViewController,
             
         } else if collectionView == self.collectionView
         {
+            
+            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
 
             let videoLauncher = VideoLauncher()
             

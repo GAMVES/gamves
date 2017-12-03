@@ -14,11 +14,7 @@ class VideoPlayerView: UIView {
 
     var videoLauncher:VideoLauncher!
     var keyWindow: UIView!
-    var playerLayer: AVPlayerLayer!
-
-    var yLocation = CGFloat()
-    var xLocation = CGFloat()
-    var lastX = CGFloat()   
+    var playerLayer: AVPlayerLayer!    
 
     let controlsContainerView: UIView = {
         let view = UIView()
@@ -26,8 +22,7 @@ class VideoPlayerView: UIView {
         return view
     }()
 
-
-     lazy var arrowDownButton: UIButton = {
+    lazy var arrowDownButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(named: "arrow_down")
         button.setImage(image, for: UIControlState())
@@ -36,120 +31,6 @@ class VideoPlayerView: UIView {
         button.addTarget(self, action: #selector(handleDownButton), for: .touchUpInside)        
         return button
     }()
-
-    func handleDownButton() 
-    {
-        //self.handlePause()
-        
-        /*for subview in (UIApplication.shared.keyWindow?.subviews)! {
-            if (subview.tag == 1) {
-                subview.removeFromSuperview()
-            }
-        }*/
-        
-        self.videoLauncher.chatView.dismissKeyboard()
-        
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-            
-            let totalHeight = self.keyWindow.frame.size.height
-            let totalWidth = self.keyWindow.frame.size.width
-            
-            let thumbWidth = totalWidth / 2
-            let thumbHeight = thumbWidth * 9 / 16
-            
-            let x = (totalWidth / 2) - (thumbWidth / 2)
-            let y = totalHeight - (thumbHeight + 30)
-            
-            self.yLocation = y
-            print(y)
-            self.xLocation = x
-            self.lastX = x
-            
-            self.activityIndicatorView.isHidden = true
-            self.arrowDownButton.isHidden = true
-            self.pausePlayButton.isHidden = true
-            self.videoLengthLabel.isHidden = true
-            self.currentTimeLabel.isHidden = true
-            self.videoSlider.isHidden = true
-            
-            self.controlsContainerView.isHidden = true
-            
-            //self.controlsContainerView.isHidden = true
-            
-            self.videoLauncher.infoView.isHidden = true
-            self.videoLauncher.chatView.isHidden = true
-            
-            let smallFrame = CGRect(x: x, y: y, width: thumbWidth, height: thumbHeight)
-            
-            self.videoLauncher.view.frame = smallFrame
-            
-            self.playerLayer.frame = smallFrame            
-
-            //let gesture = UIPanGestureRecognizer(target: self, action:  #selector(self.wasDragged))
-            //self.videoLauncher.view.addGestureRecognizer(gesture)
-            //self.videoLauncher.view.isUserInteractionEnabled = true
-            
-            //self.playerLayer.frame = CGRect(x: 0, y: 0, width: thumbWidth, height: thumbHeight)
-            
-            //let smallFrame = CGRect(x: x, y: y, width: thumbWidth, height: thumbHeight)
-            
-            //self.keyWindow.frame = smallFrame
-            
-            //self.playerLayer.bounds = smallFrame
-            
-            //self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-            
-            //gesture.delegate = self as! UIGestureRecognizerDelegate
-            
-            //self.videoLauncher.view.backgroundColor = UIColor.black
-            
-            
-            
-            
-        }, completion: { (completedAnimation) in
-            
-            //maybe we'll do something here later...
-            UIApplication.shared.setStatusBarHidden(true, with: .fade)
-            
-        })
-    }
-
-    /*func wasDragged(gestureRecognizer: UIPanGestureRecognizer) {
-        
-        if gestureRecognizer.state == UIGestureRecognizerState.began || gestureRecognizer.state ==
-        UIGestureRecognizerState.changed
-        {
-            
-            let translation = gestureRecognizer.translation(in: self)
-           
-            print("///////////////")
-            
-            print(gestureRecognizer.view!.center.x)
-            print(self.xLocation)
-            
-            if(gestureRecognizer.view!.center.x > self.xLocation)
-            {
-                gestureRecognizer.view!.center = CGPoint(x:self.xLocation + translation.x, y:self.yLocation )
-                
-            } else  if(gestureRecognizer.view!.center.x < self.xLocation)
-            {
-                let xVariable = gestureRecognizer.view!.center.x
-                
-                let disX = self.lastX - xVariable
-                
-                self.videoLauncher.view.backgroundColor = UIColor.black.withAlphaComponent(disX*0.1)
-                self.videoLauncher.view.isOpaque = false
-                
-                gestureRecognizer.view!.center = CGPoint(x:xVariable, y:self.yLocation)
-                
-                self.lastX = xVariable
-                
-            }
-            
-            gestureRecognizer.setTranslation(CGPoint(x:0,y:0), in: self)
-        }
-        
-    }*/
 
     let activityIndicatorView: UIActivityIndicatorView = {
         let aiv = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
@@ -165,13 +46,13 @@ class VideoPlayerView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white
         button.isHidden = true
-        
         button.addTarget(self, action: #selector(handlePause), for: .touchUpInside)
-        
         return button
     }()
     
     var isPlaying = false
+    
+    var urlVideo = String()
     
     func handlePause() {
         if isPlaying {
@@ -213,24 +94,12 @@ class VideoPlayerView: UIView {
         slider.addTarget(self, action: #selector(handleSliderChange), for: .valueChanged)        
         return slider
     }()
-    
-    func handleSliderChange() 
-    {
-        print(videoSlider.value)
-        
-        if let duration = player?.currentItem?.duration 
-        {
-            let totalSeconds = CMTimeGetSeconds(duration)
-            
-            let value = Float64(videoSlider.value) * totalSeconds
-            
-            let seekTime = CMTime(value: Int64(value), timescale: 1)
-            
-            player?.seek(to: seekTime, completionHandler: { (completedSeek) in
-                //perhaps do something later here
-            })
-        }
-    } 
+
+    var gradientLayer = CAGradientLayer()
+
+    var videoUrl = String()
+
+    var isVideoDown = Bool()    
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -240,11 +109,41 @@ class VideoPlayerView: UIView {
     {
         self.videoLauncher = videoLauncherVidew
         self.keyWindow = view
-        //self.infoView = infoView
-        //self.chatView = chatView
+    }   
+
+    func handleDownButton() 
+    {
+        self.videoLauncher.shrinkVideoDown()
     }
 
-    var videoUrl = String()
+    func hideShowControllers(status:Bool)
+    {
+        self.activityIndicatorView.isHidden = status
+        self.arrowDownButton.isHidden = status
+        self.pausePlayButton.isHidden = status
+        self.videoLengthLabel.isHidden = status
+        self.currentTimeLabel.isHidden = status
+        self.videoSlider.isHidden = status   
+        self.gradientLayer.isHidden = status        
+    }
+
+    
+    func handleSliderChange() 
+    {
+        print(videoSlider.value)
+        
+        if let duration = player?.currentItem?.duration 
+        {
+            let totalSeconds = CMTimeGetSeconds(duration)            
+            let value = Float64(videoSlider.value) * totalSeconds            
+            let seekTime = CMTime(value: Int64(value), timescale: 1)
+            
+            player?.seek(to: seekTime, completionHandler: { (completedSeek) in
+                //perhaps do something later here
+            })
+        }
+    } 
+
 
     func setPlayerUrl(urlString : String)
     {        
@@ -295,11 +194,16 @@ class VideoPlayerView: UIView {
     
     func setupPlayerView(urlString : String) {
         
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(closeVideo), name: NSNotification.Name(rawValue: Global.notificationKeyCloseVideo), object: nil)
+        
         //warning: use your own video url here, the bandwidth for google firebase storage will run out as more and more people use this file
         
         //let urlString = "https://firebasestorage.googleapis.com/v0/b/gameofchats-762ca.appspot.com/o/message_movies%2F12323439-9729-4941-BA07-2BAE970967C7.mov?alt=media&token=3e37a093-3bc8-410f-84d3-38332af9c726"
         
         print(urlString)
+        
+        self.urlVideo = urlString
 
         //DispatchQueue.main.async
         //{
@@ -355,7 +259,11 @@ class VideoPlayerView: UIView {
         if keyPath == "currentItem.loadedTimeRanges" {
             activityIndicatorView.stopAnimating()
             controlsContainerView.backgroundColor = .clear
-            pausePlayButton.isHidden = false
+
+            if !isVideoDown
+            {
+                pausePlayButton.isHidden = false
+            }
             isPlaying = true
             
             if let duration = player?.currentItem?.duration {
@@ -368,8 +276,7 @@ class VideoPlayerView: UIView {
         }
     }
     
-    fileprivate func setupGradientLayer() {
-        let gradientLayer = CAGradientLayer()
+    fileprivate func setupGradientLayer() {        
         gradientLayer.frame = bounds
         gradientLayer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
         gradientLayer.locations = [0.7, 1.2]
@@ -379,7 +286,21 @@ class VideoPlayerView: UIView {
     required init?(coder aDecoder: NSCoder) 
     {
         fatalError("init(coder:) has not been implemented")
-    }   
+    }
+    
+    
+    func closeVideo()
+    {
+        //REMOVE IF EXISTS VIDEO RUNNING
+        for subview in (UIApplication.shared.keyWindow?.subviews)! {
+            if (subview.tag == 1)
+            {
+                print(self.urlVideo)
+                self.handlePause()                
+                subview.removeFromSuperview()
+            }
+        }
+    }
 
 }
 
@@ -392,16 +313,28 @@ class VideoLauncher: UIView, KeyboardDelegate {
     var view:UIView!
     
     var originaChatYPosition = CGFloat()
-    var originaChatHeightPosition = CGFloat()
+    var originaChatHeightPosition = CGFloat()    
 
-    var panGesture = UIPanGestureRecognizer()
+    var yLocation = CGFloat()
+    var xLocation = CGFloat()
+    var lastX = CGFloat()   
 
-    func showVideoPlayer(videoGamves: VideoGamves){ //videoUrl :String, videoId:String, fanpageId:String) {
-                
+    var keyWindoWidth = CGFloat()
+    var keyWindoHeight = CGFloat()
+
+    //var valpha = CGFloat() 
+
+    var originalVideoFrame = CGRect()
+    var downVideoFrame = CGRect()
+
+    func showVideoPlayer(videoGamves: VideoGamves){
+        
+        self.keyWindoWidth = (UIApplication.shared.keyWindow?.frame.size.width)!
+        self.keyWindoHeight = (UIApplication.shared.keyWindow?.frame.size.height)!
+
         let videoUrl = videoGamves.video_url
         let videoObj = videoGamves.videoobj!
-        let videoId = videoObj["videoId"] as! String
-        //let viId:Int = NumberFormatter().number(from: videoId) as! Int
+        let videoId = videoObj["videoId"] as! String        
 
         let first5VideoId = videoId.substring(to:videoId.index(videoId.startIndex, offsetBy: 5))
         
@@ -425,9 +358,31 @@ class VideoLauncher: UIView, KeyboardDelegate {
             videoPlayerView.setPlayerUrl(urlString: videoUrl)
             view.addSubview(videoPlayerView)
 
-            self.panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.draggedView))
-            videoPlayerView.isUserInteractionEnabled = true
-            videoPlayerView.addGestureRecognizer(self.panGesture)
+            //let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.draggedView))
+            //panGesture.delegate = self
+            //videoPlayerView.isUserInteractionEnabled = true
+            //videoPlayerView.addGestureRecognizer(panGesture)  
+
+            let swipeDown: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(self.swipedDownVideo))  
+            swipeDown.direction = .down
+            swipeDown.cancelsTouchesInView = false
+            swipeDown.delaysTouchesEnded = false
+            videoPlayerView.addGestureRecognizer(swipeDown)           
+            
+
+            let swipeUp: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(self.swipedDownVideo))
+            swipeUp.direction = .up
+            swipeUp.cancelsTouchesInView = false
+            swipeUp.delaysTouchesEnded = false                       
+            videoPlayerView.addGestureRecognizer(swipeUp)  
+
+            let swipeLeft: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeLeftClose))  
+            swipeLeft.direction = .left
+            swipeLeft.cancelsTouchesInView = false
+            swipeLeft.delaysTouchesEnded = false                      
+            videoPlayerView.addGestureRecognizer(swipeLeft)      
+
+            videoPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.reopenVideo)))            
             
             let infoHeight = 90            
             let infoFrame = CGRect(x: 0, y: Int(videoPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
@@ -451,56 +406,188 @@ class VideoLauncher: UIView, KeyboardDelegate {
             view.addSubview(chatView)
             
             chatView.loadChatFeed()
+
+            //self.valpha = 1.0
             
             videoPlayerView.setViews(view: view, videoLauncherVidew: self)
             
             keyWindow.addSubview(view)
 
-            view.tag = 1
+            view.tag = 1                                   
             
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
                 
                 self.view.frame = keyWindow.frame
                 
-                }, completion: { (completedAnimation) in
+                }, completion: { (completedAnimation) in                   
                     
-                    //maybe we'll do something here later...
                     UIApplication.shared.setStatusBarHidden(true, with: .fade)
-                    
-                    
             })
         }
     }
 
-
-    func draggedView(sender: UIPanGestureRecognizer)
-    {
-       
-        self.view.bringSubview(toFront: sender.view!)
+    func swipedDownVideo(sender: UISwipeGestureRecognizer) {
         
-        let translation = sender.translation(in: self.view)
+        print("swiped down")
 
-        print(translation)
- 
-        sender.view!.center = CGPoint(x: sender.view!.center.x + translation.x, y: sender.view!.center.y + translation.y)
- 
-        sender.setTranslation(CGPoint.zero, in: self.view) 
+        self.videoPlayerView.hideShowControllers(status: true)
 
+        self.shrinkVideoDown()
+    }   
+
+    func swipedUpVideo(sender: UISwipeGestureRecognizer) {
+        
+        print("swiped up")
+        
+        self.videoPlayerView.hideShowControllers(status: false)
+        
+        self.openVideoUp()
     }
     
+    func swipeLeftVideo(sender: UISwipeGestureRecognizer) {
+        
+        print("swiped left")
+
+    }
+
+    func reopenVideo(sender: UITapGestureRecognizer)
+    {
+        if self.videoPlayerView.isVideoDown
+        {
+            self.openVideoUp()
+        }
+    }      
+
+    
+    func shrinkVideoDown()
+    {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {           
+            
+            
+            let totalHeight = UIApplication.shared.keyWindow?.frame.size.height
+            let totalWidth = UIApplication.shared.keyWindow?.frame.size.width
+            
+            let thumbWidth = totalWidth! / 2
+            let thumbHeight = thumbWidth * 9 / 16
+            
+            let x = (totalWidth! / 2) - (thumbWidth / 2)
+            let y = totalHeight! - (thumbHeight + 30)
+            
+            self.yLocation = y            
+            self.xLocation = x
+            self.lastX = x  
+
+            self.originalVideoFrame = self.videoPlayerView.frame                     
+            
+            let smallBottomFrame = CGRect(x: x, y: y, width: thumbWidth, height: thumbHeight)
+            
+            self.videoPlayerView.videoLauncher.view.frame = smallBottomFrame
+
+            let smallOriginFrame = CGRect(x: 0, y: 0, width: thumbWidth, height: thumbHeight)
+
+            self.videoPlayerView.playerLayer.frame = smallOriginFrame
+
+            UIApplication.shared.keyWindow?.bringSubview(toFront: self.videoPlayerView)
+            
+            self.downVideoFrame = smallBottomFrame
+                    
+            
+        }, completion: { (completedAnimation) in            
+            
+            self.videoPlayerView.playerLayer.borderWidth = 1.0
+            self.videoPlayerView.playerLayer.borderColor = UIColor.white.cgColor 
+
+            UIApplication.shared.setStatusBarHidden(true, with: .fade)
+
+            self.videoPlayerView.isVideoDown = true
+            
+        })
+    }  
+
+
+    func openVideoUp()
+    {
+       
+        if self.videoPlayerView.isVideoDown
+        {
+
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {                 
+                
+                
+                self.videoPlayerView.videoLauncher.view.frame = self.originalVideoFrame
+
+                let smallOriginFrame = CGRect(x: 0, y: 0, width: self.originalVideoFrame.width, height: self.originalVideoFrame.height)
+
+                self.videoPlayerView.playerLayer.frame = self.originalVideoFrame           
+                
+            }, completion: { (completedAnimation) in            
+                
+                self.videoPlayerView.playerLayer.borderWidth = 0.0
+                
+                self.videoPlayerView.hideShowControllers(status: false)
+
+                UIApplication.shared.setStatusBarHidden(true, with: .fade)
+
+                self.videoPlayerView.isVideoDown = true
+                
+            })
+
+        }
+    } 
+
+
+    func swipeLeftClose()
+    {
+
+        if self.videoPlayerView.isVideoDown
+        {
+
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {                      
+                
+                let fwidth = self.downVideoFrame.width * -1           
+
+                self.originalVideoFrame = self.videoPlayerView.frame
+                
+                let leftFrame = CGRect(x: fwidth, y: self.downVideoFrame.origin.y, width: self.downVideoFrame.width, height: self.downVideoFrame.height)
+                
+                self.videoPlayerView.videoLauncher.view.frame = leftFrame            
+
+                self.videoPlayerView.playerLayer.frame = leftFrame            
+                
+            }, completion: { (completedAnimation) in                     
+
+                UIApplication.shared.setStatusBarHidden(true, with: .fade)
+
+                self.videoPlayerView.isVideoDown = false
+
+                self.videoPlayerView.handlePause()
+
+                for subview in (UIApplication.shared.keyWindow?.subviews)! {
+                    if (subview.tag == 1) {
+                        subview.removeFromSuperview()
+                    }
+                }
+                
+            })
+
+        }
+    }  
+
+
     func keyboardOpened(keybordHeight keybordEditHeight: CGFloat)
     {
         
         if (self.infoView != nil)
         {
             self.infoView.isHidden = true
+            self.chatView.dismissKeyboard()
         }
         
-        let keyHeight = UIApplication.shared.keyWindow?.frame.height
+        let keyHeight = self.keyWindoHeight
 
         let viewsHeight = self.videoPlayerView.frame.height + keybordEditHeight //+ inputHeight
 
-        let chatHeight = keyHeight! - viewsHeight
+        let chatHeight = keyHeight - viewsHeight
         
         let yPosition = self.videoPlayerView.frame.size.height
         
@@ -524,9 +611,131 @@ class VideoLauncher: UIView, KeyboardDelegate {
         
         self.chatView.frame.origin.y = self.originaChatYPosition
         
-        self.chatView.frame.size.height = self.originaChatHeightPosition
-        
+        self.chatView.frame.size.height = self.originaChatHeightPosition        
     }
-    
+
+
+    /*func draggedView(sender: UIPanGestureRecognizer)
+    {
+       
+        if sender.state == UIGestureRecognizerState.began
+        {
+            self.videoPlayerView.hideControllers()
+            self.videoPlayerView.layer.borderWidth = 1.0
+            self.videoPlayerView.layer.borderColor = UIColor.white.cgColor
+
+            UIApplication.shared.keyWindow?.backgroundColor = UIColor(white: 1, alpha: 0.0)
+        
+        }
+        
+        //else if sender.state == UIGestureRecognizerState.
+        //{
+        //    self.shrinkVideoDown()
+        //}
+        
+        self.view.bringSubview(toFront: sender.view!)
+        
+        let translation = sender.translation(in: self.view)
+
+        print(translation.y)
+ 
+        sender.view!.center = CGPoint(x: sender.view!.center.x, y: sender.view!.center.y + translation.y)
+
+        sender.setTranslation(CGPoint.zero, in: self.view)       
+        
+        print("translation: \(translation.y)")
+        //print(valpha)      
+
+        if translation.y == 0.0
+        {
+            return
+        }
+
+        if translation.y >= 0 //going down
+        {
+            
+            if valpha >= 0.0
+            {
+                valpha = valpha - 0.005            
+            }     
+
+
+        } else  //going up
+        {
+            
+            if valpha <= 0.9
+            {
+                valpha = valpha + 0.005
+            }           
+
+        }
+
+        //let frame:CGRect = self.getFrameFromPan(value: translation.y)
+
+        //self.videoPlayerView.frame = frame
+        //self.videoPlayerView.playerLayer.frame = frame         
+
+        print(valpha)
+
+        self.infoView.center = CGPoint(x: self.infoView.center.x, y: self.infoView.center.y + translation.y)
+        sender.setTranslation(CGPoint.zero, in: self.infoView)
+        //self.infoView.alpha = CGFloat(valpha)        
+
+        self.chatView.center = CGPoint(x: self.chatView.center.x, y: self.infoView.center.y + translation.y)
+        sender.setTranslation(CGPoint.zero, in: self.chatView)
+        //self.chatView.alpha = CGFloat(valpha)
+
+        //let middle = self.keyWindoHeight / 4
+        //if sender.view!.center.y > middle
+        //{            
+        //}                   
+    }
+
+    func getFrameFromPan(value:CGFloat) -> CGRect
+    {
+
+        let xCurrX = self.videoPlayerView.frame.origin.x
+        let yCurrY = self.videoPlayerView.frame.origin.y
+        let yCurrHeight = self.videoPlayerView.frame.height
+        let yCurrWidth = self.videoPlayerView.frame.width
+
+        print("____________________")
+
+        print(xCurrX)
+        print(yCurrY)        
+        print(yCurrWidth)
+        print(yCurrHeight)
+
+        print("--------------------")
+
+        let ratio = yCurrWidth / yCurrHeight
+        //print("ratio: \(ratio)")
+        let newHeight = yCurrHeight - value
+        let newWidth = newHeight * ratio
+
+        let centerWidth = self.keyWindoWidth / 2
+        //print("centerWidth: \(centerWidth) ")
+        let halfNewWidth = newWidth / 2
+        //print("halfNewWidth: \(halfNewWidth) ")
+        let newX = centerWidth - halfNewWidth
+        //print("newX: \(newX) ")
+
+        let diffHeight = yCurrHeight - newHeight 
+        //print("diffHeight: \(diffHeight) ")
+        let midDistance = diffHeight / 2
+        let newY = yCurrY + midDistance
+        //print("newY: \(newY) ")
+
+        let newFrame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)  
+
+        print(newX)
+        print(newY)
+        print(newWidth)
+        print(newHeight)
+
+        return newFrame
+
+    }*/
+       
     
 }

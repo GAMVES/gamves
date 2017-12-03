@@ -23,5 +23,7 @@ target 'gamves' do
   pod 'PopupDialog'
   
   pod 'DownPicker'
+
+  pod 'YouTubePlayer'
   
 end

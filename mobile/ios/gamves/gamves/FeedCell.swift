@@ -300,6 +300,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             
             print(video.videoId)
             
+            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
+            
             let videoLauncher = VideoLauncher()
             videoLauncher.showVideoPlayer(videoGamves: video)
             

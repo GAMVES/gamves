@@ -203,7 +203,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         
         if !Global.hasDateChanged()
         {
-            queryCategories.cachePolicy = .cacheElseNetwork
+            queryCategories.cachePolicy = .cacheThenNetwork
         }
         
         queryCategories.order(byDescending: "order")
@@ -255,7 +255,11 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                     cat.name = name
                                     cat.thum_image = image!
                                     
-                                     let backImage = pcategory["backImage"] as! PFFile
+                                    print(name)
+                                    let backImage = pcategory["backImage"] as! PFFile
+                                    
+                                    print(backImage)
+                                    
                                     
                                      backImage.getDataInBackground(block: { (backImageData, error) in
                                         

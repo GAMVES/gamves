@@ -33,7 +33,7 @@ class Downloader: NSObject
                 let albumsQuery = relationAlbums.query()                
                 if !Global.hasDateChanged()
                 {
-                    albumsQuery.cachePolicy = .cacheElseNetwork
+                    albumsQuery.cachePolicy = .cacheThenNetwork
                 }
                 albumsQuery.findObjectsInBackground(block: { (fanpageAlbums, error) in
                     

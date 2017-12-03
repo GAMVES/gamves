@@ -300,7 +300,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
             if !Global.hasDateChanged()
             {
-                familyQuery.cachePolicy = .cacheElseNetwork
+                familyQuery.cachePolicy = .cacheThenNetwork
             }
             familyQuery.findObjectsInBackground(block: { (families, error) in
                 
