@@ -13,6 +13,15 @@ import PopupDialog
 
 class Global: NSObject
 {
+    
+    static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
+    
+    static var api_image_base = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="
+    static var api_image_format = "&format=json"
+    
+    static var api_desc_base = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id="
+    static var api_desc_middle = "&fields=items/snippet/title,items/snippet/description&key="
+    
     static var admin_delimitator:String = "---is_admin_chat---"
     
     static var key_you_spouse_chat_id = "you_spouse_chat_id"
@@ -33,7 +42,9 @@ class Global: NSObject
     
     static var chatVideos = Dictionary<Int, VideoGamves>()
     
-    static var hasNewFeed = Bool()   
+    static var hasNewFeed = Bool()
+    
+    static var categories_gamves  = [CategoryGamves]()
 
     //Bool to foce download and skip chache. 
     static var forceFromNetworkCache = Bool()

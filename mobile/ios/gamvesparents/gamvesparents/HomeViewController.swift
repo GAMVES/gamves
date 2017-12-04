@@ -27,7 +27,6 @@ class HomeViewController: UIViewController,
     private var sonSubscription: Subscription<PFObject>!
     
     let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
-
     
     var youSonChatId = Int()
     var youSpouseChatId = Int()

@@ -22,6 +22,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     let titles = ["Home", "Activity", "Profile"]
     
     var cellFree:FeedCell!
+    var cellHome:HomeCell!
     
     var locationManager : CLLocationManager = CLLocationManager()
     
@@ -68,11 +69,11 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     {
         
         //Got to Feed if there is a Badge
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        if (appDelegate.gamvesApplication?.applicationIconBadgeNumber)! > 0
-        {
+        //let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        //if (appDelegate.gamvesApplication?.applicationIconBadgeNumber)! > 0
+        //{
             //Move to the next index, could not do it.
-        }
+        //}
         
     }
     
@@ -223,11 +224,17 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
         
-        if indexPath.item == 1
+        if indexPath.item == 0
+        {
+            cellHome = cell as! HomeCell
+            cellHome.homeController = self
+        } else if indexPath.item == 1
         {
             cellFree = cell as! FeedCell
             cellFree.homeController = self
         }
+        
+        
         
         return cell
     }
@@ -269,6 +276,20 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.pushViewController(selectContactViewController, animated: true)
     }
     
+    lazy var newVideoController: NewVideoController = {
+        let newvideo = NewVideoController()
+        newvideo.homeController = self
+        return newvideo
+    }()
+    
+    func addNewVideo()
+    {        
+        newVideoController.view.backgroundColor = UIColor.white
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(newVideoController, animated: true)
+    }    
+
     lazy var groupNameViewController: GroupNameViewController = {
         let groupName = GroupNameViewController()
         groupName.homeController = self

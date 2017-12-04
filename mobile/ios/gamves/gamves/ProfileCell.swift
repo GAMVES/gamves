@@ -13,7 +13,6 @@ import Parse
 
 class ProfileCell: BaseCell, UIScrollViewDelegate {
     
-    
     let sonViewContent: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -75,7 +74,53 @@ class ProfileCell: BaseCell, UIScrollViewDelegate {
         label.backgroundColor = UIColor.white
         return label
     }()
-    
+
+    ///////////////////////////
+
+    lazy var yourPhotoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "your_photo")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoImageView)))
+        imageView.isUserInteractionEnabled = true     
+        imageView.tag = 0           
+        return imageView
+    }()
+
+    lazy var sonPhotoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "son_photo")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoImageView)))
+        imageView.isUserInteractionEnabled = true        
+        imageView.tag = 1
+        return imageView
+    }()   
+
+    lazy var spousePhotoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "spouse_photo")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoImageView)))
+        imageView.isUserInteractionEnabled = true     
+        imageView.tag = 2           
+        return imageView
+    }()
+
+    lazy var familyPhotoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "family_photo")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoImageView)))
+        imageView.isUserInteractionEnabled = true     
+        imageView.tag = 3           
+        return imageView
+    }()
+   
     
     override func setupViews() {
         super.setupViews()

@@ -11,7 +11,9 @@ import Floaty
 
 
 class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDelegate, CellDelegate {
-        
+    
+    var homeController: HomeController?
+    
     var pages = [UIViewController]()
     //let pageControl = UIPageControl()
     var pageController : UIPageViewController?
@@ -70,7 +72,10 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
         let floaty = Floaty()
         floaty.addItem(title: "New Video", handler: { item in
 
-            
+            if self.homeController != nil
+            {
+                self.homeController?.addNewVideo()
+            }
             
         })        
         

@@ -26,4 +26,8 @@ target 'gamves' do
 
   pod 'YouTubePlayer'
   
+  pod 'Alamofire'
+  
+  pod 'SwiftyJSON'
+  
 end

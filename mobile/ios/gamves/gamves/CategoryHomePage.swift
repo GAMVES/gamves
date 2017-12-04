@@ -15,9 +15,7 @@ let fanpageCell = "fanpageCell"
 class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDelegate  {
     
     let categorySectionCellId = "categorySectionCellId"
-    let categoryCollectionCellId = "categoryCollectionCellId"      
-    
-    var categories_gamves  = [CategoryGamves]()
+    let categoryCollectionCellId = "categoryCollectionCellId"    
 
     var width = CGFloat()
     var height = CGFloat()
@@ -73,7 +71,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     {
         if (self.dalaLoaded)
         {
-            let countCategories = self.categories_gamves.count
+            let countCategories = Global.categories_gamves.count
             return countCategories
         }
         return 0
@@ -136,7 +134,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
   
         let headerView = tableView.dequeueReusableCell(withIdentifier: categorySectionCellId) as! CategoryTableViewSectionCell
         
-        let catcel:CategoryGamves = self.categories_gamves[section]
+        let catcel:CategoryGamves = Global.categories_gamves[section]
         
         headerView.name.text  = catcel.name
         
@@ -175,7 +173,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         print(section)
         if ( delegate != nil )
         {
-            let category = self.categories_gamves[section]
+            let category = Global.categories_gamves[section]
             
             print(category.name)
             
@@ -277,7 +275,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
 
                                                 }
                                                 
-                                                self.categories_gamves.append(cat)
+                                                Global.categories_gamves.append(cat)
 
                                                 var last = Bool()
                                                 if count == total
@@ -478,7 +476,7 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         print(id)
 
-        let countFanpages = self.categories_gamves[id].fanpages.count
+        let countFanpages = Global.categories_gamves[id].fanpages.count
         
         print(countFanpages)
         
@@ -493,14 +491,14 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         let row = indexPath.row
         
-        print(self.categories_gamves[id].name)
+        print(Global.categories_gamves[id].name)
         
         print(id)        
         print(row)
         
-        print(self.categories_gamves[id].fanpages.count)
+        print(Global.categories_gamves[id].fanpages.count)
 
-        let fanpage = self.categories_gamves[id].fanpages[row]
+        let fanpage = Global.categories_gamves[id].fanpages[row]
         
         print(fanpage.name)
 
@@ -519,7 +517,7 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         let id = collectionView.tag
         
-        let category:CategoryGamves = self.categories_gamves[id]
+        let category:CategoryGamves = Global.categories_gamves[id]
         
         //print(category.name)
         

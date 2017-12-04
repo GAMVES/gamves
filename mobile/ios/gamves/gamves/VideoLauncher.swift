@@ -80,8 +80,7 @@ class VideoPlayerView: UIView, YouTubePlayerDelegate {
         return slider
     }()
 
-    var isPlaying = false    
-    var urlVideo = String()
+    var isPlaying = false
     var videoType = Int()
     var gradientLayer = CAGradientLayer()
     var videoUrl = String()
@@ -128,11 +127,6 @@ class VideoPlayerView: UIView, YouTubePlayerDelegate {
                 //perhaps do something later here
             })
         }
-    } 
-
-    func setPlayerUrl(url:String)
-    {
-        self.urlVideo = url
     }
 
     func setYoutubePlayer(id:String)
@@ -171,9 +165,9 @@ class VideoPlayerView: UIView, YouTubePlayerDelegate {
     }  
 
 
-    func setNativePlayer()
+    func setNativePlayer(url:String)
     {        
-        setupPlayerView()
+        setupPlayerView(urlString: url)
         setupGradientLayer()              
         
         controlsContainerView.frame = frame
@@ -215,11 +209,11 @@ class VideoPlayerView: UIView, YouTubePlayerDelegate {
 
     var player: AVPlayer?
     
-    func setupPlayerView() {        
+    func setupPlayerView(urlString:String) {
         
-        NotificationCenter.default.addObserver(self, selector: #selector(closeVideo), name: NSNotification.Name(rawValue: Global.notificationKeyCloseVideo), object: nil)            
+        NotificationCenter.default.addObserver(self, selector: #selector(closeVideo), name: NSNotification.Name(rawValue: Global.notificationKeyCloseVideo), object: nil)
         
-        if let url = URL(string: self.videoUrl) {
+        if let url = URL(string: urlString) {
             
             do
             {
@@ -304,7 +298,6 @@ class VideoPlayerView: UIView, YouTubePlayerDelegate {
         for subview in (UIApplication.shared.keyWindow?.subviews)! {
             if (subview.tag == 1)
             {
-                print(self.urlVideo)
                 self.handlePause()                
                 subview.removeFromSuperview()
             }
@@ -364,14 +357,13 @@ class VideoLauncher: UIView, KeyboardDelegate {
             let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoHeight)
 
             //REMOVE
-            videoGamves.videoType = 1
-            videoGamves.youtubeId = "FA_q7chyDAU"
+            //videoGamves.videoType = 1
+            //videoGamves.youtubeId = "FA_q7chyDAU"
 
-            videoPlayerView = VideoPlayerView(frame: videoPlayerFrame)
-            videoPlayerView.setPlayerUrl(url: videoUrl)
+            videoPlayerView = VideoPlayerView(frame: videoPlayerFrame)            
             if videoGamves.videoType == 0
             {
-                videoPlayerView.setNativePlayer()
+                videoPlayerView.setNativePlayer(url: videoUrl)
             } else if videoGamves.videoType == 1
             {
                 videoPlayerView.setYoutubePlayer(id: videoGamves.youtubeId)

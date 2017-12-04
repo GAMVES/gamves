@@ -19,14 +19,10 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     
     var activityView: NVActivityIndicatorView!
     
-    var homeController: HomeController?
+    var homeController: HomeController?    
     
-    //var videosGamves = [VideoGamves]()
-    
-    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
-    
-    //let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: "wss://gamves.back4app.io")
-    
+    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")    
+  
     private var subscription: Subscription<PFObject>!
     
     var queryChatFeed:PFQuery<PFObject>!
