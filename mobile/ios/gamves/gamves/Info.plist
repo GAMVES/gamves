@@ -45,5 +45,10 @@
 	<false/>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Gamves tracks your position near your family</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 </dict>
 </plist>

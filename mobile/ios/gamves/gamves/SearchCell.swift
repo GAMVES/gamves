@@ -47,11 +47,12 @@ class SearchCell: UITableViewCell {
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 14)
         return label
-    }()   
+    }()  
+
+    var delegate:SearchProtocol? 
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
+        super.init(coder: aDecoder)      
         
     }
     

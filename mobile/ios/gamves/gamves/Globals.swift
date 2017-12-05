@@ -22,6 +22,12 @@ class Global: NSObject
     static var api_desc_base = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id="
     static var api_desc_middle = "&fields=items/snippet/title,items/snippet/description&key="
     
+    
+    static var api_suggestion_base = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q="
+    static var api_suggestion_mid = "&key="
+    static var api_suggestion_close = "=5&alt=json"
+    
+    
     static var admin_delimitator:String = "---is_admin_chat---"
     
     static var key_you_spouse_chat_id = "you_spouse_chat_id"

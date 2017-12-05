@@ -20,7 +20,7 @@ UICollectionViewDelegateFlowLayout {
 
     let coverContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.red //UIColor(white: 0, alpha: 1)
+        view.backgroundColor = UIColor.gamvesColor //UIColor(white: 0, alpha: 1)
         return view
     }()
 

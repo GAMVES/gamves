@@ -10,6 +10,7 @@
 		8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D6F41F74B46C00F2A121 /* Colors.swift */; };
 		822D620A1FD5FCCE0025481E /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822D62091FD5FCCE0025481E /* SearchController.swift */; };
 		822D620D1FD62FBD0025481E /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822D620C1FD62FBD0025481E /* SearchCell.swift */; };
+		822D620F1FD650910025481E /* UISearch+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822D620E1FD650910025481E /* UISearch+Extension.swift */; };
 		82418F361EF853E400D7E6BC /* HomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82418F351EF853E400D7E6BC /* HomeCell.swift */; };
 		82418F381EF8600500D7E6BC /* CategoryHomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82418F371EF8600500D7E6BC /* CategoryHomePage.swift */; };
 		82418F3D1EF86FBC00D7E6BC /* FanpagePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82418F3C1EF86FBC00D7E6BC /* FanpagePage.swift */; };
@@ -83,6 +84,7 @@
 		8212D6F41F74B46C00F2A121 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		822D62091FD5FCCE0025481E /* SearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
 		822D620C1FD62FBD0025481E /* SearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchCell.swift; sourceTree = "<group>"; };
+		822D620E1FD650910025481E /* UISearch+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISearch+Extension.swift"; sourceTree = "<group>"; };
 		82418F351EF853E400D7E6BC /* HomeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCell.swift; sourceTree = "<group>"; };
 		82418F371EF8600500D7E6BC /* CategoryHomePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryHomePage.swift; sourceTree = "<group>"; };
 		82418F3C1EF86FBC00D7E6BC /* FanpagePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FanpagePage.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 				82BD5EFC1F92B58600BD8760 /* Int+Extension.swift */,
 				82DD00331F9D021C00CD19D7 /* UINavigationBar+Extension.swift */,
 				825568D81FA3FA2F0074C49C /* Array+Extension.swift */,
+				822D620E1FD650910025481E /* UISearch+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -564,6 +567,7 @@
 				82BD5EF91F915D1E00BD8760 /* ChatViewController.swift in Sources */,
 				828DB5DF1EFE408500403C66 /* Gradients.swift in Sources */,
 				825568D91FA3FA2F0074C49C /* Array+Extension.swift in Sources */,
+				822D620F1FD650910025481E /* UISearch+Extension.swift in Sources */,
 				C75742B71D5D93FA001C066C /* VideoLauncher.swift in Sources */,
 				829F01121FC09ED800B8F2BD /* ChatFeedMethods.swift in Sources */,
 				82C9084B1FA0FD790059FAB8 /* Downloader.swift in Sources */,

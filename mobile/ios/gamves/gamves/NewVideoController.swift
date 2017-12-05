@@ -13,7 +13,11 @@ import NVActivityIndicatorView
 import SwiftyJSON
 import UITextView_Placeholder
 
-class NewVideoController: UIViewController  {
+protocol SearchProtocol {
+    func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
+}
+
+class NewVideoController: UIViewController, SearchProtocol  {
     
     var homeController: HomeController?
     
@@ -213,6 +217,7 @@ class NewVideoController: UIViewController  {
     var author_name = String()
     var videoTitle = String()
     var videoDescription = String()
+    var videoId = String()
 
     //-- save
 
@@ -240,12 +245,14 @@ class NewVideoController: UIViewController  {
     lazy var searchController: SearchController = {
         let search = SearchController()
         search.newVideoController = self
+        search.delegateSearch = self
         return search
     }()
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         
 		self.view.addSubview(self.scrollView)
 
@@ -661,6 +668,19 @@ class NewVideoController: UIViewController  {
     {
 
     }
+
+
+    func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
+    {
+    	self.videoId = videoId
+    	self.videoTitle = title
+    	self.videoDescription = description
+    	self.thumbnailImage = image
+
+    	self.titleTextField.text = title
+    	self.descriptionTextView.text = description
+    	self.thumbnailView.image = image    	
+    }   
 
 }
 
