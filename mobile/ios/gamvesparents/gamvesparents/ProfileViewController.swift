@@ -1706,7 +1706,7 @@ class ProfileViewController: UIViewController,
                 Global.gamvesFamily.familyImage = self.familyPhotoImageSmall
                 
                 Global.defaults.set(true, forKey: "family_exist")
-                completionHandler(true)                
+                completionHandler(true)             
                
             }
         }   

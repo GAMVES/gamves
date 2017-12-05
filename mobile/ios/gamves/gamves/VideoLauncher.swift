@@ -509,7 +509,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
             self.videoPlayerView.playerLayer.borderWidth = 1.0
             self.videoPlayerView.playerLayer.borderColor = UIColor.white.cgColor 
 
-            UIApplication.shared.setStatusBarHidden(true, with: .fade)
+            UIApplication.shared.setStatusBarHidden(false, with: .fade)
 
             self.videoPlayerView.isVideoDown = true
             
@@ -568,7 +568,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
                 
             }, completion: { (completedAnimation) in                     
 
-                UIApplication.shared.setStatusBarHidden(true, with: .fade)
+                UIApplication.shared.setStatusBarHidden(false, with: .fade)
 
                 self.videoPlayerView.isVideoDown = false
 

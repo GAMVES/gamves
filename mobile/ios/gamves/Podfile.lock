@@ -17,6 +17,7 @@ PODS:
   - PopupDialog (0.5.4)
   - Starscream (2.1.1)
   - SwiftyJSON (3.1.4)
+  - UITextView+Placeholder (1.2.0)
   - YouTubePlayer (0.4.0)
 
 DEPENDENCIES:
@@ -28,6 +29,7 @@ DEPENDENCIES:
   - ParseLiveQuery
   - PopupDialog
   - SwiftyJSON
+  - UITextView+Placeholder (~> 1.2)
   - YouTubePlayer
 
 EXTERNAL SOURCES:
@@ -53,8 +55,9 @@ SPEC CHECKSUMS:
   PopupDialog: 75cf955693590b0cb2fdde00223fb65d99c57247
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  UITextView+Placeholder: 77680995fcdd07c3f52ec92fe1150874a2ac89ff
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 8221c21b60b81f62ac8d8e80c7319e51f8db59a1
+PODFILE CHECKSUM: d22f090be4da434886761c25f98f25af63bb4c2e
 
 COCOAPODS: 1.2.1.beta.1

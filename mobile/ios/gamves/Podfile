@@ -30,4 +30,7 @@ target 'gamves' do
   
   pod 'SwiftyJSON'
   
+  pod 'UITextView+Placeholder', '~> 1.2'
+
+  
 end
