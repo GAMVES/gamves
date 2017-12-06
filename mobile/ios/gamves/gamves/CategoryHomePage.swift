@@ -425,7 +425,10 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                             
                                             
                                         }
-                                        self.tableView.reloadData()
+                                        DispatchQueue.main.async
+                                        {
+                                            self.tableView.reloadData()
+                                        }
                                         count = count + 1
                                     }
                                     

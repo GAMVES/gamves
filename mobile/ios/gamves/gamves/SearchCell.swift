@@ -23,7 +23,7 @@ class SearchCell: UITableViewCell {
     let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 34
+        imageView.isUserInteractionEnabled = true
         imageView.layer.masksToBounds = true
         return imageView
     }()
@@ -47,9 +47,9 @@ class SearchCell: UITableViewCell {
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 14)
         return label
-    }()  
+    }()    
 
-    var delegate:SearchProtocol? 
+    var delegate:VidewVideoProtocol?
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)      
@@ -64,27 +64,34 @@ class SearchCell: UITableViewCell {
     
     func setupViews()
     {
-        
+
         addSubview(thumbnailImageView)
-        addSubview(dividerLineView)       
-        
+        addSubview(dividerLineView)               
         
         setupContainerView()
         
         addConstraintsWithFormat("H:|-12-[v0(68)]", views: thumbnailImageView)
         addConstraintsWithFormat("V:[v0(68)]", views: thumbnailImageView)
+
+        thumbnailImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(clickThumbnail)))       
         
         addConstraint(NSLayoutConstraint(item: thumbnailImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
         addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)       
-       
-        
+        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)          
+    }
+    
+    func clickThumbnail(sender: UIPanGestureRecognizer)
+    {        
+        let rowid:Int = Int((sender.view?.tag)!)
+        if delegate != nil {
+            delegate?.openVideoById(id: rowid)
+        }        
     }
     
 
     fileprivate func setupContainerView() {
-        let containerView = UIView()
+         let containerView = UIView()
         
         addSubview(containerView)
         
@@ -101,8 +108,10 @@ class SearchCell: UITableViewCell {
         containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: titleLabel, descLabel)
         
         containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: descLabel)
+
         
     }
+
     
     
 }

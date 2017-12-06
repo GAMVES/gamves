@@ -26,7 +26,7 @@ class NewVideoController: UIViewController, SearchProtocol  {
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesBackgoundColor
+        v.backgroundColor = UIColor.gamvesColor
         return v
     }()
 
@@ -108,7 +108,7 @@ class NewVideoController: UIViewController, SearchProtocol  {
         let tf = UITextField()
         tf.placeholder = "Youtube url"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "o7Kd6VVp6jE"        
+        //tf.text = "o7Kd6VVp6jE"        
         return tf
     }()
 
@@ -121,10 +121,12 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
     lazy var searchButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.lightGray                
+        button.backgroundColor = UIColor.gambesDarkColor
         button.translatesAutoresizingMaskIntoConstraints = false          
-        button.addTarget(self, action: #selector(handleSearch), for: .touchUpInside)               
-        button.setImage(UIImage(named: "search_icon"), for: .normal)
+        button.addTarget(self, action: #selector(handleSearch), for: .touchUpInside)  
+        let imageIcon = UIImage(named: "search_icon")    
+        imageIcon?.maskWithColor(color: UIColor.white)
+        button.setImage(imageIcon, for: .normal)
         return button
     }()
 
@@ -159,12 +161,12 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
 	let thumbnailConteinerView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.lightGray
+        view.backgroundColor = UIColor.gamvesBackgoundColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    lazy var thumbnailView: UIImageView = {
+    lazy var cameraView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "camera")
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -248,34 +250,61 @@ class NewVideoController: UIViewController, SearchProtocol  {
         search.delegateSearch = self
         return search
     }()
-
+    
+    var metricsNew = [String:CGFloat]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
+        let navItem = UINavigationItem()
+        navItem.title = "Share your video"
+        
+        let buttonArrowBack: UIButton = UIButton (type: UIButtonType.custom)
+        buttonArrowBack.setImage(UIImage(named: "arrow_back_white"), for: UIControlState.normal)
+        buttonArrowBack.frame = CGRect(x:0, y:0, width:30, height:30)
+        buttonArrowBack.addTarget(self, action: #selector(backButtonPressed(sender:)), for: .touchUpInside)
+        
+        let arrowButton = UIBarButtonItem(customView: buttonArrowBack)
+        
+        navigationItem.leftBarButtonItem = arrowButton
+
 		self.view.addSubview(self.scrollView)
 
 		self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView) 
-		self.view.addConstraintsWithFormat("V:|[v0]|", views: self.scrollView)        
-        self.scrollView.backgroundColor = UIColor.gamvesBackgoundColor
+		self.view.addConstraintsWithFormat("V:|[v0]|", views: self.scrollView)
+    
+        self.scrollView.contentSize.width = self.view.frame.width
 
 		self.scrollView.addSubview(self.categoriesContainerView)
-		self.scrollView.addSubview(self.videoContainerView)
+        
+        let cwidth:CGFloat = self.view.frame.width
+        let cpadd:CGFloat = 12
+        let csize:CGFloat = cwidth - (cpadd*2)
+        
+        print(cwidth)
+        print(cpadd)
+        print(csize)
+        
+        self.metricsNew["cpadd"]    =  cpadd
+        self.metricsNew["csize"]    =  csize
+        
+        self.scrollView.addConstraintsWithFormat("H:|-cpadd-[v0(csize)]-cpadd-|", views: self.categoriesContainerView, metrics: metricsNew)
+        
+        self.scrollView.addSubview(self.videoContainerView)
 		self.scrollView.addSubview(self.saveButton)
 		self.scrollView.addSubview(self.bottomView)
-
-		self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.categoriesContainerView)		
-		self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.videoContainerView)
-		self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.saveButton)
-		self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.bottomView)
+        
+        self.scrollView.addConstraintsWithFormat("H:|-cpadd-[v0(csize)]-cpadd-|", views: self.videoContainerView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cpadd-[v0(csize)]-cpadd-|", views: self.saveButton, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cpadd-[v0(csize)]-cpadd-|", views: self.bottomView, metrics: metricsNew)
 
 		self.scrollView.addConstraintsWithFormat(
-            "V:|-12-[v0(124)]-12-[v1(180)]-12-[v2(40)][v3]|", views: 
+            "V:|-cpadd-[v0(124)]-cpadd-[v1(160)]-cpadd-[v2(40)][v3]|", views:
             self.categoriesContainerView, 
             self.videoContainerView, 
             self.saveButton, 
-            self.bottomView)
+            self.bottomView,
+            metrics: metricsNew)
 
         //-- categoriesContainerView
 
@@ -331,9 +360,9 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
 		self.videoContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.inputVideoRowView)		
 		self.videoContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.inputVideoSeparatorView)		
-		self.videoContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.previewVideoRowView)		
+		self.videoContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.previewVideoRowView)
 		
-		self.videoContainerView.addConstraintsWithFormat("V:|[v0(60)][v1(2)][v2]|", views: 
+		self.videoContainerView.addConstraintsWithFormat("V:|[v0(40)][v1(2)][v2]|", views: 
 			self.inputVideoRowView,
 			self.inputVideoSeparatorView,
 			self.previewVideoRowView)		
@@ -344,15 +373,15 @@ class NewVideoController: UIViewController, SearchProtocol  {
 		self.inputVideoRowView.addSubview(self.searchButton)		
 
 		self.inputVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.youtubeUrlTextField)		
-		self.inputVideoRowView.addConstraintsWithFormat("V:|[v0(60)]|", views: self.searchButton)	
+		self.inputVideoRowView.addConstraintsWithFormat("V:|[v0(40)]|", views: self.searchButton)	
 
-		self.inputVideoRowView.addConstraintsWithFormat("H:|[v0][v1(60)]|", views: 
+		self.inputVideoRowView.addConstraintsWithFormat("H:|[v0][v1(40)]|", views: 
 			self.youtubeUrlTextField,
 			self.searchButton)		
 
 		//-- inputVideoRowView local
 
-		/*self.inputVideoRowView.addSubview(self.recordButton)
+		self.inputVideoRowView.addSubview(self.recordButton)
 		self.inputVideoRowView.addSubview(self.uploadButton)		
 
 		self.inputVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.recordButton)		
@@ -360,7 +389,7 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
 		self.inputVideoRowView.addConstraintsWithFormat("H:|[v0][v1]|", views: 
 			self.recordButton,
-			self.uploadButton)*/
+			self.uploadButton)
 
 		//-- previewVideoRowView 
 	
@@ -377,9 +406,9 @@ class NewVideoController: UIViewController, SearchProtocol  {
 			self.thumbnailSeparatorView,
 			self.titleDescContainerView)
 
-		self.thumbnailConteinerView.addSubview(self.thumbnailView)
-		self.previewVideoRowView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: self.thumbnailView)		
-		self.previewVideoRowView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.thumbnailView)		
+		self.thumbnailConteinerView.addSubview(self.cameraView)
+		self.previewVideoRowView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: self.cameraView)		
+		self.previewVideoRowView.addConstraintsWithFormat("V:|-15-[v0]-15-|", views: self.cameraView)		
 
 		self.titleDescContainerView.addSubview(self.titleTextField)
 		self.titleDescContainerView.addSubview(self.titleDescSeparatorView)		
@@ -398,14 +427,34 @@ class NewVideoController: UIViewController, SearchProtocol  {
 		self.uploadButton.isHidden = true
 
 		//self.videoContainerView.isHidden = true
-		self.saveButton.isHidden = true
+		//self.saveButton.isHidden = true
 		//self.inputVideoRowView.isHidden = true
-		//self.previewVideoRowView.isHidden = true	
+		//self.previewVideoRowView.isHidden = true
 
 		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
-		//self.handleSearch()
+		//self.handleSearch()*/ 
+        
+        //Looks for single or multiple taps.
+        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
 
+    }
+    
+    func backButtonPressed(sender: UIBarButtonItem)
+    {
+        //self.delegateFeed.uploadData()
+        //self.navigationController?.popViewController(animated: true)
+        self.navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func dismissKeyboard()
+    {
+        self.view.endEditing(true)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        
+        self.scrollView.contentSize.width = self.view.frame.width
     }
     
     override func textFieldDidEndEditing(_ textField: UITextField) {
@@ -596,7 +645,7 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
     	self.getVideoDataUser(videoId: "C7i4SoN58Sk", completionHandler: { ( restul:Bool ) -> () in   		
 
-    		self.thumbnailView.image = self.thumbnailImage
+    		self.cameraView.image = self.thumbnailImage
 			self.titleTextField.text = self.videoTitle			
 
 			self.getVideoDescription(videoId: "C7i4SoN58Sk", completionHandlerDesc: { ( restul:Bool ) -> () in
@@ -679,60 +728,8 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
     	self.titleTextField.text = title
     	self.descriptionTextView.text = description
-    	self.thumbnailView.image = image    	
+    	self.cameraView.image = image    	
     }   
 
 }
 
-
-
-/*class SearchView: UIView, UISearchBarDelegate 
-{
-
-
-	lazy var searchController: UISearchController = {
-        let searchBar = UISearchController()
-        //searchBar.translatesAutoresizingMaskIntoConstraints = false        
-        return searchBar
-    }()
-
-
-	let myLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        //label.text = "00:00"
-        //label.textColor = .white
-        //label.font = UIFont.boldSystemFont(ofSize: 13)
-        return label
-    }() 
-
-    func setViews()
-    {
-
-		        // Initialize and set up the search controller
-		self.searchController = UISearchController(searchResultsController: nil)
-		//self.searchController.searchResultsUpdater = self as! UISearchResultsUpdating
-		self.searchController.dimsBackgroundDuringPresentation = false // Optional
-		self.searchController.searchBar.delegate = self
-
-		// Add the search bar as a subview of the UIView you added above the table view
-		self.addSubview(self.searchController.searchBar)
-		// Call sizeToFit() on the search bar so it fits nicely in the UIView
-		self.searchController.searchBar.sizeToFit()
-		// For some reason, the search bar will extend outside the view to the left after calling sizeToFit. This next line corrects this.
-		self.searchController.searchBar.frame.size.width = self.frame.size.width
-
-    }   
-
-
-	override init(frame: CGRect) {        
-        super.init(frame: frame)
-
-        self.backgroundColor = UIColor.white
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-}*/

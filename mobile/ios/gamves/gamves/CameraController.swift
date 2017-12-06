@@ -9,6 +9,7 @@
 import AVFoundation
 import UIKit
 
+@available(iOS 10.0, *)
 class CameraController: NSObject {
     var captureSession: AVCaptureSession?
     
@@ -24,18 +25,27 @@ class CameraController: NSObject {
     
     var previewLayer: AVCaptureVideoPreviewLayer?
     
+    var session:AVCaptureDeviceDiscoverySession?
+    var settings:AVCapturePhotoSettings?
+    
     var flashMode = AVCaptureFlashMode.off
     var photoCaptureCompletionBlock: ((UIImage?, Error?) -> Void)?
 }
 
+@available(iOS 10.0, *)
 extension CameraController {
+    
     func prepare(completionHandler: @escaping (Error?) -> Void) {
         func createCaptureSession() {
             self.captureSession = AVCaptureSession()
         }
         
         func configureCaptureDevices() throws {
-            let session = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified)
+            if #available(iOS 10.0, *) {
+                session = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified)
+            } else {
+                // Fallback on earlier versions
+            }
             guard let cameras = (session?.devices.flatMap { $0 }), !cameras.isEmpty else { throw CameraControllerError.noCamerasAvailable }
             
             for camera in cameras {
@@ -175,16 +185,22 @@ extension CameraController {
     func captureImage(completion: @escaping (UIImage?, Error?) -> Void) {
         guard let captureSession = captureSession, captureSession.isRunning else { completion(nil, CameraControllerError.captureSessionIsMissing); return }
         
-        let settings = AVCapturePhotoSettings()
-        settings.flashMode = self.flashMode
+        if #available(iOS 10.0, *) {
+            settings = AVCapturePhotoSettings()
+        } else {
+            // Fallback on earlier versions
+        }
+        settings?.flashMode = self.flashMode
         
-        self.photoOutput?.capturePhoto(with: settings, delegate: self)
+        self.photoOutput?.capturePhoto(with: settings!, delegate: self)
         self.photoCaptureCompletionBlock = completion
     }
 
 }
 
+@available(iOS 10.0, *)
 extension CameraController: AVCapturePhotoCaptureDelegate {
+    @available(iOS 10.0, *)
     public func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?,
                         resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Swift.Error?) {
         if let error = error { self.photoCaptureCompletionBlock?(nil, error) }
@@ -201,6 +217,7 @@ extension CameraController: AVCapturePhotoCaptureDelegate {
     }
 }
 
+@available(iOS 10.0, *)
 extension CameraController {
     enum CameraControllerError: Swift.Error {
         case captureSessionAlreadyRunning
