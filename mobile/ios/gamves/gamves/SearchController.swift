@@ -103,6 +103,8 @@ class SearchController: UIViewController,
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.cellId)
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
+
+        !self.searchBar.becomeFirstResponder()
     
     }
     

@@ -30,7 +30,17 @@ class NewVideoController: UIViewController, SearchProtocol  {
         return v
     }()
 
-	
+	//-- TITTLE
+    
+    let welcome: PaddingLabel = {
+        let label = PaddingLabel()
+        label.text = "Select category, fanpage and type"
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        return label
+    }()
+    
     //-- CATEGORY     
 
     let categoriesContainerView: UIView = {
@@ -76,48 +86,60 @@ class NewVideoController: UIViewController, SearchProtocol  {
         tf.translatesAutoresizingMaskIntoConstraints = false        
         return tf
     }()
-
-    //-- VIDEO
-
-    let videoContainerView: UIView = {
+    
+    let categorySeparatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 5
-        view.layer.masksToBounds = true
         return view
     }()
 
-    let inputVideoRowView: UIView = {
+    //-- VIDEO
+
+    let youtubeVideoRowView: UIView = {
+        let view = UIView()        
+        view.translatesAutoresizingMaskIntoConstraints = false        
+        view.layer.cornerRadius = 5        
+        view.layer.masksToBounds = true
+        view.backgroundColor = UIColor.white
+        return view
+    }()   
+
+    let localVideoRowView: UIView = {
         let view = UIView()        
         view.translatesAutoresizingMaskIntoConstraints = false        
         view.layer.masksToBounds = true
+        view.layer.cornerRadius = 5
+        view.backgroundColor = UIColor.gamvesColor
         return view
-    }()   
+    }() 
 
      let previewVideoRowView: UIView = {
         let view = UIView()        
         view.translatesAutoresizingMaskIntoConstraints = false        
         view.layer.masksToBounds = true
+        view.layer.cornerRadius = 5   
+        return view
+    }()
+    
+    let previewVideoSeparatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    //-- inputVideoRowView youtube
+    //-- youtubeVideoRowView youtube
 
 	let youtubeUrlTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Youtube url"
         tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.layer.cornerRadius = 5
+        tf.backgroundColor = UIColor.white
         //tf.text = "o7Kd6VVp6jE"        
         return tf
-    }()
-
-    let inputVideoSeparatorView: UIView = {
-        let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()  
+    }()     
 
     lazy var searchButton: UIButton = {
         let button = UIButton(type: .system)
@@ -127,10 +149,18 @@ class NewVideoController: UIViewController, SearchProtocol  {
         let imageIcon = UIImage(named: "search_icon")    
         imageIcon?.maskWithColor(color: UIColor.white)
         button.setImage(imageIcon, for: .normal)
+        button.layer.cornerRadius = 5
         return button
     }()
 
-    //-- inputVideoRowView local
+    let youtubeVideoSeparatorView: UIView = {
+        let view = UIView()        
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }() 
+
+    //-- localVideoRowView local
 
     lazy var recordButton: UIButton = {
         let button = UIButton(type: .system)
@@ -144,17 +174,23 @@ class NewVideoController: UIViewController, SearchProtocol  {
         return button
     }()
 
-
 	lazy var uploadButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor        
-        button.setTitle("Upload video", for: UIControlState())
+        button.setTitle("Load video", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
         button.addTarget(self, action: #selector(handleUpload), for: .touchUpInside)       
         button.layer.cornerRadius = 5 
         return button
+    }()
+
+    let localVideoSeparatorView: UIView = {
+        let view = UIView()        
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
 	//-- previewVideoRowView 
@@ -195,7 +231,8 @@ class NewVideoController: UIViewController, SearchProtocol  {
     let titleTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Title"
-        tf.translatesAutoresizingMaskIntoConstraints = false        
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.backgroundColor = UIColor.white
         return tf
     }()
 
@@ -269,44 +306,66 @@ class NewVideoController: UIViewController, SearchProtocol  {
         navigationItem.leftBarButtonItem = arrowButton
 
 		self.view.addSubview(self.scrollView)
+        
+        //-- categoriesContainerView
+        
+        self.categoryTypeTextField.addTarget(self, action: #selector(self.categoryFieldDidChange(_:)), for: .editingChanged)
 
 		self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView) 
 		self.view.addConstraintsWithFormat("V:|[v0]|", views: self.scrollView)
     
         self.scrollView.contentSize.width = self.view.frame.width
 
+        self.scrollView.addSubview(self.welcome)
 		self.scrollView.addSubview(self.categoriesContainerView)
+        self.scrollView.addSubview(self.categorySeparatorView)        
+        self.scrollView.addSubview(self.localVideoRowView)
+        self.scrollView.addSubview(self.localVideoSeparatorView)
+        self.scrollView.addSubview(self.youtubeVideoRowView)
+        self.scrollView.addSubview(self.youtubeVideoSeparatorView)
+        self.scrollView.addSubview(self.previewVideoRowView)
+        self.scrollView.addSubview(self.previewVideoSeparatorView)
+        self.scrollView.addSubview(self.saveButton)
+        self.scrollView.addSubview(self.bottomView)
         
         let cwidth:CGFloat = self.view.frame.width
-        let cpadd:CGFloat = 12
-        let csize:CGFloat = cwidth - (cpadd*2)
+        let cp:CGFloat = 12
+        let cs:CGFloat = cwidth - (cp*2)
         
         print(cwidth)
-        print(cpadd)
-        print(csize)
+        print(cp)
+        print(cs)
         
-        self.metricsNew["cpadd"]    =  cpadd
-        self.metricsNew["csize"]    =  csize
-        
-        self.scrollView.addConstraintsWithFormat("H:|-cpadd-[v0(csize)]-cpadd-|", views: self.categoriesContainerView, metrics: metricsNew)
-        
-        self.scrollView.addSubview(self.videoContainerView)
-		self.scrollView.addSubview(self.saveButton)
-		self.scrollView.addSubview(self.bottomView)
-        
-        self.scrollView.addConstraintsWithFormat("H:|-cpadd-[v0(csize)]-cpadd-|", views: self.videoContainerView, metrics: metricsNew)
-        self.scrollView.addConstraintsWithFormat("H:|-cpadd-[v0(csize)]-cpadd-|", views: self.saveButton, metrics: metricsNew)
-        self.scrollView.addConstraintsWithFormat("H:|-cpadd-[v0(csize)]-cpadd-|", views: self.bottomView, metrics: metricsNew)
+        self.metricsNew["cp"]    =  cp
+        self.metricsNew["cs"]    =  cs
 
-		self.scrollView.addConstraintsWithFormat(
-            "V:|-cpadd-[v0(124)]-cpadd-[v1(160)]-cpadd-[v2(40)][v3]|", views:
-            self.categoriesContainerView, 
-            self.videoContainerView, 
-            self.saveButton, 
+        self.scrollView.addConstraintsWithFormat(
+            "V:|[v0(40)][v1(124)][v2(cp)][v3(40)][v4(cp)][v5(40)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|", views:
+            self.welcome,
+            self.categoriesContainerView,
+            self.categorySeparatorView,            
+            self.localVideoRowView,
+            self.localVideoSeparatorView,
+            self.youtubeVideoRowView,
+            self.youtubeVideoSeparatorView,
+            self.previewVideoRowView,
+            self.previewVideoSeparatorView,
+            self.saveButton,
             self.bottomView,
             metrics: metricsNew)
-
-        //-- categoriesContainerView
+        
+        self.scrollView.addConstraintsWithFormat("H:|[v0(cs)]|", views: self.welcome, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.categoriesContainerView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.categorySeparatorView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.youtubeVideoRowView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.youtubeVideoSeparatorView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.localVideoRowView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.localVideoSeparatorView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.previewVideoRowView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.saveButton, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.bottomView, metrics: metricsNew)
+        
+	   //-- categoriesContainerView
 
         self.categoryTypeTextField.addTarget(self, action: #selector(self.categoryFieldDidChange(_:)), for: .editingChanged)
 
@@ -330,7 +389,9 @@ class NewVideoController: UIViewController, SearchProtocol  {
             self.fanpageTextField,
             self.fanpageSeparatorView,            
             self.typeTextField) 
-        
+
+        self.categoryTypeTextField.becomeFirstResponder()
+
         var catArray = [String]()
         for cats in Global.categories_gamves {	
         	catArray.append(cats.name)
@@ -350,46 +411,32 @@ class NewVideoController: UIViewController, SearchProtocol  {
         self.fanpageDownPicker = DownPicker(textField: fanpageTextField)
 
         self.fanpageDownPicker.isEnabled = false
-        self.typeDownPicker.isEnabled = false
+        self.typeDownPicker.isEnabled = false        
 
-        //-- videoContainerView        
+		//-- youtubeVideoRowView youtube
 
-        self.videoContainerView.addSubview(self.inputVideoRowView)
-		self.videoContainerView.addSubview(self.inputVideoSeparatorView)        
-		self.videoContainerView.addSubview(self.previewVideoRowView)
+		self.youtubeVideoRowView.addSubview(self.youtubeUrlTextField)
+		self.youtubeVideoRowView.addSubview(self.searchButton)		
 
-		self.videoContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.inputVideoRowView)		
-		self.videoContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.inputVideoSeparatorView)		
-		self.videoContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.previewVideoRowView)
-		
-		self.videoContainerView.addConstraintsWithFormat("V:|[v0(40)][v1(2)][v2]|", views: 
-			self.inputVideoRowView,
-			self.inputVideoSeparatorView,
-			self.previewVideoRowView)		
+		self.youtubeVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.youtubeUrlTextField)		
+		self.youtubeVideoRowView.addConstraintsWithFormat("V:|[v0(40)]|", views: self.searchButton)	
 
-		//-- inputVideoRowView youtube
-
-		self.inputVideoRowView.addSubview(self.youtubeUrlTextField)
-		self.inputVideoRowView.addSubview(self.searchButton)		
-
-		self.inputVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.youtubeUrlTextField)		
-		self.inputVideoRowView.addConstraintsWithFormat("V:|[v0(40)]|", views: self.searchButton)	
-
-		self.inputVideoRowView.addConstraintsWithFormat("H:|[v0][v1(40)]|", views: 
+		self.youtubeVideoRowView.addConstraintsWithFormat("H:|[v0][v1(40)]|", views: 
 			self.youtubeUrlTextField,
 			self.searchButton)		
 
-		//-- inputVideoRowView local
+		//-- youtubeVideoRowView local
 
-		self.inputVideoRowView.addSubview(self.recordButton)
-		self.inputVideoRowView.addSubview(self.uploadButton)		
+		self.localVideoRowView.addSubview(self.recordButton)
+		self.localVideoRowView.addSubview(self.uploadButton)		
 
-		self.inputVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.recordButton)		
-		self.inputVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.uploadButton)	
+		self.localVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.recordButton)		
+		self.localVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.uploadButton)	
 
-		self.inputVideoRowView.addConstraintsWithFormat("H:|[v0][v1]|", views: 
+		self.localVideoRowView.addConstraintsWithFormat("H:|[v0(150)]-cp-[v1]|", views: 
 			self.recordButton,
-			self.uploadButton)
+			self.uploadButton,
+			metrics: metricsNew)	
 
 		//-- previewVideoRowView 
 	
@@ -423,13 +470,11 @@ class NewVideoController: UIViewController, SearchProtocol  {
 			self.titleDescSeparatorView,
 			self.descriptionTextView)	
 		
-		self.recordButton.isHidden = true
-		self.uploadButton.isHidden = true
+		//self.recordButton.isHidden = true
+		//self.uploadButton.isHidden = true
 
-		//self.videoContainerView.isHidden = true
-		//self.saveButton.isHidden = true
-		//self.inputVideoRowView.isHidden = true
-		//self.previewVideoRowView.isHidden = true
+		//self.youtubeUrlTextField.isHidden = true
+		//self.searchButton.isHidden = true
 
 		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
@@ -499,7 +544,7 @@ class NewVideoController: UIViewController, SearchProtocol  {
         
         self.typeDownPicker.isEnabled = true
 
-        self.typeDownPicker.becomeFirstResponder()
+        self.typeTextField.becomeFirstResponder()
 
     }
 
@@ -507,29 +552,40 @@ class NewVideoController: UIViewController, SearchProtocol  {
     func selectedType(picker: DownPicker)
     {
 
-		self.videoContainerView.isHidden = false
-		self.inputVideoRowView.isHidden = false
+		self.titleDescContainerView.isHidden = false
+		self.youtubeVideoRowView.isHidden = false
 		self.previewVideoRowView.isHidden = false
 
     	let value = picker.getTextField().text
 
     	if value == "Youtube"
     	{
+            
+			//self.youtubeUrlTextField.alpha = 1
+			//self.searchButton.alpha = 1
+            //self.youtubeVideoRowView.alpha = 1
 
-			self.youtubeUrlTextField.isHidden = false
-			self.searchButton.isHidden = false
-
-			self.recordButton.isHidden = true
-			self.uploadButton.isHidden = true
+			//self.recordButton.alpha = 0.25
+			//self.uploadButton.alpha = 0.25
+            
+            self.youtubeUrlTextField.isUserInteractionEnabled = true
+            self.searchButton.isUserInteractionEnabled = true
+            
+            self.recordButton.isUserInteractionEnabled = false
+            self.uploadButton.isUserInteractionEnabled = false
+            
+            
+            
 
     	} else if value == "Local"
     	{
 
-			self.recordButton.isHidden = false
-			self.uploadButton.isHidden = false
+            self.recordButton.isUserInteractionEnabled = true
+            self.uploadButton.isUserInteractionEnabled = true
 
-			self.youtubeUrlTextField.isHidden = true
-			self.searchButton.isHidden = true
+            self.youtubeUrlTextField.isUserInteractionEnabled = false
+            self.searchButton.isUserInteractionEnabled = false
+            
     	}
   
     }
@@ -635,7 +691,6 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
 	}
 
-
 	func handleSearch()
     {
 
@@ -691,9 +746,6 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
     }
 
-
-    
-    
     func openSerarch()
     {
         //searchController.isGroup = group
@@ -705,17 +757,17 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
 	func handleSave()
     {
-
+        print("hanhandleSavedleRecord")
     }
    
    	func handleRecord()
     {
-
+        print("handleRecord")
     }
 
     func handleUpload()
     {
-
+        print("handleUpload")
     }
 
 
