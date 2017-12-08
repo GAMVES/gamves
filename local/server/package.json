@@ -9,19 +9,16 @@
     },
     "license": "MIT",
     "dependencies": {
-        "material-ui": "^0.20.0",
         "parse": "~1.8.0",
         "parse-server": "~2.2.2",
         "s3": "^4.4.0",
-        "underscore": "^1.8.3"
+        "underscore": "^1.8.3",
+        "youtube-dl": "^1.12.2"
     },
     "scripts": {
         "start": "node index.js"
     },
     "engines": {
         "node": ">=4.3"
-    },
-    "devDependencies": {
-        "youtube-dl": "^1.12.2"
     }
 }
