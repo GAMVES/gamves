@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="Back4App Inc" name="author">
+  <title>Gamves Backend</title>
+  
+  <script src="../dist/jquery-1.11.1.min.js"></script>  
+  <script src="https://npmcdn.com/parse@1.10.0/dist/parse.min.js"></script>
+  <link rel="stylesheet" href="../dist/bootstrap.min.css" type="text/css" media="all">
+  <link href="../dist/jquery.bootgrid.css" rel="stylesheet" />
+  <script src="../dist/jquery-1.11.1.min.js"></script>
+  <script src="../dist/bootstrap.min.js"></script>
+  <script src="../dist/jquery.bootgrid.min.js"></script>
+
+  <script src="../dist/jquery.bootgrid.min.js"></script>        
+  
+  <script type="text/javascript" src="../js/fanpages.js"></script>
+  <script type="text/javascript" src="../js/categories.js"></script>              
+  
+
+</head>
+
+<body>
+    <header>      
+    </header>   
+       
+    <div id="categories"></div>       
+    <div id="fanpages" style="display: none;"></div>   
+    <div id="videos" style="display: none;"></div>   
+   
+</body>
+</html>
+
+<script type="text/javascript">
+
+  $( document ).ready(function() {
+
+      $("#categories").load("categories.html");
+      //$("#fanpages").load("fanpages.html");
+
+  });
+
+</script>
