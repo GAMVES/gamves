@@ -13,6 +13,11 @@ import NVActivityIndicatorView
 import SwiftyJSON
 import UITextView_Placeholder
 
+protocol VideoProtocol {
+    func selectedVideo(videoUrl: String, title: String, description : String, image : UIImage)
+}
+
+
 protocol SearchProtocol {
     func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
 }
@@ -162,29 +167,17 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
     //-- localVideoRowView local
 
-    lazy var recordButton: UIButton = {
+    lazy var videoButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor        
         button.setTitle("Record video", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
-        button.addTarget(self, action: #selector(handleRecord), for: .touchUpInside)       
+        button.addTarget(self, action: #selector(handleVideo), for: .touchUpInside)       
         button.layer.cornerRadius = 5 
         return button
-    }()
-
-	lazy var uploadButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor        
-        button.setTitle("Load video", for: UIControlState())
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor.white, for: UIControlState())
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
-        button.addTarget(self, action: #selector(handleUpload), for: .touchUpInside)       
-        button.layer.cornerRadius = 5 
-        return button
-    }()
+    }()	
 
     let localVideoSeparatorView: UIView = {
         let view = UIView()        
@@ -202,15 +195,16 @@ class NewVideoController: UIViewController, SearchProtocol  {
         return view
     }()
 
-    lazy var cameraView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "camera")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit        
-        imageView.isUserInteractionEnabled = true          
-        //imageView.backgroundColor = UIColor.gray
-        imageView.tag = 0           
-        return imageView
+    lazy var cameraButton: UIButton = {
+        let cameraButton = UIButton()
+        let image = UIImage(named: "camera")
+        cameraButton.setImage(image, for: .normal)
+        cameraButton.translatesAutoresizingMaskIntoConstraints = false
+        cameraButton.contentMode = .scaleAspectFit
+        cameraButton.isUserInteractionEnabled = true
+        cameraButton.addTarget(self, action: #selector(handleCameraImage), for: .touchUpInside)
+        cameraButton.tag = 0
+        return cameraButton
     }()
 
     let thumbnailSeparatorView: UIView = {
@@ -427,16 +421,12 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
 		//-- youtubeVideoRowView local
 
-		self.localVideoRowView.addSubview(self.recordButton)
-		self.localVideoRowView.addSubview(self.uploadButton)		
+		self.localVideoRowView.addSubview(self.videoButton)
+				
 
-		self.localVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.recordButton)		
-		self.localVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.uploadButton)	
-
-		self.localVideoRowView.addConstraintsWithFormat("H:|[v0(150)]-cp-[v1]|", views: 
-			self.recordButton,
-			self.uploadButton,
-			metrics: metricsNew)	
+		self.localVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.videoButton)
+        self.localVideoRowView.addConstraintsWithFormat("H:|[v0]|", views:
+			self.videoButton)
 
 		//-- previewVideoRowView 
 	
@@ -453,9 +443,9 @@ class NewVideoController: UIViewController, SearchProtocol  {
 			self.thumbnailSeparatorView,
 			self.titleDescContainerView)
 
-		self.thumbnailConteinerView.addSubview(self.cameraView)
-		self.previewVideoRowView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: self.cameraView)		
-		self.previewVideoRowView.addConstraintsWithFormat("V:|-15-[v0]-15-|", views: self.cameraView)		
+		self.thumbnailConteinerView.addSubview(self.cameraButton)
+		self.previewVideoRowView.addConstraintsWithFormat("H:|[v0]|", views: self.cameraButton)
+		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.cameraButton)
 
 		self.titleDescContainerView.addSubview(self.titleTextField)
 		self.titleDescContainerView.addSubview(self.titleDescSeparatorView)		
@@ -470,7 +460,7 @@ class NewVideoController: UIViewController, SearchProtocol  {
 			self.titleDescSeparatorView,
 			self.descriptionTextView)	
 		
-		//self.recordButton.isHidden = true
+		//self.videoButton.isHidden = true
 		//self.uploadButton.isHidden = true
 
 		//self.youtubeUrlTextField.isHidden = true
@@ -482,6 +472,7 @@ class NewVideoController: UIViewController, SearchProtocol  {
         
         //Looks for single or multiple taps.
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        
 
     }
     
@@ -565,23 +556,19 @@ class NewVideoController: UIViewController, SearchProtocol  {
 			//self.searchButton.alpha = 1
             //self.youtubeVideoRowView.alpha = 1
 
-			//self.recordButton.alpha = 0.25
+			//self.videoButton.alpha = 0.25
 			//self.uploadButton.alpha = 0.25
             
             self.youtubeUrlTextField.isUserInteractionEnabled = true
             self.searchButton.isUserInteractionEnabled = true
             
-            self.recordButton.isUserInteractionEnabled = false
-            self.uploadButton.isUserInteractionEnabled = false
-            
-            
+            self.videoButton.isUserInteractionEnabled = false
             
 
     	} else if value == "Local"
     	{
 
-            self.recordButton.isUserInteractionEnabled = true
-            self.uploadButton.isUserInteractionEnabled = true
+            self.videoButton.isUserInteractionEnabled = true
 
             self.youtubeUrlTextField.isUserInteractionEnabled = false
             self.searchButton.isUserInteractionEnabled = false
@@ -760,16 +747,19 @@ class NewVideoController: UIViewController, SearchProtocol  {
         print("hanhandleSavedleRecord")
     }
    
-   	func handleRecord()
+    func handleCameraImage()
     {
-        print("handleRecord")
+        print("handleCameraImage")
+        let mediaPickerController = MediaPickerController(type: MediaPickerControllerType.imageOnly, presentingViewController: self )
+        mediaPickerController.show()
     }
 
-    func handleUpload()
+   	func handleVideo()
     {
         print("handleUpload")
+        let mediaPickerController = MediaPickerController(type: MediaPickerControllerType.videoOnly, presentingViewController: self )
+        mediaPickerController.show()
     }
-
 
     func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
     {
@@ -780,7 +770,7 @@ class NewVideoController: UIViewController, SearchProtocol  {
 
     	self.titleTextField.text = title
     	self.descriptionTextView.text = description
-    	self.cameraView.image = image    	
+    	self.cameraButton.setImage(image, for: .normal)
     }   
 
 }

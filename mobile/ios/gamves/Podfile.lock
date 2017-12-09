@@ -1,5 +1,8 @@
 PODS:
   - Alamofire (4.5.0)
+  - AWSCore (2.6.1)
+  - AWSS3 (2.6.1):
+    - AWSCore (= 2.6.1)
   - Bolts-Swift (1.3.0)
   - Bolts/Tasks (1.8.4)
   - DeviceKit (1.0.1)
@@ -22,6 +25,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - AWSS3
   - DeviceKit
   - DownPicker
   - Floaty (from `https://github.com/kciter/Floaty.git`, tag `4.0.0`)
@@ -44,6 +48,8 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  AWSCore: e7d37fa0715def975acf1b0d75556576780088b8
+  AWSS3: 2e18ede28199a5530955dc1a65434da43dcc4d2c
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
   Bolts-Swift: fa98d1b59fc1acea9b21a21306dcdca1c85e3737
   DeviceKit: 461e525867e48e725f41699c1cab3100df1258ff
@@ -58,6 +64,6 @@ SPEC CHECKSUMS:
   UITextView+Placeholder: 77680995fcdd07c3f52ec92fe1150874a2ac89ff
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: d22f090be4da434886761c25f98f25af63bb4c2e
+PODFILE CHECKSUM: 55018f973272583b9fe1eda167e7ac32cf239a2a
 
 COCOAPODS: 1.2.1.beta.1
