@@ -26,17 +26,15 @@
 
     <header>      
     </header>
-
       
-      <div class="container">
+    <div class="container">
     
-       <h2>Gamves Categories</h2>
-    
-    
-    <table id="gridStudents" class="table table-condensed table-hover table-striped" width="100%" cellspacing="0" data-toggle="bootgrid">
+    <h2>Gamves Categories</h2>    
+
+    <table id="gridCategory" class="table table-condensed table-hover table-striped">
       <thead>
         <tr>
-          <th data-column-id="id" data-type="numeric" data-identifier="true" width="10%">Id</th>
+          <th data-column-id="id" data-type="numeric" data-identifier="true" data-width="10%">Id</th>
           <th data-column-id="objectId">ObjectId</th>
           <th data-column-id="thumbnail" data-formatter="thumbnail">Thumbnail</th>
           <th data-column-id="order">Order</th>
@@ -46,51 +44,49 @@
         </tr>
       </thead>
     </table>
-
+    
     </div>
 
 
     <div id="edit_model" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog" >
+        <div class="modal-content">            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Edit Employee</h4>
+                <h4 class="modal-title">Edit Category</h4>
             </div>
             <div class="modal-body">
-                <form method="post" id="frm_edit">
-        <input type="hidden" value="edit" name="action" id="action">
-        <input type="hidden" value="0" name="edit_id" id="edit_id">
+                <form method="post" id="frm_edit">                  
                   <div class="form-group">
-                    <label for="name" class="control-label">Name:</label>
-                    <input type="text" class="form-control" id="edit_name" name="edit_name"/>
+                    <label for="name" class="control-label">Thumbnail:</label>                    
+                    <div id="edit_thumbnail" height="50" width="50" />                    
+                    <input id="btn_thumb_image" type="file"></input>
                   </div>
                   <div class="form-group">
-                    <label for="salary" class="control-label">Salary:</label>
-                    <input type="text" class="form-control" id="edit_salary" name="edit_salary"/>
+                    <label for="name" class="control-label">Order:</label>
+                    <input type="text" class="form-control" id="edit_order" name="edit_order"/>
                   </div>
-          <div class="form-group">
-                    <label for="salary" class="control-label">Age:</label>
-                    <input type="text" class="form-control" id="edit_age" name="edit_age"/>
+                  <div class="form-group">
+                    <label for="salary" class="control-label">Description:</label>
+                    <input type="text" class="form-control" id="edit_description" name="edit_description"/>
                   </div>
-                
+                  <div class="form-group">
+                    <label for="name" class="control-label">BackImage:</label>
+                    <button id="btn_back_image" type="button" class="btn btn-xs btn-default command-edit"><span class="glyphicon glyphicon-camera"></span></button>
+                    <div id="edit_backimage" height="30" width="150"/>                    
+                  </div>                  
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" id="btn_edit" class="btn btn-primary">Save</button>
             </div>
-      </form>
+            </form>
         </div>
     </div>
   </div>
-  
 
-    
 </body>
-
 </html>
-
-
 
 <script type="text/javascript">
 
@@ -119,7 +115,7 @@
               {
 
                   item = {};
-                  item["id"] = i;
+                  item["id"] = i+1;
 
                   var objectId = categories[i].id;
                   dataJson.objectId = objectId;
@@ -129,7 +125,7 @@
                     var thumbnail = categories[i].get("thumbnail");
                     item["thumbnail"] = thumbnail._url;
                   } else {
-                    item["thumbnail"] = "https://cdn.zivame.com/media/mimages/new@2x.png";
+                    item["thumbnail"] = "https://dummyimage.com/60x60/286090/ffffff.png&text=NA";
                   }
 
                   var order = categories[i].get("order");
@@ -142,33 +138,39 @@
                     var backImage = categories[i].get("backImage");
                     item["backImage"] = backImage._url;
                   } else {
-                    item["backImage"] = "http://bit.ly/2iGtN0l";
+                    item["backImage"] = "https://dummyimage.com/150x60/286090/ffffff.png&text=Not+Available";
                   }
-
                   dataJson.push(item);
-
               }                          
 
-              var grid = $("#gridStudents").bootgrid({                  
+              var rowIds = [];
+
+              var grid = $("#gridCategory").bootgrid({                  
+                  templates: {
+                      header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button  type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Category </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                  }, 
                   caseSensitive: true,
                   selection: true,
                   multiSelect: true,                  
                   formatters: {              
                     "thumbnail": function (column, row) {
-                        return "<a href=\"#\"><img src=\"" + row.thumbnail + "\" height=\"30\" width=\"30\"/></a>";
+                        return "<img src=\"" + row.thumbnail + "\" height=\"30\" width=\"30\"/>";
                     },
                     "backImage": function (column, row) {
                         return "<img src=\"" + row.backImage + "\" height=\"30\" width=\"150\"/>";
                     },
                     "commands": function(column, row) {
-                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button> " + 
-                               "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>";
-                    }
-                  }
+                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>&nbsp;" + 
+                               "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;" + 
+                               "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\">Fanpages</button>";
+                    }                   
+                  }                  
               }).on("selected.rs.jquery.bootgrid", function(e, rows) {
-                  var rowIds = [];
+                  
+                  rowIds = [];
                   for (var i = 0; i < rows.length; i++)
                   {
+                      rowIds.push(rows[i].id);
                       rowIds.push(rows[i].id);
                   }
                   //alert("Select: " + rowIds.join(","));
@@ -186,26 +188,41 @@
                   
                   /* Executes after data is loaded and rendered */
                   grid.find(".command-edit").on("click", function(e) {
+                      
                       //alert("You pressed edit on row: " + $(this).data("row-id"));
                       var ele =$(this).parent();
                       var g_id = $(this).parent().siblings(':first').html();
                       var g_name = $(this).parent().siblings(':nth-of-type(2)').html();
+                      
                       console.log(g_id);
                       console.log(g_name);
 
                       //console.log(grid.data());//
-                    $('#edit_model').modal('show');
-                    if($(this).data("row-id") >0) {
-                            
-                        // collect the data
-                        $('#edit_id').val(ele.siblings(':first').html()); // in case we're changing the key
-                        $('#edit_name').val(ele.siblings(':nth-of-type(2)').html());
-                        $('#edit_salary').val(ele.siblings(':nth-of-type(3)').html());
-                        $('#edit_age').val(ele.siblings(':nth-of-type(4)').html());
+                      $('#edit_model').modal('show');
 
-                    } else {
+                      if ($(this).data("row-id") >0) {
+                            
+                        var f = ele.siblings(':first').html();                        
+                        var a1 = ele.siblings(':nth-of-type(1)').html();
+                        var a2 = ele.siblings(':nth-of-type(2)').html();
+                        var a3 = ele.siblings(':nth-of-type(3)');
+                        var a4 = ele.siblings(':nth-of-type(4)').html();
+                        var a5 = ele.siblings(':nth-of-type(5)').html();
+                        var a6 = ele.siblings(':nth-of-type(6)').html();
+                        var a7 = ele.siblings(':nth-of-type(7)').html();
+
+                        // collect the data
+                        //$('#edit_id').val(ele.siblings(':first').html());                                                
+                        $("#edit_thumbnail").append(a4);
+                        $('#edit_order').val(a5);
+                        $('#edit_description').val(a6);
+                        $('#edit_backimage').append(a7);
+                        
+
+                      } else {
                          alert('Now row selected! First select row, then click edit button');
-                    }
+                      }
+
                
                   }).end().find(".command-delete").on("click", function(e) {
 
@@ -227,14 +244,24 @@
         }
     });
 
-        $( "#btn_add" ).click(function() {
-          ajaxAction('add');
-        });
-        $( "#btn_edit" ).click(function() {
-          ajaxAction('edit');
-        });
+      $( "#btn_thumb_image" ).click(function() {
+          alert("");
+      });
+
+      $( "#btn_back_image" ).click(function() {
+        alert("");
+      });
+
+      $( "#btn_edit" ).click(function() {
+        alert("");
+      });
 
 
+      function removeAssetsFromPopup()
+      {
+
+
+      }
 
   });
 
