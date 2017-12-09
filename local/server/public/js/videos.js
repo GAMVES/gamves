@@ -1,108 +1,92 @@
 
-document.addEventListener("LoadFanpage", function(event){
+document.addEventListener("LoadVideo", function(event){
 
-      var catId = event.detail;
-      
-      var selectedItem = [];   
-      var selected = -1; 
+      var fanpage = event.detail;
 
-      var queryCategory = new Parse.Query("Categories");             
-      queryCategory.equalTo("objectId", catId);
-      queryCategory.first({
-          success: function (category) {
+      var queryFanpage = new Parse.Query("Fanpage");             
+      queryFanpage.equalTo("objectId", fanpage);
+      queryFanpage.first({
+          success: function (fanpage) {
               
-              if (category) {
-                    searchFanpage(category)            
+              if (fanpage) {                    
+                    searchVideo(fanpage)            
               }
           }
       });
       
-      function searchFanpage(category)
+      function searchVideo(fanpage)
       {
-            var queryFanpage = new Parse.Query("Fanpage");             
-            queryFanpage.equalTo("category", category);
-            queryFanpage.find({
-                success: function (fanpages) {
+            //result.relation('videos').query().each(function(videos) {
 
-                    if (fanpages) {                
+            var videosRelation = fanpage.relation('videos').query();
+            videosRelation.find({
+                success: function (videos) {                                   
 
-                      var clength = fanpages.length;
+                    if (videos) {                
+
+                      var clength = videos.length;
                       var dataJson = [];
 
                       for (var i = 0; i < clength; ++i) 
                       {
                           item = {};
                           item["id"] = i+1;
-                          var objectId = fanpages[i].id;
+                          var objectId = videos[i].id;
                           dataJson.objectId = objectId;
                           item["objectId"] = objectId;                  
                           
-                          if (fanpages[i].get("pageIcon") != undefined){                
-                            var icon = fanpages[i].get("pageIcon");
-                            item["icon"] = icon;
+                          if (videos[i].get("thumbnailUrl") != undefined){                
+                            var thumbnail = videos[i].get("thumbnailUrl");
+                            item["thumbnail"] = thumbnail;
                           } else {
-                            item["icon"] = "https://dummyimage.com/60x60/286090/ffffff.png&text=NA";
+                            item["thumbnail"] = "https://dummyimage.com/60x60/286090/ffffff.png&text=NA";
                           }
-
                           
-                          var name = fanpages[i].get("pageName");
-                          item["name"] = name;
-                          var about = fanpages[i].get("pageAbout");
-                          item["about"] = about;
-                          if (fanpages[i].get("pageCover") != undefined){
-                            var cover = fanpages[i].get("pageCover");
-                            item["cover"] = cover;
+                          var title = videos[i].get("title");
+                          item["title"] = title;
+
+                          var description = videos[i].get("description");
+                          item["description"] = description;
+
+                          if (videos[i].get("source") != undefined){
+                            var source = videos[i].get("source");
+                            item["source"] = source;
                           } else {
-                            item["cover"] = "https://dummyimage.com/150x60/286090/ffffff.png&text=Not+Available";
+                            item["source"] = "https://dummyimage.com/150x60/286090/ffffff.png&text=Not+Available";
                           }
                           dataJson.push(item);
                       }                          
 
                       var rowIds = [];
-                      var grid = $("#gridFanpage").bootgrid({                  
+                      var grid = $("#gridVideos").bootgrid({                  
                           templates: {
-                              header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button  type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Fanpage </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                              header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button  type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New video </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
                           }, 
                           caseSensitive: true,
                           selection: true,
                           multiSelect: true,                  
                           formatters: {              
-                            "icon": function (column, row) {
-                                return "<img src=\"" + row.icon + "\" height=\"30\" width=\"30\"/>";
+                            "thumbnail": function (column, row) {
+                                return "<img src=\"" + row.thumbnail + "\" height=\"30\" width=\"30\"/>";
                             },
-                            "cover": function (column, row) {
-                                return "<img src=\"" + row.cover + "\" height=\"30\" width=\"150\"/>";
+                            "source": function (column, row) {
+                                return "<video src=\"" + row.source + "\" height=\"60\" width=\"150\" type=\"video/mp4\"/>";
                             },
                             "commands": function(column, row) {
                                 return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>&nbsp;" + 
                                        "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;";
                                        
                             }                   
-                          }               
-
+                          }                  
                       }).on("selected.rs.jquery.bootgrid", function(e, rows) {
 
-                          if ( selectedItem.length > 0) {                       
-                               $("#gridFanpage").bootgrid("deselect", [parseInt(selected)]);                                              
-                           }
-
-                          var countSelected=0;
-                          var rowIds = [];
-                          var fanpageId;
+                          rowIds = [];
                           for (var i = 0; i < rows.length; i++)
-                          {                      
-                              rowIds.push(rows[i].id); 
-                              fanpageId = rows[i].objectId;                               
-                          }              
-
-                          selected = rowIds.join(",");
-                          selectedItem.push(selected);   
-                                     
-                          var event = new CustomEvent("LoadVideo", { detail: fanpageId });
-                          document.dispatchEvent(event);
-                          
+                          {
+                              rowIds.push(rows[i].id);
+                              rowIds.push(rows[i].id);
+                          }
                           //alert("Select: " + rowIds.join(","));
-
                       }).on("deselected.rs.jquery.bootgrid", function(e, rows)
                       {
                           var rowIds = [];
@@ -124,7 +108,7 @@ document.addEventListener("LoadFanpage", function(event){
                               console.log(g_name);
 
                               //console.log(grid.data());//
-                              $('#edit_model_fanpage').modal('show');
+                              $('#edit_model_video').modal('show');
 
                               if ($(this).data("row-id") >0) {
 
@@ -139,20 +123,18 @@ document.addEventListener("LoadFanpage", function(event){
 
                                 // collect the data
                                 //$('#edit_id').val(ele.siblings(':first').html());                                                
-                                $("#edit_icon").append(a4);
-                                $('#edit_name').val(a5);
-                                $('#edit_about').val(a6);
-                                $('#edit_cover').append(a7);                       
+                                $("#edit_thumbnail").append(a4);
+                                $('#edit_title').val(a5);
+                                $('#edit_description').val(a6);
+                                $('#edit_source').append(a7);                       
 
                               } else {
                                  alert('Now row selected! First select row, then click edit button');
                               }
 
-                          }).end().find(".command-delete").on("click", function(e) {
-                                
+                          }).end().find(".command-delete").on("click", function(e) {                           
 
-                          }).end().find(".command-fanpage").on("click", function(e) {
-                              
+                          }).end().find(".command-video").on("click", function(e) {                                  
 
                           });
                       });
