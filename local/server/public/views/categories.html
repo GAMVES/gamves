@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="Back4App Inc" name="author">
+
+  <title>Gamves Backend</title>
+
+  <script src="../dist/jquery-1.11.1.min.js"></script>
+  
+  <script src="https://npmcdn.com/parse@1.10.0/dist/parse.min.js"></script>
+
+  <link rel="stylesheet" href="../dist/bootstrap.min.css" type="text/css" media="all">
+  <link href="../dist/jquery.bootgrid.css" rel="stylesheet" />
+  <script src="../dist/jquery-1.11.1.min.js"></script>
+  <script src="../dist/bootstrap.min.js"></script>
+  <script src="../dist/jquery.bootgrid.min.js"></script>
+
+</head>
+
+<body>
+
+
+    <header>      
+    </header>
+
+      
+      <div class="container">
+    
+       <h2>Gamves Categories</h2>
+    
+    
+    <table id="gridStudents" class="table table-condensed table-hover table-striped" width="100%" cellspacing="0" data-toggle="bootgrid">
+      <thead>
+        <tr>
+          <th data-column-id="id" data-type="numeric" data-identifier="true" width="10%">Id</th>
+          <th data-column-id="objectId">ObjectId</th>
+          <th data-column-id="thumbnail" data-formatter="thumbnail">Thumbnail</th>
+          <th data-column-id="order">Order</th>
+          <th data-column-id="description">Description</th>
+          <th data-column-id="backImage" data-formatter="backImage">BackImage</th>   
+          <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>       
+        </tr>
+      </thead>
+    </table>
+
+    </div>
+
+
+    <div id="edit_model" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Edit Employee</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="frm_edit">
+        <input type="hidden" value="edit" name="action" id="action">
+        <input type="hidden" value="0" name="edit_id" id="edit_id">
+                  <div class="form-group">
+                    <label for="name" class="control-label">Name:</label>
+                    <input type="text" class="form-control" id="edit_name" name="edit_name"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="salary" class="control-label">Salary:</label>
+                    <input type="text" class="form-control" id="edit_salary" name="edit_salary"/>
+                  </div>
+          <div class="form-group">
+                    <label for="salary" class="control-label">Age:</label>
+                    <input type="text" class="form-control" id="edit_age" name="edit_age"/>
+                  </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="btn_edit" class="btn btn-primary">Save</button>
+            </div>
+      </form>
+        </div>
+    </div>
+  </div>
+  
+
+    
+</body>
+
+</html>
+
+
+
+<script type="text/javascript">
+
+  $( document ).ready(function() {
+
+    Parse.initialize("lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"); 
+    Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
+    Parse.serverURL = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/";
+
+    var currentUser = Parse.User.current();
+    if (!currentUser) {
+        window.location = "../index.html";
+    }
+
+  
+    query = new Parse.Query("Categories");      
+    query.find({
+        success: function (categories) {
+            
+            if (categories) {                
+
+              var clength = categories.length;
+              var dataJson = [];
+
+              for (var i = 0; i < clength; ++i) 
+              {
+
+                  item = {};
+                  item["id"] = i;
+
+                  var objectId = categories[i].id;
+                  dataJson.objectId = objectId;
+                  item["objectId"] = objectId;
+                  
+                  if (categories[i].get("thumbnail") != undefined){                
+                    var thumbnail = categories[i].get("thumbnail");
+                    item["thumbnail"] = thumbnail._url;
+                  } else {
+                    item["thumbnail"] = "https://cdn.zivame.com/media/mimages/new@2x.png";
+                  }
+
+                  var order = categories[i].get("order");
+                  item["order"] = order;
+
+                  var description = categories[i].get("description");
+                  item["description"] = description;
+
+                  if (categories[i].get("backImage") != undefined){
+                    var backImage = categories[i].get("backImage");
+                    item["backImage"] = backImage._url;
+                  } else {
+                    item["backImage"] = "http://bit.ly/2iGtN0l";
+                  }
+
+                  dataJson.push(item);
+
+              }                          
+
+              var grid = $("#gridStudents").bootgrid({                  
+                  caseSensitive: true,
+                  selection: true,
+                  multiSelect: true,                  
+                  formatters: {              
+                    "thumbnail": function (column, row) {
+                        return "<a href=\"#\"><img src=\"" + row.thumbnail + "\" height=\"30\" width=\"30\"/></a>";
+                    },
+                    "backImage": function (column, row) {
+                        return "<img src=\"" + row.backImage + "\" height=\"30\" width=\"150\"/>";
+                    },
+                    "commands": function(column, row) {
+                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button> " + 
+                               "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>";
+                    }
+                  }
+              }).on("selected.rs.jquery.bootgrid", function(e, rows) {
+                  var rowIds = [];
+                  for (var i = 0; i < rows.length; i++)
+                  {
+                      rowIds.push(rows[i].id);
+                  }
+                  //alert("Select: " + rowIds.join(","));
+
+              }).on("deselected.rs.jquery.bootgrid", function(e, rows)
+              {
+                  var rowIds = [];
+                  for (var i = 0; i < rows.length; i++)
+                  {
+                      rowIds.push(rows[i].id);
+                  }
+                  //alert("Deselect: " + rowIds.join(","));
+
+              }).on("loaded.rs.jquery.bootgrid", function() {
+                  
+                  /* Executes after data is loaded and rendered */
+                  grid.find(".command-edit").on("click", function(e) {
+                      //alert("You pressed edit on row: " + $(this).data("row-id"));
+                      var ele =$(this).parent();
+                      var g_id = $(this).parent().siblings(':first').html();
+                      var g_name = $(this).parent().siblings(':nth-of-type(2)').html();
+                      console.log(g_id);
+                      console.log(g_name);
+
+                      //console.log(grid.data());//
+                    $('#edit_model').modal('show');
+                    if($(this).data("row-id") >0) {
+                            
+                        // collect the data
+                        $('#edit_id').val(ele.siblings(':first').html()); // in case we're changing the key
+                        $('#edit_name').val(ele.siblings(':nth-of-type(2)').html());
+                        $('#edit_salary').val(ele.siblings(':nth-of-type(3)').html());
+                        $('#edit_age').val(ele.siblings(':nth-of-type(4)').html());
+
+                    } else {
+                         alert('Now row selected! First select row, then click edit button');
+                    }
+               
+                  }).end().find(".command-delete").on("click", function(e) {
+
+                    var conf = confirm('Delete ' + $(this).data("row-id") + ' items?');
+                    alert(conf);          
+
+                  });
+              });
+
+              grid.bootgrid("append", dataJson);
+
+            } else {
+                console.log("Nothing found, please try again");
+            }
+
+        },
+        error: function (error) {
+            console.log("Error: " + error.code + " " + error.message);
+        }
+    });
+
+        $( "#btn_add" ).click(function() {
+          ajaxAction('add');
+        });
+        $( "#btn_edit" ).click(function() {
+          ajaxAction('edit');
+        });
+
+
+
+  });
+
+
+
+</script>

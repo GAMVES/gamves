@@ -1,16 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Hello from SashiDo</title>
-  <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="Back4App Inc" name="author">
+
+  <title>Gamves Backend</title>
+
+  <script src="dist/jquery-1.11.1.min.js"></script>
+  
+  <script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+
+  <link rel="stylesheet" href="dist/bootstrap.min.css" type="text/css" media="all">
+  <link href="dist/jquery.bootgrid.css" rel="stylesheet" />
+  <script src="dist/jquery-1.11.1.min.js"></script>
+  <script src="dist/bootstrap.min.js"></script>
+  <script src="dist/jquery.bootgrid.min.js"></script>
+
 </head>
+
 <body>
-  <div class="viewport">
-    <div class="content">
-      <a href="//www.sashido.io/" target="_blank" title="SashiDo is a Parse Server Hosting"><img src="//www.sashido.io/img/logo-white.svg" alt="SlashiDo.io" width="220" /></a>
-      <p>Hello from <span>public/index.html</span></p>
+
+  <div>
+
+    <header>      
+    </header>
+
+    <br>
+    <div id="myapp">
+      <h2>Gamves backend</h2>
+      <div id="form">
+        <form id="form_pets" class="">
+          <fieldset form="form_pets">
+            <legend id="form_title">Credentials</legend> 
+            Username: 
+            <input type="text" id="input_username" name="input_username" placeholder=" User name" size="40" >
+            <br> 
+            Password: 
+            <input type="password" id="input_password" name="input_password" placeholder=" Password" size="10" >
+            <br><br>
+            <input type="button" name="login" id="login" value="Login">
+            <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+          </fieldset>
+        </form>
+        <p id="message"></p>
+      </div>
+      
+
     </div>
   </div>
+  <br>
+  <br>
+  <br>
+  <footer>
+    <a atr href="http://www.back4app.com">
+      <!--<img src="assets/logo-back4app-blue.svg" />-->
+      </a>
+  </footer>
+
 </body>
+
 </html>
+
+
+<script type="text/javascript">
+
+$( document ).ready(function() {
+  
+  Parse.initialize("lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"); 
+  Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
+  Parse.serverURL = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/";
+  
+  var usernameInput = document.getElementById("input_username");
+  var usernamePass = document.getElementById("input_password");
+  var loginBtn = document.getElementById("login");
+
+  loginBtn.onclick = Login;
+
+
+  function Login () {  
+      
+      var username = usernameInput.value;
+      var password = usernamePass.value;
+
+      console.log(username);
+      console.log(password);
+
+      Parse.User.logIn(username, password, {
+        success: function(user) {            
+            window.location = "views/main.html"
+        },
+        error: function(user, error) {
+          usernameInput.value = "";
+          usernameInput.focus();
+          usernamePass.value = "";
+          alert(error);          
+        }
+
+      });
+    
+
+  }
+
+
+
+});
+
+
+
+</script>
