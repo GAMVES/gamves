@@ -1,22 +1,23 @@
 
 document.addEventListener("LoadVideo", function(event){
 
-      var fanpage = event.detail;
+      var fanpageId = event.detail;
+      var fanpageObj;
 
       var queryFanpage = new Parse.Query("Fanpage");             
-      queryFanpage.equalTo("objectId", fanpage);
+      queryFanpage.equalTo("objectId", fanpageId);
       queryFanpage.first({
           success: function (fanpage) {
               
-              if (fanpage) {                    
+              if (fanpage) { 
+                    fanpageObj = fanpage;                  
                     searchVideo(fanpage)            
               }
           }
       });
       
       function searchVideo(fanpage)
-      {
-            //result.relation('videos').query().each(function(videos) {
+      {           
 
             var videosRelation = fanpage.relation('videos').query();
             videosRelation.find({
@@ -60,7 +61,7 @@ document.addEventListener("LoadVideo", function(event){
                       var rowIds = [];
                       var grid = $("#gridVideos").bootgrid({                  
                           templates: {
-                              header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button  type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New video </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                              header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button id=\"new_video\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New video </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
                           }, 
                           caseSensitive: true,
                           selection: true,
@@ -95,7 +96,13 @@ document.addEventListener("LoadVideo", function(event){
                               rowIds.push(rows[i].id);
                           }
 
-                      }).on("loaded.rs.jquery.bootgrid", function() {                    
+                      }).on("loaded.rs.jquery.bootgrid", function() {   
+
+                          $( "#new_video" ).click(function() {
+                
+                            $('#edit_model_video').modal('show');
+
+                          });                 
 
                           grid.find(".command-edit").on("click", function(e) {
 
@@ -149,23 +156,51 @@ document.addEventListener("LoadVideo", function(event){
                 error: function (error) {
                     console.log("Error: " + error.code + " " + error.message);
                 }
-            });
+            });             
+      
 
               $( "#btn_thumb_image" ).click(function() {
                   alert("");
               });
 
+              
               $( "#btn_back_image" ).click(function() {
                 alert("");
               });
 
-              $( "#btn_edit" ).click(function() {
 
-                //CLEAN UP FORM IMAGES AND ALL DATA
-                //alert("");
-              });
+              $( "#edit_youtube_check" ).click(function() {
+                  
+                  var videoId = $("#edit_youtube_video_id").val();                    
 
-              function removeAssetsFromPopup(){}    
+                  var url = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=" + videoId + "&format=json";
+              
+                  var jsonResult;
+
+                  $.ajax({
+                       type: "GET",
+                       url: url,
+                       processData: true,
+                       data: {},
+                       dataType: "json",
+                     error: function(e){
+
+                        var error = e; 
+                        console.log(e);                    
+
+                     },
+                     success: function (data) {
+
+                        var d = data;
+                         
+                      }
+                  });
+
+                   
+              });                 
+
+
       }  
 
+   
 });

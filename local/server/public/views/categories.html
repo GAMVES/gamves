@@ -24,28 +24,29 @@
             </div>
             <div class="modal-body">
                 <form method="post" id="frm_edit">                  
-                  <div class="form-group">
-                    <label for="name" class="control-label">Thumbnail:</label>                    
-                    <div id="edit_thumbnail" height="50" width="50" />                    
-                    <input id="btn_thumb_image" type="file"></input>
-                  </div>
-                  <div class="form-group">
-                    <label for="name" class="control-label">Order:</label>
-                    <input type="text" class="form-control" id="edit_order" name="edit_order"/>
-                  </div>
-                  <div class="form-group">
+                  <div class="form-group">                   
+                   <div class="form-group">
                     <label for="salary" class="control-label">Description:</label>
                     <input type="text" class="form-control" id="edit_description" name="edit_description"/>
                   </div>
                   <div class="form-group">
-                    <label for="name" class="control-label">BackImage:</label>
-                    <button id="btn_back_image" type="button" class="btn btn-xs btn-default command-edit"><span class="glyphicon glyphicon-camera"></span></button>
-                    <div id="edit_backimage" height="30" width="150"/>                    
+                    <label for="name" class="control-label">Order:</label>
+                    <select name="edit_order" id="edit_order"></select>                      
+                  </div>
+                  <label for="name" class="control-label">Thumbnail:</label><br>                                        
+                    <img id="img_thumbnail" height="60" width="60"/>                 
+                    <input id="input_thumb_image" type="file"></input>
+                  </div>             
+                  <div class="form-group">
+                    <label for="name" class="control-label">BackImage:</label>                    
+                    <div id="edit_backimage" height="50" width="50" /> 
+                    <img id="img_back" height="60" width="120"/>                   
+                    <input id="input_back_image" type="file"></input>
                   </div>                  
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="btn_edit" class="btn btn-primary">Save</button>
+                <button type="button" id="btn_edit_category" class="btn btn-primary">Save</button>
             </div>
             </form>
         </div>

@@ -1,9 +1,13 @@
 
   $( document ).ready(function() {
 
-    Parse.initialize("lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"); 
-    Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
-    Parse.serverURL = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/";
+    //Parse.initialize("lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"); 
+    //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
+    //Parse.serverURL = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/";
+
+    Parse.initialize("0123456789"); 
+    //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
+    Parse.serverURL = "http://192.168.16.22:1337/1/";
 
     var currentUser = Parse.User.current();
     if (!currentUser) {
@@ -12,6 +16,7 @@
 
     var selectedItem = [];   
     var selected = -1; 
+    var categoriesLenght = 0;
   
     queryCategory = new Parse.Query("Categories");      
     queryCategory.find({
@@ -19,10 +24,10 @@
             
             if (categories) {                
 
-              var clength = categories.length;
+              categoriesLenght = categories.length;
               var dataJson = [];
 
-              for (var i = 0; i < clength; ++i) 
+              for (var i = 0; i < categoriesLenght; ++i) 
               {
                   item = {};
                   item["id"] = i+1;
@@ -51,7 +56,7 @@
               var rowIds = [];
               var grid = $("#gridCategory").bootgrid({                  
                   templates: {
-                      header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button  type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Category </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                      header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button type=\"button\" id=\"new_category\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Category </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
                   }, 
                   caseSensitive: true,
                   selection: true,
@@ -103,7 +108,36 @@
                       rowIds.push(rows[i].id);                      
                   }
                   //alert("Deselect: " + rowIds.join(","));
-              }).on("loaded.rs.jquery.bootgrid", function() {
+              }).on("loaded.rs.jquery.bootgrid", function() {                   
+
+                    $("#input_thumb_image").unbind("change").change(function() {
+                      loadThumbImage(this);
+                    });
+
+                    $("#input_back_image").unbind("change").change(function() {
+                      loadBackImage(this);
+                    });
+
+                    $( "#btn_edit_category" ).unbind("click").click(function() {
+                        saveCategory();
+                    });                    
+                
+                    $( "#new_category" ).unbind("click").click(function() {
+                
+                      $('#edit_model_category').modal('show');     
+    
+                        
+
+                      if (categoriesLenght==0){
+                          $("#edit_order").append(($("<option/>", { html: 0 })));                                     
+                      } else {
+                        categoriesLenght++;
+                        for (var i = 0; i < categoriesLenght; i++) {                          
+                          $("#edit_order").append(($("<option/>", { html: i })));                                     
+                        }    
+                      }           
+
+                    }); 
                   
                   /* Executes after data is loaded and rendered */
                   grid.find(".command-edit").on("click", function(e) {
@@ -161,20 +195,65 @@
             console.log("Error: " + error.code + " " + error.message);
         }
     });
+     
+      var parseFileThumbanil; 
+      var parseFileBackImage; 
 
-      $( "#btn_thumb_image" ).click(function() {
-          alert("");
-      });
+      function loadThumbImage(input) {
+        if (input.files && input.files[0]) {         
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#img_thumbnail').attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);
+          var desc = $("#edit_description").val();
+          var thunbname = "t_" + desc.toLowerCase() + ".png";
+          parseFileThumbanil = new Parse.File(thunbname, input.files[0], "image/png");                   
+        }
+      }
 
-      $( "#btn_back_image" ).click(function() {
-        alert("");
-      });
+      function loadBackImage(input) {
+        if (input.files && input.files[0]) { 
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#img_back').attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);  
+          var desc = $("#edit_description").val();
+          var backname = "b_" + desc.toLowerCase() + ".png";       
+          parseFileBackImage = new Parse.File(backname, input.files[0], "image/jpg");                    
+        }
+      }
 
-      $( "#btn_edit" ).click(function() {
+      function saveCategory() {          
 
-        //CLEAN UP FORM IMAGES AND ALL DATA
-        //alert("");
-      });
+          var Category = Parse.Object.extend("Categories");         
+
+          var cat = new Category();
+    
+          cat.set("thumbnail", parseFileThumbanil);
+
+          cat.set("description", $("#edit_description").val());
+
+          var order = $("#edit_order").val();
+          cat.set("order", parseInt(order));         
+
+          cat.set("backImage", parseFileBackImage);
+
+          cat.save(null, {
+              success: function (pet) {
+                  console.log('Pet created successful with name: ' + pet.get("name") + ' and age: ' + pet.get("age"));
+                  $('#edit_model_category').modal('hide');
+              },
+              error: function (response, error) {
+                  console.log('Error: ' + error.message);
+              }
+
+          });          
+
+      }
+
+
 
 
       function removeAssetsFromPopup()
