@@ -17,6 +17,7 @@
     var selectedItem = [];   
     var selected = -1; 
     var categoriesLenght = 0;
+    var categoryName;
   
     queryCategory = new Parse.Query("Categories");      
     queryCategory.find({
@@ -89,7 +90,8 @@
                   for (var i = 0; i < rows.length; i++)
                   {                      
                       rowIds.push(rows[i].id); 
-                      categoryId = rows[i].objectId;                               
+                      categoryId = rows[i].objectId; 
+                      categoryName = rows[i].name;                              
                   }              
 
                   selected = rowIds.join(",");
@@ -124,16 +126,19 @@
                 
                     $( "#new_category" ).unbind("click").click(function() {
                 
-                      $('#edit_model_category').modal('show');     
-    
                         
 
+                        $("#h2Id").text("new text"); 
+
+
+                      $('#edit_model_category').modal('show');                               
+
                       if (categoriesLenght==0){
-                          $("#edit_order").append(($("<option/>", { html: 0 })));                                     
+                          $("#edit_order_categories").append(($("<option/>", { html: 0 })));                                     
                       } else {
                         categoriesLenght++;
                         for (var i = 0; i < categoriesLenght; i++) {                          
-                          $("#edit_order").append(($("<option/>", { html: i })));                                     
+                          $("#edit_order_categories").append(($("<option/>", { html: i })));                                     
                         }    
                       }           
 
@@ -167,7 +172,7 @@
                         // collect the data
                         //$('#edit_id').val(ele.siblings(':first').html());                                                
                         $("#edit_thumbnail").append(a4);
-                        $('#edit_order').val(a5);
+                        $('#edit_order_categories').val(a5);
                         $('#edit_description').val(a6);
                         $('#edit_backimage').append(a7);                       
 
@@ -196,8 +201,8 @@
         }
     });
      
-      var parseFileThumbanil; 
-      var parseFileBackImage; 
+    var parseFileThumbanil; 
+    var parseFileBackImage; 
 
       function loadThumbImage(input) {
         if (input.files && input.files[0]) {         
@@ -235,14 +240,14 @@
 
           cat.set("description", $("#edit_description").val());
 
-          var order = $("#edit_order").val();
+          var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
 
           cat.set("backImage", parseFileBackImage);
 
           cat.save(null, {
               success: function (pet) {
-                  console.log('Pet created successful with name: ' + pet.get("name") + ' and age: ' + pet.get("age"));
+                  console.log('Category created successful with name: ' + cat.get("pageName"));
                   $('#edit_model_category').modal('hide');
               },
               error: function (response, error) {

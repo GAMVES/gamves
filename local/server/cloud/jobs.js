@@ -3,6 +3,7 @@
 */
 
 Parse.Cloud.job("facebook", function(request, status) {
+  
   // the params passed through the start request
   const params = request.params;
   // Headers from the request that triggered the job
@@ -13,6 +14,7 @@ Parse.Cloud.job("facebook", function(request, status) {
 
   // Update the Job status message
   status.message("I just started");
+
   doSomethingVeryLong().then(function(result) {
     // Mark the job as successful
     // success and error only support string as parameters

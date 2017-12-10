@@ -23,12 +23,7 @@
                 <h4 class="modal-title">Edit Fanpage</h4>
             </div>
             <div class="modal-body">
-                <form method="post" id="frm_edit">                  
-                  <div class="form-group">
-                    <label for="name" class="control-label">Icon:</label>                    
-                    <div id="edit_icon" height="50" width="50" />                    
-                    <input id="btn_icon_image" type="file"></input>
-                  </div>
+                <form method="post" id="frm_edit">                                    
                   <div class="form-group">
                     <label for="name" class="control-label">Name:</label>
                     <input type="text" class="form-control" id="edit_name" name="edit_name"/>
@@ -37,15 +32,24 @@
                     <label for="salary" class="control-label">About:</label>
                     <input type="text" class="form-control" id="edit_about" name="edit_about"/>
                   </div>
+                   <div class="form-group">
+                    <label for="name" class="control-label">Order:</label>
+                    <select name="edit_order_fanpage" id="edit_order_fanpage"></select>                      
+                  </div>
+                  <div class="form-group">
+                    <label for="name" class="control-label">Icon:</label>   
+                    <img id="img_icon" height="60" width="60"/>                                                        
+                    <input id="input_icon_image" type="file"></input>
+                  </div>
                   <div class="form-group">
                     <label for="name" class="control-label">Cover:</label>
-                    <button id="btn_cover_image" type="button" class="btn btn-xs btn-default command-edit"><span class="glyphicon glyphicon-camera"></span></button>
-                    <div id="edit_backimage" height="30" width="150"/>                    
+                    <img id="img_cover" height="60" width="120"/>                                                        
+                    <input id="input_cover_image" type="file"></input>                    
                   </div>                  
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="btn_edit" class="btn btn-primary">Save</button>
+                <button type="button" id="btn_edit_fanpages" class="btn btn-primary">Save</button>
             </div>
             </form>
         </div>
