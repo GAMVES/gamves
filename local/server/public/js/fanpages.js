@@ -13,14 +13,14 @@ document.addEventListener("LoadFanpage", function(event){
               
               if (category) {
                     categoryPF = category
-                    searchFanpage(category)            
+                    loadFanpages(category)            
               }
           }
       });
       
-      var fanpagesLenght = 0;
+      var fanpagesLenght = 0;      
 
-      function searchFanpage(category)
+      function loadFanpages(category)
       {
             var queryFanpage = new Parse.Query("Fanpage");             
             queryFanpage.equalTo("category", category);
@@ -42,7 +42,7 @@ document.addEventListener("LoadFanpage", function(event){
 
                           if (fanpages[i].get("pageIcon") != undefined){                
                             var icon = fanpages[i].get("pageIcon");
-                            item["icon"] = icon;
+                            item["icon"] = icon._url;
                           } else {
                             item["icon"] = "https://dummyimage.com/60x60/286090/ffffff.png&text=NA";
                           }
@@ -53,7 +53,7 @@ document.addEventListener("LoadFanpage", function(event){
                           item["about"] = about;
                           if (fanpages[i].get("pageCover") != undefined){
                             var cover = fanpages[i].get("pageCover");
-                            item["cover"] = cover;
+                            item["cover"] = cover._url;
                           } else {
                             item["cover"] = "https://dummyimage.com/150x60/286090/ffffff.png&text=Not+Available";
                           }
@@ -129,6 +129,8 @@ document.addEventListener("LoadFanpage", function(event){
 
                           $( "#new_fanpage" ).unbind("click").click(function() {
 
+                             $("#fanpage_title").text("New Fanpage"); 
+
                              $('#edit_model_fanpage').modal('show');       
 
                               if (fanpagesLenght==0){
@@ -171,7 +173,9 @@ document.addEventListener("LoadFanpage", function(event){
                                 $("#edit_icon").append(a4);
                                 $('#edit_name').val(a5);
                                 $('#edit_about').val(a6);
-                                $('#edit_cover').append(a7);                       
+                                $('#edit_cover').append(a7);  
+
+                                $("#fanpage_title").text("Edit fanpage - " + a5);                     
 
                               } else {
                                  alert('Now row selected! First select row, then click edit button');
@@ -233,31 +237,24 @@ document.addEventListener("LoadFanpage", function(event){
 
           var Fanpage = Parse.Object.extend("Fanpage");         
 
-          var fanpage = new Fanpage();
-    
+          var fanpage = new Fanpage();    
           fanpage.set("category", categoryPF);
-
           fanpage.set("pageName", $("#edit_name").val());
-
           fanpage.set("pageAbout", $("#edit_about").val());
-
           fanpage.set("pageIcon", parseFileIcon);
-
           fanpage.set("pageCover", parseFileCover);         
-
           var order = $("#edit_order_fanpage").val();          
-          fanpage.set("order", parseInt(order));         
-          
+          fanpage.set("order", parseInt(order));                             
           fanpage.save(null, {
               success: function (pet) {
                   console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
                   $('#edit_model_fanpage').modal('hide');
+                  loadFanpages(categoryPF);
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
               }
-
-          });          
+          });
 
       }
 

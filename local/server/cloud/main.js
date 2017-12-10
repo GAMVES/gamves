@@ -460,6 +460,34 @@ var client = s3.createClient({
   "region":"us-east-1"  
 }*/
 
+
+Parse.Cloud.define("getYoutubeVideoInfo", function( request, response ) {
+
+	var videoId = request.params.videoId;
+	var youtubedl = require('youtube-dl');
+
+	var video = youtubedl('http://www.youtube.com/watch?v='+videoId,
+	  // Optional arguments passed to youtube-dl.
+	  ['--format=18'],
+	  // Additional options can be given for calling `child_process.execFile()`.
+	  { cwd: __dirname });
+	 
+	// Will be called when the download starts.
+	video.on('info', function(info) {
+	  console.log('Download started');
+	  console.log('filename: ' + info.filename);
+	  console.log('size: ' + info.size);
+	  response.success(info);
+	});
+
+	video.on('error', function error(err) {
+    	console.log('error 2:', err);
+    	response.error(err);
+  	});
+
+});
+
+
 Parse.Cloud.define("downloadVideoFromYoutube", function( request, response ) {
 
 	//var members = request.object.get("members");

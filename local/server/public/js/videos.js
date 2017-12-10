@@ -96,15 +96,18 @@ document.addEventListener("LoadVideo", function(event){
                               rowIds.push(rows[i].id);
                           }
 
-                      }).on("loaded.rs.jquery.bootgrid", function() {   
+                      }).on("loaded.rs.jquery.bootgrid", function() {                        
 
-                          $( "#new_video" ).click(function() {
-                
-                            $('#edit_model_video').modal('show');
+                            
+                              $( "#new_video" ).unbind("click").click(function() {
 
-                          });                 
+                                    $("#video_title").text("New Video"); 
 
-                          grid.find(".command-edit").on("click", function(e) {
+                                    $('#edit_model_video').modal('show');
+
+                              });  
+                                         
+                            grid.find(".command-edit").unbind("click").on("click", function(e) {
 
                               //alert("You pressed edit on row: " + $(this).data("row-id"));
                               var ele =$(this).parent();
@@ -133,7 +136,9 @@ document.addEventListener("LoadVideo", function(event){
                                 $("#edit_thumbnail").append(a4);
                                 $('#edit_title').val(a5);
                                 $('#edit_description').val(a6);
-                                $('#edit_source').append(a7);                       
+                                $('#edit_source').append(a7); 
+
+                                $("#fanpage_title").text("Edit video - " + a5);                      
 
                               } else {
                                  alert('Now row selected! First select row, then click edit button');
@@ -156,51 +161,38 @@ document.addEventListener("LoadVideo", function(event){
                 error: function (error) {
                     console.log("Error: " + error.code + " " + error.message);
                 }
-            });             
-      
+            });                  
+      }     
 
-              $( "#btn_thumb_image" ).click(function() {
-                  alert("");
-              });
+      $( "#edit_youtube_check" ).click(function() {
+            
 
-              
-              $( "#btn_back_image" ).click(function() {
-                alert("");
-              });
+         var videoUrl = $("#edit_youtube_video_id").val();
 
+         var vId = videoUrl.split("watch?v=")[1];                                              
 
-              $( "#edit_youtube_check" ).click(function() {
+         Parse.Cloud.run("getYoutubeVideoInfo", { videoId: vId }).then(function(result) {           
+
+            var title = result.fulltitle;
                   
-                  var videoId = $("#edit_youtube_video_id").val();                    
+            $("#edit_title_video").val(title);
 
-                  var url = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=" + videoId + "&format=json";
-              
-                  var jsonResult;
+            var desc = result.description;
 
-                  $.ajax({
-                       type: "GET",
-                       url: url,
-                       processData: true,
-                       data: {},
-                       dataType: "json",
-                     error: function(e){
+            $("#edit_description_video").val(desc);
 
-                        var error = e; 
-                        console.log(e);                    
+            var thumbnailUrl = result.thumbnail;
 
-                     },
-                     success: function (data) {
+            $('#img_thumbnail_video').attr('src', thumbnailUrl);                             
+            //console.log("result :" + JSON.stringify(result));
 
-                        var d = data;
-                         
-                      }
-                  });
+        }, function(error) {
 
-                   
-              });                 
+           console.log("error :" +errort);
+            // error
+        });  
 
-
-      }  
-
+      });
    
 });
+

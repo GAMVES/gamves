@@ -13,7 +13,8 @@
         "parse-server": "~2.2.2",
         "s3": "^4.4.0",
         "underscore": "^1.8.3",
-        "youtube-dl": "^1.12.2"
+        "youtube-dl": "^1.12.2",
+        "youtube-dl-info": "0.0.6"
     },
     "scripts": {
         "start": "node index.js"

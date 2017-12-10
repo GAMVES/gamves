@@ -41,6 +41,23 @@
       $("#fanpages").load("fanpages.html");
       $("#videos").load("videos.html");
 
+
+        function getYoutubeVideoInfoById()
+  {
+                               
+
+          Parse.Cloud.run("getYoutubeVideoInfo", { videoId: vId }).then(function(result) {
+
+              // make sure the set the email sent flag on the object
+              console.log("result :" + JSON.stringify(result))
+
+          }, function(error) {
+              
+             console.log("error :" +errort);
+              // error
+          }); 
+  }  
+
   });
 
 </script>
