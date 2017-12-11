@@ -464,7 +464,7 @@ var client = s3.createClient({
 Parse.Cloud.define("getYoutubeVideoInfo", function( request, response ) {
 
 	var videoId = request.params.videoId;
-	var youtubedl = require('youtube-dl');
+	var youtubedl = require('youtube-dl');	
 
 	var video = youtubedl('http://www.youtube.com/watch?v='+videoId,
 	  // Optional arguments passed to youtube-dl.
@@ -474,10 +474,10 @@ Parse.Cloud.define("getYoutubeVideoInfo", function( request, response ) {
 	 
 	// Will be called when the download starts.
 	video.on('info', function(info) {
-	  console.log('Download started');
-	  console.log('filename: ' + info.filename);
-	  console.log('size: ' + info.size);
-	  response.success(info);
+		//console.log('Download started');
+		//console.log('filename: ' + info.filename);
+		//console.log('size: ' + info.size);		
+		response.success(info);		
 	});
 
 	video.on('error', function error(err) {

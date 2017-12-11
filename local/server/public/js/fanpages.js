@@ -229,7 +229,7 @@ document.addEventListener("LoadFanpage", function(event){
           reader.readAsDataURL(input.files[0]);  
           var desc = $("#edit_name").val();
           var backname = "s_" + desc.toLowerCase() + ".png";       
-          parseFileCover = new Parse.File(backname, input.files[0], "image/jpg");                    
+          parseFileCover = new Parse.File(backname, input.files[0], "image/png");                    
         }
       }
 

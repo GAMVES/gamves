@@ -11,11 +11,13 @@ document.addEventListener("LoadVideo", function(event){
               
               if (fanpage) { 
                     fanpageObj = fanpage;                  
-                    searchVideo(fanpage)            
+                    searchVideo(fanpage);            
               }
           }
-      });
-      
+      });   
+
+      var videosLenght = 0;      
+
       function searchVideo(fanpage)
       {           
 
@@ -25,10 +27,10 @@ document.addEventListener("LoadVideo", function(event){
 
                     if (videos) {                
 
-                      var clength = videos.length;
+                      videosLenght = videos.length;
                       var dataJson = [];
 
-                      for (var i = 0; i < clength; ++i) 
+                      for (var i = 0; i < videosLenght; ++i) 
                       {
                           item = {};
                           item["id"] = i+1;
@@ -49,7 +51,7 @@ document.addEventListener("LoadVideo", function(event){
                           var description = videos[i].get("description");
                           item["description"] = description;
 
-                          if (videos[i].get("source") != undefined){
+                          if (videos[i].get("ytb_source") != undefined){
                             var source = videos[i].get("source");
                             item["source"] = source;
                           } else {
@@ -104,6 +106,18 @@ document.addEventListener("LoadVideo", function(event){
                                     $("#video_title").text("New Video"); 
 
                                     $('#edit_model_video').modal('show');
+
+                                    //$('#video_spinner').hide();
+
+                                    if (videosLenght==0){
+                                        $("#edit_order_video").append(($("<option/>", { html: 0 })));                                     
+                                    } else {
+                                      videosLenght++;
+                                      for (var i = 0; i < videosLenght; i++) {                          
+                                        $("#edit_order_video").append(($("<option/>", { html: i })));                                     
+                                      }    
+                                    } 
+                                    
 
                               });  
                                          
@@ -162,37 +176,94 @@ document.addEventListener("LoadVideo", function(event){
                     console.log("Error: " + error.code + " " + error.message);
                 }
             });                  
-      }     
+      }    
 
-      $( "#edit_youtube_check" ).click(function() {
-            
+       
+       var videoUrl, vId, title, desc, thumbnailUrl, upload_date, view_count, tags, duration, category, like_count;
+       var parseFileThumb;
 
-         var videoUrl = $("#edit_youtube_video_id").val();
+      $( "#btn_edit_video" ).click(function() {
 
-         var vId = videoUrl.split("watch?v=")[1];                                              
+        saveVideo();
 
-         Parse.Cloud.run("getYoutubeVideoInfo", { videoId: vId }).then(function(result) {           
+      });
 
-            var title = result.fulltitle;
-                  
+      $( "#edit_youtube_check" ).unbind("click").click(function() {
+           
+
+         $('#video_spinner').show();   
+
+         videoUrl = $("#edit_youtube_video_id").val();
+
+         vId = videoUrl.split("watch?v=")[1];                                              
+
+         Parse.Cloud.run("getYoutubeVideoInfo", { videoId: vId }).then(function(result) {    
+
+            console.log("__________________________");                         
+            console.log(JSON.stringify(result));       
+
+            title = result.fulltitle;                  
             $("#edit_title_video").val(title);
-
-            var desc = result.description;
-
+            desc = result.description;
             $("#edit_description_video").val(desc);
+            thumbnailUrl = result.thumbnail;
+            $('#img_thumbnail_video').attr('src', thumbnailUrl); 
 
-            var thumbnailUrl = result.thumbnail;
+            upload_date = result.upload_date;
+            view_count = result.view_count;
+            tags = result.tags;
+            duration = result.duration;
+            categories = result.categories,
+            like_count = result.like_count;           
+            
+            //var blobName = vId + ".jpg"; 
+            //parseFileThumb = new Parse.File(name, {base64: result.blob}, "image/jpg");            
 
-            $('#img_thumbnail_video').attr('src', thumbnailUrl);                             
-            //console.log("result :" + JSON.stringify(result));
-
-        }, function(error) {
+         }, function(error) {
 
            console.log("error :" +errort);
             // error
         });  
 
-      });
-   
+      });     
+
+      function saveVideo() {          
+
+          var Videos = Parse.Object.extend("Videos");
+          var video = new Videos();              
+
+          video.set("downloaded", false);
+          video.set("authorized", true);
+
+          video.set("title", title);
+          video.set("description", desc);
+          //video.set("thumbnail", );
+
+          video.set("s3_source", "");
+          video.set("ytb_source", videoUrl);
+          video.set("ytb_thumbnail_source", thumbnailUrl);
+          video.set("ytb_videoId", vId);
+
+          video.set("ytb_upload_date", upload_date);          
+          video.set("ytb_view_count", view_count);       
+          video.set("ytb_tags", tags);
+          video.set("ytb_duration", duration);         
+          video.set("ytb_categories", categories);         
+          video.set("ytb_like_count", like_count);                         
+
+          var order = $("#edit_order_video").val();
+
+          video.set("order", parseInt(order));    
+
+          video.save(null, {
+              success: function (pet) {
+                  console.log('Video created successful with name: ' + video.get("title"));
+                  $('#edit_model_video').modal('hide');                                                      
+              },
+              error: function (response, error) {
+                  console.log('Error: ' + error.message);
+              }
+          });
+      }
 });
 

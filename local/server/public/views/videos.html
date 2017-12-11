@@ -24,7 +24,11 @@
             </div>
             <div class="modal-body">
                 <form method="post" id="frm_edit">                  
-                  
+                  <div class="form-group">
+                    <label for="youtube_video" class="control-label">Youtube Video url:</label>
+                    <input type="text" class="form-control" id="edit_youtube_video_id" name="edit_youtube_video_id"/>
+                    <button type="button" id="edit_youtube_check" name="edit_youtube_check">Check</button>                    
+                  </div> 
                   <div class="form-group">
                     <label for="title" class="control-label">Title:</label>
                     <input type="text" class="form-control" id="edit_title_video" name="edit_title_video"/>
@@ -34,23 +38,17 @@
                     <input type="text" class="form-control" id="edit_description_video" name="edit_description_video"/>
                   </div>
                   <div class="form-group">
+                    <label for="name" class="control-label">Order:</label>
+                    <select name="edit_order_video" id="edit_order_video"></select>                      
+                  </div>
+                  <div class="form-group">
                     <label for="name" class="control-label">Thumbnail:</label>                    
                     <img id="img_thumbnail_video" height="60" width="120"/>                 
                     <input id="input_thumb_image_video" type="file"></input>                   
-                  </div>
-                  <div class="form-group">
-                    <label for="name" class="control-label">Source:</label>
-                    <button id="btn_back_image" type="button" class="btn btn-xs btn-default command-edit"><span class="glyphicon glyphicon-camera"></span></button>
-                    <div id="edit_source" height="30" width="150"/>                    
-                  </div> 
-                  <div class="form-group">
-                    <label for="youtube_video" class="control-label">Youtube Video url:</label>
-                    <input type="text" class="form-control" id="edit_youtube_video_id" name="edit_youtube_video_id"/>
-                    <button type="button" id="edit_youtube_check" name="edit_youtube_check">Check</button>                    
-                  </div>                                 
-            <div class="modal-footer">
+                  </div>                                                         
+            <div class="modal-footer">                
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="btn_edit_video" class="btn btn-primary">Save</button>
+                <button type="button" id="btn_edit_video" class="btn btn-primary">Save</button>            
             </div>
             </form>
         </div>
