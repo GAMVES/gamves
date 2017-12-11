@@ -65,7 +65,7 @@
                   var rowIds = [];
                   var grid = $("#gridCategory").bootgrid({                  
                       templates: {
-                          header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button type=\"button\" id=\"new_category\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Category </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                          header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_category\" class=\"loader\"/></div><button type=\"button\" id=\"new_category\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Category </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
                       }, 
                       caseSensitive: true,
                       selection: true,
@@ -118,7 +118,9 @@
                           rowIds.push(rows[i].id);                      
                       }
                       //alert("Deselect: " + rowIds.join(","));
-                  }).on("loaded.rs.jquery.bootgrid", function() {                   
+                  }).on("loaded.rs.jquery.bootgrid", function() {  
+
+                        $("#loader_category").hide();                 
 
                         $("#input_thumb_image").unbind("change").change(function() {
                           loadThumbImage(this);
@@ -194,13 +196,14 @@
 
 
                       });
-                  });
-
-                  grid.bootgrid("append", dataJson);
+                  });                  
 
                 } else {
                     console.log("Nothing found, please try again");
                 }
+                
+                grid.bootgrid("clear");
+                grid.bootgrid("append", dataJson);
 
             },
             error: function (error) {
@@ -249,6 +252,8 @@
               success: function (pet) {
                   console.log('Category created successful with name: ' + cat.get("pageName"));
                   $('#edit_model_category').modal('hide');
+                  loadCategories();
+                  clearField();
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
@@ -256,4 +261,14 @@
           });
       }
   });
+
+  function clearField(){
+      $("#edit_model_category").find("input[type=text], textarea").val("");
+      $("#edit_model_category").find("input[type=file], textarea").val("");
+      $("#edit_order_categories").empty();
+      $('#img_thumbnail').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+      $("#img_back").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+  }
+
+
 

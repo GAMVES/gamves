@@ -6,15 +6,15 @@
   <meta content="Back4App Inc" name="author">
   <title>Gamves Backend</title>
   
-  <script src="../dist/jquery-1.11.1.min.js"></script>  
-  <script src="https://npmcdn.com/parse@1.10.0/dist/parse.min.js"></script>
-  <link rel="stylesheet" href="../dist/bootstrap.min.css" type="text/css" media="all">
-  <link href="../dist/jquery.bootgrid.css" rel="stylesheet" />
+  <link href="../dist/bootstrap.min.css" rel="stylesheet"  type="text/css" media="all">  
+  <link href="../dist/font-awesome.min.css" rel="stylesheet">  
+  <link href="../dist/jquery.bootgrid.css" rel="stylesheet">
+  <link href="../dist/spinner.css" rel="stylesheet" >
+
   <script src="../dist/jquery-1.11.1.min.js"></script>
   <script src="../dist/bootstrap.min.js"></script>
-  <script src="../dist/jquery.bootgrid.min.js"></script>
-
-  <script src="../dist/jquery.bootgrid.min.js"></script>        
+  <script src="../dist/parse.min.js"></script>    
+  <script src="../dist/jquery.bootgrid.min.js"></script>       
   
   <script type="text/javascript" src="../js/videos.js"></script>
   <script type="text/javascript" src="../js/fanpages.js"></script>
@@ -39,24 +39,7 @@
 
       $("#categories").load("categories.html");
       $("#fanpages").load("fanpages.html");
-      $("#videos").load("videos.html");
-
-
-        function getYoutubeVideoInfoById()
-  {
-                               
-
-          Parse.Cloud.run("getYoutubeVideoInfo", { videoId: vId }).then(function(result) {
-
-              // make sure the set the email sent flag on the object
-              console.log("result :" + JSON.stringify(result))
-
-          }, function(error) {
-              
-             console.log("error :" +errort);
-              // error
-          }); 
-  }  
+      $("#videos").load("videos.html");    
 
   });
 

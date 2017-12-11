@@ -469,44 +469,19 @@ Parse.Cloud.afterSave("Videos", function(request) {
 	if (!removed && downloaded) {
 
 		var ytb_videoId = request.object.get("ytb_videoId");
+		var videoFile = ytb_videoId + ".mp4";
 
-		var queryConfig = new Parse.Query("Config"); 
-	    queryConfig.first({	   
-	    	useMasterKey: true,     
-	        success: function(result) {          
+		var fs = require('fs'); 
+	    fs.unlinkSync(videoFile);
 
-	       	  	var serverUrl = result.get("server_url");
-	       	  	var _appId = result.get("app_id");
-	       	  	var _mKey = result.get("master_key");
-	       	  	var localVideo = serverUrl + ytb_videoId + ".mp4";
-
-				/*Parse.Cloud.httpRequest({
-			      method: "DELETE",
-			      url: localVideo,
-			      headers: {
-			    	"X-Parse-Application-Id": _appId,
-			    	"X-Parse-Master-Key": _mKey,
-			    	"Content-Type": "application/json"
-			  	  },	      
-			      success: function(httpResponse) {
-			          	console.info('Delete succeeded  ' + httpResponse.text);
-			           	request.set("removed", true);
-	            		request.save(null, { useMasterKey: true } );
-			      },
-			      error: function(httpResponse) {
-			           console.info('Delete failed  ' + localVideo);
-			      }
-			    }); */
-
-			    var fs = require('fs'); 
-			    fs.unlinkSync(ytb_videoId + ".mp4");
-
-	          
-			}
-		});	
-
+	    if (!fs.existsSync(videoFile)) {
+	      	request.object.set("removed", true);
+	    	request.object.save(null, { useMasterKey: true } );	
+	    } else 
+		{
+			//DO SOMETHING HERE TO INFORM.
+		}
 	}
-	
 
 });
 

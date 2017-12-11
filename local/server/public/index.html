@@ -9,14 +9,12 @@
 
   <title>Gamves Backend</title> 
 
-  <link rel="stylesheet" href="dist/bootstrap.min.css" type="text/css" media="all">  
-  <link rel="stylesheet" href="dist/font-awesome.min.css">
+  <link href="dist/bootstrap.min.css" rel="stylesheet"  type="text/css" media="all">  
+  <link href="dist/spinner.css" rel="stylesheet" >
 
-  <script src="dist/parse.min.js"></script> 
-  <link href="dist/jquery.bootgrid.css" rel="stylesheet" />
   <script src="dist/jquery-1.11.1.min.js"></script>
-  <script src="dist/bootstrap.min.js"></script>
-  <script src="dist/jquery.bootgrid.min.js"></script>
+  <script src="dist/parse.min.js"></script>  
+  <script src="dist/bootstrap.min.js"></script>  
 
 </head>
 
@@ -98,8 +96,10 @@ $( document ).ready(function() {
 
       Parse.User.logIn(username, password, {
         success: function(user) { 
+
+          window.location = "views/panel.html";
   
-          var queryConfig = new Parse.Query("Config");
+          /*var queryConfig = new Parse.Query("Config");
           queryConfig.first({	        
               success: function(results) {
 
@@ -126,7 +126,7 @@ $( document ).ready(function() {
                   window.location = "views/panel.html";
                 }
               }
-          });	                                 
+          });*/	                                 
 
         },
         error: function(user, error) {

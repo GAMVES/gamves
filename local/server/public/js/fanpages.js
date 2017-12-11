@@ -22,7 +22,7 @@ document.addEventListener("LoadFanpage", function(event){
 
       function loadFanpages(category)
       {
-            var queryFanpage = new Parse.Query("Fanpage");             
+            var queryFanpage = new Parse.Query("Fanpages");             
             queryFanpage.equalTo("category", category);
             queryFanpage.find({
                 success: function (fanpages) {
@@ -30,7 +30,7 @@ document.addEventListener("LoadFanpage", function(event){
                     if (fanpages) {                
 
                       fanpagesLenght = fanpages.length;
-                      var dataJson = [];
+                      var dataJson = [];                      
 
                       for (var i = 0; i < fanpagesLenght; ++i) 
                       {
@@ -63,7 +63,7 @@ document.addEventListener("LoadFanpage", function(event){
                       var rowIds = [];
                       var grid = $("#gridFanpage").bootgrid({                  
                           templates: {
-                              header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button id=\"new_fanpage\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Fanpage </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                              header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_fanpage\" class=\"loader\"/></div><button id=\"new_fanpage\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Fanpage </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
                           }, 
                           caseSensitive: true,
                           selection: true,
@@ -113,13 +113,15 @@ document.addEventListener("LoadFanpage", function(event){
                               rowIds.push(rows[i].id);
                           }
 
-                      }).on("loaded.rs.jquery.bootgrid", function() {      
+                      }).on("loaded.rs.jquery.bootgrid", function() {
 
-                           $("#input_icon_image").unbind("change").change(function() {
+                           $("#loader_fanpage").hide();       
+
+                           $("#input_icon_fanpage").unbind("change").change(function() {
                              loadIconsImage(this);
                           });
 
-                          $("#input_cover_image").unbind("change").change(function() {
+                          $("#input_cover_fanpage").unbind("change").change(function() {
                              loadCoverImage(this);
                           });
 
@@ -127,8 +129,8 @@ document.addEventListener("LoadFanpage", function(event){
                               saveFanpage();
                           });                    
 
-                          $( "#new_fanpage" ).unbind("click").click(function() {
-
+                          $( "#new_fanpage" ).unbind("click").click(function() {                             
+                                                          
                              $("#fanpage_title").text("New Fanpage"); 
 
                              $('#edit_model_fanpage').modal('show');       
@@ -188,13 +190,14 @@ document.addEventListener("LoadFanpage", function(event){
 
 
                           });
-                      });
-
-                      grid.bootgrid("append", dataJson);
+                      });                      
 
                     } else {
                         console.log("Nothing found, please try again");
                     }
+
+                    grid.bootgrid("clear");
+                    grid.bootgrid("append", dataJson);
 
                 },
                 error: function (error) {
@@ -211,7 +214,7 @@ document.addEventListener("LoadFanpage", function(event){
         if (input.files && input.files[0]) {         
           var reader = new FileReader();
           reader.onload = function (e) {
-            $('#img_icon').attr('src', e.target.result);
+            $('#img_icon_fanpage').attr('src', e.target.result);
           }
           reader.readAsDataURL(input.files[0]);
           var desc = $("#edit_name").val();
@@ -224,7 +227,7 @@ document.addEventListener("LoadFanpage", function(event){
         if (input.files && input.files[0]) { 
           var reader = new FileReader();
           reader.onload = function (e) {
-            $('#img_cover').attr('src', e.target.result);
+            $('#img_cover_fanpage').attr('src', e.target.result);
           }
           reader.readAsDataURL(input.files[0]);  
           var desc = $("#edit_name").val();
@@ -235,7 +238,7 @@ document.addEventListener("LoadFanpage", function(event){
 
       function saveFanpage() {          
 
-          var Fanpage = Parse.Object.extend("Fanpage");         
+          var Fanpage = Parse.Object.extend("Fanpages");         
 
           var fanpage = new Fanpage();    
           fanpage.set("category", categoryPF);
@@ -250,12 +253,21 @@ document.addEventListener("LoadFanpage", function(event){
                   console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
                   $('#edit_model_fanpage').modal('hide');
                   loadFanpages(categoryPF);
+                  clearField();
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
               }
           });
 
+      }
+
+      function clearField(){
+        $("#edit_model_fanpage").find("input[type=text], textarea").val("");
+        $("#edit_model_fanpage").find("input[type=file], textarea").val("");
+        $("#edit_order_fanpage").empty();
+        $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+        $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
       }
 
 });

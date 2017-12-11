@@ -121,13 +121,31 @@ function downloadVideo(request, status){
                 uploader.on('end', function() {
                   console.log("done uploading");
 
-                   var baseUrl = s3.getPublicUrlHttp(s3bucket, s3key);
 
-                   var uploadedUrl = baseUrl + "/" + videoName;        
-                   videoObject.set("s3_source", uploadedUrl);
-                   videoObject.set("downloaded", true);
-                   videoObject.save(null, { useMasterKey: true } );
-                   status.success(uploadedUrl);
+                    var ytb_thumbnail_source = videoObject.get("ytb_thumbnail_source");
+
+                    Parse.Cloud.httpRequest({url: ytb_thumbnail_source}).then(function(httpResponse) {
+                        
+                         var imageBuffer = httpResponse.buffer;
+                         var base64 = imageBuffer.toString("base64");
+                         var file = new Parse.File(ytb_videoId+".jpg", { base64: base64 });
+                    
+                         var baseUrl = s3.getPublicUrlHttp(s3bucket, s3key);
+                         var uploadedUrl = baseUrl + "/" + videoName;        
+                         
+                         videoObject.set("thumbnail", file);
+                         videoObject.set("s3_source", uploadedUrl);
+                         videoObject.set("downloaded", true);
+
+                         videoObject.save(null, { useMasterKey: true } );
+
+                         status.success(uploadedUrl);     
+                        
+                    }, function(error) {
+                        
+                        status.error("Error downloading thumbnail"); 
+
+                    });                  
 
                 });
 

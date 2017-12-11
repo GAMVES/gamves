@@ -4,7 +4,7 @@ document.addEventListener("LoadVideo", function(event){
       var fanpageId = event.detail;
       var fanpageObj;
 
-      var queryFanpage = new Parse.Query("Fanpage");             
+      var queryFanpage = new Parse.Query("Fanpages");             
       queryFanpage.equalTo("objectId", fanpageId);
       queryFanpage.first({
           success: function (fanpage) {
@@ -25,7 +25,8 @@ document.addEventListener("LoadVideo", function(event){
             videosRelation.find({
                 success: function (videos) {                                   
 
-                    if (videos) {                
+                    if (videos) {  
+                               
 
                       videosLenght = videos.length;
                       var dataJson = [];
@@ -38,9 +39,9 @@ document.addEventListener("LoadVideo", function(event){
                           dataJson.objectId = objectId;
                           item["objectId"] = objectId;                  
                           
-                          if (videos[i].get("thumbnailUrl") != undefined){                
-                            var thumbnail = videos[i].get("thumbnailUrl");
-                            item["thumbnail"] = thumbnail;
+                          if (videos[i].get("thumbnail") != undefined){                
+                            var thumbnail = videos[i].get("thumbnail");
+                            item["thumbnail"] = thumbnail._url;
                           } else {
                             item["thumbnail"] = "https://dummyimage.com/60x60/286090/ffffff.png&text=NA";
                           }
@@ -63,7 +64,7 @@ document.addEventListener("LoadVideo", function(event){
                       var rowIds = [];
                       var grid = $("#gridVideos").bootgrid({                  
                           templates: {
-                              header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><button id=\"new_video\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New video </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                              header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_video\" class=\"loader\"/></div><button id=\"new_video\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New video </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
                           }, 
                           caseSensitive: true,
                           selection: true,
@@ -100,6 +101,7 @@ document.addEventListener("LoadVideo", function(event){
 
                       }).on("loaded.rs.jquery.bootgrid", function() {                        
 
+                              $("#loader_video").hide(); 
                             
                               $( "#new_video" ).unbind("click").click(function() {
 
@@ -163,13 +165,14 @@ document.addEventListener("LoadVideo", function(event){
                           }).end().find(".command-video").on("click", function(e) {                                  
 
                           });
-                      });
-
-                      grid.bootgrid("append", dataJson);
+                      });                     
 
                     } else {
                         console.log("Nothing found, please try again");
                     }
+
+                    grid.bootgrid("clear");
+                    grid.bootgrid("append", dataJson);
 
                 },
                 error: function (error) {
@@ -264,6 +267,7 @@ document.addEventListener("LoadVideo", function(event){
                   fanpageObj.save(null, {
                         success: function (pet) {   
                               postDownloadJob(savedVideo.id);
+                              clearField();
                         },
                         error: function (response, error) {
                               console.log('Error: ' + error.message);
@@ -279,18 +283,25 @@ document.addEventListener("LoadVideo", function(event){
 
       function postDownloadJob(objectId) {  
 
-            var serverUrl = Parse.serverURL;
+          var serverUrl = Parse.serverURL;
 
-             Parse.Cloud.run("postDownloadVideoJob", { 
-                  ytb_videoId: vId, 
-                  pfVideoId:   objectId, 
-                  serverUrl :  serverUrl  
-            }).then(function(result) {    
-            
-                  console.log(result);
-            });
-          
-        
+          Parse.Cloud.run("postDownloadVideoJob", { 
+              ytb_videoId: vId, 
+              pfVideoId:   objectId, 
+              serverUrl :  serverUrl  
+          }).then(function(result) {    
+              searchVideo(fanpage);
+              console.log(result);
+          });       
+
       }     
+
+      function clearField(){
+        $("#edit_model_fanpage").find("input[type=text], textarea").val("");
+        $("#edit_model_fanpage").find("input[type=file], textarea").val("");
+        $("#edit_order_fanpage").empty();
+        $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+        $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+      }
 });
 
