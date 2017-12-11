@@ -214,10 +214,7 @@ document.addEventListener("LoadVideo", function(event){
             tags = result.tags;
             duration = result.duration;
             categories = result.categories,
-            like_count = result.like_count;           
-            
-            //var blobName = vId + ".jpg"; 
-            //parseFileThumb = new Parse.File(name, {base64: result.blob}, "image/jpg");            
+            like_count = result.like_count;                  
 
          }, function(error) {
 
@@ -236,8 +233,7 @@ document.addEventListener("LoadVideo", function(event){
           video.set("authorized", true);
 
           video.set("title", title);
-          video.set("description", desc);
-          //video.set("thumbnail", );
+          video.set("description", desc);          
 
           video.set("s3_source", "");
           video.set("ytb_source", videoUrl);
@@ -249,21 +245,47 @@ document.addEventListener("LoadVideo", function(event){
           video.set("ytb_tags", tags);
           video.set("ytb_duration", duration);         
           video.set("ytb_categories", categories);         
-          video.set("ytb_like_count", like_count);                         
+          video.set("ytb_like_count", like_count);                      
 
           var order = $("#edit_order_video").val();
-
           video.set("order", parseInt(order));    
 
           video.save(null, {
-              success: function (pet) {
+              success: function (videoSaved) {
                   console.log('Video created successful with name: ' + video.get("title"));
-                  $('#edit_model_video').modal('hide');                                                      
+                  $('#edit_model_video').modal('hide'); 
+                  var fanVideoRelation = fanpageObj.relation("videos");
+                  fanVideoRelation.add(videoSaved);
+                  fanpageObj.save(null, {
+                        success: function (pet) {   
+                              postDownloadJob(videoSaved.objectId);
+                        },
+                        error: function (response, error) {
+                              console.log('Error: ' + error.message);
+                        }
+                 });                                                                                   
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
               }
           });
       }
+
+      function postDownloadJob(vobjectId) {      
+        var serverUrl = Parse.serverURL + "jobs/downloader";
+        Parse.Cloud.httpRequest({
+          method: "POST",
+          url: serverUrl,
+          headers: {
+            "X-Parse-Application-Id": "0123456789",
+            "X-Parse-Master-Key": "9876543210",
+            "Content-Type": "application/json"
+          },
+          body: {
+            "ytb_videoId": vId,
+            "objectId": vobjectId            
+          }
+        });                
+      }     
 });
 
