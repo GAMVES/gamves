@@ -180,7 +180,7 @@ document.addEventListener("LoadVideo", function(event){
 
        
        var videoUrl, vId, title, desc, thumbnailUrl, upload_date, view_count, tags, duration, category, like_count;
-       var parseFileThumb;
+       var parseFileThumb;      
 
       $( "#btn_edit_video" ).click(function() {
 
@@ -230,6 +230,7 @@ document.addEventListener("LoadVideo", function(event){
           var video = new Videos();              
 
           video.set("downloaded", false);
+          video.set("removed", false);
           video.set("authorized", true);
 
           video.set("title", title);
@@ -251,19 +252,24 @@ document.addEventListener("LoadVideo", function(event){
           video.set("order", parseInt(order));    
 
           video.save(null, {
-              success: function (videoSaved) {
+              success: function (savedVideo) {        
+                 
                   console.log('Video created successful with name: ' + video.get("title"));
+                 
                   $('#edit_model_video').modal('hide'); 
+
                   var fanVideoRelation = fanpageObj.relation("videos");
-                  fanVideoRelation.add(videoSaved);
+                  fanVideoRelation.add(savedVideo);
+
                   fanpageObj.save(null, {
                         success: function (pet) {   
-                              postDownloadJob(videoSaved.objectId);
+                              postDownloadJob(savedVideo.id);
                         },
                         error: function (response, error) {
                               console.log('Error: ' + error.message);
                         }
-                 });                                                                                   
+                 });
+                                                                                                    
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
@@ -271,21 +277,20 @@ document.addEventListener("LoadVideo", function(event){
           });
       }
 
-      function postDownloadJob(vobjectId) {      
-        var serverUrl = Parse.serverURL + "jobs/downloader";
-        Parse.Cloud.httpRequest({
-          method: "POST",
-          url: serverUrl,
-          headers: {
-            "X-Parse-Application-Id": "0123456789",
-            "X-Parse-Master-Key": "9876543210",
-            "Content-Type": "application/json"
-          },
-          body: {
-            "ytb_videoId": vId,
-            "objectId": vobjectId            
-          }
-        });                
+      function postDownloadJob(objectId) {  
+
+            var serverUrl = Parse.serverURL;
+
+             Parse.Cloud.run("postDownloadVideoJob", { 
+                  ytb_videoId: vId, 
+                  pfVideoId:   objectId, 
+                  serverUrl :  serverUrl  
+            }).then(function(result) {    
+            
+                  console.log(result);
+            });
+          
+        
       }     
 });
 

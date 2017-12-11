@@ -88,7 +88,6 @@ $( document ).ready(function() {
 
   loginBtn.onclick = Login;
 
-
   function Login () {  
       
       var username = usernameInput.value;
@@ -98,8 +97,37 @@ $( document ).ready(function() {
       console.log(password);
 
       Parse.User.logIn(username, password, {
-        success: function(user) {            
-            window.location = "views/panel.html"
+        success: function(user) { 
+  
+          var queryConfig = new Parse.Query("Config");
+          queryConfig.first({	        
+              success: function(results) {
+
+                if( results == undefined) 
+                {
+                 
+                  var Config = Parse.Object.extend("Config");
+                  var config = new Config();
+                  config.set("server_url", Parse.serverURL); 
+                  config.set("app_id", APP_ID);
+                  config.set("master_key", "");
+
+                  config.save(null, {
+                    success: function (savedConfig) { 
+                      window.location = "views/panel.html";
+                    },
+                    error: function (response, error) {
+                        console.log('Error: ' + error.message);
+                    }
+                  }); 
+
+                } else 
+                {
+                  window.location = "views/panel.html";
+                }
+              }
+          });	                                 
+
         },
         error: function(user, error) {
           usernameInput.value = "";

@@ -426,16 +426,89 @@ Parse.Cloud.define("saveImageForUser", function( request, response ) {
 });
 
 // --
-// Download Youtube Video and save it to S3 after Video is created. 
+// Run job to download video. 
 
-/*Parse.Cloud.afterSave("Videos", function(request) {
+var _appId      = '0123456789';
+var _mKey       = "9876543210";
+
+Parse.Cloud.define("postDownloadVideoJob", function( request, response ) {
+
+	var serverUrl = request.params.serverUrl;
+	var vId       = request.params.ytb_videoId;
+	var pfVideoId = request.params.pfVideoId;
+    
+    Parse.Cloud.httpRequest({
+      method: "POST",
+      url: serverUrl + "jobs/downloader",
+      headers: {
+	    	"X-Parse-Application-Id": _appId,
+	    	"X-Parse-Master-Key": _mKey,
+	    	"Content-Type": "application/json"
+	  },
+      body: {
+        "ytb_videoId": vId,
+        "objectId": pfVideoId            
+      },	      
+      success: function(httpResponse) {          
+          response.success();			 
+      },
+      error: function(httpResponse) {
+          response.error("failed");
+      }
+    });  
+});
+
+// --
+// Delete downloaded file after saved. 
+
+Parse.Cloud.afterSave("Videos", function(request) {
 
 	var downloaded = request.object.get("downloaded");
+	var removed = request.object.get("removed");
 
-	if (!downloaded){
+	if (!removed && downloaded) {
+
+		var ytb_videoId = request.object.get("ytb_videoId");
+
+		var queryConfig = new Parse.Query("Config"); 
+	    queryConfig.first({	   
+	    	useMasterKey: true,     
+	        success: function(result) {          
+
+	       	  	var serverUrl = result.get("server_url");
+	       	  	var _appId = result.get("app_id");
+	       	  	var _mKey = result.get("master_key");
+	       	  	var localVideo = serverUrl + ytb_videoId + ".mp4";
+
+				/*Parse.Cloud.httpRequest({
+			      method: "DELETE",
+			      url: localVideo,
+			      headers: {
+			    	"X-Parse-Application-Id": _appId,
+			    	"X-Parse-Master-Key": _mKey,
+			    	"Content-Type": "application/json"
+			  	  },	      
+			      success: function(httpResponse) {
+			          	console.info('Delete succeeded  ' + httpResponse.text);
+			           	request.set("removed", true);
+	            		request.save(null, { useMasterKey: true } );
+			      },
+			      error: function(httpResponse) {
+			           console.info('Delete failed  ' + localVideo);
+			      }
+			    }); */
+
+			    var fs = require('fs'); 
+			    fs.unlinkSync(ytb_videoId + ".mp4");
+
+	          
+			}
+		});	
+
 	}
+	
 
-});*/
+});
 
 // --
 // Get Video Info.

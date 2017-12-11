@@ -39,11 +39,11 @@ function downloadVideo(request, status){
   var path = require('path');
   var s3 = require('s3');
 
-  var s3bucket = "gamves.videos";
+  var s3bucket = "gamves-deployments-mobilehub-352107381";
   var s3key = "AKIAJP4GPKX77DMBF5AQ";
   var s3secret = "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";
   var s3region = "us-east-1"; 
-  var s3endpoint = 's3-sa-east-1.amazonaws.com/gamves/';
+  var s3endpoint = s3bucket  + ".s3.amazonaws.com";
 
   var client = s3.createClient({
     maxAsyncS3: 20,     // this is the default
@@ -55,7 +55,7 @@ function downloadVideo(request, status){
       accessKeyId: s3key,
       secretAccessKey: s3secret,
       region: s3region,
-      endpoint: s3endpoint,
+      //endpoint: s3endpoint,
       // sslEnabled: false
       // any other options are passed to new AWS.S3()
       // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#constructor-property
@@ -127,8 +127,6 @@ function downloadVideo(request, status){
                    videoObject.set("s3_source", uploadedUrl);
                    videoObject.set("downloaded", true);
                    videoObject.save(null, { useMasterKey: true } );
-
-
                    status.success(uploadedUrl);
 
                 });
@@ -137,5 +135,4 @@ function downloadVideo(request, status){
           }
         }
     });     
-
 }
