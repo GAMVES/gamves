@@ -50,7 +50,14 @@ class Global: NSObject
     
     static var hasNewFeed = Bool()
     
-    static var categories_gamves  = [CategoryGamves]()
+    //static var categories_gamves  = [CategoryGamves]()
+    
+    static var categories_gamves = Dictionary<Int, CategoryGamves>()
+    
+    static func sortCategoryByOrder()
+    {
+        self.categories_gamves.sorted(by: {$0.value.order > $1.value.order })
+    }
 
     //Bool to foce download and skip chache. 
     static var forceFromNetworkCache = Bool()
@@ -606,15 +613,23 @@ class Global: NSObject
         })
         
     }
-    
-    static func alertWithTitle(viewController: UIViewController, title: String!, message: String, toFocus:UITextField) {
+
+    static func alertWithTitle(viewController: UIViewController, title: String!, message: String, toFocus:UITextField?)
+    {
+        
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel,handler: {_ in
-            toFocus.becomeFirstResponder()
+            
+            if toFocus != nil
+            {
+                toFocus?.becomeFirstResponder()
+            }
+            
         });
         alert.addAction(action)
         viewController.present(alert, animated: true, completion:nil)
     }
+
 
     static func hasDateChanged() -> Bool
     {

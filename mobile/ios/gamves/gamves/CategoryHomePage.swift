@@ -134,7 +134,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
   
         let headerView = tableView.dequeueReusableCell(withIdentifier: categorySectionCellId) as! CategoryTableViewSectionCell
         
-        let catcel:CategoryGamves = Global.categories_gamves[section]
+        let catcel:CategoryGamves = Global.categories_gamves[section]!
         
         headerView.name.text  = catcel.name
         
@@ -175,7 +175,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         {
             let category = Global.categories_gamves[section]
             
-            print(category.name)
+            print(category?.name)
             
             delegate?.setCurrentPage(current: 1, direction: UIPageViewControllerNavigationDirection.forward, data: category)
         }
@@ -197,14 +197,17 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     {
         
         let queryCategories = PFQuery(className:"Categories")
-        queryCategories.whereKey("hasFanpage", equalTo: true)
+        
+        //queryCategories.whereKey("hasFanpage", equalTo: true)
         
         if !Global.hasDateChanged()
         {
             queryCategories.cachePolicy = .cacheThenNetwork
         }
         
-        queryCategories.order(byDescending: "order")
+        //queryCategories.order(byDescending: "order")
+        queryCategories.order(byAscending: "order")
+        
         var count = 0
         
         queryCategories.findObjectsInBackground { (categories, error) in
@@ -275,15 +278,27 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
 
                                                 }
                                                 
-                                                Global.categories_gamves.append(cat)
+                                                let order = pcategory["order"] as! Int
+
+                                                
+                                                Global.categories_gamves[order] = cat
 
                                                 var last = Bool()
+                                                
+                                                print(count)
+                                                print(total)
+                                                
                                                 if count == total
                                                 {
                                                     last = true
+                                                    Global.sortCategoryByOrder()
+                                                    self.tableView.reloadData()
+                                                    DispatchQueue.main.async {
+                                                        self.loadFanpagesFromCategories()
+                                                    }
                                                 }
                                                 
-                                                self.loadFunpageByCategory(cat: cat, lastCategory: last)
+                                                //self.loadFunpageByCategory(cat: cat, lastCategory: last)
                                             }
                                             
                                             count  = count + 1
@@ -300,9 +315,120 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         }
     }
     
+    func loadFanpagesFromCategories()
+    {
+        let ids = Array(Global.categories_gamves.keys)
+        
+        for i in ids {
+            
+            var cat = Global.categories_gamves[i] as! CategoryGamves
+            
+            var fanpageAmount = 0
+            
+            let category = cat.cateobj
+            
+            let queryFanpage = PFQuery(className:"Fanpages")
+            
+            print(category?.objectId)
+            
+            queryFanpage.whereKey("category", equalTo: category)
+            
+            //queryFanpage.cachePolicy = .cacheElseNetwork
+            
+            if !Global.hasDateChanged()
+            {
+                queryFanpage.cachePolicy = .cacheElseNetwork
+            }
+            
+            
+            queryFanpage.findObjectsInBackground { (fanpagesArray, error) in
+                
+                if error != nil
+                {
+                    print("error")
+                } else {
+                    
+                    if let fanpagesArray = fanpagesArray
+                    {
+                        let fanpageAmount = fanpagesArray.count
+                        
+                        print(fanpageAmount)
+                        
+                        var total = Int()
+                        total = fanpageAmount - 1
+                        
+                        var count = 0
+                        
+                        for fanpage in fanpagesArray
+                        {
+                            
+                            //Download Images
+                            //Downloader.loadFanpageImages(fanpage: fanpage)
+                            
+                            let fan = FanpageGamves()
+                            
+                            let fpObj:PFObject = fanpage
+                            
+                            fan.fanpageObj = fpObj
+                            fan.categoryObj = cat.cateobj
+                            //let fanpageId = fpObj["fanpageId"] as! String
+                            let cover = fpObj["pageCover"] as! PFFile
+                            let name  = fpObj["pageName"] as! String
+                            let icon  = fpObj["pageIcon"] as! PFFile
+                            let about  = fpObj["pageAbout"] as! String
+                            
+                            icon.getDataInBackground(block: { (iconImageData, error) in
+                                
+                                if error == nil
+                                {
+                                    
+                                    let iconImage = UIImage(data: iconImageData!)
+                                    
+                                    fan.icon_image = iconImage!
+                                    fan.name =  name
+                                    fan.about = about
+                                    
+                                    cover.getDataInBackground(block: { (coverImageData, error) in
+                                        
+                                        if error == nil
+                                        {
+                                            
+                                            let coverImage = UIImage(data:coverImageData!)
+                                            fan.cover_image = coverImage!
+                                            
+                                            cat.fanpages.append(fan)
+                                            
+                                            print(fanpageAmount)
+                                            print(count)
+                                            //print(lastCategory)
+                                            
+                                            if  (fanpageAmount-1) == count //&& lastCategory )
+                                            {
+                                                self.dalaLoaded=true
+                                                
+                                                DispatchQueue.main.async {
+                                                    self.tableView.isHidden = false
+                                                    self.activityIndicatorView?.stopAnimating()
+                                                    self.tableView.reloadData()
+                                                }
+                                                
+                                            }
+                                            DispatchQueue.main.async{
+                                                self.tableView.reloadData()
+                                            }
+                                            count = count + 1
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+        }
+    }
     
-    
-    func loadFunpageByCategory(cat: CategoryGamves, lastCategory: Bool)
+    /*func loadFunpageByCategory(cat: CategoryGamves, lastCategory: Bool)
     {
         
         print("***************FANPAGEBYCATEGORY*********************")
@@ -311,7 +437,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         
         let category = cat.cateobj
         
-        let queryFanpage = PFQuery(className:"Fanpage")
+        let queryFanpage = PFQuery(className:"Fanpages")
         
         print(category?.objectId)
         
@@ -347,104 +473,70 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                     {
                         
                         //Download Images
-                        Downloader.loadFanpageImages(fanpage: fanpage)
+                        //Downloader.loadFanpageImages(fanpage: fanpage)
                         
-                        var fan = FanpageGamves()
+                        let fan = FanpageGamves()
                         
                         let fpObj:PFObject = fanpage
                         
                         fan.fanpageObj = fpObj
                         fan.categoryObj = cat.cateobj
-                        let fanpageId = fpObj["fanpageId"] as! String
-                        let cover = fpObj["pageCover"] as! String
-                        var name  = fpObj["pageName"] as! String
-                        var icon  = fpObj["pageIcon"] as! String
-                        var about  = fpObj["pageAbout"] as! String
+                        //let fanpageId = fpObj["fanpageId"] as! String
+                        let cover = fpObj["pageCover"] as! PFFile
+                        let name  = fpObj["pageName"] as! String
+                        let icon  = fpObj["pageIcon"] as! PFFile
+                        let about  = fpObj["pageAbout"] as! String
                         
-                        print(name)
-                        print(cover)
-                        print(icon)
-                        
-                        let iconURL = URL(string: icon)!
-                        let sessionIcon = URLSession(configuration: .default)
-                        
-                        let downloadIcon = sessionIcon.dataTask(with: iconURL) {
-                            (data, response, error) in
-                            
-                            guard error == nil else {
-                                print(error!)
-                                return
-                            }
-                            guard let data = data else {
-                                print("Data is empty")
-                                return
-                            }
-                            
-                            let image = UIImage(data: data)
+                        icon.getDataInBackground(block: { (iconImageData, error) in
                             
                             if error == nil
                             {
-                                let iconImage = UIImage(data:data)
-                                fan.fanpageId = fanpageId
+                                
+                                let iconImage = UIImage(data: iconImageData!)
+                                
                                 fan.icon_image = iconImage!
                                 fan.name =  name
                                 fan.about = about
                                 
-                                let coverURL = URL(string: cover)!
-                                let sessionCover = URLSession(configuration: .default)
-                                
-                                let downloadCover = sessionCover.dataTask(with: coverURL) {
-                                    (data, response, error) in
-                                    
-                                    guard error == nil else {
-                                        print(error!)
-                                        return
-                                    }
-                                    guard let data = data else {
-                                        print("Data is empty")
-                                        return
-                                    }
+                                cover.getDataInBackground(block: { (coverImageData, error) in
                                     
                                     if error == nil
                                     {
-                                        let coverImage = UIImage(data:data)
+                                        
+                                        let coverImage = UIImage(data:coverImageData!)
                                         fan.cover_image = coverImage!
                                         
-                                        cat.fanpages.append(fan)                                     
+                                        cat.fanpages.append(fan)
+                                        
+                                        print(fanpageAmount)
+                                        print(count)
+                                        print(lastCategory)
                                         
                                         if ( (fanpageAmount-1) == count && lastCategory )
                                         {
                                             self.dalaLoaded=true
                                             
-                                            DispatchQueue.main.async
-                                            {
+                                            DispatchQueue.main.async {
                                                 self.tableView.isHidden = false
                                                 self.activityIndicatorView?.stopAnimating()
                                                 self.tableView.reloadData()
                                             }
                                             
-                                            
                                         }
-                                        DispatchQueue.main.async
-                                        {
+                                        DispatchQueue.main.async{
                                             self.tableView.reloadData()
                                         }
                                         count = count + 1
                                     }
-                                    
-                                }
-                                downloadCover.resume()                               
-                                
+                                })
                             }
-                            
-                        }
-                        downloadIcon.resume()
+                        })
                         
                     }
                 }
             }
         }
-    } 
+    }*/
     
     
     func getImageVideo(videothumburl: String, video:VideoGamves, completionHandler : (_ video:VideoGamves) -> Void)
@@ -475,15 +567,15 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
  
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
              
-        let id = collectionView.tag
+        let id = collectionView.tag as Int
         
         print(id)
 
-        let countFanpages = Global.categories_gamves[id].fanpages.count
+        let countFanpages = Global.categories_gamves[id]?.fanpages.count
         
         print(countFanpages)
         
-        return countFanpages
+        return countFanpages!
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -494,23 +586,23 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         let row = indexPath.row
         
-        print(Global.categories_gamves[id].name)
+        print(Global.categories_gamves[id]?.name)
         
         print(id)        
         print(row)
         
-        print(Global.categories_gamves[id].fanpages.count)
+        print(Global.categories_gamves[id]?.fanpages.count)
 
-        let fanpage = Global.categories_gamves[id].fanpages[row]
+        let fanpage = Global.categories_gamves[id]?.fanpages[row]
         
-        print(fanpage.name)
+        print(fanpage?.name)
 
         cell.fanpageImageView.layer.masksToBounds = true
         cell.fanpageImageView.layer.cornerRadius = 5
         
-        cell.fanpageImageView.image = fanpage.icon_image
+        cell.fanpageImageView.image = fanpage?.icon_image
         
-        cell.fanpageName.text = fanpage.name
+        cell.fanpageName.text = fanpage?.name
         
         return cell
     }
@@ -518,9 +610,9 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {    
         
-        let id = collectionView.tag
+        let id = collectionView.tag as Int
         
-        let category:CategoryGamves = Global.categories_gamves[id]
+        let category:CategoryGamves = Global.categories_gamves[id]!
         
         //print(category.name)
         

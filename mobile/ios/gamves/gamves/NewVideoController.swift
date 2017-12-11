@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import Parse
 import DownPicker
 import Alamofire
 import NVActivityIndicatorView
 import SwiftyJSON
 import UITextView_Placeholder
+import AVFoundation
+import MobileCoreServices
+
 
 protocol VideoProtocol {
     func selectedVideo(videoUrl: String, title: String, description : String, image : UIImage)
@@ -22,7 +26,7 @@ protocol SearchProtocol {
     func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
 }
 
-class NewVideoController: UIViewController, SearchProtocol  {
+class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate {
     
     var homeController: HomeController?
     
@@ -283,7 +287,13 @@ class NewVideoController: UIViewController, SearchProtocol  {
     }()
     
     var metricsNew = [String:CGFloat]()
-
+    
+    var videoSelLocalUrl:URL?
+    var videoSelData = Data()
+    var videoSelThumbnail = UIImage()
+    
+    var newVideoId = String()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -387,8 +397,11 @@ class NewVideoController: UIViewController, SearchProtocol  {
         self.categoryTypeTextField.becomeFirstResponder()
 
         var catArray = [String]()
-        for cats in Global.categories_gamves {	
-        	catArray.append(cats.name)
+        
+        let ids = Array(Global.categories_gamves.keys)
+        
+        for i in ids {
+            catArray.append((Global.categories_gamves[i]?.name)!)
         }
         let categories: NSMutableArray = catArray as! NSMutableArray
         self.categoryDownPicker = DownPicker(textField: categoryTypeTextField, withData:categories as! [Any])
@@ -505,10 +518,14 @@ class NewVideoController: UIViewController, SearchProtocol  {
         
         let value = picker.getTextField().text
         let fanpage = FanpageGamves()
-        for cat in Global.categories_gamves {
-            if cat.name == value
+        
+        let ids = Array(Global.categories_gamves.keys)
+        
+        for i in ids {
+            let cat = Global.categories_gamves[i]
+            if cat?.name == value
             {
-                self.category = cat
+                self.category = cat!
             }
         }
         
@@ -681,60 +698,6 @@ class NewVideoController: UIViewController, SearchProtocol  {
 	func handleSearch()
     {
 
-        self.openSerarch()
-        
-		/*self.activityIndicatorView?.startAnimating()
-
-    	self.getVideoDataUser(videoId: "C7i4SoN58Sk", completionHandler: { ( restul:Bool ) -> () in   		
-
-    		self.cameraView.image = self.thumbnailImage
-			self.titleTextField.text = self.videoTitle			
-
-			self.getVideoDescription(videoId: "C7i4SoN58Sk", completionHandlerDesc: { ( restul:Bool ) -> () in
-
-				self.descriptionTextView.text = self.videoDescription
-
-				self.activityIndicatorView?.stopAnimating()
-
-			})
-
-		})*/
-
-        
-        
-		/*if let keyWindow = UIApplication.shared.keyWindow 
-		{
-
-			var view:UIView!
-			view = UIView(frame: keyWindow.frame)
-            view.backgroundColor = UIColor.white 
-
-            view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)           
-
-            let searchFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: keyWindow.frame.height)
-
-			let searchView = SearchView(frame: searchFrame)  
-
-
-			keyWindow.addSubview(searchView)    
-
-			searchView.setViews()
-
-			 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
-                
-                view.frame = keyWindow.frame
-                
-                }, completion: { (completedAnimation) in                   
-                    
-                    UIApplication.shared.setStatusBarHidden(true, with: .fade)
-            })        
-
-		}*/
-
-    }
-
-    func openSerarch()
-    {
         //searchController.isGroup = group
         searchController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
@@ -742,25 +705,34 @@ class NewVideoController: UIViewController, SearchProtocol  {
         navigationController?.pushViewController(searchController, animated: true)
     }
 
-	func handleSave()
-    {
-        print("hanhandleSavedleRecord")
-    }
-   
-    func handleCameraImage()
-    {
+  
+    func handleCameraImage() {
         print("handleCameraImage")
-        let mediaPickerController = MediaPickerController(type: MediaPickerControllerType.imageOnly, presentingViewController: self )
-        mediaPickerController.show()
+        
+        //let mediaPickerController = MediaPickerController(type: MediaPickerControllerType.imageOnly, presentingViewController: self )
+        //mediaPickerController.show()
+        
+        let takePictures = TakePictures()
+        takePictures.setType(type: TakePictureType.selectImage)
+        navigationController?.pushViewController(takePictures, animated: true)
+    }
+    
+    func didPickImage(_ image: UIImage){
+        self.cameraButton.setImage(image, for: .normal)
+        self.videoSelThumbnail = image
+    }
+    func didPickVideo(url: URL, data: Data, thumbnail: UIImage){
+        self.videoSelLocalUrl = url
+        self.videoSelData = data
     }
 
-   	func handleVideo()
-    {
+   	func handleVideo() {
         print("handleUpload")
-        let mediaPickerController = MediaPickerController(type: MediaPickerControllerType.videoOnly, presentingViewController: self )
-        mediaPickerController.show()
+        let takePictures = TakePictures()
+        takePictures.setType(type: TakePictureType.selectVideo)
+        navigationController?.pushViewController(takePictures, animated: true)
     }
-
+    
     func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
     {
     	self.videoId = videoId
@@ -771,7 +743,101 @@ class NewVideoController: UIViewController, SearchProtocol  {
     	self.titleTextField.text = title
     	self.descriptionTextView.text = description
     	self.cameraButton.setImage(image, for: .normal)
-    }   
+    }
+    
+    func handleSave() {
+        
+        if !checErrors()
+        {
+        
+            print("hanhandleSavedleRecord")
+            
+            let videoPF: PFObject = PFObject(className: "VideoNew")
+            
+            videoPF["title"] = titleTextField.text
+            
+            videoPF["description"] = descriptionTextView.text
+            
+            let videoId = Global.getRandomInt()
+            
+            videoPF["videoId"] = videoId
+        
+            //let videoFile = PFFile(data: self.videoSelData)
+            
+            let thumbFile = PFFile(data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
+            
+            videoPF.saveInBackground { (resutl, error) in
+                
+                if error != nil
+                {
+                    self.newVideoId = videoPF.objectId!
+                    
+                    
+                }
+            
+                
+                
+            }
+        }
+        
+    }
+    
+    func checErrors() -> Bool
+    {
+        var errors = false
+        let title = "Error"
+        var message = ""
+        
+        if self.videoSelThumbnail == nil
+        {
+            errors = true
+            message += "Thumbnail image is empty please add a new video"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
+            
+        } else if self.videoSelData == nil
+        {
+            errors = true
+            message += "Please choose a video"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
+            
+        } else if (self.categoryTypeTextField.text?.isEmpty)!
+        {
+            errors = true
+            message += "Catgory is empty"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.categoryTypeTextField)
+            
+        } else if (self.fanpageTextField.text?.isEmpty)!
+        {
+            errors = true
+            message += "Fanpage is empty"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.fanpageTextField)
+            
+        } else if ((self.typeDownPicker.getTextField().text == "Youtube") && (self.youtubeUrlTextField.text?.isEmpty)!)
+        {
+            errors = true
+            message += "Youtube video is empty"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.youtubeUrlTextField)
+            
+        }
+        else if (self.titleTextField.text?.characters.count)! < 8
+        {
+            errors = true
+            message += "The title of the video is empty"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.titleTextField)
+        }
+        else if (self.descriptionTextView.text?.isEmpty)!
+        {
+            errors = true
+            message += "The description of the video is empty"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
+        }
+        return errors
+    }
+
+    
+    
 
 }
+
+
 

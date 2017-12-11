@@ -17,7 +17,7 @@ class CategoryCollectionViewCell: BaseCell
         let fanpageImageView = UIImageView()        
         fanpageImageView.contentMode = .scaleAspectFill //.scaleFill
         fanpageImageView.clipsToBounds = true
-        fanpageImageView.backgroundColor = UIColor.red
+        fanpageImageView.backgroundColor = UIColor.gamvesColor
         fanpageImageView.layer.cornerRadius = 10
         return fanpageImageView
     }()       

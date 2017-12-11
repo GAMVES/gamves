@@ -445,7 +445,7 @@ class FanpagePage: UIViewController,
             let videoLauncher = VideoLauncher()
             
             let video = videosGamves[indexPath.row]
-            video.fanpageId = fanpageGamves.fanpageId
+            //video.fanpageId = fanpageGamves.fanpageId
             
             videoLauncher.showVideoPlayer(videoGamves: video)
             

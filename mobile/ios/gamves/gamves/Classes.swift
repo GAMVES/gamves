@@ -71,7 +71,7 @@ class VideoGamves
     var thumb_url = String()
     var video_url = String()
     
-    var fanpageId = String()
+    //var fanpageId = String()
     
     var videoId = String()
     
@@ -95,11 +95,13 @@ class CategoryGamves
     var fanpages = [FanpageGamves]()
     
     var selected = Bool()
+    
+    var order = Int()
 }
 
 class FanpageGamves
 {
-    var fanpageId = String()
+    //var fanpageId = String()
     var cover   = String()
     var name    = String()
     var icon    = String()
