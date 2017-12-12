@@ -2,41 +2,34 @@
 //  YouTubePlayerController.swift
 //  gamves
 //
-//  Created by Jose Vigil on 12/5/17.
+//  Created by Jose Vigil on 12/12/17.
 //  Copyright © 2017 letsbuildthatapp. All rights reserved.
 //
 
 import UIKit
-import YouTubePlayer
 
-class YouTubePlayerController: UIViewController, YouTubePlayerDelegate  {
-    
-    var videoId = String()
-
+class YouTubePlayerController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let playerFrame = self.view.frame
-
-        var videoPlayer = YouTubePlayerView(frame: playerFrame)
-        self.view.addSubview(videoPlayer)
-
-        videoPlayer.delegate = self
-        
-        print(self.videoId)
-
-        videoPlayer.loadVideoID(self.videoId)
-
-        //videoPlayer.play()
-        
+        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }    
+    }
+    
 
-   
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+    }
+    */
 
 }
