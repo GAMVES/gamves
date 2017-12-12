@@ -68,10 +68,10 @@ class VideoGamves
     
     var thum_image = UIImage()
     
-    var thumb_url = String()
+    var thumbnail:PFFile?
     var video_url = String()
     
-    //var fanpageId = String()
+    var fanpageId = String()
     
     var videoId = String()
     
@@ -79,6 +79,8 @@ class VideoGamves
     
     var videoType = Int()
     var youtubeId = String()
+    
+    var image = UIImage()
     
 }
 
@@ -101,7 +103,7 @@ class CategoryGamves
 
 class FanpageGamves
 {
-    //var fanpageId = String()
+    var fanpageId = String()
     var cover   = String()
     var name    = String()
     var icon    = String()

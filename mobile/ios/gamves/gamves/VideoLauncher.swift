@@ -341,7 +341,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
         let first5VideoId = videoId.substring(to:videoId.index(videoId.startIndex, offsetBy: 5))
         
         let viId:Int = Int(first5VideoId)!
-        //let fanpageId = videoGamves.fanpageId
+        let fanpageId = videoGamves.fanpageId
         
         print("Showing video player....\(videoUrl)")
         

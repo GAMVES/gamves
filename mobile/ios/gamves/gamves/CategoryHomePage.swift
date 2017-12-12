@@ -371,7 +371,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                             
                             fan.fanpageObj = fpObj
                             fan.categoryObj = cat.cateobj
-                            //let fanpageId = fpObj["fanpageId"] as! String
+                            let fanpageId = fpObj["fanpageId"] as! String
                             let cover = fpObj["pageCover"] as! PFFile
                             let name  = fpObj["pageName"] as! String
                             let icon  = fpObj["pageIcon"] as! PFFile
@@ -614,12 +614,12 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         let category:CategoryGamves = Global.categories_gamves[id]!
         
-        //print(category.name)
+        print(category.name)
         
         let fanpage:FanpageGamves = category.fanpages[indexPath.row]
             
         
-        //print(fanpage.fanpageObj?.objectId)
+        print(fanpage.fanpageObj?.objectId)
         
         if ( delegate != nil )
         {

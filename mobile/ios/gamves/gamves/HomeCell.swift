@@ -162,7 +162,7 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
                         
                         let fanpage = data as! FanpageGamves
                         
-                        //print(fanpage.fanpageObj?.objectId)
+                        print(fanpage.fanpageObj?.objectId)
                         
                         fanpagePage.setFanpageGamvesData(data: fanpage)
                         

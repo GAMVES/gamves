@@ -315,7 +315,7 @@ class FanpagePage: UIViewController,
                             
                             let video = VideoGamves()
                             
-                            let videothumburl:String = qvideoinfo["thumbnailUrl"] as! String
+                            let videothum:PFFile = qvideoinfo["thumbnail"] as! PFFile
                             let videoDescription:String = qvideoinfo["description"] as! String
                             let videoCategory:String = qvideoinfo["category"] as! String
                             let videoUrl:String = qvideoinfo["source"] as! String
@@ -323,28 +323,33 @@ class FanpagePage: UIViewController,
                             let videoFromName:String = qvideoinfo["fromName"] as! String
                             
                             video.video_title = videoTitle
-                            video.thumb_url = videothumburl
+                            video.thumbnail = videothum
                             video.description = videoDescription
                             video.video_category = videoCategory
                             video.video_url = videoUrl
                             video.video_fromName = videoFromName
                             video.videoobj = qvideoinfo
                             
-                            self.getImageVideo(videothumburl: videothumburl, video: video, completionHandler:{(video:VideoGamves) -> Void in
+                            videothum.getDataInBackground(block: { (data, error) in
                                 
-                                fan.videos.append(video)
-                                
-                                print("***********")
-                                print("countVideos: \(countVideos!)")
-                                print("countVideosLoaded: \(countVideosLoaded)")
-
-                                if ( (countVideos!-1) == count)
-                                {
-                                    self.videosGamves = fan.videos
-                                    self.activityVideoView.stopAnimating()
-                                    self.collectionView.reloadData()
+                                if error != nil{
+                                    
+                                    video.image = UIImage(data: data!)!
+                                    
+                                    fan.videos.append(video)
+                                    
+                                    print("***********")
+                                    print("countVideos: \(countVideos!)")
+                                    print("countVideosLoaded: \(countVideosLoaded)")
+                                    
+                                    if ( (countVideos!-1) == count)
+                                    {
+                                        self.videosGamves = fan.videos
+                                        self.activityVideoView.stopAnimating()
+                                        self.collectionView.reloadData()
+                                    }
+                                    count = count + 1
                                 }
-                                count = count + 1                             
                             })
                         }
                     }
@@ -445,7 +450,7 @@ class FanpagePage: UIViewController,
             let videoLauncher = VideoLauncher()
             
             let video = videosGamves[indexPath.row]
-            //video.fanpageId = fanpageGamves.fanpageId
+            video.fanpageId = fanpageGamves.fanpageId
             
             videoLauncher.showVideoPlayer(videoGamves: video)
             

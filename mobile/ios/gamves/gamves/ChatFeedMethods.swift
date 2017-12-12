@@ -175,7 +175,7 @@ class ChatFeedMethods: NSObject
                                 for video in videos
                                 {
                                     let videoGamves = VideoGamves()
-                                    let videothumburl:String = video["thumbnailUrl"] as! String
+                                    let videothumb:PFFile = video["thumbnail"] as! PFFile
                                     let videoDescription:String = video["description"] as! String
                                     let videoCategory:String = video["category"] as! String
                                     let videoUrl:String = video["source"] as! String
@@ -183,21 +183,24 @@ class ChatFeedMethods: NSObject
                                     let videoFromName:String = video["fromName"] as! String
                                     
                                     videoGamves.video_title = videoTitle
-                                    videoGamves.thumb_url = videothumburl
+                                    videoGamves.thumbnail = videothumb
                                     videoGamves.description = videoDescription
                                     videoGamves.video_category = videoCategory
                                     videoGamves.video_url = videoUrl
                                     videoGamves.video_fromName = videoFromName
                                     videoGamves.videoobj = video
                                     
-                                    if let vurl = URL(string: videothumburl)
-                                    {
-                                        if let data = try? Data(contentsOf: vurl)
-                                        {
-                                            videoGamves.thum_image = UIImage(data: data)!
+                                    videothumb.getDataInBackground(block: { (data, error) in
+                                        
+                                        if error != nil{
+                                            
+                                            videoGamves.image = UIImage(data: data!)!
+                                            
+                                            Global.chatVideos[chatId] = videoGamves
                                         }
-                                    }
-                                    Global.chatVideos[chatId] = videoGamves
+
+                                    })
+                                    
                                 }
                             }
                         }
