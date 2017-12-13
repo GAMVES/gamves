@@ -247,8 +247,7 @@ class ChatView: UIView,
             
             if ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber != nil
             {
-                if (ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber)! > 0
-                {
+                if (ChatFeedMethods.chatFeeds[self.chatId]?.badgeNumber)! > 0 {
                     self.clearBargesForChatId()
                 }
             }
@@ -285,8 +284,6 @@ class ChatView: UIView,
                     
                     if chatsAmount > 0
                     {
-                        
-                        
                         var total = Int()
                         total = chatsAmount - 1
                         var i = 0

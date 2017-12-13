@@ -194,7 +194,7 @@ UICollectionViewDelegateFlowLayout {
         
         cell.userProfileImageView.image = fanpagesGamves[indexPath.row].icon_image
         
-        cell.subtitleTextView.text = fanpagesGamves[indexPath.row].about
+        //cell.subtitleTextView.text = fanpagesGamves[indexPath.row].about
 
         return cell
     }

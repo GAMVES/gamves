@@ -14,6 +14,8 @@ import PopupDialog
 class Global: NSObject
 {
     
+    static var gamves_official = "gamves_official"
+    
     static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
     
     static var api_image_base = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="

@@ -266,13 +266,17 @@ class FanpagePage: UIViewController,
         gradientLayer.locations = [0.7, 1.2]
         self.coverContainerView.layer.addSublayer(gradientLayer)
     }
+    
+    var loaded = Bool()
 
     func setFanpageData()
     {
         self.videosGamves.removeAll()
-        self.getFanpageVideos(fan: fanpageGamves)
+        if !self.loaded {
+            self.getFanpageVideos(fan: fanpageGamves)
+            self.loaded = true
+        }
     }
-    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -281,7 +285,6 @@ class FanpagePage: UIViewController,
 
     func getFanpageVideos(fan:FanpageGamves)
     {
-        
         let countVideosLoaded = 0
         
         let videoRel:PFRelation = fan.fanpageObj!.relation(forKey: "videos")
@@ -344,6 +347,33 @@ class FanpagePage: UIViewController,
                             video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
                             
                             video.posterId                  = qvideoinfo["posterId"] as! String
+                            
+                            print(video.posterId)
+                            
+                            if Global.userDictionary[video.posterId] == nil && video.posterId != Global.gamves_official {
+                            
+                                let userQuery = PFQuery(className:"_User")
+                                userQuery.whereKey("objectId", notEqualTo: video.posterId)
+                                userQuery.findObjectsInBackground(block: { (users, error) in
+                                    
+                                    if error == nil
+                                    {
+                                        let usersCount =  users?.count
+                                        var count = 0
+                                        
+                                        //print(usersCount)
+                                        
+                                        for user in users!
+                                        {
+                                            Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
+                                            
+                                                self.collectionView.reloadData()
+                                            })
+                                        }
+                                    }
+                                })
+                            }
+                            
                             video.posterName                = qvideoinfo["poster_name"] as! String
                             
                             video.published                 = qvideoinfo.createdAt! as Date
@@ -377,7 +407,6 @@ class FanpagePage: UIViewController,
             }
         })
     }
-    
 
     func getImageVideo(videothumburl: String, video:VideoGamves, completionHandler : (_ video:VideoGamves) -> Void)
     {
@@ -431,7 +460,26 @@ class FanpagePage: UIViewController,
             
             cellVideo.thumbnailImageView.image = videosGamves[indexPath.row].image
             
-            cellVideo.descriptionTextView.text = videosGamves[indexPath.row].description
+            let posterId = videosGamves[indexPath.row].posterId
+            
+            if posterId == Global.gamves_official {
+                
+                cellVideo.userProfileImageView.image = UIImage(named:"gamves_icons_white")
+                
+            } else if let imagePoster = Global.userDictionary[posterId] {
+                
+                cellVideo.userProfileImageView.image = imagePoster.avatar
+            }
+            
+            cellVideo.videoName.text = videosGamves[indexPath.row].title
+            
+            let published = String(describing: videosGamves[indexPath.row].published)
+            
+            let shortDate = published.components(separatedBy: " at ")
+            
+            cellVideo.videoDatePublish.text = shortDate[0]
+            
+            //cellVideo.descriptionTextView.text = videosGamves[indexPath.row].description
             
             return cellVideo
         }

@@ -95,6 +95,7 @@ class VideoGamves
     var videoObj:PFObject?
     var posterId = String()
     var posterName = String()
+    var posterImage = UIImage()
     var published = Date()
 
 }
