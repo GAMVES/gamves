@@ -95,11 +95,9 @@ $( document ).ready(function() {
       console.log(password);
 
       Parse.User.logIn(username, password, {
-        success: function(user) { 
-
-          window.location = "views/panel.html";
+        success: function(user) {          
   
-          /*var queryConfig = new Parse.Query("Config");
+          var queryConfig = new Parse.Query("Config");
           queryConfig.first({	        
               success: function(results) {
 
@@ -110,6 +108,8 @@ $( document ).ready(function() {
                   var config = new Config();
                   config.set("server_url", Parse.serverURL); 
                   config.set("app_id", APP_ID);
+                  config.set("app_icon_url", "https://api-parseground.s3.amazonaws.com/deab76060e176261cfdbb8d779dd1e32_gamves_icons_white.png");                  
+                  config.set("hasIcon", false);
                   config.set("master_key", "");
 
                   config.save(null, {
@@ -126,7 +126,7 @@ $( document ).ready(function() {
                   window.location = "views/panel.html";
                 }
               }
-          });*/	                                 
+          });
 
         },
         error: function(user, error) {

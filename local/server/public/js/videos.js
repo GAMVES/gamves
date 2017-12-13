@@ -1,8 +1,10 @@
 
 document.addEventListener("LoadVideo", function(event){
 
-      var fanpageId = event.detail;
+      var fanpageId = event.detail.fanpageId;
+      var categoryName = event.detail.categoryName;
       var fanpageObj;
+      var appIconFile;
 
       var queryFanpage = new Parse.Query("Fanpages");             
       queryFanpage.equalTo("objectId", fanpageId);
@@ -11,7 +13,8 @@ document.addEventListener("LoadVideo", function(event){
               
               if (fanpage) { 
                     fanpageObj = fanpage;                  
-                    searchVideo(fanpage);            
+                    searchVideo(fanpage); 
+                    getAppIcon();           
               }
           }
       });   
@@ -25,8 +28,7 @@ document.addEventListener("LoadVideo", function(event){
             videosRelation.find({
                 success: function (videos) {                                   
 
-                    if (videos) {  
-                               
+                    if (videos) {                                 
 
                       videosLenght = videos.length;
                       var dataJson = [];
@@ -221,8 +223,11 @@ document.addEventListener("LoadVideo", function(event){
 
          }, function(error) {
 
-           console.log("error :" +errort);
+            console.log("error :" +errort);
             // error
+
+            $('#error_message').html("<p>" + errort + "</p>");
+
         });  
 
       });     
@@ -239,6 +244,10 @@ document.addEventListener("LoadVideo", function(event){
           video.set("title", title);
           video.set("description", desc);          
 
+          video.set("categoryName", categoryName);
+
+          video.set("poster", );          
+
           video.set("s3_source", "");
           video.set("ytb_source", videoUrl);
           video.set("ytb_thumbnail_source", thumbnailUrl);
@@ -252,49 +261,36 @@ document.addEventListener("LoadVideo", function(event){
           video.set("ytb_like_count", like_count);                      
 
           var order = $("#edit_order_video").val();
-          video.set("order", parseInt(order));    
+          video.set("order", parseInt(order)); 
+
+          video.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
+
+          var vrnd = Math.floor(100000 + Math.random() * 900000);
+          video.set("videoId", vrnd.toString());              
+
+          video.set("fanpageObjId", fanpageObj.id); 
+
+          video.set("posterId", "gamves_official");           
+          video.set("poster_name", "Gamves Official");                       
 
           video.save(null, {
               success: function (savedVideo) {        
                  
                   console.log('Video created successful with name: ' + video.get("title"));
                  
-                  $('#edit_model_video').modal('hide'); 
+                  $('#edit_model_video').modal('hide');
 
-                  var fanVideoRelation = fanpageObj.relation("videos");
-                  fanVideoRelation.add(savedVideo);
-
-                  fanpageObj.save(null, {
-                        success: function (pet) {   
-                              postDownloadJob(savedVideo.id);
-                              clearField();
-                        },
-                        error: function (response, error) {
-                              console.log('Error: ' + error.message);
-                        }
-                 });
+                  clearField();
+                  searchVideo(fanpage);                   
                                                                                                     
               },
               error: function (response, error) {
+                    $('#error_message').html("<p>" + errort + "</p>");
                   console.log('Error: ' + error.message);
               }
           });
       }
-
-      function postDownloadJob(objectId) {  
-
-          var serverUrl = Parse.serverURL;
-
-          Parse.Cloud.run("postDownloadVideoJob", { 
-              ytb_videoId: vId, 
-              pfVideoId:   objectId, 
-              serverUrl :  serverUrl  
-          }).then(function(result) {    
-              searchVideo(fanpage);
-              console.log(result);
-          });       
-
-      }     
+         
 
       function clearField(){
         $("#edit_model_fanpage").find("input[type=text], textarea").val("");
@@ -302,6 +298,20 @@ document.addEventListener("LoadVideo", function(event){
         $("#edit_order_fanpage").empty();
         $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
         $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+      }
+
+      function getAppIcon(){
+
+        var queryConfig = new Parse.Query("Config");
+          queryConfig.first({         
+              success: function(results) {
+
+                if( results != undefined) 
+                {
+                  appIconFile = results.get("app_thumbnail");                  
+                }        
+              }
+          });
       }
 });
 

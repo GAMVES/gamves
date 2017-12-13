@@ -1,6 +1,6 @@
  
   <div class="container_fanpage">         
-  <h3>Fanpages</h3>
+  <h3>FANPAGES</h3>
     <table id="gridFanpage" class="table table-condensed table-hover table-striped">
       <thead>
         <tr>
@@ -9,13 +9,14 @@
           <th data-column-id="icon" data-formatter="icon">Icon</th>
           <th data-column-id="name">Name</th>
           <th data-column-id="about">About</th>
+          <th data-column-id="images" data-formatter="images">Images</th>
           <th data-column-id="cover" data-formatter="cover">Cover</th>   
           <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>       
         </tr>
       </thead>
     </table>    
     </div>
-    <div id="edit_model_fanpage" class="modal fade">
+    <div id="edit_modal_fanpage" class="modal fade">
     <div class="modal-dialog" >
         <div class="modal-content">            
             <div class="modal-header">
@@ -55,4 +56,31 @@
         </div>
       </div>
     </div>
+
+    <div id="edit_modal_album" class="modal fade">
+    <div class="modal-dialog" >
+        <div class="modal-content">            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="fanpage_title" class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="frm_edit">                                    
+                  <div class="form-group">
+                    <label for="name" class="control-label">Images:</label>
+                    <div id="images_countainer"/>
+                  </div>
+                  <div class="form-group">              
+                    <input id="input_icon_fanpage" type="file"></input>
+                  </div>                                  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save_images_container" class="btn btn-primary">Save</button>
+            </div>
+            </form>
+        </div>
+      </div>
+    </div>
+    
   </div>

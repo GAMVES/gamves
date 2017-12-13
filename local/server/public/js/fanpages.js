@@ -4,7 +4,8 @@ document.addEventListener("LoadFanpage", function(event){
       
       var selectedItem = [];   
       var selected = -1;
-      var categoryPF; 
+      var categoryPF;
+      var categoryName; 
 
       var queryCategory = new Parse.Query("Categories");             
       queryCategory.equalTo("objectId", catId);
@@ -13,7 +14,8 @@ document.addEventListener("LoadFanpage", function(event){
               
               if (category) {
                     categoryPF = category
-                    loadFanpages(category)            
+                    categoryName = category.get("description");
+                    loadFanpages(category);            
               }
           }
       });
@@ -78,6 +80,9 @@ document.addEventListener("LoadFanpage", function(event){
                             "commands": function(column, row) {
                                 return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>&nbsp;" + 
                                        "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;";
+                            },
+                            "images": function(column, row) {
+                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-images\" data-row-id=\"" + row.id + "\">Images</button>&nbsp;";                                       
 
                             }                   
                           }               
@@ -100,7 +105,9 @@ document.addEventListener("LoadFanpage", function(event){
                           selected = rowIds.join(",");
                           selectedItem.push(selected);   
 
-                          var event = new CustomEvent("LoadVideo", { detail: fanpageId });
+                          var event = new CustomEvent("LoadVideo", { detail: {
+                                    fanpageId: fanpageId,
+                                    categoryName: categoryName }} );                                    
                           document.dispatchEvent(event);
 
                           //alert("Select: " + rowIds.join(","));
@@ -133,7 +140,7 @@ document.addEventListener("LoadFanpage", function(event){
                                                           
                              $("#fanpage_title").text("New Fanpage"); 
 
-                             $('#edit_model_fanpage').modal('show');       
+                             $('#edit_modal_fanpage').modal('show');       
 
                               if (fanpagesLenght==0){
                                   $("#edit_order_fanpage").append(($("<option/>", { html: 0 })));                                     
@@ -157,7 +164,7 @@ document.addEventListener("LoadFanpage", function(event){
                               console.log(g_name);
 
                               //console.log(grid.data());//
-                              $('#edit_model_fanpage').modal('show');
+                              $('#edit_modal_fanpage').modal('show');
 
                               if ($(this).data("row-id") >0) {
 
@@ -182,6 +189,18 @@ document.addEventListener("LoadFanpage", function(event){
                               } else {
                                  alert('Now row selected! First select row, then click edit button');
                               }
+
+                          }).end().find(".command-images").on("click", function(e) {
+
+                                $('#edit_modal_album').modal('show');
+
+                                 var ele =$(this).parent();   
+
+                                if ($(this).data("row-id") >0) {
+
+                                    var f = ele.siblings(':first').html(); 
+
+                                }
 
                           }).end().find(".command-delete").on("click", function(e) {
 
@@ -247,11 +266,14 @@ document.addEventListener("LoadFanpage", function(event){
           fanpage.set("pageIcon", parseFileIcon);
           fanpage.set("pageCover", parseFileCover);         
           var order = $("#edit_order_fanpage").val();          
-          fanpage.set("order", parseInt(order));                             
+          fanpage.set("order", parseInt(order));  
+
+          fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
+                                     
           fanpage.save(null, {
               success: function (pet) {
                   console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
-                  $('#edit_model_fanpage').modal('hide');
+                  $('#edit_modal_fanpage').modal('hide');
                   loadFanpages(categoryPF);
                   clearField();
               },
@@ -259,12 +281,11 @@ document.addEventListener("LoadFanpage", function(event){
                   console.log('Error: ' + error.message);
               }
           });
-
       }
 
       function clearField(){
-        $("#edit_model_fanpage").find("input[type=text], textarea").val("");
-        $("#edit_model_fanpage").find("input[type=file], textarea").val("");
+        $("#edit_modal_fanpage").find("input[type=text], textarea").val("");
+        $("#edit_modal_fanpage").find("input[type=file], textarea").val("");
         $("#edit_order_fanpage").empty();
         $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
         $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             

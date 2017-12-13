@@ -224,6 +224,30 @@ Parse.Cloud.afterSave("ChatVideo", function(request) {
 });
 
 // --
+// Save Config download image for poster
+
+Parse.Cloud.afterSave("Config", function(request) {
+
+	var app_icon_url = request.object.get("app_icon_url");
+	var hasIcon = request.object.get("hasIcon");
+
+	if (!hasIcon) {
+		Parse.Cloud.httpRequest({url: app_icon_url}).then(function(httpResponse) {
+	                    
+		     var imageBuffer = httpResponse.buffer;
+		     var base64 = imageBuffer.toString("base64");
+		     var file = new Parse.File("gamves.png", { base64: base64 });                    
+		     
+		     request.object.set("app_thumbnail", file);
+		     request.object.set("hasIcon", true);
+
+		     request.object.save(null, { useMasterKey: true } );
+
+		});	
+	}	
+});
+
+// --
 // Update or create Budges
 
 Parse.Cloud.afterSave("ChatFeed", function(request) {
@@ -262,19 +286,13 @@ Parse.Cloud.afterSave("ChatFeed", function(request) {
 			//}
 		}
 
-	} else
-	{
-
+	} else {
 		console.info("createBadgeForUser");
-
 		var userId = members.replace(/"/g, '');
-
 		createBadgeForUser(chatId, lastPoster, userId);
-
 	}
 
-	function createBadgeForUser(chatId, lastPoster, userId)
-	{
+	function createBadgeForUser(chatId, lastPoster, userId) {
 
 		console.info("*************************************");
 		console.info("userId: " + userId + " chatId: " + chatId + " lastPoster: " + lastPoster);
@@ -368,9 +386,7 @@ Parse.Cloud.afterSave("ChatFeed", function(request) {
 	            console.error(error);
 	        }
 	    });
-
 	}
-
 });
 
 
@@ -413,7 +429,6 @@ Parse.Cloud.define("saveImageForUser", function( request, response ) {
 		            response.error(error.message);
 		        }
 		    );			
-
 		
 		}, error:function(error)
         {
@@ -470,18 +485,98 @@ Parse.Cloud.afterSave("Videos", function(request) {
 
 		var ytb_videoId = request.object.get("ytb_videoId");
 		var videoFile = ytb_videoId + ".mp4";
-
 		var fs = require('fs'); 
 	    fs.unlinkSync(videoFile);
-
-	    if (!fs.existsSync(videoFile)) {
-	      	request.object.set("removed", true);
-	    	request.object.save(null, { useMasterKey: true } );	
-	    } else 
-		{
-			//DO SOMETHING HERE TO INFORM.
+	    if ( !fs.existsSync(videoFile) ) {	      	
+	    	request.object.save({ removed : true }, { useMasterKey: true,
+		        success: function (response) {
+		            response.success(response);
+		        },
+		        error: function (error) {
+		            response.error('Error! ' + error.message);
+		        }
+		    });
+	    } else {
+			//DO SOMETHING!! The file has not been removed.
 		}
+
+	} else if (!removed && !downloaded) {
+
+		//-- Save video relation into fanpage
+
+		var query = new Parse.Query("Fanpages");
+		var fanpageId = request.object.get("fanpageObjId");
+	    query.equalTo("objectId", fanpageId);	   
+	    
+	    query.find({
+	        useMasterKey: true,
+	        success: function(results) {
+	        	
+	        	if( results.length > 0) {
+					
+					var fanpageObject = results[0];
+					console.info("feedObject: " + fanpageObject);
+		        	var videoRelation = fanpageObject.relation("videos");
+		        	videoRelation.add(request.object);		        	
+
+		        	fanpageObject.save(null, { useMasterKey: true,
+                        success: function () {
+
+                        	var queryConfig = new Parse.Query("Config");				   
+						    queryConfig.find({
+						        useMasterKey: true,
+						        success: function(results) {
+
+						        	if( results.length > 0) 
+						        	{
+
+										var configObject = results[0];
+										
+										var serverUrl = configObject.get("server_url");
+										var vId       = request.object.get("ytb_videoId");
+										var pfVideoId = request.object.id;
+									    
+									    Parse.Cloud.httpRequest({
+									      
+									      method: "POST",
+									      url: serverUrl + "jobs/downloader",
+									      headers: {
+										    	"X-Parse-Application-Id": _appId,
+										    	"X-Parse-Master-Key": _mKey,
+										    	"Content-Type": "application/json"
+										  },
+									      body: {
+									        "ytb_videoId": vId,
+									        "objectId": pfVideoId            
+									      },	      
+									      success: function(httpResponse) {          
+									          console.log(httpResponse);			 
+									      },
+									      error: function(httpResponse) {
+									          console.log('Error! ' + httpResponse);
+									      }
+									    });
+								    } 
+						        },
+						        error: function(error) {						            
+						            console.log(error);
+						        }
+						    });    
+                        	
+
+                        },
+                        error: function (error) {
+                            console.log('Error! ' + error.message);
+                        }
+                    });   		            
+			    } 
+	        },
+	        error: function(error) {	            
+	            console.log(error);
+	        }
+	    });
 	}
+
 
 });
 
@@ -504,6 +599,7 @@ Parse.Cloud.define("getYoutubeVideoInfo", function( request, response ) {
 		//console.log('Download started');
 		//console.log('filename: ' + info.filename);
 		//console.log('size: ' + info.size);		
+		// TOMAR SOLO LO NECESARIO
 		response.success(info);		
 	});
 
@@ -598,71 +694,3 @@ Parse.Cloud.define("uploadVideoToS3", function( request, response ) {
 		});
 
 });
-
-
-/*Parse.Cloud.define("saveImageForUser", function( request, response ) {
-	
-	var userId = request.params.userId;
-
-	var image = request.params.image;
-	var imagename = request.params.imagename;
-
-	var imageSmall = request.params.imageSmall;
-	var imagesmallname = request.params.imagesmallname;
-
-	var userQuery = new Parse.Query(Parse.User);
-	userQuery.equalTo('objectId', userId);
-
-	userQuery.find({
-		useMasterKey: true,
-		success: function(user) 
-		{
-
-			var imageFile = new Parse.File(imagename,image);
-			
-			imageFile.save(null, {useMasterKey: true})
-		    .then(
-		        function() { 	
-
-		            //response.success(1);
-
-		            var imageFileSmall = new Parse.File(imagesmallname,imageSmall)
-		            imageFileSmall.save(null, {useMasterKey: true})
-				    .then(
-				        function() {
-
-				        	user.set("picture", image);
-							user.set("pictureSmall", imageSmall);
-							user.save(null, { useMasterKey: true } );
-
-				        	response.success(true);
-
-						}, 
-				        function(error) {
-				            response.error(error.message);
-				        }
-				    );	   	
-
-		        }, 
-		        function(error) {
-		            response.error(error.message);
-		        }
-		    );			
-
-		
-		}, error:function(error)
-        {
-        	response.error(error);
-            console.error("pushQuery find failed. error = " + error.message);
-        }
-
-     });
-
-});*/
-
-
-
-
-
-
-
