@@ -7,6 +7,11 @@ document.addEventListener("LoadFanpage", function(event){
       var categoryPF;
       var categoryName; 
 
+      var fanpageId;
+      var fanpageObjs = [];
+      var _fId;
+      var fanpageIdArray = []; 
+
       var queryCategory = new Parse.Query("Categories");             
       queryCategory.equalTo("objectId", catId);
       queryCategory.first({
@@ -31,8 +36,9 @@ document.addEventListener("LoadFanpage", function(event){
 
                     if (fanpages) {                
 
+                      fanpageObjs = fanpages;
                       fanpagesLenght = fanpages.length;
-                      var dataJson = [];                      
+                      var dataJson = [];                                           
 
                       for (var i = 0; i < fanpagesLenght; ++i) 
                       {
@@ -59,6 +65,9 @@ document.addEventListener("LoadFanpage", function(event){
                           } else {
                             item["cover"] = "https://dummyimage.com/150x60/286090/ffffff.png&text=Not+Available";
                           }
+                          var fpid = fanpages[i].get("fanpageId");  
+                          fanpageIdArray.push(fpid);
+
                           dataJson.push(item);
                       }                          
 
@@ -82,7 +91,8 @@ document.addEventListener("LoadFanpage", function(event){
                                        "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;";
                             },
                             "images": function(column, row) {
-                                return "<button type=\"button\" class=\"btn btn-xs btn-default command-images\" data-row-id=\"" + row.id + "\">Images</button>&nbsp;";                                       
+                                var fpid = fanpageIdArray[(row.id-1)];  
+                                return "<button type=\"button\ data-fanpage=\"" + fpid + "\" class=\"btn btn-xs btn-default command-images\" data-row-id=\"" + row.id + "\">Images</button>&nbsp;";                                       
 
                             }                   
                           }               
@@ -94,8 +104,7 @@ document.addEventListener("LoadFanpage", function(event){
                            }
 
                           var countSelected=0;
-                          var rowIds = [];
-                          var fanpageId;
+                          var rowIds = [];                          
                           for (var i = 0; i < rows.length; i++)
                           {                      
                               rowIds.push(rows[i].id); 
@@ -110,13 +119,10 @@ document.addEventListener("LoadFanpage", function(event){
                                     categoryName: categoryName }} );                                    
                           document.dispatchEvent(event);
 
-                          //alert("Select: " + rowIds.join(","));
-
                       }).on("deselected.rs.jquery.bootgrid", function(e, rows)
                       {
                           var rowIds = [];
-                          for (var i = 0; i < rows.length; i++)
-                          {
+                          for (var i = 0; i < rows.length; i++) {
                               rowIds.push(rows[i].id);
                           }
 
@@ -134,7 +140,15 @@ document.addEventListener("LoadFanpage", function(event){
 
                           $( "#btn_edit_fanpages" ).unbind("click").click(function() {
                               saveFanpage();
-                          });                    
+                          }); 
+
+                           $( "#save_albums_container" ).unbind("click").click(function() {
+                              saveAlbums();
+                          });
+
+                           $("#input_album_fanpage").unbind("change").change(function() {
+                              loadAlbumImage(this);
+                          });                   
 
                           $( "#new_fanpage" ).unbind("click").click(function() {                             
                                                           
@@ -192,15 +206,18 @@ document.addEventListener("LoadFanpage", function(event){
 
                           }).end().find(".command-images").on("click", function(e) {
 
-                                $('#edit_modal_album').modal('show');
+                                $('#edit_modal_album').modal('show');                                                                 
 
-                                 var ele =$(this).parent();   
+                                 var row  =$(this).attr('data-row-id'); 
 
-                                if ($(this).data("row-id") >0) {
+                                 _fId = row-1;
+                                 
+
+                                /*if ($(this).data("row-id") >0) {
 
                                     var f = ele.siblings(':first').html(); 
 
-                                }
+                                }*/
 
                           }).end().find(".command-delete").on("click", function(e) {
 
@@ -253,6 +270,22 @@ document.addEventListener("LoadFanpage", function(event){
           var backname = "s_" + desc.toLowerCase() + ".png";       
           parseFileCover = new Parse.File(backname, input.files[0], "image/png");                    
         }
+      }           
+
+      var albumImages = [];
+
+      function loadAlbumImage(input) {
+        
+        if (input.files && input.files[0]) {           
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var _img = "<img id src=\"" + e.target.result + "\" height=\"30\" width=\"30\"/>";
+            $("#images_countainer").append(_img);            
+          }          
+          reader.readAsDataURL(input.files[0]);            
+          var parseAlbumFile = new Parse.File("albums", input.files[0], "image/png");                    
+          albumImages.push(parseAlbumFile);             
+        }
       }
 
       function saveFanpage() {          
@@ -282,13 +315,47 @@ document.addEventListener("LoadFanpage", function(event){
               }
           });
       }
+      
 
-      function clearField(){
-        $("#edit_modal_fanpage").find("input[type=text], textarea").val("");
-        $("#edit_modal_fanpage").find("input[type=file], textarea").val("");
-        $("#edit_order_fanpage").empty();
-        $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
-        $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+      function saveAlbums() {
+
+          var Albums = Parse.Object.extend("Albums");              
+          
+          for (var i=0; i<albumImages.length; i++){           
+            
+            var album = new Albums();
+            album.set("cover", albumImages[i]);
+            var fanId = fanpageIdArray[_fId];
+            album.set("fanpageId", fanId);      
+
+            album.save(null, {
+              success: function (albumStored) {
+                  
+                    var alRelation = fanpageObjs[_fId].relation("albums");
+                    alRelation.add(albumStored);
+
+                    fanpageObjs[_fId].save();
+
+              },
+              error: function (response, error) {
+                  console.log('Error: ' + error.message);
+              }
+
+            });
+          }
+
+          $('#edit_modal_album').modal('hide');          
+          clearField();         
+      }
+
+      function clearField() {
+
+          $("#edit_modal_fanpage").find("input[type=text], textarea").val("");
+          $("#edit_modal_fanpage").find("input[type=file], textarea").val("");
+          $("#edit_order_fanpage").empty();
+          $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+          $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+
       }
 
 });
