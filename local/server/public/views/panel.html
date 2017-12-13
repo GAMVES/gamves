@@ -18,7 +18,8 @@
   
   <script type="text/javascript" src="../js/videos.js"></script>
   <script type="text/javascript" src="../js/fanpages.js"></script>
-  <script type="text/javascript" src="../js/categories.js"></script>              
+  <script type="text/javascript" src="../js/categories.js"></script> 
+  <script type="text/javascript" src="../js/schools.js"></script>              
   
   <style>
     .container {
@@ -60,6 +61,8 @@
     <br>
     <img src="../img/gamves_logo.png" class="logo"/>
     <br>   
+    <div id="schools" style="width:90%; margin:0 auto;"></div>
+    <br>   
     <div id="categories" style="width:90%; margin:0 auto;"></div>   
     <br>  
     <div id="fanpages" style="width:90%; margin:0 auto;"></div>   
@@ -75,6 +78,7 @@
 
   $( document ).ready(function() {
 
+      $("#schools").load("schools.html");
       $("#categories").load("categories.html");
       $("#fanpages").load("fanpages.html");
       $("#videos").load("videos.html");    

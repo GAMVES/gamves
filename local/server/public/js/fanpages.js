@@ -92,8 +92,7 @@ document.addEventListener("LoadFanpage", function(event){
                             },
                             "images": function(column, row) {
                                 var fpid = fanpageIdArray[(row.id-1)];  
-                                return "<button type=\"button\ data-fanpage=\"" + fpid + "\" class=\"btn btn-xs btn-default command-images\" data-row-id=\"" + row.id + "\">Images</button>&nbsp;";                                       
-
+                                return "<button type=\"button\ data-fanpage=\"" + fpid + "\" class=\"btn btn-xs btn-default command-images\" data-row-id=\"" + row.id + "\">Grades</button>&nbsp;";                                       
                             }                   
                           }               
 
@@ -211,13 +210,6 @@ document.addEventListener("LoadFanpage", function(event){
                                  var row  =$(this).attr('data-row-id'); 
 
                                  _fId = row-1;
-                                 
-
-                                /*if ($(this).data("row-id") >0) {
-
-                                    var f = ele.siblings(':first').html(); 
-
-                                }*/
 
                           }).end().find(".command-delete").on("click", function(e) {
 

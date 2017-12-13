@@ -1,18 +1,6 @@
+document.addEventListener("LoadCategories", function(event){
 
-  $( document ).ready(function() {
-
-    //Parse.initialize("lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"); 
-    //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
-    //Parse.serverURL = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/";
-
-    Parse.initialize("0123456789"); 
-    //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
-    Parse.serverURL = "http://192.168.16.22:1337/1/";
-
-    var currentUser = Parse.User.current();
-    if (!currentUser) {
-        window.location = "../index.html";
-    }
+    var schoolId = event.detail;
 
     var selectedItem = [];   
     var selected = -1; 
@@ -27,7 +15,8 @@
     function loadCategories()
     {
   
-        queryCategory = new Parse.Query("Categories");      
+        queryCategory = new Parse.Query("Categories");  
+        queryCategory.equalTo("schoolId", schoolId);          
         queryCategory.find({
             success: function (categories) {
 
@@ -243,6 +232,7 @@
 
           var Category = Parse.Object.extend("Categories");         
           var cat = new Category();    
+          cat.set("schoolId", schoolId);
           cat.set("thumbnail", parseFileThumbanil);
           cat.set("description", $("#edit_description").val());
           var order = $("#edit_order_categories").val();
@@ -260,15 +250,18 @@
               }
           });
       }
+
+      function clearField(){
+          $("#edit_model_category").find("input[type=text], textarea").val("");
+          $("#edit_model_category").find("input[type=file], textarea").val("");
+          $("#edit_order_categories").empty();
+          $('#img_thumbnail').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+          $("#img_back").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+      }
+
   });
 
-  function clearField(){
-      $("#edit_model_category").find("input[type=text], textarea").val("");
-      $("#edit_model_category").find("input[type=file], textarea").val("");
-      $("#edit_order_categories").empty();
-      $('#img_thumbnail').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
-      $("#img_back").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
-  }
+  
 
 
 
