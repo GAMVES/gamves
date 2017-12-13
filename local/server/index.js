@@ -13,7 +13,7 @@ var api = new ParseServer(
   masterKey  : process.env.MASTER_KEY      || '9876543210', //Add your master key here. Keep it secret!
   serverURL  : process.env.SERVER_URL      || 'http://192.168.16.22:' + port + '/1',
   liveQuery: {
-        classNames: ['UserOnline'],
+        classNames: ['UserOnline', 'ChatFeed', 'ChatVideo'],
   },  
 
   // If you change the cloud/main.js to another path

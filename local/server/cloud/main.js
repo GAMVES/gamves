@@ -224,30 +224,6 @@ Parse.Cloud.afterSave("ChatVideo", function(request) {
 });
 
 // --
-// Save Config download image for poster
-
-Parse.Cloud.afterSave("Config", function(request) {
-
-	var app_icon_url = request.object.get("app_icon_url");
-	var hasIcon = request.object.get("hasIcon");
-
-	if (!hasIcon) {
-		Parse.Cloud.httpRequest({url: app_icon_url}).then(function(httpResponse) {
-	                    
-		     var imageBuffer = httpResponse.buffer;
-		     var base64 = imageBuffer.toString("base64");
-		     var file = new Parse.File("gamves.png", { base64: base64 });                    
-		     
-		     request.object.set("app_thumbnail", file);
-		     request.object.set("hasIcon", true);
-
-		     request.object.save(null, { useMasterKey: true } );
-
-		});	
-	}	
-});
-
-// --
 // Update or create Budges
 
 Parse.Cloud.afterSave("ChatFeed", function(request) {
@@ -578,6 +554,123 @@ Parse.Cloud.afterSave("Videos", function(request) {
 	}
 
 
+});
+
+
+// --
+// Initial script for Config and other classes.
+
+Parse.Cloud.define("initConfig", function( request, response ) {
+
+	var app_id 			= request.params.app_id;
+	var server_url 		= request.params.serverUrl;	
+	var app_icon_url 	= request.params.app_icon_url;
+	var hasIcon 		= request.params.hasIcon;
+
+
+	var Schools = Parse.Object.extend("Schools");
+	var school = new Schools();
+	school.save();
+
+	var UserTypes = Parse.Object.extend("UserType");
+
+	var t = "idUserType";
+	var d = "description";
+
+	var registerMother = new UserTypes();
+	registerMother.set(t, 0);
+	registerMother.set(d, "Register-Mother");
+	registerMother.save();                         
+
+	var spouseMother = new UserTypes();
+	spouseMother.set(t, 1);
+	spouseMother.set(d, "Spouse-Mother");
+	spouseMother.save();
+
+	var son = new UserTypes();
+	son.set(t, 2);
+	son.set(d, "Son");
+	son.save();
+
+	var daughter = new UserTypes();
+	daughter.set(t, 3);
+	daughter.set(d, "Daughter");
+	daughter.save();
+
+	var spouseFather = new UserTypes();
+	spouseFather.set(t, 4);
+	spouseFather.set(d, "Spouse-Father");
+	spouseFather.save();
+
+	var registerFather = new UserTypes();
+	registerFather.set(t, 5);
+	registerFather.set(d, "Register-Father");
+	registerFather.save(); 
+
+	//Role Class is to be added by hand and set 
+    //var Roles = Parse.Role()
+    //var role = new Roles();
+    //role.set("name", "admin");
+    //var customAcl = new Parse.ACL();                        
+    //customAcl.setPublicReadAccess(true);
+    //customAcl.setPublicWriteAccess(true);
+    //role.setACL(customAcl);
+    //role.save();
+
+	var queryConfig = new Parse.Query("Config");
+          queryConfig.first({         
+              success: function(results) {
+
+                if( results == undefined) 
+                {
+                 
+                  var Config = Parse.Object.extend("Config");
+                  var config = new Config();
+                  config.set("server_url", Parse.serverURL); 
+                  config.set("app_id", app_id);
+                  config.set("app_icon_url", app_icon_url);                  
+                  config.set("hasIcon", hasIcon);                  
+
+                  config.save(null, {
+                    success: function (savedConfig) {
+
+                        response.success();                   
+
+                    },
+                    error: function (response, error) {
+                        console.log('Error: ' + error.message);
+                        response.error(error);
+                    }
+                  }); 
+
+              } 
+          }
+     });     
+
+});	
+
+// --
+// Save Config download image for poster
+
+Parse.Cloud.afterSave("Config", function(request) {
+
+	var app_icon_url = request.object.get("app_icon_url");
+	var hasIcon = request.object.get("hasIcon");
+
+	if (!hasIcon) {
+		Parse.Cloud.httpRequest({url: app_icon_url}).then(function(httpResponse) {
+	                    
+		     var imageBuffer = httpResponse.buffer;
+		     var base64 = imageBuffer.toString("base64");
+		     var file = new Parse.File("gamves.png", { base64: base64 });                    
+		     
+		     request.object.set("app_thumbnail", file);
+		     request.object.set("hasIcon", true);
+
+		     request.object.save(null, { useMasterKey: true } );
+
+		});	
+	}	
 });
 
 // --
