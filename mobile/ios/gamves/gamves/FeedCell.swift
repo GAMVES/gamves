@@ -294,7 +294,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
                 
             video = Global.chatVideos[chatId]!
             
-            print(video.videoId)
+            print(video.ytb_videoId)
             
             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
             

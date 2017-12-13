@@ -21,7 +21,6 @@ protocol VideoProtocol {
     func selectedVideo(videoUrl: String, title: String, description : String, image : UIImage)
 }
 
-
 protocol SearchProtocol {
     func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
 }
@@ -31,6 +30,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     var homeController: HomeController?
     
     var category = CategoryGamves()
+    var fanpage = FanpageGamves()
 
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -248,14 +248,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         tf.translatesAutoresizingMaskIntoConstraints = false      
         return tf
     }()
-
-    var thumbnailImage = UIImage()
-    var thumbnail_url = String()
-    var author_name = String()
-    var videoTitle = String()
-    var videoDescription = String()
-    var videoId = String()
-
+   
     //-- save
 
     var activityIndicatorView:NVActivityIndicatorView?
@@ -550,6 +543,16 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         let value = picker.getTextField().text
         print(value)
         
+        let ids = Array(self.category.fanpages)
+        
+        for fpage in self.category.fanpages {
+            
+            if fpage.name == value
+            {
+                self.fanpage = fpage
+            }
+        }
+        
         self.typeDownPicker.isEnabled = true
 
         self.typeTextField.becomeFirstResponder()
@@ -582,19 +585,29 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
             self.videoButton.isUserInteractionEnabled = false
             
 
-    	} else if value == "Local"
-    	{
-
+    	} else if value == "Local" {
             self.videoButton.isUserInteractionEnabled = true
-
             self.youtubeUrlTextField.isUserInteractionEnabled = false
-            self.searchButton.isUserInteractionEnabled = false
-            
-    	}
-  
+            self.searchButton.isUserInteractionEnabled = false            
+    	}  
     }
+    
+    var thumbnailImage      = UIImage()
+    var thumbnail_url       = String()
+    var author_name         = String()
+    var videoTitle          = String()
+    var videoDescription    = String()
+    var videoId             = String()
+    var video_url           = String()
 
-     
+    var upload_date = String()
+    var view_count  = String()
+    var tags        = String()
+    var duration    = String()
+    var categories  = String()
+    var like_count  = String()
+
+    
     func getVideoDataUser(videoId: String, completionHandler : @escaping (_ resutl:Bool) -> ()){
 
     	let urlString = "\(Global.api_image_base)\(videoId)\(Global.api_image_format)"
@@ -740,6 +753,8 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     	self.videoDescription = description
     	self.thumbnailImage = image
 
+        self.video_url = "https://www.youtube.com/watch?v=" + self.videoId
+        self.youtubeUrlTextField.text = self.video_url
     	self.titleTextField.text = title
     	self.descriptionTextView.text = description
     	self.cameraButton.setImage(image, for: .normal)
@@ -749,37 +764,119 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         
         if !checErrors()
         {
-        
-            print("hanhandleSavedleRecord")
             
-            let videoPF: PFObject = PFObject(className: "VideoNew")
+            self.activityIndicatorView?.startAnimating()
             
-            videoPF["title"] = titleTextField.text
+            let params = ["videoId":videoId] as [String : Any]
             
-            videoPF["description"] = descriptionTextView.text
-            
-            let videoId = Global.getRandomInt()
-            
-            videoPF["videoId"] = videoId
-        
-            //let videoFile = PFFile(data: self.videoSelData)
-            
-            let thumbFile = PFFile(data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
-            
-            videoPF.saveInBackground { (resutl, error) in
+            PFCloud.callFunction(inBackground: "getYoutubeVideoInfo", withParameters: params) { (result, error) in
                 
-                if error != nil
+                if error == nil
                 {
-                    self.newVideoId = videoPF.objectId!
                     
-                    
+                    do {
+                        
+                        if let json = result as? [String:Any] {
+                            
+                            print(json)
+                            
+                            self.videoTitle       = json["fulltitle"] as! String
+                            self.videoDescription = (json["description"] as? String)!
+                            self.thumbnail_url    = (json["thumbnail"] as? String)!
+                            
+                            let upload_date     = json["upload_date"] as? String
+                            let view_count      = json["view_count"] as! Double
+                            let tags            = json["tags"] as! NSArray
+                            let duration        = json["duration"] as! String
+                            let categoriesArray = json["categories"] as! NSArray
+                            let like_count      = json["like_count"] as! Double
+                            
+                            let videoPF: PFObject = PFObject(className: "Videos")
+                            
+                            videoPF["title"] = self.titleTextField.text
+                            
+                            videoPF["description"] = self.descriptionTextView.text
+                            
+                            let videoNumericId = Global.getRandomInt()
+
+                            videoPF["videoId"] = videoNumericId
+                            
+                            videoPF["downloaded"]   = false
+                            videoPF["removed"]      = false
+                            videoPF["authorized"]    = false
+    
+                            videoPF["categoryName"] = self.category.name
+
+                            videoPF["s3_source"]    =  String()
+                            videoPF["ytb_source"]   =  self.video_url
+                            videoPF["ytb_thumbnail_source"] = self.thumbnail_url
+                            videoPF["ytb_videoId"]  = self.videoId
+    
+                            videoPF["ytb_upload_date"]  = upload_date
+                            videoPF["ytb_view_count"]   = view_count     
+                            videoPF["ytb_tags"]         = tags
+                            videoPF["ytb_duration"]     = duration
+                            videoPF["ytb_categories"]   = categoriesArray         
+                            videoPF["ytb_like_count"]   = like_count                                          
+                            
+                            videoPF["order"] = -1 //LEAVE TO BACKEND 
+
+                            let fanpageNumericId = Global.getRandomInt()
+                            videoPF["fanpageId"] = fanpageNumericId
+                            videoPF["videoId"] = self.videoId
+                            videoPF["fanpageObjId"] = self.fanpage.fanpageObj?.objectId
+
+                            videoPF["posterId"] = PFUser.current()?.objectId
+                            
+                            let userId = PFUser.current()?.objectId
+                            let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
+                            
+                            videoPF["poster_name"] = name
+                                
+                            print(videoPF)
+
+                            videoPF.saveInBackground { (resutl, error) in
+                                
+                                if error == nil
+                                {
+                                    
+                                    let approvals: PFObject = PFObject(className: "Approvals")
+                                    
+                                    approvals["videoObjectId"] = videoPF.objectId
+                                    
+                                    if Global.gamvesFamily.youUser.isRegister
+                                    {
+                                        approvals["registerId"] = Global.gamvesFamily.youUser.userId
+                                        approvals["spouseId"] = Global.gamvesFamily.spouseUser.userId
+                                        
+                                    } else if Global.gamvesFamily.spouseUser.isRegister
+                                    {
+                                        approvals["registerId"] = Global.gamvesFamily.spouseUser.userId
+                                        approvals["spouseId"] = Global.gamvesFamily.youUser.userId
+                                    }
+                                    
+                                    approvals.saveInBackground { (resutl, error) in
+                                        
+                                        if error == nil
+                                        {
+                                            let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
+                                            Global.alertWithTitle(viewController: self, title: "Video Uploaded!", message: message, toFocus: self.categoryTypeTextField)
+                                            
+                                            self.activityIndicatorView?.startAnimating()
+                                            
+                                            self.navigationController?.popToRootViewController(animated: true)
+                                        }
+                                    }
+                                }                       
+                            }
+                        }
+                        
+                    } catch let err {
+                        print(err.localizedDescription)
+                    }                    
                 }
-            
-                
-                
-            }
+            }           
         }
-        
     }
     
     func checErrors() -> Bool

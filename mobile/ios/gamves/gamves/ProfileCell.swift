@@ -173,12 +173,10 @@ class ProfileCell: BaseCell, UIScrollViewDelegate {
         self.sonLabel.textAlignment = NSTextAlignment.center
 
     }
-
     
     override func layoutSubviews() {
         
     }
-   
     
     
 }

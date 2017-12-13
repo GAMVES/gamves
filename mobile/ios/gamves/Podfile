@@ -1,18 +1,11 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, '9.0'
 
-
 use_frameworks!
 
 target 'gamves' do
-  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
-  
-
-  # Pods for gamves
 
   pod 'ParseLiveQuery'
-  
-  #pod 'Parse'
 
   pod 'DeviceKit'
   
@@ -23,8 +16,6 @@ target 'gamves' do
   pod 'PopupDialog'
   
   pod 'DownPicker'
-
-  pod 'YouTubePlayer'
   
   pod 'Alamofire'
   
@@ -33,6 +24,7 @@ target 'gamves' do
   pod 'UITextView+Placeholder', '~> 1.2'
   
   pod 'AWSS3'
-
+  
+  pod 'YouTubePlayer'
   
 end

@@ -50,6 +50,7 @@ class GamvesParseUser
     var chatId = Int()
     var isChecked = Bool()
     var gender = GamvesGender()
+    var isRegister = Bool()
 }
 
 class GamvesGender
@@ -60,28 +61,42 @@ class GamvesGender
 
 class VideoGamves
 {
-    var video_category = String()
-    var video_title = String()
-    
+    /*var video_category = String()
+    var video_title = String()    
     var video_fromName = String()
-    var description = String()
-    
-    var thum_image = UIImage()
-    
+    var description = String()    
+    var thum_image = UIImage()    
     var thumbnail:PFFile?
-    var video_url = String()
-    
-    var fanpageId = String()
-    
-    var videoId = String()
-    
-    var videoobj:PFObject?
-    
+    var video_url = String()    
+    var fanpageId = Int()    
+    var videoId = String()    
+    var videoobj:PFObject?    
     var videoType = Int()
-    var youtubeId = String()
-    
+    var youtubeId = String()    
+    var image = UIImage()*/
+
+    var title = String()
+    var description = String()
+    var videoId = String()
+    var categoryName = String()
+    var thumbnail:PFFile?
+    var s3_source = String()        
+    var ytb_thumbnail_source = String()
+    var ytb_videoId = String()
+    var ytb_upload_date = Date()
+    var ytb_view_count = Int()
+    var ytb_tags = [String]()
+    var ytb_duration = Double()
+    var ytb_categories = [String]()
+    var ytb_like_count = Int()
+    var order = Int()
+    var fanpageId = Int()
     var image = UIImage()
-    
+    var videoObj:PFObject?
+    var posterId = String()
+    var posterName = String()
+    var published = Date()
+
 }
 
 class CategoryGamves
@@ -103,7 +118,7 @@ class CategoryGamves
 
 class FanpageGamves
 {
-    var fanpageId = String()
+    var fanpageId = Int()
     var cover   = String()
     var name    = String()
     var icon    = String()

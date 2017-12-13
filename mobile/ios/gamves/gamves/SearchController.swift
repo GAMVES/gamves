@@ -343,7 +343,8 @@ class SearchController: UIViewController,
             navigationController?.pushViewController(youTubePlayerController, animated: true)         
         }
         
-    }
+    }  
+    
 
 }
 

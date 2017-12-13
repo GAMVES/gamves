@@ -9,9 +9,8 @@
 import UIKit
 import AVFoundation
 import Parse
-import YouTubePlayer
 
-class VideoPlayerView: UIView, YouTubePlayerDelegate {  
+class VideoPlayerView: UIView {
 
     var videoLauncher:VideoLauncher!
     var keyWindow: UIView!
@@ -84,8 +83,7 @@ class VideoPlayerView: UIView, YouTubePlayerDelegate {
     var videoType = Int()
     var gradientLayer = CAGradientLayer()
     var videoUrl = String()
-    var isVideoDown = Bool()   
-    var youtubePlayer: YouTubePlayerView! 
+    var isVideoDown = Bool()       
     var videoFrame = CGRect()
 
     override init(frame: CGRect) {
@@ -93,7 +91,7 @@ class VideoPlayerView: UIView, YouTubePlayerDelegate {
         super.init(frame: frame)
     }
     
-    func setViews(type: Int, view:UIView, videoLauncherVidew:VideoLauncher) {
+    func setViews(view:UIView, videoLauncherVidew:VideoLauncher) {
         self.videoLauncher = videoLauncherVidew
         self.keyWindow = view
     }   
@@ -127,30 +125,8 @@ class VideoPlayerView: UIView, YouTubePlayerDelegate {
                 //perhaps do something later here
             })
         }
-    }
-
-    func setYoutubePlayer(id:String)
-    {
-        self.youtubePlayer = YouTubePlayerView(frame: self.videoFrame)
-        self.youtubePlayer.delegate = self
-        self.addSubview(youtubePlayer)
-        self.youtubePlayer.loadVideoID(id)
-    }
+    }        
     
-    func playerReady(_ videoPlayer: YouTubePlayerView) {
-        print("ready")        
-    }
-    
-    func playerStateChanged(_ videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState) {
-     
-        print("changes: \(playerState)")
-    }
-    
-    func playerQualityChanged(_ videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality) {
-        
-        print("playbackQuality: \(playbackQuality)")
-        
-    }
 
     func handlePause() {
         if isPlaying {
@@ -334,9 +310,9 @@ class VideoLauncher: UIView, KeyboardDelegate {
         self.keyWindoWidth = (UIApplication.shared.keyWindow?.frame.size.width)!
         self.keyWindoHeight = (UIApplication.shared.keyWindow?.frame.size.height)!
 
-        let videoUrl = videoGamves.video_url
-        let videoObj = videoGamves.videoobj!
-        let videoId = videoObj["videoId"] as! String        
+        let videoUrl = videoGamves.s3_source
+        let videoObj = videoGamves.videoObj
+        let videoId = videoObj?["videoId"] as! String        
 
         let first5VideoId = videoId.substring(to:videoId.index(videoId.startIndex, offsetBy: 5))
         
@@ -354,20 +330,10 @@ class VideoLauncher: UIView, KeyboardDelegate {
             
             //16 x 9 is the aspect ratio of all HD videos
             let videoHeight = keyWindow.frame.width * 9 / 16
-            let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoHeight)
+            let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoHeight)           
 
-            //REMOVE
-            //videoGamves.videoType = 1
-            //videoGamves.youtubeId = "FA_q7chyDAU"
-
-            videoPlayerView = VideoPlayerView(frame: videoPlayerFrame)            
-            if videoGamves.videoType == 0
-            {
-                videoPlayerView.setNativePlayer(url: videoUrl)
-            } else if videoGamves.videoType == 1
-            {
-                videoPlayerView.setYoutubePlayer(id: videoGamves.youtubeId)
-            }
+            videoPlayerView = VideoPlayerView(frame: videoPlayerFrame)                        
+            videoPlayerView.setNativePlayer(url: videoUrl)
             view.addSubview(videoPlayerView)
 
             //let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.draggedView))
@@ -411,17 +377,15 @@ class VideoLauncher: UIView, KeyboardDelegate {
             
             chatView = ChatView(frame: chatFrame, isVideo: true)
             
-            let params = ["chatId": viId, "isVideoChat": true, "thumbnailImage": videoGamves.thum_image, "delegate":self] as [String : Any]
+            let params = ["chatId": viId, "isVideoChat": true, "thumbnailImage": videoGamves.image, "delegate":self] as [String : Any]
             
             chatView.setParams(parameters: params)
 
             view.addSubview(chatView)
             
             chatView.loadChatFeed()
-
-            //self.valpha = 1.0
             
-            videoPlayerView.setViews(type: videoGamves.videoType, view: view, videoLauncherVidew: self)
+            videoPlayerView.setViews(view: view, videoLauncherVidew: self)
             
             keyWindow.addSubview(view)
 
@@ -468,7 +432,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
         {
             self.openVideoUp()
         }
-    }      
+    }    
 
     
     func shrinkVideoDown()

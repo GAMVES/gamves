@@ -134,6 +134,9 @@ class Global: NSObject
                                     
                                     gamvesUser.typeNumber = typeNumber
                                     
+                                    let register = user["isRegister"] as! Bool
+                                    gamvesUser.isRegister = register
+                                    
                                     print(gamvesUser.typeNumber)
                                     
                                     //No me interesa
@@ -219,7 +222,7 @@ class Global: NSObject
             
             if let data = try? Data(contentsOf: vurl)
             {
-                video.thum_image = UIImage(data: data)!
+                video.image = UIImage(data: data)!
                 
                 completionHandler(video)
             }
@@ -662,6 +665,8 @@ class Global: NSObject
         return has
 
     }
+    
+    
 
 }
 

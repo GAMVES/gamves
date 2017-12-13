@@ -28,11 +28,21 @@ class VideoCollectionViewCell: BaseCell {
         return imageView
     }()
     
-    let separatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
-        return view
-    }()        
+    
+
+    let videoName: UILabel = {
+        let label = UILabel()
+        //label.text = "Setting"
+        label.font = UIFont.systemFont(ofSize: 13)
+        return label
+    }()
+
+    let videoPoster: UILabel = {
+        let label = UILabel()
+        //label.text = "Setting"
+        label.font = UIFont.systemFont(ofSize: 10)
+        return label
+    }()      
     
     let descriptionTextView: UITextView = {
         let textView = UITextView()
@@ -42,25 +52,54 @@ class VideoCollectionViewCell: BaseCell {
         textView.textColor = UIColor.lightGray
         return textView
     }()
+
+    let separatorView: UIView = {
+        let view = UIView()
+        //view.backgroundColor = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+        view.backgroundColor = UIColor.white
+        return view
+    }()
     
     var titleLabelHeightConstraint: NSLayoutConstraint?
     
     override func setupViews() 
     {
+
+
+        /*contentView.addSubview(thumbnailImageView)        
+        contentView.addSubview(separatorView)
+        contentView.addSubview(fanpageName)          
+
+        contentView.addConstraintsWithFormat("H:|-10-[v0(80)]-10-|", views: thumbnailImageView)         
+        contentView.addConstraintsWithFormat("H:|[v0]|", views: separatorView)
+        contentView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: fanpageName)
+            
+        //vertical constraints
+        contentView.addConstraintsWithFormat("V:|-10-[v0(80)]-[v1(10)]-[v2]-10-|", views: 
+            fanpageImageView, 
+            separatorView, 
+            fanpageName)             */
+
+
+
         
         addSubview(thumbnailImageView) 
         addSubview(descriptionTextView)   
         addSubview(separatorView)
         
-        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: thumbnailImageView)
+        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: thumbnailImageView)        
+        
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: descriptionTextView)
-        addConstraintsWithFormat("H:|[v0]|", views: separatorView)      
+        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: separatorView)      
         
         //vertical constraints
         addConstraintsWithFormat("V:|-16-[v0]-8-[v1(44)]-36-[v2(1)]|", 
-            views: thumbnailImageView, descriptionTextView, separatorView)        
+            views: thumbnailImageView, descriptionTextView, separatorView)
 
         self.separatorView.backgroundColor = UIColor.lightGray
+
+
+
         
     }
 

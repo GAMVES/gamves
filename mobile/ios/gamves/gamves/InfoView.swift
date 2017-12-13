@@ -147,7 +147,7 @@ class InfoView: UIView {
         self.descHolderView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.infoTitleLabel)
         self.descHolderView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.infoDescLabel)
         
-        self.infoTitleLabel.text = self.videoGamves.video_fromName
+        self.infoTitleLabel.text = self.videoGamves.title
         self.infoDescLabel.text = self.videoGamves.description
 
         self.likesHolderView.addSubview(self.likeContainerView)

@@ -94,20 +94,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func loadParse(application: UIApplication, launchOptions: [AnyHashable: Any]?)
     {
+        //Local
+        let configuration = ParseClientConfiguration {
+            $0.applicationId = "0123456789"
+            $0.server = "http://192.168.16.22:1337/1/"
+        }
+        Parse.initialize(with: configuration)
+        
         //Back4app
         /*let configuration = ParseClientConfiguration {
-            $0.applicationId = "qmTbd36dChKyopgav1JVUMGx2vnZSVdclkNpK6YU"
-            $0.clientKey = "r1FBMzUkEemRnGllhvZdkFtKknu1CMUXUUwzP6ew"
-            $0.server = "https://parseapi.back4app.com"
-        }*/
+         $0.applicationId = "qmTbd36dChKyopgav1JVUMGx2vnZSVdclkNpK6YU"
+         $0.clientKey = "r1FBMzUkEemRnGllhvZdkFtKknu1CMUXUUwzP6ew"
+         $0.server = "https://parseapi.back4app.com"
+         }*/
         
         //Sashido
-        let configuration = ParseClientConfiguration {
+        /*let configuration = ParseClientConfiguration {
          $0.applicationId = "lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"
          $0.clientKey = "sMlMuxDQTs631WYXfS5rdnUQzeeRPB6JFNnKsVhY"
          $0.server = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
          }
-        Parse.initialize(with: configuration)
+         Parse.initialize(with: configuration)*/
+
         
         // [Optional] Track statistics around application opens.
         PFAnalytics.trackAppOpened(launchOptions: launchOptions)

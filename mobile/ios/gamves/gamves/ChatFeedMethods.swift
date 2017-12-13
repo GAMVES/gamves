@@ -172,25 +172,48 @@ class ChatFeedMethods: NSObject
                             
                             if let videos = videos
                             {
-                                for video in videos
+                                for qvideoinfo in videos
                                 {
                                     let videoGamves = VideoGamves()
-                                    let videothumb:PFFile = video["thumbnail"] as! PFFile
-                                    let videoDescription:String = video["description"] as! String
-                                    let videoCategory:String = video["category"] as! String
-                                    let videoUrl:String = video["source"] as! String
-                                    let videoTitle:String = video["title"] as! String
-                                    let videoFromName:String = video["fromName"] as! String
                                     
-                                    videoGamves.video_title = videoTitle
-                                    videoGamves.thumbnail = videothumb
-                                    videoGamves.description = videoDescription
-                                    videoGamves.video_category = videoCategory
-                                    videoGamves.video_url = videoUrl
-                                    videoGamves.video_fromName = videoFromName
-                                    videoGamves.videoobj = video
+                                    let video = VideoGamves()
                                     
-                                    videothumb.getDataInBackground(block: { (data, error) in
+                                    var videothum = qvideoinfo["thumbnail"] as! PFFile
+                                    
+                                    video.title                     = qvideoinfo["title"] as! String
+                                    video.description               = qvideoinfo["description"] as! String
+                                    video.thumbnail                 = videothum
+                                    video.categoryName              = qvideoinfo["categoryName"] as! String
+                                    video.videoId                   = qvideoinfo["videoId"] as! String
+                                    video.s3_source                 = qvideoinfo["s3_source"] as! String
+                                    video.ytb_thumbnail_source      = qvideoinfo["ytb_thumbnail_source"] as! String
+                                    video.ytb_videoId               = qvideoinfo["ytb_videoId"] as! String
+                                    
+                                    let dateStr = qvideoinfo["ytb_upload_date"] as! String
+                                    let dateDouble = Double(dateStr)
+                                    let date = NSDate(timeIntervalSince1970: dateDouble!)
+                                    
+                                    video.ytb_upload_date           = date as Date
+                                    video.ytb_view_count            = qvideoinfo["ytb_view_count"] as! Int
+                                    video.ytb_tags                  = qvideoinfo["ytb_tags"] as! [String]
+                                    
+                                    let durStr = qvideoinfo["ytb_upload_date"] as! String
+                                    let durDouble = Double(durStr)
+                                    video.ytb_duration              = durDouble!
+                                    
+                                    video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]
+                                    video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
+                                    video.order                     = qvideoinfo["order"] as! Int
+                                    video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
+                                    
+                                    video.posterId                  = qvideoinfo["posterId"] as! String
+                                    video.posterName                = qvideoinfo["poster_name"] as! String
+                                    
+                                    video.published                 = qvideoinfo.createdAt as! Date
+                                    
+                                    video.videoObj = qvideoinfo
+                                                                       
+                                    videothum.getDataInBackground(block: { (data, error) in
                                         
                                         if error != nil{
                                             
@@ -199,8 +222,7 @@ class ChatFeedMethods: NSObject
                                             Global.chatVideos[chatId] = videoGamves
                                         }
 
-                                    })
-                                    
+                                    })                                    
                                 }
                             }
                         }

@@ -177,7 +177,7 @@ class FanpagePage: UIViewController,
     {
         self.fanpageGamves = data as FanpageGamves
         
-        let fanpageId = data.fanpageObj?["fanpageId"] as! String
+        let fanpageId = data.fanpageObj?["fanpageId"] as! Int
         
         if Downloader.fanpageImagesDictionary[fanpageId] != nil
         {
@@ -315,24 +315,44 @@ class FanpagePage: UIViewController,
                             
                             let video = VideoGamves()
                             
-                            let videothum:PFFile = qvideoinfo["thumbnail"] as! PFFile
-                            let videoDescription:String = qvideoinfo["description"] as! String
-                            let videoCategory:String = qvideoinfo["category"] as! String
-                            let videoUrl:String = qvideoinfo["source"] as! String
-                            let videoTitle:String = qvideoinfo["title"] as! String
-                            let videoFromName:String = qvideoinfo["fromName"] as! String
+                            var videothum = qvideoinfo["thumbnail"] as! PFFile
                             
-                            video.video_title = videoTitle
-                            video.thumbnail = videothum
-                            video.description = videoDescription
-                            video.video_category = videoCategory
-                            video.video_url = videoUrl
-                            video.video_fromName = videoFromName
-                            video.videoobj = qvideoinfo
+                            video.title                     = qvideoinfo["title"] as! String
+                            video.description               = qvideoinfo["description"] as! String
+                            video.thumbnail                 = videothum
+                            video.categoryName              = qvideoinfo["categoryName"] as! String
+                            video.videoId                   = qvideoinfo["videoId"] as! String
+                            video.s3_source                 = qvideoinfo["s3_source"] as! String
+                            video.ytb_thumbnail_source      = qvideoinfo["ytb_thumbnail_source"] as! String
+                            video.ytb_videoId               = qvideoinfo["ytb_videoId"] as! String
+                            
+                            let dateStr = qvideoinfo["ytb_upload_date"] as! String
+                            let dateDouble = Double(dateStr)
+                            let date = NSDate(timeIntervalSince1970: dateDouble!)
+                            
+                            video.ytb_upload_date           = date as Date
+                            video.ytb_view_count            = qvideoinfo["ytb_view_count"] as! Int
+                            video.ytb_tags                  = qvideoinfo["ytb_tags"] as! [String]
+                            
+                            let durStr = qvideoinfo["ytb_upload_date"] as! String
+                            let durDouble = Double(durStr)
+                            video.ytb_duration              = durDouble!
+                            
+                            video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]
+                            video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
+                            video.order                     = qvideoinfo["order"] as! Int
+                            video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
+                            
+                            video.posterId                  = qvideoinfo["posterId"] as! String
+                            video.posterName                = qvideoinfo["poster_name"] as! String
+                            
+                            video.published                 = qvideoinfo.createdAt! as Date
+                            
+                            video.videoObj = qvideoinfo
                             
                             videothum.getDataInBackground(block: { (data, error) in
                                 
-                                if error != nil{
+                                if error == nil{
                                     
                                     video.image = UIImage(data: data!)!
                                     
@@ -357,6 +377,7 @@ class FanpagePage: UIViewController,
             }
         })
     }
+    
 
     func getImageVideo(videothumburl: String, video:VideoGamves, completionHandler : (_ video:VideoGamves) -> Void)
     {
@@ -366,7 +387,7 @@ class FanpagePage: UIViewController,
             
             if let data = try? Data(contentsOf: vurl)
             {
-                video.thum_image = UIImage(data: data)!
+                video.image = UIImage(data: data)!
                 
                 completionHandler(video)
             }
@@ -408,7 +429,7 @@ class FanpagePage: UIViewController,
         {
             let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell
             
-            cellVideo.thumbnailImageView.image = videosGamves[indexPath.row].thum_image
+            cellVideo.thumbnailImageView.image = videosGamves[indexPath.row].image
             
             cellVideo.descriptionTextView.text = videosGamves[indexPath.row].description
             

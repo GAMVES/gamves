@@ -13,13 +13,13 @@ import Parse
 class Downloader: NSObject
 {
     
-    static var fanpageImagesDictionary = Dictionary<String, [FanpageImageGamves]>()
+    static var fanpageImagesDictionary = Dictionary<Int, [FanpageImageGamves]>()
     
-    static var quenedImages = Dictionary<String, Bool>()
+    static var quenedImages = Dictionary<Int, Bool>()
     
     static func loadFanpageImages(fanpage:PFObject)
     {
-        let fanpageId = fanpage["fanpageId"] as! String
+        let fanpageId = fanpage["fanpageId"] as! Int
         
         if self.fanpageImagesDictionary[fanpageId] == nil && self.quenedImages[fanpageId] == nil
         {
@@ -56,21 +56,21 @@ class Downloader: NSObject
                             
                             for fanpageAlbum in fanpageAlbums!
                             {
-                                print(fanpageAlbum["name"])
+                                //print(fanpageAlbum["name"])
                                 
                                 let image = FanpageImageGamves()
                                 
                                 let id = fanpageAlbum.objectId as! String
                                 image.objectId = id
                                 
-                                let name = fanpageAlbum["name"] as! String
-                                image.name = name
+                                //let name = fanpageAlbum["name"] as! String
+                                //image.name = name
                                 
-                                let cover = fanpageAlbum["cover"] as! String
+                                let coverFile = fanpageAlbum["cover"] as! PFFile
                                 
-                                let catPictureURL = URL(string: cover)!
+                                let catPictureURL = URL(string: coverFile.url!)!
                                 
-                                print("IMAGE \(name)")
+                                //print("IMAGE \(name)")
                                 print(catPictureURL)
                                 
                                 let downloadPicTask = URLSession.shared.dataTask(with: catPictureURL) {
@@ -98,7 +98,7 @@ class Downloader: NSObject
                                         
                                         if (countFanpageAlbums!-1) == count
                                         {
-                                            let fanpageId = fanpageAlbum["fanpageId"] as! String
+                                            let fanpageId = fanpageAlbum["fanpageId"] as! Int
                                             
                                             self.fanpageImagesDictionary[fanpageId] = images
                                         }

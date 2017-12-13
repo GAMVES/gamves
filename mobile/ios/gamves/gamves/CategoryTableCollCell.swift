@@ -22,6 +22,12 @@ class CategoryTableCollCell: UITableViewCell {
         //cv.delegate = self
         return cv
     }()
+    
+    let cellBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        return view
+    }()
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     	super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -30,12 +36,28 @@ class CategoryTableCollCell: UITableViewCell {
            layout.scrollDirection = .horizontal
         }
         
+        
+        addSubview(cellBackgroundView)
+        addConstraintsWithFormat("H:|[v0]|", views: cellBackgroundView)
+        addConstraintsWithFormat("V:|[v0]|", views: cellBackgroundView)
+        
     	addSubview(collectionView)
         addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         addConstraintsWithFormat("V:|[v0]|", views: collectionView)
         
         collectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: fanpageCell)
-
+        
+        let descgradient = "gradient_3"
+        let gr = Gradients()
+        
+        if gr.colors[descgradient] != nil
+        {
+            let gradient: CAGradientLayer  = gr.getGradientByDescription(descgradient)
+            gradient.frame = CGRect(x: 0, y: 0,width: cellBackgroundView.frame.width, height: cellBackgroundView.frame.height)
+            self.cellBackgroundView.layer.insertSublayer(gradient, at: 0)
+            self.cellBackgroundView.alpha = 0.8
+        }
+        
     }
     
     required init?(coder aDecoder: NSCoder) {

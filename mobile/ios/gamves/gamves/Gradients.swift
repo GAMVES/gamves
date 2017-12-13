@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
   
-    class Gradients 
+    class Gradients
     {      
   
         let colors = 
