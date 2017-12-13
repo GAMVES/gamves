@@ -58,6 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.loadChatChannels()
         }
         
+        Global.loaLevels()
+        
         if #available(iOS 10.0, *)
         {
             let center = UNUserNotificationCenter.current()

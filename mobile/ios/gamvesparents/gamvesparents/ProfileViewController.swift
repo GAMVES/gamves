@@ -24,9 +24,7 @@ class ProfileViewController: UIViewController,
     var imageCropVC = RSKImageCropViewController()
 
     var tabBarViewController:TabBarViewController?
-
-    var levels = Dictionary<String, LevelsGamves>()
-
+    
     var types = Dictionary<Int, PFObject>()
     
     var adminRole:PFRole!
@@ -70,7 +68,7 @@ class ProfileViewController: UIViewController,
     let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesBackgoundColor
+        v.backgroundColor = UIColor.gamvesColor
         return v
     }()
 
@@ -436,7 +434,16 @@ class ProfileViewController: UIViewController,
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
         })
         
-        let grades: NSMutableArray = ["5 - Fig", "5 - Chestnut"]
+        let levelKeys = Array(Global.levels.keys)
+        
+        let grades: NSMutableArray = [] //["5 - Fig", "5 - Chestnut"]
+        
+        for level in levelKeys {
+            grades.add(level)
+        }
+        
+        print(grades)
+        
         self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])
         sonGradeDownPicker.setPlaceholder("Tap to choose grade...")  
 
@@ -484,8 +491,7 @@ class ProfileViewController: UIViewController,
         metricsProfile["saveButtonHeight"]      = saveButtonHeight 
 
         self.boyConstraints()       
-        self.loadSonDataIfFamilyDontExist()
-        self.loaLevels()
+        self.loadSonDataIfFamilyDontExist()        
 
         self.prepTextFields(inView: [self.sonNameContainerView])
 
@@ -597,6 +603,8 @@ class ProfileViewController: UIViewController,
         
         roleQuery?.getFirstObjectInBackground(block: { (role, error) in
             
+            print(error)
+            
             if error == nil
             {
                 self.adminRole = role as! PFRole
@@ -608,7 +616,7 @@ class ProfileViewController: UIViewController,
 
     func loadSchools(completionHandler : @escaping (_ user:Bool) -> ())
     {
-        let querySchool = PFQuery(className:"School")    
+        let querySchool = PFQuery(className:"Schools")
         
         querySchool.findObjectsInBackground(block: { (schools, error) in
             
@@ -941,45 +949,7 @@ class ProfileViewController: UIViewController,
             }
         }
     } 
-
-    func loaLevels()
-    {
-        let queryLevel = PFQuery(className:"Level")
-        queryLevel.order(byAscending: "order")            
-        queryLevel.findObjectsInBackground { (levelObjects, error) in
-            
-            if error != nil
-            {
-            
-                print("error")
-            
-            } else 
-            {             
-
-                if let levelObjects = levelObjects
-                {
-
-                    for level in levelObjects
-                    {
-
-                        let levelGamves = LevelsGamves()
-                        levelGamves.description = level["description"] as! String
-                        levelGamves.grade = level["grade"] as! Int
-
-                        let full = "\(levelGamves.grade) - \(levelGamves.description)"
-                        
-                        print(full)
-                        
-                        levelGamves.levelObj = level
-                    
-                        self.levels[full] = levelGamves
-
-                    }                        
-                }
-            }
-        }
-    } 
-    
+  
 
     func handleSave()
     {
@@ -1289,9 +1259,9 @@ class ProfileViewController: UIViewController,
     
         print(son_grade)
     
-        if self.levels[son_grade] != nil
+        if Global.levels[son_grade] != nil
         {
-            let level = self.levels[son_grade] as! LevelsGamves
+            let level = Global.levels[son_grade] as! LevelsGamves
             levelRel.add(level.levelObj!)
         }
 
@@ -1369,9 +1339,9 @@ class ProfileViewController: UIViewController,
     
         print(son_grade)
     
-        if self.levels[son_grade] != nil
+        if Global.levels[son_grade] != nil
         {
-            let level = self.levels[son_grade] as! LevelsGamves
+            let level = Global.levels[son_grade] as! LevelsGamves
             levelRel.add(level.levelObj!)
         }
 
@@ -1624,9 +1594,9 @@ class ProfileViewController: UIViewController,
         
             print(son_grade)
         
-            if self.levels[son_grade] != nil
+            if Global.levels[son_grade] != nil
             {
-                let level = self.levels[son_grade] as! LevelsGamves
+                let level = Global.levels[son_grade] as! LevelsGamves
                 levelRel.add(level.levelObj!)
             }
             

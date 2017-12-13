@@ -14,6 +14,9 @@ import PopupDialog
 class Global: NSObject
 {
     
+    
+    static var defaults = UserDefaults.standard
+
     static var gamves_official = "gamves_official"
     
     static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"

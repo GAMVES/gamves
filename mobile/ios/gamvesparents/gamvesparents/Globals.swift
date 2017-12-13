@@ -14,6 +14,8 @@ import PopupDialog
 class Global: NSObject
 {
     
+    static var levels = Dictionary<String, LevelsGamves>()
+    
     static var admin_delimitator:String = "---is_admin_chat---"
 
     static var defaults = UserDefaults.standard
@@ -667,13 +669,50 @@ class Global: NSObject
                                 
                             }
                         })
-                        
-                                            }
+                    }
                 }
             })
         }
     }
     
+    
+    static func loaLevels()
+    {
+        let queryLevel = PFQuery(className:"Level")
+        queryLevel.order(byAscending: "order")
+        queryLevel.findObjectsInBackground { (levelObjects, error) in
+            
+            if error != nil
+            {
+                
+                print("error")
+                
+            } else
+            {
+                
+                if let levelObjects = levelObjects
+                {
+                    
+                    for level in levelObjects
+                    {
+                        
+                        let levelGamves = LevelsGamves()
+                        levelGamves.description = level["description"] as! String
+                        levelGamves.grade = level["grade"] as! Int
+                        
+                        let full = "\(levelGamves.grade) - \(levelGamves.description)"
+                        
+                        print(full)
+                        
+                        levelGamves.levelObj = level
+                        
+                        self.levels[full] = levelGamves
+                        
+                    }                        
+                }
+            }
+        }
+    }
     
     
 
