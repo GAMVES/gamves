@@ -289,20 +289,29 @@
 
             level.save(null, {
               success: function (albumStored) {
-                  
-                    var alRelation = schoolObjs[_sId].relation("levels");
+                    
+                    var schoolObj = schoolObjs[_sId];
+                    
+                    var alRelation = schoolObj.relation("levels");
                     alRelation.add(albumStored);
 
-                    schoolObjs[_sId].save();
+                    schoolObj.save(null, {
+                      success: function (album) {
 
-                    if (lsize == count) {
+                            if (lsize == count) {
+                              $('#edit_modal_grade').modal('hide');                
+                              clearField(); 
+                            }
+                            count++;
 
-                      $('#edit_modal_grade').modal('hide');                
-                      clearField(); 
+                      },
+                      error: function (response, error) {
+                          console.log('Error: ' + error.message);
+                      }
 
-                    }
+                    });
 
-                    count++;
+                    
 
 
               },

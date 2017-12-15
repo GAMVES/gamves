@@ -268,7 +268,7 @@ document.addEventListener("LoadVideo", function(event){
           var vrnd = Math.floor(100000 + Math.random() * 900000);
           video.set("videoId", vrnd.toString());              
 
-          video.set("fanpageObjId", fanpageObj.id); 
+          video.set("fanpageObjId", fanpagseObj.id); 
 
           video.set("posterId", "gamves_official");           
           video.set("poster_name", "Gamves Official");                       

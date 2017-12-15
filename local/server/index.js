@@ -11,10 +11,8 @@ var api = new ParseServer(
   databaseURI: databaseUri                 || 'mongodb://192.168.16.22:27017/db',
   appId      : process.env.APP_ID          || '0123456789',
   masterKey  : process.env.MASTER_KEY      || '9876543210', //Add your master key here. Keep it secret!
-  serverURL  : process.env.SERVER_URL      || 'http://192.168.16.22:' + port + '/1',
-  liveQuery: {
-        classNames: ['UserOnline', 'ChatFeed', 'ChatVideo'],
-  },  
+  serverURL  : process.env.SERVER_URL      || 'http://192.168.16.22:' + port + '/1',   
+  
 
   // If you change the cloud/main.js to another path
   // it wouldn't work on SashiDo :( ... so Don't change this.
@@ -22,7 +20,7 @@ var api = new ParseServer(
 
   liveQuery:
   {
-    classNames: [] // List of classes to support for query subscriptions example: [ 'Posts', 'Comments' ]
+    classNames: ['UserOnline', 'ChatFeed', 'ChatVideo', 'Approvals'] // List of classes to support for query subscriptions example: [ 'Posts', 'Comments' ]
   },
 });
 
@@ -46,7 +44,7 @@ app.use(mountPath, api);
 
 
 var httpServer = require('http').createServer(app);
-httpServer.listen(port, function(){ console.log('Running on http://localhost:' + port); });
+httpServer.listen(port, function(){ console.log('Running on http://192.168.0.186:' + port); });
 
 // This will enable the Live Query real-time server
 ParseServer.createLiveQueryServer(httpServer);

@@ -80,6 +80,7 @@ $( document ).ready(function() {
   Parse.initialize(APP_ID); 
   //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
   Parse.serverURL = "http://192.168.16.22:1337/1/";
+  //Parse.serverURL = "http://192.168.0.186:1337/1/";
   
   var usernameInput = document.getElementById("input_username");
   var usernamePass = document.getElementById("input_password");
@@ -89,27 +90,62 @@ $( document ).ready(function() {
   loginBtn.onclick = Login;
   registerBtn.onclick = Register;
 
-  function Login () {  
+    function Login () {  
       
-      var username = usernameInput.value;
-      var password = usernamePass.value;
+      var username = "gamvesadmin"; //usernameInput.value;
+      var password = "dalegas"; //usernamePass.value;
 
       console.log(username);
       console.log(password);
 
       Parse.User.logIn(username, password, {
         success: function(user) {            
+
+          var queryConfig = new Parse.Query("Config");
+            queryConfig.first({         
+                success: function(results) {
+
+                  window.location = "views/panel.html";
+
+                  //var serverurl = results.get("server_url");
+                  //var n = results.get("app_id");  
+
+                  /*if( results == undefined) 
+                  {
+                   
+                    var Config = Parse.Object.extend("Config");
+                    var config = new Config();
+                    config.set("server_url", Parse.serverURL); 
+                    config.set("app_id", app_id);
+                    config.set("app_icon_url", app_icon_url);                  
+                    config.set("hasIcon", hasIcon);                  
+
+                    config.save(null, {
+                      success: function (savedConfig) {
+
+                          response.success();                   
+
+                      },
+                      error: function (response, error) {
+                          console.log('Error: ' + error.message);
+                          response.error(error);
+                      }
+                    }); */
+
+                } 
+            
+          });
           
-            Parse.Cloud.run("initConfig", { 
-                serverUrl: Parse.serverURL,
-                app_id:  APP_ID,
-                app_icon_url: "https://api-parseground.s3.amazonaws.com/deab76060e176261cfdbb8d779dd1e32_gamves_icons_white.png",
-                hasIcon: false }).then(function(result) { 
-                }, function(error) {
-                  console.log("error :" +errort);
-            });   
-      
-            window.location = "views/panel.html";
+          /*Parse.Cloud.run("initConfig", { 
+              serverUrl: Parse.serverURL,
+              app_id:  APP_ID,
+              app_icon_url: "https://api-parseground.s3.amazonaws.com/deab76060e176261cfdbb8d779dd1e32_gamves_icons_white.png",
+              hasIcon: false }).then(function(result) { 
+              }, function(error) {
+                console.log("error :" +errort);
+          });*/   
+
+            //window.location = "views/panel.html";
 
         },
         error: function(user, error) {
