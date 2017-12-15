@@ -159,7 +159,6 @@ class ChatFeedMethods: NSObject
                     if error != nil
                     {
                         print("error")
-                        
                     } else {
                         
                         if (videos?.count)! > 0
@@ -170,30 +169,9 @@ class ChatFeedMethods: NSObject
                             {
                                 for video in videos
                                 {
-                                    let videoGamves = VideoGamves()
-                                    let videothumburl:String = video["thumbnailUrl"] as! String
-                                    let videoDescription:String = video["description"] as! String
-                                    let videoCategory:String = video["category"] as! String
-                                    let videoUrl:String = video["source"] as! String
-                                    let videoTitle:String = video["title"] as! String
-                                    let videoFromName:String = video["fromName"] as! String
-                                    
-                                    videoGamves.video_title = videoTitle
-                                    videoGamves.thumb_url = videothumburl
-                                    videoGamves.description = videoDescription
-                                    videoGamves.video_category = videoCategory
-                                    videoGamves.video_url = videoUrl
-                                    videoGamves.video_fromName = videoFromName
-                                    videoGamves.videoobj = video
-                                    
-                                    if let vurl = URL(string: videothumburl)
-                                    {
-                                        if let data = try? Data(contentsOf: vurl)
-                                        {
-                                            videoGamves.thum_image = UIImage(data: data)!
-                                        }
-                                    }
-                                    Global.chatVideos[chatId] = videoGamves
+                                
+                                    Global.parseVideo(video: video, chatId : chatId )
+                                
                                 }
                             }
                         }

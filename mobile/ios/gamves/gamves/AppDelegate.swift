@@ -75,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         if PFUser.current() != nil
         {
-            self.getFamilyData()
+            Global.getFamilyData()
         }
     
         
@@ -146,11 +146,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Parse.enableLocalDatastore()
         
         //Local
-        let configuration = ParseClientConfiguration {
+        /*let configuration = ParseClientConfiguration {
             $0.applicationId = "0123456789"            
             $0.server = "http://192.168.16.22:1337/1/"
         }
-        Parse.initialize(with: configuration)
+        Parse.initialize(with: configuration)*/
 
         //Back4app
         /*let configuration = ParseClientConfiguration {
@@ -160,12 +160,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
          }*/
         
         //Sashido
-        /*let configuration = ParseClientConfiguration {
+        let configuration = ParseClientConfiguration {
             $0.applicationId = "lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"
             $0.clientKey = "sMlMuxDQTs631WYXfS5rdnUQzeeRPB6JFNnKsVhY"
             $0.server = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
         }
-        Parse.initialize(with: configuration)*/
+        Parse.initialize(with: configuration)
         
         // [Optional] Track statistics around application opens.
         PFAnalytics.trackAppOpened(launchOptions: launchOptions)
@@ -241,7 +241,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.inBackground = true
         
-        self.updateUserOnline(online: false)
+        Global.updateUserOnline(online: false)
         
     }
 
@@ -261,7 +261,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.inBackground = true
         
-        self.updateUserOnline(online: false)
+        Global.updateUserOnline(online: false)
         
     }
 
@@ -280,7 +280,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         })
         
-        self.updateUserOnline(online: true)
+        Global.updateUserOnline(online: true)
     
     }
 
@@ -290,114 +290,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.inBackground = true
         
-        self.updateUserOnline(online: false)
+        Global.updateUserOnline(online: false)
 
     }
     
         
-    func getFamilyData()
-    {
     
-        DispatchQueue.global().async {
-            
-            let familyQuery = PFQuery(className:"Family")
-            familyQuery.whereKey("members", equalTo: PFUser.current())
-            
-            print(familyQuery.cachePolicy.hashValue)
-            
-            if !Global.hasDateChanged()
-            {
-                familyQuery.cachePolicy = .cacheThenNetwork
-            }
-            familyQuery.findObjectsInBackground(block: { (families, error) in
-                
-                if error == nil
-                {
-                    
-                    for family in families!
-                    {
-                        
-                        Global.gamvesFamily.familyName = family["description"] as! String
-                        
-                        let membersRelation = family.relation(forKey: "members") as PFRelation
-                        
-                        let queryMembers = membersRelation.query()
-                        
-                        queryMembers.findObjectsInBackground(block: { (members, error) in
-                            
-                            if error == nil
-                            {
-                                for member in members!
-                                {
-                                    Global.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
-                                    
-                                            Global.userDictionary[gamvesUser.userId] = gamvesUser
-                                    })
-                                }
-                            }
-                        })
-                        
-                        let schoolRelation = family.relation(forKey: "school") as PFRelation
-                        
-                        let querySchool = schoolRelation.query()
-                        
-                        querySchool.findObjectsInBackground(block: { (schools, error) in
-                            
-                            if error == nil
-                            {
-                                for school in schools!
-                                {
-                                    Global.gamvesFamily.school = school["name"] as! String
-                                }
-                            }
-                        })
-                    }
-                }
-            })
-        }
-    }
-    
-    
-    func updateUserOnline(online : Bool)
-    {
-        let queryOnine = PFQuery(className:"UserOnline")
-        queryOnine.whereKey("userId", equalTo: PFUser.current()?.objectId)
-        queryOnine.findObjectsInBackground { (usersOnline, error) in
-            
-            if error != nil
-            {
-                print("error")
-                
-            } else {
-                
-                if (usersOnline?.count)!>0
-                {
-                    for userOnline in usersOnline!
-                    {
-                        userOnline["isOnline"] = online
-                        
-                        userOnline.saveInBackground(block: { (resutl, error) in
-                            print("saved")
-                        })
-
-                    }
-                    
-                } else
-                {
-                    let userOnline = PFObject(className: "UserOnline")
-                    userOnline["userId"] = PFUser.current()?.objectId
-                    userOnline["isOnline"] = online
-                    
-                    userOnline.saveInBackground(block: { (resutl, error) in
-                        print("saved")
-                    })
-                    
-                }
-            
-            }
-        }
-       
-    }
     
     func handleLogin()
     {

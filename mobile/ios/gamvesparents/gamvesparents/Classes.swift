@@ -28,6 +28,15 @@ class ChatFeed
     var badgeNumber:Int?
 }
 
+class Approvals
+{
+    var objectId = String()
+    var thumbnail:UIImage?
+    var videoId = Int()
+    var videoName = String()
+    var approved = Bool()
+}
+
 
 class GamvesParseUser
 {

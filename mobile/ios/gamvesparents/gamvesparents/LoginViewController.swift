@@ -466,7 +466,7 @@ class LoginViewController: UIViewController
             
             if relationship == "Father"
             {
-                type = 4
+                type = 5
 
             } else if relationship == "Mother"
             {

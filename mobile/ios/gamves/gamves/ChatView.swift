@@ -32,9 +32,7 @@ class ChatView: UIView,
     
     var activityView: NVActivityIndicatorView!
 
-    //let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://gamves.back4app.io")
-    
-    let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
+    let liveQueryClient: Client = ParseLiveQuery.Client(server: Global.remoteWs) // .localWs)
     
     private var chatSubscription: Subscription<PFObject>!
     private var feedSubscription: Subscription<PFObject>!
@@ -583,7 +581,7 @@ class ChatView: UIView,
                 
                 if sendPush
                 {
-                    self.sendPushWithCoud(message: message)
+                    //self.sendPushWithCoud(message: message)
                 }
             }
         }
@@ -894,6 +892,7 @@ class ChatView: UIView,
                         completionHandlerSave(resutl)
                     }
                     
+                    completionHandlerSave(resutl)
                 })
             }
         })

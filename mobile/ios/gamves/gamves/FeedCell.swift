@@ -21,7 +21,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     
     var homeController: HomeController?    
     
-    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")    
+    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: Global.remoteWs) // .localWs)
   
     private var subscription: Subscription<PFObject>!
     

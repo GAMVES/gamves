@@ -291,6 +291,8 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
         
         let userId = PFUser.current()?.objectId
         
+        print(userId)
+        
         if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.avatar
         {
             self.sonProfileImageView.image = sonImage
@@ -497,7 +499,7 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
     {
         self.familyLabel.text = Global.gamvesFamily.familyName
 
-        if self.isKeyPresentInUserDefaults(key:"son_object_id")
+        if Global.isKeyPresentInUserDefaults(key:"son_object_id")
         {
             let sonId = Global.defaults.object(forKey: "son_object_id") as! String
             if Global.userDictionary[sonId] != nil
@@ -508,7 +510,7 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
             }
         }
         
-        if self.isKeyPresentInUserDefaults(key:"spouse_object_id")
+        if Global.isKeyPresentInUserDefaults(key:"spouse_object_id")
         {
             
             let spouseId = Global.defaults.object(forKey: "spouse_object_id") as! String
@@ -526,12 +528,6 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
         
         //self.initializeOnlineSubcritpion()
         
-    }
-    
-   
-    func isKeyPresentInUserDefaults(key: String) -> Bool
-    {
-        return UserDefaults.standard.object(forKey: key) != nil
     }
 
     

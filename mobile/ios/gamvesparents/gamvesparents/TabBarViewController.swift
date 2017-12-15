@@ -47,20 +47,19 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
             didFindLocation = false
         }
         
-        if let user = PFUser.current()
-        {
-            if !isLoggedIn()
-            {
+        if let user = PFUser.current() {
+            
+            if !isLoggedIn() {
+                
                 perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
             }
+                
+        } else {
             
-        } else
-        {
             perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
         }
-        
-        
 
+        
         let homeViewController = HomeViewController()
         homeViewController.tabBarViewController = self
         
@@ -85,16 +84,14 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         profileNavController.tabBarItem.image = UIImage(named: "profile")
         let profileTitle = "Profile"
         profileViewController.title = profileTitle
-
         
         viewControllers = [homeNavController, chatFeedNavController, profileNavController]
 
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
         blurVisualEffectView?.frame = view.bounds
-        self.view.addSubview(blurVisualEffectView!)      
+        self.view.addSubview(blurVisualEffectView!)
         
-
     }   
     
     

@@ -529,7 +529,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         }
         let fanpages = fanArray as! NSMutableArray
         self.fanpageDownPicker.setData(fanpages as! [Any])
-        self.fanpageDownPicker.setPlaceholder("Tap to choose category...")
+        self.fanpageDownPicker.setPlaceholder("Tap to choose fanpage...")
 
         self.fanpageDownPicker.addTarget(self, action: #selector(selectedFanpage), for: UIControlEvents.valueChanged )
 
@@ -842,18 +842,11 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
                                     
                                     let approvals: PFObject = PFObject(className: "Approvals")
                                     
-                                    approvals["videoObjectId"] = videoPF.objectId
-                                    
-                                    if Global.gamvesFamily.youUser.isRegister
-                                    {
-                                        approvals["registerId"] = Global.gamvesFamily.youUser.userId
-                                        approvals["spouseId"] = Global.gamvesFamily.spouseUser.userId
-                                        
-                                    } else if Global.gamvesFamily.spouseUser.isRegister
-                                    {
-                                        approvals["registerId"] = Global.gamvesFamily.spouseUser.userId
-                                        approvals["spouseId"] = Global.gamvesFamily.youUser.userId
-                                    }
+                                    approvals["videoId"] = videoNumericId
+                                    approvals["posterId"] = PFUser.current()?.objectId
+                                    approvals["familyId"] = Global.gamvesFamily.objectId
+                                    approvals["videoTitle"] = self.titleTextField.text
+                                    approvals["approved"] = false
                                     
                                     approvals.saveInBackground { (resutl, error) in
                                         

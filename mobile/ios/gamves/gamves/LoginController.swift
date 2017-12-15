@@ -257,6 +257,15 @@ class LoginController: UIViewController {
                      
                      }*/
                     
+                    
+                    //Check fisrt login
+                    
+                    if Global.isKeyPresentInUserDefaults(key:"first_run")
+                    {
+                        Global.getFamilyData()
+                        Global.defaults.set(true, forKey: "first_run")
+                    }
+                    
                     NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoggedin), object: self)
                     
                     

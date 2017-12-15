@@ -47,7 +47,7 @@ class VideoPlayerView: UIView {
             }
         }*/
         
-        self.videoLauncher.chatView.dismissKeyboard()
+        //self.videoLauncher.chatView.dismissKeyboard()
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
@@ -77,7 +77,7 @@ class VideoPlayerView: UIView {
             //self.controlsContainerView.isHidden = true
             
             self.videoLauncher.infoView.isHidden = true
-            self.videoLauncher.chatView.isHidden = true
+            //self.videoLauncher.chatView.isHidden = true
             
             let smallFrame = CGRect(x: x, y: y, width: thumbWidth, height: thumbHeight)
             
@@ -372,9 +372,43 @@ class VideoPlayerView: UIView {
 }
 
 class VideoLauncher: UIView, KeyboardDelegate {
-        
+    
+    let approveView: UIView = {
+        let view = UIView()
+        //view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.masksToBounds = true
+        return view
+    }()
+
+    lazy var approveButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor
+        button.setTitle("Save son or doughter", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(handleApprove), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+    
+    lazy var rejectButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor
+        button.setTitle("Save son or doughter", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(handleReject), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+
+    
+    
     var infoView:InfoView!
-    var chatView:ChatView!
+    //var chatView:ChatView!
     var videoPlayerView:VideoPlayerView!
     
     var view:UIView!
@@ -421,15 +455,17 @@ class VideoLauncher: UIView, KeyboardDelegate {
             
             let chatFrame = CGRect(x: 0, y: chatY, width: Int(keyWindow.frame.width), height: chatHeight)
             
-            chatView = ChatView(frame: chatFrame, isVideo: true)
+            view.addSubview(approveView)
             
-            let params = ["chatId": viId, "isVideoChat": true, "thumbnailImage": videoGamves.thum_image, "delegate":self] as [String : Any]
+            //chatView = ChatView(frame: chatFrame, isVideo: true)
             
-            chatView.setParams(parameters: params)
+            //let params = ["chatId": viId, "isVideoChat": true, "thumbnailImage": videoGamves.thum_image, "delegate":self] as [String : Any]
+            
+            //chatView.setParams(parameters: params)
 
-            view.addSubview(chatView)
+            //view.addSubview(chatView)
             
-            chatView.loadChatFeed()
+            //chatView.loadChatFeed()
             
             videoPlayerView.setViews(view: view, videoLauncherVidew: self)
             
@@ -466,16 +502,22 @@ class VideoLauncher: UIView, KeyboardDelegate {
         
         let yPosition = self.videoPlayerView.frame.size.height
         
-        self.originaChatYPosition = self.chatView.frame.origin.y
-        
-        self.chatView.frame.origin.y = yPosition
-        
-        self.originaChatHeightPosition = self.chatView.frame.size.height
- 
-        self.chatView.frame.size.height = chatHeight      
+        //self.originaChatYPosition = self.chatView.frame.origin.y
+        //self.chatView.frame.origin.y = yPosition
+        //self.originaChatHeightPosition = self.chatView.frame.size.height
+        //self.chatView.frame.size.height = chatHeight
                       
     }
     
+    
+    func handleApprove() {
+        
+    }
+    
+    func handleReject() {
+        
+    }
+
     
     func keyboardclosed()
     {
@@ -484,9 +526,8 @@ class VideoLauncher: UIView, KeyboardDelegate {
             self.infoView.isHidden = false
         }
         
-        self.chatView.frame.origin.y = self.originaChatYPosition
-        
-        self.chatView.frame.size.height = self.originaChatHeightPosition
+        //self.chatView.frame.origin.y = self.originaChatYPosition
+        //self.chatView.frame.size.height = self.originaChatHeightPosition
         
     }
     

@@ -375,11 +375,17 @@ class ProfileViewController: UIViewController,
         return view
     }()
     
+    var sonImageName = "sonImage"
+    var familyImageName = "familyImage"
 
     var sonNameContainerViewHeightAnchor: NSLayoutConstraint?
 
     override func viewDidLoad() {
         super.viewDidLoad()        
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
         
         self.loadAdminRole()
         
@@ -428,25 +434,6 @@ class ProfileViewController: UIViewController,
 
         //let schools: NSMutableArray = ["St Paul's", "St Hilda's"]
         
-        self.loadSchools(completionHandler: { ( user ) -> () in
-            
-            self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
-            self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
-        })
-        
-        let levelKeys = Array(Global.levels.keys)
-        
-        let grades: NSMutableArray = [] //["5 - Fig", "5 - Chestnut"]
-        
-        for level in levelKeys {
-            grades.add(level)
-        }
-        
-        print(grades)
-        
-        self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])
-        sonGradeDownPicker.setPlaceholder("Tap to choose grade...")  
-
         self.scrollView.addSubview(self.yourNameContainerView)
         self.scrollView.addSubview(self.spouseContainerView) 
 
@@ -490,26 +477,57 @@ class ProfileViewController: UIViewController,
         metricsProfile["schoolEditTextHeight"]  = schoolEditTextHeight
         metricsProfile["saveButtonHeight"]      = saveButtonHeight 
 
-        self.boyConstraints()       
-        self.loadSonDataIfFamilyDontExist()        
-
+        self.boyConstraints()
+        
         self.prepTextFields(inView: [self.sonNameContainerView])
 
         self.segmentedControl.setEnabled(false, forSegmentAt: 1)
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
        
-      
         self.familyChatId    = Global.getRandomInt()
         self.sonChatId       = Global.getRandomInt()
         self.spouseChatId    = Global.getRandomInt()
-
+        
+        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
+            
+            tabBarController?.tabBar.isHidden = true
+            
+            if Global.isKeyPresentInUserDefaults(key: "son_name") {
+            
+                self.loadSonDataIfFamilyDontExist()
+            }
+        }
+        
+        Global.loaLevels()
+        
     }
     
     
-    override func viewWillAppear(_ animated: Bool) {
+    func levelsLoaded() {
         
-        if self.isKeyPresentInUserDefaults(key: "profile_completed")
+        self.loadSchools(completionHandler: { ( user ) -> () in
+            
+            self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
+            self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
+        })
+        
+        let grades: NSMutableArray = [] //["5 - Fig", "5 - Chestnut"]
+        
+        for level in Global.levels {
+            grades.add(level.fullDesc)
+        }
+        
+        print(grades)
+        
+        self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])
+        sonGradeDownPicker.setPlaceholder("Tap to choose grade...")
+        
+    }
+    
+    func familyLoaded() {
+        
+        if Global.isKeyPresentInUserDefaults(key: "profile_completed")
         {
             let profile_completed = Global.defaults.bool(forKey: "profile_completed")
             
@@ -526,11 +544,10 @@ class ProfileViewController: UIViewController,
         }
     }
     
-
     func loadFamilyData()
     {
-        DispatchQueue.main.async()
-        {
+        DispatchQueue.main.async() {
+            
             self.yourPhotoImageView.image     = Global.gamvesFamily.youUser.avatar
             self.makeRounded(imageView:self.yourPhotoImageView)
             
@@ -570,14 +587,15 @@ class ProfileViewController: UIViewController,
             self.sonSchoolTextField.text = Global.gamvesFamily.school          
             
             self.sonGradeTextField.text = Global.gamvesFamily.sonsUsers[0].levelDescription
+            
+            print(Global.gamvesFamily.youUser.typeNumber)
+            
+            self.yourTypeId = Global.gamvesFamily.youUser.typeNumber
 
         }
     }
 
-
-
-    func scrollViewGoTop()
-    {
+    func scrollViewGoTop() {
         scrollView.setContentOffset(CGPoint(x:0, y:0), animated: false)
     }
     
@@ -591,12 +609,8 @@ class ProfileViewController: UIViewController,
         } 
     }
 
-    func isKeyPresentInUserDefaults(key: String) -> Bool {
-        return UserDefaults.standard.object(forKey: key) != nil
-    }
-    
-    func loadAdminRole()
-    {
+    func loadAdminRole() {
+        
         let roleQuery = PFRole.query()
         
         roleQuery?.whereKey("name", equalTo: "admin")
@@ -614,8 +628,8 @@ class ProfileViewController: UIViewController,
 
     }
 
-    func loadSchools(completionHandler : @escaping (_ user:Bool) -> ())
-    {
+    func loadSchools(completionHandler : @escaping (_ user:Bool) -> ()) {
+        
         let querySchool = PFQuery(className:"Schools")
         
         querySchool.findObjectsInBackground(block: { (schools, error) in
@@ -659,8 +673,8 @@ class ProfileViewController: UIViewController,
     }
 
 
-    func boyConstraints()
-    {
+    func boyConstraints() {
+        
          print(metricsProfile)       
 
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)  
@@ -734,11 +748,9 @@ class ProfileViewController: UIViewController,
             self.sonSchoolSeparatorView,          
             self.sonGradeTextField,          
             metrics: metricsProfile)
-
     }
 
-    func familyConstraints()
-    {  
+    func familyConstraints() {
         
         self.sonPhotoImageView.isHidden       = true
         self.familyPhotoImageView.isHidden    = true
@@ -801,11 +813,10 @@ class ProfileViewController: UIViewController,
             metrics: metricsProfile)
     }
 
-    func handleSegmentedChange()
-    {
+    func handleSegmentedChange() {
+        
         if self.segmentedControl.selectedSegmentIndex == 0
         {
-
             self.prepTextFields(inView: [self.sonNameContainerView])
 
             self.sonNameContainerView.isHidden = false
@@ -818,9 +829,7 @@ class ProfileViewController: UIViewController,
 
             self.saveButton.setTitle("Save son or doughter", for: UIControlState())
 
-
-        } else if self.segmentedControl.selectedSegmentIndex == 1
-        {    
+        } else if self.segmentedControl.selectedSegmentIndex == 1 {
             
             self.prepTextFields(inView: [self.yourNameContainerView,self.spouseContainerView])
 
@@ -838,11 +847,9 @@ class ProfileViewController: UIViewController,
     }
 
 
-    func loadSonDataIfFamilyDontExist()
-    {
+    func loadSonDataIfFamilyDontExist() {
         
         let family_exist = Global.defaults.bool(forKey: "family_exist")
-
         let son_exist = Global.defaults.bool(forKey: "son_exist")
         
         Global.defaults.synchronize()
@@ -868,49 +875,42 @@ class ProfileViewController: UIViewController,
                     if let users = users
                     {
                         let userAmount = users.count
-                        for user in users
-                        {
+                        for user in users {
+                            
                             self.son = user as! PFUser
-                            if user["picture"] != nil
-                            {
-                                let pictureData = user["picture"] as! PFFile
-                                var data:Data = Data()
-
-                                do 
-                                {
-                                
-                                    data = try pictureData.getData()
-
-                                } catch let error
-                                {
-                                    print(error)
-                                }                       
-                                
-                                if let profilePicture = UIImage(data: data)
-                                {
-                                    self.sonPhotoImage = profilePicture
-                                    self.sonPhotoImageView.image = profilePicture
-                                    self.makeRounded(imageView:self.sonPhotoImageView)
-                                }
-                                
-                            }
-
+                           
+                            self.sonPhotoImage = self.loadImageFromDisc(imageName: self.sonImageName)
+                            self.sonPhotoImageView.image = self.sonPhotoImage
+                            self.makeRounded(imageView:self.sonPhotoImageView)
+                            
+                            self.familyPhotoImage = self.loadImageFromDisc(imageName: self.familyImageName)
+                            self.familyPhotoImageView.image = self.familyPhotoImage
+                            self.makeRounded(imageView:self.familyPhotoImageView)
+                            
                             self.sonNameTextField.text = user["Name"] as! String
 
                             self.sonUserTextField.text = user["username"] as! String
                             
                             self.sonTypeId = user["userType"] as! Int
                             
-                            //No me insteresa
-                            //self.sonType = type
+                            let sonUserType = user["userType"] as! Int
                             
-                            let sonTypeDesc = user["description"] as! String
+                            var sType = String()
                             
-                            self.sonUserTypeTextField.text = sonTypeDesc
+                            if sonUserType == 2 {
+                                sType = "Son"
+                            } else if sonUserType == 3 {
+                                sType = "Daughter"
+                            }
                             
-                            let son_school = Global.defaults.string(forKey: "son_school")
+                            self.sonUserTypeTextField.text = sType
                             
-                            self.sonSchoolTextField.text = son_school
+                            if Global.isKeyPresentInUserDefaults(key: "son_school") {
+                            
+                                let son_school = Global.defaults.string(forKey: "son_school")
+                            
+                                self.sonSchoolTextField.text = son_school
+                            }
                             
                             let levelRel:PFRelation = user.relation(forKey: "level")
                             
@@ -938,18 +938,45 @@ class ProfileViewController: UIViewController,
                                         self.segmentedControl.selectedSegmentIndex = 1
                                         self.segmentedControl.setEnabled(true, forSegmentAt: 1)
                                         self.handleSegmentedChange()
-                                        
+            
                                     }
                                 }
                             })
-            
                         }
                     }
                 }
             }
         }
     } 
-  
+    
+    func storeImgeLocally(imagePath: String, imageToStore:UIImage) {
+        
+        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imagePath).png"
+        
+        let imageUrl: URL = URL(fileURLWithPath: imagePath)
+        
+        do {
+            try? UIImagePNGRepresentation(imageToStore)?.write(to: imageUrl)
+        } catch {
+            
+        }
+    }
+
+    
+    func loadImageFromDisc(imageName: String) -> UIImage {
+        
+        var imageLoaded = UIImage()
+        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imageName).png"
+        let imageUrl: URL = URL(fileURLWithPath: imagePath)
+        
+        if FileManager.default.fileExists(atPath: imagePath),
+            let imageData: Data = try? Data(contentsOf: imageUrl),
+            let image: UIImage = UIImage(data: imageData, scale: UIScreen.main.scale) {
+            
+            imageLoaded = image
+        }
+        return imageLoaded
+    }
 
     func handleSave()
     {
@@ -1028,7 +1055,6 @@ class ProfileViewController: UIViewController,
 
                             })
                         }          
-                        
                     
                     } else 
                     {
@@ -1070,8 +1096,6 @@ class ProfileViewController: UIViewController,
             } else {
                 print(error)
             }
-            
-            
         }
     }
 
@@ -1243,6 +1267,7 @@ class ProfileViewController: UIViewController,
         self.son.password = son_password
         self.son["firstName"] = full_name?[0]
         self.son["lastName"] = full_name?[1]
+        self.son["isRegister"] = false
     
         let son_type = Global.defaults.string(forKey: "son_type")
         if son_type == "Son"
@@ -1259,20 +1284,24 @@ class ProfileViewController: UIViewController,
     
         print(son_grade)
     
-        if Global.levels[son_grade] != nil
-        {
-            let level = Global.levels[son_grade] as! LevelsGamves
-            levelRel.add(level.levelObj!)
+        for lv in Global.levels {
+            
+            if lv.fullDesc == son_grade {
+        
+                levelRel.add(lv.levelObj!)
+            }
         }
-
+    
+        self.storeImgeLocally(imagePath: self.sonImageName, imageToStore: self.sonPhotoImage)
+    
+        self.storeImgeLocally(imagePath: self.familyImageName, imageToStore: self.familyPhotoImage)
+    
         self.son.signUpInBackground {
             (success, error) -> Void in
 
-            if let error = error as NSError?
-            {
+            if let error = error as NSError? {
                 
                 let errorString = error.userInfo["error"] as? NSString
-
                 completionHandler(false)
 
             } else {
@@ -1282,15 +1311,14 @@ class ProfileViewController: UIViewController,
                 Global.defaults.synchronize()
 
                 //PERMISSIONS
-                
-                 let acl = PFACL(user: self.son!)
+                let acl = PFACL(user: self.son!)
                  
-                 acl.setWriteAccess(true, for: self.adminRole)
-                 acl.setReadAccess(true, for: self.adminRole)
+                acl.setWriteAccess(true, for: self.adminRole)
+                acl.setReadAccess(true, for: self.adminRole)
                  
-                 self.adminRole.users.add(self.son!)
+                self.adminRole.users.add(self.son!)
                  
-                 self.adminRole.saveInBackground(block: { (resutl, error) in
+                self.adminRole.saveInBackground(block: { (resutl, error) in
                  
                      print("")
                      
@@ -1300,12 +1328,11 @@ class ProfileViewController: UIViewController,
                      } else {
                         completionHandler(true)
                      }
-                 
                  })
             }
         }
    }
-
+    
 
    func saveSpouse(completionHandler : @escaping (_ resutl:Bool) -> ())
    {            
@@ -1325,7 +1352,7 @@ class ProfileViewController: UIViewController,
         spouseUser["firstName"] = full_name?[0]
         spouseUser["lastName"] = full_name?[1]
     
-        if self.yourTypeId == 4 //"Father"
+        if self.yourTypeId == 5 //"Father"
         {
             spouseUser["userType"] = 1
             
@@ -1334,15 +1361,20 @@ class ProfileViewController: UIViewController,
             spouseUser["userType"] = 5
         } 
 
+        spouseUser["isRegister"] = false
+    
         let levelRel:PFRelation = spouseUser.relation(forKey: "level")
         var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
     
         print(son_grade)
     
-        if Global.levels[son_grade] != nil
-        {
-            let level = Global.levels[son_grade] as! LevelsGamves
-            levelRel.add(level.levelObj!)
+        for lv in Global.levels {
+            
+            if lv.fullDesc == son_grade {
+                
+                levelRel.add(lv.levelObj!)
+                
+            }
         }
 
         spouseUser.signUpInBackground {
@@ -1412,15 +1444,13 @@ class ProfileViewController: UIViewController,
                     var gSpouse = GamvesParseUser()
                     var gSon = GamvesParseUser()
 
-                    if Global.userDictionary[self.you.objectId!] != nil
-                    {                        
+                    if Global.userDictionary[self.you.objectId!] != nil {
                         Global.userDictionary[self.you.objectId!]?.gamvesUser = self.you                        
                         gYou = Global.userDictionary[self.you.objectId!]!                        
                     }
 
 
-                    if self.yourPhotoImage != nil
-                    {
+                    if self.yourPhotoImage != nil {
                         
                         ///SAVE SON
                         
@@ -1453,11 +1483,9 @@ class ProfileViewController: UIViewController,
                                                     
                                                     print("done youSon")
                                                     
-                                                    if (resutl != nil)
-                                                    {
+                                                    if (resutl != nil) {
                                                         next(nil)
                                                     }
-                                                    
                                                 })
                                             }
                                         })
@@ -1468,8 +1496,7 @@ class ProfileViewController: UIViewController,
                         
                         //SAVE SPOUSE
                         
-                        if self.spousePhotoImage != nil
-                        {
+                        if self.spousePhotoImage != nil {
                             
                             queue.tasks +=~ { resutl, next in
                                 
@@ -1504,13 +1531,10 @@ class ProfileViewController: UIViewController,
                                                     }
 
                                                 })
-                                                
                                             }
-
                                         })
                                     }
-                                })                               
-                                
+                                })
                             }
                         }
 
@@ -1545,21 +1569,14 @@ class ProfileViewController: UIViewController,
                                         }
 
                                     })
-        
                             })
-                            
                         }
-
                         queue.run()
-
                     }
 
                 })
             }
-
-
         })
-
     }
 
     func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
@@ -1592,12 +1609,13 @@ class ProfileViewController: UIViewController,
             let levelRel:PFRelation = self.you.relation(forKey: "level")
             var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
         
-            print(son_grade)
-        
-            if Global.levels[son_grade] != nil
-            {
-                let level = Global.levels[son_grade] as! LevelsGamves
-                levelRel.add(level.levelObj!)
+            for lv in Global.levels {
+                
+                if lv.fullDesc == son_grade {
+                    
+                    levelRel.add(lv.levelObj!)
+                    
+                }
             }
             
             self.you.saveInBackground(block: { (resutl, error) in
@@ -1615,10 +1633,8 @@ class ProfileViewController: UIViewController,
 
                     })
                 }
-            })  
-
+            })
         })
-
     }
 
     func saveFamily(completionHandler : @escaping (_ resutl:Bool) -> ())
@@ -1903,7 +1919,7 @@ class ProfileViewController: UIViewController,
         }, completion: nil)
     }
 
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) 
+    func imagePickerControllerDidCancel(picker: UIImagePickerController)
     {
         dismiss(animated: true, completion: nil)
     }

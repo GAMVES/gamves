@@ -28,6 +28,7 @@
 		8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D7201F7AD44500F2A121 /* HomeViewController.swift */; };
 		8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */; };
 		8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */; };
+		8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */; };
 		827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827FE2F61FAE599100A32994 /* CheckBoxView.swift */; };
 		828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */; };
 		828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */; };
@@ -88,6 +89,7 @@
 		8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		8212D72F1F7C0A8400F2A121 /* gamvesparents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = gamvesparents.entitlements; sourceTree = "<group>"; };
+		8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalViewControlle.swift; sourceTree = "<group>"; };
 		827FE2F61FAE599100A32994 /* CheckBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxView.swift; sourceTree = "<group>"; };
 		828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMethods.swift; sourceTree = "<group>"; };
 		828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatFeedMethods.swift; sourceTree = "<group>"; };
@@ -224,7 +226,6 @@
 				82E372361FB16550000AD7EB /* GroupNameViewController.swift */,
 				82E372341FB16520000AD7EB /* ChatViewController.swift */,
 				82E3722E1FB1636F000AD7EB /* Cells */,
-				82E3722C1FB16109000AD7EB /* SelectContactViewController.swift */,
 			);
 			name = Chat;
 			sourceTree = "<group>";
@@ -239,6 +240,15 @@
 				8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */,
 			);
 			name = TabBarControllers;
+			sourceTree = "<group>";
+		};
+		8262CDFA1FE1FE0F003F9C9D /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				82E3722C1FB16109000AD7EB /* SelectContactViewController.swift */,
+				8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 		829F01191FC325EB00B8F2BD /* Cells */ = {
@@ -315,6 +325,7 @@
 		C7B401FD1D78C167001D8ED4 /* gamvesparents */ = {
 			isa = PBXGroup;
 			children = (
+				8262CDFA1FE1FE0F003F9C9D /* Controllers */,
 				82E372441FB16AC6000AD7EB /* Helpers */,
 				82E372201FAF311E000AD7EB /* Bridge */,
 				82B7EB7B1FAB6EC600C61A6B /* Model */,
@@ -374,6 +385,9 @@
 						DevelopmentTeam = YDE3D3X5DH;
 						LastSwiftMigration = 0830;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.Maps.iOS = {
 								enabled = 0;
 							};
@@ -486,6 +500,7 @@
 				82E372481FB16C32000AD7EB /* InfoView.swift in Sources */,
 				82E3723F1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift in Sources */,
 				82E372371FB16550000AD7EB /* GroupNameViewController.swift in Sources */,
+				8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */,
 				82E372461FB16AD9000AD7EB /* VideoLauncher.swift in Sources */,
 				C7B401FF1D78C167001D8ED4 /* AppDelegate.swift in Sources */,
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,

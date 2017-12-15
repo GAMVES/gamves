@@ -58,8 +58,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.loadChatChannels()
         }
         
-        Global.loaLevels()
-        
         if #available(iOS 10.0, *)
         {
             let center = UNUserNotificationCenter.current()
@@ -99,7 +97,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //Local
         let configuration = ParseClientConfiguration {
             $0.applicationId = "0123456789"
-            $0.server = "http://192.168.16.22:1337/1/"
+            $0.server = Global.serverUrl
         }
         Parse.initialize(with: configuration)
         
@@ -114,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         /*let configuration = ParseClientConfiguration {
          $0.applicationId = "lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"
          $0.clientKey = "sMlMuxDQTs631WYXfS5rdnUQzeeRPB6JFNnKsVhY"
-         $0.server = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
+         $0.server = Global.serverUrl
          }
          Parse.initialize(with: configuration)*/
 

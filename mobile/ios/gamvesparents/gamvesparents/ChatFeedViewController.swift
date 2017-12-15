@@ -19,7 +19,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     
     var tabBarViewController:TabBarViewController?
     
-    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
+    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: Global.remoteWs) // .remoteWs .localWs
     
     //"wss://gamves.back4app.io"
     //"https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"

@@ -14,6 +14,8 @@ import PopupDialog
 class Global: NSObject
 {
     
+    static var localWs = "wss://192.168.16.22:1337/1/"
+    static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard
 
@@ -139,8 +141,12 @@ class Global: NSObject
                                     
                                     gamvesUser.typeNumber = typeNumber
                                     
-                                    let register = user["isRegister"] as! Bool
-                                    gamvesUser.isRegister = register
+                                    if user["isRegister"] != nil {
+                                    
+                                        let register = user["isRegister"] as! Bool
+                                        gamvesUser.isRegister = register
+                                        
+                                    }
                                     
                                     print(gamvesUser.typeNumber)
                                     
@@ -275,6 +281,11 @@ class Global: NSObject
         //titleView.backgroundColor = UIColor.blue
         
         return titleView
+    }
+    
+    static func isKeyPresentInUserDefaults(key: String) -> Bool
+    {
+        return UserDefaults.standard.object(forKey: key) != nil
     }
     
     static func parseUsersStringToArray(separated: String) -> [String]
@@ -671,7 +682,109 @@ class Global: NSObject
 
     }
     
+    static func getFamilyData()
+    {
+        
+        DispatchQueue.global().async {
+            
+            let familyQuery = PFQuery(className:"Family")
+            familyQuery.whereKey("members", equalTo: PFUser.current())
+            
+            print(familyQuery.cachePolicy.hashValue)
+            
+            if !Global.hasDateChanged()
+            {
+                familyQuery.cachePolicy = .cacheThenNetwork
+            }
+            familyQuery.findObjectsInBackground(block: { (families, error) in
+                
+                if error == nil
+                {
+                    
+                    for family in families!
+                    {
+                        
+                        Global.gamvesFamily.familyName = family["description"] as! String
+                        
+                        let membersRelation = family.relation(forKey: "members") as PFRelation
+                        
+                        let queryMembers = membersRelation.query()
+                        
+                        queryMembers.findObjectsInBackground(block: { (members, error) in
+                            
+                            if error == nil
+                            {
+                                for member in members!
+                                {
+                                    Global.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                                        
+                                        Global.userDictionary[gamvesUser.userId] = gamvesUser
+                                    })
+                                }
+                            }
+                        })
+                        
+                        let schoolRelation = family.relation(forKey: "school") as PFRelation
+                        
+                        let querySchool = schoolRelation.query()
+                        
+                        querySchool.findObjectsInBackground(block: { (schools, error) in
+                            
+                            if error == nil
+                            {
+                                for school in schools!
+                                {
+                                    Global.gamvesFamily.school = school["name"] as! String
+                                }
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    }
     
+    
+    static func updateUserOnline(online : Bool)
+    {
+        let queryOnine = PFQuery(className:"UserOnline")
+        queryOnine.whereKey("userId", equalTo: PFUser.current()?.objectId)
+        queryOnine.findObjectsInBackground { (usersOnline, error) in
+            
+            if error != nil
+            {
+                print("error")
+                
+            } else {
+                
+                if (usersOnline?.count)!>0
+                {
+                    for userOnline in usersOnline!
+                    {
+                        userOnline["isOnline"] = online
+                        
+                        userOnline.saveInBackground(block: { (resutl, error) in
+                            print("saved")
+                        })
+                        
+                    }
+                    
+                } else
+                {
+                    let userOnline = PFObject(className: "UserOnline")
+                    userOnline["userId"] = PFUser.current()?.objectId
+                    userOnline["isOnline"] = online
+                    
+                    userOnline.saveInBackground(block: { (resutl, error) in
+                        print("saved")
+                    })
+                    
+                }
+                
+            }
+        }
+        
+    }
 
 }
 

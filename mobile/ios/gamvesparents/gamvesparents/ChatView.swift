@@ -32,7 +32,7 @@ class ChatView: UIView,
     
     var activityView: NVActivityIndicatorView!
 
-    let liveQueryClient: Client = ParseLiveQuery.Client(server: "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/")
+    let liveQueryClient: Client = ParseLiveQuery.Client(server: Global.localWs) //.remoteWs
         
     //"wss://gamves.back4app.io"
     

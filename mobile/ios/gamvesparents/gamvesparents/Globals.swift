@@ -14,7 +14,16 @@ import PopupDialog
 class Global: NSObject
 {
     
-    static var levels = Dictionary<String, LevelsGamves>()
+    
+    static var serverUrl = "http://192.168.16.22:1337/1/"
+    //static var serverUrl = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
+    
+    static var localWs = "wss://192.168.16.22:1337/1/"
+    static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
+    
+    static var levels = [LevelsGamves]()
+    
+    static var approvals = [Approvals]()
     
     static var admin_delimitator:String = "---is_admin_chat---"
 
@@ -36,6 +45,7 @@ class Global: NSObject
     
     //Notifications
     static var notificationKeyFamilyLoaded  = "com.gamves.gamvesparent.familyLoaded"
+    static var notificationKeyLevelsLoaded  = "com.gamves.gamvesparent.levelsLoaded"
     static var notificationKeyChatFeed      = "com.gamves.gamvesparent.chatfeed"
     
     static var badgeNumber = Bool()
@@ -146,12 +156,15 @@ class Global: NSObject
                                             if typeNumber == 1
                                             {
                                                 gender.female = true
+                                                
                                             } else if typeNumber == 5
                                             {
                                                 gender.male = true
                                             }
                                             
                                             gamvesUser.gender = gender
+                                            
+                                            print(gender)
                                             
                                             Global.gamvesFamily.spouseUser = gamvesUser
                                             
@@ -183,7 +196,6 @@ class Global: NSObject
                                     count = count + 1
                                     
                                 }
-                                
                             })
                         }
                     }
@@ -578,7 +590,6 @@ class Global: NSObject
     
     static func getFamilyData()
     {
-        
         self.keySpouseSmall   = "\(self.keySpouse)Small"
         self.keyYourSmall     = "\(self.keyYour)Small"
         self.keySonSmall      = "\(self.keySon)Small"
@@ -592,10 +603,8 @@ class Global: NSObject
                 
                 if error == nil
                 {
-                    
                     for family in families!
                     {
-                        
                         self.gamvesFamily.familyName = family["description"] as! String
                         self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
                         self.gamvesFamily.sonChatId = family["sonChatId"] as! Int
@@ -630,7 +639,7 @@ class Global: NSObject
                                         {
                                             
                                             DispatchQueue.main.async
-                                                {
+                                            {
                                                     
                                                     self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
                                                         
@@ -693,6 +702,10 @@ class Global: NSObject
                 if let levelObjects = levelObjects
                 {
                     
+                    var countLevels = levelObjects.count
+                    
+                    var count = 0
+                    
                     for level in levelObjects
                     {
                         
@@ -704,14 +717,130 @@ class Global: NSObject
                         
                         print(full)
                         
+                        levelGamves.fullDesc = full
                         levelGamves.levelObj = level
                         
-                        self.levels[full] = levelGamves
+                        self.levels.append(levelGamves)
+                        
+                        if (countLevels-1)  == count {
+                            
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: self)
+                        }
+                        count = count + 1
                         
                     }                        
                 }
             }
         }
+    }
+    
+    
+    
+    static func getApprovasByFamilyId(familyId:String, completionHandler : @escaping (_ resutl: Int) -> ())
+    {
+        let queryApproval = PFQuery(className:"Approvals")
+        queryApproval.whereKey("familyId", equalTo: familyId)
+        queryApproval.findObjectsInBackground { (approvalObjects, error) in
+            
+            if error != nil
+            {
+                print("error")
+            } else
+            {
+                
+                if let approvalObjects = approvalObjects
+                {
+                    
+                    var countAapprovals = approvalObjects.count
+                    
+                    for approvalObj in approvalObjects
+                    {
+                        
+                        let approval = Approvals()
+                        approval.objectId = approvalObj.objectId!
+                        approval.videoId = approvalObj["videoId"] as! Int
+                        approval.videoName = approvalObj["videoTitle"] as! String
+                        approval.approved = approvalObj["approved"] as! Bool
+                        
+                        let queryVideo = PFQuery(className:"Videos")
+                        queryVideo.whereKey("objectId", equalTo: approval.videoId)
+                        queryVideo.findObjectsInBackground { (videoObjects, error) in
+                            
+                            if error != nil
+                            {
+                                print("error")
+                            } else
+                            {
+                                if let videoObjects = videoObjects
+                                {
+                                    
+                                    for videoObject in videoObjects
+                                    {
+                                        
+                                        let thumImage = videoObject["thumbnail"] as! PFFile
+                                        
+                                        let videoId = videoObject["objectId"] as! String
+                                        
+                                        let vId:Int = Int(videoId)!
+                                        
+                                        thumImage.getDataInBackground(block: { (data, error) in
+                                            
+                                            if error == nil
+                                            {
+                                                let thumbImage = UIImage(data:data!)
+                                                
+                                                approval.thumbnail = thumbImage
+                                                
+                                                self.approvals.append(approval)
+                                                
+                                                Global.parseVideo(video: videoObject, chatId : vId )
+                                            
+                                            }
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    
+    static func parseVideo(video:PFObject, chatId :Int ) {
+    
+        let videoGamves = VideoGamves()
+        let videothumburl:String = video["thumbnailUrl"] as! String
+        let videoDescription:String = video["description"] as! String
+        let videoCategory:String = video["category"] as! String
+        let videoUrl:String = video["source"] as! String
+        let videoTitle:String = video["title"] as! String
+        let videoFromName:String = video["fromName"] as! String
+        
+        videoGamves.video_title = videoTitle
+        videoGamves.thumb_url = videothumburl
+        videoGamves.description = videoDescription
+        videoGamves.video_category = videoCategory
+        videoGamves.video_url = videoUrl
+        videoGamves.video_fromName = videoFromName
+        videoGamves.videoobj = video
+        
+        if let vurl = URL(string: videothumburl)
+        {
+            if let data = try? Data(contentsOf: vurl)
+            {
+                videoGamves.thum_image = UIImage(data: data)!
+            }
+        }
+        Global.chatVideos[chatId] = videoGamves
+    
+    }
+    
+    
+    static func isKeyPresentInUserDefaults(key: String) -> Bool {
+        return UserDefaults.standard.object(forKey: key) != nil
     }
     
     
