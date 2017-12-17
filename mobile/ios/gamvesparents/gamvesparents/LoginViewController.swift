@@ -14,9 +14,7 @@ import NVActivityIndicatorView
 
 class LoginViewController: UIViewController
 {
-    
-    var userTypes = Dictionary<Int, PFObject>()
-    
+
     var okLogin = Bool()
 
     var activityIndicatorView:NVActivityIndicatorView?
@@ -299,8 +297,6 @@ class LoginViewController: UIViewController
     
         NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
-
-        self.loaUserTypes()
         
         self.prepTextFields(inView: self.view)
         
@@ -406,10 +402,6 @@ class LoginViewController: UIViewController
             
             print("Internet connection FAILED")
         }
-        
-        
-        
-        
     }
     
     func handleLoginRegister()
@@ -462,16 +454,18 @@ class LoginViewController: UIViewController
             
             //let userTypeRel:PFRelation = user.relation(forKey: "userType")
             
-            var type = Int()
+            var type = Int()            
             
-            if relationship == "Father"
-            {
-                type = 5
-
-            } else if relationship == "Mother"
-            {
-                type = 0
+            if relationship == "Father" {
+                type = Global.REGISTER_FATHER
+            } else if relationship == "Mother" {
+                type = Global.REGISTER_MOTHER
             }
+            
+            user["iDUserType"] = type
+            
+            let relation:PFRelation = user.relation(forKey: "userType")
+            relation.add((Global.userTypes[type]?.userTypeObj)!)
             
             user.signUpInBackground {
                 (success, error) -> Void in
@@ -681,35 +675,4 @@ class LoginViewController: UIViewController
         
     }
     
-    let SHORT = 100
-    
-    func loaUserTypes()
-    {
-        let queryUserType = PFQuery(className:"UserType")
-        queryUserType.order(byAscending: "order")    
-        
-        queryUserType.findObjectsInBackground { (typesObjects, error) in
-            
-            if error != nil
-            {
-                print("error")
-            
-            } else 
-            {
-                if let userTypes = typesObjects
-                {
-
-                    for type in userTypes
-                    {
-                        let id = type["idUserType"] as! Int
-
-                        let idType = type["idUserType"] as! Int
-                        
-                        self.userTypes[idType] = type as PFObject
-                        
-                    }                        
-                }
-            }
-        }
-    }
 }

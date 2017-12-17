@@ -14,6 +14,9 @@ import PopupDialog
 class Global: NSObject
 {
     
+    static var levels = Dictionary<String, LevelsGamves>()
+    
+    static var schools = [GamvesSchools]()
     
     static var serverUrl = "http://192.168.16.22:1337/1/"
     //static var serverUrl = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
@@ -21,8 +24,35 @@ class Global: NSObject
     static var localWs = "wss://192.168.16.22:1337/1/"
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
-    static var levels = [LevelsGamves]()
+    static var userTypes = Dictionary<Int, UserTypeGamves>()
     
+    /*static func getUserTypeObjById(id:Int) -> PFObject {
+        
+        var obj:PFObject!
+        
+        for ust in userTypes {
+            if ust.idUserType == id {
+                obj = ust.userTypeObj!
+            }
+        }
+        
+        return obj
+    }*/
+    
+    static func getTypeDescById(id:Int) -> String {
+        let descType = userTypes[id]?.description
+        return descType!
+    }
+    
+    static var REGISTER_MOTHER  = 0
+    static var SPOUSE_MOTHER    = 1
+    static var SON              = 2
+    static var DAUGHTER         = 3
+    static var SPOUSE_FATHER    = 4
+    static var REGISTER_FATHER  = 5
+    
+    
+
     static var approvals = [Approvals]()
     
     static var admin_delimitator:String = "---is_admin_chat---"
@@ -73,9 +103,20 @@ class Global: NSObject
             gamvesUser.firstName = user["firstName"] as! String
             gamvesUser.lastName = user["lastName"] as! String
             
+            var registered = Bool()
+            
+            if user["isRegister"] != nil {
+                registered = user["isRegister"] as! Bool
+            }
+            
+            gamvesUser.isRegister = registered
+            
+            
             gamvesUser.userName = user["username"] as! String
             
-            //gamvesUser.email = user.email!
+            if user.email != nil {
+                gamvesUser.email = user.email!
+            }
             
             if user["status"] != nil
             {
@@ -87,126 +128,140 @@ class Global: NSObject
                 gamvesUser.isSender = true
             }
             
-            gamvesUser.gamvesUser = user
+            gamvesUser.userObj = user
             
-            let levelRelation = user.relation(forKey: "level") as PFRelation
-            
-            let queryLevel = levelRelation.query()
-            
-            queryLevel.findObjectsInBackground(block: { (levels, error) in
+            if user["pictureSmall"] != nil
+            {
                 
-                if error == nil
-                {
-                    let countLevels = levels?.count
-                    var count = 0
+                let picture = user["pictureSmall"] as! PFFile
+                
+                picture.getDataInBackground(block: { (data, error) in
                     
-                    for level in levels!
-                    {
-                        gamvesUser.levelNumber = level["grade"] as! Int
-                        gamvesUser.levelDescription = level["description"] as! String
-                    
-                        if user["pictureSmall"] != nil
-                        {
+                    if (error != nil) {
+                        print(error)
+                    } else {
                         
-                            let picture = user["pictureSmall"] as! PFFile
+                        let image = UIImage(data: data!)
+                        gamvesUser.avatar = image!
+                        gamvesUser.isAvatarDownloaded = true
+                        gamvesUser.isAvatarQuened = false
+                        
+                        var typeNumber = user["iDUserType"] as! Int
+                        print(gamvesUser.firstName)
+                        
+                        gamvesUser.typeNumber = typeNumber
+                        gamvesUser.typeObj = Global.userTypes[typeNumber]?.userTypeObj  //Global.getUserTypeObjById(id: typeNumber)
+                        
+                        print(gamvesUser.typeNumber)
+                        
+                        if isFamily {
                             
-                            picture.getDataInBackground(block: { (data, error) in
-                                
-                                if (error != nil)
-                                {
-                                    print(error)
-                                } else
-                                {
-                                
-                                    let image = UIImage(data: data!)
-                                    gamvesUser.avatar = image!
-                                    gamvesUser.isAvatarDownloaded = true
-                                    gamvesUser.isAvatarQuened = false
+                            var gender = GamvesGender()
+                            
+                            if typeNumber == Global.REGISTER_MOTHER || typeNumber == Global.SPOUSE_FATHER
+                            {
+                                if typeNumber == Global.REGISTER_MOTHER {
                                     
-                                    var typeNumber = user["userType"] as! Int
+                                    gender.female = true
+                                } else if typeNumber == Global.SPOUSE_FATHER {
                                     
-                                    print(gamvesUser.firstName)
-                                    
-                                    gamvesUser.typeNumber = typeNumber
-                                    
-                                    print(gamvesUser.typeNumber)
-                                    
-                                    //No me interesa
-                                    //gamvesUser.typeDescription = user["description"] as! String
-                                    
-                                    if isFamily
-                                    {
-                                        var gender = GamvesGender()
-                                        
-                                        if typeNumber == 0 || typeNumber == 4
-                                        {
-                                            if typeNumber == 0
-                                            {
-                                                gender.female = true
-                                            } else if typeNumber == 4
-                                            {
-                                                gender.male = true
-                                            }
-                                            gamvesUser.gender = gender
-                                            
-                                            Global.gamvesFamily.youUser = gamvesUser
-                                            
-                                        } else if typeNumber == 1 || typeNumber == 5
-                                        {
-                                            if typeNumber == 1
-                                            {
-                                                gender.female = true
-                                                
-                                            } else if typeNumber == 5
-                                            {
-                                                gender.male = true
-                                            }
-                                            
-                                            gamvesUser.gender = gender
-                                            
-                                            print(gender)
-                                            
-                                            Global.gamvesFamily.spouseUser = gamvesUser
-                                            
-                                        } else if typeNumber == 2 || typeNumber == 3
-                                        {
-                                            
-                                            if typeNumber == 2
-                                            {
-                                                gender.male = true
-                                            } else if typeNumber == 3
-                                            {
-                                                gender.male = false
-                                            }
-                                            gamvesUser.gender = gender
-                                            
-                                            Global.gamvesFamily.sonsUsers.append(gamvesUser)
-                                        }
-                                    }
-                                    
-                                    if count == (countLevels!-1)
-                                    {
-                                        
-                                        self.userDictionary[userId] = gamvesUser
-                                        
-                                        completionHandler(gamvesUser)
-                                        
-                                    }
-                                    
-                                    count = count + 1
-                                    
+                                    gender.male = true
                                 }
-                            })
+                                
+                                gamvesUser.gender = gender
+                                
+                                adduserToFamilyFromGlobal(gamvesUser: gamvesUser)
+                                
+                                
+                            } else if typeNumber == Global.SPOUSE_MOTHER || typeNumber == Global.REGISTER_FATHER
+                            {
+                                if typeNumber == Global.SPOUSE_MOTHER {
+                                    
+                                    gender.female = true
+                                } else if typeNumber == Global.REGISTER_FATHER {
+                                    
+                                    gender.male = true
+                                }
+                                
+                                gamvesUser.gender = gender
+                                
+                                adduserToFamilyFromGlobal(gamvesUser: gamvesUser)
+                                
+                                
+                            } else if typeNumber == Global.SON || typeNumber == Global.DAUGHTER {
+                                
+                                if typeNumber == Global.SON {
+                                    
+                                    gender.male = true
+                                } else if typeNumber == Global.DAUGHTER {
+                                    gender.male = false
+                                }
+                                
+                                gamvesUser.gender = gender
+                                
+                                if user["levelObjId"] != nil {
+                                
+                                    let levelId = user["levelObjId"] as! String
+                                    
+                                    print(levelId)
+                                    
+                                    let levelGamves = Global.levels[levelId]
+                                    
+                                    print(levelGamves)
+                                    
+                                    gamvesUser.levelNumber = (levelGamves?.grade)!
+                                    gamvesUser.levelDescription = (levelGamves?.description)!
+                                    gamvesUser.levelId = levelId
+                                
+                                }
+                                
+                                adduserToFamilyFromGlobal(gamvesUser: gamvesUser)
+                                
+                                completionHandler(gamvesUser)
+                                
+
+                            }
+                        }
+                        
+                        if typeNumber != Global.SON || typeNumber != Global.DAUGHTER {
+                            
+                            completionHandler(gamvesUser)
                         }
                     }
-                }
-            })
-            
+                })
+            }
+        
         } else {
             
             completionHandler(self.userDictionary[userId]!)
         }
     }
+    
+    
+    static func adduserToFamilyFromGlobal(gamvesUser : GamvesParseUser){
+        
+        if let myId = PFUser.current()?.objectId {
+            
+            if myId == gamvesUser.userId {
+                
+                Global.gamvesFamily.youUser = gamvesUser
+                
+            } else if gamvesUser.typeNumber == Global.SON ||  gamvesUser.typeNumber == Global.DAUGHTER {
+                
+                Global.gamvesFamily.sonsUsers.append(gamvesUser)
+                Global.gamvesFamily.levels.append(self.levels[gamvesUser.levelId]!)
+                
+            } else {
+                
+                Global.gamvesFamily.spouseUser = gamvesUser
+            }
+            
+        }
+        
+        self.userDictionary[gamvesUser.userId] = gamvesUser
+
+    }
+
     
     static func getImageVideo(videothumburl: String, video:VideoGamves, completionHandler : (_ video:VideoGamves) -> Void)
     {
@@ -641,19 +696,17 @@ class Global: NSObject
                                             DispatchQueue.main.async
                                             {
                                                     
-                                                    self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                                                self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                                                    
+                                                    print(gamvesUser.userName)
+                                                    
+                                                    if count == (memberCount!-1)
+                                                    {                                                           
                                                         
-                                                        print(gamvesUser.userName)
-                                                        
-                                                        self.userDictionary[gamvesUser.userId] = gamvesUser
-                                                        
-                                                        if count == (memberCount!-1)
-                                                        {                                                           
-                                                            
-                                                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
-                                                        }
-                                                        count = count + 1
-                                                    })
+                                                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                    }
+                                                    count = count + 1
+                                                })
                                             }
                                         }
                                     }
@@ -685,29 +738,23 @@ class Global: NSObject
     }
     
     
-    static func loaLevels()
-    {
+    static func loaLevels() {
+        
         let queryLevel = PFQuery(className:"Level")
         queryLevel.order(byAscending: "order")
         queryLevel.findObjectsInBackground { (levelObjects, error) in
             
-            if error != nil
-            {
-                
+            if error != nil {
                 print("error")
+            } else {
                 
-            } else
-            {
-                
-                if let levelObjects = levelObjects
-                {
+                if let levelObjects = levelObjects {
                     
                     var countLevels = levelObjects.count
                     
                     var count = 0
                     
-                    for level in levelObjects
-                    {
+                    for level in levelObjects {
                         
                         let levelGamves = LevelsGamves()
                         levelGamves.description = level["description"] as! String
@@ -718,12 +765,12 @@ class Global: NSObject
                         print(full)
                         
                         levelGamves.fullDesc = full
+                        levelGamves.objectId = level.objectId!
                         levelGamves.levelObj = level
                         
-                        self.levels.append(levelGamves)
+                        self.levels[level.objectId!] = levelGamves
                         
                         if (countLevels-1)  == count {
-                            
                             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: self)
                         }
                         count = count + 1
@@ -843,6 +890,41 @@ class Global: NSObject
         return UserDefaults.standard.object(forKey: key) != nil
     }
     
+    
+    static func loadUserTypes()
+    {
+        let queryLevel = PFQuery(className:"UserType")
+        queryLevel.findObjectsInBackground { (userTypeObjects, error) in
+            
+            if error != nil
+            {
+                
+                print("error")
+                
+            } else
+            {
+                
+                if let userTypeObjects = userTypeObjects
+                {
+                    var countUserTypes = userTypeObjects.count
+                    
+                    print(countUserTypes)
+                    
+                    for userType in userTypeObjects {
+                        
+                        let userTypeGamves = UserTypeGamves()
+                        userTypeGamves.description = userType["description"] as! String
+                        let type = userType["idUserType"] as! Int
+                        userTypeGamves.idUserType = type
+                        userTypeGamves.userTypeObj = userType
+                        
+                        self.userTypes[type] = userTypeGamves
+                        
+                    }
+                }
+            }
+        }
+    }
     
 
 }

@@ -21,6 +21,8 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         
     var didFindLocation = Bool()
     
+    var profileViewController : ProfileViewController!
+    
     lazy var chatLauncher: ChatViewController = {
         let launcher = ChatViewController()
         return launcher
@@ -78,7 +80,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         let activiyTitle = "Activity"
         self.chatFeedViewController.title = activiyTitle
         
-        let profileViewController = ProfileViewController()
+        profileViewController = ProfileViewController()
         profileViewController.tabBarViewController = self
         let profileNavController = UINavigationController(rootViewController: profileViewController)
         profileNavController.tabBarItem.image = UIImage(named: "profile")
@@ -92,8 +94,19 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         blurVisualEffectView?.frame = view.bounds
         self.view.addSubview(blurVisualEffectView!)
         
-    }   
+        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
+        
+    }
     
+    func familyLoaded() {
+        profileViewController.familyLoaded()
+    }
+    
+    func levelsLoaded() {
+        profileViewController.levelsLoaded()
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         

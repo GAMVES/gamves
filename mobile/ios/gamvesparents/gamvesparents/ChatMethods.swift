@@ -45,9 +45,11 @@ class ChatMethods: NSObject
             
             var array = [String]()
             
-            for user in gamvesUsers
+            for gamvesUser in gamvesUsers
             {
-                array.append(user.gamvesUser.objectId!)
+                let userObjectId = gamvesUser.userId
+                print(userObjectId)
+                array.append(userObjectId)
             }
             let members = String(describing: array)
             chatFeed["members"] = members

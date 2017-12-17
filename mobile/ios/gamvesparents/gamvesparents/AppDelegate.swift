@@ -48,7 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         window?.rootViewController = TabBarViewController()
         
-        
         if PFUser.current() != nil
         {
             Global.getFamilyData()
@@ -87,6 +86,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 UIApplication.shared.registerForRemoteNotifications()
             }
         }
+        
+        Global.loadUserTypes()
         
         return true
     }
