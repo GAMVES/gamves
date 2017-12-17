@@ -1,6 +1,7 @@
 require('./functions')
 require('./jobs')
 require('./init')
+require('./users')
 
 /*
 * If you want to use Advanced Cloud Code,

@@ -44,10 +44,6 @@
 	        user = result;
 	        var roleQuery = new Parse.Query(Parse.Role);
 	        roleQuery.equalTo("name", "admin");
-
-	        // here's our defense against mischief: find the admin role
-	        // only if the requesting user is an admin
-
 	        roleQuery.equalTo("users", request.user);
 
 	        return roleQuery.first();
@@ -223,7 +219,6 @@
 	        }
 
 	     });
-
 	});
 
 
