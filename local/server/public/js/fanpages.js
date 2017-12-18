@@ -193,7 +193,7 @@ document.addEventListener("LoadFanpage", function(event){
                                 // collect the data
                                 //$('#edit_id').val(ele.siblings(':first').html());                                                
                                 $("#edit_icon").append(a4);
-                                $('#edit_name').val(a5);
+                                $('#edit_name_fanpage').val(a5);
                                 $('#edit_about').val(a6);
                                 $('#edit_cover').append(a7);  
 
@@ -245,7 +245,7 @@ document.addEventListener("LoadFanpage", function(event){
             $('#img_icon_fanpage').attr('src', e.target.result);
           }
           reader.readAsDataURL(input.files[0]);
-          var desc = $("#edit_name").val();
+          var desc = $("#edit_name_fanpage").val();
           var thunbname = "i_" + desc.toLowerCase() + ".png";
           parseFileIcon = new Parse.File(thunbname, input.files[0], "image/png");                   
         }
@@ -258,7 +258,7 @@ document.addEventListener("LoadFanpage", function(event){
             $('#img_cover_fanpage').attr('src', e.target.result);
           }
           reader.readAsDataURL(input.files[0]);  
-          var desc = $("#edit_name").val();
+          var desc = $("#edit_name_fanpage").val();
           var backname = "s_" + desc.toLowerCase() + ".png";       
           parseFileCover = new Parse.File(backname, input.files[0], "image/png");                    
         }
@@ -286,7 +286,10 @@ document.addEventListener("LoadFanpage", function(event){
 
           var fanpage = new Fanpage();    
           fanpage.set("category", categoryPF);
-          fanpage.set("pageName", $("#edit_name").val());
+
+          var fanpageName = $("#edit_name_fanpage").val();
+
+          fanpage.set("pageName", fanpageName);
           fanpage.set("pageAbout", $("#edit_about").val());
           fanpage.set("pageIcon", parseFileIcon);
           fanpage.set("pageCover", parseFileCover);         

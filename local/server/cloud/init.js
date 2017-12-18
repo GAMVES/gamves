@@ -61,9 +61,7 @@
 					admin.set(d, "Administrator");					
 
 					admin.save(null, {											
-						success: function (adm) {
-
-							console.log("1");
+						success: function (adm) {							
 
 						    var user = new Parse.User();
 							user.set("username", _admuser);
