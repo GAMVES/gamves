@@ -31,27 +31,54 @@ class ChatFeed
 
 class GamvesParseUser
 {
-    var gamvesUser:PFUser! = nil
+    var userObj:PFUser! = nil
     var name = String()
     var firstName = String()
     var lastName = String()
     var userName = String()
     var userId = String()
     var email = String()
+    
     var avatar = UIImage()
     var isAvatarDownloaded = Bool()
     var isAvatarQuened = Bool()
     var isSender = Bool()
+    
+    var isRegister = Bool()
+    
     var levelNumber = Int()
     var levelDescription = String()
+    
+    var levelId = String()
+    
     var typeNumber = Int()
+    var typeObj:PFObject!
+    
     var typeDescription = String()
     var status = String()
     var chatId = Int()
     var isChecked = Bool()
     var gender = GamvesGender()
-    var isRegister = Bool()
 }
+
+
+class LevelsGamves
+{
+    var objectId = String()
+    var description = String()
+    var grade = Int()
+    var fullDesc = String()
+    var levelObj:PFObject?
+}
+
+class UserTypeGamves
+{
+    var objectId = String()
+    var description = String()
+    var idUserType = Int()
+    var userTypeObj:PFObject?
+}
+
 
 class GamvesGender
 {
@@ -153,7 +180,7 @@ struct Page {
     let imageName: String
 }
 
-class GamvesFamily
+/*class GamvesFamily
 {
     var sonsUsers:[GamvesParseUser]!
     var youUser:GamvesParseUser!
@@ -199,17 +226,59 @@ class GamvesFamily
         return sonwithId
     }
     
-}
+}*/
 
-
-class LevelsGamves
+class GamvesFamily
 {
+    var sonsUsers:[GamvesParseUser]!
+    var levels:[LevelsGamves]!
+    
+    var youUser:GamvesParseUser!
+    var spouseUser:GamvesParseUser!
+    
+    var familyName = String()
     var objectId = String()
-    var description = String()
-    var grade = Int()
-    var fullDesc = String()
-    var levelObj:PFObject?
+    var school = String()
+    
+    var sonChatId = Int()
+    var spouseChatId = Int()
+    var familyChatId = Int()
+    
+    var familyImage = UIImage()
+    
+    init()
+    {
+        self.sonsUsers = [GamvesParseUser]()
+        self.levels = [LevelsGamves]()
+    }
+    
+    func getFamilyUserById(userId : String) -> GamvesParseUser?
+    {
+        if youUser.userId == userId
+        {
+            return youUser
+            
+        } else if spouseUser.userId == userId
+        {
+            return spouseUser
+        }
+        
+        var sonwithId = GamvesParseUser()
+        
+        for son in sonsUsers
+        {
+            if son.userId == userId
+            {
+                sonwithId = son
+                
+            }
+        }
+        
+        return sonwithId
+    }
+    
 }
+
 
 
 class UserStatistics

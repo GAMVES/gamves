@@ -217,7 +217,7 @@ class GroupNameViewController: UIViewController,
         
         for user in self.gamvesUsers
         {
-            let objectsIds = user.gamvesUser.objectId!
+            let objectsIds = user.typeObj.objectId!
             self.arrayIds.append(objectsIds)
         }
     

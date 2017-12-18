@@ -807,7 +807,7 @@ class ChatView: UIView,
                 
                 for user in self.gamvesUsers
                 {
-                    array.append(user.gamvesUser.objectId!)
+                    array.append(user.typeObj.objectId!)
                 }
                 let members = String(describing: array)
                 self.chatFeed["members"] = members

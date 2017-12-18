@@ -529,7 +529,7 @@ class ProfileViewController: UIViewController,
             
             self.segmentedControl.setEnabled(true, forSegmentAt: 1)
             
-        }         
+        }       
         
     }
     
@@ -1438,7 +1438,7 @@ class ProfileViewController: UIViewController,
         
         let sonParams = [
             "user_name" : spouse_username,
-            "user_user_name" : spouse_username,
+            "user_user_name" : spouse_email,
             "user_email" : spouse_email,
             "user_password" : spouse_password,
             "firstName" : firstName,

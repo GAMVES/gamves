@@ -114,7 +114,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
                     {
                         gamvesUser.status = user["status"] as! String
                     }
-                    gamvesUser.gamvesUser = user as! PFUser
+                    gamvesUser.userObj = user as! PFUser
                     
                     let userId = user.objectId as! String
                     

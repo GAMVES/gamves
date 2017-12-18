@@ -73,11 +73,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window?.addConstraintsWithFormat("H:|[v0]|", views: statusBarBackgroundView)
         window?.addConstraintsWithFormat("V:|[v0(20)]", views: statusBarBackgroundView)
         
-        if PFUser.current() != nil
-        {
-            Global.getFamilyData()
-        }
-    
         
         if #available(iOS 10.0, *)
         {
@@ -115,9 +110,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
         if PFUser.current() != nil
         {
-            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+            //ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+            
+            //self.loadChatChannels()
+            
+            //Global.loaLevels()
+            //Global.getFamilyData()
+            
+            
+            Global.loaLevels()
+            
+            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                
+                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                
+            })
             
             self.loadChatChannels()
+
+            
+            
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
@@ -146,11 +158,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Parse.enableLocalDatastore()
         
         //Local
-        /*let configuration = ParseClientConfiguration {
+        let configuration = ParseClientConfiguration {
             $0.applicationId = "0123456789"            
             $0.server = "http://192.168.16.22:1337/1/"
         }
-        Parse.initialize(with: configuration)*/
+        Parse.initialize(with: configuration)
 
         //Back4app
         /*let configuration = ParseClientConfiguration {
@@ -160,12 +172,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
          }*/
         
         //Sashido
-        let configuration = ParseClientConfiguration {
+        /*let configuration = ParseClientConfiguration {
             $0.applicationId = "lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"
             $0.clientKey = "sMlMuxDQTs631WYXfS5rdnUQzeeRPB6JFNnKsVhY"
             $0.server = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
         }
-        Parse.initialize(with: configuration)
+        Parse.initialize(with: configuration)*/
         
         // [Optional] Track statistics around application opens.
         PFAnalytics.trackAppOpened(launchOptions: launchOptions)
