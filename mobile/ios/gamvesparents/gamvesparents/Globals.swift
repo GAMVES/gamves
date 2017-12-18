@@ -643,7 +643,7 @@ class Global: NSObject
     }
     
     
-    static func getFamilyData()
+    static func getFamilyData(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
         self.keySpouseSmall   = "\(self.keySpouse)Small"
         self.keyYourSmall     = "\(self.keyYour)Small"
@@ -702,6 +702,7 @@ class Global: NSObject
                                                     
                                                     if count == (memberCount!-1)
                                                     {                                                           
+                                                        completionHandler(true)
                                                         
                                                         NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
                                                     }

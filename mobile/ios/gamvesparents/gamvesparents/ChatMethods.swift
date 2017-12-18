@@ -14,7 +14,7 @@ class ChatMethods: NSObject
 {
     
     
-    static func addNewFeedAppendgroup(gamvesUsers:[GamvesParseUser], chatId:Int, completionHandler : @escaping (_ resutl:Bool) -> ())
+    static func addNewFeedAppendgroup(gamvesUsers:[GamvesParseUser], chatId:Int, completionHandlerGroup : @escaping (_ resutl:Bool) -> ())
     {
         
         let random = Int()
@@ -109,20 +109,20 @@ class ChatMethods: NSObject
                 
                 self.addChannels(userIds:userIdArray, channel: chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
                     
-                    if resutl
-                    {                        
+                    if resutl {                        
                         
                         ChatMethods.sendMessage(sendPush: false, chatId: chatId, text: message, textField: nil, completionHandlerMessage: { ( resutl:Bool ) -> () in
                             
-                            completionHandler(resutl)
+                            if resutl {
+                                completionHandlerGroup(true)
+                            } else {
+                                completionHandlerGroup(false)
+                            }
                             
                         })
 
-                        
-                        
-                    } else
-                    {
-                        completionHandler(false)
+                    } else {
+                        completionHandlerGroup(false)
                     }
                     
                 })

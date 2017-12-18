@@ -487,7 +487,7 @@ class ProfileViewController: UIViewController,
         
         self.prepTextFields(inView: [self.sonNameContainerView])
 
-        self.segmentedControl.setEnabled(false, forSegmentAt: 1)
+        
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
        
@@ -508,7 +508,12 @@ class ProfileViewController: UIViewController,
             if Global.isKeyPresentInUserDefaults(key: "son_userId") {
                 
                 self.loadSonSpouseDataIfFamilyDontExist()
+                
+                self.segmentedControl.setEnabled(true, forSegmentAt: 1)
             
+            } else {
+                
+                self.segmentedControl.setEnabled(false, forSegmentAt: 1)
             }
         
         } else {
@@ -521,6 +526,9 @@ class ProfileViewController: UIViewController,
                 self.makeRounded(imageView:self.spousePhotoImageView)
                 self.makeRounded(imageView:self.familyPhotoImageView)
             }
+            
+            self.segmentedControl.setEnabled(true, forSegmentAt: 1)
+            
         }         
         
     }
@@ -595,7 +603,9 @@ class ProfileViewController: UIViewController,
             self.yourFamilyTextField.text = Global.gamvesFamily.familyName
             
             self.spouseNameTextField.text = Global.gamvesFamily.spouseUser.name
-            self.spouseEmailTextField.text = Global.gamvesFamily.spouseUser.email
+            let spousemeail = Global.gamvesFamily.spouseUser.email
+            
+            self.spouseEmailTextField.text = spousemeail
             
             let type = Global.gamvesFamily.sonsUsers[0].typeNumber
             
@@ -1109,21 +1119,27 @@ class ProfileViewController: UIViewController,
                                             
                                             self.saveFamilyImagesToServer(completionHandlerFamilySave: { ( resutl ) -> () in
                                                 
-                                                print("GROUPS CREATED")
+                                                if resutl {
                                                 
-                                                self.activityIndicatorView?.stopAnimating()
-                                                
-                                                self.hideShowTabBar(status:false)
-                                                self.tabBarViewController?.selectedIndex = 0
-                                                
-                                                Global.defaults.set(true, forKey: "profile_completed")
-                                                
-                                                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
-                                                
-                                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-                                                
-                                                Global.getFamilyData()
-                                                
+                                                    print("GROUPS CREATED")
+                                                    
+                                                    self.activityIndicatorView?.stopAnimating()
+                                                    
+                                                    self.hideShowTabBar(status:false)
+                                                    self.tabBarViewController?.selectedIndex = 0
+                                                    
+                                                    Global.defaults.set(true, forKey: "profile_completed")
+                                                    
+                                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                    
+                                                    Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                                                    
+                                                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                                                        
+                                                    })
+                                                    
+                                                }
+                                                    
                                             })
                                             
                                         }
@@ -1144,31 +1160,8 @@ class ProfileViewController: UIViewController,
                  self.activityIndicatorView?.stopAnimating()
             }
         }
-   }
-    
-    
-    func logOutLogIn(username:String, password: String, completionHandler : @escaping (_ user:PFUser) -> ()) {
-        
-        PFUser.logOutInBackground { (error) in
-        
-            if error == nil {
-                
-                // Defining the user object
-                PFUser.logInWithUsername(inBackground: username, password: password, block: {(user, error) -> Void in
-                    
-                    if let error = error as NSError? {
-                        print(error)
-                    } else {
-                        print(user?.username)
-                        completionHandler(user!)
-                    }
-                })
-                
-            } else {
-                print(error)
-            }
-        }
     }
+    
 
     func checkForSonErrors() -> Bool {
         
@@ -1387,99 +1380,24 @@ class ProfileViewController: UIViewController,
                     self.sonGamves = gamvesUser
                   
                     Global.defaults.set(true, forKey: "son_exist")
-                    Global.defaults.set(self.son.objectId, forKey: "son_object_id")
-                    Global.defaults.synchronize()
+                    
+                    if let sonObjectId = self.son.objectId {
+                        
+                        print(sonObjectId)
+                        Global.defaults.set(sonObjectId, forKey: "son_object_id")
+                        Global.defaults.synchronize()
+                    }
                     
                     completionHandler(true)
                 })
-                
                 
             } else {
                 
                  print(error)
                  completionHandler(false)
             }
-            
         }
-        
     }
-    
-    
-    /*func saveSon(completionHandler : @escaping (_ resutl:Bool) -> ())
-    {
-
-        let son_name = Global.defaults.string(forKey: "son_name")
-        let son_user_name = Global.defaults.string(forKey: "son_username")
-        let son_password = Global.defaults.string(forKey: "son_password")
-    
-        let full_name = son_name?.components(separatedBy: " ")
-
-        self.son = PFUser()
-        self.son["Name"]  = son_name
-        self.son.username = son_user_name
-        self.son.password = son_password
-        self.son["firstName"] = full_name?[0]
-        self.son["lastName"] = full_name?[1]
-        self.son["isRegister"] = false
-    
-    
-        let son_type = Global.defaults.string(forKey: "son_type")
-    
-        var type = Int()
-        if son_type == "Son" {
-            type = Global.SON
-        } else if son_type == "Daughter" {
-            type = Global.DAUGHTER
-        }
-
-        self.son["iDUserType"] = type
-    
-        let relationType:PFRelation = self.son.relation(forKey: "userType")
-        relationType.add(Global.getUserTypeObjById(id: type))
-    
-        var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
-    
-        print(son_grade)
-    
-        let levelRel:PFRelation = self.son.relation(forKey: "level")
-    
-        let lkeys = Array(Global.levels.keys)
-    
-        for i in lkeys {
-            
-            let level = Global.levels[i]
-            
-            if level?.fullDesc == son_grade {
-                
-                self.son["levelObjId"] = level?.objectId
-            }
-        }
-    
-        self.storeImgeLocally(imagePath: self.sonImageName, imageToStore: self.sonPhotoImage)
-        self.storeImgeLocally(imagePath: self.sonImageNameSmall, imageToStore: self.sonPhotoImageSmall)
-    
-        self.storeImgeLocally(imagePath: self.familyImageName, imageToStore: self.familyPhotoImage)
-        self.storeImgeLocally(imagePath: self.familyImageNameSmall, imageToStore: self.familyPhotoImageSmall)
-    
-        self.son.signUpInBackground {
-            (success, error) -> Void in
-
-            if let error = error as NSError? {
-                
-                let errorString = error.userInfo["error"] as? NSString
-                completionHandler(false)
-
-            } else {
-                
-                Global.defaults.set(true, forKey: "son_exist")
-                Global.defaults.set(self.son.objectId, forKey: "son_object_id")
-                Global.defaults.synchronize()
-
-     
-            }
-        }
-   }*/
-    
     
     func saveSpouse(completionHandler : @escaping (_ resutl:Bool) -> ()) {
         
@@ -1521,6 +1439,7 @@ class ProfileViewController: UIViewController,
         let sonParams = [
             "user_name" : spouse_username,
             "user_user_name" : spouse_username,
+            "user_email" : spouse_email,
             "user_password" : spouse_password,
             "firstName" : firstName,
             "lastName" : lastName,
@@ -1553,9 +1472,7 @@ class ProfileViewController: UIViewController,
                     completionHandler(true)
                 })
                 
-                
             } else {
-                
                 print(error)
                 completionHandler(false)
             }
@@ -1563,420 +1480,8 @@ class ProfileViewController: UIViewController,
         }
         
     }
-    
-    /*func saveSpouse(completionHandler : @escaping (_ resutl:Bool) -> ())
-    {
-        
-        let spouse_username = Global.defaults.string(forKey: "spouse_username")
-        let spouse_password = Global.defaults.string(forKey: "spouse_password")
-        let spouse_email = Global.defaults.string(forKey: "spouse_email")
-        
-        let spouseUser = PFUser()
-        spouseUser["Name"]  = spouse_username
-        spouseUser.email = spouse_email
-        spouseUser.username = spouse_email
-        spouseUser.password = spouse_password
-        
-        let full_name = spouse_username?.components(separatedBy: " ")
-        
-        spouseUser["firstName"] = full_name?[0]
-        spouseUser["lastName"] = full_name?[1]
-        
-        print(self.yourTypeId)
-        
-        var type = Int()
-        
-        print(self.yourTypeId)
-        
-        if self.yourTypeId == Global.REGISTER_FATHER { //"Father" {
-            type = Global.SPOUSE_MOTHER
-            print(type)
-        } else if self.yourTypeId == Global.SPOUSE_MOTHER { //"Mother" {
-            type = Global.REGISTER_FATHER
-            print(type)
-        }
-        
-        let relation:PFRelation = spouseUser.relation(forKey: "userType")
-        relation.add((Global.userTypes[type]?.userTypeObj)!)
-        
-        spouseUser["iDUserType"] = type
-        spouseUser["isRegister"] = false
-        
-        /*let levelRel:PFRelation = spouseUser.relation(forKey: "level")
-         var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
-         
-         print(son_grade)
-         
-         for lv in Global.levels {
-         
-         if lv.fullDesc == son_grade {
-         
-         levelRel.add(lv.levelObj!)
-         
-         }
-         }*/
-        
-        spouseUser.signUpInBackground {
-            (success, error) -> Void in
-            
-            if let error = error as NSError? {
-                
-                let errorString = error.userInfo["error"] as? NSString
-                
-                print(errorString)
-                
-                completionHandler(false)
-                
-            } else {
-                
-                self.spouse = spouseUser
-                
-                print(self.spouse["Name"])
-                
-                Global.defaults.set(self.spouse.objectId, forKey: "spouse_object_id")
-                
-                Global.defaults.synchronize()
-                
-                //PERMISSIONS
-                
-                let acl = PFACL(user: self.spouse!)
-                
-                acl.setWriteAccess(true, for: self.adminRole)
-                acl.setReadAccess(true, for: self.adminRole)
-                
-                self.adminRole.users.add(self.spouse!)
-                
-                self.adminRole.saveInBackground(block: { (resutl, error) in
-                    
-                    print("")
-                    
-                    if error != nil
-                    {
-                        completionHandler(false)
-                    } else {
-                        completionHandler(true)
-                    }
-                    
-                })
-            }
-        }
-    }*/
-    
 
-    func saveFamilyImagesToServer(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())
-    {
-        
-        //self.saveYou(completionHandler: { ( resutl ) -> () in
-            
-            //print("YOU SAVED")
-            
-            //if resutl
-            //{
-                self.saveFamily(completionHandler: { ( resutl ) -> () in
-                    
-                    print("FAMILY SAVED")
-                    
-                    Global.defaults.setHasProfileInfo(value: true)
-                    
-                    var queue = TaskQueue()
-                    
-                    var gYou = GamvesParseUser()
-                    gYou = self.youGamves
-                    
-                    var gSpouse = GamvesParseUser()
-                    gSpouse = self.spouseGamves
-                    
-                    var gSon = GamvesParseUser()
-                    gSon = self.sonGamves
-                    
-                    /*if Global.userDictionary[self.you.objectId!] != nil {
-                        Global.userDictionary[self.you.objectId!]?.typeObj = self.you
-                        gYou = Global.userDictionary[self.you.objectId!]!
-                    }*/
-                    
-                    
-                    if self.yourPhotoImage != nil {
-                        
-                        ///SAVE SON
-                        
-                        if self.sonPhotoImage != nil
-                        {
-                            
-                            queue.tasks +=~ { resutl, next in
-                                
-                                //self.saveUserImages(id: 1, completionHandler: { ( resutl ) -> () in
-                                
-                                //if resutl
-                                //{
-                                
-                                //Global.addUserToDictionary(user: self.son as! PFUser, isFamily: true, completionHandler: { ( sonGamvesUser ) -> () in
-                                    
-                                    
-                                    //if sonGamvesUser != nil
-                                    //{
-                                        
-                                        //sonGamvesUser.userObj = self.son
-                                        
-                                        //gSon = sonGamvesUser
-                                        
-                                        var youSon = [GamvesParseUser]()
-                                        
-                                        youSon.append(gYou)
-                                        youSon.append(gSon)
-                                        
-                                        ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonChatId, completionHandler: { ( result ) -> () in
-                                            
-                                            print("done youSon")
-                                            
-                                            if (resutl != nil) {
-                                                next(nil)
-                                            }
-                                        })
-                                    //}
-                                //})
-                                //}
-                                //})
-                            }
-                        }
-                        
-                        //SAVE SPOUSE
-                        
-                        if self.spousePhotoImage != nil {
-                            
-                            queue.tasks +=~ { resutl, next in
-                                
-                                
-                                //self.saveUserImages(id: 2, completionHandler: { ( resutl ) -> () in
-                                //if resutl {
-                                
-                                //Global.addUserToDictionary(user: self.spouse as! PFUser, isFamily: true, completionHandler: { ( spouseGamvesUser ) -> () in
-                                    
-                                    
-                                    //if spouseGamvesUser != nil
-                                    //{
-                                        
-                                        //spouseGamvesUser.userObj = self.spouse
-                                        //gSpouse = spouseGamvesUser
-                                        
-                                        var youSpouse = [GamvesParseUser]()
-                                        
-                                        youSpouse.append(gYou)
-                                        youSpouse.append(gSpouse)
-                                        
-                                        ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseChatId, completionHandler: { ( result ) -> () in
-                                            
-                                            print("done youSpouse")
-                                            
-                                            if (resutl != nil)
-                                            {
-                                                next(nil)
-                                            }
-                                            
-                                        })
-                                    //}
-                                //})
-                                
-                                //}
-                                //})
-                            }
-                        }
-                        
-                        //SAVE FAMILY
-                        
-                        queue.tasks +=~ {
-                            
-                            print("FINISH")
-                            
-                            //let your_email = Global.defaults.string(forKey: "your_email")
-                            //let your_password = Global.defaults.string(forKey: "your_password")
-                            
-                            //self.logOutLogIn(username: your_email!, password: your_password!, completionHandler: { ( user ) -> () in
-                                
-                                
-                                print("BACK AGAIN LOGIN AS: \(PFUser.current()?.username)")
-                                
-                                var youSpouseSon = [GamvesParseUser]()
-                                
-                                youSpouseSon.append(gYou)
-                                youSpouseSon.append(gSpouse)
-                                youSpouseSon.append(gSon)
-                                
-                                ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouseSon, chatId: self.familyChatId, completionHandler: { ( result ) -> () in
-                                    
-                                    print("done youSpouseSon")
-                                    
-                                    if (resutl != nil)
-                                    {
-                                        
-                                        completionHandlerFamilySave(true)
-                                    }
-                                    
-                                })
-                            //})
-                        }
-                        queue.run()
-                    }
-                })
-            //}
-        //})
-    }
-    
-
-    /*func saveFamilyImagesToServer(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())
-    {
-     
-        self.saveYou(completionHandler: { ( resutl ) -> () in
-
-            print("YOU SAVED")
-
-            if resutl
-            {
-                self.saveFamily(completionHandler: { ( resutl ) -> () in
-
-                    print("FAMILY SAVED")
-     
-                    Global.defaults.setHasProfileInfo(value: true)
-
-                    var queue = TaskQueue()
-
-                    var gYou = GamvesParseUser()
-                    var gSpouse = GamvesParseUser()
-                    var gSon = GamvesParseUser()
-
-                    if Global.userDictionary[self.you.objectId!] != nil {
-                        Global.userDictionary[self.you.objectId!]?.typeObj = self.you
-                        gYou = Global.userDictionary[self.you.objectId!]!
-                    }
-
-
-                    if self.yourPhotoImage != nil {
-     
-                        ///SAVE SON
-     
-                        if self.sonPhotoImage != nil
-                        {
-     
-                            queue.tasks +=~ { resutl, next in
-     
-                                self.saveUserImages(id: 1, completionHandler: { ( resutl ) -> () in
-     
-                                    if resutl
-                                    {
-     
-                                        Global.addUserToDictionary(user: self.son as! PFUser, isFamily: true, completionHandler: { ( sonGamvesUser ) -> () in
-     
-     
-                                            if sonGamvesUser != nil
-                                            {
-     
-                                                sonGamvesUser.userObj = self.son
-     
-                                                gSon = sonGamvesUser
-     
-                                                var youSon = [GamvesParseUser]()
-     
-                                                youSon.append(gYou)
-                                                youSon.append(gSon)
-     
-                                                ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonChatId, completionHandler: { ( result ) -> () in
-     
-                                                    print("done youSon")
-     
-                                                    if (resutl != nil) {
-                                                        next(nil)
-                                                    }
-                                                })
-                                            }
-                                        })
-                                    }
-                                })
-                            }
-                        }
-     
-                        //SAVE SPOUSE
-     
-                        if self.spousePhotoImage != nil {
-     
-                            queue.tasks +=~ { resutl, next in
-     
-     
-                                self.saveUserImages(id: 2, completionHandler: { ( resutl ) -> () in
-                                    
-                                    if resutl
-                                    {
-
-                                        Global.addUserToDictionary(user: self.spouse as! PFUser, isFamily: true, completionHandler: { ( spouseGamvesUser ) -> () in
-
-
-                                            if spouseGamvesUser != nil
-                                            {
-                                                
-                                                spouseGamvesUser.userObj = self.spouse
-                                                
-                                                gSpouse = spouseGamvesUser
-                                                
-                                                var youSpouse = [GamvesParseUser]()
-
-                                                youSpouse.append(gYou)
-                                                youSpouse.append(gSpouse)
-
-                                                ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseChatId, completionHandler: { ( result ) -> () in
-
-                                                    print("done youSpouse")
-
-                                                    if (resutl != nil)
-                                                    {                                               
-                                                        next(nil)
-                                                    }
-
-                                                })
-                                            }
-                                        })
-                                    }
-                                })
-                            }
-                        }
-
-                        //SAVE FAMILY
-                        
-                        queue.tasks +=~ {
-                            
-                            print("FINISH")
-                            
-                            let your_email = Global.defaults.string(forKey: "your_email")
-                            let your_password = Global.defaults.string(forKey: "your_password")
-                            
-                            self.logOutLogIn(username: your_email!, password: your_password!, completionHandler: { ( user ) -> () in
-                                
-                                
-                                    print("BACK AGAIN LOGIN AS: \(PFUser.current()?.username)")
-
-                                    var youSpouseSon = [GamvesParseUser]()                                  
-                                   
-                                    youSpouseSon.append(gYou)
-                                    youSpouseSon.append(gSpouse)
-                                    youSpouseSon.append(gSon)
-
-                                    ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouseSon, chatId: self.familyChatId, completionHandler: { ( result ) -> () in
-
-                                        print("done youSpouseSon")
-
-                                        if (resutl != nil)
-                                        {                                                                                                                                                                                    
-                                         
-                                            completionHandlerFamilySave(true)
-                                        }
-
-                                    })
-                            })
-                        }
-                        queue.run()
-                    }
-                })
-            }
-        })
-    }*/
-    
+  
     func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
     {	
         
@@ -1985,6 +1490,8 @@ class ProfileViewController: UIViewController,
         
         var reusername = self.you["firstName"] as! String
         reusername = reusername.lowercased()
+        
+        self.you["email"] = your_email
         
         let yourimage = PFFile(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
         self.you.setObject(yourimage!, forKey: "picture")
@@ -2029,66 +1536,6 @@ class ProfileViewController: UIViewController,
         })
         
     }
-
-    /*func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
-    {
-        
-        let your_email = Global.defaults.string(forKey: "your_email")
-        let your_password = Global.defaults.string(forKey: "your_password")
-        
-        
-                        
-        self.logOutLogIn(username: your_email!, password: your_password!, completionHandler: { ( user ) -> () in
-            
-            print(user.username)
-            
-            self.you = user                   
-            
-            var reusername = self.you["firstName"] as! String
-            reusername = reusername.lowercased()
-
-            let yourimage = PFFile(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
-            user.setObject(yourimage!, forKey: "picture")
-            
-            let yourImgName = "\(reusername)_small"
-            
-            print("--------------")
-            print(yourImgName)
-            print("--------------")
-            
-            let yourimageSmall = PFFile(name: yourImgName, data: UIImageJPEGRepresentation(self.yourPhotoImageSmall, 1.0)!)
-            self.you.setObject(yourimageSmall!, forKey: "pictureSmall")
-
-            /*let levelRel:PFRelation = self.you.relation(forKey: "level")
-            var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
-        
-            for lv in Global.levels {
-                
-                if lv.fullDesc == son_grade {
-                    
-                    levelRel.add(lv.levelObj!)
-                    
-                }
-            }*/
-            
-            self.you.saveInBackground(block: { (resutl, error) in
-                
-                if error != nil
-                {
-                    print(error)
-                    completionHandler(false)
-                } else
-                {
-
-                    Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
-
-                        completionHandler(true)
-
-                    })
-                }
-            })
-        })
-    }*/
 
     func saveFamily(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
@@ -2178,9 +1625,93 @@ class ProfileViewController: UIViewController,
     }  
     
     
+    func saveFamilyImagesToServer(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())
+    {
+        print("FAMILY SAVED")
+        
+        Global.defaults.setHasProfileInfo(value: true)
+        
+        var queue = TaskQueue()
+        
+        /*if Global.userDictionary[self.you.objectId!] != nil {
+         Global.userDictionary[self.you.objectId!]?.typeObj = self.you
+         gYou = Global.userDictionary[self.you.objectId!]!
+         }*/
+        
+        ///SAVE SON
+        
+        queue.tasks +=~ { resutl, next in
+            
+            var youSon = [GamvesParseUser]()
+            
+            youSon.append(self.youGamves)
+            youSon.append(self.sonGamves)
+            
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                
+                print("done youSon")
+                print(resutl)
+                if resutl {
+                    next(nil)
+                }
+            })
+            
+        }
+        
+        //SAVE SPOUSE
+        
+        queue.tasks +=~ { resutl, next in
+            
+            var youSpouse = [GamvesParseUser]()
+            
+            youSpouse.append(self.youGamves)
+            youSpouse.append(self.spouseGamves)
+            
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                
+                print("done youSpouse")
+                print(resutl)
+                if (resutl != nil) {
+                    next(nil)
+                }
+                
+            })
+        }
+        
+        //SAVE FAMILY
+        
+        queue.tasks +=~ {
+            
+            print("FINISH")
+            
+            print("BACK AGAIN LOGIN AS: \(PFUser.current()?.username)")
+            
+            var youSpouseSon = [GamvesParseUser]()
+            
+            youSpouseSon.append(self.youGamves)
+            youSpouseSon.append(self.spouseGamves)
+            youSpouseSon.append(self.sonGamves)
+            
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouseSon, chatId: self.familyChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                
+                print("done youSpouseSon")
+                print(resutl)
+                if resutl {
+                    completionHandlerFamilySave(true)
+                }
+                
+            })
+            
+        }
+        queue.run()
+        
+        
+        
+    }
+    
 
     
-    func saveUserImages(id: Int, completionHandler : @escaping (_ resutl:Bool) -> ())
+    /*func saveUserImages(id: Int, completionHandler : @escaping (_ resutl:Bool) -> ())
     {
         
         var _user = PFUser()
@@ -2269,7 +1800,7 @@ class ProfileViewController: UIViewController,
         })  
         
         
-    } 
+    } */
 
    
     func handlePhotoImageView(sender: UITapGestureRecognizer)
