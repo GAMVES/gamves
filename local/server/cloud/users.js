@@ -49,7 +49,7 @@
 	    
 			var user = new Parse.User();
 			
-			user.set("username", user_name);
+			user.set("username", user_user_name);
 			user.set("password", user_password);
 			user.set("Name", user_user_name);
 		  	user.set("firstName", firstName);
@@ -72,13 +72,14 @@
 		    let relationLevel = user.relation("level")
 		    relationLevel.add(objects[1]);
 
-		    return user.signUp(null, {useMasterKey: true});
+		    return user.signUp(null, {useMasterKey: true} );
 		
 	    }).then(function(userSaved) {
 
 	    	var adminRole = objects[2];
 
-	    	adminRole.add(userSaved);
+	    	var adminRoleRelation = adminRole.relation("users");
+			adminRoleRelation.add(userSaved);		    	
 
 	    	adminRole.save(null, {useMasterKey: true});
 

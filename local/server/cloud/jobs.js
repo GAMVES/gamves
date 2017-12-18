@@ -95,10 +95,7 @@
                               status.error('Error! ' + error.message);
                           }
                       });                            
-                      //videoObject.set("thumbnail", file);
-                      //videoObject.set("s3_source", uploadedUrl);
-                      //videoObject.set("downloaded", true);
-                      //videoObject.save(null, { useMasterKey: true } );                                                  
+                                                            
                   }, function(error) {                    
                       status.error("Error downloading thumbnail"); 
                   });

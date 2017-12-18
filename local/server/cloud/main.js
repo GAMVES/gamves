@@ -264,6 +264,9 @@ Parse.Cloud.afterSave("Videos", function(request) {
 										var configObject = results[0];
 										
 										var serverUrl = configObject.get("server_url");
+										var _appId = configObject.get("app_id");
+										var _mKey = configObject.get("master_key");
+
 										var vId       = request.object.get("ytb_videoId");
 										var pfVideoId = request.object.id;
 									    
@@ -286,6 +289,7 @@ Parse.Cloud.afterSave("Videos", function(request) {
 									      error: function(httpResponse) {
 									          console.log('Error! ' + httpResponse);
 									      }
+
 									    });
 								    } 
 						        },

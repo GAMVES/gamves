@@ -72,20 +72,14 @@
 
 							var adminRelation = user.relation("userType");
 				        	adminRelation.add(adm);	
-							
-							var acl = new Parse.ACL();
-		    				acl.setPublicReadAccess(false);
-		    				acl.setPublicWriteAccess(false);
-		    				user.setACL(acl);
-
-		    				console.log("2");
 
 							user.signUp(null, {
-								success: function(user) {
+								success: function(userLogged) {
 								  
 								  	console.log("LLEGA");
 								  	
 									var app_id 			= "0123456789";
+									var master_key		= "9876543210";
 									var server_url 		= "http://192.168.16.22:1337/1/";	
 									var app_icon_url 	= "https://api-parseground.s3.amazonaws.com/deab76060e176261cfdbb8d779dd1e32_gamves_icons_white.png";
 									var hasIcon 		= false;
@@ -95,9 +89,24 @@
 
 									config.set("server_url", server_url); 
 									config.set("app_id", app_id);
+									config.set("master_key", master_key);
 									config.set("app_icon_url", app_icon_url);                  
 									config.set("hasIcon", hasIcon);                  
 									config.save();
+									
+						        	var queryRole = new Parse.Query(Parse.Role);
+									queryRole.equalTo('name', 'admin');
+									queryRole.first({useMasterKey:true}).then(function(adminRole){
+											
+										console.log("entra");
+										console.log(adminRole);										
+
+										var adminRoleRelation = adminRole.relation("users");
+				        				adminRoleRelation.add(userLogged);	
+
+			    						adminRole.save(null, {useMasterKey: true});
+
+									});	
 
 								},
 								error: function(user, error) {
