@@ -31,6 +31,7 @@
 	        
 	        var user_name = request.params.user_name;
 	        var user_user_name = request.params.user_user_name;
+	        var user_email = request.params.user_email;
 	    	var user_password = request.params.user_password;
 	    	var firstName = request.params.firstName;
 	    	var lastName = request.params.lastName;
@@ -61,6 +62,8 @@
 			if (iDUserType==2 || iDUserType==3) { // only son and daughter
 				
 				user.set("levelObjId", lobjectId);	
+			} else {				
+				user.set("email", user_email);
 			}		
 
 			let relationType = user.relation("userType")
