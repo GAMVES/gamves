@@ -98,6 +98,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
         
+        
     }
     
     func familyLoaded() {

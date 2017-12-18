@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window?.rootViewController = TabBarViewController()
         
         if PFUser.current() != nil
-        {
+        {            
             Global.getFamilyData()
             
             ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
@@ -87,7 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         
-        Global.loadUserTypes()
+        Global.loadUserTypes()        
         
         return true
     }
