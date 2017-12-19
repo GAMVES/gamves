@@ -39,7 +39,7 @@ class VideoApprovalPlayerView: UIView {
     func handleDownButton() 
     {
         
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             let totalHeight = self.keyWindow.frame.size.height
             let totalWidth = self.keyWindow.frame.size.width
@@ -51,7 +51,6 @@ class VideoApprovalPlayerView: UIView {
             let y = totalHeight - (thumbHeight + 30)
             
             self.yLocation = y
-            print(y)
             self.xLocation = x
             self.lastX = x
             
@@ -150,7 +149,6 @@ class VideoApprovalPlayerView: UIView {
             player?.play()
             pausePlayButton.setImage(UIImage(named: "pause"), for: UIControlState())
         }
-        
         isPlaying = !isPlaying
     }    
     
@@ -337,8 +335,6 @@ class VideoApprovalPlayerView: UIView {
 
 }
 
-    
-
 
 class VideoApprovalLauncher: UIView {
     
@@ -348,6 +344,8 @@ class VideoApprovalLauncher: UIView {
     var buttonsApprovalView:ButtonsApprovalView!
     
     var videoApprovalPlayerView:VideoApprovalPlayerView!
+    
+    var delegate:ApprovalProtocol!
     
     var view:UIView!
     
@@ -383,23 +381,20 @@ class VideoApprovalLauncher: UIView {
             let infoFrame = CGRect(x: 0, y: Int(videoApprovalPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
             
             infoApprovalView = InfoApprovalView(frame: infoFrame, video: videoGamves)
-            infoApprovalView.backgroundColor = UIColor.cyan
             view.addSubview(infoApprovalView)
 
             let diff = Int(videoHeight) + Int(infoHeight)
             let chatHeight = Int(keyWindow.frame.height) - diff
             
             let apprY = Int(videoApprovalPlayerView.frame.height) + Int(infoApprovalView.frame.height)
-            
             let apprFrame = CGRect(x: 0, y: apprY, width: Int(keyWindow.frame.width), height: chatHeight)
-                        
-            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame)
-            buttonsApprovalView.backgroundColor = UIColor.green
+            
+            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame, playerView: videoApprovalPlayerView, videoId: videoId, delegate: self.delegate)
+            buttonsApprovalView.backgroundColor = UIColor.gamvesBackgoundColor
             view.addSubview(buttonsApprovalView)
-           
-            
+            buttonsApprovalView.addSubViews()
+
             videoApprovalPlayerView.setViews(view: view, videoLauncherVidew: self)
-            
             keyWindow.addSubview(view)
 
             view.tag = 1
@@ -419,55 +414,144 @@ class VideoApprovalLauncher: UIView {
 }
 
 class ButtonsApprovalView: UIView {
-    
-    
-    let approveView: UIView = {
-        let view = UIView()
-        //view.backgroundColor = UIColor.gamvesColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.masksToBounds = true
-        return view
-    }()
+
     
     lazy var approveButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor
-        button.setTitle("Save son or doughter", for: UIControlState())
+        button.backgroundColor = UIColor.gamvesSemaphorGreenColor
+        button.setTitle("APPROVE VIDEO", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.addTarget(self, action: #selector(handleApprove), for: .touchUpInside)
+        button.addTarget(self, action: #selector(touchUpApprove), for: .touchUpInside)
         button.layer.cornerRadius = 5
         return button
     }()
     
     lazy var rejectButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor
-        button.setTitle("Save son or doughter", for: UIControlState())
+        button.backgroundColor = UIColor.gamvesSemaphorRedColor
+        button.setTitle("REJECT VIDEO", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.addTarget(self, action: #selector(handleReject), for: .touchUpInside)
+        button.addTarget(self, action: #selector(touchUpReject), for: .touchUpInside)
         button.layer.cornerRadius = 5
         return button
     }()
+
+     lazy var laterButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gamvesColor
+        button.setTitle("DECIDE LATER", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(touchUpLater), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+
+    let bottomView: UIView = {
+        let view = UIView()       
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()     
+
+    var playerView:VideoApprovalPlayerView!
+    var videoId = Int()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    var delegate:ApprovalProtocol!
+
+    
+    init(frame: CGRect, playerView:VideoApprovalPlayerView, videoId:Int, delegate:ApprovalProtocol) {
+        super.init(frame: frame)  
+        self.playerView = playerView
+        self.videoId = videoId
+        self.delegate = delegate
+    }
+
+    func addSubViews() {
+
+        self.addSubview(self.approveButton)
+        self.addSubview(self.rejectButton)
+        self.addSubview(self.laterButton)
+        self.addSubview(self.bottomView)
+        
+        self.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.approveButton)
+        self.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.rejectButton)
+        self.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.laterButton)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)
+        
+        self.addConstraintsWithFormat("V:|-30-[v0(60)]-10-[v1(60)]-10-[v2(60)][v3]|", views: 
+            self.approveButton, 
+            self.rejectButton, 
+            self.laterButton,
+            self.bottomView)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func handleApprove() {
+    func touchUpApprove() {
         
+        updateApprovalStatus(videoId: self.videoId, status: 1);
     }
     
-    func handleReject() {
-        
+    func touchUpReject() {
+
+        updateApprovalStatus(videoId: self.videoId, status: -1);
     }
     
-    
+    func touchUpLater() {
+
+        self.closeApprovalWindow()       
+    }
+
+    func closeApprovalWindow() {
+
+        //REMOVE IF EXISTS VIDEO RUNNING
+        for subview in (UIApplication.shared.keyWindow?.subviews)! {
+            if (subview.tag == 1)
+            {
+                self.playerView.handleDownButton()
+                self.playerView.handlePause()                
+                subview.removeFromSuperview()
+            }
+        }
+    }
+
+    func updateApprovalStatus(videoId:Int,  status: Int){
+
+        print(videoId)
+        
+        let queryApprovals = PFQuery(className: "Approvals")        
+        queryApprovals.whereKey("videoId", equalTo: videoId)
+        queryApprovals.getFirstObjectInBackground { (approval, error) in
+            
+            if error != nil
+            {
+                print("error")
+                
+            } else {
+
+                approval?["approved"] = status
+                
+                approval?.saveInBackground(block: { (resutl, error) in
+                    
+                    self.delegate.closedRefresh()
+                    self.closeApprovalWindow()
+                    
+                    
+                })
+            }
+        }
+
+    }
+
+
+
+   
+
 }

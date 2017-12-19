@@ -32,9 +32,10 @@ class Approvals
 {
     var objectId = String()
     var thumbnail:UIImage?
-    var videoId = Int()
-    var videoName = String()
-    var approved = Bool()
+    var videoId = Int()    
+    var videoTitle = String()
+    var videoDescription = String()
+    var approved = Int()
     var video = VideoGamves()
 }
 
@@ -86,8 +87,7 @@ class GamvesGender
 }
 
 class VideoGamves
-{
-    var video_title = String()        
+{    
     var title = String()
     var description = String()
     var videoId = Int()    

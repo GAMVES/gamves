@@ -468,27 +468,6 @@ class Global: NSObject
             }
         }
         
-        // Create buttons
-        /*let buttonOne = CancelButton(title: "CANCEL")
-         {
-         print("You canceled the car dialog.")
-         }
-         
-         let buttonTwo = DefaultButton(title: "ADMIRE CAR")
-         {
-         print("What a beauty!")
-         }
-         
-         let buttonThree = DefaultButton(title: "BUY CAR", height: 60)
-         {
-         print("Ah, maybe next time :)")
-         }
-         
-         // Add buttons to dialog
-         // Alternatively, you can use popup.addButton(buttonOne)
-         // to add a single button
-         popup.addButtons([buttonOne, buttonTwo, buttonThree])*/
-        
         // Present dialog
         viewController.present(popup, animated: true, completion: nil)
         
@@ -773,14 +752,11 @@ class Global: NSObject
                             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: self)
                         }
                         count = count + 1
-                        
                     }                        
                 }
             }
         }
     }
-    
-    
     
     static func getApprovasByFamilyId(familyId:String, completionHandler : @escaping (_ resutl: Int) -> ())
     {
@@ -801,20 +777,25 @@ class Global: NSObject
                     var countAapprovals = approvalObjects.count
                     var count = 0
                     
+                    var countNotApproved = 0
+                    
                     for approvalObj in approvalObjects
                     {
                         
                         let approval = Approvals()
                         approval.objectId = approvalObj.objectId!
                         approval.videoId = approvalObj["videoId"] as! Int
-                        approval.videoName = approvalObj["videoTitle"] as! String
-                        approval.approved = approvalObj["approved"] as! Bool
+                        
+                        let approved = approvalObj["approved"] as! Int
+                            
+                        approval.approved = approved
+                        
+                        if approved == 0 {
+                                countNotApproved = countNotApproved + 1
+                        }                        
                         
                         let queryVideo = PFQuery(className:"Videos")
                         queryVideo.whereKey("videoId", equalTo: approval.videoId)
-                        
-                        print(approval.videoId)
-                        
                         queryVideo.findObjectsInBackground { (videoObjects, error) in
                             
                             if error != nil
@@ -840,15 +821,17 @@ class Global: NSObject
                                                 
                                                 approval.thumbnail = thumbImage
                                                 
-                                                
                                                 let gamvesVideo = Global.parseVideo(video: videoObject, chatId : videoId, videoImage: thumbImage! )
                                                 
                                                 approval.video = gamvesVideo
                                                 
+                                                approval.videoTitle = videoObject["title"] as! String
+                                                approval.videoDescription = videoObject["description"] as! String
+                                                
                                                 self.approvals.append(approval)
                                                 
                                                 if (countAapprovals-1) == count {
-                                                    completionHandler(countAapprovals)                                                    
+                                                    completionHandler(countNotApproved)
                                                 }
                                                 count = count + 1
                                             }
@@ -870,7 +853,9 @@ class Global: NSObject
     
         let videoGamves = VideoGamves()
        
-        videoGamves.video_title = video["title"] as! String
+        let title = video["title"] as! String
+        
+        videoGamves.title = title
         
         videoGamves.description = video["description"] as! String
         videoGamves.videoId = video["videoId"] as! Int                

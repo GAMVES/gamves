@@ -12,7 +12,11 @@ import GameKit
 import Floaty
 import PopupDialog
 
-class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+protocol ApprovalProtocol {
+    func closedRefresh()
+}
+
+class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ApprovalProtocol {
     
     var homeViewController:HomeViewController? 
     
@@ -30,6 +34,8 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
     }()
     
     let cellId = "approvlCellId"
+    
+    var familyId = String()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,39 +50,51 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
         self.collectionView.register(ApprovalCell.self, forCellWithReuseIdentifier: cellId)
         
         self.collectionView.reloadData()
-      
+        
+        self.familyId = Global.gamvesFamily.objectId
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
-    {
+    func closedRefresh() {
+        
+        Global.approvals = [Approvals]()
+        
+        Global.getApprovasByFamilyId(familyId: self.familyId) { ( count ) in
+            
+            self.collectionView.reloadData()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let countItems = Global.approvals.count
         print(countItems)
         return countItems
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-    {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ApprovalCell
         
         let index = indexPath.item
         let approval:Approvals = Global.approvals[index]
         
-        print(approval.videoName)
+        print(approval.videoTitle)
         
-        cell.nameLabel.text = approval.videoName
+        cell.nameLabel.text = approval.videoTitle
+        
+        cell.statusLabel.text = "APPROVED"
+        
         cell.profileImageView.image = approval.thumbnail!
         
-        let checked = approval.approved
+        let approved = approval.approved
         
-        if checked
+        if approved == 1
         {
             cell.checkLabel.isHidden = false
-        } else
+        } else if approved == 0
         {
             cell.checkLabel.isHidden = true
         }
@@ -85,91 +103,26 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         return CGSize(width: self.view.frame.width, height: 100)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
-    {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let approval:Approvals = Global.approvals[indexPath.item]
    
-        if self.homeViewController != nil
-        {
+        if self.homeViewController != nil {
             
             var video = VideoGamves()
             
             video = Global.chatVideos[approval.videoId]!
             
-            let videoLauncher = VideoApprovalLauncher()
-            
-            videoLauncher.showVideoPlayer(videoGamves: video)         
-            
+            let videoApprovalLauncher = VideoApprovalLauncher()
+            videoApprovalLauncher.delegate = self
+            videoApprovalLauncher.showVideoPlayer(videoGamves: video)
         }
-       
     }
+    
    
-    
-    func findChatWithUser(user:PFUser)
-    {
-        
-        let queryChatFeed = PFQuery(className:"ChatFeed")
-    
-        queryChatFeed.whereKey("participants", equalTo: PFUser.current())
-        queryChatFeed.whereKey("participants", equalTo: user)
-        
-        let innerQuery = PFQuery(className: "ChatFeed")
-        innerQuery.whereKey("counter", equalTo: 2)  // exactly two users
-        innerQuery.whereKey("users", equalTo: PFUser.current()) // at least user1 is there
-        
-        let query = PFQuery(className: "ChatFeed")
-        query.whereKey("objectId", matchesQuery: innerQuery) // exactly two users including user1
-        query.whereKey("users", equalTo: user) // select groups which also have user2
-
-        query.findObjectsInBackground { (chatFeeds, error) in
-            
-            if error != nil
-            {
-                print("error")
-                
-            } else {
-                
-                if let chatFeeds = chatFeeds
-                {
-                    
-                    let chatsAmount = chatFeeds.count
-                    var chatId = Int()
-                    
-                    if chatsAmount>0
-                    {
-                        
-                        print(chatsAmount)
-                        
-                        var total = Int()
-                        total = chatsAmount - 1
-                        var i = 0
-                        
-                        for chatFeed in chatFeeds
-                        {
-                        
-                            let usersRealtion = chatFeed["participants"] as! PFRelation
-                            
-                            let usersQuery = usersRealtion.query()
-                        }
-                        
-                    } else
-                    {
-                        
-                        chatId = Global.getRandomInt()
-                        
-                    }
-                    
-                   
-                }
-            }
-        }
-    }
-
 }

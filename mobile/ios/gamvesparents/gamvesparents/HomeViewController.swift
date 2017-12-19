@@ -474,6 +474,8 @@ class HomeViewController: UIViewController,
         
         Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
             
+            print(count)
+            
             self._approval.approval = count as Int
             self.collectionView.reloadData()
             

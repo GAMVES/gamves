@@ -845,20 +845,14 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
                                     let approvals: PFObject = PFObject(className: "Approvals")
                                     
                                     approvals["videoId"] = videoNumericId
-                                    approvals["posterId"] = PFUser.current()?.objectId
-                                    
+                                    approvals["posterId"] = PFUser.current()?.objectId                                    
                                     let familyId = Global.gamvesFamily.objectId
-                                    
-                                    print(familyId)
-                                    
                                     approvals["familyId"] = familyId
-                                    approvals["videoTitle"] = self.titleTextField.text
-                                    approvals["approved"] = false
+                                    approvals["approved"] = 0
                                     
                                     approvals.saveInBackground { (resutl, error) in
                                         
-                                        if error == nil
-                                        {
+                                        if error == nil {
                                             
                                             self.activityIndicatorView?.startAnimating()
                                             
