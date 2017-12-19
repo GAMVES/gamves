@@ -35,6 +35,7 @@ class Approvals
     var videoId = Int()
     var videoName = String()
     var approved = Bool()
+    var video = VideoGamves()
 }
 
 
@@ -86,17 +87,6 @@ class GamvesGender
 
 class VideoGamves
 {
-    /*var video_category = String()
-    var video_title = String()    
-    var video_fromName = String()
-    var description = String()    
-    var thum_image = UIImage()
-    var thumbnail:PFFile!    
-    var video_url = String()    
-    var fanpageId = String()    
-    var videoId = String()    
-    var videoobj:PFObject?*/
-
     var video_title = String()        
     var title = String()
     var description = String()

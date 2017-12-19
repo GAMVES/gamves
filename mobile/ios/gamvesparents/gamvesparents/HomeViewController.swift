@@ -710,7 +710,6 @@ class HomeViewController: UIViewController,
             navigationController?.pushViewController(approvalViewController, animated: true)
             tabBarController?.tabBar.isHidden = true
             
-            
         }      
         
     }

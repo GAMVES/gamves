@@ -8,7 +8,7 @@
 
 import UIKit
 
-class InfoView: UIView {
+class InfoApprovalView: UIView {
     
     var videoGamves:VideoGamves!
 

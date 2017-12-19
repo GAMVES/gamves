@@ -50,9 +50,7 @@ class Global: NSObject
     static var DAUGHTER         = 3
     static var SPOUSE_FATHER    = 4
     static var REGISTER_FATHER  = 5
-    
-    
-
+        
     static var approvals = [Approvals]()
     
     static var admin_delimitator:String = "---is_admin_chat---"
@@ -842,9 +840,12 @@ class Global: NSObject
                                                 
                                                 approval.thumbnail = thumbImage
                                                 
-                                                self.approvals.append(approval)
                                                 
-                                                Global.parseVideo(video: videoObject, chatId : videoId, videoImage: thumbImage! )
+                                                let gamvesVideo = Global.parseVideo(video: videoObject, chatId : videoId, videoImage: thumbImage! )
+                                                
+                                                approval.video = gamvesVideo
+                                                
+                                                self.approvals.append(approval)
                                                 
                                                 if (countAapprovals-1) == count {
                                                     completionHandler(countAapprovals)                                                    
@@ -864,7 +865,8 @@ class Global: NSObject
     
     
     
-    static func parseVideo(video:PFObject, chatId :Int, videoImage: UIImage ) {
+    static func parseVideo(video:PFObject, chatId :Int, videoImage: UIImage ) -> VideoGamves
+    {
     
         let videoGamves = VideoGamves()
        
@@ -895,6 +897,8 @@ class Global: NSObject
         videoGamves.thumbnail = video["thumbnail"] as! PFFile
         
         Global.chatVideos[chatId] = videoGamves
+        
+        return videoGamves
         
     }
     

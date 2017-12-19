@@ -296,8 +296,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
             
             print(video.videoId)
             
-            let videoLauncher = VideoLauncher()
-            videoLauncher.showVideoPlayer(videoGamves: video)
+            let videoApprovalLauncher = VideoApprovalLauncher()
+            videoApprovalLauncher.showVideoPlayer(videoGamves: video)
             
         } else
         {

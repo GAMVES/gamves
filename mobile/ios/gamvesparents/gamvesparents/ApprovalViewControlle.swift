@@ -14,9 +14,7 @@ import PopupDialog
 
 class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    var homeViewController:HomeViewController?
-    
-    //var gamvesUsers = [GamvesParseUser]()
+    var homeViewController:HomeViewController? 
     
     var isGroup = Bool()
     
@@ -31,27 +29,26 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
         return cv
     }()
     
-    let cellId = "contactCellId"
+    let cellId = "approvlCellId"
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        //self.navigationItem.titleView = Global.setTitle(title: "Select friend or family", subtitle: "                          ")
-        
-        //self.navigationItem.title = "Select contact"    
+        self.navigationItem.title = "Approvals"
         
         self.view.addSubview(self.collectionView)
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
     
-        self.collectionView.register(ContactCell.self, forCellWithReuseIdentifier: cellId)
+        self.collectionView.register(ApprovalCell.self, forCellWithReuseIdentifier: cellId)
+        
+        self.collectionView.reloadData()
       
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
@@ -64,13 +61,15 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         
-        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ContactCell
+        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ApprovalCell
         
         let index = indexPath.item
         let approval:Approvals = Global.approvals[index]
         
-        cell.contact?.name = approval.videoName
-        cell.contact?.avatar = approval.thumbnail!
+        print(approval.videoName)
+        
+        cell.nameLabel.text = approval.videoName
+        cell.profileImageView.image = approval.thumbnail!
         
         let checked = approval.approved
         
@@ -104,17 +103,14 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
             
             video = Global.chatVideos[approval.videoId]!
             
-            let videoLauncher = VideoLauncher()
+            let videoLauncher = VideoApprovalLauncher()
             
             videoLauncher.showVideoPlayer(videoGamves: video)         
             
         }
        
     }
-    
-    //func randomBetween(min: Int, max: Int) -> Int {
-    //    return GKRandomSource.sharedRandom().nextInt(upperBound: max - min) + min
-    //}
+   
     
     func findChatWithUser(user:PFUser)
     {
@@ -166,7 +162,7 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
                     } else
                     {
                         
-                        chatId = Global.getRandomInt() //self.randomBetween(min:100000000, max:1000000000)
+                        chatId = Global.getRandomInt()
                         
                     }
                     

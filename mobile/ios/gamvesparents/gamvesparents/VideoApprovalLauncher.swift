@@ -10,9 +10,9 @@ import UIKit
 import AVFoundation
 import Parse
 
-class VideoPlayerView: UIView {  
+class VideoApprovalPlayerView: UIView {
 
-    var videoLauncher:VideoLauncher!
+    var videoLauncher:VideoApprovalLauncher!
     var keyWindow: UIView!
     var playerLayer: AVPlayerLayer!
 
@@ -26,7 +26,6 @@ class VideoPlayerView: UIView {
         return view
     }()
 
-
      lazy var arrowDownButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(named: "arrow_down")
@@ -39,15 +38,6 @@ class VideoPlayerView: UIView {
 
     func handleDownButton() 
     {
-        //self.handlePause()
-        
-        /*for subview in (UIApplication.shared.keyWindow?.subviews)! {
-            if (subview.tag == 1) {
-                subview.removeFromSuperview()
-            }
-        }*/
-        
-        //self.videoLauncher.chatView.dismissKeyboard()
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
@@ -74,39 +64,17 @@ class VideoPlayerView: UIView {
             
             self.controlsContainerView.isHidden = true
             
-            //self.controlsContainerView.isHidden = true
-            
-            self.videoLauncher.infoView.isHidden = true
-            //self.videoLauncher.chatView.isHidden = true
-            
             let smallFrame = CGRect(x: x, y: y, width: thumbWidth, height: thumbHeight)
             
             self.videoLauncher.view.frame = smallFrame
             
             self.playerLayer.frame = smallFrame
-        
             
             let gesture = UIPanGestureRecognizer(target: self, action:  #selector(self.wasDragged))
             self.videoLauncher.view.addGestureRecognizer(gesture)
             self.videoLauncher.view.isUserInteractionEnabled = true
-            
-            //self.playerLayer.frame = CGRect(x: 0, y: 0, width: thumbWidth, height: thumbHeight)
-            
-            //let smallFrame = CGRect(x: x, y: y, width: thumbWidth, height: thumbHeight)
-            
-            //self.keyWindow.frame = smallFrame
-            
-            //self.playerLayer.bounds = smallFrame
-            
-            //self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-            
-            //gesture.delegate = self as! UIGestureRecognizerDelegate
-            
-            //self.videoLauncher.view.backgroundColor = UIColor.black
-            
-            
-            
-            
+        
+        
         }, completion: { (completedAnimation) in
             
             //maybe we'll do something here later...
@@ -237,12 +205,10 @@ class VideoPlayerView: UIView {
         super.init(frame: frame)
     }
     
-    func setViews(view:UIView, videoLauncherVidew:VideoLauncher)
+    func setViews(view:UIView, videoLauncherVidew:VideoApprovalLauncher)
     {
         self.videoLauncher = videoLauncherVidew
         self.keyWindow = view
-        //self.infoView = infoView
-        //self.chatView = chatView
     }
 
     var videoUrl = String()
@@ -371,7 +337,89 @@ class VideoPlayerView: UIView {
 
 }
 
-class VideoLauncher: UIView, KeyboardDelegate {
+    
+
+
+class VideoApprovalLauncher: UIView {
+    
+    
+    var infoApprovalView:InfoApprovalView!
+    
+    var buttonsApprovalView:ButtonsApprovalView!
+    
+    var videoApprovalPlayerView:VideoApprovalPlayerView!
+    
+    var view:UIView!
+    
+    var originaChatYPosition = CGFloat()
+    var originaChatHeightPosition = CGFloat()
+
+    func showVideoPlayer(videoGamves: VideoGamves){
+                
+        let videoUrl = videoGamves.s3_source
+        let videoObj = videoGamves.videoObj!
+        let videoId  = videoObj["videoId"] as! Int
+        
+        let fanpageId = videoGamves.fanpageId
+        
+        print("Showing video player....\(videoUrl)")
+        
+        if let keyWindow = UIApplication.shared.keyWindow {
+
+            view = UIView(frame: keyWindow.frame)
+            view.backgroundColor = UIColor.white
+            
+            view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)
+            
+            //16 x 9 is the aspect ratio of all HD videos
+            let videoHeight = keyWindow.frame.width * 9 / 16
+            let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoHeight)
+            
+            videoApprovalPlayerView = VideoApprovalPlayerView(frame: videoPlayerFrame)
+            videoApprovalPlayerView.setPlayerUrl(urlString: videoUrl)
+            view.addSubview(videoApprovalPlayerView)
+
+            let infoHeight = 200
+            let infoFrame = CGRect(x: 0, y: Int(videoApprovalPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
+            
+            infoApprovalView = InfoApprovalView(frame: infoFrame, video: videoGamves)
+            infoApprovalView.backgroundColor = UIColor.cyan
+            view.addSubview(infoApprovalView)
+
+            let diff = Int(videoHeight) + Int(infoHeight)
+            let chatHeight = Int(keyWindow.frame.height) - diff
+            
+            let apprY = Int(videoApprovalPlayerView.frame.height) + Int(infoApprovalView.frame.height)
+            
+            let apprFrame = CGRect(x: 0, y: apprY, width: Int(keyWindow.frame.width), height: chatHeight)
+                        
+            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame)
+            buttonsApprovalView.backgroundColor = UIColor.green
+            view.addSubview(buttonsApprovalView)
+           
+            
+            videoApprovalPlayerView.setViews(view: view, videoLauncherVidew: self)
+            
+            keyWindow.addSubview(view)
+
+            view.tag = 1
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
+                
+                self.view.frame = keyWindow.frame
+                
+                }, completion: { (completedAnimation) in
+                    
+                    UIApplication.shared.setStatusBarHidden(true, with: .fade)
+                    
+            })
+        }
+    }
+    
+}
+
+class ButtonsApprovalView: UIView {
+    
     
     let approveView: UIView = {
         let view = UIView()
@@ -380,7 +428,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
         view.layer.masksToBounds = true
         return view
     }()
-
+    
     lazy var approveButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor
@@ -404,130 +452,20 @@ class VideoLauncher: UIView, KeyboardDelegate {
         button.layer.cornerRadius = 5
         return button
     }()
-
     
-    
-    var infoView:InfoView!
-    //var chatView:ChatView!
-    var videoPlayerView:VideoPlayerView!
-    
-    var view:UIView!
-    
-    var originaChatYPosition = CGFloat()
-    var originaChatHeightPosition = CGFloat()
-
-    func showVideoPlayer(videoGamves: VideoGamves){ //videoUrl :String, videoId:String, fanpageId:String) {
-                
-        let videoUrl = videoGamves.s3_source
-        let videoObj = videoGamves.videoObj!
-        let videoId = videoObj["videoId"] as! String
-        //let viId:Int = NumberFormatter().number(from: videoId) as! Int
-        let viId:Int = Int(videoId)!
-        let fanpageId = videoGamves.fanpageId
-        
-        print("Showing video player....\(videoUrl)")
-        
-        if let keyWindow = UIApplication.shared.keyWindow {
-
-            view = UIView(frame: keyWindow.frame)
-            view.backgroundColor = UIColor.white
-            
-            view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)
-            
-            //16 x 9 is the aspect ratio of all HD videos
-            let videoHeight = keyWindow.frame.width * 9 / 16
-            let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoHeight)
-            
-            videoPlayerView = VideoPlayerView(frame: videoPlayerFrame)
-            videoPlayerView.setPlayerUrl(urlString: videoUrl)
-            view.addSubview(videoPlayerView)
-
-            let infoHeight = 90            
-            let infoFrame = CGRect(x: 0, y: Int(videoPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
-            
-            infoView = InfoView(frame: infoFrame, video: videoGamves)
-            view.addSubview(infoView)
-
-            let diff = Int(videoHeight) + Int(infoHeight)
-            let chatHeight = Int(keyWindow.frame.height) - diff
-            
-            let chatY = Int(videoPlayerView.frame.height) + Int(infoView.frame.height)
-            
-            let chatFrame = CGRect(x: 0, y: chatY, width: Int(keyWindow.frame.width), height: chatHeight)
-            
-            view.addSubview(approveView)
-            
-            //chatView = ChatView(frame: chatFrame, isVideo: true)
-            
-            //let params = ["chatId": viId, "isVideoChat": true, "thumbnailImage": videoGamves.thum_image, "delegate":self] as [String : Any]
-            
-            //chatView.setParams(parameters: params)
-
-            //view.addSubview(chatView)
-            
-            //chatView.loadChatFeed()
-            
-            videoPlayerView.setViews(view: view, videoLauncherVidew: self)
-            
-            keyWindow.addSubview(view)
-
-            view.tag = 1
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
-                
-                self.view.frame = keyWindow.frame
-                
-                }, completion: { (completedAnimation) in
-                    
-                    //maybe we'll do something here later...
-                    UIApplication.shared.setStatusBarHidden(true, with: .fade)
-                    
-            })
-        }
+    override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
-    func keyboardOpened(keybordHeight keybordEditHeight: CGFloat)
-    {
-        
-        if (self.infoView != nil)
-        {
-            self.infoView.isHidden = true
-        }
-        
-        let keyHeight = UIApplication.shared.keyWindow?.frame.height
-
-        let viewsHeight = self.videoPlayerView.frame.height + keybordEditHeight //+ inputHeight
-
-        let chatHeight = keyHeight! - viewsHeight
-        
-        let yPosition = self.videoPlayerView.frame.size.height
-        
-        //self.originaChatYPosition = self.chatView.frame.origin.y
-        //self.chatView.frame.origin.y = yPosition
-        //self.originaChatHeightPosition = self.chatView.frame.size.height
-        //self.chatView.frame.size.height = chatHeight
-                      
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
     
     func handleApprove() {
         
     }
     
     func handleReject() {
-        
-    }
-
-    
-    func keyboardclosed()
-    {
-        if (self.infoView != nil)
-        {
-            self.infoView.isHidden = false
-        }
-        
-        //self.chatView.frame.origin.y = self.originaChatYPosition
-        //self.chatView.frame.size.height = self.originaChatHeightPosition
         
     }
     

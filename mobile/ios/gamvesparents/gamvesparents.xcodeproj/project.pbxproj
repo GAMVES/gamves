@@ -29,6 +29,8 @@
 		8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */; };
 		8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */; };
 		8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */; };
+		8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */; };
+		8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */; };
 		827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827FE2F61FAE599100A32994 /* CheckBoxView.swift */; };
 		828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */; };
 		828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */; };
@@ -49,7 +51,7 @@
 		82E3723F1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E3723E1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift */; };
 		82E372411FB169A3000AD7EB /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372401FB169A3000AD7EB /* Video.swift */; };
 		82E372431FB169D0000AD7EB /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372421FB169D0000AD7EB /* UIImage+Extension.swift */; };
-		82E372461FB16AD9000AD7EB /* VideoLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372451FB16AD9000AD7EB /* VideoLauncher.swift */; };
+		82E372461FB16AD9000AD7EB /* VideoApprovalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372451FB16AD9000AD7EB /* VideoApprovalLauncher.swift */; };
 		82E372481FB16C32000AD7EB /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372471FB16C32000AD7EB /* InfoView.swift */; };
 		A906869CBFAB0ED21C2284F8 /* Pods_gamvesparents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA0B00730FB7D2B8B415B6CA /* Pods_gamvesparents.framework */; };
 		C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70156201D8DC3B0003E25AF /* UIView+Extensions.swift */; };
@@ -90,6 +92,8 @@
 		8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		8212D72F1F7C0A8400F2A121 /* gamvesparents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = gamvesparents.entitlements; sourceTree = "<group>"; };
 		8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalViewControlle.swift; sourceTree = "<group>"; };
+		8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalCell.swift; sourceTree = "<group>"; };
+		8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoApprovalView.swift; sourceTree = "<group>"; };
 		827FE2F61FAE599100A32994 /* CheckBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxView.swift; sourceTree = "<group>"; };
 		828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMethods.swift; sourceTree = "<group>"; };
 		828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatFeedMethods.swift; sourceTree = "<group>"; };
@@ -110,7 +114,7 @@
 		82E3723E1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupUserCollectionViewCell.swift; sourceTree = "<group>"; };
 		82E372401FB169A3000AD7EB /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		82E372421FB169D0000AD7EB /* UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
-		82E372451FB16AD9000AD7EB /* VideoLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoLauncher.swift; sourceTree = "<group>"; };
+		82E372451FB16AD9000AD7EB /* VideoApprovalLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoApprovalLauncher.swift; sourceTree = "<group>"; };
 		82E372471FB16C32000AD7EB /* InfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		AA0B00730FB7D2B8B415B6CA /* Pods_gamvesparents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gamvesparents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C70156201D8DC3B0003E25AF /* UIView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
@@ -220,6 +224,7 @@
 		8212D7101F7ABFD500F2A121 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */,
 				82E372471FB16C32000AD7EB /* InfoView.swift */,
 				82E3723E1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift */,
 				82E3723A1FB16676000AD7EB /* ChatView.swift */,
@@ -290,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				82E3723C1FB166F5000AD7EB /* VideoCell.swift */,
+				8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */,
 				82E372311FB16385000AD7EB /* ContactCell.swift */,
 				82E3722F1FB1637C000AD7EB /* MessageCell.swift */,
 			);
@@ -299,7 +305,7 @@
 		82E372441FB16AC6000AD7EB /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				82E372451FB16AD9000AD7EB /* VideoLauncher.swift */,
+				82E372451FB16AD9000AD7EB /* VideoApprovalLauncher.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -490,6 +496,7 @@
 				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
 				C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */,
+				8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */,
 				C7B402011D78C167001D8ED4 /* TutorialController.swift in Sources */,
 				82E372411FB169A3000AD7EB /* Video.swift in Sources */,
 				82E372301FB1637C000AD7EB /* MessageCell.swift in Sources */,
@@ -501,7 +508,7 @@
 				82E3723F1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift in Sources */,
 				82E372371FB16550000AD7EB /* GroupNameViewController.swift in Sources */,
 				8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */,
-				82E372461FB16AD9000AD7EB /* VideoLauncher.swift in Sources */,
+				82E372461FB16AD9000AD7EB /* VideoApprovalLauncher.swift in Sources */,
 				C7B401FF1D78C167001D8ED4 /* AppDelegate.swift in Sources */,
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
@@ -516,6 +523,7 @@
 				8212D6F11F73707800F2A121 /* Reachability.swift in Sources */,
 				82E372391FB1665A000AD7EB /* Protocols.swift in Sources */,
 				82E372431FB169D0000AD7EB /* UIImage+Extension.swift in Sources */,
+				8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */,
 				8212D7061F78439400F2A121 /* Color+Extensions.swift in Sources */,
 				828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */,
 				8212D7081F7843B600F2A121 /* ImageView+Extensions.swift in Sources */,

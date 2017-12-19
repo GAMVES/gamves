@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContactCell: BaseCell {
+class ApprovalCell: BaseCell {
     
     var checked = Bool()
     
@@ -17,23 +17,6 @@ class ContactCell: BaseCell {
             backgroundColor = isHighlighted ? UIColor(red: 0, green: 134/255, blue: 249/255, alpha: 1) : UIColor.white
             nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
             statusLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
-        }
-    }
-    
-    var contact: GamvesParseUser?
-    {
-        
-        didSet
-        {
-            nameLabel.text = contact?.name
-            
-            if let profileImage = contact?.avatar
-            {
-                profileImageView.image = profileImage
-            }
-    
-            statusLabel.text = contact?.status
-            
         }
     }
     
