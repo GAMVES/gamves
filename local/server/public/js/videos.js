@@ -266,7 +266,7 @@ document.addEventListener("LoadVideo", function(event){
           video.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
 
           var vrnd = Math.floor(100000 + Math.random() * 900000);
-          video.set("videoId", vrnd.toString());              
+          video.set("videoId", vrnd);              
 
           video.set("fanpageObjId", fanpageObj.id); 
 
