@@ -418,8 +418,8 @@ class VideoLauncher: UIView, KeyboardDelegate {
 
     func showVideoPlayer(videoGamves: VideoGamves){ //videoUrl :String, videoId:String, fanpageId:String) {
                 
-        let videoUrl = videoGamves.video_url
-        let videoObj = videoGamves.videoobj!
+        let videoUrl = videoGamves.s3_source
+        let videoObj = videoGamves.videoObj!
         let videoId = videoObj["videoId"] as! String
         //let viId:Int = NumberFormatter().number(from: videoId) as! Int
         let viId:Int = Int(videoId)!

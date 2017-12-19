@@ -22,7 +22,7 @@ protocol VideoProtocol {
 }
 
 protocol SearchProtocol {
-    func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
+    func setResultOfsearch(videoId: String, title: String, description : String, duration : String, image : UIImage)
 }
 
 class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate {
@@ -746,7 +746,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         navigationController?.pushViewController(takePictures, animated: true)
     }
     
-    func setResultOfsearch(videoId: String, title: String, description : String, image : UIImage)
+    func setResultOfsearch(videoId: String, title: String, description : String, duration: String, image : UIImage)
     {
     	self.videoId = videoId
     	self.videoTitle = title
@@ -799,7 +799,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
                             
                             let videoNumericId = Global.getRandomInt()
 
-                            videoPF["videoId"] = videoNumericId
+                            videoPF["videoId"] = videoNumericId as Int
                             
                             videoPF["downloaded"]   = false
                             videoPF["removed"]      = false
@@ -823,7 +823,9 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
                             let fanpageNumericId = Global.getRandomInt()
                             videoPF["fanpageId"] = fanpageNumericId
-                            videoPF["videoId"] = self.videoId
+                            
+                            //videoPF["videoId"] = self.videoId
+                            
                             videoPF["fanpageObjId"] = self.fanpage.fanpageObj?.objectId
 
                             videoPF["posterId"] = PFUser.current()?.objectId
@@ -844,7 +846,12 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
                                     
                                     approvals["videoId"] = videoNumericId
                                     approvals["posterId"] = PFUser.current()?.objectId
-                                    approvals["familyId"] = Global.gamvesFamily.objectId
+                                    
+                                    let familyId = Global.gamvesFamily.objectId
+                                    
+                                    print(familyId)
+                                    
+                                    approvals["familyId"] = familyId
                                     approvals["videoTitle"] = self.titleTextField.text
                                     approvals["approved"] = false
                                     
@@ -852,12 +859,14 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
                                         
                                         if error == nil
                                         {
-                                            let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
-                                            Global.alertWithTitle(viewController: self, title: "Video Uploaded!", message: message, toFocus: self.categoryTypeTextField)
                                             
                                             self.activityIndicatorView?.startAnimating()
                                             
                                             self.navigationController?.popToRootViewController(animated: true)
+                                            
+                                            let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
+                                            Global.alertWithTitle(viewController: self, title: "Video Uploaded!", message: message, toFocus: self.categoryTypeTextField)
+                                            
                                         }
                                     }
                                 }                       

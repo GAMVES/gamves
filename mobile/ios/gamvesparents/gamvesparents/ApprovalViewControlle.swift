@@ -48,7 +48,6 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
         self.collectionView.register(ContactCell.self, forCellWithReuseIdentifier: cellId)
       
     }
-    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

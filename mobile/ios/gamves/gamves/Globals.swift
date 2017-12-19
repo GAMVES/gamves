@@ -961,6 +961,7 @@ class Global: NSObject
                         self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
                         self.gamvesFamily.sonChatId = family["sonChatId"] as! Int
                         self.gamvesFamily.spouseChatId = family["spouseChatId"] as! Int
+                        self.gamvesFamily.objectId = family.objectId!
                         
                         let picture = family["picture"] as! PFFile
                         

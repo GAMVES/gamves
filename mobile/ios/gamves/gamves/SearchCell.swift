@@ -36,19 +36,29 @@ class SearchCell: UITableViewCell {
     
     var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Mark Zuckerberg"
-        label.font = UIFont.systemFont(ofSize: 18)
+        //label.text = "Mark Zuckerberg"
+        label.font = UIFont.systemFont(ofSize: 16)
+        //label.backgroundColor = UIColor.cyan
         return label
     }()
     
     let descLabel: UILabel = {
         let label = UILabel()
-        label.text = "Your friend's message and something else..."
+        //label.text = "Your friend's message and something else..."
         label.textColor = UIColor.darkGray
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 13)
+        //label.backgroundColor = UIColor.green
         return label
     }()    
 
+    let timeLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.systemFont(ofSize: 13)
+        //label.backgroundColor = UIColor.gray
+        return label
+    }()
+    
     var delegate:VidewVideoProtocol?
     
     required init?(coder aDecoder: NSCoder) {
@@ -102,12 +112,14 @@ class SearchCell: UITableViewCell {
         
         containerView.addSubview(titleLabel)
         containerView.addSubview(descLabel)
+        containerView.addSubview(timeLabel)       
         
         containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: titleLabel)
         
-        containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: titleLabel, descLabel)
+        containerView.addConstraintsWithFormat("V:|[v0][v1][v2]|", views: titleLabel, descLabel, timeLabel)
         
         containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: descLabel)
+        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: timeLabel)
 
         
     }

@@ -13,10 +13,11 @@ import NVActivityIndicatorView
 import MapKit
 import ParseLiveQuery
 
+
 class HomeViewController: UIViewController,
     UICollectionViewDataSource,
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout  {    
+    UICollectionViewDelegateFlowLayout {
 
     var userStatistics = [UserStatistics]()
 
@@ -140,7 +141,7 @@ class HomeViewController: UIViewController,
         return cv
     }()
 
-    let approvalView: UIView = {
+    /*let approvalView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
         //v.backgroundColor = UIColor.blue
@@ -173,7 +174,7 @@ class HomeViewController: UIViewController,
         label.textColor = UIColor.lightGray
         label.font = UIFont.systemFont(ofSize: 16)
         return label
-    }() 
+    }()*/ 
 
 
     let footerView: UIView = {
@@ -194,6 +195,11 @@ class HomeViewController: UIViewController,
     
     var sonOnline = Bool()
 
+    var _status = UserStatistics()
+    var _location = UserStatistics()
+    var _time = UserStatistics()
+    var _approval = UserStatistics()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -209,7 +215,9 @@ class HomeViewController: UIViewController,
         self.scrollView.addSubview(self.photosContainerView)
         self.scrollView.addSubview(self.sonLabel)        
         self.scrollView.addSubview(self.collectionView)
-        self.scrollView.addSubview(self.approvalView)
+        
+        //self.scrollView.addSubview(self.approvalView)
+        
         self.scrollView.addSubview(self.footerView)
 
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)
@@ -219,7 +227,9 @@ class HomeViewController: UIViewController,
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
         self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)
-        self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.approvalView)
+        
+        //self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.approvalView)
+        
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)
         
         let width:Int = Int(view.frame.size.width)
@@ -236,7 +246,7 @@ class HomeViewController: UIViewController,
         self.metricsHome["photoSize"]       = photoSize
         self.metricsHome["padding"]         = padding
         
-        self.scrollView.addConstraintsWithFormat(
+        /*self.scrollView.addConstraintsWithFormat(
             "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-midPadding-[v2(midPadding)]-20-[v3(160)][v4(80)][v5(30)]|", views:
             self.familyLabel,
             self.photosContainerView,
@@ -244,8 +254,19 @@ class HomeViewController: UIViewController,
             self.collectionView,
             self.approvalView,
             self.footerView,
-            metrics: metricsHome)
+            metrics: metricsHome)*/
 
+        self.scrollView.addConstraintsWithFormat(
+         "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-midPadding-[v2(midPadding)]-20-[v3(220)][v4(30)]|", views:
+         self.familyLabel,
+         self.photosContainerView,
+         self.sonLabel,
+         self.collectionView,
+        // self.approvalView,
+         self.footerView,
+         metrics: metricsHome)
+
+        
         self.checkLabelSon =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
         self.checkLabelSpouse =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
         self.checkLabelGroup =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)        
@@ -304,7 +325,7 @@ class HomeViewController: UIViewController,
         self.checkLabelSpouse.isHidden = true
         self.checkLabelGroup.isHidden = true
 
-        self.checkLabelApproval =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
+        /*self.checkLabelApproval =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
 
         self.approvalImageView.alpha = 0.3
 
@@ -324,25 +345,31 @@ class HomeViewController: UIViewController,
         self.approvalView.addConstraintsWithFormat("V:|[v0(25)]|", views: self.checkLabelApproval)
         self.approvalView.addConstraintsWithFormat("H:|-70-[v0(25)]", views: self.checkLabelApproval)
 
-        self.approvalLabel.text = "Approvals"
-
-        let _status = UserStatistics()
+        self.approvalLabel.text = "Approvals"*/
+        
         _status.desc = "Offline"
         _status.icon = UIImage(named: "status_offline")!
+        _status.id = 0
         self.userStatistics.append(_status)
-
-        let _location = UserStatistics()
+        
         _location.desc = "Current location"
         _location.data = "5 Km"
+        _location.id = 1
         _location.icon = UIImage(named: "map")!
         self.userStatistics.append(_location)
 
-        let _time = UserStatistics()
         _time.desc = "Week count"
         _time.data = "04:50 hs"
+        _time.id = 2
         _time.icon = UIImage(named: "time")!
         self.userStatistics.append(_time)
 
+        _approval.desc = "Approvals"
+        _approval.id = 3
+        _approval.icon = UIImage(named: "check_circle")!
+        self.userStatistics.append(_approval)
+        
+      
         /*let _videos = UserStatistics()
         _videos.desc = "Videos watched"
         _videos.data = "12 videos"
@@ -355,19 +382,14 @@ class HomeViewController: UIViewController,
         _chats.icon = UIImage(named: "chat_room_black")!
         self.userStatistics.append(_chats)*/
 
-        self.checkLabelApproval.isHidden = true
+        //self.checkLabelApproval.isHidden = true
 
     }
+
     
-    func handleApproval(sender: UITapGestureRecognizer)
-    {        
-        approvalViewController.homeViewController = self
-        approvalViewController.view.backgroundColor = UIColor.white
-        navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        navigationController?.pushViewController(approvalViewController, animated: true)
-        tabBarController?.tabBar.isHidden = true
-    }
+    /*func handleApproval(sender: UITapGestureRecognizer) {
+        
+    }*/
 
 
      func openMapForPlace() {
@@ -447,6 +469,16 @@ class HomeViewController: UIViewController,
     
     func familyLoaded()
     {
+        
+        let familyId = Global.gamvesFamily.objectId
+        
+        Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
+            
+            self._approval.approval = count as Int
+            self.collectionView.reloadData()
+            
+        })
+        
         self.familyLabel.text = Global.gamvesFamily.familyName
 
         if self.isKeyPresentInUserDefaults(key:"son_object_id")
@@ -595,29 +627,59 @@ class HomeViewController: UIViewController,
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HomeCollectionViewCell
         
+
         let id = indexPath.row
         
         var stats = self.userStatistics[id]
         
-        
         cell.descLabel.text = stats.desc
+        
         cell.dataLabel.text = stats.data
-
+        
+        print(stats.desc)
+        print(stats.approval)
+        
         if id == 0
         {
             if self.sonOnline
             {
                 stats.icon = UIImage(named: "status_online")!
                 cell.descLabel.text = "Online"
-            } else 
+            } else
             {
                 stats.icon = UIImage(named: "status_offline")!
                 cell.descLabel.text = "Offline"
             }
-
+            
             cell.dataLabel.isHidden = true
             
         }
+        
+        if stats.approval > 0 {
+            
+            stats.icon = UIImage(named: "check_circle_white")!
+            
+            cell.descLabel.textColor = UIColor.white
+            cell.dataLabel.textColor = UIColor.white
+            
+            cell.dataLabel.text = String(stats.approval)
+        
+            cell.backgroundColor = UIColor.gamvesColor
+            cell.layer.cornerRadius = 10
+            
+        }
+        
+        /*else {
+            
+            stats.icon = UIImage(named: "check_circle")!
+            
+            cell.descLabel.textColor = UIColor.darkGray
+            cell.dataLabel.textColor = UIColor.lightGray
+            
+            cell.backgroundColor = UIColor.gamvesBackgoundColor
+            cell.layer.cornerRadius = 0
+            
+        }*/
    
         cell.iconImageView.image = stats.icon
         
@@ -627,7 +689,31 @@ class HomeViewController: UIViewController,
         }
         
         return cell
-    }    
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {    
+        
+        if indexPath.row == 0 {
+            
+        } else if indexPath.row == 1 {
+            
+        
+        } else if indexPath.row == 2 {
+            
+            
+        } else if indexPath.row == 3 {
+        
+            approvalViewController.homeViewController = self
+            approvalViewController.view.backgroundColor = UIColor.white
+            navigationController?.navigationBar.tintColor = UIColor.white
+            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            navigationController?.pushViewController(approvalViewController, animated: true)
+            tabBarController?.tabBar.isHidden = true
+            
+            
+        }      
+        
+    }
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -699,9 +785,7 @@ class HomeViewController: UIViewController,
                 
                 Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
                     
-                    self.checkLabelApproval.isHidden = true
-                    
-                    self.checkLabelApproval.text = String(count)
+                        self._approval.approval = count as Int
                         
                 })
                 
@@ -725,7 +809,7 @@ class HomeViewController: UIViewController,
             self.sonOnline = false
         }
         
-        self.collectionView.reloadData()
+        //self.collectionView.reloadData()
         
     }
 

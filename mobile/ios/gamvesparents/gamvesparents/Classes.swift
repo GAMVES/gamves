@@ -86,22 +86,46 @@ class GamvesGender
 
 class VideoGamves
 {
-    var video_category = String()
-    var video_title = String()
-    
+    /*var video_category = String()
+    var video_title = String()    
     var video_fromName = String()
-    var description = String()
-    
+    var description = String()    
     var thum_image = UIImage()
+    var thumbnail:PFFile!    
+    var video_url = String()    
+    var fanpageId = String()    
+    var videoId = String()    
+    var videoobj:PFObject?*/
+
+    var video_title = String()        
+    var title = String()
+    var description = String()
+    var videoId = Int()    
+
+    var authorized = Bool()
+    var categoryName = String()
+    var s3_source = String()
+    var ytb_source = String()
+    var ytb_thumbnail_source = String()
+    var ytb_videoId = String()   
     
-    var thumb_url = String()
-    var video_url = String()
+    var ytb_upload_date = String()
     
-    var fanpageId = String()
+    var ytb_view_count = Int()
+
+    var ytb_tags = [String]()
+
+    var ytb_duration = String()        
+    var ytb_categories = [String]()
+
+    var ytb_like_count = Int() 
+    var fanpageId = Int()  
+    var posterId = String()  
     
-    var videoId = String()
-    
-    var videoobj:PFObject?
+    var videoObj:PFObject?
+    var thumbnail:PFFile!
+    var image = UIImage()
+
 }
 
 class CategoryGamves
@@ -226,7 +250,10 @@ class UserTypeGamves
 
 class UserStatistics
 {
+    var id = Int()
     var desc = String()
     var data = String()
     var icon = UIImage()
+    var approval = Int()
+    
 }

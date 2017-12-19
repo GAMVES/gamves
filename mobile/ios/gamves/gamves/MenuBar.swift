@@ -13,7 +13,8 @@ class MenuBar: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.rgb(230, green: 32, blue: 31)
+        //cv.backgroundColor = UIColor.rgb(230, green: 32, blue: 31)
+        cv.backgroundColor = UIColor.gamvesColor
         cv.dataSource = self
         cv.delegate = self
         cv.alwaysBounceVertical = false

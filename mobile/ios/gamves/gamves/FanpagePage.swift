@@ -99,7 +99,6 @@ class FanpagePage: UIViewController,
         cv.delegate = self
         return cv
     }()
-   
 
     func handleBackButton() 
     {
@@ -178,6 +177,8 @@ class FanpagePage: UIViewController,
         self.fanpageGamves = data as FanpageGamves
         
         let fanpageId = data.fanpageObj?["fanpageId"] as! Int
+        
+        let name = data.fanpageObj?["pageName"] as! String
         
         if Downloader.fanpageImagesDictionary[fanpageId] != nil
         {

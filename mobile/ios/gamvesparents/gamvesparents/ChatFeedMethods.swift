@@ -169,9 +169,23 @@ class ChatFeedMethods: NSObject
                             {
                                 for video in videos
                                 {
+                                    
+                                    let thumbnail = video["thumbnail"] as! PFFile
+                                 
+                                    thumbnail.getDataInBackground(block: { (data, error) in
+                                        
+                                        
+                                        if error == nil
+                                        {
+                                            let thumbImage = UIImage(data:data!)
+                                            
+                                            
+                                            Global.parseVideo(video: video, chatId : chatId, videoImage: thumbImage! )
+
+                                        }
+                                    })
                                 
-                                    Global.parseVideo(video: video, chatId : chatId )
-                                
+                                    
                                 }
                             }
                         }

@@ -67,7 +67,6 @@ class Global: NSObject
     static var key_you_spouse_chat_id = "you_spouse_chat_id"
     static var key_you_son_chat_id = "you_son_chat_id"
     static var key_you_spouse_son_chat_id = "you_spouse_son_chat_id"
-
     
     static var keySpouseSmall   = String() //"\(Global.keySpouse)Small"
     static var keyYourSmall     = String() //"\(Global.keyYour)Small"
@@ -271,7 +270,7 @@ class Global: NSObject
             
             if let data = try? Data(contentsOf: vurl)
             {
-                video.thum_image = UIImage(data: data)!
+                video.image = UIImage(data: data)!
                 
                 completionHandler(video)
             }
@@ -664,6 +663,7 @@ class Global: NSObject
                         self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
                         self.gamvesFamily.sonChatId = family["sonChatId"] as! Int
                         self.gamvesFamily.spouseChatId = family["spouseChatId"] as! Int
+                        self.gamvesFamily.objectId = family.objectId!
                         
                         let picture = family["picture"] as! PFFile
                         
@@ -788,6 +788,7 @@ class Global: NSObject
     {
         let queryApproval = PFQuery(className:"Approvals")
         queryApproval.whereKey("familyId", equalTo: familyId)
+        print(familyId)
         queryApproval.findObjectsInBackground { (approvalObjects, error) in
             
             if error != nil
@@ -800,6 +801,7 @@ class Global: NSObject
                 {
                     
                     var countAapprovals = approvalObjects.count
+                    var count = 0
                     
                     for approvalObj in approvalObjects
                     {
@@ -811,7 +813,10 @@ class Global: NSObject
                         approval.approved = approvalObj["approved"] as! Bool
                         
                         let queryVideo = PFQuery(className:"Videos")
-                        queryVideo.whereKey("objectId", equalTo: approval.videoId)
+                        queryVideo.whereKey("videoId", equalTo: approval.videoId)
+                        
+                        print(approval.videoId)
+                        
                         queryVideo.findObjectsInBackground { (videoObjects, error) in
                             
                             if error != nil
@@ -827,9 +832,7 @@ class Global: NSObject
                                         
                                         let thumImage = videoObject["thumbnail"] as! PFFile
                                         
-                                        let videoId = videoObject["objectId"] as! String
-                                        
-                                        let vId:Int = Int(videoId)!
+                                        let videoId = videoObject["videoId"] as! Int                                     
                                         
                                         thumImage.getDataInBackground(block: { (data, error) in
                                             
@@ -841,8 +844,12 @@ class Global: NSObject
                                                 
                                                 self.approvals.append(approval)
                                                 
-                                                Global.parseVideo(video: videoObject, chatId : vId )
-                                            
+                                                Global.parseVideo(video: videoObject, chatId : videoId, videoImage: thumbImage! )
+                                                
+                                                if (countAapprovals-1) == count {
+                                                    completionHandler(countAapprovals)                                                    
+                                                }
+                                                count = count + 1
                                             }
                                         })
                                     }
@@ -857,33 +864,38 @@ class Global: NSObject
     
     
     
-    static func parseVideo(video:PFObject, chatId :Int ) {
+    static func parseVideo(video:PFObject, chatId :Int, videoImage: UIImage ) {
     
         let videoGamves = VideoGamves()
-        let videothumburl:String = video["thumbnailUrl"] as! String
-        let videoDescription:String = video["description"] as! String
-        let videoCategory:String = video["category"] as! String
-        let videoUrl:String = video["source"] as! String
-        let videoTitle:String = video["title"] as! String
-        let videoFromName:String = video["fromName"] as! String
+       
+        videoGamves.video_title = video["title"] as! String
         
-        videoGamves.video_title = videoTitle
-        videoGamves.thumb_url = videothumburl
-        videoGamves.description = videoDescription
-        videoGamves.video_category = videoCategory
-        videoGamves.video_url = videoUrl
-        videoGamves.video_fromName = videoFromName
-        videoGamves.videoobj = video
+        videoGamves.description = video["description"] as! String
+        videoGamves.videoId = video["videoId"] as! Int                
+        videoGamves.authorized = video["authorized"] as! Bool
+
+        videoGamves.categoryName = video["categoryName"] as! String
+        videoGamves.s3_source = video["s3_source"] as! String
+        videoGamves.ytb_source = video["ytb_source"] as! String
+        videoGamves.ytb_thumbnail_source = video["ytb_thumbnail_source"] as! String
         
-        if let vurl = URL(string: videothumburl)
-        {
-            if let data = try? Data(contentsOf: vurl)
-            {
-                videoGamves.thum_image = UIImage(data: data)!
-            }
-        }
+        videoGamves.ytb_upload_date = video["ytb_upload_date"] as! String     
+        videoGamves.ytb_view_count = video["ytb_view_count"] as! Int 
+
+        videoGamves.ytb_tags = video["ytb_tags"] as! [String]
+        videoGamves.ytb_duration = video["ytb_duration"] as! String     
+        videoGamves.ytb_categories = video["ytb_categories"] as! [String]
+
+        videoGamves.ytb_like_count = video["ytb_like_count"] as! Int
+        videoGamves.fanpageId = video["fanpageId"] as! Int   
+
+        videoGamves.posterId = video["posterId"] as! String    
+        videoGamves.videoObj = video
+
+        videoGamves.thumbnail = video["thumbnail"] as! PFFile
+        
         Global.chatVideos[chatId] = videoGamves
-    
+        
     }
     
     
