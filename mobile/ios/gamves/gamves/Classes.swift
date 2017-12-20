@@ -104,7 +104,7 @@ class VideoGamves
 
     var title = String()
     var description = String()
-    var videoId = String()
+    var videoId = Int()
     var categoryName = String()
     var thumbnail:PFFile?
     var s3_source = String()        
@@ -234,15 +234,16 @@ class GamvesFamily
     var levels:[LevelsGamves]!
     
     var youUser:GamvesParseUser!
+    var registerUser:GamvesParseUser!
     var spouseUser:GamvesParseUser!
     
     var familyName = String()
     var objectId = String()
     var school = String()
     
-    var sonChatId = Int()
-    var spouseChatId = Int()
-    var familyChatId = Int()
+    var sonRegisterChatId = Int()
+    var sonSpouseChatId = Int()
+    var familyChatId = Int()    
     
     var familyImage = UIImage()
     
@@ -254,9 +255,9 @@ class GamvesFamily
     
     func getFamilyUserById(userId : String) -> GamvesParseUser?
     {
-        if youUser.userId == userId
+        if registerUser.userId == userId
         {
-            return youUser
+            return registerUser
             
         } else if spouseUser.userId == userId
         {

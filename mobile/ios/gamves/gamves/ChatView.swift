@@ -32,7 +32,7 @@ class ChatView: UIView,
     
     var activityView: NVActivityIndicatorView!
 
-    let liveQueryClient: Client = ParseLiveQuery.Client(server: Global.remoteWs) // .localWs)
+    let liveQueryClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
     
     private var chatSubscription: Subscription<PFObject>!
     private var feedSubscription: Subscription<PFObject>!
@@ -208,6 +208,9 @@ class ChatView: UIView,
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
         self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+        
+        
+        self.collectionView.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
         
     }
 

@@ -576,8 +576,7 @@ class Global: NSObject
         badgesQuery.whereKey("chatId", equalTo: chatId)
         badgesQuery.findObjectsInBackground(block: { (badges, error) in
             
-            if error == nil
-            {
+            if error == nil {
                 
                 let badgesUsers = badges?.count
                 
@@ -602,8 +601,7 @@ class Global: NSObject
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel,handler: {_ in
             
-            if toFocus != nil
-            {
+            if toFocus != nil {
                 toFocus?.becomeFirstResponder()
             }
 
@@ -635,12 +633,16 @@ class Global: NSObject
                 if error == nil
                 {
                     for family in families!
-                    {
+                    {                       
+                        
                         self.gamvesFamily.familyName = family["description"] as! String
                         self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
-                        self.gamvesFamily.sonChatId = family["sonChatId"] as! Int
-                        self.gamvesFamily.spouseChatId = family["spouseChatId"] as! Int
+                        
+                        self.gamvesFamily.sonRegisterChatId = family["sonRegisterChatId"] as! Int
+                        self.gamvesFamily.spouseRegisterChatId = family["spouseRegisterChatId"] as! Int
                         self.gamvesFamily.objectId = family.objectId!
+                        
+                        
                         
                         let picture = family["picture"] as! PFFile
                         
@@ -792,7 +794,7 @@ class Global: NSObject
                         
                         if approved == 0 {
                                 countNotApproved = countNotApproved + 1
-                        }                        
+                        }
                         
                         let queryVideo = PFQuery(className:"Videos")
                         queryVideo.whereKey("videoId", equalTo: approval.videoId)

@@ -312,11 +312,11 @@ class VideoLauncher: UIView, KeyboardDelegate {
 
         let videoUrl = videoGamves.s3_source
         let videoObj = videoGamves.videoObj
-        let videoId = videoObj?["videoId"] as! String        
+        let videoId = videoObj?["videoId"] as! Int
 
-        let first5VideoId = videoId.substring(to:videoId.index(videoId.startIndex, offsetBy: 5))
+        //let first5VideoId = videoId.substring(to:videoId.index(videoId.startIndex, offsetBy: 5))
+        //let viId:Int = Int(first5VideoId)!
         
-        let viId:Int = Int(first5VideoId)!
         let fanpageId = videoGamves.fanpageId
         
         print("Showing video player....\(videoUrl)")
@@ -377,7 +377,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
             
             chatView = ChatView(frame: chatFrame, isVideo: true)
             
-            let params = ["chatId": viId, "isVideoChat": true, "thumbnailImage": videoGamves.image, "delegate":self] as [String : Any]
+            let params = ["chatId": videoId, "isVideoChat": true, "thumbnailImage": videoGamves.image, "delegate":self] as [String : Any]
             
             chatView.setParams(parameters: params)
 

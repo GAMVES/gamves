@@ -80,11 +80,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             center.delegate = self
             center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
                 
-                if error == nil
-                {
+                if error == nil {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
-                
             }
             
         } else {
@@ -104,25 +102,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         
-        // Lets see the current registered channels of the installation.
-        //let currentChannels = PFInstallation.current()?.channels
-        // Do something with currentChannels.
-    
-        if PFUser.current() != nil
-        {
-            //ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-            
-            //self.loadChatChannels()
-            
-            //Global.loaLevels()
-            //Global.getFamilyData()
-            
+        
+        if PFUser.current() != nil {
             
             Global.loaLevels()
             
             Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
                 
-                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                Global.familyLoaded = true
+                
+                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
+                
+                    Global.chatFeedLoaded = true
+                    
+                })
                 
             })
             
@@ -328,33 +321,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
             
-            let chatFeddsCount = chatfeeds?.count
+            if chatfeeds != nil {
             
-            print(chatFeddsCount)
-            
-            if chatFeddsCount! > 0
-            {
-                let chatfeedsCount =  chatfeeds?.count
+                let chatFeddsCount = chatfeeds?.count
                 
-                print(chatfeedsCount)
+                print(chatFeddsCount)
                 
-                if chatfeedsCount! > 0
+                if chatFeddsCount! > 0
                 {
+                    let chatfeedsCount =  chatfeeds?.count
                     
-                    for feed in chatfeeds!
+                    print(chatfeedsCount)
+                    
+                    if chatfeedsCount! > 0
                     {
-                        let chatId:Int = feed["chatId"] as! Int
                         
-                        let chatIdStr = String(chatId) as String
-                        
-                        PFPush.subscribeToChannel(inBackground: chatIdStr)
+                        for feed in chatfeeds!
+                        {
+                            let chatId:Int = feed["chatId"] as! Int
+                            
+                            let chatIdStr = String(chatId) as String
+                            
+                            PFPush.subscribeToChannel(inBackground: chatIdStr)
+                            
+                        }
                         
                     }
                     
                 }
-                
             }
-            
         })
     }
     

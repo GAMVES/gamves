@@ -57,7 +57,7 @@ class LoginController: UIViewController {
         tf.placeholder = "User name"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.tag = 0
-        tf.text = "josemanuelvigil@gmail.com"
+        //tf.text = "josemanuelvigil@gmail.com"
         return tf
     }()
     
@@ -74,7 +74,7 @@ class LoginController: UIViewController {
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.isSecureTextEntry = true
         tf.tag = 1
-        tf.text = "JoseVigil2016"
+        //tf.text = "JoseVigil2016"
         return tf
     }()
 

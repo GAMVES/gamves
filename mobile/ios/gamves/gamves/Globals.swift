@@ -73,6 +73,9 @@ class Global: NSObject
     
     static var gamvesFamily = GamvesFamily()
     
+    static var familyLoaded = Bool()
+    static var chatFeedLoaded = Bool()
+    
     static var chatVideos = Dictionary<Int, VideoGamves>()
     
     static var hasNewFeed = Bool()
@@ -245,13 +248,14 @@ class Global: NSObject
             if myId == gamvesUser.userId {
                 
                 Global.gamvesFamily.youUser = gamvesUser
-                
-            } else if gamvesUser.typeNumber == Global.SON ||  gamvesUser.typeNumber == Global.DAUGHTER {
-                
                 Global.gamvesFamily.sonsUsers.append(gamvesUser)
                 Global.gamvesFamily.levels.append(self.levels[gamvesUser.levelId]!)
                 
-            } else {
+            } else if gamvesUser.typeNumber == Global.REGISTER_MOTHER ||  gamvesUser.typeNumber == Global.REGISTER_FATHER {
+                
+                Global.gamvesFamily.registerUser = gamvesUser
+                
+            } else if gamvesUser.typeNumber == Global.SPOUSE_FATHER ||  gamvesUser.typeNumber == Global.SPOUSE_MOTHER {
                 
                 Global.gamvesFamily.spouseUser = gamvesUser
             }
@@ -946,94 +950,109 @@ class Global: NSObject
         self.keyYourSmall     = "\(self.keyYour)Small"
         self.keySonSmall      = "\(self.keySon)Small"
         
-        DispatchQueue.global().async {
-            
-            let familyQuery = PFQuery(className:"Family")
-            familyQuery.whereKey("members", equalTo: PFUser.current())
+        let familyQuery = PFQuery(className:"Family")
+        familyQuery.whereKey("members", equalTo: PFUser.current())
+        if !Global.hasDateChanged() {
             familyQuery.cachePolicy = .cacheElseNetwork
-            familyQuery.findObjectsInBackground(block: { (families, error) in
-                
-                if error == nil
-                {
-                    for family in families!
-                    {
-                        self.gamvesFamily.familyName = family["description"] as! String
-                        self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
-                        self.gamvesFamily.sonChatId = family["sonChatId"] as! Int
-                        self.gamvesFamily.spouseChatId = family["spouseChatId"] as! Int
-                        self.gamvesFamily.objectId = family.objectId!
-                        
-                        let picture = family["picture"] as! PFFile
-                        
-                        picture.getDataInBackground(block: { (data, error) in
-                            
-                            if (error != nil)
-                            {
-                                print(error)
-                            } else
-                            {
-                                
-                                let imageFamily = UIImage(data: data!)
-                                
-                                self.gamvesFamily.familyImage = imageFamily!
-                                
-                                let membersRelation = family.relation(forKey: "members") as PFRelation
-                                
-                                let queryMembers = membersRelation.query()
-                                
-                                queryMembers.findObjectsInBackground(block: { (members, error) in
-                                    
-                                    if error == nil
-                                    {
-                                        var memberCount = members?.count
-                                        var count = 0
-                                        
-                                        for member in members!
-                                        {
-                                            
-                                            DispatchQueue.main.async
-                                                {
-                                                    
-                                                    self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
-                                                        
-                                                        print(gamvesUser.userName)
-                                                        
-                                                        if count == (memberCount!-1)
-                                                        {
-                                                            completionHandler(true)
-                                                            
-                                                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
-                                                        }
-                                                        count = count + 1
-                                                    })
-                                            }
-                                        }
-                                    }
-                                })
-                                
-                                let schoolRelation = family.relation(forKey: "school") as PFRelation
-                                
-                                let querySchool = schoolRelation.query()
-                                
-                                querySchool.findObjectsInBackground(block: { (schools, error) in
-                                    
-                                    if error == nil
-                                    {
-                                        for school in schools!
-                                        {
-                                            self.gamvesFamily.school = school["name"] as! String
-                                        }
-                                    }
-                                })
-                                
-                                
-                                
-                            }
-                        })
-                    }
-                }
-            })
         }
+        familyQuery.findObjectsInBackground(block: { (families, error) in
+            
+            if error == nil
+            {
+                for family in families!
+                {
+                    print(family)
+                    
+                    self.gamvesFamily.familyName = family["description"] as! String
+                    self.gamvesFamily.familyChatId = family["familyChatId"] as! Int           
+                    
+                    if family["sonRegisterChatId"] != nil {
+                       self.gamvesFamily.sonRegisterChatId  = family["sonRegisterChatId"] as! Int
+                    }
+                    
+                    print(self.gamvesFamily.sonRegisterChatId)
+                    
+                    if family["sonSpouseChatId"] != nil {
+                        self.gamvesFamily.sonSpouseChatId = family["sonSpouseChatId"] as! Int
+                    }
+                    
+                    print(self.gamvesFamily.sonSpouseChatId)
+                    
+                    self.gamvesFamily.objectId = family.objectId!
+                    
+                    let picture = family["picture"] as! PFFile
+                    
+                    picture.getDataInBackground(block: { (data, error) in
+                        
+                        if (error != nil)
+                        {
+                            print(error)
+                        } else
+                        {
+                            
+                            let imageFamily = UIImage(data: data!)
+                            
+                            self.gamvesFamily.familyImage = imageFamily!
+                            
+                            let membersRelation = family.relation(forKey: "members") as PFRelation
+                            
+                            let queryMembers = membersRelation.query()
+                            
+                            queryMembers.findObjectsInBackground(block: { (members, error) in
+                                
+                                if error == nil
+                                {
+                                    var memberCount = members?.count
+                                    var count = 0
+                                    
+                                    for member in members!
+                                    {
+                                        
+                                        DispatchQueue.main.async
+                                            {
+                                                
+                                                self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                                                    
+                                                    print(gamvesUser.userName)
+                                                    
+                                                    if count == (memberCount!-1)
+                                                    {
+                                                        completionHandler(true)
+                                                        
+                                                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                    }
+                                                    count = count + 1
+                                                })
+                                        }
+                                    }
+                                }
+                            })
+                            
+                            let schoolRelation = family.relation(forKey: "school") as PFRelation
+                            
+                            let querySchool = schoolRelation.query()
+                            
+                            querySchool.findObjectsInBackground(block: { (schools, error) in
+                                
+                                if error == nil
+                                {
+                                    for school in schools!
+                                    {
+                                        self.gamvesFamily.school = school["name"] as! String
+                                    }
+                                }
+                            })
+                            
+                            
+                            
+                        }
+                    })
+                }
+            } else {
+                print(error)
+            }
+        })
+        
     }
 
     

@@ -141,42 +141,6 @@ class HomeViewController: UIViewController,
         return cv
     }()
 
-    /*let approvalView: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        //v.backgroundColor = UIColor.blue
-        v.layer.borderWidth = 1
-        v.layer.cornerRadius = 10
-        //v.layer.borderColor = UIColor.gamvesColor as! CGColor
-        v.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleApproval)))
-        return v
-    }()
-
-    lazy var approvalImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "approval")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit        
-        imageView.isUserInteractionEnabled = true             
-        return imageView
-    }()
-
-     var checkLabelApproval: UILabel = {
-        let label = UILabel()
-        return label
-    }()
-
-    var approvalLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .left
-        //label.backgroundColor = UIColor.white
-        //label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.textColor = UIColor.lightGray
-        label.font = UIFont.systemFont(ofSize: 16)
-        return label
-    }()*/ 
-
-
     let footerView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
@@ -214,10 +178,7 @@ class HomeViewController: UIViewController,
         self.scrollView.addSubview(self.familyLabel)
         self.scrollView.addSubview(self.photosContainerView)
         self.scrollView.addSubview(self.sonLabel)        
-        self.scrollView.addSubview(self.collectionView)
-        
-        //self.scrollView.addSubview(self.approvalView)
-        
+        self.scrollView.addSubview(self.collectionView)       
         self.scrollView.addSubview(self.footerView)
 
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)
@@ -226,10 +187,7 @@ class HomeViewController: UIViewController,
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.familyLabel)
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
-        self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)
-        
-        //self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.approvalView)
-        
+        self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)        
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)
         
         let width:Int = Int(view.frame.size.width)
@@ -244,25 +202,14 @@ class HomeViewController: UIViewController,
         self.metricsHome["midPadding"]      = midPadding
         self.metricsHome["smallPadding"]    = smallPadding
         self.metricsHome["photoSize"]       = photoSize
-        self.metricsHome["padding"]         = padding
-        
-        /*self.scrollView.addConstraintsWithFormat(
-            "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-midPadding-[v2(midPadding)]-20-[v3(160)][v4(80)][v5(30)]|", views:
-            self.familyLabel,
-            self.photosContainerView,
-            self.sonLabel,
-            self.collectionView,
-            self.approvalView,
-            self.footerView,
-            metrics: metricsHome)*/
+        self.metricsHome["padding"]         = padding    
 
         self.scrollView.addConstraintsWithFormat(
          "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-midPadding-[v2(midPadding)]-20-[v3(220)][v4(30)]|", views:
          self.familyLabel,
          self.photosContainerView,
          self.sonLabel,
-         self.collectionView,
-        // self.approvalView,
+         self.collectionView,        
          self.footerView,
          metrics: metricsHome)
 
@@ -324,29 +271,7 @@ class HomeViewController: UIViewController,
         self.checkLabelSon.isHidden = true
         self.checkLabelSpouse.isHidden = true
         self.checkLabelGroup.isHidden = true
-
-        /*self.checkLabelApproval =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
-
-        self.approvalImageView.alpha = 0.3
-
-        self.approvalView.addSubview(self.approvalImageView)
-        self.approvalView.addSubview(self.checkLabelApproval)
-        self.approvalView.addSubview(self.approvalLabel)
-        
-        
-        self.approvalView.addConstraintsWithFormat(
-            "H:|-10-[v0(50)]-10-[v1]|", views:
-            self.approvalImageView,
-            self.approvalLabel, metrics: metricsHorBudge)
-
-        self.approvalView.addConstraintsWithFormat("V:|-15-[v0(50)]-15-|", views: self.approvalImageView)
-        self.approvalView.addConstraintsWithFormat("V:|-15-[v0(50)]-15-|", views: self.approvalLabel)
-
-        self.approvalView.addConstraintsWithFormat("V:|[v0(25)]|", views: self.checkLabelApproval)
-        self.approvalView.addConstraintsWithFormat("H:|-70-[v0(25)]", views: self.checkLabelApproval)
-
-        self.approvalLabel.text = "Approvals"*/
-        
+             
         _status.desc = "Offline"
         _status.icon = UIImage(named: "status_offline")!
         _status.id = 0
@@ -367,30 +292,10 @@ class HomeViewController: UIViewController,
         _approval.desc = "Approvals"
         _approval.id = 3
         _approval.icon = UIImage(named: "check_circle")!
-        self.userStatistics.append(_approval)
-        
-      
-        /*let _videos = UserStatistics()
-        _videos.desc = "Videos watched"
-        _videos.data = "12 videos"
-        _videos.icon = UIImage(named: "movie")!
-        self.userStatistics.append(_videos)
-
-        let _chats = UserStatistics()
-        _chats.desc = "Chats talked"
-        _chats.data = "22 chats"
-        _chats.icon = UIImage(named: "chat_room_black")!
-        self.userStatistics.append(_chats)*/
-
-        //self.checkLabelApproval.isHidden = true
+        self.userStatistics.append(_approval)        
 
     }
-
-    
-    /*func handleApproval(sender: UITapGestureRecognizer) {
-        
-    }*/
-
+ 
 
      func openMapForPlace() {
 
@@ -414,13 +319,15 @@ class HomeViewController: UIViewController,
         
         tabBarController?.tabBar.isHidden = false
     }
+  
+  
     
     func chatFeedLoaded()
     {
-        let sonChatId:Int = Global.gamvesFamily.sonChatId
-        if ChatFeedMethods.chatFeeds[sonChatId]! != nil
+        let sonRegisterChatId:Int = Global.gamvesFamily.sonRegisterChatId
+        if ChatFeedMethods.chatFeeds[sonRegisterChatId]! != nil
         {
-            let sonBadge = ChatFeedMethods.chatFeeds[sonChatId]?.badgeNumber
+            let sonBadge = ChatFeedMethods.chatFeeds[sonRegisterChatId]?.badgeNumber
             
             if sonBadge! > 0
             {
@@ -433,10 +340,10 @@ class HomeViewController: UIViewController,
             
         }
         
-        let spouseChatId:Int = Global.gamvesFamily.spouseChatId
-        if ChatFeedMethods.chatFeeds[spouseChatId]! != nil
+        let spouseRegisterChatId:Int = Global.gamvesFamily.spouseRegisterChatId
+        if ChatFeedMethods.chatFeeds[spouseRegisterChatId]! != nil
         {
-            let spouseBadge = ChatFeedMethods.chatFeeds[spouseChatId]?.badgeNumber
+            let spouseBadge = ChatFeedMethods.chatFeeds[spouseRegisterChatId]?.badgeNumber
             
             if spouseBadge! > 0
             {
@@ -543,20 +450,19 @@ class HomeViewController: UIViewController,
     func handleSonPhotoImageView(sender: UITapGestureRecognizer)
     {
         
-        let sonChatId:Int = Global.gamvesFamily.sonChatId
+        let sonRegisterChatId:Int = Global.gamvesFamily.sonRegisterChatId
     
-        if ChatFeedMethods.chatFeeds[sonChatId]! != nil
+        if ChatFeedMethods.chatFeeds[sonRegisterChatId]! != nil
         {
-            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[sonChatId]!
+            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[sonRegisterChatId]!
             
             var users = [GamvesParseUser]()
             users.append(Global.gamvesFamily.sonsUsers[0])
             users.append(Global.gamvesFamily.youUser)
 
-            self.chatViewController.chatId = sonChatId
+            self.chatViewController.chatId = sonRegisterChatId
             self.chatViewController.gamvesUsers = users
-            self.chatViewController.room = chatfeed.room!
-            //self.chatViewController.isStandAlone = true
+            self.chatViewController.room = chatfeed.room!            
             self.chatViewController.view.backgroundColor = UIColor.white
            
             navigationController?.pushViewController(self.chatViewController, animated: true)
@@ -568,17 +474,17 @@ class HomeViewController: UIViewController,
     func handleSpousePhotoImageView(sender: UITapGestureRecognizer)
     {
         
-        let spouseChatId:Int = Global.gamvesFamily.spouseChatId
+        let spouseRegisterChatId:Int = Global.gamvesFamily.spouseRegisterChatId
         
-        if ChatFeedMethods.chatFeeds[spouseChatId]! != nil
+        if ChatFeedMethods.chatFeeds[spouseRegisterChatId]! != nil
         {
-            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[spouseChatId]!
+            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[spouseRegisterChatId]!
             
             var users = [GamvesParseUser]()
             users.append(Global.gamvesFamily.spouseUser)
             users.append(Global.gamvesFamily.youUser)
             
-            self.chatViewController.chatId = spouseChatId
+            self.chatViewController.chatId = spouseRegisterChatId
             self.chatViewController.gamvesUsers = users
             self.chatViewController.room = chatfeed.room!
             //self.chatViewController.isStandAlone = true

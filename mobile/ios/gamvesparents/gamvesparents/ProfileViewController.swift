@@ -65,9 +65,10 @@ class ProfileViewController: UIViewController,
 
     let schoolsArray: NSMutableArray = []
  
-    var familyChatId = Int() 
-    var sonChatId = Int() 
-    var spouseChatId = Int() 
+    var familyChatId = Int()
+    var sonRegisterChatId = Int()
+    var spouseRegisterChatId = Int()
+    var sonSpouseChatId = Int()
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -487,13 +488,12 @@ class ProfileViewController: UIViewController,
         
         self.prepTextFields(inView: [self.sonNameContainerView])
 
-        
-        
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
        
         self.familyChatId    = Global.getRandomInt()
-        self.sonChatId       = Global.getRandomInt()
-        self.spouseChatId    = Global.getRandomInt()
+        self.sonRegisterChatId       = Global.getRandomInt()
+        self.spouseRegisterChatId    = Global.getRandomInt()
+        self.sonSpouseChatId    = Global.getRandomInt()
         
         if PFUser.current() != nil {
             self.son = PFUser.current()
@@ -1117,7 +1117,7 @@ class ProfileViewController: UIViewController,
                                         
                                         if resutl {
                                             
-                                            self.saveFamilyImagesToServer(completionHandlerFamilySave: { ( resutl ) -> () in
+                                            self.createChatGroups(completionHandlerFamilySave: { ( resutl ) -> () in
                                                 
                                                 if resutl {
                                                 
@@ -1557,9 +1557,10 @@ class ProfileViewController: UIViewController,
         userRel.add(self.you!)
 
         family["familyChatId"]  = self.familyChatId
-        family["sonChatId"]     = self.sonChatId
-        family["spouseChatId"]  = self.spouseChatId
-
+        family["sonRegisterChatId"]  = self.sonRegisterChatId
+        family["spouseRegisterChatId"]  = self.spouseRegisterChatId
+        family["sonSpouseChatId"]  = self.sonSpouseChatId
+        
         let imageFamily = self.familyPhotoImage
 
         let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily!, 1.0)!)
@@ -1605,14 +1606,15 @@ class ProfileViewController: UIViewController,
                 completionHandler(false)
             }
             else
-            {
-
+            {           
+               
+                
                 print(your_family_name)
                 
                 Global.gamvesFamily.familyName = your_family_name!
                
-                Global.gamvesFamily.sonChatId = self.sonChatId
-                Global.gamvesFamily.spouseChatId = self.spouseChatId
+                Global.gamvesFamily.sonRegisterChatId = self.sonRegisterChatId
+                Global.gamvesFamily.spouseRegisterChatId = self.spouseRegisterChatId
                 Global.gamvesFamily.familyChatId = self.familyChatId
 
                 Global.gamvesFamily.familyImage = self.familyPhotoImageSmall
@@ -1625,7 +1627,7 @@ class ProfileViewController: UIViewController,
     }  
     
     
-    func saveFamilyImagesToServer(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())
+    func createChatGroups(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())
     {
         print("FAMILY SAVED")
         
@@ -1647,7 +1649,7 @@ class ProfileViewController: UIViewController,
             youSon.append(self.youGamves)
             youSon.append(self.sonGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonRegisterChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youSon")
                 print(resutl)
@@ -1667,7 +1669,7 @@ class ProfileViewController: UIViewController,
             youSpouse.append(self.youGamves)
             youSpouse.append(self.spouseGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseRegisterChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youSpouse")
                 print(resutl)
@@ -1677,6 +1679,28 @@ class ProfileViewController: UIViewController,
                 
             })
         }
+
+        
+        //SAVE SPOUSE SON
+        
+        queue.tasks +=~ { resutl, next in
+            
+            var sonSpouse = [GamvesParseUser]()
+            
+            sonSpouse.append(self.sonGamves)
+            sonSpouse.append(self.spouseGamves)
+            
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonSpouse, chatId: self.sonSpouseChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                
+                print("done sonSpouse")
+                print(resutl)
+                if (resutl != nil) {
+                    next(nil)
+                }
+                
+            })
+        }
+
         
         //SAVE FAMILY
         
@@ -1708,99 +1732,6 @@ class ProfileViewController: UIViewController,
         
         
     }
-    
-
-    
-    /*func saveUserImages(id: Int, completionHandler : @escaping (_ resutl:Bool) -> ())
-    {
-        
-        var _user = PFUser()
-        var image = UIImage()
-        var imageSmall = UIImage()
-        
-        var username = String()
-        var password = String()
-        
-        switch id
-        {
-            
-            case 0:
-                
-                _user = self.you
-                
-                image = self.yourPhotoImage
-                imageSmall = self.yourPhotoImageSmall
-                
-                username = Global.defaults.string(forKey: "your_email")!
-                password = Global.defaults.string(forKey: "your_password")!
-                
-                break
-                
-             case 1:
-                
-                _user = self.son
-                
-                image = self.sonPhotoImage
-                imageSmall = self.sonPhotoImageSmall
-                
-                username = Global.defaults.string(forKey: "son_username")!
-                password = Global.defaults.string(forKey: "son_password")!
-                
-                break
-                
-            case 2:
-                
-                _user = self.spouse
-                
-                image = self.spousePhotoImage
-                imageSmall = self.spousePhotoImageSmall
-                
-                username = Global.defaults.string(forKey: "spouse_email")!
-                password = Global.defaults.string(forKey: "spouse_password")!
-                
-                break
-                
-            default:
-                break
-        }
-        
-        var name = _user["firstName"] as! String
-        name = name.lowercased()
-        
-        let pfimage = PFFile(name: name, data: UIImageJPEGRepresentation(image, 1.0)!)
-        _user.setObject(pfimage!, forKey: "picture")
-        
-        let usernamesmall = "\(name)_small"
-        
-        let pfimagesmall = PFFile(name: usernamesmall, data: UIImageJPEGRepresentation(imageSmall, 1.0)!)
-        _user.setObject(pfimagesmall!, forKey: "pictureSmall")
-        
-        self.logOutLogIn(username: username, password: password, completionHandler: { ( user ) -> () in
-            
-            print(_user.username)
-            
-            _user.saveInBackground { (resutl, error) in
-                
-                if error != nil
-                {
-                    
-                    print(error)
-                    
-                    completionHandler(false)
-                }
-                else {
-                    
-                    print(resutl)
-                    
-                    completionHandler(true)
-                    
-                }
-            }
-            
-        })  
-        
-        
-    } */
 
    
     func handlePhotoImageView(sender: UITapGestureRecognizer)
@@ -1891,8 +1822,6 @@ class ProfileViewController: UIViewController,
         }
         
         navigationController?.popViewController(animated: true)
-        
-    
     }
 
     

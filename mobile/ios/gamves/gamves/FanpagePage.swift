@@ -325,7 +325,7 @@ class FanpagePage: UIViewController,
                             video.description               = qvideoinfo["description"] as! String
                             video.thumbnail                 = videothum
                             video.categoryName              = qvideoinfo["categoryName"] as! String
-                            video.videoId                   = qvideoinfo["videoId"] as! String
+                            video.videoId                   = qvideoinfo["videoId"] as! Int
                             video.s3_source                 = qvideoinfo["s3_source"] as! String
                             video.ytb_thumbnail_source      = qvideoinfo["ytb_thumbnail_source"] as! String
                             video.ytb_videoId               = qvideoinfo["ytb_videoId"] as! String

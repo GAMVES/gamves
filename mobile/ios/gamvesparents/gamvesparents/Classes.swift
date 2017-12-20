@@ -181,8 +181,8 @@ class GamvesFamily
     var objectId = String()
     var school = String()
     
-    var sonChatId = Int()
-    var spouseChatId = Int()
+    var sonRegisterChatId = Int()
+    var spouseRegisterChatId = Int()
     var familyChatId = Int()
     
     var familyImage = UIImage()

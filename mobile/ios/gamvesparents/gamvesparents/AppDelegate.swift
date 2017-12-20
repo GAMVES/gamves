@@ -282,27 +282,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
             
-            let chatFeddsCount = chatfeeds?.count
+            if chatfeeds != nil {
             
-            print(chatFeddsCount)
-            
-            if chatFeddsCount! > 0
-            {
-                let chatfeedsCount =  chatfeeds?.count
+                let chatFeddsCount = chatfeeds?.count
                 
-                print(chatfeedsCount)
+                print(chatFeddsCount)
                 
-                if chatfeedsCount! > 0
+                if chatFeddsCount! > 0
                 {
+                    let chatfeedsCount =  chatfeeds?.count
                     
-                    for feed in chatfeeds!
+                    print(chatfeedsCount)
+                    
+                    if chatfeedsCount! > 0
                     {
-                        let chatId:Int = feed["chatId"] as! Int
                         
-                        let chatIdStr = String(chatId) as String
-                        
-                        PFPush.subscribeToChannel(inBackground: chatIdStr)
-                        
+                        for feed in chatfeeds!
+                        {
+                            let chatId:Int = feed["chatId"] as! Int
+                            
+                            let chatIdStr = String(chatId) as String
+                            
+                            PFPush.subscribeToChannel(inBackground: chatIdStr)
+                            
+                        }
                     }
                 }
             }
