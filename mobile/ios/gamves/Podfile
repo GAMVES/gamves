@@ -27,4 +27,8 @@ target 'gamves' do
   
   pod 'YouTubePlayer'
   
+  pod 'AACarousel'
+  
+  pod 'KenBurns'
+  
 end

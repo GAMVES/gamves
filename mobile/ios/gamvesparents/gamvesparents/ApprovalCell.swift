@@ -93,7 +93,7 @@ class ApprovalCell: BaseCell {
         
         containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: nameLabel)
         
-        containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, statusLabel)
+        containerView.addConstraintsWithFormat("V:|[v0]-10-[v1(24)]|", views: nameLabel, statusLabel)
         
         containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: statusLabel)
         

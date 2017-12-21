@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import KenBurns
 
 class CategoryPage: UIViewController, 
 UICollectionViewDataSource, 
@@ -24,12 +25,12 @@ UICollectionViewDelegateFlowLayout {
         return view
     }()
 
-    let coverImageView: CustomImageView = {
-        let imageView = CustomImageView()
+    var coverImageView: KenBurnsImageView = {
+        let imageView = KenBurnsImageView()
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-
+    
     lazy var arrowBackButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(named: "arrow_back_white")
@@ -65,8 +66,8 @@ UICollectionViewDelegateFlowLayout {
     let categoryName: UILabel = {
         let label = UILabel()
         //label.text = "Setting"
-        label.sizeToFit()
-        label.font = UIFont.systemFont(ofSize: 20)
+        label.sizeToFit()        
+        label.font = UIFont.boldSystemFont(ofSize: 25)
         label.textColor = UIColor.white
         label.numberOfLines = 2
         label.adjustsFontSizeToFitWidth = true
@@ -108,14 +109,15 @@ UICollectionViewDelegateFlowLayout {
         self.view.addSubview(self.coverContainerView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.coverContainerView)
         self.view.addConstraintsWithFormat("V:|[v0(coverHeight)]|", views: self.coverContainerView, metrics: metricsCoverView)
-
-        self.coverContainerView.addSubview(self.coverImageView)
-        self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.coverImageView)
-        self.coverContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.coverImageView)        
            
         self.coverContainerView.addSubview(self.arrowBackButton)
         self.coverContainerView.addSubview(self.separatorButtonsView)
         self.coverContainerView.addSubview(self.favoriteButton)
+        
+        self.coverContainerView.addSubview(self.coverImageView)
+        self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.coverImageView)
+        self.coverContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.coverImageView)
+        
 
         //horizontal constraints
         self.coverContainerView.addConstraintsWithFormat("H:|-10-[v0(60)]-10-[v1]-10-[v2(60)]-10-|", views: arrowBackButton, separatorButtonsView, favoriteButton)
@@ -142,6 +144,13 @@ UICollectionViewDelegateFlowLayout {
         self.view.addConstraintsWithFormat("V:|-coverHeight-[v0]|", views: self.collectionView,metrics: metricsCoverView)
         
     }
+    
+    func newKenBurnsImageView(image: UIImage) {
+        self.coverImageView.setImage(image)
+        self.coverImageView.zoomIntensity = 1.5
+        self.coverImageView.setDuration(min: 5, max: 13)
+        self.coverImageView.startAnimating()
+    }
 
     fileprivate func setupGradientLayer() {
         let gradientLayer = CAGradientLayer()
@@ -154,13 +163,20 @@ UICollectionViewDelegateFlowLayout {
         self.coverContainerView.bringSubview(toFront: self.arrowBackButton)
         self.coverContainerView.bringSubview(toFront: self.favoriteButton)
     }
+    
+    func setKurnImage(image: UIImage) {
+        self.newKenBurnsImageView(image:image)
+    }
 
     func setCategoryData()
     {
         self.fanpagesGamves.removeAll()        
         self.fanpagesGamves = categoryGamves.fanpages
-        self.categoryName.text = categoryGamves.name        
-        self.coverImageView.image = categoryGamves.cover_image
+        self.categoryName.text = categoryGamves.name
+        //self.coverImageView.image = categoryGamves.cover_image
+        
+        self.newKenBurnsImageView(image: categoryGamves.cover_image)
+        
         self.collectionView.reloadData()
         if self.coverContainerView.tag != 1
         {

@@ -150,6 +150,8 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
                         
                             let category = viewController as! CategoryPage
                         
+                        
+                        
                             category.categoryGamves = data as! CategoryGamves
                         
                             category.setCategoryData()
