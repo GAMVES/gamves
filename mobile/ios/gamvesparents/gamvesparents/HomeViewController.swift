@@ -163,6 +163,10 @@ class HomeViewController: UIViewController,
     var _location = UserStatistics()
     var _time = UserStatistics()
     var _approval = UserStatistics()
+    var _activity = UserStatistics()
+    var _history = UserStatistics()
+
+    var photoCornerRadius = Int()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -188,15 +192,16 @@ class HomeViewController: UIViewController,
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
         self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)        
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)        
         
         let width:Int = Int(view.frame.size.width)
         
         let topPadding = 40
         let midPadding =  topPadding / 2
         let smallPadding =  midPadding / 2
-        let photoSize = width / 4
-        let padding = photoSize / 4        
+        let photoSize = width / 5
+        let padding = (width - (photoSize * 3))  / 4
+        self.photoCornerRadius = photoSize / 2
 
         self.metricsHome["topPadding"]      = topPadding
         self.metricsHome["midPadding"]      = midPadding
@@ -205,7 +210,7 @@ class HomeViewController: UIViewController,
         self.metricsHome["padding"]         = padding    
 
         self.scrollView.addConstraintsWithFormat(
-         "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-midPadding-[v2(midPadding)]-20-[v3(220)][v4(30)]|", views:
+         "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-50-[v2(midPadding)]-10-[v3(300)][v4(30)]|", views:
          self.familyLabel,
          self.photosContainerView,
          self.sonLabel,
@@ -293,6 +298,16 @@ class HomeViewController: UIViewController,
         _approval.id = 3
         _approval.icon = UIImage(named: "check_circle")!
         self.userStatistics.append(_approval)        
+
+        _activity.desc = "Activity"
+        _activity.id = 4
+        _activity.icon = UIImage(named: "view_activity")!
+        self.userStatistics.append(_activity)  
+
+        _history.desc = "History"
+        _history.id = 5
+        _history.icon = UIImage(named: "history")!
+        self.userStatistics.append(_history)        
 
     }
  
@@ -397,7 +412,7 @@ class HomeViewController: UIViewController,
             {
                 self.sonLabel.text = Global.userDictionary[sonId]?.firstName
                 self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
-                Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
+                Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)
             }
         }
         
@@ -408,12 +423,12 @@ class HomeViewController: UIViewController,
             if Global.userDictionary[spouseId] != nil
             {
                 self.spousePhotoImageView.image = Global.userDictionary[spouseId]?.avatar
-                Global.setRoundedImage(image: self.spousePhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
+                Global.setRoundedImage(image: self.spousePhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)
             }
         }
         
         self.groupPhotoImageView.image = Global.gamvesFamily.familyImage //self.generateGroupImage() 
-        Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
+        Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)
         
         self.activityIndicatorView?.stopAnimating()
         
