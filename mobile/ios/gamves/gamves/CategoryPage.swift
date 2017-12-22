@@ -143,6 +143,8 @@ UICollectionViewDelegateFlowLayout {
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)           
         self.view.addConstraintsWithFormat("V:|-coverHeight-[v0]|", views: self.collectionView,metrics: metricsCoverView)
         
+        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
+        
     }
     
     func newKenBurnsImageView(image: UIImage) {

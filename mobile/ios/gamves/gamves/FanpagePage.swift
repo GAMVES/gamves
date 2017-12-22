@@ -163,6 +163,8 @@ class FanpagePage: UIViewController,
         
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)
        
+        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
+        
         self.view.addSubview(self.videosContainerView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.videosContainerView)
         

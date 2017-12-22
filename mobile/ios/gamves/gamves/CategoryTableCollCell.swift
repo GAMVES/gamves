@@ -77,6 +77,8 @@ extension CategoryTableCollCell {
         
         //collectionView.delegate = delegate
         
+        collectionView.backgroundColor = UIColor.gamvesBackgoundColor
+        
         collectionView.reloadData()
     }
     

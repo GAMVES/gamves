@@ -59,6 +59,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         self.tableView.register(CategoryTableViewSectionCell.self, forCellReuseIdentifier: categorySectionCellId)
         self.tableView.register(CategoryTableCollCell.self, forCellReuseIdentifier: categoryCollectionCellId)
         
+        self.tableView.backgroundColor = UIColor.gamvesBackgoundColor
+        
         self.loadCategories()
     }   
       
