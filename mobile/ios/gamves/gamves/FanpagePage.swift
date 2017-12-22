@@ -9,11 +9,14 @@
 import UIKit
 import Parse
 import NVActivityIndicatorView
+import KenBurns
+import AACarousel
 
 class FanpagePage: UIViewController,
     UICollectionViewDataSource, 
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout
+    UICollectionViewDelegateFlowLayout,
+    AACarouselDelegate
 {
     
     var activityVideoView: NVActivityIndicatorView!
@@ -32,14 +35,11 @@ class FanpagePage: UIViewController,
         return view
     }()
 
-    lazy var imageCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.white
-        cv.dataSource = self
-        cv.delegate = self
-        return cv
-    }()
+    var coverImageView: KenBurnsImageView = {
+        let imageView = KenBurnsImageView()
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()    
 
     lazy var arrowBackButton: UIButton = {
         let button = UIButton(type: .system)
@@ -91,6 +91,16 @@ class FanpagePage: UIViewController,
         return view
     }()
 
+    lazy var imageCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = UIColor.white
+        cv.dataSource = self
+        cv.delegate = self
+        return cv
+    }()   
+
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -100,6 +110,11 @@ class FanpagePage: UIViewController,
         return cv
     }()
 
+    var carouselView: AACarousel = {
+        let iconView = AACarousel()
+        return iconView
+    }()
+    
     func handleBackButton() 
     {
         print("hola") 
@@ -123,9 +138,9 @@ class FanpagePage: UIViewController,
         self.view.addSubview(self.coverContainerView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.coverContainerView)
         
-        self.coverContainerView.addSubview(self.imageCollectionView)
-        self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.imageCollectionView)
-        self.coverContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.imageCollectionView)
+        self.coverContainerView.addSubview(self.coverImageView)
+        self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.coverImageView)
+        self.coverContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.coverImageView)
     
         self.coverContainerView.addSubview(self.arrowBackButton)
         self.coverContainerView.addSubview(self.separatorButtonsView)
@@ -156,20 +171,62 @@ class FanpagePage: UIViewController,
         
         self.videosContainerView.addSubview(self.collectionView)
         self.videosContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
-        self.videosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
+        self.videosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)       
         
-        let imagesHeight = self.view.frame.width * 4 / 16
+        self.view.addSubview(self.imageCollectionView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.imageCollectionView)
         
-        let imagesMetrics = ["imagesHeight":imagesHeight]
-        
-        self.view.addConstraintsWithFormat("V:|[v0(imagesHeight)][v1]|", views: self.coverContainerView, self.videosContainerView, metrics: imagesMetrics)
+        self.imageCollectionView.backgroundColor = UIColor.gamvesBlackColor
+
+        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(80)][v2]|", views: 
+            self.coverContainerView,
+            self.imageCollectionView, 
+            self.videosContainerView)
         
         self.imageCollectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
         
         self.activityVideoView = Global.setActivityIndicator(container: self.videosContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
         
-         self.activityVideoView.startAnimating()
-    
+        let widthImages = view.frame.width
+        let heightImages = (view.frame.width - 16 - 16) * 9 / 16
+        
+        let padding = (view.frame.height - heightImages) / 2
+        
+        let metricsImages = [
+            "widthImages":widthImages,
+            "heightImages":heightImages,
+            "padding" : padding
+        ]
+        
+        self.view.addSubview(self.carouselView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.carouselView)
+        self.view.addConstraintsWithFormat("V:|-padding-[v0(heightImages)]-padding-|", views: self.carouselView, metrics: metricsImages)
+        self.carouselView.isHidden = true
+        
+        self.activityVideoView.startAnimating()
+        
+        
+    }
+
+
+     func newKenBurnsImageView(image: UIImage) {
+        self.coverImageView.setImage(image)
+        self.coverImageView.zoomIntensity = 1.5
+        self.coverImageView.setDuration(min: 5, max: 13)
+        self.coverImageView.startAnimating()
+    }
+
+    fileprivate func setupGradientLayer() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = self.coverContainerView.frame
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.gamvesBlackColor.cgColor]
+        gradientLayer.locations = [0.2, 1.2]
+        self.coverContainerView.tag = 1
+        self.coverContainerView.layer.addSublayer(gradientLayer)
+        self.coverContainerView.bringSubview(toFront: self.coverImageView)
+        self.coverContainerView.bringSubview(toFront: self.separatorButtonsView)
+        self.coverContainerView.bringSubview(toFront: self.arrowBackButton)
+        self.coverContainerView.bringSubview(toFront: self.favoriteButton)        
     }
     
     func setFanpageGamvesData(data: FanpageGamves)
@@ -187,11 +244,30 @@ class FanpagePage: UIViewController,
             self.fanpageImages.shuffled
             
             print(self.fanpageImages.count)
+
+            self.newKenBurnsImageView(image: self.fanpageImages[0].cover_image)
+            
+            var titleImageArray = [String]()
+            var sourceArray = [String]()
+            
+            for gamvesImage in self.fanpageImages {
+                
+                titleImageArray.append(gamvesImage.name)
+                sourceArray.append(gamvesImage.source)
+            }
+            
+            self.carouselView.delegate = self
+            
+            self.carouselView.setCarouselData(paths: sourceArray,  describedTitle: titleImageArray, isAutoScroll: true, timer: 5.0, defaultImage: "defaultImage")
+            
+            //optional methods
+            self.carouselView.setCarouselOpaque(layer: false, describedTitle: false, pageIndicator: false)
+            
+            self.carouselView.setCarouselLayout(displayStyle: 0, pageIndicatorPositon: 5, pageIndicatorColor: nil, describedTitleColor: nil, layerColor: nil)
             
             self.imageCollectionView.reloadData()
             
             self.startTimer()
-            
         }
     }
     
@@ -221,7 +297,7 @@ class FanpagePage: UIViewController,
     
     func autoScrollImageSlider() {
         
-        DispatchQueue.global(qos: .background).async {
+        /*DispatchQueue.global(qos: .background).async {
             
             DispatchQueue.main.async {
                 
@@ -240,7 +316,7 @@ class FanpagePage: UIViewController,
                     
                 }
             }
-        }
+        }*/
     }
     
     func btnLeftArrowAction() {
@@ -260,13 +336,6 @@ class FanpagePage: UIViewController,
         self.imageCollectionView.scrollRectToVisible(frame, animated: true)
     }
     
-    fileprivate func setupGradientLayer() {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = self.coverContainerView.frame
-        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
-        gradientLayer.locations = [0.7, 1.2]
-        self.coverContainerView.layer.addSublayer(gradientLayer)
-    }
     
     var loaded = Bool()
 
@@ -368,6 +437,8 @@ class FanpagePage: UIViewController,
                                         {
                                             Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
                                             
+                                                self.categoryName.text = video.categoryName
+                                                
                                                 self.collectionView.reloadData()
                                             })
                                         }
@@ -491,18 +562,38 @@ class FanpagePage: UIViewController,
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout:
         UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        var height = CGFloat()
+        var size = CGSize()
         
         if collectionView == self.imageCollectionView
         {
-            height = self.coverContainerView.frame.height
+            
+            size = CGSize(width: 160, height: 80)
             
         } else if collectionView == self.collectionView
         {
-            height = (view.frame.width - 16 - 16) * 9 / 16
+            let height = (view.frame.width - 16 - 16) * 9 / 16
+            
+            size = CGSize(width: view.frame.width, height: height + 16 + 88)
         }
         
-        return CGSize(width: view.frame.width, height: height + 16 + 88)
+        return size //CGSize(width: view.frame.width, height: height + 16 + 88)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        
+        var spacing = CGFloat()
+        
+        if collectionView == self.imageCollectionView
+        {
+            spacing = 5
+            
+        } else if collectionView == self.collectionView
+        {
+            spacing = 0
+        }
+        
+        return spacing
+        
     }
     
    
@@ -511,6 +602,8 @@ class FanpagePage: UIViewController,
     
         if collectionView == self.imageCollectionView
         {
+            self.carouselView.isHidden = false
+            carouselView.startScrollImageView()
             
         } else if collectionView == self.collectionView
         {
@@ -525,6 +618,20 @@ class FanpagePage: UIViewController,
             videoLauncher.showVideoPlayer(videoGamves: video)
             
         }
+        
+    }
+    
+    func downloadImages(_ url:String, _ index:Int) {
+        
+        self.carouselView.images[index] = self.fanpageImages[index].cover_image
+        
+    }
+    
+    func didSelectCarouselView(_ view:AACarousel, _ index:Int) {
+        
+    }
+    
+    func callBackFirstDisplayView(_ imageView:UIImageView, _ url:[String], _ index:Int){
         
     }
 

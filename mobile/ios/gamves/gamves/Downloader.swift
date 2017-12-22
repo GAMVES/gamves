@@ -63,10 +63,12 @@ class Downloader: NSObject
                                 let id = fanpageAlbum.objectId as! String
                                 image.objectId = id
                                 
-                                //let name = fanpageAlbum["name"] as! String
-                                //image.name = name
+                                let name = fanpageAlbum["name"] as! String
+                                image.name = name
                                 
                                 let coverFile = fanpageAlbum["cover"] as! PFFile
+                                
+                                image.source = coverFile.url!
                                 
                                 let catPictureURL = URL(string: coverFile.url!)!
                                 

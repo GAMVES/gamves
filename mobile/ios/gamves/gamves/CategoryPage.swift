@@ -155,7 +155,7 @@ UICollectionViewDelegateFlowLayout {
     fileprivate func setupGradientLayer() {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = self.coverContainerView.frame
-        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.gamvesBlackColor.cgColor]
         gradientLayer.locations = [0.2, 1.2]
         self.coverContainerView.tag = 1
         self.coverContainerView.layer.addSublayer(gradientLayer)
