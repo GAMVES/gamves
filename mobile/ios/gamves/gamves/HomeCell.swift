@@ -70,6 +70,7 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
         //Floaty.global.rtlMode = true
         
         let floaty = Floaty()
+        
         floaty.addItem(title: "New Video", handler: { item in
 
             if self.homeController != nil
@@ -160,9 +161,12 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
                     {
                         print("fanpage")
                         
-                        let fanpagePage = viewController as! FanpagePage
+                        var fanpagePage = viewController as! FanpagePage
                         
-                        let fanpage = data as! FanpageGamves
+                        var fanpage = data as! FanpageGamves
+                        
+                        //var name = fanpage.categoryName
+                        //fanpagePage.categoryName = name
                         
                         print(fanpage.fanpageObj?.objectId)
                         

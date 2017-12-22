@@ -370,6 +370,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                             
                             fan.fanpageObj = fpObj
                             fan.categoryObj = cat.cateobj
+                            fan.categoryName = fpObj["categoryName"] as! String
+                            
                             let fanpageId = fpObj["fanpageId"] as! Int
                             let cover = fpObj["pageCover"] as! PFFile
                             let name  = fpObj["pageName"] as! String

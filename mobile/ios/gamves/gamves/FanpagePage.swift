@@ -21,7 +21,7 @@ class FanpagePage: UIViewController,
     
     var activityVideoView: NVActivityIndicatorView!
     
-    weak var delegate:CellDelegate?
+    weak var delegate:CellDelegate?    
     
     var fanpageGamves  = FanpageGamves()
     var videosGamves  = [VideoGamves]()
@@ -73,7 +73,7 @@ class FanpagePage: UIViewController,
         return view
     }()
 
-    let categoryName: UILabel = {
+    var categoryName: UILabel = {
         let label = UILabel()
         //label.text = "Setting"
         label.sizeToFit()
@@ -154,16 +154,13 @@ class FanpagePage: UIViewController,
     
         self.coverContainerView.addSubview(self.separatorCenterView)        
         self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.separatorCenterView)           
-        self.coverContainerView.addConstraintsWithFormat("V:|-60-[v0(50)]|", views: self.separatorCenterView)                          
+        self.coverContainerView.addConstraintsWithFormat("V:|-60-[v0(50)]|", views: self.separatorCenterView)                                  
 
-        //name = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.width - 80, height: self.view.frame.height))        
+        self.separatorButtonsView.addSubview(self.categoryName)
+        self.separatorButtonsView.addConstraintsWithFormat("H:|[v0]|", views: self.categoryName)
+        self.separatorButtonsView.addConstraintsWithFormat("V:|[v0]|", views: self.categoryName)    
 
-        self.coverContainerView.addSubview(self.categoryName)        
-        self.coverContainerView.addConstraintsWithFormat("H:|-100-[v0]|", views: self.categoryName)           
-        self.coverContainerView.addConstraintsWithFormat("V:|-100-[v0(50)]|", views: self.categoryName)                          
-    
-        self.setupGradientLayer() 
-
+        
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)
        
         self.view.addSubview(self.videosContainerView)
@@ -203,8 +200,7 @@ class FanpagePage: UIViewController,
         self.view.addConstraintsWithFormat("V:|-padding-[v0(heightImages)]-padding-|", views: self.carouselView, metrics: metricsImages)
         self.carouselView.isHidden = true
         
-        self.activityVideoView.startAnimating()
-        
+        self.activityVideoView.startAnimating()        
         
     }
 
@@ -223,15 +219,19 @@ class FanpagePage: UIViewController,
         gradientLayer.locations = [0.2, 1.2]
         self.coverContainerView.tag = 1
         self.coverContainerView.layer.addSublayer(gradientLayer)
-        self.coverContainerView.bringSubview(toFront: self.coverImageView)
         self.coverContainerView.bringSubview(toFront: self.separatorButtonsView)
         self.coverContainerView.bringSubview(toFront: self.arrowBackButton)
-        self.coverContainerView.bringSubview(toFront: self.favoriteButton)        
+        self.coverContainerView.bringSubview(toFront: self.favoriteButton)    
+        self.coverContainerView.bringSubview(toFront: self.favoriteButton)
     }
     
     func setFanpageGamvesData(data: FanpageGamves)
     {
         self.fanpageGamves = data as FanpageGamves
+        
+        print(data.categoryName)
+
+        self.categoryName.text = data.categoryName
         
         let fanpageId = data.fanpageObj?["fanpageId"] as! Int
         
@@ -266,6 +266,10 @@ class FanpagePage: UIViewController,
             self.carouselView.setCarouselLayout(displayStyle: 0, pageIndicatorPositon: 5, pageIndicatorColor: nil, describedTitleColor: nil, layerColor: nil)
             
             self.imageCollectionView.reloadData()
+
+            if self.coverContainerView.tag != 1 {
+                self.setupGradientLayer()
+            }
             
             self.startTimer()
         }
@@ -435,9 +439,8 @@ class FanpagePage: UIViewController,
                                         
                                         for user in users!
                                         {
-                                            Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
-                                            
-                                                self.categoryName.text = video.categoryName
+                                            Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
+                                                
                                                 
                                                 self.collectionView.reloadData()
                                             })
