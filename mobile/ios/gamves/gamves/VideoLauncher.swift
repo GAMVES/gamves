@@ -556,7 +556,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
         if (self.infoView != nil)
         {
             self.infoView.isHidden = true
-            self.chatView.dismissKeyboard()
+            //self.chatView.dismissKeyboard()
         }
         
         let keyHeight = self.keyWindoHeight

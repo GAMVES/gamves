@@ -135,6 +135,8 @@ class ChatView: UIView,
         return button
     }()
     
+    var tabGesture = UITapGestureRecognizer()
+    
     init(frame: CGRect, isVideo:Bool) {
         super.init(frame: frame)
         
@@ -202,10 +204,13 @@ class ChatView: UIView,
         self.setupInputComponents()
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         //Looks for single or multiple taps.
-        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        //self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        
+        self.tabGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         
         self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
         
@@ -213,12 +218,6 @@ class ChatView: UIView,
         self.collectionView.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
         
     }
-
-    func dismissKeyboard()
-    {
-        self.endEditing(true)
-    }
-    
 
     func setParams(parameters: [String: Any?])
     {
@@ -931,6 +930,9 @@ class ChatView: UIView,
                 })
                 
                 
+                self.addGestureRecognizer(self.tabGesture)
+                
+                
             } else if notification.name == NSNotification.Name.UIKeyboardWillHide
             {
                 
@@ -949,9 +951,20 @@ class ChatView: UIView,
                     self.scrollToLast()
                 
                 })
+                
+                self.removeGestureRecognizer(self.tabGesture)
+                
+                
             }
         }
     }
+    
+    func dismissKeyboard() {
+    
+        self.endEditing(true)
+     
+    }
+
     
     
     func clearBargesForChatId()
