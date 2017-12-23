@@ -32,7 +32,9 @@ class ChatView: UIView,
     
     var activityView: NVActivityIndicatorView!
 
-    let liveQueryClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
+    let chatClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
+    let feedClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
+    let onlineClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
     
     private var chatSubscription: Subscription<PFObject>!
     private var feedSubscription: Subscription<PFObject>!
@@ -177,16 +179,21 @@ class ChatView: UIView,
         
         self.addConstraintsWithFormat("H:|[v0]|", views: self.messageInputContainerView)
         
-        let editSize = 48
-        let metricsMessageView = ["editSize": editSize]
+        let editSize:CGFloat = 48
+        
+        var height = self.frame.height
+        let chatHeightVideo = height - (30 + editSize)
+        let chatHeight = height - editSize
+        
+        let metricsMessageView = ["editSize" : editSize, "chatHeightVideo" : chatHeightVideo, "chatHeight" : chatHeight]
         
         if isVideo
         {
             
-            self.addConstraintsWithFormat("V:|[v0(30)][v1][v2(editSize)]|", views: self.titleContainerView, self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
+            self.addConstraintsWithFormat("V:|[v0(30)][v1(chatHeightVideo)][v2(editSize)]|", views: self.titleContainerView, self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
         } else
         {
-            self.addConstraintsWithFormat("V:|-3-[v0][v1(editSize)]|", views: self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
+            self.addConstraintsWithFormat("V:|-3-[v0(chatHeight)][v1(editSize)]|", views: self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
         }
         
         self.chatHolderView.addSubview(self.chatImageView)
@@ -207,13 +214,9 @@ class ChatView: UIView,
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        //Looks for single or multiple taps.
-        //self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
-        
         self.tabGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         
         self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
-        
         
         self.collectionView.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
         
@@ -465,7 +468,7 @@ class ChatView: UIView,
         
         let videoQuery = PFQuery(className: "ChatVideo").whereKey("chatId", equalTo: self.chatId)
         
-        self.chatSubscription = liveQueryClient.subscribe(videoQuery).handle(Event.created) { _, chatMessage in
+        self.chatSubscription = chatClient.subscribe(videoQuery).handle(Event.created) { _, chatMessage in
             
             self.updateMessageFromServer(chatMessage: chatMessage)
             
@@ -475,12 +478,10 @@ class ChatView: UIView,
         
         let feedQuery = PFQuery(className: "ChatFeed").whereKey("chatId", equalTo: self.chatId)
         
-        self.feedSubscription = liveQueryClient.subscribe(feedQuery).handle(Event.created) { _, chatMessage in
+        self.feedSubscription = feedClient.subscribe(feedQuery).handle(Event.created) { _, chatMessage in
             
             self.clearBargesForChatId()
-            
         }
-        
     }
     
     func handleSend()
@@ -687,7 +688,7 @@ class ChatView: UIView,
         
         let onlineQuery = PFQuery(className: "UserOnline").whereKey("userId", equalTo: userId)
         
-        onlineSubscription = liveQueryClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
+        onlineSubscription = onlineClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
             
             self.changeSingleUserStatus(onlineMessage:onlineMessage)
         }
@@ -762,40 +763,35 @@ class ChatView: UIView,
             
             let queryVideo = PFQuery(className:"Videos")
             
-            let videoId = String(self.chatId)
+            let videoId = self.chatId
             
             print(videoId)
             
             queryVideo.whereKey("videoId", equalTo: videoId)
             
-            queryVideo.findObjectsInBackground { (videos, error) in
+            queryVideo.getFirstObjectInBackground(block: { (video, error) in
                 
                 if error != nil
                 {
-                    print("error")
+                    print(error)
                     
                     completionHandler(false)
                     
                 } else {
                     
-                    if let videos = videos
-                    {
+                    let description = video?["description"] as! String
+                    
+                    self.chatFeed["room"] = description
+                    
+                    self.saveChatFeed(file: groupImageFile, completionHandlerSave: { ( result:Bool ) -> () in
                         
-                        for video in videos
-                        {
-                            let description = video["description"] as! String
-                            
-                            self.chatFeed["room"] = description
-                            
-                            self.saveChatFeed(file: groupImageFile, completionHandlerSave: { ( result:Bool ) -> () in
-                                
-                                completionHandler(result)
-                                
-                            })
-                        }
-                    }
+                        completionHandler(result)
+                        
+                    })
                 }
-            }
+                
+            })
+            
             
         } else
         {
