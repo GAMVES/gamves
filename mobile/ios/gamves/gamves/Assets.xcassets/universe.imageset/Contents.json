@@ -2,17 +2,15 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "ic_feedback.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "ic_feedback_2x.png",
+      "filename" : "universe-1566159_960_720.jpg",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "ic_feedback_3x.png",
       "scale" : "3x"
     }
   ],

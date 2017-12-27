@@ -37,7 +37,7 @@
 		829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829F011A1FC3261500B8F2BD /* HomeCollectionViewCell.swift */; };
 		82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7EB7C1FAB6FA700C61A6B /* LoginViewController.swift */; };
 		82B7EB7F1FAB772600C61A6B /* LoginViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7EB7E1FAB772600C61A6B /* LoginViewController+Extensions.swift */; };
-		82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift */; };
+		82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions.swift */; };
 		82E372251FAFD530000AD7EB /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372241FAFD530000AD7EB /* Globals.swift */; };
 		82E3722B1FAFD698000AD7EB /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E3722A1FAFD698000AD7EB /* Classes.swift */; };
 		82E3722D1FB16109000AD7EB /* SelectContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E3722C1FB16109000AD7EB /* SelectContactViewController.swift */; };
@@ -100,7 +100,7 @@
 		829F011A1FC3261500B8F2BD /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		82B7EB7C1FAB6FA700C61A6B /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		82B7EB7E1FAB772600C61A6B /* LoginViewController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginViewController+Extensions.swift"; sourceTree = "<group>"; };
-		82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProfileViewController+Extensions copy.swift"; sourceTree = "<group>"; };
+		82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProfileViewController+Extensions.swift"; sourceTree = "<group>"; };
 		82E372241FAFD530000AD7EB /* Globals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		82E3722A1FAFD698000AD7EB /* Classes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
 		82E3722C1FB16109000AD7EB /* SelectContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectContactViewController.swift; sourceTree = "<group>"; };
@@ -210,7 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				82E372421FB169D0000AD7EB /* UIImage+Extension.swift */,
-				82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift */,
+				82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions.swift */,
 				C73A31981DA3078D00C86C96 /* UserDefaults+helpers.swift */,
 				82B7EB7E1FAB772600C61A6B /* LoginViewController+Extensions.swift */,
 				8212D7071F7843B600F2A121 /* ImageView+Extensions.swift */,
@@ -490,7 +490,7 @@
 			files = (
 				82E372251FAFD530000AD7EB /* Globals.swift in Sources */,
 				82E3722D1FB16109000AD7EB /* SelectContactViewController.swift in Sources */,
-				82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions copy.swift in Sources */,
+				82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions.swift in Sources */,
 				829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */,
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
 				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
