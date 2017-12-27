@@ -428,7 +428,7 @@ class TakePictures: UIViewController, UIImagePickerControllerDelegate, UIAlertVi
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
-        //self.dismiss()
+        self.dismiss()
         
         let mediaType = info[UIImagePickerControllerMediaType] as! NSString
         
@@ -739,8 +739,12 @@ class TakePictures: UIViewController, UIImagePickerControllerDelegate, UIAlertVi
                     
                     self.delegate?.didPickVideo?(url: outputURL, data: self.videoData, thumbnail: self.thumbnail)
                     
-                    if let navController = self.navigationController {
-                        navController.popViewController(animated: true)
+                    DispatchQueue.main.async() {
+                        
+                        if let navController = self.navigationController {
+                            navController.popViewController(animated: true)
+                        }
+                        
                     }
                     
                 case .failed:
@@ -769,11 +773,10 @@ class TakePictures: UIViewController, UIImagePickerControllerDelegate, UIAlertVi
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image:
         UIImage, editingInfo: [String : AnyObject]?) {
-        //print(self.Tag + "image picker controller")
         
         self.dismiss(animated: true, completion: nil)
-        strongSelf = nil // let me go
         
+        self.strongSelf = nil // let me go
     }
     
 }
@@ -851,7 +854,9 @@ private extension TakePictures {
         let cancel = Strings.Cancel
         let cancelAction = UIAlertAction(title: cancel, style: UIAlertActionStyle.cancel) { (_) -> Void in
 
-            self.dismiss()
+            DispatchQueue.main.async {
+                self.navigationController?.popViewController(animated: true)
+            }
         
         }
     
@@ -861,7 +866,6 @@ private extension TakePictures {
     func dismiss() {
         DispatchQueue.main.async {
             self.dismiss(animated: true, completion: nil)
-            self.navigationController?.popViewController(animated: true)
         }
     }
     

@@ -148,6 +148,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         return view
     }()
 
+    
     //-- youtubeVideoRowView youtube
 
 	let youtubeUrlTextField: UITextField = {
@@ -491,9 +492,9 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         //Looks for single or multiple taps.
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
-        self.generateFileName()
+        print(self.generateFileName())
         
-        self.prepTextFields(inView: [self.view])
+        self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
         
     }
     
@@ -724,6 +725,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
 	func handleSearch() {
         self.type = UploadType.youtube
+        searchController.termToSearch = fanpageTextField.text!
         searchController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
@@ -748,8 +750,11 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         self.videoSelLocalUrl = url
         self.videoSelData = data
         self.videoSelThumbnail = thumbnail
-        self.cameraButton.setImage(thumbnail, for: .normal)
-        //HERE THUMBNAIL
+        
+        DispatchQueue.main.async()
+        {
+            self.cameraButton.setImage(thumbnail, for: .normal)
+        }
         
     }
 
@@ -784,22 +789,33 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
             
             if self.type == UploadType.local {
                 
-                self.uploadToS3(completionHandler: { (s3Url) -> ()? in
+                var json = [String:Any]()
+                
+                self.uploadToS3(completionHandler: { (url) in
                     
-                    self.saveVideo(url: s3Url)
+                    json["downloaded"] = true
+                    json["removed"] = true
+                    json["s3_source"] = url.absoluteString
+                    json["authorized"] = false
+                    
+                    json["fulltitle"] = self.titleTextField.text
+                    json["description"] = self.descriptionTextView.text
+                    
+                    self.saveVideo(json: json)
                     
                 })
+               
                 
             } else if self.type == UploadType.youtube {
              
-                self.saveVideo(url: nil)
+                self.saveYoutubeVideo(url: nil)
                 
             }
             
         }
     }
     
-    func saveVideo(url:URL?) {
+    func saveYoutubeVideo(url:URL?) {
         
         let params = ["videoId":videoId] as [String : Any]
         
@@ -810,112 +826,15 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
                 
                 do {
                     
-                    if let json = result as? [String:Any] {
+                    if var json = result as? [String:Any] {
                         
                         print(json)
+                    
+                        json["downloaded"] = false
+                        json["removed"] = false
+                        json["authorized"] = false
                         
-                        self.videoTitle       = json["fulltitle"] as! String
-                        self.videoDescription = (json["description"] as? String)!
-                        self.thumbnail_url    = (json["thumbnail"] as? String)!
-                        
-                        let upload_date     = json["upload_date"] as? String
-                        let view_count      = json["view_count"] as! Double
-                        let tags            = json["tags"] as! NSArray
-                        let duration        = json["duration"] as! String
-                        let categoriesArray = json["categories"] as! NSArray
-                        let like_count      = json["like_count"] as! Double
-                        
-                        let videoPF: PFObject = PFObject(className: "Videos")
-                        
-                        videoPF["title"] = self.titleTextField.text
-                        
-                        videoPF["description"] = self.descriptionTextView.text
-                        
-                        let videoNumericId = Global.getRandomInt()
-                        
-                        videoPF["videoId"] = videoNumericId as Int
-                        
-                        if url == nil {
-                        
-                            videoPF["downloaded"]   = false
-                            videoPF["removed"]      = false
-                            
-                        } else {
-                            
-                            videoPF["downloaded"]   = true
-                            videoPF["removed"]      = true
-                            videoPF["s3_source"]    = url?.absoluteString
-                            
-                            let filename = "\(self.generateFileName()).png"
-                            
-                            let yourimageSmall = PFFile(name: filename, data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
-                            
-                            videoPF.setObject(yourimageSmall!, forKey: "thumbnail")
-                            
-                        }
-                        
-                        videoPF["authorized"]    = false
-                        
-                        videoPF["categoryName"] = self.category.name
-                        
-                        videoPF["s3_source"]    =  String()
-                        videoPF["ytb_source"]   =  self.video_url
-                        videoPF["ytb_thumbnail_source"] = self.thumbnail_url
-                        videoPF["ytb_videoId"]  = self.videoId
-                        
-                        videoPF["ytb_upload_date"]  = upload_date
-                        videoPF["ytb_view_count"]   = view_count
-                        videoPF["ytb_tags"]         = tags
-                        videoPF["ytb_duration"]     = duration
-                        videoPF["ytb_categories"]   = categoriesArray
-                        videoPF["ytb_like_count"]   = like_count
-                        
-                        videoPF["order"] = -1 //LEAVE TO BACKEND
-                        
-                        let fanpageNumericId = Global.getRandomInt()
-                        videoPF["fanpageId"] = fanpageNumericId
-                        
-                        //videoPF["videoId"] = self.videoId
-                        
-                        videoPF["fanpageObjId"] = self.fanpage.fanpageObj?.objectId
-                        
-                        videoPF["posterId"] = PFUser.current()?.objectId
-                        
-                        let userId = PFUser.current()?.objectId
-                        let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
-                        
-                        videoPF["poster_name"] = name
-                        
-                        print(videoPF)
-                        
-                        videoPF.saveInBackground { (resutl, error) in
-                            
-                            if error == nil
-                            {
-                                
-                                let approvals: PFObject = PFObject(className: "Approvals")
-                                
-                                approvals["videoId"] = videoNumericId
-                                approvals["posterId"] = PFUser.current()?.objectId
-                                let familyId = Global.gamvesFamily.objectId
-                                approvals["familyId"] = familyId
-                                approvals["approved"] = 0
-                                
-                                approvals.saveInBackground { (resutl, error) in
-                                    
-                                    if error == nil {
-                                        
-                                        self.activityIndicatorView?.startAnimating()
-                                        
-                                        self.navigationController?.popToRootViewController(animated: true)
-                                        
-                                        let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
-                                        Global.alertWithTitle(viewController: self, title: "Video Uploaded!", message: message, toFocus: self.categoryTypeTextField)
-                                        
-                                    }
-                                }
-                            }
-                        }
+                        self.saveVideo(json: json)
                     }
                     
                 } catch let err {
@@ -923,27 +842,154 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
                 }
             }
         }
-        
     }
     
-    func generateFileName() -> String?
-    {
+    func saveVideo( json : [String:Any] ) {
         
-        if let userId = PFUser.current()?.objectId {
-            let date = Date()
-            let calendar = Calendar.current
-            let hour = calendar.component(.hour, from: date)
-            let minutes = calendar.component(.minute, from: date)
-            let hm = "\(hour)\(minutes)"
-            let name = "\(userId)_\(hm)"
-            return name
+        self.videoTitle       = json["fulltitle"] as! String
+        //self.videoDescription = (json["description"] as? String)!
+        
+        let videoPF: PFObject = PFObject(className: "Videos")
+        
+        videoPF["title"] = self.titleTextField.text
+        videoPF["description"] = self.descriptionTextView.text
+        
+        let videoNumericId = Global.getRandomInt()
+        
+        videoPF["videoId"] = videoNumericId as Int
+    
+        videoPF["downloaded"]   = json["downloaded"] as! Bool
+        videoPF["removed"]      = json["removed"] as! Bool
+        videoPF["authorized"]    = json["authorized"] as! Bool
+        
+        videoPF["categoryName"] = self.category.name
+        
+        videoPF["order"] = -1 //LEAVE TO BACKEND
+        
+        let fanpageNumericId = Global.getRandomInt()
+        videoPF["fanpageId"] = fanpageNumericId
+        
+        //videoPF["videoId"] = self.videoId
+        
+        videoPF["fanpageObjId"] = self.fanpage.fanpageObj?.objectId
+        
+        videoPF["posterId"] = PFUser.current()?.objectId
+        
+        let userId = PFUser.current()?.objectId
+        let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
+        
+        videoPF["poster_name"] = name
+        
+        print(videoPF)
+        
+        videoPF["s3_source"]    = String()
+        
+        if json["s3_source"] != nil {
+            
+            videoPF["s3_source"] = json["s3_source"]
+            
+            let filename = "\(self.generateFileName()).png"
+            
+            let thumbnail = PFFile(name: filename, data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
+            
+            videoPF.setObject(thumbnail!, forKey: "thumbnail")
+            
+            videoPF["source_type"] = 1
+        
+        } else  {
+            
+            let upload_date     = json["upload_date"] as? String
+            let view_count      = json["view_count"] as! Double
+            let tags            = json["tags"] as! NSArray
+            let duration        = json["duration"] as! String
+            let categoriesArray = json["categories"] as! NSArray
+            let like_count      = json["like_count"] as! Double
+        
+            self.thumbnail_url    = (json["thumbnail"] as? String)!
+            
+            videoPF["ytb_source"]   =  self.video_url
+            videoPF["ytb_thumbnail_source"] = self.thumbnail_url
+            videoPF["ytb_videoId"]  = self.videoId
+            
+            videoPF["ytb_upload_date"]  = upload_date
+            videoPF["ytb_view_count"]   = view_count
+            videoPF["ytb_tags"]         = tags
+            videoPF["ytb_duration"]     = duration
+            videoPF["ytb_categories"]   = categoriesArray
+            videoPF["ytb_like_count"]   = like_count
+            
+            videoPF["source_type"] = 2
+            
+        }
+     
+        videoPF.saveInBackground { (resutl, error) in
+            
+            if error == nil
+            {
+                
+                let approvals: PFObject = PFObject(className: "Approvals")
+                
+                approvals["videoId"] = videoNumericId
+                approvals["posterId"] = PFUser.current()?.objectId
+                let familyId = Global.gamvesFamily.objectId
+                approvals["familyId"] = familyId
+                approvals["approved"] = 0
+                approvals["videoTitle"] = self.videoTitle
+                
+                approvals.saveInBackground { (resutl, error) in
+                    
+                    if error == nil {
+                        
+                        self.activityIndicatorView?.startAnimating()
+                        
+                        let title = "Video Uploaded!"
+                        let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
+                        
+                        let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                        
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                            
+                            self.navigationController?.popToRootViewController(animated: true)
+                            
+                        }))
+                        
+                        
+                    }
+                }
+            }
         }
         
-        return nil
+    }
+    
+    func generateFileName() -> String
+    {
+        var name = String()
+        
+        if let userId = PFUser.current()?.objectId {
+            
+            print(userId)
+            
+            let date = Date()
+            let calendar = Calendar.current
+            
+            let hour = String(calendar.component(.hour, from: date))
+            let minutes = String(calendar.component(.minute, from: date))
+            
+            let hm:String = "\(hour)\(minutes)"
+            
+            print(hm)
+            
+            name = "\(userId)_\(hm)"
+            
+            print(name)
+            
+        }
+        
+        return name
     }
     
     
-    func uploadToS3(completionHandler : @escaping (_ publicUrl : URL) -> ()?) {
+    func uploadToS3(completionHandler : @escaping (_ resutl:URL) -> ()){
         
         let accessKey = "AKIAJP4GPKX77DMBF5AQ"
         let secretKey = "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"
@@ -952,7 +998,6 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         AWSServiceManager.default().defaultServiceConfiguration = configuration
         
         let url = self.videoSelLocalUrl
-        let userId = PFUser.current()?.objectId
         let remoteName = "\(self.generateFileName()).mp4"
         let S3BucketName = "gamves"
         let uploadRequest = AWSS3TransferManagerUploadRequest()!
@@ -973,12 +1018,17 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
             //}
             
             if task.result != nil {
+                
                 let url = AWSS3.default().configuration.endpoint.url
-                let publicURL = url?.appendingPathComponent(uploadRequest.bucket!).appendingPathComponent(uploadRequest.key!)
                 
-                completionHandler(publicURL!)
+                if let publicURL = url?.appendingPathComponent(uploadRequest.bucket!).appendingPathComponent(uploadRequest.key!) {
                 
-                print("Uploaded to:\(publicURL)")
+                    completionHandler(publicURL)
+                    
+                    print("Uploaded to:\(publicURL)")
+                    
+                }
+                
             }
             return nil
             
@@ -1023,7 +1073,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.youtubeUrlTextField)
             
         }
-        else if (self.titleTextField.text?.characters.count)! < 8
+        else if (self.titleTextField.text?.characters.count)! < 1
         {
             errors = true
             message += "The title of the video is empty"

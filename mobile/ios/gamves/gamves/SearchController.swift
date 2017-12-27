@@ -33,6 +33,8 @@ class SearchController: UIViewController,
     UIBarPositioningDelegate     
 {   
 
+    var termToSearch = String()
+    
     var tableView : UITableView = {
         let t = UITableView()
         t.translatesAutoresizingMaskIntoConstraints = false
@@ -105,8 +107,13 @@ class SearchController: UIViewController,
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
-        !self.searchBar.becomeFirstResponder()
-    
+        print(termToSearch)
+        
+        
+        //NOT WORKING 
+        
+        self.searchBar.setText(text: termToSearch)      
+        
     }
     
     func goBack()
@@ -414,6 +421,16 @@ class SearchController: UIViewController,
     }  
     
 
+}
+
+public extension UISearchBar {
+    
+    public func setText(text: String) {
+        let svs = subviews.flatMap { $0.subviews }
+        guard let tf = (svs.filter { $0 is UITextField }).first as? UITextField else { return }
+        tf.text = text
+        tf.becomeFirstResponder()
+    }
 }
 
 
