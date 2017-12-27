@@ -865,18 +865,23 @@ class Global: NSObject
 
         videoGamves.categoryName = video["categoryName"] as! String
         videoGamves.s3_source = video["s3_source"] as! String
-        videoGamves.ytb_source = video["ytb_source"] as! String
-        videoGamves.ytb_thumbnail_source = video["ytb_thumbnail_source"] as! String
         
-        videoGamves.ytb_upload_date = video["ytb_upload_date"] as! String     
-        videoGamves.ytb_view_count = video["ytb_view_count"] as! Int 
+        if video["ytb_source"] != nil {
+        
+            videoGamves.ytb_source = video["ytb_source"] as! String
+            videoGamves.ytb_thumbnail_source = video["ytb_thumbnail_source"] as! String
+            
+            videoGamves.ytb_upload_date = video["ytb_upload_date"] as! String     
+            videoGamves.ytb_view_count = video["ytb_view_count"] as! Int 
 
-        videoGamves.ytb_tags = video["ytb_tags"] as! [String]
-        videoGamves.ytb_duration = video["ytb_duration"] as! String     
-        videoGamves.ytb_categories = video["ytb_categories"] as! [String]
+            videoGamves.ytb_tags = video["ytb_tags"] as! [String]
+            videoGamves.ytb_duration = video["ytb_duration"] as! String     
+            videoGamves.ytb_categories = video["ytb_categories"] as! [String]
 
-        videoGamves.ytb_like_count = video["ytb_like_count"] as! Int
-        videoGamves.fanpageId = video["fanpageId"] as! Int   
+            videoGamves.ytb_like_count = video["ytb_like_count"] as! Int
+        }
+        
+        videoGamves.fanpageId = video["fanpageId"] as! Int
 
         videoGamves.posterId = video["posterId"] as! String    
         videoGamves.videoObj = video

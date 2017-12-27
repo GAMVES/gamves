@@ -606,7 +606,6 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     var duration    = String()
     var categories  = String()
     var like_count  = String()
-
     
     func getVideoDataUser(videoId: String, completionHandler : @escaping (_ resutl:Bool) -> ()){
 
