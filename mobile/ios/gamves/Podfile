@@ -31,4 +31,6 @@ target 'gamves' do
   
   pod 'KenBurns'
   
+  #pod 'ABVideoRangeSlider'
+  
 end

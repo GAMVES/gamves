@@ -103,7 +103,7 @@ class GroupNameViewController: UIViewController,
         
         self.imagePicker.delegate = self
         
-        self.userTextField.delegate = self
+        //self.userTextField.delegate = self
         
         self.view.addSubview(self.newGroupContainerView)
         self.view.addSubview(self.usersContainerView)
@@ -173,11 +173,11 @@ class GroupNameViewController: UIViewController,
         
     }
     
-    override func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         self.userTextField.resignFirstResponder()  //if desired
         
-        self.submitForm()
+        //self.submitForm()
         
         return false
     }
@@ -187,7 +187,7 @@ class GroupNameViewController: UIViewController,
         
         self.activityView.startAnimating()
         
-        self.submitForm()
+        //self.submitForm()
         
         let random = Int()
         

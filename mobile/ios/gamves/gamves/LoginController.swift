@@ -155,7 +155,7 @@ class LoginController: UIViewController {
         
         self.view.addSubview(activityView)
         
-        self.prepTextFields(inView: self.view)
+        self.prepTextFields(inView: [self.view])
 
     }
     
@@ -344,8 +344,8 @@ class LoginController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func submitForm() {
-        super.submitForm()
+    func submitForm() {
+        submitFormEnter()
         // actually submit the form
         print ("Submit")
         
@@ -353,7 +353,7 @@ class LoginController: UIViewController {
         
     }
 
-    override func textFieldDidBeginEditing(_ textField: UITextField) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         
         let editTextPosition = textField.frame.maxY + 100
         
@@ -362,7 +362,7 @@ class LoginController: UIViewController {
         self.scrollView.setContentOffset(CGPoint(x:0, y:editTextPosition), animated: true)
     }
     
-    override func textFieldDidEndEditing(_ textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         
         self.scrollView.setContentOffset(CGPoint(x:0, y:0), animated: true)
     }
