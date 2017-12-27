@@ -292,7 +292,9 @@ document.addEventListener("LoadFanpage", function(event){
           fanpage.set("pageName", fanpageName);
           fanpage.set("pageAbout", $("#edit_about").val());
           fanpage.set("pageIcon", parseFileIcon);
-          fanpage.set("pageCover", parseFileCover);         
+          fanpage.set("pageCover", parseFileCover);
+          fanpage.set("categoryName", categoryName);
+
           var order = $("#edit_order_fanpage").val();          
           fanpage.set("order", parseInt(order));  
 

@@ -11,7 +11,6 @@ require('./users')
 */
 module.exports.app = require('./app')
 
-
 // --
 // Update or create Budges
 
@@ -235,6 +234,65 @@ Parse.Cloud.afterSave("Videos", function(request) {
 
 		//-- Save video relation into fanpage
 
+		saveFapage(fanpageId, function() {
+
+			var queryConfig = new Parse.Query("Config");				   
+		    queryConfig.find({
+		        useMasterKey: true,
+		        success: function(results) {
+
+		        	if( results.length > 0) 
+		        	{
+
+						var configObject = results[0];
+						
+						var serverUrl = configObject.get("server_url");
+						var _appId = configObject.get("app_id");
+						var _mKey = configObject.get("master_key");
+
+						var vId       = request.object.get("ytb_videoId");
+						var pfVideoId = request.object.id;
+					    
+					    Parse.Cloud.httpRequest({
+					      
+					      method: "POST",
+					      url: serverUrl + "jobs/downloader",
+					      headers: {
+						    	"X-Parse-Application-Id": _appId,
+						    	"X-Parse-Master-Key": _mKey,
+						    	"Content-Type": "application/json"
+						  },
+					      body: {
+					        "ytb_videoId": vId,
+					        "objectId": pfVideoId            
+					      },	      
+					      success: function(httpResponse) {          
+					          console.log(httpResponse);			 
+					      },
+					      error: function(httpResponse) {
+					          console.log('Error! ' + httpResponse);
+					      }
+
+					    });
+				    } 
+		        },
+		        error: function(error) {						            
+		            console.log(error);
+		        }
+		    });  
+
+		});
+			
+	
+	} else if (removed && downloaded) {
+
+		saveFapage(fanpageId, function(){});
+
+	}
+
+
+	function saveFapage(request, callback) {
+
 		var query = new Parse.Query("Fanpages");
 		var fanpageId = request.object.get("fanpageObjId");
 	    query.equalTo("objectId", fanpageId);	   
@@ -251,54 +309,8 @@ Parse.Cloud.afterSave("Videos", function(request) {
 		        	videoRelation.add(request.object);		        	
 
 		        	fanpageObject.save(null, { useMasterKey: true,
-                        success: function () {
-
-                        	var queryConfig = new Parse.Query("Config");				   
-						    queryConfig.find({
-						        useMasterKey: true,
-						        success: function(results) {
-
-						        	if( results.length > 0) 
-						        	{
-
-										var configObject = results[0];
-										
-										var serverUrl = configObject.get("server_url");
-										var _appId = configObject.get("app_id");
-										var _mKey = configObject.get("master_key");
-
-										var vId       = request.object.get("ytb_videoId");
-										var pfVideoId = request.object.id;
-									    
-									    Parse.Cloud.httpRequest({
-									      
-									      method: "POST",
-									      url: serverUrl + "jobs/downloader",
-									      headers: {
-										    	"X-Parse-Application-Id": _appId,
-										    	"X-Parse-Master-Key": _mKey,
-										    	"Content-Type": "application/json"
-										  },
-									      body: {
-									        "ytb_videoId": vId,
-									        "objectId": pfVideoId            
-									      },	      
-									      success: function(httpResponse) {          
-									          console.log(httpResponse);			 
-									      },
-									      error: function(httpResponse) {
-									          console.log('Error! ' + httpResponse);
-									      }
-
-									    });
-								    } 
-						        },
-						        error: function(error) {						            
-						            console.log(error);
-						        }
-						    });    
-                        	
-
+                        success: function () {              	                          	
+                        	callback();
                         },
                         error: function (error) {
                             console.log('Error! ' + error.message);
