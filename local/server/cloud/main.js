@@ -208,124 +208,128 @@ Parse.Cloud.afterSave("ChatFeed", function(request) {
 
 Parse.Cloud.afterSave("Videos", function(request) {
 
+	
 	var downloaded = request.object.get("downloaded");
 	var removed = request.object.get("removed");
+	var source_type = request.object.get("source_type");
 
-	if (!removed && downloaded) {
 
-		var ytb_videoId = request.object.get("ytb_videoId");
-		var videoFile = ytb_videoId + ".mp4";
-		var fs = require('fs'); 
-	    fs.unlinkSync(videoFile);
-	    if ( !fs.existsSync(videoFile) ) {	      	
-	    	request.object.save({ removed : true }, { useMasterKey: true,
-		        success: function (response) {
-		            response.success(response);
-		        },
-		        error: function (error) {
-		            response.error('Error! ' + error.message);
-		        }
-		    });
-	    } else {
-			//DO SOMETHING!! The file has not been removed.
-		}
+	if ( source_type == 1 ) { //LOCAL
 
-	} else if (!removed && !downloaded) {
+		saveFanpage(request, function(){});
 
-		//-- Save video relation into fanpage
+	} else if ( source_type == 2 ) { //YOUTUBE
 
-		saveFapage(fanpageId, function() {
+		if (!removed && downloaded) {
 
-			var queryConfig = new Parse.Query("Config");				   
-		    queryConfig.find({
-		        useMasterKey: true,
-		        success: function(results) {
+			var ytb_videoId = request.object.get("ytb_videoId");
+			var videoFile = ytb_videoId + ".mp4";
+			var fs = require('fs'); 
+		    fs.unlinkSync(videoFile);
+		    if ( !fs.existsSync(videoFile) ) {	      	
+		    	request.object.save({ removed : true }, { useMasterKey: true,
+			        success: function (response) {
+			            response.success(response);
+			        },
+			        error: function (error) {
+			            response.error('Error! ' + error.message);
+			        }
+			    });
+		    } else {
+				//DO SOMETHING!! The file has not been removed.
+			}
 
-		        	if( results.length > 0) 
-		        	{
+		} else if (!removed && !downloaded) {
 
-						var configObject = results[0];
-						
-						var serverUrl = configObject.get("server_url");
-						var _appId = configObject.get("app_id");
-						var _mKey = configObject.get("master_key");
+			//-- Save video relation into fanpage
 
-						var vId       = request.object.get("ytb_videoId");
-						var pfVideoId = request.object.id;
-					    
-					    Parse.Cloud.httpRequest({
-					      
-					      method: "POST",
-					      url: serverUrl + "jobs/downloader",
-					      headers: {
-						    	"X-Parse-Application-Id": _appId,
-						    	"X-Parse-Master-Key": _mKey,
-						    	"Content-Type": "application/json"
-						  },
-					      body: {
-					        "ytb_videoId": vId,
-					        "objectId": pfVideoId            
-					      },	      
-					      success: function(httpResponse) {          
-					          console.log(httpResponse);			 
-					      },
-					      error: function(httpResponse) {
-					          console.log('Error! ' + httpResponse);
-					      }
+			saveFanpage(request, function() {
 
-					    });
-				    } 
-		        },
-		        error: function(error) {						            
-		            console.log(error);
-		        }
-		    });  
+				var queryConfig = new Parse.Query("Config");				   
+			    queryConfig.find({
+			        useMasterKey: true,
+			        success: function(results) {
 
-		});
-			
-	
-	} else if (removed && downloaded) {
+			        	if( results.length > 0) 
+			        	{
 
-		saveFapage(fanpageId, function(){});
+							var configObject = results[0];
+							
+							var serverUrl = configObject.get("server_url");
+							var _appId = configObject.get("app_id");
+							var _mKey = configObject.get("master_key");
 
+							var vId       = request.object.get("ytb_videoId");
+							var pfVideoId = request.object.id;
+						    
+						    Parse.Cloud.httpRequest({
+						      
+						      method: "POST",
+						      url: serverUrl + "jobs/downloader",
+						      headers: {
+							    	"X-Parse-Application-Id": _appId,
+							    	"X-Parse-Master-Key": _mKey,
+							    	"Content-Type": "application/json"
+							  },
+						      body: {
+						        "ytb_videoId": vId,
+						        "objectId": pfVideoId            
+						      },	      
+						      success: function(httpResponse) {          
+						          console.log(httpResponse);			 
+						      },
+						      error: function(httpResponse) {
+						          console.log('Error! ' + httpResponse);
+						      }
+
+						    });
+					    } 
+			        },
+			        error: function(error) {						            
+			            console.log(error);
+			        }
+			    });  
+
+			});		
+		
+		} 
 	}
-
-
-	function saveFapage(request, callback) {
-
-		var query = new Parse.Query("Fanpages");
-		var fanpageId = request.object.get("fanpageObjId");
-	    query.equalTo("objectId", fanpageId);	   
-	    
-	    query.find({
-	        useMasterKey: true,
-	        success: function(results) {
-	        	
-	        	if( results.length > 0) {
-					
-					var fanpageObject = results[0];
-					console.info("feedObject: " + fanpageObject);
-		        	var videoRelation = fanpageObject.relation("videos");
-		        	videoRelation.add(request.object);		        	
-
-		        	fanpageObject.save(null, { useMasterKey: true,
-                        success: function () {              	                          	
-                        	callback();
-                        },
-                        error: function (error) {
-                            console.log('Error! ' + error.message);
-                        }
-                    });   		            
-			    } 
-	        },
-	        error: function(error) {	            
-	            console.log(error);
-	        }
-	    });
-	}
-
 
 });
+
+
+function saveFanpage(request, callback) {
+
+	var query = new Parse.Query("Fanpages");
+	var fanpageId = request.object.get("fanpageObjId");
+    query.equalTo("objectId", fanpageId);	   
+    
+    query.find({
+        useMasterKey: true,
+        success: function(results) {
+        	
+        	if( results.length > 0) {
+				
+				var fanpageObject = results[0];
+				console.info("feedObject: " + fanpageObject);
+	        	var videoRelation = fanpageObject.relation("videos");
+	        	videoRelation.add(request.object);		        	
+
+	        	fanpageObject.save(null, { useMasterKey: true,
+                    success: function () {              	                          	
+                    	callback();
+                    },
+                    error: function (error) {
+                        console.log('Error! ' + error.message);
+                    }
+                });   		            
+		    } 
+        },
+        error: function(error) {	            
+            console.log(error);
+        }
+    });
+}
 
 
 // --
