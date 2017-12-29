@@ -32,11 +32,12 @@ class Approvals
 {
     var objectId = String()
     var thumbnail:UIImage?
-    var videoId = Int()    
-    var videoTitle = String()
-    var videoDescription = String()
+    var referenceId = Int()
+    var title = String()
+    var description = String()
     var approved = Int()
     var video = VideoGamves()
+    var fanpage = FanpageGamves()
 }
 
 
@@ -135,12 +136,14 @@ class CategoryGamves
 
 class FanpageGamves
 {
-    var fanpageId = String()
+    var objectId = String()
     var cover   = String()
     var name    = String()
     var icon    = String()
     var link    = String()
     var about   = String()
+    
+    var fanpageId = Int()
     
     var cover_image = UIImage()
     var icon_image  = UIImage()

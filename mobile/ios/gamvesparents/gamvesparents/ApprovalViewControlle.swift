@@ -81,9 +81,9 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
         let index = indexPath.item
         let approval:Approvals = Global.approvals[index]
         
-        print(approval.videoTitle)
+        print(approval.title)
         
-        cell.nameLabel.text = approval.videoTitle
+        cell.nameLabel.text = approval.title
         
         cell.statusLabel.text = "APPROVED"
         
@@ -116,7 +116,7 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
             
             var video = VideoGamves()
             
-            video = Global.chatVideos[approval.videoId]!
+            video = Global.chatVideos[approval.referenceId]!
             
             let videoApprovalLauncher = VideoApprovalLauncher()
             videoApprovalLauncher.delegate = self
