@@ -25,13 +25,21 @@ class YVideo {
     var duration = String()
 }*/
 
+
 class SearchImageController: UIViewController,
-    UITableViewDelegate, UITableViewDataSource,
+    UICollectionViewDataSource,
+    UICollectionViewDelegate,
+    UICollectionViewDelegateFlowLayout,
     UISearchResultsUpdating, UISearchBarDelegate,
     XMLParserDelegate,
     UIBarPositioningDelegate     
 {   
 
+    
+    var searchImages = [SearchImage]()
+    
+    var takePicturesController:TakePicturesController!
+    
     var termToSearch = String()
     
     var tableView : UITableView = {
@@ -56,9 +64,7 @@ class SearchImageController: UIViewController,
     var filteredVideos = [YVideo]()
     var videos = [YVideo]()
     
-    var cellIdSearch = "cellIdSearch"
-    var cellId = "cellId"
-
+    
     var delegateSearch:SearchProtocol!   
 
     var parser = XMLParser()
@@ -67,13 +73,20 @@ class SearchImageController: UIViewController,
     var isSuggestion = Bool()
 
     var activityIndicatorView:NVActivityIndicatorView?
+    
+    var cellId:String = "SearchCellId"
+    
+    lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = UIColor.white
+        cv.dataSource = self
+        cv.delegate = self
+        return cv
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
-        self.view.addSubview(self.tableView)
 
         let btnleft : UIButton = UIButton(frame: CGRect(x:0, y:0, width:35, height:35))
         btnleft.setTitleColor(UIColor.white, for: .normal)
@@ -85,6 +98,7 @@ class SearchImageController: UIViewController,
 
         self.navigationItem.setLeftBarButtonItems([backBarButon], animated: false)
   
+        self.view.addSubview(self.collectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.tableView) 
 
@@ -96,22 +110,14 @@ class SearchImageController: UIViewController,
         self.searchController.searchBar.sizeToFit()
        
         self.tableView.tableHeaderView = self.searchController.searchBar
-      
-        definesPresentationContext = true
-           
-        self.videoDetailsDict = [Int:YVideo]()
-        
-        self.tableView.register(SearchCell.self, forCellReuseIdentifier: self.cellIdSearch)
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: self.cellId)
-
+    
+    
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
         print(termToSearch)
         
+        self.collectionView.register(SearchImageCell.self, forCellWithReuseIdentifier: cellId)
         
-        //NOT WORKING 
-        
-        self.searchBar.setText(text: termToSearch)      
         
     }
     
@@ -210,30 +216,31 @@ class SearchImageController: UIViewController,
         return height        
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+       
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SearchImageCell
+        
+        
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         searchController.searchBar.endEditing(true)
-        let index = indexPath.row as Int        
-        if isSuggestion {            
-            var sg = resultArr[index]            
-            isSuggestion = false
-            resultArr.removeAll()
-            self.tableView.reloadData()
-            self.findVideoFromSuggestion(suggestion: sg)
-        } else {
-            if let yVideo = self.videoDetailsDict[index] as! YVideo? {
-                let videoId = yVideo.videoId
-                //self.setYoutubePlayer(id: videoId)
-                self.delegateSearch.setResultOfsearch(videoId: videoId, 
-                    title: yVideo.title, 
-                    description : yVideo.description,
-                    duration : yVideo.duration,
-                    image : yVideo.image)
-               self.tableView.tableHeaderView = nil                
-                _ = navigationController?.popViewController(animated: true)
-            }
-        }    
-    }  
+        
+        //Seleccionar o si es en grupo adjuntar
+        
+        if let ySearch = self.searchImages[index] as! SearchImage? {
+        
+        }
+        
+    }
+    
+    
+    
+    
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -259,50 +266,47 @@ class SearchImageController: UIViewController,
         }
      }
 
-
+    
     func findVideoFromSuggestion(suggestion: String) {
-        isSuggestion = false        
+        
+        isSuggestion = false
         searchController.searchBar.isLoading = true
-        self.activityIndicatorView?.startAnimating()            
-        //var urlString:String = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id,snippet(title,description,channelTitle,thumbnails))&order=viewCount&q=\(searchController.searchBar.text!)&type=video&maxResults=25&key=\(Global.api_key)"
-        var urlString:String = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id,snippet(title,description,channelTitle,thumbnails))&order=viewCount&q=\(suggestion)&type=video&maxResults=25&key=\(Global.api_key)"        
+        self.activityIndicatorView?.startAnimating()
+        
+        var urlString:String = "https://www.googleapis.com/customsearch/v1?key=\(Global.api_key)&cx=\(Global.search_engine)&q=\(suggestion)&searchType=image&alt=json"
+        
         let urlwithPercentEscapes = urlString.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         
         Alamofire.request(urlwithPercentEscapes!, method: .get)
-            .responseJSON { response in                
-                print("Success: \(response.result.isSuccess)")                
+            .responseJSON { response in
+                
+                print("Success: \(response.result.isSuccess)")
+               
                 switch response.result {
-                case .success:                
-                    let json = JSON(response.result.value!)                    
-                    if let items = json["items"].array {                    
-                        var i = 0                        
-                        var countItems = items.count                        
-                        for item in items {                            
-                            var yv = YVideo() 
-                            if let idItem = item["id"].dictionary {                                                                                            
-                                if idItem["videoId"]?.stringValue != nil {
-                                    let videoId = idItem["videoId"]?.stringValue as! String                                    
-                                    yv.videoId = videoId                                    
-                                }                       
-                            }                        
+                case .success:
+                   
+                    let json = JSON(response.result.value!)
+                    if let items = json["items"].array {
+                        
+                        var i = 0
+                        var countItems = items.count
+                        
+                        for item in items {
                             
-                            if let snippetDict = item["snippet"].dictionary {
+                            var image = SearchImage()
+                            
+                            image.link = item["link"].stringValue as! String
+                            
+                            if let imageDict = item["image"].dictionary {
                                 
-                                print(snippetDict)                       
-                                yv.title = snippetDict["title"]?.stringValue as! String                                
-                                print(yv.title)                                
-                                yv.description = (snippetDict["description"]?.stringValue as AnyObject) as! String
-                                print(yv.description)                                
+                                print(imageDict)
                                 
-                                var thumbnails = snippetDict["thumbnails"]?.dictionary
-                                var dfault = thumbnails?["default"]?.dictionary                                
-                                var thumbUrl =  dfault?["url"]?.stringValue as! String                                
-                                yv.url = thumbUrl                                
-                                print(thumbUrl)
+                                image.thumbnailLink = imageDict["thumbnailLink"]?.stringValue as! String
+                               
+                                let thUrl = URL(string: image.thumbnailLink)!
+                                let sessionCover = URLSession(configuration: .default)
+                                print(thUrl)
                                 
-                                let thUrl = URL(string: thumbUrl)!
-                                let sessionCover = URLSession(configuration: .default)                                
-                                print(thUrl)                                
                                 let downloadCover = sessionCover.dataTask(with: thUrl) {
                                     (data, response, error) in
                                     
@@ -317,119 +321,33 @@ class SearchImageController: UIViewController,
                                     
                                     if error == nil {
                                         
-                                        yv.image = UIImage(data:data)!
-                                        self.videoDetailsDict[i] = yv
-                                        self.searchDuration(id: i)
+                                        image.image = UIImage(data:data)!
+                                        self.searchImages[i] = image
+                                        
+                                        self.tableView.reloadData()
                                         
                                         if i == (countItems-1) {
                                             self.searchController.searchBar.isLoading = false
+                                            self.activityIndicatorView?.stopAnimating()
                                         }
                                         
-                                        i = i + 1                                        
+                                        i = i + 1
                                     }
                                     
                                 }
-                                downloadCover.resume()                       
-                            }                            
-                        }
-                    }             
-                break
-                case .failure(let error):
-                print(error)
-            }
-        }
-    }
-    
-    func searchDuration(id:Int) {
-        
-        DispatchQueue.main.async {
-            
-            var yv:YVideo = self.videoDetailsDict[id]!
-            
-            let videoId = yv.videoId
-            
-            var urlString:String = "https://www.googleapis.com/youtube/v3/videos?id=\(videoId)&part=contentDetails&key=\(Global.api_key)"
-            
-            let urlwithPercentEscapes = urlString.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
-            
-            Alamofire.request(urlwithPercentEscapes!, method: .get)
-                .responseJSON { response in
-                    
-                print("Success: \(response.result.isSuccess)")
-                
-                if response.result.isSuccess {
-                    
-                    let json = JSON(response.result.value!)
-                    if let items = json["items"].array {
-                        
-                        if let contentDetails = items[0]["contentDetails"].dictionary {
-                            
-                            let duration = contentDetails["duration"] as! JSON
-                            
-                            let dateString = String(describing: duration)
-                            
-                            let durFormat = self.getYoutubeFormattedDuration(duration: dateString)
-                            
-                            self.videoDetailsDict[id]!.duration = durFormat
-                            
-                            DispatchQueue.main.async {
-                                self.tableView.reloadData()
-                                self.activityIndicatorView?.stopAnimating()
+                                downloadCover.resume()
                             }
                         }
                     }
+                    break
+                case .failure(let error):
+                    print(error)
                 }
-            }
         }
     }
     
     
-    func getYoutubeFormattedDuration(duration: String) -> String {
-        
-        let formattedDuration = duration.replacingOccurrences(of: "PT", with: "").replacingOccurrences(of: "H", with:":").replacingOccurrences(of: "M", with: ":").replacingOccurrences(of: "S", with: "")
-        
-        let components = formattedDuration.components(separatedBy: ":")
-        var duration = ""
-        for component in components {
-            duration = duration.characters.count > 0 ? duration + ":" : duration
-            if component.characters.count < 2 {
-                duration += "0" + component
-                continue
-            }
-            duration += component
-        }
-        
-        return duration
-        
-    }
-
-
-    func openVideoById(id: Int)
-    {
-        
-        if let yVideo = videoDetailsDict[id] as! YVideo? {
-
-            let videoId = yVideo.videoId
-            var youTubePlayerController = YouTubePlayerController()
-            youTubePlayerController.videoId = videoId
-            navigationController?.navigationBar.tintColor = UIColor.white
-            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-            navigationController?.pushViewController(youTubePlayerController, animated: true)         
-        }
-        
-    }  
     
-
-}
-
-public extension UISearchBar {
-    
-    public func setText(text: String) {
-        let svs = subviews.flatMap { $0.subviews }
-        guard let tf = (svs.filter { $0 is UITextField }).first as? UITextField else { return }
-        tf.text = text
-        tf.becomeFirstResponder()
-    }
 }
 
 

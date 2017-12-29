@@ -155,7 +155,12 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
         return button
     }()
     
-    func handleIcon() {}
+    func handleIcon() {
+        let takePictures = TakePicturesController()
+        takePictures.delegate = self
+        takePictures.setType(type: TakePictureType.selectImage)
+        navigationController?.pushViewController(takePictures, animated: true)
+    }
     
     let imageSeparatorView: UIView = {
         let view = UIView()
@@ -208,12 +213,6 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
         return button
     }()
     
-    lazy var searchImageController: SearchImageController = {
-        let search = SearchImageController()
-        search.newFanpageController = self
-        search.delegateSearch = self
-        return search
-    }()
 
     var metricsNew = [String:CGFloat]()
     
@@ -421,7 +420,7 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
     var categories  = String()
     var like_count  = String()
 
-    
+    //LEAVE IT FOR SEARCHING IMAGES
     func getVideoDataUser(videoId: String, completionHandler : @escaping (_ resutl:Bool) -> ()){
 
     	let urlString = "\(Global.api_image_base)\(videoId)\(Global.api_image_format)"
@@ -527,15 +526,12 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
 	func handleSearch() {
         self.type = UploadType.youtube
         
-        searchImageController.view.backgroundColor = UIColor.white
-        navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        navigationController?.pushViewController(searchImageController, animated: true)
+        
     }
 
   
     func handleCameraImage() {
-        let takePictures = TakePictures()
+        let takePictures = TakePicturesController()
         takePictures.delegate = self
         takePictures.setType(type: TakePictureType.selectImage)
         navigationController?.pushViewController(takePictures, animated: true)
@@ -555,7 +551,7 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
 
    	func handleVideo() {
         self.type = UploadType.local
-        let takePictures = TakePictures()
+        let takePictures = TakePicturesController()
         takePictures.delegate = self
         takePictures.setType(type: TakePictureType.selectVideo)
         navigationController?.pushViewController(takePictures, animated: true)
@@ -577,6 +573,15 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
         {
             
             self.activityIndicatorView?.startAnimating()
+            
+            let fanpagePF: PFObject = PFObject(className: "Fanpages")
+            
+            fanpagePF["title"] = self.nameTextField.text
+            
+            fanpagePF["title"] = self.nameTextField.text
+
+            
+            
             
         }
     }

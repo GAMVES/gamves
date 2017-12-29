@@ -16,6 +16,23 @@ protocol VidewVideoProtocol {
     func openVideoById(id: Int)
 }
 
+class SearchImage {
+
+    var image = UIImage()
+
+    var url = String()
+    
+    var objectId = String()
+    
+    var fanpageId = Int()
+    
+    var thumbnailLink = String()
+    
+    var link = String()
+    
+}
+
+
 class YVideo {
     var image = UIImage()
     var title = String()
@@ -33,6 +50,8 @@ class SearchController: UIViewController,
     UIBarPositioningDelegate     
 {   
 
+    var takePicturesController:TakePicturesController!
+    
     var termToSearch = String()
     
     var tableView : UITableView = {

@@ -22,7 +22,7 @@ public enum TakePictureType {
     case selectVideo
 }
 
-class TakePictures: UIViewController, UIImagePickerControllerDelegate, UIAlertViewDelegate, UINavigationControllerDelegate
+class TakePicturesController: UIViewController, UIImagePickerControllerDelegate, UIAlertViewDelegate, UINavigationControllerDelegate
 {
     
     var thumbnail = UIImage()
@@ -32,7 +32,7 @@ class TakePictures: UIViewController, UIImagePickerControllerDelegate, UIAlertVi
     
     let mediaPicker = UIImagePickerController()
     
-    var strongSelf: TakePictures?
+    var strongSelf: TakePicturesController?
     var imagePicker: UIImagePickerController! = UIImagePickerController()
     
     open weak var delegate: TakePicturesDelegate?
@@ -235,6 +235,21 @@ class TakePictures: UIViewController, UIImagePickerControllerDelegate, UIAlertVi
     var videoPlaybackPosition: CGFloat = 0.0
     var cache:NSCache<AnyObject, AnyObject>!
     var rangeSlider: RangeSlider! = nil
+    
+    lazy var searchImageController: SearchImageController = {
+        let search = SearchImageController()
+        search.takePicturesController = self
+        //search.delegateSearch = self
+        return search
+    }()
+    
+    lazy var searchController: SearchController = {
+        let search = SearchController()
+        search.takePicturesController = self
+        //search.delegateSearch = self
+        return search
+    }()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -781,7 +796,7 @@ class TakePictures: UIViewController, UIImagePickerControllerDelegate, UIAlertVi
     
 }
 
-private extension TakePictures {
+private extension TakePicturesController {
     
     var optionsActionSheet: UIAlertController {
         
@@ -798,6 +813,7 @@ private extension TakePictures {
                     self.present(self.mediaPicker, animated: true, completion: nil)
                     
                 }
+                
                 let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
@@ -805,8 +821,18 @@ private extension TakePictures {
                     self.present(self.mediaPicker, animated: true, completion: nil)
                 }
                 
-                actionSheet.addAction(chooseExistingAction)
+                let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
+                    
+                    self.searchImageController.view.backgroundColor = UIColor.white
+                    self.navigationController?.navigationBar.tintColor = UIColor.white
+                    self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+                    self.navigationController?.pushViewController(self.searchImageController, animated: true)
+                    
+                }
+                
                 actionSheet.addAction(takePhotoAction)
+                actionSheet.addAction(chooseExistingAction)
+                actionSheet.addAction(searchExistingAction)
                 
                 
             } else if self.type == .selectVideo {
@@ -819,8 +845,6 @@ private extension TakePictures {
                     
                 }
                 
-                actionSheet.addAction(takeVideoAction)
-                
                 let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                 
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
@@ -828,7 +852,19 @@ private extension TakePictures {
                     self.present(self.mediaPicker, animated: true, completion: nil)
                     
                 }
+                
+                let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
+                    
+                    self.searchController.view.backgroundColor = UIColor.white
+                    self.navigationController?.navigationBar.tintColor = UIColor.white
+                    self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+                    self.navigationController?.pushViewController(self.searchController, animated: true)
+                    
+                }
+                
+                actionSheet.addAction(takeVideoAction)
                 actionSheet.addAction(chooseExistingAction)
+                actionSheet.addAction(searchExistingAction)
                 
             }
         } else {
@@ -896,19 +932,31 @@ private extension TakePictures {
         
     }
     
+    var searchExistingText: String {
+        
+        let t = self.type
+        switch t! {
+        case .selectImage:
+            return Strings.SearchPhoto
+        case .selectVideo:
+            return Strings.SearchVideo
+        default:
+            break
+        }
+    }
+    
     // MARK: - Constants
     
     struct Strings {
         
-        static let Title = NSLocalizedString("Attach", comment: "Title for a generic action sheet for picking media from the device.")
+        static let Title = NSLocalizedString("Attach", comment: "")
+        static let ChooseVideo = NSLocalizedString("Choose existing video", comment: "")
+        static let TakeVideo = NSLocalizedString("Record a video", comment: "")
+        static let SearchVideo = NSLocalizedString("Search a Video", comment: "")
         
-        static let ChoosePhoto = NSLocalizedString("Choose existing photo", comment: "Text for an option that lets the user choose an existing photo in a generic action sheet for picking media from the device.")
-        
-        static let ChooseVideo = NSLocalizedString("Choose existing video", comment: "Text for an option that lets the user choose an existing photo or video in a generic action sheet for picking media from the device.")
-        
-        static let TakePhoto = NSLocalizedString("Take a photo", comment: "Text for an option that lets the user take a picture with the device camera in a generic action sheet for picking media from the device.")
-        
-        static let TakeVideo = NSLocalizedString("Record a video", comment: "Text for an option that lets the user take a video with the device camera in a generic action sheet for picking media from the device.")
+        static let ChoosePhoto = NSLocalizedString("Choose existing photo", comment: "")
+        static let TakePhoto = NSLocalizedString("Take a photo", comment: "")
+        static let SearchPhoto = NSLocalizedString("Search a photo", comment: "")
         
         static let Cancel = NSLocalizedString("Cancel", comment: "Text for the 'cancel' action in a generic action sheet for picking media from the device.")
     }

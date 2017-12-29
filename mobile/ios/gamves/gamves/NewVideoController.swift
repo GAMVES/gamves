@@ -717,8 +717,6 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         super.didReceiveMemoryWarning()        
     }
     
-    
-    
     func categoryFieldDidChange(_ textField: UITextField) {
 
 	}
@@ -734,7 +732,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
   
     func handleCameraImage() {
-        let takePictures = TakePictures()
+        let takePictures = TakePicturesController()
         takePictures.delegate = self
         takePictures.setType(type: TakePictureType.selectImage)
         navigationController?.pushViewController(takePictures, animated: true)
@@ -760,7 +758,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
    	func handleVideo() {
         self.type = UploadType.local
-        let takePictures = TakePictures()
+        let takePictures = TakePicturesController()
         takePictures.delegate = self
         takePictures.setType(type: TakePictureType.selectVideo)
         navigationController?.pushViewController(takePictures, animated: true)
@@ -929,12 +927,13 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
                 
                 let approvals: PFObject = PFObject(className: "Approvals")
                 
-                approvals["videoId"] = videoNumericId
+                approvals["referenceId"] = videoNumericId
                 approvals["posterId"] = PFUser.current()?.objectId
                 let familyId = Global.gamvesFamily.objectId
                 approvals["familyId"] = familyId
                 approvals["approved"] = 0
-                approvals["videoTitle"] = self.videoTitle
+                approvals["title"] = self.videoTitle
+                approvals["type"] = 1
                 
                 approvals.saveInBackground { (resutl, error) in
                     
