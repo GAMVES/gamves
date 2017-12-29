@@ -12,30 +12,31 @@ import MobileCoreServices
 import AWSS3
 import AWSCore
 
-@objc public protocol TakePicturesDelegate {
+@objc public protocol MediaDelegate {
     @objc optional func didPickImage(_ image: UIImage)
     @objc optional func didPickVideo(url: URL, data: Data, thumbnail: UIImage)
 }
 
-public enum TakePictureType {
+public enum MediaType {
     case selectImage
     case selectVideo
 }
 
-class TakePicturesController: UIViewController, UIImagePickerControllerDelegate, UIAlertViewDelegate, UINavigationControllerDelegate
+class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAlertViewDelegate, UINavigationControllerDelegate
 {
     
     var thumbnail = UIImage()
     var videoData = Data()
     
-    var type: TakePictureType!
-    
+    var type: MediaType!
+    var searchType: SearchType!
+
     let mediaPicker = UIImagePickerController()
     
-    var strongSelf: TakePicturesController?
+    var strongSelf: MediaController?
     var imagePicker: UIImagePickerController! = UIImagePickerController()
     
-    open weak var delegate: TakePicturesDelegate?
+    open weak var delegate: MediaDelegate?
     
     let backgroundView: UIView = {
         let v = UIView()
@@ -235,17 +236,10 @@ class TakePicturesController: UIViewController, UIImagePickerControllerDelegate,
     var videoPlaybackPosition: CGFloat = 0.0
     var cache:NSCache<AnyObject, AnyObject>!
     var rangeSlider: RangeSlider! = nil
-    
-    lazy var searchImageController: SearchImageController = {
-        let search = SearchImageController()
-        search.takePicturesController = self
-        //search.delegateSearch = self
-        return search
-    }()
-    
+
     lazy var searchController: SearchController = {
         let search = SearchController()
-        search.takePicturesController = self
+        search.mediaController = self
         //search.delegateSearch = self
         return search
     }()
@@ -414,7 +408,7 @@ class TakePicturesController: UIViewController, UIImagePickerControllerDelegate,
         
     }
     
-    func setType(type: TakePictureType) {
+    func setType(type: MediaType) {
         self.type = type
     }
     
@@ -796,7 +790,7 @@ class TakePicturesController: UIViewController, UIImagePickerControllerDelegate,
     
 }
 
-private extension TakePicturesController {
+private extension MediaController {
     
     var optionsActionSheet: UIAlertController {
         
@@ -823,10 +817,11 @@ private extension TakePicturesController {
                 
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
-                    self.searchImageController.view.backgroundColor = UIColor.white
+                    self.searchController.type = self.searchType
+                    self.searchController.view.backgroundColor = UIColor.white
                     self.navigationController?.navigationBar.tintColor = UIColor.white
                     self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-                    self.navigationController?.pushViewController(self.searchImageController, animated: true)
+                    self.navigationController?.pushViewController(self.searchController, animated: true)
                     
                 }
                 
@@ -855,6 +850,7 @@ private extension TakePicturesController {
                 
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
+                    self.searchController.type = SearchType.isVideo
                     self.searchController.view.backgroundColor = UIColor.white
                     self.navigationController?.navigationBar.tintColor = UIColor.white
                     self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]

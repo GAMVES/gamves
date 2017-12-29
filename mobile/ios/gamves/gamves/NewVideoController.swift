@@ -31,7 +31,7 @@ public enum UploadType {
     case local
 }*/
 
-class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate {
+class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     
     var type: UploadType!
     
@@ -732,10 +732,10 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
   
     func handleCameraImage() {
-        let takePictures = TakePicturesController()
-        takePictures.delegate = self
-        takePictures.setType(type: TakePictureType.selectImage)
-        navigationController?.pushViewController(takePictures, animated: true)
+        let media = MediaController()
+        media.delegate = self
+        media.setType(type: MediaType.selectImage)
+        navigationController?.pushViewController(media, animated: true)
     }
     
     func didPickImage(_ image: UIImage){
@@ -758,10 +758,10 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
    	func handleVideo() {
         self.type = UploadType.local
-        let takePictures = TakePicturesController()
-        takePictures.delegate = self
-        takePictures.setType(type: TakePictureType.selectVideo)
-        navigationController?.pushViewController(takePictures, animated: true)
+        let media = MediaController()
+        media.delegate = self
+        media.setType(type: MediaType.selectVideo)
+        navigationController?.pushViewController(media, animated: true)
     }
     
     func setResultOfsearch(videoId: String, title: String, description : String, duration: String, image : UIImage)

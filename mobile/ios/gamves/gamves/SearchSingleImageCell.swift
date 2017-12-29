@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchImageCell: UICollectionViewCell {
+class SearchSingleImageCell: UITableViewCell {
     
     
     let thumbnailImageView: UIImageView = {
@@ -19,17 +19,26 @@ class SearchImageCell: UICollectionViewCell {
         return imageView
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
         
+    }
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        self.setupViews()
+    }
+
+    func setupViews()
+    {
+    
         self.addSubview(thumbnailImageView)
         
         self.addConstraintsWithFormat("H:[v0]", views: thumbnailImageView)
         self.addConstraintsWithFormat("V:[v0]", views: thumbnailImageView)
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+   
     
 }

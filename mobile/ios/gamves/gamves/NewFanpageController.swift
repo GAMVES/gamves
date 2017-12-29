@@ -31,7 +31,7 @@ public enum UploadType {
     case local
 }
 
-class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelegate {
+class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
     
     var activityIndicatorView:NVActivityIndicatorView?
     
@@ -155,12 +155,7 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
         return button
     }()
     
-    func handleIcon() {
-        let takePictures = TakePicturesController()
-        takePictures.delegate = self
-        takePictures.setType(type: TakePictureType.selectImage)
-        navigationController?.pushViewController(takePictures, animated: true)
-    }
+    
     
     let imageSeparatorView: UIView = {
         let view = UIView()
@@ -189,8 +184,6 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
         button.tag = 0
         return button
     }()
-    
-    func handleCover() {}
     
     //-- BOTTOM
     
@@ -526,16 +519,31 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
 	func handleSearch() {
         self.type = UploadType.youtube
         
-        
     }
 
-  
-    func handleCameraImage() {
-        let takePictures = TakePicturesController()
-        takePictures.delegate = self
-        takePictures.setType(type: TakePictureType.selectImage)
-        navigationController?.pushViewController(takePictures, animated: true)
+    func handleIcon() {
+        let media = MediaController()
+        media.delegate = self
+        media.setType(type: MediaType.selectImage)
+        media.searchType = SearchType.isImageGallery
+        navigationController?.pushViewController(media, animated: true)
     }
+    
+    func handleCover() {
+        let media = MediaController()
+        media.delegate = self
+        media.setType(type: MediaType.selectImage)
+        media.searchType = SearchType.isSingleImage
+        navigationController?.pushViewController(media, animated: true)
+    }
+  
+    /*func handleCameraImage() {
+        let media = MediaController()
+        media.delegate = self
+        media.setType(type: MediaType.selectImage)
+        media.searchType = SearchType.isSingleImage
+        navigationController?.pushViewController(media, animated: true)
+    }*/
     
     func didPickImage(_ image: UIImage){
         
@@ -551,10 +559,10 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
 
    	func handleVideo() {
         self.type = UploadType.local
-        let takePictures = TakePicturesController()
-        takePictures.delegate = self
-        takePictures.setType(type: TakePictureType.selectVideo)
-        navigationController?.pushViewController(takePictures, animated: true)
+        let media = MediaController()
+        media.delegate = self
+        media.setType(type: MediaType.selectVideo)
+        navigationController?.pushViewController(media, animated: true)
     }
     
     func setResultOfsearch(videoId: String, title: String, description : String, duration: String, image : UIImage)
@@ -579,10 +587,6 @@ class NewFanpageController: UIViewController, SearchProtocol, TakePicturesDelega
             fanpagePF["title"] = self.nameTextField.text
             
             fanpagePF["title"] = self.nameTextField.text
-
-            
-            
-            
         }
     }
     
