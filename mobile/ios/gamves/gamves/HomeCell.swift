@@ -71,14 +71,23 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
         
         let floaty = Floaty()
         
+        floaty.addItem(title: "New Fanpage", handler: { item in
+            
+            if self.homeController != nil
+            {
+                self.homeController?.addNewFanpage()
+            }
+            
+        })
+        
         floaty.addItem(title: "New Video", handler: { item in
-
+            
             if self.homeController != nil
             {
                 self.homeController?.addNewVideo()
             }
             
-        })        
+        })
         
         self.addSubview(floaty)
         

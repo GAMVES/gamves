@@ -18,7 +18,7 @@ class Global: NSObject
     
     static var levels = Dictionary<String, LevelsGamves>()
     
-    static var localWs = "wss://192.168.16.22:1337/1/"
+    static var localWs = "wss://192.168.1.43:1337/1/"
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard
@@ -209,13 +209,17 @@ class Global: NSObject
                                     
                                     print(levelId)
                                     
-                                    let levelGamves = Global.levels[levelId]
+                                    if Global.levels[levelId] != nil {
                                     
-                                    print(levelGamves)
-                                    
-                                    gamvesUser.levelNumber = (levelGamves?.grade)!
-                                    gamvesUser.levelDescription = (levelGamves?.description)!
-                                    gamvesUser.levelId = levelId
+                                        let levelGamves = Global.levels[levelId]
+                                        
+                                        print(levelGamves)
+                                        
+                                        gamvesUser.levelNumber = (levelGamves?.grade)!
+                                        gamvesUser.levelDescription = (levelGamves?.description)!
+                                
+                                        gamvesUser.levelId = levelId
+                                    }
                                     
                                 }
                                 

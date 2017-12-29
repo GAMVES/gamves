@@ -12,7 +12,7 @@ import AVFoundation
 import SwiftyJSON
 import NVActivityIndicatorView
 
-protocol VidewVideoProtocol {
+/*protocol VidewVideoProtocol {
     func openVideoById(id: Int)
 }
 
@@ -23,13 +23,12 @@ class YVideo {
     var description = String()
     var videoId = String()
     var duration = String()
-}
+}*/
 
-class SearchController: UIViewController, 
+class SearchImageController: UIViewController,
     UITableViewDelegate, UITableViewDataSource,
     UISearchResultsUpdating, UISearchBarDelegate,
     XMLParserDelegate,
-    VidewVideoProtocol,
     UIBarPositioningDelegate     
 {   
 
@@ -47,7 +46,7 @@ class SearchController: UIViewController,
         return search
     }()
     
-    var newVideoController:NewVideoController!
+    var newFanpageController:NewFanpageController!
     
     var searchURL = String()
     
@@ -92,7 +91,7 @@ class SearchController: UIViewController,
         self.searchController = UISearchController(searchResultsController: nil)
         self.searchController.searchResultsUpdater = self
         self.searchController.dimsBackgroundDuringPresentation = false
-        self.searchController.searchBar.placeholder = "Search Youtube Videos"
+        self.searchController.searchBar.placeholder = "Search Images"
         self.searchController.searchBar.delegate = self
         self.searchController.searchBar.sizeToFit()
        
@@ -107,10 +106,13 @@ class SearchController: UIViewController,
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
-        self.searchBar.text = termToSearch
+        print(termToSearch)
         
-        self.searchBar.becomeFirstResponder()
-    
+        
+        //NOT WORKING 
+        
+        self.searchBar.setText(text: termToSearch)      
+        
     }
     
     func goBack()
@@ -187,7 +189,7 @@ class SearchController: UIViewController,
                 cellS.descLabel.text = yVideo.description                
                 cellS.titleLabel.text = yVideo.title
                 cellS.timeLabel.text = yVideo.duration
-                cellS.delegate = self
+                //cellS.delegate = self
                 if  yVideo.image != nil {
                     cellS.thumbnailImageView.image = yVideo.image
                     cellS.thumbnailImageView.tag = index
@@ -418,6 +420,16 @@ class SearchController: UIViewController,
     }  
     
 
+}
+
+public extension UISearchBar {
+    
+    public func setText(text: String) {
+        let svs = subviews.flatMap { $0.subviews }
+        guard let tf = (svs.filter { $0 is UITextField }).first as? UITextField else { return }
+        tf.text = text
+        tf.becomeFirstResponder()
+    }
 }
 
 

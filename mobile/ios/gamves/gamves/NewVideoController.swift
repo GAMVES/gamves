@@ -18,7 +18,7 @@ import MobileCoreServices
 import AWSS3
 import AWSCore
 
-protocol VideoProtocol {
+/*protocol VideoProtocol {
     func selectedVideo(videoUrl: String, title: String, description : String, image : UIImage)
 }
 
@@ -29,7 +29,7 @@ protocol SearchProtocol {
 public enum UploadType {
     case youtube
     case local
-}
+}*/
 
 class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate {
     

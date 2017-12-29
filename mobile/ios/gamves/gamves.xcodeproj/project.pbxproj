@@ -72,6 +72,8 @@
 		82DD00301F9CF21600CD19D7 /* GroupNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DD002F1F9CF21500CD19D7 /* GroupNameViewController.swift */; };
 		82DD00341F9D021C00CD19D7 /* UINavigationBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DD00331F9D021C00CD19D7 /* UINavigationBar+Extension.swift */; };
 		82DD00371F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DD00361F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift */; };
+		82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E1AC231FF422D400209AEF /* NewFanpageController.swift */; };
+		82E1AC261FF5382C00209AEF /* SearchImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E1AC251FF5382C00209AEF /* SearchImageController.swift */; };
 		82E372291FAFD5CF000AD7EB /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372281FAFD5CF000AD7EB /* Classes.swift */; };
 		82E66DB91FD4B51000968E88 /* NewVideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E66DB81FD4B51000968E88 /* NewVideoController.swift */; };
 		AA17A4B5A7E45A0EC31B12C3 /* Pods_gamves.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C5EB34FC19283B9FAC429A7 /* Pods_gamves.framework */; };
@@ -157,6 +159,8 @@
 		82DD002F1F9CF21500CD19D7 /* GroupNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupNameViewController.swift; sourceTree = "<group>"; };
 		82DD00331F9D021C00CD19D7 /* UINavigationBar+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Extension.swift"; sourceTree = "<group>"; };
 		82DD00361F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupUserCollectionViewCell.swift; sourceTree = "<group>"; };
+		82E1AC231FF422D400209AEF /* NewFanpageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewFanpageController.swift; sourceTree = "<group>"; };
+		82E1AC251FF5382C00209AEF /* SearchImageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchImageController.swift; sourceTree = "<group>"; };
 		82E372281FAFD5CF000AD7EB /* Classes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
 		82E66DB81FD4B51000968E88 /* NewVideoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewVideoController.swift; sourceTree = "<group>"; };
 		9C5EB34FC19283B9FAC429A7 /* Pods_gamves.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gamves.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -431,12 +435,14 @@
 		C77B55531D02346C00FF375C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				82E1AC231FF422D400209AEF /* NewFanpageController.swift */,
 				825C6CA41FDA4CC1005A762F /* record */,
 				822D620B1FD62F830025481E /* cells */,
 				C77B55181CFFF3AD00FF375C /* HomeController.swift */,
 				824E67BE1F544DDD0025096D /* LoginController.swift */,
 				8272A2AB1FD7D5FA00D14A76 /* CameraController.swift */,
 				C7E095C81D14C6690081F88C /* SettingsLauncher.swift */,
+				82E1AC251FF5382C00209AEF /* SearchImageController.swift */,
 				82BD5EF81F915D1E00BD8760 /* ChatViewController.swift */,
 				82BD5EFA1F91635400BD8760 /* SelectContactViewController.swift */,
 				82DD002F1F9CF21500CD19D7 /* GroupNameViewController.swift */,
@@ -609,6 +615,7 @@
 				824E67C11F5458130025096D /* LoginController+Extension.swift in Sources */,
 				82C908491FA0B8220059FAB8 /* ImagesCollectionViewCell.swift in Sources */,
 				82BD5EF91F915D1E00BD8760 /* ChatViewController.swift in Sources */,
+				82E1AC261FF5382C00209AEF /* SearchImageController.swift in Sources */,
 				828DB5DF1EFE408500403C66 /* Gradients.swift in Sources */,
 				825568D91FA3FA2F0074C49C /* Array+Extension.swift in Sources */,
 				822D620F1FD650910025481E /* UISearch+Extension.swift in Sources */,
@@ -624,6 +631,7 @@
 				824E67D41F5D781C0025096D /* InfoView.swift in Sources */,
 				82DD00371F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift in Sources */,
 				82970BA41F1DBFF000F6ABAD /* VideoPage.swift in Sources */,
+				82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */,
 				82BD5EFF1F93AC9600BD8760 /* ContactCell.swift in Sources */,
 				824E67C41F58D5D00025096D /* FanpageCollectionViewCell.swift in Sources */,
 				82418F361EF853E400D7E6BC /* HomeCell.swift in Sources */,
