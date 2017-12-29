@@ -21,7 +21,6 @@ class SearchSingleImageCell: UITableViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
     }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -32,13 +31,14 @@ class SearchSingleImageCell: UITableViewCell {
 
     func setupViews()
     {
-    
         self.addSubview(thumbnailImageView)
         
-        self.addConstraintsWithFormat("H:[v0]", views: thumbnailImageView)
-        self.addConstraintsWithFormat("V:[v0]", views: thumbnailImageView)
+        let imageWidth = self.frame.width
+        
+        let imageMetrics = ["iw":imageWidth, "ih":120]
+        
+        self.addConstraintsWithFormat("H:[v0(iw)]", views: thumbnailImageView, metrics:imageMetrics )
+        self.addConstraintsWithFormat("V:[v0(ih)]", views: thumbnailImageView, metrics:imageMetrics)
     }
-    
-   
     
 }

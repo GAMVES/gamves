@@ -26,7 +26,7 @@ class SearchGridImageCell: UITableViewCell {
         return imageView
     }()
     
-    var imageView_3: UIImageView = {
+    let imageView_3: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.isUserInteractionEnabled = true

@@ -639,7 +639,10 @@ class SearchController: UIViewController,
                                         if isSingle {
                                         
                                             self.searchImages.append(image)
-                                            self.tableView.reloadData()
+                                            
+                                            DispatchQueue.main.async(execute: {
+                                                self.tableView.reloadData()
+                                            })
                                         
                                         } else {
                                             
@@ -676,10 +679,13 @@ class SearchController: UIViewController,
                                             
                                             //Agregar resto cuando sea no multiplo de 3
                                             
-                                            if countr == 0, countr == 1, countr == 2 {
-                                                
-                                                self.rowGalleryImages.append(self.rowGalleryImage)
-                                                
+                                            if !isSingle {
+                                            
+                                                if countr == 0, countr == 1, countr == 2 {
+                                                    
+                                                    self.rowGalleryImages.append(self.rowGalleryImage)
+                                                    
+                                                }
                                             }
                                             
                                             self.searchController.searchBar.isLoading = false
