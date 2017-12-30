@@ -14,6 +14,7 @@ import AWSCore
 
 @objc public protocol MediaDelegate {
     @objc optional func didPickImage(_ image: UIImage)
+    @objc optional func didPickImages(_ images: [UIImage])
     @objc optional func didPickVideo(url: URL, data: Data, thumbnail: UIImage)
 }
 
@@ -829,6 +830,7 @@ private extension MediaController {
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.searchController.type = self.searchType
+                    self.searchController.delegateMedia = self.delegate
                     self.searchController.view.backgroundColor = UIColor.white
                     self.navigationController?.navigationBar.tintColor = UIColor.white
                     self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
@@ -864,6 +866,7 @@ private extension MediaController {
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.searchController.type = SearchType.isVideo
+                    self.searchController.delegateMedia = self.delegate
                     self.searchController.view.backgroundColor = UIColor.white
                     self.navigationController?.navigationBar.tintColor = UIColor.white
                     self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
@@ -958,19 +961,18 @@ private extension MediaController {
     
     struct Strings {
         
-        static let Title = NSLocalizedString("Attach", comment: "")
-        static let ChooseVideo = NSLocalizedString("Choose existing video", comment: "")
-        static let TakeVideo = NSLocalizedString("Record a video", comment: "")
-        static let SearchVideo = NSLocalizedString("Search a Video", comment: "")
+        static let Title = NSLocalizedString("Media input types", comment: "")
         
-        static let ChoosePhoto = NSLocalizedString("Choose existing photo", comment: "")
-        static let TakePhoto = NSLocalizedString("Take a photo", comment: "")
-        static let SearchPhoto = NSLocalizedString("Search a photo", comment: "")
+        static let TakeVideo = NSLocalizedString("Record with Camera", comment: "")
+        static let ChooseVideo = NSLocalizedString("Choose existing", comment: "")
+        static let SearchVideo = NSLocalizedString("Search on the Internet", comment: "")
+        
+        static let ChoosePhoto = NSLocalizedString("Choose existing", comment: "")
+        static let TakePhoto = NSLocalizedString("Camera", comment: "")
+        static let SearchPhoto = NSLocalizedString("Search on the Internet", comment: "")
         
         static let Cancel = NSLocalizedString("Cancel", comment: "Text for the 'cancel' action in a generic action sheet for picking media from the device.")
     }
-    
-    
     
 }
 

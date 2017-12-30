@@ -16,6 +16,12 @@ protocol VidewVideoProtocol {
     func openVideoById(id: Int)
 }
 
+protocol TableViewCellDelegate : class {
+    func button_1_tapped(_ sender: SearchGridImageCell)
+    func button_2_tapped(_ sender: SearchGridImageCell)
+    func button_3_tapped(_ sender: SearchGridImageCell)
+}
+
 class RowGalleryImage {
     
     var image_1 = SearchImage()
@@ -54,9 +60,12 @@ class SearchController: UIViewController,
     UISearchResultsUpdating, UISearchBarDelegate,
     XMLParserDelegate,
     VidewVideoProtocol,
-    UIBarPositioningDelegate     
+    UIBarPositioningDelegate,
+    TableViewCellDelegate
 {   
 
+    var delegateMedia:MediaDelegate?
+    
     var mediaController: MediaController!
     
     var termToSearch = String()
@@ -103,6 +112,8 @@ class SearchController: UIViewController,
     var start = Int()
     var end = Int()
     var lastTerm = String()
+    
+    var gridButtonTag = Int()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -264,7 +275,8 @@ class SearchController: UIViewController,
                         cellv.thumbnailImageView.tag = index
                         
                     }                
-                }            
+                }
+                
                 return cellv
                 
             } else if type == SearchType.isSingleImage {
@@ -287,9 +299,15 @@ class SearchController: UIViewController,
                 
                 if let gallery = self.rowGalleryImages[index] as! RowGalleryImage? {
                     
-                    cellg.imageView_1.image = gallery.image_1.image
-                    cellg.imageView_2.image = gallery.image_2.image
-                    cellg.imageView_3.image = gallery.image_3.image
+                    cellg.button_1.setImage(gallery.image_1.image, for: .normal)
+                    cellg.button_2.setImage(gallery.image_2.image, for: .normal)
+                    cellg.button_3.setImage(gallery.image_3.image, for: .normal)
+                
+                    gridButtonTag = gridButtonTag + 3
+                    
+                    print(gridButtonTag)
+                    
+                    cellg.delegate = self
                     
                 }
                 return cellg
@@ -298,6 +316,50 @@ class SearchController: UIViewController,
             
         }
         return cell
+    }
+    
+    func button_1_tapped(_ sender: SearchGridImageCell){
+        guard let tappedIndexPath = tableView.indexPath(for: sender) else { return }
+        let rowId = tappedIndexPath[1]
+        print(rowId)
+        let imageId = (3 * rowId)
+        print(imageId)
+        let searchImage = self.searchImages[imageId] as SearchImage
+        print(searchImage.link)
+        delegateMedia?.didPickImage!(searchImage.image)
+        self.popBackToView()
+    }
+    func button_2_tapped(_ sender: SearchGridImageCell){
+        guard let tappedIndexPath = tableView.indexPath(for: sender) else { return }
+        let rowId = tappedIndexPath[1]
+        print(rowId)
+        let imageId = (3 * rowId) + 1
+        print(imageId)
+        let searchImage = self.searchImages[imageId] as SearchImage
+        print(searchImage.link)
+        delegateMedia?.didPickImage!(searchImage.image)
+        self.popBackToView()
+    }
+    func button_3_tapped(_ sender: SearchGridImageCell){
+        guard let tappedIndexPath = tableView.indexPath(for: sender) else { return }
+        let rowId = tappedIndexPath[1]
+        print(rowId)
+        let imageId = (3 * rowId) + 2
+        print(imageId)
+        let searchImage = self.searchImages[imageId] as SearchImage
+        print(searchImage.link)
+        delegateMedia?.didPickImage!(searchImage.image)
+        self.popBackToView()
+    }
+    
+    func popBackToView() {
+        if let viewControllers = self.navigationController?.viewControllers {
+            if viewControllers.count > 3 {
+                self.navigationController?.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
+            } else {
+                // fail
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -381,14 +443,15 @@ class SearchController: UIViewController,
                     
                 }
             
-            } else if type == SearchType.isImageGallery {
-                
-                
-                
-                
+
             } else if type == SearchType.isSingleImage {
             
-            
+
+                let searchImage = self.searchImages[index] as SearchImage
+                print(searchImage.link)
+                delegateMedia?.didPickImage!(searchImage.image)
+                self.popBackToView()
+                
             }
             
         }    
@@ -694,15 +757,8 @@ class SearchController: UIViewController,
                                         
                                         image.image = UIImage(data:data)!
                                         
-                                        if isSingle {
+                                        if !isSingle {
                                         
-                                            self.searchImages.append(image)
-                                            
-                                            //DispatchQueue.main.async(execute: {
-                                            //    self.tableView.reloadData()
-                                            //})
-                                        
-                                        } else {
                                             
                                             countr = countr + 1
                                             
@@ -729,9 +785,11 @@ class SearchController: UIViewController,
                                                 //})
                                                 
                                                 
-                                                
                                             }
+                                            
                                         }
+                                        
+                                        self.searchImages.append(image)
                                         
                                         if i == (countItems-1) {
                                             

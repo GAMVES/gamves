@@ -215,6 +215,8 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
     
     var newVideoId = String()
     
+    var touchedButton = UIButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -521,15 +523,9 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         
     }
 
-    func handleIcon() {
-        let media = MediaController()
-        media.delegate = self
-        media.setType(type: MediaType.selectImage)
-        media.searchType = SearchType.isImageGallery
-        navigationController?.pushViewController(media, animated: true)
-    }
     
     func handleCover() {
+        self.touchedButton = coverButton
         let media = MediaController()
         media.delegate = self
         media.setType(type: MediaType.selectImage)
@@ -537,25 +533,30 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         navigationController?.pushViewController(media, animated: true)
     }
   
-    /*func handleCameraImage() {
+    func handleIcon() {
+        self.touchedButton = iconButton
         let media = MediaController()
         media.delegate = self
         media.setType(type: MediaType.selectImage)
-        media.searchType = SearchType.isSingleImage
+        media.searchType = SearchType.isImageGallery
         navigationController?.pushViewController(media, animated: true)
-    }*/
+    }
+
     
     func didPickImage(_ image: UIImage){
+
+        self.touchedButton.setImage(image, for: .normal)
         
-        //self.cameraButton.setImage(image, for: .normal)
-        
-        self.videoSelThumbnail = image
     }
     
-    func didPickVideo(url: URL, data: Data, thumbnail: UIImage) {
+    func didPickImages(_ images: [UIImage]){
         
-        
+    
     }
+    
+    
+    func didPickVideo(url: URL, data: Data, thumbnail: UIImage) {}
+    
 
    	func handleVideo() {
         self.type = UploadType.local
