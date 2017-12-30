@@ -99,10 +99,17 @@ class SearchController: UIViewController,
     var rowGalleryImage = RowGalleryImage()
     var rowGalleryImages = [RowGalleryImage]()
     var activityIndicatorView:NVActivityIndicatorView?
+    
+    var start = Int()
+    var end = Int()
+    var lastTerm = String()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        self.start = 11
+        self.end = 22
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.view.addSubview(self.tableView)
@@ -315,8 +322,12 @@ class SearchController: UIViewController,
                 height = imageWidth
                 
             } else if type == SearchType.isSingleImage {
+                
+                let iw = self.view.frame.width
              
-                height = 120
+                let imageHeight = iw * 9 / 16
+                
+                height = imageHeight
                 
             }
         }
@@ -335,6 +346,8 @@ class SearchController: UIViewController,
             self.isSuggestion = false
             
             self.resultArr.removeAll()
+            
+            self.lastTerm = sg
             
             if type == SearchType.isVideo {
         
@@ -381,6 +394,49 @@ class SearchController: UIViewController,
         }    
     }  
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        // handle your logic here to get more items, add it to dataSource and reload tableview
+        
+        if type == SearchType.isVideo {
+            
+            let lastElement = self.videoDetailsDict.count - 1
+            if indexPath.row == lastElement {
+            
+            }
+            
+        } else if type == SearchType.isImageGallery {
+            
+            let lastElement = self.rowGalleryImages.count - 1
+            if indexPath.row == lastElement {
+                
+                if self.end < 88 {
+                    
+                    self.start = self.start + 11
+                    self.end = self.start + 11
+                    self.findImagesFromSuggestion(suggestion: self.lastTerm, isSingle: false)
+                    
+                }
+                
+            }
+            
+        } else if type == SearchType.isSingleImage {
+            
+            let lastElement = self.searchImages.count - 1
+            if indexPath.row == lastElement {
+             
+                if self.end < 88 {
+                
+                    self.start = self.start + 11
+                    self.end = self.start + 11
+                    self.findImagesFromSuggestion(suggestion: self.lastTerm, isSingle: true)
+                    
+                }
+            }
+        }
+    }
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -420,7 +476,7 @@ class SearchController: UIViewController,
         
         self.activityIndicatorView?.startAnimating()
         
-        var urlString:String = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id,snippet(title,description,channelTitle,thumbnails))&order=viewCount&q=\(suggestion)&type=video&maxResults=25&key=\(Global.api_key)"
+        var urlString:String = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id,snippet(title,description,channelTitle,thumbnails))&order=viewCount&q=\(suggestion)&type=video&maxResults=50&key=\(Global.api_key)"
         
         let urlwithPercentEscapes = urlString.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         
@@ -582,7 +638,9 @@ class SearchController: UIViewController,
         searchController.searchBar.isLoading = true
         self.activityIndicatorView?.startAnimating()
         
-        var urlString:String = "https://www.googleapis.com/customsearch/v1?key=\(Global.api_key)&cx=\(Global.search_engine)&q=\(suggestion)&searchType=image&alt=json"
+        var urlString:String = "https://www.googleapis.com/customsearch/v1?key=\(Global.api_key)&cx=\(Global.search_engine)&q=\(suggestion)&searchType=image&start=\(self.start)&end=\(self.end)&alt=json"
+        
+        print(urlString)
         
         let urlwithPercentEscapes = urlString.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         
@@ -600,13 +658,13 @@ class SearchController: UIViewController,
                         var i = 0
                         var countItems = items.count
                         
+                        print(countItems)
+                        
                         var countr = 0
                         
                         for item in items {
                             
                             var image = SearchImage()
-                            
-                            
                             
                             image.link = item["link"].stringValue as! String
                             
@@ -640,9 +698,9 @@ class SearchController: UIViewController,
                                         
                                             self.searchImages.append(image)
                                             
-                                            DispatchQueue.main.async(execute: {
-                                                self.tableView.reloadData()
-                                            })
+                                            //DispatchQueue.main.async(execute: {
+                                            //    self.tableView.reloadData()
+                                            //})
                                         
                                         } else {
                                             
@@ -666,9 +724,9 @@ class SearchController: UIViewController,
                                                 
                                                 countr = 0
                                                 
-                                                DispatchQueue.main.async(execute: {
-                                                    self.tableView.reloadData()
-                                                })
+                                                //DispatchQueue.main.async(execute: {
+                                                //    self.tableView.reloadData()
+                                                //})
                                                 
                                                 
                                                 

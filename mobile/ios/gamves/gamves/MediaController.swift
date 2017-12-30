@@ -265,9 +265,16 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         self.view.addConstraintsWithFormat("V:|-50-[v0(100)][v1]|", views: self.msgLabel, self.bottomView)
         
         self.mediaPicker.delegate = self
+        
+        
+    }
+    
+    func shoOptions() {
+        
         let actionSheet = self.optionsActionSheet
         self.present(actionSheet, animated: true, completion: nil)
     }
+    
     
     func handleCrop() {
         let start = Float(startTimeText.text!)
@@ -478,12 +485,16 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     override func viewDidAppear(_ animated: Bool) {
         print("appeared")
         
-        if isRecording {
-            setupTrimmer()
-            isRecording = false
-        } else {
-            isRecording = true
+        if type == MediaType.selectVideo {
+        
+            if isRecording {
+                setupTrimmer()
+                isRecording = false
+            }
+            
         }
+        
+        self.shoOptions()
     }
     
     func setupTrimmer() {
@@ -833,6 +844,8 @@ private extension MediaController {
             } else if self.type == .selectVideo {
                 
                 let takeVideoAction = UIAlertAction(title: Strings.TakeVideo, style: UIAlertActionStyle.default) { (_) -> Void in
+                    
+                    self.isRecording = true
                     
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.camera
                     self.mediaPicker.mediaTypes = [kUTTypeMovie as String]
