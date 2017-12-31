@@ -10,6 +10,17 @@ import UIKit
 
 class SearchSingleImageCell: UITableViewCell {
     
+    var checked = Bool()
+    
+    override var isHighlighted: Bool {
+        didSet {
+            backgroundColor = isHighlighted ? UIColor(red: 0, green: 134/255, blue: 249/255, alpha: 1) : UIColor.white
+            
+            //nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
+            //statusLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
+            
+        }
+    }
     
     let conteinerView: UIView = {
         let view = UIView()
@@ -27,6 +38,12 @@ class SearchSingleImageCell: UITableViewCell {
         imageView.layer.masksToBounds = true
         return imageView
     }()
+    
+    var checkLabel: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -62,6 +79,19 @@ class SearchSingleImageCell: UITableViewCell {
         
         
         self.conteinerView.addSubview(thumbnailImageView)
+        
+        checkLabel =  Global.createCircularLabel(text: "✓", size: 60, fontSize: 50.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+        addSubview(checkLabel)
+        
+    
+        let pr = cw - 80
+        let pt = ch - 80
+        
+        
+        let paddingMetrics = ["pr":pr,"pt":pt]
+        
+        addConstraintsWithFormat("H:|-pr-[v0(60)]", views: checkLabel, metrics : paddingMetrics)
+        addConstraintsWithFormat("V:|-pt-[v0(60)]", views: checkLabel, metrics : paddingMetrics)
     }
     
 }

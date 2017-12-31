@@ -193,7 +193,7 @@ UICollectionViewDelegateFlowLayout {
     }
 
 
-     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let count = fanpagesGamves.count
         return count
     }

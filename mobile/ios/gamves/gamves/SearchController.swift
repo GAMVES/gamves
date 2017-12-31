@@ -37,6 +37,8 @@ class SearchImage {
     var fanpageId = Int()
     var thumbnailLink = String()
     var link = String()
+    var checked = Bool()
+    var title = String()
 }
 
 
@@ -108,13 +110,22 @@ class SearchController: UIViewController,
     var rowGalleryImage = RowGalleryImage()
     var rowGalleryImages = [RowGalleryImage]()
     var activityIndicatorView:NVActivityIndicatorView?
+    var imagesSelected = Dictionary<String, UIImage>()
     
     var start = Int()
     var end = Int()
     var lastTerm = String()
     
     var gridButtonTag = Int()
+    
+    var multiselect = Bool()
 
+    var countSelected = Int()
+    
+    var buttonView = UIView()
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -134,10 +145,41 @@ class SearchController: UIViewController,
         let backBarButon: UIBarButtonItem = UIBarButtonItem(customView: btnleft)
 
         self.navigationItem.setLeftBarButtonItems([backBarButon], animated: false)
-  
+        
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.tableView) 
+        
+        
+        multiselect = true
+        
+        if multiselect {
+            
+            
+            let width = self.view.frame.width
 
+            self.buttonView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: 50))
+            self.buttonView.backgroundColor = UIColor.gamvesBlackColor
+            let button = UIButton(frame: CGRect(x: 0, y: 0, width: width-40, height: 50))
+            button.setTitle("Add Images", for: .normal)
+            let image = UIImage(named: "add_white")
+            button.setImage(image, for: .normal)
+            button.addTarget(self, action: #selector(handleSaveImages), for: .touchUpInside)
+            self.buttonView.addSubview(button)
+            
+            self.view.addSubview(buttonView)
+            
+            self.view.addConstraintsWithFormat("V:|[v0][v1(50)]|", views:
+                self.tableView,
+                buttonView)
+            self.view.addConstraintsWithFormat("H:|[v0]|", views: buttonView)
+            
+            self.buttonView.isHidden = true
+            
+        } else {
+            
+            self.view.addConstraintsWithFormat("V:|[v0]|", views: self.tableView)
+            
+        }
+        
         self.searchController = UISearchController(searchResultsController: nil)
         self.searchController.searchResultsUpdater = self
         self.searchController.dimsBackgroundDuringPresentation = false
@@ -163,6 +205,8 @@ class SearchController: UIViewController,
         self.searchBar.text = termToSearch
         
         self.searchBar.becomeFirstResponder()
+        
+        
     
     }
     
@@ -244,9 +288,7 @@ class SearchController: UIViewController,
         return c
     }
     
-    
-    
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {        
         
         let index = indexPath.row as Int
@@ -289,6 +331,17 @@ class SearchController: UIViewController,
                     if  searchImage.image != nil {
                         cells.thumbnailImageView.image = searchImage.image
                         cells.thumbnailImageView.tag = index
+                        
+                        if searchImage.checked
+                        {
+                            cells.checkLabel.isHidden = false
+                            cells.isHighlighted = false
+                        } else
+                        {
+                            cells.checkLabel.isHidden = true
+                            cells.isHighlighted = true
+                        }
+                        
                     }
                 }
                 return cells
@@ -320,34 +373,32 @@ class SearchController: UIViewController,
     
     func button_1_tapped(_ sender: SearchGridImageCell){
         guard let tappedIndexPath = tableView.indexPath(for: sender) else { return }
+        
         let rowId = tappedIndexPath[1]
-        print(rowId)
         let imageId = (3 * rowId)
-        print(imageId)
         let searchImage = self.searchImages[imageId] as SearchImage
-        print(searchImage.link)
+        
         delegateMedia?.didPickImage!(searchImage.image)
         self.popBackToView()
     }
     func button_2_tapped(_ sender: SearchGridImageCell){
         guard let tappedIndexPath = tableView.indexPath(for: sender) else { return }
+        
         let rowId = tappedIndexPath[1]
-        print(rowId)
         let imageId = (3 * rowId) + 1
         print(imageId)
         let searchImage = self.searchImages[imageId] as SearchImage
-        print(searchImage.link)
+        
         delegateMedia?.didPickImage!(searchImage.image)
         self.popBackToView()
     }
     func button_3_tapped(_ sender: SearchGridImageCell){
         guard let tappedIndexPath = tableView.indexPath(for: sender) else { return }
         let rowId = tappedIndexPath[1]
-        print(rowId)
+    
         let imageId = (3 * rowId) + 2
-        print(imageId)
         let searchImage = self.searchImages[imageId] as SearchImage
-        print(searchImage.link)
+
         delegateMedia?.didPickImage!(searchImage.image)
         self.popBackToView()
     }
@@ -360,6 +411,21 @@ class SearchController: UIViewController,
                 // fail
             }
         }
+    }
+    
+    func handleSaveImages() {
+        
+        let titles = self.imagesSelected.keys
+        
+        var finalImages = [UIImage]()
+        
+        for t in titles {
+            finalImages.append(self.imagesSelected[t]!)
+        }
+        
+        delegateMedia?.didPickImages!(finalImages)
+        self.popBackToView()
+        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -445,12 +511,38 @@ class SearchController: UIViewController,
             
 
             } else if type == SearchType.isSingleImage {
-            
 
                 let searchImage = self.searchImages[index] as SearchImage
-                print(searchImage.link)
-                delegateMedia?.didPickImage!(searchImage.image)
-                self.popBackToView()
+                
+                
+                //delegateMedia?.didPickImage!(searchImage.image)
+                //self.popBackToView()
+                
+                let title = self.searchImages[index].title as String
+                
+                if self.searchImages[index].checked {
+                
+                    self.searchImages[index].checked = false
+                    countSelected = countSelected - 1
+                    
+                    self.imagesSelected.removeValue(forKey: title)
+                    
+                } else {
+        
+                    if countSelected < 5 {
+                        
+                        self.searchImages[index].checked = true
+                        countSelected = countSelected + 1
+                        
+                        let title = self.searchImages[index].title as String
+                        
+                        self.imagesSelected[title] =  self.searchImages[index].image
+                        
+                    }
+                    
+                }
+
+                self.tableView.reloadData()
                 
             }
             
@@ -731,6 +823,8 @@ class SearchController: UIViewController,
                             
                             image.link = item["link"].stringValue as! String
                             
+                            image.title = item["title"].stringValue as! String
+                            
                             if let imageDict = item["image"].dictionary {
                                 
                                 print(imageDict)
@@ -807,6 +901,10 @@ class SearchController: UIViewController,
                                             self.searchController.searchBar.isLoading = false
                                             
                                             DispatchQueue.main.async(execute: {
+                                                
+                                                if self.multiselect {
+                                                    self.buttonView.isHidden = false
+                                                }
                                                 
                                                 self.tableView.reloadData()
                                                 self.activityIndicatorView?.stopAnimating()

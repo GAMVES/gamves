@@ -31,7 +31,12 @@ public enum UploadType {
     case local
 }
 
-class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
+class NewFanpageController: UIViewController,
+SearchProtocol,
+MediaDelegate,
+UICollectionViewDataSource,
+UICollectionViewDelegate,
+UICollectionViewDelegateFlowLayout {
     
     var activityIndicatorView:NVActivityIndicatorView?
     
@@ -42,6 +47,8 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
     var category = CategoryGamves()
 
     var current : AnyObject?
+    
+    var imagesArray = [UIImage]()
     
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -155,8 +162,6 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         return button
     }()
     
-    
-    
     let imageSeparatorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.gamvesColor
@@ -185,15 +190,65 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         return button
     }()
     
-    //-- BOTTOM
-    
-    let bottomView: UIView = {
+    let imagesViewSeparatorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
+    
+    //-- IMAGES
+    
+    let imagesListView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.lightGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.cornerRadius = 5
+        return view
+    }()
+    
+    lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = UIColor.gamvesBackgoundColor
+        cv.dataSource = self
+        cv.delegate = self
+        cv.cornerRadius = 5
+        return cv
+    }()
+    
+    let imagesSeparatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.lightGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    lazy var addButton: UIButton = {
+        let button = UIButton()
+        let image = UIImage(named: "add_white")
+        button.setImage(image, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.contentMode = .scaleAspectFit
+        button.isUserInteractionEnabled = true
+        button.addTarget(self, action: #selector(handleAddImages), for: .touchUpInside)
+        button.cornerRadius = 20
+        //button.backgroundColor = UIColor.white
+        button.borderColor = UIColor.white
+        button.borderWidth = 2
+        return button
+    }()
+    
+    //-- BOTTOM
+    
+    let saveSeparatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor
@@ -206,16 +261,20 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         return button
     }()
     
-
-    var metricsNew = [String:CGFloat]()
+    let bottomView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
-    var videoSelLocalUrl:URL?
-    var videoSelData = Data()
-    var videoSelThumbnail = UIImage()
+    var metricsNew = [String:CGFloat]()
     
     var newVideoId = String()
     
     var touchedButton = UIButton()
+    
+    let cellImageCollectionId = "cellImageCollectionId"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -246,9 +305,9 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         let cp:CGFloat = 12
         let cs:CGFloat = cwidth - (cp*2)
         
-        print(cwidth)
-        print(cp)
-        print(cs)
+        //print(cwidth)
+        //print(cp)
+        //print(cs)
         
         self.metricsNew["cp"]    =  cp
         self.metricsNew["cs"]    =  cs
@@ -259,20 +318,27 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         self.scrollView.addSubview(self.namesView)
         self.scrollView.addSubview(self.imagesView)
         self.scrollView.addSubview(self.aboutSeparatorView)
-        self.scrollView.addSubview(self.bottomView)
+        self.scrollView.addSubview(self.imagesListView)
+        self.scrollView.addSubview(self.imagesViewSeparatorView)
+        self.scrollView.addSubview(self.saveSeparatorView)
         self.scrollView.addSubview(self.saveButton)
-    
+        self.scrollView.addSubview(self.bottomView)
+        
         self.scrollView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(40)][v2(cp)][v3(120)][v4(cp)][v5(100)][v6(cp)][v7(60)]|", views:
+            "V:|[v0(40)][v1(40)][v2(cp)][v3(120)][v4(cp)][v5(80)][v6(cp)][v7(100)][v8(cp)][v9(60)][v10]|", views:
             self.welcome,
             self.categoriesContainerView,
             self.categorySeparatorView,
             self.namesView,
             self.aboutSeparatorView,
             self.imagesView,
-            self.bottomView,
+            self.imagesViewSeparatorView,
+            self.imagesListView,
+            self.saveSeparatorView,
             self.saveButton,
+            self.bottomView,
             metrics: metricsNew)
+        
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.welcome, metrics: metricsNew)
         
@@ -304,6 +370,18 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.imagesView, metrics: metricsNew)
         
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.imagesViewSeparatorView, metrics: metricsNew)
+        
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.aboutSeparatorView, metrics: metricsNew)
+        
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.imagesListView, metrics: metricsNew)
+        
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.saveSeparatorView, metrics: metricsNew)
+        
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.saveButton, metrics: metricsNew)
+        
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.bottomView, metrics: metricsNew)
+        
         self.imagesView.addSubview(self.iconConteinerView)
         self.imagesView.addSubview(self.imageSeparatorView)
         self.imagesView.addSubview(self.coverConteinerView)
@@ -327,11 +405,21 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         self.coverConteinerView.addConstraintsWithFormat("H:|[v0(80)]|", views: self.coverButton)
         self.coverConteinerView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.coverButton)
         
-        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.aboutSeparatorView, metrics: metricsNew)
+        self.imagesListView.addSubview(self.collectionView)
+        self.imagesListView.addConstraintsWithFormat("V:|-10-[v0(80)]-10-|", views: self.collectionView)
         
-        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.saveButton, metrics: metricsNew)
+        self.imagesListView.addSubview(self.imagesSeparatorView)
+        self.imagesListView.addConstraintsWithFormat("V:|-10-[v0(80)]-10-|", views: self.imagesSeparatorView)
         
-        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.bottomView, metrics: metricsNew)
+        self.imagesListView.addSubview(self.addButton)
+        self.imagesListView.addConstraintsWithFormat("V:|-20-[v0(40)]-20-|", views: self.addButton)
+        
+        self.imagesListView.addConstraintsWithFormat(
+            "H:|-10-[v0][v1(cp)][v2(40)]-20-|", views:
+            self.collectionView,
+            self.imagesSeparatorView,
+            self.addButton,
+            metrics: metricsNew)
         
         var catArray = [String]()
         
@@ -351,6 +439,7 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         //Looks for single or multiple taps.
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
+        self.collectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
     
         //self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
         
@@ -541,17 +630,23 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         media.searchType = SearchType.isImageGallery
         navigationController?.pushViewController(media, animated: true)
     }
+    
+    func handleAddImages() {
+        let media = MediaController()
+        media.delegate = self
+        media.setType(type: MediaType.selectImage)
+        media.searchType = SearchType.isSingleImage
+        navigationController?.pushViewController(media, animated: true)
+    }
 
     
     func didPickImage(_ image: UIImage){
-
         self.touchedButton.setImage(image, for: .normal)
-        
     }
     
     func didPickImages(_ images: [UIImage]){
-        
-    
+        self.imagesArray = images
+        self.collectionView.reloadData()
     }
     
     
@@ -619,6 +714,45 @@ class NewFanpageController: UIViewController, SearchProtocol, MediaDelegate {
         }
         
         return errors
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let count = self.imagesArray.count
+        return count
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cellImage = collectionView.dequeueReusableCell(withReuseIdentifier: cellImageCollectionId, for: indexPath) as! ImagesCollectionViewCell
+        
+        cellImage.imageView.image = self.imagesArray[indexPath.row]
+        
+        return cellImage
+        
+        return cellImage
+    }
+    
+    /*func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let height = (view.frame.width - 16 - 16) * 9 / 16
+        
+        return CGSize(width: view.frame.width, height: height + 16 + 88)
+        
+    }*/
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let image:UIImage = self.imagesArray[indexPath.row]
+        
     }
 
 }
