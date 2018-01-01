@@ -70,7 +70,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     //////
     
     var urlRecorded:URL!
-    var isRecording = Bool()
+    var isLocalVideo = Bool()
     
     let layoutContainer: UIView = {
         let v = UIView()
@@ -483,18 +483,29 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
         print("appeared")
+        
+        var showOptions = Bool()
         
         if type == MediaType.selectVideo {
         
-            if isRecording {
+            if isLocalVideo {
+                
                 setupTrimmer()
-                isRecording = false
+                isLocalVideo = false
+                showOptions = false
+                
+            } else {
+                
+                showOptions = true
             }
             
         }
+        if showOptions {
+            self.shoOptions()
+        }
         
-        self.shoOptions()
         
     }
     
@@ -848,7 +859,7 @@ private extension MediaController {
                 
                 let takeVideoAction = UIAlertAction(title: Strings.TakeVideo, style: UIAlertActionStyle.default) { (_) -> Void in
                     
-                    self.isRecording = true
+                    self.isLocalVideo = true
                     
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.camera
                     self.mediaPicker.mediaTypes = [kUTTypeMovie as String]
@@ -857,6 +868,8 @@ private extension MediaController {
                 }
                 
                 let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
+                    
+                    self.isLocalVideo = true
                 
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
                     self.mediaPicker.mediaTypes = self.chooseExistingMediaTypes
