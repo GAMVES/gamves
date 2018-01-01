@@ -28,6 +28,8 @@
 		8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D7201F7AD44500F2A121 /* HomeViewController.swift */; };
 		8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */; };
 		8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */; };
+		822010B81FFAD684008C9027 /* FanpageApprovalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */; };
+		822010BA1FFAD960008C9027 /* ButtonsApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */; };
 		8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */; };
 		8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */; };
 		8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */; };
@@ -91,6 +93,8 @@
 		8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		8212D72F1F7C0A8400F2A121 /* gamvesparents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = gamvesparents.entitlements; sourceTree = "<group>"; };
+		822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FanpageApprovalLauncher.swift; sourceTree = "<group>"; };
+		822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsApprovalView.swift; sourceTree = "<group>"; };
 		8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalViewControlle.swift; sourceTree = "<group>"; };
 		8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalCell.swift; sourceTree = "<group>"; };
 		8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoApprovalView.swift; sourceTree = "<group>"; };
@@ -305,7 +309,9 @@
 		82E372441FB16AC6000AD7EB /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */,
 				82E372451FB16AD9000AD7EB /* VideoApprovalLauncher.swift */,
+				822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -493,6 +499,7 @@
 				82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions.swift in Sources */,
 				829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */,
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
+				822010BA1FFAD960008C9027 /* ButtonsApprovalView.swift in Sources */,
 				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
 				C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */,
@@ -505,6 +512,7 @@
 				8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */,
 				827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */,
 				82E372481FB16C32000AD7EB /* InfoView.swift in Sources */,
+				822010B81FFAD684008C9027 /* FanpageApprovalLauncher.swift in Sources */,
 				82E3723F1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift in Sources */,
 				82E372371FB16550000AD7EB /* GroupNameViewController.swift in Sources */,
 				8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */,

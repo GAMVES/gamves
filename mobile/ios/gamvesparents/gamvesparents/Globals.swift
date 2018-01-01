@@ -882,11 +882,8 @@ class Global: NSObject
                                             count = count + 1
                                         }
                                     })
-                                    
                                 }
-                                
                             })
-                            
                         }
                     }
                 }

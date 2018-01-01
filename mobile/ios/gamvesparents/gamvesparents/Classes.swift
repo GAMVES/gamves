@@ -38,6 +38,7 @@ class Approvals
     var approved = Int()
     var video = VideoGamves()
     var fanpage = FanpageGamves()
+    var type = Int()
 }
 
 

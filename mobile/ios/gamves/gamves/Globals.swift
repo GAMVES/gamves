@@ -27,6 +27,10 @@ class Global: NSObject
     
     static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
     
+    // KEY      AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU
+    
+    // ENGINE   010975053378915722447:h2ob_fkvam0
+    
     static var api_image_base = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="
     static var api_image_format = "&format=json"
     

@@ -11,6 +11,7 @@ import UIKit
 class InfoApprovalView: UIView {
     
     var videoGamves:VideoGamves!
+    var fanpageGamves:FanpageGamves!
 
 	let infoContView: UIView = {
         let view = UIView()
@@ -64,16 +65,33 @@ class InfoApprovalView: UIView {
     ///////////////////////////////////////////////////
 
 
-    init(frame: CGRect, video: VideoGamves)
+    init(frame: CGRect, obj: AnyObject)
     {
-        super.init(frame: frame)    
+        super.init(frame: frame)
+        
+        let type = type(of: obj)
+        
+        if (obj is VideoGamves) {
+            
+            let video = obj as! VideoGamves
+            
+            self.videoGamves = video
+            
+            self.infoTitleLabel.text = video.title
+            self.infoDescLabel.text = video.description
+        
+        } else if (obj is FanpageGamves) {
+            
+            let fanpage = obj as! FanpageGamves
+            
+            self.fanpageGamves = fanpage
+            
+            self.infoTitleLabel.text = fanpage.name
+            self.infoDescLabel.text = fanpage.about
+            
+        }
 
-        self.videoGamves = video
-        
-        self.infoTitleLabel.text = video.title
-        self.infoDescLabel.text = video.description
-        
-        self.infoContView.frame = frame  
+        self.infoContView.frame = frame
 
         self.addSubview(self.infoContView)     
         self.addConstraintsWithFormat("H:|[v0]|", views: self.infoContView)
