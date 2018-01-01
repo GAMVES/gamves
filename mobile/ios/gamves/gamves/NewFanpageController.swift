@@ -276,6 +276,9 @@ UICollectionViewDelegateFlowLayout {
     
     let cellImageCollectionId = "cellImageCollectionId"
     
+    var iconImage = UIImage()
+    var coverImage = UIImage()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -304,10 +307,6 @@ UICollectionViewDelegateFlowLayout {
         let cwidth:CGFloat = self.view.frame.width
         let cp:CGFloat = 12
         let cs:CGFloat = cwidth - (cp*2)
-        
-        //print(cwidth)
-        //print(cp)
-        //print(cs)
         
         self.metricsNew["cp"]    =  cp
         self.metricsNew["cs"]    =  cs
@@ -338,7 +337,6 @@ UICollectionViewDelegateFlowLayout {
             self.saveButton,
             self.bottomView,
             metrics: metricsNew)
-        
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.welcome, metrics: metricsNew)
         
@@ -442,6 +440,8 @@ UICollectionViewDelegateFlowLayout {
         self.collectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
     
         //self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
+        
+        self.prepTextFields(inView: [self.namesView])
         
     }
     
@@ -587,9 +587,6 @@ UICollectionViewDelegateFlowLayout {
                         
                         self.videoDescription = snptJson["description"].stringValue
                         
-                        print(self.videoDescription)
-                        
-                        
                         break
                     case .failure(let error):
                         print(error)
@@ -616,6 +613,7 @@ UICollectionViewDelegateFlowLayout {
     func handleCover() {
         self.touchedButton = coverButton
         let media = MediaController()
+        media.isImageMultiSelection = false
         media.delegate = self
         media.setType(type: MediaType.selectImage)
         media.searchType = SearchType.isSingleImage
@@ -634,13 +632,20 @@ UICollectionViewDelegateFlowLayout {
     func handleAddImages() {
         let media = MediaController()
         media.delegate = self
+        media.isImageMultiSelection = true
         media.setType(type: MediaType.selectImage)
         media.searchType = SearchType.isSingleImage
         navigationController?.pushViewController(media, animated: true)
     }
 
-    
     func didPickImage(_ image: UIImage){
+        
+        if self.touchedButton == iconButton {
+            self.iconImage = image
+        } else if self.touchedButton == coverButton {
+            self.coverImage = image
+        }
+        
         self.touchedButton.setImage(image, for: .normal)
     }
     
@@ -676,13 +681,120 @@ UICollectionViewDelegateFlowLayout {
         if !checErrors()
         {
             
+            var albumsPF = [PFObject]()
+            
             self.activityIndicatorView?.startAnimating()
+            
+            var count = 1
+            
+            for image in self.imagesArray {
+            
+                let albumPF: PFObject = PFObject(className: "Albums")
+                
+                let filename = "\(Global.generateFileName()).png"
+                
+                let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
+                
+                
+                albumPF["cover"] = imageFile
+                
+                albumPF["name"] = "\(count)"
+                
+                do {
+                
+                   try albumPF.saveInBackground()
+                
+                } catch let error {
+                    print(error.localizedDescription)
+                }
+                
+                albumsPF.append(albumPF)
+                
+                count = count + 1
+                
+            }
+            
             
             let fanpagePF: PFObject = PFObject(className: "Fanpages")
             
-            fanpagePF["title"] = self.nameTextField.text
+            fanpagePF["pageName"] = self.nameTextField.text
             
-            fanpagePF["title"] = self.nameTextField.text
+            fanpagePF["pageAbout"] = self.aboutTextField.text
+            
+            let filenameIcon = "icon.png"
+            
+            let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.iconImage, 1.0)!)
+            
+            fanpagePF.setObject(iconImageFile, forKey: "pageIcon")
+            
+            let coverIcon = "cover.png"
+            
+            let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.coverImage, 1.0)!)
+        
+            fanpagePF.setObject(coverImageFile, forKey: "pageCover")
+            
+            var fanpageId = Global.getRandomInt()
+            
+            fanpagePF["fanpageId"] = fanpageId
+            
+            fanpagePF["category"] = self.category.cateobj
+            
+            fanpagePF["categoryName"] = self.category.name
+            
+            fanpagePF["approved"] = false
+            
+            fanpagePF.saveInBackground(block: { (fanpge, error) in
+                
+                if error == nil {
+                    
+                    for albumObj  in albumsPF {
+                        
+                        albumObj["fanpageId"] = fanpageId
+                       
+                        do {
+                            
+                            try albumObj.saveInBackground()
+                            
+                        } catch let error {
+                            print(error.localizedDescription)
+                        }
+                    }
+            
+                    let approvals: PFObject = PFObject(className: "Approvals")
+                    
+                    approvals["referenceId"] = fanpageId
+                    approvals["posterId"] = PFUser.current()?.objectId
+                    let familyId = Global.gamvesFamily.objectId
+                    approvals["familyId"] = familyId
+                    approvals["approved"] = 0
+                    approvals["title"] = self.nameTextField.text
+                    approvals["type"] = 2
+                    
+                    approvals.saveInBackground { (resutl, error) in
+                        
+                        if error == nil {
+                            
+                            self.activityIndicatorView?.startAnimating()
+                            
+                            let title = "Fanpage created!"
+                            let message = "The fanpage \(self.nameTextField.text) has been created and sent to your parents for appoval. Thanks for submitting!"
+                            
+                            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                            
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                                
+                                self.navigationController?.popToRootViewController(animated: true)
+                                
+                            }))
+                            
+                            self.present(alert, animated: true)
+                            
+                        }
+                    }
+                }
+                
+            })
+            
         }
     }
     
@@ -693,24 +805,41 @@ UICollectionViewDelegateFlowLayout {
         let title = "Error"
         var message = ""
         
-        if self.videoSelThumbnail == nil
-        {
-            errors = true
-            message += "Thumbnail image is empty please add a new video"
-            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
-            
-        } else if self.videoSelData == nil
-        {
-            errors = true
-            message += "Please choose a video"
-            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
-            
-        } else if (self.categoryTypeTextField.text?.isEmpty)!
+        if (self.categoryTypeTextField.text?.isEmpty)!
         {
             errors = true
             message += "Catgory is empty"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.categoryTypeTextField)
+    
+        } else if (self.nameTextField.text?.isEmpty)!
+        {
+            errors = true
+            message += "Fanpage name cannot be empty"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.nameTextField)
             
+        } else if (self.aboutTextField.text?.isEmpty)!
+        {
+            errors = true
+            message += "Please provide and about description"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.aboutTextField)
+            
+        }  else if self.iconImage == nil
+        {
+            errors = true
+            message += "Icon image is empty please add a new image"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
+            
+        }  else if self.coverImage == nil
+        {
+            errors = true
+            message += "Cover image is empty please add a new image"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
+            
+        }  else if self.imagesArray.count < 2
+        {
+            errors = true
+            message += "Image gallery must have at least three images, please add them"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
         }
         
         return errors

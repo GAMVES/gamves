@@ -39,6 +39,8 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     
     open weak var delegate: MediaDelegate?
     
+    var isImageMultiSelection = Bool()
+    
     let backgroundView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
@@ -468,16 +470,13 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
             self.thumbnail = self.urlRecorded.generateThumbnail()
             
             //self.backgroundView.removeFromSuperview()
-            
             //self.trimmerView.isHidden = false
-            
             
             DispatchQueue.main.async() {
                 self.setTrimmerView()
             }
             
             //self.setupTrimmer(url:url)
-            
             //self.delegate?.didPickVideo?(url: url, data: videoData, thumbnail: thumbnail)
         }
         
@@ -496,6 +495,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         }
         
         self.shoOptions()
+        
     }
     
     func setupTrimmer() {
@@ -831,6 +831,7 @@ private extension MediaController {
                     
                     self.searchController.type = self.searchType
                     self.searchController.delegateMedia = self.delegate
+                    self.searchController.multiselect = self.isImageMultiSelection
                     self.searchController.view.backgroundColor = UIColor.white
                     self.navigationController?.navigationBar.tintColor = UIColor.white
                     self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]

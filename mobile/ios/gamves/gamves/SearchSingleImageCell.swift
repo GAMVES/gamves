@@ -41,6 +41,7 @@ class SearchSingleImageCell: UITableViewCell {
     
     var checkLabel: UILabel = {
         let label = UILabel()
+        label.isHidden = true
         return label
     }()
 

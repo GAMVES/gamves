@@ -124,8 +124,6 @@ class SearchController: UIViewController,
     
     var buttonView = UIView()
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -147,9 +145,6 @@ class SearchController: UIViewController,
         self.navigationItem.setLeftBarButtonItems([backBarButon], animated: false)
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
-        
-        
-        multiselect = true
         
         if multiselect {
             
@@ -206,8 +201,6 @@ class SearchController: UIViewController,
         
         self.searchBar.becomeFirstResponder()
         
-        
-    
     }
     
     func goBack()
@@ -329,17 +322,21 @@ class SearchController: UIViewController,
                 if let searchImage = self.searchImages[index] as! SearchImage? {
                     
                     if  searchImage.image != nil {
+                        
                         cells.thumbnailImageView.image = searchImage.image
                         cells.thumbnailImageView.tag = index
                         
-                        if searchImage.checked
-                        {
-                            cells.checkLabel.isHidden = false
-                            cells.isHighlighted = false
-                        } else
-                        {
-                            cells.checkLabel.isHidden = true
-                            cells.isHighlighted = true
+                        if multiselect {
+                        
+                            if searchImage.checked
+                            {
+                                cells.checkLabel.isHidden = false
+                                cells.isHighlighted = false
+                            } else
+                            {
+                                cells.checkLabel.isHidden = true
+                                cells.isHighlighted = true
+                            }
                         }
                         
                     }
@@ -392,7 +389,7 @@ class SearchController: UIViewController,
         delegateMedia?.didPickImage!(searchImage.image)
         self.popBackToView()
     }
-    func button_3_tapped(_ sender: SearchGridImageCell){
+    func button_3_tapped(_ sender: SearchGridImageCell) {
         guard let tappedIndexPath = tableView.indexPath(for: sender) else { return }
         let rowId = tappedIndexPath[1]
     
@@ -512,40 +509,43 @@ class SearchController: UIViewController,
 
             } else if type == SearchType.isSingleImage {
 
-                let searchImage = self.searchImages[index] as SearchImage
+                if multiselect {
                 
-                
-                //delegateMedia?.didPickImage!(searchImage.image)
-                //self.popBackToView()
-                
-                let title = self.searchImages[index].title as String
-                
-                if self.searchImages[index].checked {
-                
-                    self.searchImages[index].checked = false
-                    countSelected = countSelected - 1
+                    let title = self.searchImages[index].title as String
                     
-                    self.imagesSelected.removeValue(forKey: title)
+                    if self.searchImages[index].checked {
                     
-                } else {
-        
-                    if countSelected < 5 {
+                        self.searchImages[index].checked = false
+                        countSelected = countSelected - 1
                         
-                        self.searchImages[index].checked = true
-                        countSelected = countSelected + 1
+                        self.imagesSelected.removeValue(forKey: title)
                         
-                        let title = self.searchImages[index].title as String
-                        
-                        self.imagesSelected[title] =  self.searchImages[index].image
+                    } else {
+            
+                        if countSelected < 5 {
+                            
+                            self.searchImages[index].checked = true
+                            countSelected = countSelected + 1
+                            
+                            let title = self.searchImages[index].title as String
+                            
+                            self.imagesSelected[title] =  self.searchImages[index].image
+                            
+                        }
                         
                     }
                     
-                }
-
-                self.tableView.reloadData()
+                    self.tableView.reloadData()
+                    
+                } else  {
                 
+                    let searchImage = self.searchImages[index] as SearchImage
+                    
+                    delegateMedia?.didPickImage!(searchImage.image)
+                    self.popBackToView()
+                
+                }
             }
-            
         }    
     }  
     
@@ -590,7 +590,6 @@ class SearchController: UIViewController,
             }
         }
     }
-    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

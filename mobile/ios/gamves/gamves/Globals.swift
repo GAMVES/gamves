@@ -858,7 +858,7 @@ class Global: NSObject
         
     }
 
-    static func alertWithTitle(viewController: UIViewController, title: String!, message: String, toFocus:UITextField?)
+    static func alertWithTitle(viewController: UIViewController, title: String!, message: String, toFocus:AnyObject?)
     {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -1164,6 +1164,36 @@ class Global: NSObject
             }
         }
         
+    }
+    
+    static func generateFileName() -> String
+    {
+        var name = String()
+        
+        if let userId = PFUser.current()?.objectId {
+            
+            print(userId)
+            
+            let date = Date()
+            let calendar = Calendar.current
+            
+            let hour = String(calendar.component(.hour, from: date))
+            
+            let minutes = String(calendar.component(.minute, from: date))
+            
+            let seconds = String(calendar.component(.second, from: date))
+            
+            let hm:String = "\(hour)\(minutes)\(seconds)"
+            
+            print(hm)
+            
+            name = "\(userId)_\(hm)"
+            
+            print(name)
+            
+        }
+        
+        return name
     }
 
 }

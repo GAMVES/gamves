@@ -492,8 +492,6 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         //Looks for single or multiple taps.
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
-        print(self.generateFileName())
-        
         self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
         
     }
@@ -886,7 +884,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             
             videoPF["s3_source"] = json["s3_source"]
             
-            let filename = "\(self.generateFileName()).png"
+            let filename = "\(Global.generateFileName()).png"
             
             let thumbnail = PFFile(name: filename, data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
             
@@ -952,41 +950,12 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
                             
                         }))
                         
-                        
+                        self.present(alert, animated: true)
                     }
                 }
             }
         }
-        
     }
-    
-    func generateFileName() -> String
-    {
-        var name = String()
-        
-        if let userId = PFUser.current()?.objectId {
-            
-            print(userId)
-            
-            let date = Date()
-            let calendar = Calendar.current
-            
-            let hour = String(calendar.component(.hour, from: date))
-            let minutes = String(calendar.component(.minute, from: date))
-            
-            let hm:String = "\(hour)\(minutes)"
-            
-            print(hm)
-            
-            name = "\(userId)_\(hm)"
-            
-            print(name)
-            
-        }
-        
-        return name
-    }
-    
     
     func uploadToS3(completionHandler : @escaping (_ resutl:URL) -> ()){
         
@@ -997,7 +966,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         AWSServiceManager.default().defaultServiceConfiguration = configuration
         
         let url = self.videoSelLocalUrl
-        let remoteName = "\(self.generateFileName()).mp4"
+        let remoteName = "\(Global.generateFileName()).mp4"
         let S3BucketName = "gamves"
         let uploadRequest = AWSS3TransferManagerUploadRequest()!
         uploadRequest.body = url!
