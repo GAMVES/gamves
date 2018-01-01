@@ -11,6 +11,7 @@ import Parse
 import ParseLiveQuery
 import NVActivityIndicatorView
 import PopupDialog
+import AVFoundation
 
 class MessageChat
 {
@@ -27,7 +28,9 @@ class ChatView: UIView,
 	UICollectionViewDataSource,
     UICollectionViewDelegate, 
     UICollectionViewDelegateFlowLayout, 
-    UITextFieldDelegate
+    UITextFieldDelegate,
+    AVAudioRecorderDelegate,
+    AVAudioPlayerDelegate
 {
     
     var activityView: NVActivityIndicatorView!
@@ -128,9 +131,9 @@ class ChatView: UIView,
     }()
 
 
-    lazy var sendButton: UIButton = {
+    lazy var recSendButton: UIButton = {
         let button = UIButton(type: .system)
-        let sendImage = UIImage(named: "send")
+        let sendImage = UIImage(named: "rec_off")
         sendImage?.maskWithColor(color: UIColor.gamvesColor)
         button.setImage(sendImage, for: UIControlState.normal)
         button.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
@@ -138,6 +141,14 @@ class ChatView: UIView,
     }()
     
     var tabGesture = UITapGestureRecognizer()
+    
+    // RECORDING
+    
+    var audioPlayer : AVAudioPlayer!
+    var recordingSession : AVAudioSession!
+    var audioRecorder    :AVAudioRecorder!
+    var settings         = [String : Int]()
+    
     
     init(frame: CGRect, isVideo:Bool) {
         super.init(frame: frame)
@@ -220,8 +231,133 @@ class ChatView: UIView,
         
         self.collectionView.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
         
+        recordingSession = AVAudioSession.sharedInstance()
+        do {
+            try recordingSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try recordingSession.setActive(true)
+            recordingSession.requestRecordPermission() { [unowned self] allowed in
+                DispatchQueue.main.async {
+                    if allowed {
+                        print("Allow")
+                    } else {
+                        print("Dont Allow")
+                    }
+                }
+            }
+        } catch {
+            print("failed to record!")
+        }
+        
+        // Audio Settings
+        
+        settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 12000,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
+        
     }
-
+    
+    
+    //-- RECORD AUDIO
+    
+    func directoryURL() -> NSURL? {
+        let fileManager = FileManager.default
+        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        let documentDirectory = urls[0] as NSURL
+        let soundURL = documentDirectory.appendingPathComponent("sound.m4a")
+        print(soundURL)
+        return soundURL as NSURL?
+    }
+    
+    func startRecording() {
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            audioRecorder = try AVAudioRecorder(url: self.directoryURL()! as URL,
+                                                settings: settings)
+            audioRecorder.delegate = self
+            audioRecorder.prepareToRecord()
+        } catch {
+            finishRecording(success: false)
+        }
+        do {
+            try audioSession.setActive(true)
+            audioRecorder.record()
+        } catch {
+        }
+    }
+    
+    func finishRecording(success: Bool) {
+        audioRecorder.stop()
+        if success {
+            print(success)
+        } else {
+            audioRecorder = nil
+            print("Somthing Wrong.")
+        }
+    }
+    
+    
+    func click_AudioRecord(_ sender: AnyObject) {
+        if audioRecorder == nil {
+            
+            
+            //self.btnAudioRecord.setTitle("Stop", for: UIControlState.normal)
+            //self.btnAudioRecord.backgroundColor = UIColor(red: 119.0/255.0, green: 119.0/255.0, blue: 119.0/255.0, alpha: 1.0)
+            
+            let onImage = UIImage(contentsOfFile: "rec_on")
+            
+            self.recSendButton.setImage(onImage, for: .normal)
+            
+            self.startRecording()
+            
+        } else {
+            
+            //self.btnAudioRecord.setTitle("Record", for: UIControlState.normal)
+            //self.btnAudioRecord.backgroundColor = UIColor(red: 221.0/255.0, green: 27.0/255.0, blue: 50.0/255.0, alpha: 1.0)
+            
+            let recImage = UIImage(contentsOfFile: "rec_off")
+            
+            self.recSendButton.setImage(recImage, for: .normal)
+            
+            self.finishRecording(success: true)
+        }
+    }
+    
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        if !flag {
+            finishRecording(success: false)
+        }
+    }
+    
+    
+    //-- PLAY AUDIO
+    
+    func doPlay(_ sender: AnyObject) {
+        if !audioRecorder.isRecording {
+            self.audioPlayer = try! AVAudioPlayer(contentsOf: audioRecorder.url)
+            self.audioPlayer.prepareToPlay()
+            self.audioPlayer.delegate = self
+            self.audioPlayer.play()
+        }
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        print(flag)
+    }
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?){
+        print(error.debugDescription)
+    }
+    internal func audioPlayerBeginInterruption(_ player: AVAudioPlayer){
+        print(player.debugDescription)
+    }
+    
+    
+    //--
+    
+    
     func setParams(parameters: [String: Any?])
     {
         if parameters["chatId"] != nil {
@@ -1056,13 +1192,13 @@ class ChatView: UIView,
         topBorderView.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
         
         self.messageInputContainerView.addSubview(inputTextField)
-        self.messageInputContainerView.addSubview(sendButton)
+        self.messageInputContainerView.addSubview(recSendButton)
         self.messageInputContainerView.addSubview(topBorderView)
         
-        self.messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0][v1(60)]|", views: inputTextField, sendButton)
+        self.messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0][v1(60)]|", views: inputTextField, recSendButton)
         
         self.messageInputContainerView.addConstraintsWithFormat("V:|[v0]|", views: inputTextField)
-        self.messageInputContainerView.addConstraintsWithFormat("V:|[v0]|", views: sendButton)
+        self.messageInputContainerView.addConstraintsWithFormat("V:|[v0]|", views: recSendButton)
         
         self.messageInputContainerView.addConstraintsWithFormat("H:|[v0]|", views: topBorderView)
         self.messageInputContainerView.addConstraintsWithFormat("V:|[v0(0.5)]", views: topBorderView)
