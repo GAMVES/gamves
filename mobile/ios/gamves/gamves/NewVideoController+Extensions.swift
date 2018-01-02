@@ -96,15 +96,15 @@ extension NewVideoController : UITextFieldDelegate, UITextViewDelegate {
          
         if textObj as! NSObject == youtubeUrlTextField {
         
-            scroll = 100
+            scroll = 60
         
         } else if textObj as! NSObject == titleTextField {
          
-            scroll = 150
+            scroll = 90
         
         } else if textObj as! NSObject == descriptionTextView {
             
-            scroll = 200
+            scroll = 140
         }
         
         scrollView.setContentOffset(CGPoint(x:0, y:scroll), animated: false)

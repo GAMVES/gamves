@@ -37,7 +37,9 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     var strongSelf: MediaController?
     var imagePicker: UIImagePickerController! = UIImagePickerController()
     
-    open weak var delegate: MediaDelegate?
+    var delegate: MediaDelegate?
+    
+    var delegateSearch:SearchProtocol?
     
     var isImageMultiSelection = Bool()
     
@@ -187,6 +189,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         button.setTitle("Crop Video and save", for: UIControlState())
         button.backgroundColor = UIColor.gambesDarkColor
         button.addTarget(self, action: #selector(handleCrop), for: .touchUpInside)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         return button
     }()
     
@@ -208,6 +211,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         button.setTitle("Save Video without cropping", for: UIControlState())
         button.backgroundColor = UIColor.gambesDarkColor
         button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         return button
     }()
     
@@ -243,11 +247,11 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     lazy var searchController: SearchController = {
         let search = SearchController()
         search.mediaController = self
-        //search.delegateSearch = self
         return search
     }()
-
     
+    var termToSearch = String()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -268,7 +272,6 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         self.view.addConstraintsWithFormat("V:|-50-[v0(100)][v1]|", views: self.msgLabel, self.bottomView)
         
         self.mediaPicker.delegate = self
-        
         
     }
     
@@ -293,7 +296,12 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         self.delegate?.didPickVideo?(url: self.urlRecorded, data: self.videoData, thumbnail: self.thumbnail)
         
         //self.navigationController?.popViewController(animated: true)
-        self.navigationController?.popToRootViewController(animated: true)
+        //self.navigationController?.popToRootViewController(animated: true)
+        
+        if let navController = self.navigationController {
+            navController.popViewController(animated: true)
+        }
+
     }
     
     func setTrimmerView() {
@@ -469,22 +477,17 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
             
             self.thumbnail = self.urlRecorded.generateThumbnail()
             
-            //self.backgroundView.removeFromSuperview()
-            //self.trimmerView.isHidden = false
-            
             DispatchQueue.main.async() {
                 self.setTrimmerView()
             }
-            
-            //self.setupTrimmer(url:url)
-            //self.delegate?.didPickVideo?(url: url, data: videoData, thumbnail: thumbnail)
+        
         }
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
-        print("appeared")
+        //print("appeared")
         
         var showOptions = Bool()
         
@@ -501,7 +504,13 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
                 showOptions = true
             }
             
+        } else if type == MediaType.selectImage {
+            
+            showOptions = true
+            
         }
+        
+        
         if showOptions {
             self.shoOptions()
         }
@@ -830,6 +839,8 @@ private extension MediaController {
                     self.present(self.mediaPicker, animated: true, completion: nil)
                     
                 }
+                takePhotoAction.setValue(UIImage(named: "camera_black"), forKey: "image")
+
                 
                 let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
@@ -837,18 +848,23 @@ private extension MediaController {
                     self.mediaPicker.mediaTypes = self.chooseExistingMediaTypes
                     self.present(self.mediaPicker, animated: true, completion: nil)
                 }
+                chooseExistingAction.setValue(UIImage(named: "sdcard"), forKey: "image")
+                
                 
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.searchController.type = self.searchType
+                    self.searchController.termToSearch = self.termToSearch
                     self.searchController.delegateMedia = self.delegate
                     self.searchController.multiselect = self.isImageMultiSelection
+                    self.searchController.delegateSearch = self.delegateSearch
                     self.searchController.view.backgroundColor = UIColor.white
                     self.navigationController?.navigationBar.tintColor = UIColor.white
                     self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
                     self.navigationController?.pushViewController(self.searchController, animated: true)
                     
                 }
+                searchExistingAction.setValue(UIImage(named: "download"), forKey: "image")
                 
                 actionSheet.addAction(takePhotoAction)
                 actionSheet.addAction(chooseExistingAction)
@@ -866,6 +882,7 @@ private extension MediaController {
                     self.present(self.mediaPicker, animated: true, completion: nil)
                     
                 }
+                takeVideoAction.setValue(UIImage(named: "camera_black"), forKey: "image")
                 
                 let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
@@ -876,33 +893,27 @@ private extension MediaController {
                     self.present(self.mediaPicker, animated: true, completion: nil)
                     
                 }
+                chooseExistingAction.setValue(UIImage(named: "sdcard"), forKey: "image")
                 
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.searchController.type = SearchType.isVideo
+                    self.searchController.termToSearch = self.termToSearch
                     self.searchController.delegateMedia = self.delegate
+                    self.searchController.delegateSearch = self.delegateSearch
                     self.searchController.view.backgroundColor = UIColor.white
                     self.navigationController?.navigationBar.tintColor = UIColor.white
                     self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
                     self.navigationController?.pushViewController(self.searchController, animated: true)
                     
                 }
+                searchExistingAction.setValue(UIImage(named: "download"), forKey: "image")
                 
                 actionSheet.addAction(takeVideoAction)
                 actionSheet.addAction(chooseExistingAction)
                 actionSheet.addAction(searchExistingAction)
                 
             }
-        } else {
-            
-            /*let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
-                self.mediaPicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
-                self.mediaPicker.mediaTypes = self.chooseExistingMediaTypes
-                self.present(self.mediaPicker, animated: true, completion: nil)
-            }
-            
-            actionSheet.addAction(chooseExistingAction)*/
-        
         }
         
         self.addCancelActionToSheet(actionSheet)
@@ -979,11 +990,11 @@ private extension MediaController {
         
         static let TakeVideo = NSLocalizedString("Record with Camera", comment: "")
         static let ChooseVideo = NSLocalizedString("Choose existing", comment: "")
-        static let SearchVideo = NSLocalizedString("Search on the Internet", comment: "")
+        static let SearchVideo = NSLocalizedString("Internet", comment: "")
         
         static let ChoosePhoto = NSLocalizedString("Choose existing", comment: "")
         static let TakePhoto = NSLocalizedString("Camera", comment: "")
-        static let SearchPhoto = NSLocalizedString("Search on the Internet", comment: "")
+        static let SearchPhoto = NSLocalizedString("Internet", comment: "")
         
         static let Cancel = NSLocalizedString("Cancel", comment: "Text for the 'cancel' action in a generic action sheet for picking media from the device.")
     }
@@ -1004,3 +1015,4 @@ private extension URL {
     }
     
 }
+

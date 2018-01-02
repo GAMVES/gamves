@@ -78,11 +78,11 @@ class SearchController: UIViewController,
         return t
     }()
 
-    var searchBar : UISearchBar = {
+    /*var searchBar : UISearchBar = {
         let search = UISearchBar()
         search.translatesAutoresizingMaskIntoConstraints = false
         return search
-    }()
+    }()*/
     
     var newVideoController:NewVideoController!
     
@@ -197,10 +197,20 @@ class SearchController: UIViewController,
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
         
-        self.searchBar.text = termToSearch
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        self.searchBar.becomeFirstResponder()
-        
+        if self.termToSearch != nil {
+            
+            self.searchController.isActive = true
+            
+            self.searchController.searchBar.becomeFirstResponder()
+            
+            self.searchController.searchBar.text = self.termToSearch
+            
+        }
     }
     
     func goBack()
@@ -209,29 +219,16 @@ class SearchController: UIViewController,
         _ = navigationController?.popViewController(animated: true)
     }
 
-    /*func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
-        print("searchBarTextDidBeginEditing")
-    }
-
-    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
-        print("searchBarTextDidEndEditing")
-    }
-
-    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-        print("searchBarCancelButtonClicked")
-    }
-
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-        print("searchBarSearchButtonClicked")
-    }*/
-
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
 
-        if !self.searchBar.text!.isEmpty {
+        
+        if !self.searchController.searchBar.text!.isEmpty {
+            
             isSuggestion = true
             resultArr = [String]()        
             self.findSuggestion(stringToSearch: searchController.searchBar.text!)
         } else {
+            
             resultArr.removeAll()
             self.tableView.reloadData()
         }      
@@ -494,15 +491,15 @@ class SearchController: UIViewController,
                 if let yVideo = self.videoDetailsDict[index] as! YVideo? {
                     
                     let videoId = yVideo.videoId
-                    //self.setYoutubePlayer(id: videoId)
-                    self.delegateSearch.setResultOfsearch(videoId: videoId, 
+                    
+                    self.delegateSearch.setResultOfsearch(videoId: videoId,
                         title: yVideo.title, 
                         description : yVideo.description,
                         duration : yVideo.duration,
                         image : yVideo.image)
                     
-                   self.tableView.tableHeaderView = nil                
-                    _ = navigationController?.popViewController(animated: true)
+                    self.tableView.tableHeaderView = nil
+                    self.popBackToView()
                     
                 }
             
@@ -550,8 +547,6 @@ class SearchController: UIViewController,
     }  
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        // handle your logic here to get more items, add it to dataSource and reload tableview
         
         if type == SearchType.isVideo {
             
@@ -925,10 +920,6 @@ class SearchController: UIViewController,
                 }
         }
     }
-
-    
-
 }
-
 
 

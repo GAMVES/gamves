@@ -18,19 +18,6 @@ import MobileCoreServices
 import AWSS3
 import AWSCore
 
-/*protocol VideoProtocol {
-    func selectedVideo(videoUrl: String, title: String, description : String, image : UIImage)
-}
-
-protocol SearchProtocol {
-    func setResultOfsearch(videoId: String, title: String, description : String, duration : String, image : UIImage)
-}
-
-public enum UploadType {
-    case youtube
-    case local
-}*/
-
 class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     
     var type: UploadType!
@@ -92,20 +79,6 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         return tf
     }()
 
-    let fanpageSeparatorView: UIView = {
-        let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    var typeDownPicker: DownPicker!
-    let typeTextField: UITextField = {
-        let tf = UITextField()        
-        tf.translatesAutoresizingMaskIntoConstraints = false        
-        return tf
-    }()
-    
     let categorySeparatorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.gamvesColor
@@ -171,6 +144,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         imageIcon?.maskWithColor(color: UIColor.white)
         button.setImage(imageIcon, for: .normal)
         button.layer.cornerRadius = 5
+        button.isEnabled = false
         return button
     }()
 
@@ -186,12 +160,13 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     lazy var videoButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor        
-        button.setTitle("Record video", for: UIControlState())
+        button.setTitle("Choose video", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.addTarget(self, action: #selector(handleVideo), for: .touchUpInside)       
-        button.layer.cornerRadius = 5 
+        button.layer.cornerRadius = 5
+        button.isEnabled = false
         return button
     }()	
 
@@ -219,7 +194,9 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         cameraButton.contentMode = .scaleAspectFit
         cameraButton.isUserInteractionEnabled = true
         cameraButton.addTarget(self, action: #selector(handleCameraImage), for: .touchUpInside)
+        cameraButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         cameraButton.tag = 0
+        cameraButton.isEnabled = false
         return cameraButton
     }()
 
@@ -244,6 +221,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.backgroundColor = UIColor.white
         tf.tag = 1
+        tf.isEnabled = false
         return tf
     }()
 
@@ -255,12 +233,13 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     }()
 
     let descriptionTextView: UITextView  = {
-        let tf = UITextView()
-        tf.placeholder = "Description"
-        tf.font = UIFont.systemFont(ofSize: 16)
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.tag = 2
-        return tf
+        let tv = UITextView()
+        tv.placeholder = "Description"
+        tv.font = UIFont.systemFont(ofSize: 16)
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        tv.tag = 2
+        tv.isEditable = false
+        return tv
     }()
    
     //-- save
@@ -273,9 +252,10 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         button.setTitle("Add video to Gamves", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)       
-        button.layer.cornerRadius = 5 
+        button.layer.cornerRadius = 5
+        button.isEnabled = false
         return button
     }()
 
@@ -300,6 +280,8 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     var videoSelThumbnail = UIImage()
     
     var newVideoId = String()
+    
+    var isYoutubeHidden = Bool()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -339,6 +321,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         self.scrollView.addSubview(self.saveButton)
         self.scrollView.addSubview(self.bottomView)
         
+        
         let cwidth:CGFloat = self.view.frame.width
         let cp:CGFloat = 12
         let cs:CGFloat = cwidth - (cp*2)
@@ -349,9 +332,20 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         
         self.metricsNew["cp"]    =  cp
         self.metricsNew["cs"]    =  cs
+        
+        if self.isYoutubeHidden {
+            
+            self.metricsNew["yt"]  =  0
+            self.metricsNew["cy"]  =  0
+            
+        } else {
+            
+            self.metricsNew["yt"]  =  40
+            self.metricsNew["cy"]  =  cp
+        }
 
         self.scrollView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(124)][v2(cp)][v3(60)][v4(cp)][v5(40)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|", views:
+            "V:|[v0(40)][v1(82)][v2(cp)][v3(60)][v4(cy)][v5(yt)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|", views:
             self.welcome,
             self.categoriesContainerView,
             self.categorySeparatorView,            
@@ -382,24 +376,18 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
 
 		self.categoriesContainerView.addSubview(self.categoryTypeTextField)
         self.categoriesContainerView.addSubview(self.categoryTypeSeparatorView)
-        self.categoriesContainerView.addSubview(self.fanpageTextField)                
-        self.categoriesContainerView.addSubview(self.fanpageSeparatorView)  
-        self.categoriesContainerView.addSubview(self.typeTextField)    
-
+        self.categoriesContainerView.addSubview(self.fanpageTextField)
+    
         self.categoriesContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.categoryTypeTextField)
         self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.categoryTypeSeparatorView)        
         self.categoriesContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.fanpageTextField)
-        self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.fanpageSeparatorView)       
-        self.categoriesContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.typeTextField)                	
-
+        
         self.categoriesContainerView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(2)][v2(40)][v3(2)][v4(40)]|", 
+            "V:|[v0(40)][v1(2)][v2(40)]|",
             views: 
             self.categoryTypeTextField, 
             self.categoryTypeSeparatorView, 
-            self.fanpageTextField,
-            self.fanpageSeparatorView,            
-            self.typeTextField) 
+            self.fanpageTextField)
 
         //self.categoryTypeTextField.becomeFirstResponder()
 
@@ -416,17 +404,10 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
 
         self.categoryDownPicker.addTarget(self, action: #selector(selectedCategory), for: UIControlEvents.valueChanged )
 
-        let types: NSMutableArray = ["Youtube", "Local"]		
-        self.typeDownPicker = DownPicker(textField: typeTextField, withData:types as! [Any])
-        self.typeDownPicker.setPlaceholder("Tap to choose type of video...")
-
-        self.typeDownPicker.addTarget(self, action: #selector(selectedType), for: UIControlEvents.valueChanged )
-        
         self.fanpageDownPicker = DownPicker(textField: fanpageTextField)
 
         self.fanpageDownPicker.isEnabled = false
-        self.typeDownPicker.isEnabled = false        
-
+        
 		//-- youtubeVideoRowView youtube
 
 		self.youtubeVideoRowView.addSubview(self.youtubeUrlTextField)
@@ -479,27 +460,25 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
 			self.titleDescSeparatorView,
 			self.descriptionTextView)	
 		
-		//self.videoButton.isHidden = true
-		//self.uploadButton.isHidden = true
-
-		//self.youtubeUrlTextField.isHidden = true
-		//self.searchButton.isHidden = true
-
 		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
-		//self.handleSearch()*/ 
-        
         //Looks for single or multiple taps.
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
-        self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
+        if isYoutubeHidden {
+        
+            self.prepTextFields(inView: [self.titleDescContainerView])
+            
+        } else {
+            
+            self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
+            
+        }
         
     }
     
     func backButtonPressed(sender: UIBarButtonItem)
     {
-        //self.delegateFeed.uploadData()
-        //self.navigationController?.popViewController(animated: true)
         self.navigationController?.popToRootViewController(animated: true)
     }
     
@@ -564,44 +543,13 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             }
         }
         
-        self.typeDownPicker.isEnabled = true
-
-        self.typeTextField.becomeFirstResponder()
-
+        self.videoButton.isEnabled = true
+        self.cameraButton.isEnabled = true
+        self.titleTextField.isEnabled = true
+        self.descriptionTextView.isEditable = true
+        
     }
 
-
-    func selectedType(picker: DownPicker)
-    {
-
-		self.titleDescContainerView.isHidden = false
-		self.youtubeVideoRowView.isHidden = false
-		self.previewVideoRowView.isHidden = false
-
-    	let value = picker.getTextField().text
-
-    	if value == "Youtube"
-    	{
-            
-			//self.youtubeUrlTextField.alpha = 1
-			//self.searchButton.alpha = 1
-            //self.youtubeVideoRowView.alpha = 1
-
-			//self.videoButton.alpha = 0.25
-			//self.uploadButton.alpha = 0.25
-            
-            self.youtubeUrlTextField.isUserInteractionEnabled = true
-            self.searchButton.isUserInteractionEnabled = true
-            
-            self.videoButton.isUserInteractionEnabled = false
-            
-
-    	} else if value == "Local" {
-            self.videoButton.isUserInteractionEnabled = true
-            self.youtubeUrlTextField.isUserInteractionEnabled = false
-            self.searchButton.isUserInteractionEnabled = false            
-    	}  
-    }
     
     var thumbnailImage      = UIImage()
     var thumbnail_url       = String()
@@ -718,6 +666,16 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     func categoryFieldDidChange(_ textField: UITextField) {
 
 	}
+    
+    func handleVideo() {
+        self.type = UploadType.local
+        let media = MediaController()
+        media.delegate = self
+        media.delegateSearch = self
+        media.termToSearch = fanpageTextField.text!
+        media.setType(type: MediaType.selectVideo)
+        navigationController?.pushViewController(media, animated: true)
+    }
 
 	func handleSearch() {
         self.type = UploadType.youtube
@@ -732,6 +690,8 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     func handleCameraImage() {
         let media = MediaController()
         media.delegate = self
+        media.delegateSearch = self
+        media.termToSearch = fanpageTextField.text!
         media.setType(type: MediaType.selectImage)
         navigationController?.pushViewController(media, animated: true)
     }
@@ -754,14 +714,6 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         
     }
 
-   	func handleVideo() {
-        self.type = UploadType.local
-        let media = MediaController()
-        media.delegate = self
-        media.setType(type: MediaType.selectVideo)
-        navigationController?.pushViewController(media, animated: true)
-    }
-    
     func setResultOfsearch(videoId: String, title: String, description : String, duration: String, image : UIImage)
     {
     	self.videoId = videoId
@@ -769,11 +721,17 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     	self.videoDescription = description
     	self.thumbnailImage = image
 
-        self.video_url = "https://www.youtube.com/watch?v=" + self.videoId
-        self.youtubeUrlTextField.text = self.video_url
+        if !isYoutubeHidden {
+            self.video_url = "https://www.youtube.com/watch?v=" + self.videoId
+            self.youtubeUrlTextField.text = self.video_url
+        }
+        
     	self.titleTextField.text = title
     	self.descriptionTextView.text = description
     	self.cameraButton.setImage(image, for: .normal)
+        
+        self.saveButton.isEnabled = true
+        
     }
     
     func handleSave() {
@@ -1034,14 +992,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             message += "Fanpage is empty"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.fanpageTextField)
             
-        } else if ((self.typeDownPicker.getTextField().text == "Youtube") && (self.youtubeUrlTextField.text?.isEmpty)!)
-        {
-            errors = true
-            message += "Youtube video is empty"
-            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.youtubeUrlTextField)
-            
-        }
-        else if (self.titleTextField.text?.characters.count)! < 1
+        } else if (self.titleTextField.text?.characters.count)! < 1
         {
             errors = true
             message += "The title of the video is empty"
