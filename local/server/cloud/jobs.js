@@ -51,6 +51,7 @@
     queryVideos.find({
       useMasterKey: true,
       success: function(results) {
+
         if( results.length > 0) 
         {
             var videoObject = results[0];
@@ -85,7 +86,8 @@
                           removed: false, 
                           thumbnail: file,
                           s3_source: uploadedUrl,
-                          downloaded: true
+                          downloaded: true,
+                          source_type: 2
                         }, { useMasterKey: true,
                           success: function () {
                               //response.success('Success!');
@@ -104,4 +106,4 @@
           }
         }
     }); 
-  });
+});

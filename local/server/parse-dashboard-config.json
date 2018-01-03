@@ -1,7 +1,7 @@
 {
    "apps": [
     {
-      "serverURL": "http://192.168.16.22:1337/1",
+      "serverURL": "http://192.168.1.43:1337/1",
       "appId": "0123456789",
       "masterKey": "9876543210",
       "appName": "GamvesLocal"
