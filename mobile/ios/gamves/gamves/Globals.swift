@@ -18,7 +18,7 @@ class Global: NSObject
     
     static var levels = Dictionary<String, LevelsGamves>()
     
-    static var localWs = "wss://192.168.16.22:1337/1/"
+    static var localWs = "wss://192.168.1.43:1337/1/"
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard
