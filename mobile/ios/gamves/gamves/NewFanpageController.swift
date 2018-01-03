@@ -631,6 +631,7 @@ UICollectionViewDelegateFlowLayout {
     }
     
     func handleAddImages() {
+        self.touchedButton = addButton
         let media = MediaController()
         media.delegate = self
         media.isImageMultiSelection = true
@@ -642,16 +643,33 @@ UICollectionViewDelegateFlowLayout {
     func didPickImage(_ image: UIImage){
         
         if self.touchedButton == iconButton {
+        
             self.iconImage = image
+            
+            self.touchedButton.setImage(image, for: .normal)
+        
         } else if self.touchedButton == coverButton {
+            
             self.coverImage = image
+            
+            self.touchedButton.setImage(image, for: .normal)
+            
+        } else if self.touchedButton == addButton {
+            
+            self.imagesArray.append(image)
+            self.collectionView.reloadData()
+            
         }
         
-        self.touchedButton.setImage(image, for: .normal)
+        
     }
     
     func didPickImages(_ images: [UIImage]){
-        self.imagesArray = images
+        
+        for image in images {
+            self.imagesArray.append(image)
+        }
+        
         self.collectionView.reloadData()
     }
     
