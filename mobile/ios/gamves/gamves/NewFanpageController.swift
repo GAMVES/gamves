@@ -24,6 +24,7 @@ protocol VideoProtocol {
 
 protocol SearchProtocol {
     func setResultOfsearch(videoId: String, title: String, description : String, duration : String, image : UIImage)
+    func setVideoSearchType(type: UploadType)
 }
 
 public enum UploadType {
@@ -676,6 +677,10 @@ UICollectionViewDelegateFlowLayout {
     	
     }
     
+    func setVideoSearchType(type: UploadType) {
+    
+    }
+    
     func handleSave() {
         
         if !checErrors()
@@ -687,6 +692,10 @@ UICollectionViewDelegateFlowLayout {
             
             var count = 1
             
+            let fanpagePF: PFObject = PFObject(className: "Fanpages")
+            
+            let fanpageAlbumRelation = fanpagePF.relation(forKey: "albums")
+            
             for image in self.imagesArray {
             
                 let albumPF: PFObject = PFObject(className: "Albums")
@@ -694,7 +703,6 @@ UICollectionViewDelegateFlowLayout {
                 let filename = "\(Global.generateFileName()).png"
                 
                 let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
-                
                 
                 albumPF["cover"] = imageFile
                 
@@ -708,14 +716,13 @@ UICollectionViewDelegateFlowLayout {
                     print(error.localizedDescription)
                 }
                 
+                fanpageAlbumRelation.add(albumPF)
+                
                 albumsPF.append(albumPF)
                 
                 count = count + 1
                 
             }
-            
-            
-            let fanpagePF: PFObject = PFObject(className: "Fanpages")
             
             fanpagePF["pageName"] = self.nameTextField.text
             
@@ -749,7 +756,7 @@ UICollectionViewDelegateFlowLayout {
                     
                     for albumObj  in albumsPF {
                         
-                        albumObj["fanpageId"] = fanpageId
+                        albumObj["referenceId"] = fanpageId
                        
                         do {
                             

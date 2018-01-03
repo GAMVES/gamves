@@ -47,13 +47,14 @@ class FanpagePage: UIViewController,
         button.setImage(image, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white   
-        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)        
+        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
+        //button.backgroundColor = UIColor.green
         return button
     }()
 
      let separatorButtonsView: UIView = {
         let view = UIView()
-        //view.backgroundColor = UIColor.blue        
+        //view.backgroundColor = UIColor.blue
         return view
     }()
 
@@ -63,7 +64,8 @@ class FanpagePage: UIViewController,
         button.setImage(image, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white   
-        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)        
+        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
+        //button.backgroundColor = UIColor.cyan
         return button
     }()
 
@@ -72,12 +74,23 @@ class FanpagePage: UIViewController,
         //view.backgroundColor = UIColor.green        
         return view
     }()
+    
+    var iconImageView: UIImageView = {
+        let image = UIImageView()
+        image.contentMode = .scaleAspectFill //.scaleFill
+        image.clipsToBounds = true
+        image.backgroundColor = UIColor.gamvesColor
+        image.layer.cornerRadius = 30
+        image.borderWidth = 3
+        image.borderColor = UIColor.black
+        return image
+    }()
 
-    var categoryName: UILabel = {
+    var fanpageName: UILabel = {
         let label = UILabel()
         //label.text = "Setting"
         label.sizeToFit()
-        label.font = UIFont.systemFont(ofSize: 30)
+        label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.white
         return label
     }()
@@ -88,6 +101,12 @@ class FanpagePage: UIViewController,
     let videosContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white //UIColor(white: 0, alpha: 1)
+        return view
+    }()
+    
+    let bottomLineContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black //UIColor(white: 0, alpha: 1)
         return view
     }()
 
@@ -129,6 +148,10 @@ class FanpagePage: UIViewController,
         }  
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.view.isHidden = true
+    }
+    
     override func viewDidLoad() {
 
         super.viewDidLoad()
@@ -143,12 +166,15 @@ class FanpagePage: UIViewController,
         self.coverContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.coverImageView)
     
         self.coverContainerView.addSubview(self.arrowBackButton)
+        self.coverContainerView.addSubview(self.iconImageView)
         self.coverContainerView.addSubview(self.separatorButtonsView)
         self.coverContainerView.addSubview(self.favoriteButton)
-
+        
         //horizontal constraints
-        self.coverContainerView.addConstraintsWithFormat("H:|-10-[v0(60)]-10-[v1]-10-[v2(60)]-10-|", views: arrowBackButton, separatorButtonsView, favoriteButton)
+        self.coverContainerView.addConstraintsWithFormat("H:|[v0(60)][v1(60)]-10-[v2][v3(60)]|", views: arrowBackButton, iconImageView, separatorButtonsView, favoriteButton)
+        
         self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.arrowBackButton)
+        self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.iconImageView)
         self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.separatorButtonsView)       
         self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.favoriteButton)       
     
@@ -156,11 +182,10 @@ class FanpagePage: UIViewController,
         self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.separatorCenterView)           
         self.coverContainerView.addConstraintsWithFormat("V:|-60-[v0(50)]|", views: self.separatorCenterView)                                  
 
-        self.separatorButtonsView.addSubview(self.categoryName)
-        self.separatorButtonsView.addConstraintsWithFormat("H:|[v0]|", views: self.categoryName)
-        self.separatorButtonsView.addConstraintsWithFormat("V:|[v0]|", views: self.categoryName)    
+        self.separatorButtonsView.addSubview(self.fanpageName)
+        self.separatorButtonsView.addConstraintsWithFormat("H:|[v0]|", views: self.fanpageName)
+        self.separatorButtonsView.addConstraintsWithFormat("V:|[v0]|", views: self.fanpageName)
 
-        
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)
        
         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
@@ -181,6 +206,10 @@ class FanpagePage: UIViewController,
             self.coverContainerView,
             self.imageCollectionView, 
             self.videosContainerView)
+        
+        self.coverContainerView.addSubview(self.bottomLineContainerView)
+        self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomLineContainerView)
+        self.coverContainerView.addConstraintsWithFormat("V:|-77-[v0(3)]|", views: self.bottomLineContainerView)
         
         self.imageCollectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
         
@@ -205,9 +234,8 @@ class FanpagePage: UIViewController,
         self.activityVideoView.startAnimating()        
         
     }
-
-
-     func newKenBurnsImageView(image: UIImage) {
+    
+    func newKenBurnsImageView(image: UIImage) {
         self.coverImageView.setImage(image)
         self.coverImageView.zoomIntensity = 1.5
         self.coverImageView.setDuration(min: 5, max: 13)
@@ -233,11 +261,15 @@ class FanpagePage: UIViewController,
         
         print(data.categoryName)
 
-        self.categoryName.text = data.categoryName
+        self.fanpageName.text = self.fanpageGamves.name
         
         let fanpageId = data.fanpageObj?["fanpageId"] as! Int
         
         let name = data.fanpageObj?["pageName"] as! String
+        
+        self.newKenBurnsImageView(image: self.fanpageGamves.cover_image)
+        
+        self.iconImageView.image = self.fanpageGamves.icon_image
         
         if Downloader.fanpageImagesDictionary[fanpageId] != nil
         {
@@ -246,8 +278,6 @@ class FanpagePage: UIViewController,
             self.fanpageImages.shuffled
             
             print(self.fanpageImages.count)
-
-            self.newKenBurnsImageView(image: self.fanpageImages[0].cover_image)
             
             var titleImageArray = [String]()
             var sourceArray = [String]()
@@ -269,12 +299,14 @@ class FanpagePage: UIViewController,
             
             self.imageCollectionView.reloadData()
 
-            if self.coverContainerView.tag != 1 {
-                self.setupGradientLayer()
-            }
-            
             self.startTimer()
         }
+        
+        if self.coverContainerView.tag != 1 {
+            self.setupGradientLayer()
+        }
+        
+        self.view.isHidden = false
     }
     
     

@@ -42,6 +42,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     var delegateSearch:SearchProtocol?
     
     var isImageMultiSelection = Bool()
+    var isLocalImage = Bool()
     
     let backgroundView: UIView = {
         let v = UIView()
@@ -454,34 +455,47 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+
         
-        self.dismiss()
-        
-        let mediaType = info[UIImagePickerControllerMediaType] as! NSString
-        
-        if mediaType.isEqual(to: kUTTypeImage as NSString as String) {
+        self.dismiss(animated: true) {
             
-            // Is Image
-            let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+            let mediaType = info[UIImagePickerControllerMediaType] as! NSString
             
-            self.delegate?.didPickImage?(chosenImage)
-            
-        } else if mediaType.isEqual(to: kUTTypeMovie as NSString as String) {
-            
-            // Is Video
-            self.urlRecorded = info[UIImagePickerControllerMediaURL] as! URL
-            
-            let chosenVideo = info[UIImagePickerControllerMediaURL] as! URL
-            
-            self.videoData = try! Data(contentsOf: chosenVideo, options: [])
-            
-            self.thumbnail = self.urlRecorded.generateThumbnail()
-            
-            DispatchQueue.main.async() {
-                self.setTrimmerView()
+            if mediaType.isEqual(to: kUTTypeImage as NSString as String) {
+                
+                // Is Image
+                let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+                
+                self.delegate?.didPickImage?(chosenImage)
+                
+                DispatchQueue.main.async() {
+                
+                    if let navController = self.navigationController {
+                        navController.popViewController(animated: true)
+                    }
+                
+                }
+                
+            } else if mediaType.isEqual(to: kUTTypeMovie as NSString as String) {
+                
+                // Is Video
+                self.urlRecorded = info[UIImagePickerControllerMediaURL] as! URL
+                
+                let chosenVideo = info[UIImagePickerControllerMediaURL] as! URL
+                
+                self.videoData = try! Data(contentsOf: chosenVideo, options: [])
+                
+                self.thumbnail = self.urlRecorded.generateThumbnail()
+                
+                DispatchQueue.main.async() {
+                    self.setTrimmerView()
+                }
+                
             }
-        
+            
         }
+        
+        
         
     }
     
@@ -506,7 +520,12 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
             
         } else if type == MediaType.selectImage {
             
-            showOptions = true
+            if !self.isLocalImage {
+        
+                showOptions = true
+                
+            
+            } 
             
         }
         
@@ -580,13 +599,8 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         endView.isHidden            = false
         frameContainerView.isHidden = false
         
-        
         isSliderEnd = true
-        print(startTimeText)
-        
         startTimeText.text = "\(0.0)"
-        print(endTimeText)
-        print(thumbtimeSeconds)
         endTimeText.text   = "\(thumbtimeSeconds!)"
         self.createRangeSlider()
     }
@@ -600,9 +614,8 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         //creating assets
         let assetImgGenerate : AVAssetImageGenerator    = AVAssetImageGenerator(asset: asset)
         assetImgGenerate.appliesPreferredTrackTransform = true
-        assetImgGenerate.requestedTimeToleranceAfter    = kCMTimeZero;
-        assetImgGenerate.requestedTimeToleranceBefore   = kCMTimeZero;
-        
+        assetImgGenerate.requestedTimeToleranceAfter    = kCMTimeZero
+        assetImgGenerate.requestedTimeToleranceBefore   = kCMTimeZero
         
         assetImgGenerate.appliesPreferredTrackTransform = true
         let thumbTime: CMTime = asset.duration
@@ -747,9 +760,11 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
             let end = endTime
             print(documentDirectory)
             var outputURL = documentDirectory.appendingPathComponent("output")
+            
             do {
+                
                 try manager.createDirectory(at: outputURL, withIntermediateDirectories: true, attributes: nil)
-                //let name = hostent.newName()
+                
                 outputURL = outputURL.appendingPathComponent("1.mp4")
             }catch let error {
                 print(error)
@@ -783,6 +798,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
                     DispatchQueue.main.async() {
                         
                         if let navController = self.navigationController {
+                            
                             navController.popViewController(animated: true)
                         }
                         
@@ -834,6 +850,7 @@ private extension MediaController {
                 
                 let takePhotoAction = UIAlertAction(title: Strings.TakePhoto, style: UIAlertActionStyle.default) { (_) -> Void in
                     
+                    self.isLocalImage = true
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.camera
                     self.mediaPicker.mediaTypes = [kUTTypeImage as String]
                     self.present(self.mediaPicker, animated: true, completion: nil)
@@ -844,6 +861,7 @@ private extension MediaController {
                 
                 let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
+                    self.isLocalImage = true
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
                     self.mediaPicker.mediaTypes = self.chooseExistingMediaTypes
                     self.present(self.mediaPicker, animated: true, completion: nil)
@@ -876,7 +894,7 @@ private extension MediaController {
                 let takeVideoAction = UIAlertAction(title: Strings.TakeVideo, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.isLocalVideo = true
-                    
+                    self.delegateSearch?.setVideoSearchType(type: UploadType.local)
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.camera
                     self.mediaPicker.mediaTypes = [kUTTypeMovie as String]
                     self.present(self.mediaPicker, animated: true, completion: nil)
@@ -887,7 +905,7 @@ private extension MediaController {
                 let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.isLocalVideo = true
-                
+                self.delegateSearch?.setVideoSearchType(type: UploadType.local)
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
                     self.mediaPicker.mediaTypes = self.chooseExistingMediaTypes
                     self.present(self.mediaPicker, animated: true, completion: nil)
@@ -897,6 +915,7 @@ private extension MediaController {
                 
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
+                    self.delegateSearch?.setVideoSearchType(type: UploadType.youtube)
                     self.searchController.type = SearchType.isVideo
                     self.searchController.termToSearch = self.termToSearch
                     self.searchController.delegateMedia = self.delegate

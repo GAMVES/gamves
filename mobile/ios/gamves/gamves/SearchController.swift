@@ -77,12 +77,6 @@ class SearchController: UIViewController,
         t.translatesAutoresizingMaskIntoConstraints = false
         return t
     }()
-
-    /*var searchBar : UISearchBar = {
-        let search = UISearchBar()
-        search.translatesAutoresizingMaskIntoConstraints = false
-        return search
-    }()*/
     
     var newVideoController:NewVideoController!
     
@@ -493,12 +487,13 @@ class SearchController: UIViewController,
                     let videoId = yVideo.videoId
                     
                     self.delegateSearch.setResultOfsearch(videoId: videoId,
-                        title: yVideo.title, 
+                        title       : yVideo.title,
                         description : yVideo.description,
-                        duration : yVideo.duration,
-                        image : yVideo.image)
+                        duration    : yVideo.duration,
+                        image       : yVideo.image)
                     
                     self.tableView.tableHeaderView = nil
+                    
                     self.popBackToView()
                     
                 }

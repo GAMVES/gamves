@@ -734,6 +734,10 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         
     }
     
+    func setVideoSearchType(type: UploadType) {
+        self.type = type
+    }
+    
     func handleSave() {
         
         if !checErrors()
