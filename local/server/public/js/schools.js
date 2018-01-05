@@ -9,8 +9,8 @@
     
     //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
 
-    //Parse.serverURL = "http://192.168.16.22:1337/1/";
-    Parse.serverURL = "http://192.168.1.43:1337/1/";
+    Parse.serverURL = "http://192.168.16.22:1337/1/";
+    //Parse.serverURL = "http://192.168.1.43:1337/1/";
 
     var currentUser = Parse.User.current();
     if (!currentUser) {

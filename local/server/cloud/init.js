@@ -78,7 +78,7 @@
 								  	
 									var app_id 			= "0123456789";
 									var master_key		= "9876543210";
-									var server_url 		= "http://192.168.16.22:1337/1/";	
+									var server_url 		= "http://192.168.1.103:1337/1/";	
 									var app_icon_url 	= "https://api-parseground.s3.amazonaws.com/deab76060e176261cfdbb8d779dd1e32_gamves_icons_white.png";
 									var hasIcon 		= false;
 
@@ -119,7 +119,6 @@
 						}
 
 					}); 
-
 					
 			    } 
 	        },

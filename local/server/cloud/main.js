@@ -57,6 +57,7 @@ Parse.Cloud.afterSave("ChatVideo", function(request) {
         }
 
     });
+    
 });
 
 // --
