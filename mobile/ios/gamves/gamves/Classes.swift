@@ -25,7 +25,7 @@ class ChatFeed
     var usersLoaded:Bool?
     var imagesLoaded:Bool?
     var badgeIsActive:Bool?
-    var badgeNumber:Int?
+    var badgeNumber:Int?    
 }
 
 

@@ -12,6 +12,18 @@ import ParseLiveQuery
 import NVActivityIndicatorView
 import PopupDialog
 import AVFoundation
+import AWSS3
+import AWSCore
+
+class GamvesAudio
+{
+    var audioObj:PFObject!
+    var url = String()
+    var uri:URL!
+    var time = String()
+    var chatId = Int()
+    var name = String()
+}
 
 class MessageChat
 {
@@ -22,6 +34,8 @@ class MessageChat
     var date: Date?
     var isSender:Bool!
     var isAdmin:Bool!
+    var isAudio:Bool!
+    var audio = GamvesAudio()
 }
 
 class ChatView: UIView,
@@ -130,13 +144,13 @@ class ChatView: UIView,
         return textField
     }()
 
-
     lazy var recSendButton: UIButton = {
         let button = UIButton(type: .system)
         let sendImage = UIImage(named: "rec_off")
         sendImage?.maskWithColor(color: UIColor.gamvesColor)
         button.setImage(sendImage, for: UIControlState.normal)
-        button.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleSendRec), for: .touchDown)
+        button.tag = 1
         return button
     }()
     
@@ -148,7 +162,13 @@ class ChatView: UIView,
     var recordingSession : AVAudioSession!
     var audioRecorder    :AVAudioRecorder!
     var settings         = [String : Int]()
+    var audioRecorded:GamvesAudio!
+    var fileManager:FileManager!
+    var timer: Timer?
     
+    //var audioRecorded:PFObject!
+    //var audioUrl:URL!
+    //var audioName = String()
     
     init(frame: CGRect, isVideo:Bool) {
         super.init(frame: frame)
@@ -232,6 +252,7 @@ class ChatView: UIView,
         self.collectionView.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
         
         recordingSession = AVAudioSession.sharedInstance()
+        
         do {
             try recordingSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
             try recordingSession.setActive(true)
@@ -257,101 +278,218 @@ class ChatView: UIView,
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
         ]
         
+        self.fileManager = FileManager.default
+        
     }
-    
     
     //-- RECORD AUDIO
     
     func directoryURL() -> NSURL? {
-        let fileManager = FileManager.default
-        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        
+        let chatIdDirectory = self.createIfNotExistChatFolder()
+        
+        let urls = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         let documentDirectory = urls[0] as NSURL
-        let soundURL = documentDirectory.appendingPathComponent("sound.m4a")
-        print(soundURL)
+        let currentTime = Date().toMillis()
+        let audioName = "\(String(describing: currentTime)).m4a"
+        let soundURL = documentDirectory.appendingPathComponent(audioName)
+        
+        self.audioRecorded = GamvesAudio()
+        
+        self.audioRecorded.uri = soundURL!
+        self.audioRecorded.name = audioName
+        
         return soundURL as NSURL?
+        
+    }
+    
+    func createIfNotExistChatFolder() -> String {
+        
+        let documentDirectoy = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        
+        let chatIdDirectory = "\(documentDirectoy[0])\(self.chatId)"
+        
+        if !self.fileManager.fileExists(atPath: chatIdDirectory) {
+            
+            do {
+                try FileManager.default.createDirectory(atPath: chatIdDirectory, withIntermediateDirectories: true, attributes: nil)
+            } catch let error as NSError {
+                NSLog("Unable to create directory \(error.debugDescription)")
+            }
+        }
+        
+        return chatIdDirectory
+        
     }
     
     func startRecording() {
         
         let audioSession = AVAudioSession.sharedInstance()
+        
         do {
-            audioRecorder = try AVAudioRecorder(url: self.directoryURL()! as URL,
+        
+            self.audioRecorder = try AVAudioRecorder(url: self.directoryURL()! as URL,
                                                 settings: settings)
-            audioRecorder.delegate = self
-            audioRecorder.prepareToRecord()
+            self.audioRecorder.delegate = self
+            
+            self.audioRecorder.prepareToRecord()
+            
         } catch {
             finishRecording(success: false)
         }
+        
         do {
+            
             try audioSession.setActive(true)
-            audioRecorder.record()
+            
+            self.audioRecorder.record()
+            
         } catch {
+            
         }
     }
     
     func finishRecording(success: Bool) {
-        audioRecorder.stop()
+        
+        self.audioRecorder.stop()
+        
         if success {
+            
             print(success)
+            
+            let asset = AVURLAsset(url: self.audioRecorded.uri)
+            let totalSeconds = Int(CMTimeGetSeconds(asset.duration))
+            let minutes = totalSeconds / 60
+            let seconds = totalSeconds % 60
+            let mediaTime = String(format:"%02i:%02i",minutes, seconds)
+            
+            self.saveAudio(duration: mediaTime, name: self.audioRecorded.name)
+            
         } else {
-            audioRecorder = nil
+            
+            self.audioRecorder = nil
+            
             print("Somthing Wrong.")
         }
+        
     }
-    
-    
-    func click_AudioRecord(_ sender: AnyObject) {
-        if audioRecorder == nil {
-            
-            
-            //self.btnAudioRecord.setTitle("Stop", for: UIControlState.normal)
-            //self.btnAudioRecord.backgroundColor = UIColor(red: 119.0/255.0, green: 119.0/255.0, blue: 119.0/255.0, alpha: 1.0)
-            
-            let onImage = UIImage(contentsOfFile: "rec_on")
-            
-            self.recSendButton.setImage(onImage, for: .normal)
-            
-            self.startRecording()
-            
-        } else {
-            
-            //self.btnAudioRecord.setTitle("Record", for: UIControlState.normal)
-            //self.btnAudioRecord.backgroundColor = UIColor(red: 221.0/255.0, green: 27.0/255.0, blue: 50.0/255.0, alpha: 1.0)
-            
-            let recImage = UIImage(contentsOfFile: "rec_off")
-            
-            self.recSendButton.setImage(recImage, for: .normal)
-            
-            self.finishRecording(success: true)
-        }
-    }
+  
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        
         if !flag {
             finishRecording(success: false)
         }
     }
     
-    
-    //-- PLAY AUDIO
-    
-    func doPlay(_ sender: AnyObject) {
-        if !audioRecorder.isRecording {
-            self.audioPlayer = try! AVAudioPlayer(contentsOf: audioRecorder.url)
-            self.audioPlayer.prepareToPlay()
-            self.audioPlayer.delegate = self
-            self.audioPlayer.play()
+    func saveAudio(duration:String, name:String) {
+        
+        let audioPF = PFObject(className: "Audio")
+        
+        audioPF["chatId"] = self.chatId
+        
+        audioPF["time"] = duration
+        
+        audioPF["name"] = name
+        
+        audioPF.saveInBackground { (result, error) in
+        
+            if error == nil {
+                
+                self.audioRecorded.audioObj = audioPF
+                    
+                let messagePF: PFObject = PFObject(className: "ChatVideo")
+                
+                var userId = String()
+                
+                var textMessage = String()
+                
+                if PFUser.current() != nil
+                {
+                    userId = (PFUser.current()?.objectId)!
+                    messagePF["userId"] = userId
+                }
+                
+                messagePF["chatId"] = self.chatId
+                
+                if let audioId = self.audioRecorded.audioObj.objectId {
+                
+                    let audioMessage = "\(Global.audio_delimitator)\(audioId)----\(duration)"
+                    
+                    messagePF["message"] = audioMessage
+                }
+                
+                UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
+                
+                var message = self.inputTextField.text!
+                
+                messagePF.saveInBackground { (resutl, error) in
+                    
+                    if error == nil
+                    {
+                        
+                        var tempRecording = GamvesAudio()
+                        
+                        tempRecording = self.audioRecorded
+                        
+                        self.saveAudioToS3(audioStored: tempRecording)
+                        
+                        self.sendPushWithCoud(message: message)
+                        
+                    }
+                }
+            }
         }
     }
     
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        print(flag)
-    }
-    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?){
-        print(error.debugDescription)
-    }
-    internal func audioPlayerBeginInterruption(_ player: AVAudioPlayer){
-        print(player.debugDescription)
+    func saveAudioToS3(audioStored:GamvesAudio) {
+        
+        
+        DispatchQueue.main.async
+        {
+        
+            let accessKey = "AKIAJP4GPKX77DMBF5AQ"
+            let secretKey = "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"
+            let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
+            let configuration = AWSServiceConfiguration(region: AWSRegionType.USEast1, credentialsProvider: credentialsProvider)
+            AWSServiceManager.default().defaultServiceConfiguration = configuration
+            
+            let S3BucketName = "gamves"
+            let uploadRequest = AWSS3TransferManagerUploadRequest()!
+            uploadRequest.body = audioStored.uri
+            uploadRequest.key = audioStored.name
+            uploadRequest.bucket = S3BucketName
+            uploadRequest.contentType = "audio/m4a" //"video/mp4" //"image/jpeg"
+            uploadRequest.acl = .publicRead
+            
+            let transferManager = AWSS3TransferManager.default()
+            transferManager.upload(uploadRequest).continueWith { (task) -> Any? in
+                
+                if let error = task.error {
+                    print("Upload failed with error: (\(error.localizedDescription))")
+                }
+                
+                //if let exception = task.exception {
+                //    print("Upload failed with exception (\(exception))")
+                //}
+                
+                if task.result != nil {
+                    
+                    let url = AWSS3.default().configuration.endpoint.url
+                    
+                    if let publicURL = url?.appendingPathComponent(uploadRequest.bucket!).appendingPathComponent(uploadRequest.key!) {
+                        
+                        audioStored.audioObj["url"] = publicURL
+                        
+                        print("Uploaded to:\(publicURL)")
+                        
+                        audioStored.audioObj.saveEventually()
+                        
+                    }
+                }
+                return nil
+            }
+        }
     }
     
     
@@ -571,31 +709,150 @@ class ChatView: UIView,
                         let message = MessageChat()
                         let userId = chatVideo["userId"] as! String
                         message.userId = userId
-                        message.message = chatVideo["message"] as! String
+                        var messageText = chatVideo["message"] as! String
+                        message.message = messageText
+                        
                         message.date = chatVideo.createdAt
                         message.chatId = chatVideo["chatId"] as! Int
                         
-                        if PFUser.current()?.objectId == userId
-                        {
+                        if PFUser.current()?.objectId == userId {
                             message.isSender = true
                         }
                         
-                        messagesHandeled.append(message)
-                        
-                        if (getChatData!-1) == i
+                        if (messageText.contains(Global.audio_delimitator))
                         {
-                            completionHandler(messagesHandeled)
+                            
+                            message.isAudio = true
+                            
+                            
+                            self.handleAudio(messageText: messageText, completionHandler: { (gamvesAudio) in
+                                
+                                message.audio = gamvesAudio
+                                
+                                messagesHandeled.append(message)
+                                
+                                if (getChatData!-1) == i
+                                {
+                                    completionHandler(messagesHandeled)
+                                    
+                                }
+                                i = i + 1
+                                
+                            })
+                            
+                            let messageArr : [String] = messageText.components(separatedBy: Global.audio_delimitator)
+                            
+                            let audioArr : [String] = messageArr[1].components(separatedBy: "----")
+                            
+                            var audioId : String = messageArr[0]
+                            var audioTime : String = messageArr[1]
+                            
+                            let queryAudio = PFQuery(className:"Audios")
+                            queryAudio.whereKey("objectId", equalTo: audioId)
+                            
+                            queryAudio.getFirstObjectInBackground(block: { (audioPF, error) in
+                                
+                                if error == nil {
+                                    
+                                    let audio = GamvesAudio()
+                                    audio.audioObj = audioPF
+                                    audio.url = audioPF?["url"] as! String
+                                    audio.time = audioPF?["time"] as! String
+                                    audio.chatId = audioPF?["chatId"] as! Int
+                                    
+                                }
+                                
+                            })
+                        
+                        } else {
+                            
+                            message.isAudio = false
+                        
+                            messagesHandeled.append(message)
+                            
+                            if (getChatData!-1) == i
+                            {
+                                completionHandler(messagesHandeled)
+                                
+                            }
+                            i = i + 1
                             
                         }
-                        i = i + 1
                         
                     }
+                    
                 } else
                 {
                     self.activityView.stopAnimating()
                 }
             }
         })
+    }
+    
+    func handleAudio(messageText: String, completionHandler : @escaping (_ resutl:GamvesAudio) -> ()) {
+        
+        
+        let messageArr : [String] = messageText.components(separatedBy: Global.audio_delimitator)
+        
+        let audioArr : [String] = messageArr[1].components(separatedBy: "----")
+        
+        var audioId : String = messageArr[0]
+        var audioTime : String = messageArr[1]
+        
+        let queryAudio = PFQuery(className:"Audios")
+        queryAudio.whereKey("objectId", equalTo: audioId)
+        
+        queryAudio.getFirstObjectInBackground(block: { (audioPF, error) in
+            
+            if error == nil {
+                
+                let audio = GamvesAudio()
+                audio.audioObj = audioPF
+                audio.url = audioPF?["url"] as! String
+                audio.time = audioPF?["time"] as! String
+                audio.chatId = audioPF?["chatId"] as! Int
+                audio.name = audioPF?["name"] as! String
+                
+                DispatchQueue.main.async {
+                     self.doanloadIfExistAudio(url:audio.url, name:audio.name)
+                }
+                
+                completionHandler(audio)
+            }
+            
+        })
+        
+    }
+    
+    func doanloadIfExistAudio(url:String, name:String) {
+        
+        let chatIdDirectory = self.createIfNotExistChatFolder()
+        
+        let localAudio = "\(chatIdDirectory)\(name)"
+        
+        if !fileManager.fileExists(atPath: localAudio) {
+            
+            let audioURL = URL(string: url)!
+            
+            let downloadPicTask = URLSession.shared.dataTask(with: audioURL) {
+                (data, response, error) in
+                
+                guard error == nil else {
+                    print(error!)
+                    return
+                }
+                guard let data = data else {
+                    print("Data is empty")
+                    return
+                }
+                
+                //HANDLE DOWNLOAD
+                
+                
+                
+            }
+            downloadPicTask.resume()
+        }
     }
     
     
@@ -620,71 +877,100 @@ class ChatView: UIView,
         }
     }
     
-    func handleSend()
+    func handleSendRec()
     {
         
-        //Channel exists and isVideo
-        
-        if self.isVideo && ChatFeedMethods.chatFeeds[self.chatId] == nil
+        if self.recSendButton.tag == 1
         {
-         
-            if self.chatFeed == nil
-            {
-                self.activityView.startAnimating()
+            
+            if audioRecorder == nil {
                 
-                self.addNewFeedAppendUser(completionHandler: { ( result:Bool ) -> () in
-                    
-                    if result
-                    {
-                        self.sendMessage(sendPush: false)
-                        
-                        self.activityView.stopAnimating()
-                    }
-                    
-                })
-
-            } else
+                //self.btnAudioRecord.setTitle("Stop", for: UIControlState.normal)
+                //self.btnAudioRecord.backgroundColor = UIColor(red: 119.0/255.0, green: 119.0/255.0, blue: 119.0/255.0, alpha: 1.0)
+                
+                let onImage = UIImage(contentsOfFile: "rec_on")
+                
+                self.recSendButton.setImage(onImage, for: .normal)
+                
+                self.startRecording()
+                
+            } else {
+                
+                //self.btnAudioRecord.setTitle("Record", for: UIControlState.normal)
+                //self.btnAudioRecord.backgroundColor = UIColor(red: 221.0/255.0, green: 27.0/255.0, blue: 50.0/255.0, alpha: 1.0)
+                
+                let recImage = UIImage(contentsOfFile: "rec_off")
+                
+                self.recSendButton.setImage(recImage, for: .normal)
+                
+                self.finishRecording(success: true)
+            }
+            
+        
+        } else if self.recSendButton.tag == 2 {
+        
+        
+            //Channel exists and isVideo
+            
+            if self.isVideo && ChatFeedMethods.chatFeeds[self.chatId] == nil
             {
              
-                if let userId:String = PFUser.current()?.objectId
+                if self.chatFeed == nil
                 {
-                    
                     self.activityView.startAnimating()
                     
-                    self.chatIdStr = String(self.chatId) as String
-                    
-                    Global.addChannels(userIds:[userId], channel: self.chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
+                    self.addNewFeedAppendUser(completionHandler: { ( result:Bool ) -> () in
                         
-                        let members = self.chatFeed["members"] as! String
-                        
-                        self.gamvesUsersArray = Global.parseUsersStringToArray(separated: members)
-                        
-                        self.gamvesUsersArray.append(userId)
-                        
-                        let membersAppend = String(describing: self.gamvesUsersArray)
-
-                        self.chatFeed["members"] = membersAppend
-                        
-                        self.chatFeed.saveInBackground(block: { (resutl, error) in
-                            
-                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-                            
+                        if result
+                        {
                             self.sendMessage(sendPush: false)
                             
                             self.activityView.stopAnimating()
-                            
-                        })
+                        }
                         
                     })
+
+                } else
+                {
+                 
+                    if let userId:String = PFUser.current()?.objectId
+                    {
+                        
+                        self.activityView.startAnimating()
+                        
+                        self.chatIdStr = String(self.chatId) as String
+                        
+                        Global.addChannels(userIds:[userId], channel: self.chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
+                            
+                            let members = self.chatFeed["members"] as! String
+                            
+                            self.gamvesUsersArray = Global.parseUsersStringToArray(separated: members)
+                            
+                            self.gamvesUsersArray.append(userId)
+                            
+                            let membersAppend = String(describing: self.gamvesUsersArray)
+
+                            self.chatFeed["members"] = membersAppend
+                            
+                            self.chatFeed.saveInBackground(block: { (resutl, error) in
+                                
+                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                                
+                                self.sendMessage(sendPush: false)
+                                
+                                self.activityView.stopAnimating()
+                                
+                            })
+                        })
+                    }
                 }
                 
+            } else
+            {
+                self.sendMessage(sendPush: true)
             }
-            
-        } else
-        {
-            self.sendMessage(sendPush: true)
         }
-        
+    
     }
     
     func sendMessage(sendPush:Bool)
@@ -785,7 +1071,7 @@ class ChatView: UIView,
             
             let message = MessageChat()
             let textMessage = chatMessage["message"] as! String
-            message.message = textMessage
+            
             
             let userId = chatMessage["userId"] as! String
             message.userId = userId
@@ -798,6 +1084,19 @@ class ChatView: UIView,
             } else if userId == PFUser.current()?.objectId
             {
                 message.isSender = true
+            }
+            
+            if (textMessage.contains(Global.audio_delimitator))
+            {
+                message.isAudio = true
+                
+                
+            } else {
+                
+                message.isAudio = false
+                
+                message.message = textMessage
+                
             }
             
             let gamvesUser = Global.userDictionary[userId]!
@@ -959,9 +1258,7 @@ class ChatView: UIView,
                     self.chatFeed["members"] = member
                     self.chatFeed["room"] = "\(self.gamvesUsers[0].userId)____\(myUser)"
                 }
-                
             }
-            
         }
         
         if !self.isVideo
@@ -1166,12 +1463,38 @@ class ChatView: UIView,
             self.collectionView.scrollToItem(at: indexPath as IndexPath, at: .bottom, animated: true)
         }
     }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        let sendImage = UIImage(named: "send")
+        
+        sendImage?.maskWithColor(color: UIColor.gamvesColor)
+        
+        self.recSendButton.setImage(sendImage, for: .normal)
+        
+        self.recSendButton.tag = 2
+        
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+    
+        let sendImage = UIImage(named: "rec_off")
+        
+        sendImage?.maskWithColor(color: UIColor.gamvesColor)
+        
+        self.recSendButton.setImage(sendImage, for: .normal)
+        
+        self.recSendButton.tag = 1
+        
+        return true
+    }
+    
    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 
         self.inputTextField.resignFirstResponder()
     
-        self.handleSend()
+        self.handleSendRec()
         
         return false
     }
@@ -1253,26 +1576,62 @@ class ChatView: UIView,
         if message.isSender == nil || !message.isSender
         {
             
-            cell.messageTextView.frame = CGRect(x:48 + 8, y:0, width:estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+            var x:CGFloat = 48
+            var width = self.frame.width - 40
             
-            cell.textBubbleView.frame = CGRect(x:48 - 10,y: -4, width:estimatedFrame.width + 16 + 8 + 16, height: estimatedFrame.height + 20 + 6)
+            if message.isAudio {
+                
+                let height:CGFloat = 60
+                
+                cell.bubbleView.frame = CGRect(x: x - 10, y: -4, width: width, height: height + 6)
+                
+                cell.bubbleImageView.image = ChatLogMessageCell.audioBubbleImage
+                cell.bubbleImageView.tintColor = UIColor.blue
+                
+                cell.setAudioControl()
+                
+                cell.playerSlider.addTarget(self, action: #selector(sliderValueChanged), for: UIControlEvents.valueChanged)
+                
+                cell.playPauseButton.addTarget(self, action: #selector(playPauseAudio), for: UIControlEvents.touchDown)
+                
+                
+            } else {
             
-            cell.profileImageView.isHidden = false
-            
-            cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
-            cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
-            cell.messageTextView.textColor = UIColor.black
+                cell.messageTextView.frame = CGRect(x:x + 8, y:0, width:estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                
+                cell.bubbleView.frame = CGRect(x:x - 10, y: -4, width:estimatedFrame.width + 16 + 8 + 16, height: estimatedFrame.height + 20 + 6)
+                
+                cell.profileImageView.isHidden = false
+                
+                cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
+                cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
+                cell.messageTextView.textColor = UIColor.black
+                
+            }
             
         } else {
             
-            if message.isAdmin
+            var x:CGFloat = 20
+            var width = self.frame.width - 40
+            
+            if message.isAudio {
+                
+                
+                let height:CGFloat = 60
+                
+                cell.bubbleView.frame = CGRect(x: x, y: -4, width: width, height: height + 6)
+                
+                cell.bubbleImageView.image = ChatLogMessageCell.audioBubbleImage
+                cell.bubbleImageView.tintColor = UIColor.blue
+                
+                cell.setAudioControl()
+                
+            } else if message.isAdmin
             {
                 
-                let x:CGFloat = 20
-                let width = self.frame.width - 40
                 let height = estimatedFrame.height + 20
                 
-                cell.textBubbleView.frame = CGRect(x: x, y: -4, width: width, height: height + 6)
+                cell.bubbleView.frame = CGRect(x: x, y: -4, width: width, height: height + 6)
                 
                 cell.messageTextView.frame = CGRect(x: x + 20, y: 0, width: width-20, height: height)
                 
@@ -1286,7 +1645,7 @@ class ChatView: UIView,
                 
                 cell.messageTextView.frame = CGRect(x:self.frame.width - estimatedFrame.width - 16 - 16 - 8,y:0, width:estimatedFrame.width + 16, height:estimatedFrame.height + 20)
                 
-                cell.textBubbleView.frame = CGRect(x:self.frame.width - estimatedFrame.width - 16 - 8 - 16 - 10, y: -4, width: estimatedFrame.width + 16 + 8 + 10, height: estimatedFrame.height + 20 + 6)
+                cell.bubbleView.frame = CGRect(x:self.frame.width - estimatedFrame.width - 16 - 8 - 16 - 10, y: -4, width: estimatedFrame.width + 16 + 8 + 10, height: estimatedFrame.height + 20 + 6)
                 
                 cell.profileImageView.isHidden = true
                 
@@ -1297,7 +1656,74 @@ class ChatView: UIView,
             }
         }
         return cell
-    }   
+    }
+    
+    
+    //-- PLAY AUDIO
+    
+    func playPauseAudio(sender: AnyObject) {
+        
+        var button = sender as! UIButton
+        let index = button.tag as Int
+        let message = self.messages[index] as MessageChat
+        let audio = message.audio as GamvesAudio
+        let url:URL = URL(fileURLWithPath: audio.url)
+        
+        if !audioRecorder.isRecording {
+            
+            self.audioPlayer = try! AVAudioPlayer(contentsOf: url)
+            self.audioPlayer.prepareToPlay()
+            self.audioPlayer.delegate = self
+            self.audioPlayer.volume = 1.0
+            self.audioPlayer.play()
+            
+            //self.setupTimer()
+        }
+    }
+    
+    /*func setupTimer(){
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didPlayToEnd), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        
+        timer = Timer(timeInterval: 0.001, target: self, selector: #selector(self.tick), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer!, forMode: RunLoopMode.commonModes)
+    }
+    
+    func didPlayToEnd() {
+        
+    }*/
+    
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        print(flag)
+    }
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?){
+        print(error.debugDescription)
+    }
+    internal func audioPlayerBeginInterruption(_ player: AVAudioPlayer){
+        print(player.debugDescription)
+    }
+
+    
+    func sliderValueChanged(sender: AnyObject) {
+        
+        var slider = sender as! UISlider
+        
+        let indexPath = IndexPath(row: slider.tag, section: 0)
+    
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogMessageCell
+        
+        // If you know the exactly index
+        // var label = cell.subviews[4] as! UILabel
+        // label.text = "\(slider.value)"
+        
+        // assuming you have only one `UILabel` inside your cell
+        for view in cell.subviews {
+            if let label = view as? UILabel {
+                label.text = "\(slider.value)"
+            }
+        }
+    }
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -1341,9 +1767,8 @@ class ChatLogMessageCell: BaseCell {
         return textView
     }()
     
-    let textBubbleView: UIView = {
+    let bubbleView: UIView = {
         let view = UIView()
-//        view.backgroundColor = UIColor(white: 0.95, alpha: 1)
         view.layer.cornerRadius = 15
         view.layer.masksToBounds = true
         return view
@@ -1357,11 +1782,40 @@ class ChatLogMessageCell: BaseCell {
         return imageView
     }()
     
+    var playPauseButton: UIButton = {
+        let button = UIButton(type: .system)
+        let playImage = UIImage(named: "play")
+        playImage?.maskWithColor(color: UIColor.gamvesColor)
+        button.setImage(playImage, for: UIControlState.normal)
+        //button.addTarget(self, action: #selector(handleSendRec), for: .touchUpInside)
+        return button
+    }()
+    
+    let playerSlider: UISlider = {
+        let slider = UISlider()
+        slider.layer.cornerRadius = 15
+        slider.layer.masksToBounds = true
+        return slider
+    }()
+    
+    let audioTimeLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "00:00"
+        label.textColor = UIColor.gray
+        label.font = UIFont.boldSystemFont(ofSize: 13)
+        label.textAlignment = .left
+        return label
+    }()
+    
+
     static let grayBubbleImage = UIImage(named: "bubble_gray")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     
     static let blueBubbleImage = UIImage(named: "bubble_blue")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     
     static let adminBubbleImage = UIImage(named: "bubble_admin")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
+
+    static let audioBubbleImage = UIImage(named: "bubble_audio")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
 
     
     let bubbleImageView: UIImageView = {
@@ -1374,7 +1828,7 @@ class ChatLogMessageCell: BaseCell {
     override func setupViews() {
         super.setupViews()
         
-        addSubview(textBubbleView)
+        addSubview(bubbleView)
         addSubview(messageTextView)
         
         print(messageTextView.text)
@@ -1384,10 +1838,35 @@ class ChatLogMessageCell: BaseCell {
         addConstraintsWithFormat("V:[v0(30)]|", views: profileImageView)
         profileImageView.backgroundColor = UIColor.red
         
-        textBubbleView.addSubview(bubbleImageView)
-        textBubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
-        textBubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
+        bubbleView.addSubview(bubbleImageView)
+        bubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
+        bubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
+        
     }
     
+    func setAudioControl() {
+        
+        self.bubbleView.addSubview(self.playPauseButton)
+        self.bubbleView.addConstraintsWithFormat("V:|[v0]|", views: self.playPauseButton)
+        
+        self.bubbleView.addSubview(self.playerSlider)
+        self.bubbleView.addConstraintsWithFormat("V:|[v0]|", views: self.playerSlider)
+        
+        self.bubbleView.addSubview(self.audioTimeLabel)
+        self.bubbleView.addConstraintsWithFormat("V:|[v0]|", views: self.audioTimeLabel)
+        
+        self.bubbleView.addConstraintsWithFormat("H:|[v0(60)][v1][v2(80)]|", views:
+            self.playPauseButton,
+            self.playerSlider,
+            self.audioTimeLabel)
+        
+    }
+    
+}
+
+extension Date {
+    func toMillis() -> Int64! {
+        return Int64(self.timeIntervalSince1970 * 1000)
+    }
 }
 

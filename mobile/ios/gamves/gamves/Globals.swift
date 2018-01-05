@@ -18,7 +18,7 @@ class Global: NSObject
     
     static var levels = Dictionary<String, LevelsGamves>()
     
-    static var localWs = "wss://192.168.1.43:1337/1/"
+    static var localWs = "wss://192.168.16.22:1337/1/"
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard
@@ -40,6 +40,8 @@ class Global: NSObject
     
     
     static var admin_delimitator:String = "---is_admin_chat---"
+    
+    static var audio_delimitator:String = "---is_audio_chat---"
     
     static var key_you_spouse_chat_id = "you_spouse_chat_id"
     static var key_you_son_chat_id = "you_son_chat_id"
