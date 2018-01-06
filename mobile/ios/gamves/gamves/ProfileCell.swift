@@ -11,6 +11,7 @@
 import UIKit
 import Parse
 import NVActivityIndicatorView
+import IGColorPicker
 
 class ProfileCell: BaseCell, 
     UICollectionViewDataSource,
@@ -19,6 +20,7 @@ class ProfileCell: BaseCell,
     UIScrollViewDelegate 
 {
     
+
     var metricsHome = [String:Int]()
 
     var userStatistics = [UserStatistics]()
@@ -129,18 +131,53 @@ class ProfileCell: BaseCell,
     }()
 
 
-     lazy var editButton: UIButton = {
+    lazy var editProfileButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor        
-        button.setTitle("Edit Public Profile", for: UIControlState())
+        button.setTitle("Edit Profile", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
-        button.addTarget(self, action: #selector(handleEdit), for: .touchUpInside)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(handleEditProfile), for: .touchUpInside)
         button.layer.cornerRadius = 5 
         return button
     }()
     
+    lazy var editFanpageButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor
+        button.setTitle("Edit Fanpage", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(handleEditFanpage), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+    
+    lazy var saveProfileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor
+        button.setTitle("Save Profile", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(handleSaveProfile), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+    
+    lazy var cancelProfileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor
+        button.setTitle("Cancel", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(handleCancelProfile), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
 
     lazy var chatViewController: ChatViewController = {
         let launcher = ChatViewController()
@@ -150,6 +187,10 @@ class ProfileCell: BaseCell,
     var activityIndicatorView:NVActivityIndicatorView?
     
     var cellId = String()
+    
+    var colorPickerView: ColorPickerView!
+    
+    var editProfile = Bool()
     
     override func setupViews() {
         super.setupViews()
@@ -177,7 +218,7 @@ class ProfileCell: BaseCell,
         self.addSubview(self.footerView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)        
         
-        self.addConstraintsWithFormat("V:|[v0(220)][v1(1)][v2][v3(60)]|", views:
+        self.addConstraintsWithFormat("V:|[v0(220)][v1(1)][v2][v3(70)]|", views:
             self.profileView, 
             self.lineView, 
             self.dataView,
@@ -225,11 +266,29 @@ class ProfileCell: BaseCell,
             self.rightregisterRowView, 
             metrics: metricsRegisterView)
 
-        self.footerView.addSubview(self.editButton)
-        self.footerView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.editButton) 
-        self.footerView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.editButton) 
+        self.footerView.addSubview(self.editProfileButton)
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.editProfileButton)
         
-       
+        self.footerView.addSubview(self.editFanpageButton)
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.editFanpageButton)
+        
+        let splitFooter = (width - 60)/2
+        
+        let metricsFooterView = ["sf": splitFooter]
+        
+        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.editProfileButton, self.editFanpageButton, metrics: metricsFooterView)
+        
+        self.footerView.addSubview(self.saveProfileButton)
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.saveProfileButton)
+        self.saveProfileButton.isHidden = true
+        
+        self.footerView.addSubview(self.cancelProfileButton)
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.cancelProfileButton)
+        self.saveProfileButton.isHidden = true
+        
+        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.saveProfileButton, self.cancelProfileButton, metrics: metricsFooterView)
+        
+        
         if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.avatar {
             self.sonProfileImageView.image = sonImage
             Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 4, boderColor: UIColor.gamvesBackgoundColor)
@@ -244,16 +303,129 @@ class ProfileCell: BaseCell,
         self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView) 
         self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.collectionView) 
        
-
         self.bioLabel.text = "I like doing this and that with my information"
 
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
 
         self.collectionView.backgroundColor = UIColor.white
        
-    }    
+    }
     
-    func handleEdit() {
+    func handleEditProfile() {
+        
+        self.editProfile = true
+        
+        //-- Bottom single button
+        
+        self.saveProfileButton.isHidden = false
+        self.editProfileButton.isHidden = true
+        self.editFanpageButton.isHidden = true
+        
+        //-- Background
+        
+        let editBackgroundButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+        let imageBack = UIImage(named: "camera_black")
+        editBackgroundButton.setImage(imageBack, for: .normal)
+        editBackgroundButton.addTarget(self, action: #selector(handleChangeBackgoundImage), for: .touchUpInside)
+        self.profileView.addSubview(editBackgroundButton)
+        
+        //-- Avatar
+        
+        let editAvatarButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+        let imageAvatar = UIImage(named: "camera_black")
+    
+        editAvatarButton.setImage(imageAvatar, for: .normal)
+        editAvatarButton.addTarget(self, action: #selector(handleChangeAvatarImage), for: .touchUpInside)
+        
+        self.registerRowView.addSubview(editAvatarButton)
+        self.registerRowView.addConstraintsWithFormat("H:|-10-[v0]|", views: editAvatarButton)
+        self.registerRowView.addConstraintsWithFormat("V:|-10-[v0]|", views: editAvatarButton)
+        
+        //-- Color
+        
+        let editColorButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+        let imageColor = UIImage(named: "color")
+        imageColor?.maskWithColor(color: UIColor.lightGray)
+        editColorButton.setImage(imageColor, for: .normal)
+        editColorButton.addTarget(self, action: #selector(handleChangeColor), for: .touchUpInside)
+        
+        self.registerRowView.addSubview(editColorButton)
+        self.registerRowView.addConstraintsWithFormat("H:|[v0]|", views: editColorButton)
+        self.registerRowView.addConstraintsWithFormat("V:|-180-[v0]|", views: editColorButton)
+        
+        //-- Bio
+        
+        let editSloganButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+        let imageSlogan = UIImage(named: "edit")
+        imageSlogan?.maskWithColor(color: UIColor.lightGray)
+        editSloganButton.setImage(imageSlogan, for: .normal)
+        editSloganButton.addTarget(self, action: #selector(handleChangeSlogan), for: .touchUpInside)
+        
+        self.profileView.addSubview(editSloganButton)
+        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: editSloganButton)
+        self.profileView.addConstraintsWithFormat("V:|-180-[v0]|", views: editSloganButton)
+        
+        self.collectionView.reloadData()
+        
+    }
+    
+    func handleSaveProfile() {
+        
+        
+        
+    }
+    
+    func handleCancelProfile() {
+        
+        
+    }
+    
+    
+    func handleChangeBackgoundImage() {
+        
+        //Media Controller Here
+        
+    }
+    
+    func handleChangeAvatarImage() {
+        
+        //Media Controller Here
+        
+    }
+
+    func handleChangeColor() {
+        
+        
+    }
+
+    
+    func handleChangeSlogan() {
+        
+        let alertController = UIAlertController(title: "Slogan ", message: "Enter your slogan", preferredStyle: .alert)
+        
+        let confirmAction = UIAlertAction(title: "Enter", style: .default) { (_) in
+            
+            let bio = alertController.textFields?[0].text
+            
+            self.bioLabel.text = bio
+            
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in }
+        
+        //adding textfields to our dialog box
+        alertController.addTextField { (textField) in
+            textField.placeholder = "New slogan here"
+        }
+        
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancelAction)
+        
+        window?.rootViewController?.present(alertController, animated: true, completion: nil)
+    }
+
+    
+    func handleEditFanpage() {
         
     }
     
@@ -348,6 +520,8 @@ class ProfileCell: BaseCell,
                             
                             video.videoObj = qvideoinfo
                             
+                            video.checked                   = qvideoinfo["public"] as! Bool
+                            
                             videothum.getDataInBackground(block: { (data, error) in
                                 
                                 if error == nil{
@@ -404,6 +578,22 @@ class ProfileCell: BaseCell,
             cellVideo.userProfileImageView.image = imagePoster.avatar
         }
         
+        if self.editProfile {
+        
+            if videosGamves[indexPath.row].checked {
+                
+                cellVideo.checkLabel.isHidden = false
+            
+            } else {
+                
+                cellVideo.checkLabel.isHidden = true
+            }
+            
+        } else {
+            
+            cellVideo.checkLabel.isHidden = true
+        }
+        
         cellVideo.videoName.text = videosGamves[indexPath.row].title
         
         let published = String(describing: videosGamves[indexPath.row].published)
@@ -438,16 +628,35 @@ class ProfileCell: BaseCell,
     
    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
-    {  
+    {
+        
+        if !self.editProfile {
             
-        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
 
-        let videoLauncher = VideoLauncher()
+            let videoLauncher = VideoLauncher()
+            
+            let video = videosGamves[indexPath.row]
         
-        let video = videosGamves[indexPath.row]
-        //video.fanpageId = videosGamves.fanpageId
-        
-        videoLauncher.showVideoPlayer(videoGamves: video)
+            videoLauncher.showVideoPlayer(videoGamves: video)
+            
+        } else {
+            
+            
+            let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell
+            
+            if videosGamves[indexPath.row].checked {
+            
+                videosGamves[indexPath.row].checked = false
+                
+            } else {
+                
+                videosGamves[indexPath.row].checked = true
+            }
+            
+            self.collectionView.reloadData()
+            
+        }
 
     }    
   

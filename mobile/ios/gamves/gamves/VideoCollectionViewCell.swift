@@ -8,7 +8,9 @@
 
 import UIKit
 
-class VideoCollectionViewCell: BaseCell {  
+class VideoCollectionViewCell: BaseCell {
+    
+    var checked = Bool()
   
     let thumbnailImageView: CustomImageView = {
         let imageView = CustomImageView()        
@@ -63,6 +65,13 @@ class VideoCollectionViewCell: BaseCell {
         return view
     }()
     
+    var checkLabel: UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        return label
+    }()
+
+    
     var titleLabelHeightConstraint: NSLayoutConstraint?
     
     override func setupViews() 
@@ -98,6 +107,20 @@ class VideoCollectionViewCell: BaseCell {
         labelsView.addConstraintsWithFormat("V:|-25-[v0(25)]|", views: videoDatePublish)        
 
         self.separatorView.backgroundColor = UIColor.lightGray
+        
+        checkLabel =  Global.createCircularLabel(text: "✓", size: 40, fontSize: 30.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+        addSubview(checkLabel)
+        
+        let cw = self.frame.width
+        let ch = cw * 9 / 16
+        
+        let pr = cw - 80
+        let pt = ch - 60
+        
+        let paddingMetrics = ["pr":pr,"pt":pt]
+        
+        addConstraintsWithFormat("H:|-pr-[v0(40)]", views: checkLabel, metrics : paddingMetrics)
+        addConstraintsWithFormat("V:|-pt-[v0(40)]", views: checkLabel, metrics : paddingMetrics)
         
     }
     
