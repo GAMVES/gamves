@@ -12,6 +12,7 @@ import UIKit
 import Parse
 import NVActivityIndicatorView
 import IGColorPicker
+import PulsingHalo
 
 class ProfileCell: BaseCell, 
     UICollectionViewDataSource,
@@ -42,7 +43,6 @@ class ProfileCell: BaseCell,
         view.translatesAutoresizingMaskIntoConstraints = false        
         return view
     }()
-
 
     var backImageView: UIImageView = {        
         let imageView = UIImageView()        
@@ -191,6 +191,12 @@ class ProfileCell: BaseCell,
     var colorPickerView: ColorPickerView!
     
     var editProfile = Bool()
+    var editCreated = Bool()
+    
+    var editBackImageView:UIView!
+    var editAvatarImageView:UIView!
+    var editColorView:UIView!
+    var editBioView:UIView!
     
     override func setupViews() {
         super.setupViews()
@@ -313,59 +319,123 @@ class ProfileCell: BaseCell,
     
     func handleEditProfile() {
         
-        self.editProfile = true
+        if !self.editCreated {
         
-        //-- Bottom single button
+            DispatchQueue.main.async {
+                
+                self.editProfile = true
+                
+                //-- Bottom single button
+                
+                self.saveProfileButton.isHidden = false
+                self.editProfileButton.isHidden = true
+                self.editFanpageButton.isHidden = true
+                
+                //-- Background
+                
+                self.editBackImageView = UIView(frame: CGRect(x:30, y:30, width:50, height:50))
+                
+                var editBackImageButton = UIButton(type: UIButtonType.system)
+                editBackImageButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+                let imageBack = UIImage(named: "camera_black")
+                imageBack?.maskWithColor(color: UIColor.gamvesBackgoundColor)
+                editBackImageButton.setImage(imageBack, for: .normal)
+                editBackImageButton.isUserInteractionEnabled = true
+                editBackImageButton.addTarget(self, action: #selector(self.handleChangeBackgoundImage), for: .touchUpInside)
+                
+                let haloBack = PulsingHaloLayer()
+                haloBack.position.x = editBackImageButton.center.x
+                haloBack.position.y = editBackImageButton.center.y
+                haloBack.haloLayerNumber = 5
+                haloBack.backgroundColor = UIColor.gamvesBackgoundColor.cgColor
+                haloBack.radius = 40
+                haloBack.start()
+                
+                self.editBackImageView.layer.addSublayer(haloBack)
+                self.editBackImageView.addSubview(editBackImageButton)
+                self.profileView.addSubview(self.editBackImageView)
+                
+                //-- Avatar
+                
+                let w = self.frame.width
+                let halfWidth = w/2 - 25
+                
+                self.editAvatarImageView = UIView(frame: CGRect(x:halfWidth, y:25, width:50, height:50))
+                
+                var editAvatarButton = UIButton(type: UIButtonType.system)
+                editAvatarButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+                let imageAvatar = UIImage(named: "camera_black")
+                editAvatarButton.setImage(imageAvatar, for: .normal)
+                editAvatarButton.addTarget(self, action: #selector(self.handleChangeAvatarImage), for: .touchUpInside)
+                editAvatarButton.isUserInteractionEnabled = true
+                
+                let haloAvatar = PulsingHaloLayer()
+                haloAvatar.position.x = editAvatarButton.center.x
+                haloAvatar.position.y = editAvatarButton.center.y
+                haloAvatar.haloLayerNumber = 5
+                haloAvatar.backgroundColor = UIColor.gamvesBackgoundColor.cgColor
+                haloAvatar.radius = 40
+                haloAvatar.start()
+                
+                self.editAvatarImageView.layer.addSublayer(haloAvatar)
+                self.editAvatarImageView.addSubview(editAvatarButton)
+                self.registerRowView.addSubview(self.editAvatarImageView)
+                
+                //-- Color
+                
+                self.editColorView = UIView(frame: CGRect(x:30, y:60, width:50, height:50))
+                
+                var editColorButton = UIButton(type: UIButtonType.system)
+                editColorButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+                let imageColor = UIImage(named: "color")
+                imageColor?.maskWithColor(color: UIColor.lightGray)
+                editColorButton.setImage(imageColor, for: .normal)
+                editColorButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
+                editColorButton.isUserInteractionEnabled = true
+                
+                let haloColor = PulsingHaloLayer()
+                haloColor.position.x = editColorButton.center.x
+                haloColor.position.y = editColorButton.center.y
+                haloColor.haloLayerNumber = 5
+                haloColor.backgroundColor = UIColor.lightGray.cgColor
+                haloColor.radius = 40
+                haloColor.start()
+
+                self.editColorView.layer.addSublayer(haloColor)
+                self.editColorView.addSubview(editColorButton)
+                self.registerRowView.addSubview(self.editColorView)
+                
+                //-- Bio
+                
+                let bX = w - 60
+                
+                self.editBioView = UIView(frame: CGRect(x:bX, y:120, width:50, height:50))
         
-        self.saveProfileButton.isHidden = false
-        self.editProfileButton.isHidden = true
-        self.editFanpageButton.isHidden = true
-        
-        //-- Background
-        
-        let editBackgroundButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
-        let imageBack = UIImage(named: "camera_black")
-        editBackgroundButton.setImage(imageBack, for: .normal)
-        editBackgroundButton.addTarget(self, action: #selector(handleChangeBackgoundImage), for: .touchUpInside)
-        self.profileView.addSubview(editBackgroundButton)
-        
-        //-- Avatar
-        
-        let editAvatarButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
-        let imageAvatar = UIImage(named: "camera_black")
-    
-        editAvatarButton.setImage(imageAvatar, for: .normal)
-        editAvatarButton.addTarget(self, action: #selector(handleChangeAvatarImage), for: .touchUpInside)
-        
-        self.registerRowView.addSubview(editAvatarButton)
-        self.registerRowView.addConstraintsWithFormat("H:|-10-[v0]|", views: editAvatarButton)
-        self.registerRowView.addConstraintsWithFormat("V:|-10-[v0]|", views: editAvatarButton)
-        
-        //-- Color
-        
-        let editColorButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
-        let imageColor = UIImage(named: "color")
-        imageColor?.maskWithColor(color: UIColor.lightGray)
-        editColorButton.setImage(imageColor, for: .normal)
-        editColorButton.addTarget(self, action: #selector(handleChangeColor), for: .touchUpInside)
-        
-        self.registerRowView.addSubview(editColorButton)
-        self.registerRowView.addConstraintsWithFormat("H:|[v0]|", views: editColorButton)
-        self.registerRowView.addConstraintsWithFormat("V:|-180-[v0]|", views: editColorButton)
-        
-        //-- Bio
-        
-        let editSloganButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
-        let imageSlogan = UIImage(named: "edit")
-        imageSlogan?.maskWithColor(color: UIColor.lightGray)
-        editSloganButton.setImage(imageSlogan, for: .normal)
-        editSloganButton.addTarget(self, action: #selector(handleChangeSlogan), for: .touchUpInside)
-        
-        self.profileView.addSubview(editSloganButton)
-        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: editSloganButton)
-        self.profileView.addConstraintsWithFormat("V:|-180-[v0]|", views: editSloganButton)
-        
-        self.collectionView.reloadData()
+                var editBioButton = UIButton(type: UIButtonType.system)
+                editBioButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+                let imageBio = UIImage(named: "edit")
+                imageBio?.maskWithColor(color: UIColor.lightGray)
+                editBioButton.setImage(imageBio, for: .normal)
+                editBioButton.addTarget(self, action: #selector(self.handleChangeBio), for: .touchUpInside)
+                editBioButton.isUserInteractionEnabled = true
+                
+                let haloBio = PulsingHaloLayer()
+                haloBio.position.x = editBioButton.center.x
+                haloBio.position.y = editBioButton.center.y
+                haloBio.haloLayerNumber = 5
+                haloBio.backgroundColor = UIColor.lightGray.cgColor
+                haloBio.radius = 40
+                haloBio.start()
+                
+                self.editBioView.layer.addSublayer(haloBio)
+                self.editBioView.addSubview(editBioButton)
+                self.registerRowView.addSubview(self.editBioView)
+                
+                self.collectionView.reloadData()
+                
+                self.editCreated = true
+            }
+        }
         
     }
     
@@ -377,29 +447,51 @@ class ProfileCell: BaseCell,
     
     func handleCancelProfile() {
         
+        self.saveProfileButton.isHidden = true
+        self.editProfileButton.isHidden = false
+        self.editFanpageButton.isHidden = false
+        
+        self.editBackImageView.isHidden = true
+        self.editAvatarImageView.isHidden = true
+        self.editColorView.isHidden = true
+        self.editBioView.isHidden = true
         
     }
     
+    func handleEditFanpage() {
+        
+        //Call branch add code here
+        
+    }
     
-    func handleChangeBackgoundImage() {
+    func handleChangeBackgoundImage(sender : UIButton) {
         
         //Media Controller Here
         
     }
     
-    func handleChangeAvatarImage() {
+    func handleChangeAvatarImage(sender : UIButton) {
         
         //Media Controller Here
         
     }
 
-    func handleChangeColor() {
+    
+    func handleChangeColor(sender : UIButton) {
         
+        colorPickerView = ColorPickerView(frame: CGRect(x: 0.0, y: 0.0, width: self.frame.width, height: self.frame.height))
+        self.addSubview(colorPickerView)
         
     }
 
     
-    func handleChangeSlogan() {
+    func handleChangeBio(sender : UIButton) {
+        
+        print("changed")
+        
+    }
+    
+    /*func handleChangeSlogan(sender : UIButton) {
         
         let alertController = UIAlertController(title: "Slogan ", message: "Enter your slogan", preferredStyle: .alert)
         
@@ -422,12 +514,8 @@ class ProfileCell: BaseCell,
         alertController.addAction(cancelAction)
         
         window?.rootViewController?.present(alertController, animated: true, completion: nil)
-    }
+    }*/
 
-    
-    func handleEditFanpage() {
-        
-    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -446,8 +534,6 @@ class ProfileCell: BaseCell,
     {
         
         self.activityIndicatorView?.startAnimating()
-        
-        let countVideosLoaded = 0
         
         let queryvideos = PFQuery(className:"Videos")      
 
@@ -582,16 +668,16 @@ class ProfileCell: BaseCell,
         
             if videosGamves[indexPath.row].checked {
                 
-                cellVideo.checkLabel.isHidden = false
+                cellVideo.checkView.isHidden = false
             
             } else {
                 
-                cellVideo.checkLabel.isHidden = true
+                cellVideo.checkView.isHidden = true
             }
             
         } else {
             
-            cellVideo.checkLabel.isHidden = true
+            cellVideo.checkView.isHidden = true
         }
         
         cellVideo.videoName.text = videosGamves[indexPath.row].title

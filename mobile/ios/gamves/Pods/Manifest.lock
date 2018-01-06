@@ -26,6 +26,7 @@ PODS:
     - Parse (~> 1.15.0)
     - Starscream (= 2.1.1)
   - PopupDialog (0.5.4)
+  - PulsingHalo (0.2.8)
   - SDWebImage (3.8.2):
     - SDWebImage/Core (= 3.8.2)
   - SDWebImage/Core (3.8.2)
@@ -46,6 +47,7 @@ DEPENDENCIES:
   - NVActivityIndicatorView
   - ParseLiveQuery
   - PopupDialog
+  - PulsingHalo
   - SwiftyJSON
   - UITextView+Placeholder (~> 1.2)
   - YouTubePlayer
@@ -78,12 +80,13 @@ SPEC CHECKSUMS:
   Parse: 7daa8804b876d250a65420534c97d2d786c3b0b4
   ParseLiveQuery: bc2321032ddae9d6ecfd4842d1b10210d453b08b
   PopupDialog: 75cf955693590b0cb2fdde00223fb65d99c57247
+  PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   UITextView+Placeholder: 77680995fcdd07c3f52ec92fe1150874a2ac89ff
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 3bbc77b11dc132009f0b0ce272765b59f5b94bad
+PODFILE CHECKSUM: f83f9916d440f7700aead592036b55fc0900adc6
 
 COCOAPODS: 1.2.1.beta.1

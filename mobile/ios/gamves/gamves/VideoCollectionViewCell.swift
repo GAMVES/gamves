@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PulsingHalo
 
 class VideoCollectionViewCell: BaseCell {
     
@@ -65,10 +66,10 @@ class VideoCollectionViewCell: BaseCell {
         return view
     }()
     
-    var checkLabel: UILabel = {
-        let label = UILabel()
-        label.isHidden = true
-        return label
+    var checkView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        return view
     }()
 
     
@@ -108,8 +109,22 @@ class VideoCollectionViewCell: BaseCell {
 
         self.separatorView.backgroundColor = UIColor.lightGray
         
-        checkLabel =  Global.createCircularLabel(text: "✓", size: 40, fontSize: 30.0, borderWidth: 3.0, color: UIColor.gamvesColor)
-        addSubview(checkLabel)
+        self.checkView = UIView()
+        
+        
+        var checkLabel = UILabel()
+        
+        checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 20.0, borderWidth: 2.0, color: UIColor.gamvesColor)
+        
+        let haloCheck = PulsingHaloLayer()
+        haloCheck.position.x = checkLabel.center.x
+        haloCheck.position.y = checkLabel.center.y
+        haloCheck.haloLayerNumber = 5
+        haloCheck.backgroundColor = UIColor.white.cgColor
+        haloCheck.radius = 40
+        haloCheck.start()
+        
+        self.checkView.layer.addSublayer(haloCheck)
         
         let cw = self.frame.width
         let ch = cw * 9 / 16
@@ -119,9 +134,15 @@ class VideoCollectionViewCell: BaseCell {
         
         let paddingMetrics = ["pr":pr,"pt":pt]
         
-        addConstraintsWithFormat("H:|-pr-[v0(40)]", views: checkLabel, metrics : paddingMetrics)
-        addConstraintsWithFormat("V:|-pt-[v0(40)]", views: checkLabel, metrics : paddingMetrics)
+        self.addSubview(self.checkView)
+        self.addConstraintsWithFormat("H:|-pr-[v0(30)]", views: self.checkView, metrics : paddingMetrics)
+        self.addConstraintsWithFormat("V:|-pt-[v0(30)]", views: self.checkView, metrics : paddingMetrics)
         
+        self.checkView.addSubview(checkLabel)
+        //checkLabel.frame = CGRect(x: checkView.center.x, y: checkView.center.y, width: 30, height: 30)
+        self.checkView.addConstraintsWithFormat("H:|[v0(30)]|", views: checkLabel)
+        self.checkView.addConstraintsWithFormat("V:|[v0(30)]|", views: checkLabel)
+        
+
     }
-    
 }

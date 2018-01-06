@@ -33,4 +33,6 @@ target 'gamves' do
   
   pod 'IGColorPicker'
   
+  pod 'PulsingHalo'
+  
 end
