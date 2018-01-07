@@ -13,7 +13,7 @@ import Parse
 import NVActivityIndicatorView
 import IGColorPicker
 import PulsingHalo
-
+import KenBurns
 
 public enum ProfileSaveType {
     case profile
@@ -52,11 +52,11 @@ class ProfileCell: BaseCell,
         return view
     }()
 
-    var backImageView: UIImageView = {        
-        let imageView = UIImageView()        
+    var backImageView: KenBurnsImageView = {
+        let imageView = KenBurnsImageView()
         imageView.contentMode = .scaleAspectFill //.scaleFill
         imageView.clipsToBounds = true     
-        imageView.image = UIImage(named: "universe")
+        //imageView.image = UIImage(named: "universe")
         return imageView
     }()
     
@@ -163,10 +163,13 @@ class ProfileCell: BaseCell,
         return button
     }()
     
+    var saveDesc:String  = "Save Profile"
+    var colorDesc:String = "Choose Color"
+    
     lazy var saveProfileButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor
-        button.setTitle("Save Profile", for: UIControlState())
+        //button.setTitle(colorDesc, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
@@ -197,20 +200,26 @@ class ProfileCell: BaseCell,
     var cellId = String()
     
     var colorPickerView: ColorPickerView!
-    
+    var colorPickerViewController:ColorPickerViewController!
+
     var editProfile = Bool()
     var editCreated = Bool()
+    var colorCreated = Bool()
     
     var editBackImageView:UIView!
     var editAvatarImageView:UIView!
     var editColorView:UIView!
     var editBioView:UIView!
     
+    var initialSetting = InitialSetting()
     
+    var profilePF:PFObject!
     
     override func setupViews() {
         super.setupViews()
 
+        self.saveProfileButton.setTitle(saveDesc, for: .normal)
+        
         self.getProfileVideos()
         
         let width = self.frame.width
@@ -302,29 +311,97 @@ class ProfileCell: BaseCell,
         
         self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.saveProfileButton, self.cancelProfileButton, metrics: metricsFooterView)
         
-        
-        if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.avatar {
-            self.sonProfileImageView.image = sonImage
-            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
-
-            self.sonProfileImageView.layer.shadowColor = UIColor.black.cgColor
-            self.sonProfileImageView.layer.shadowOpacity = 1
-            self.sonProfileImageView.layer.shadowOffset = CGSize.zero
-            self.sonProfileImageView.layer.shadowRadius = 10
-        }
+        self.setSonProfileImageView()
 
         self.dataView.addSubview(self.collectionView)
         self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView) 
         self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.collectionView) 
        
-        self.bioLabel.text = "I like doing this and that with my information"
+        //self.bioLabel.text = "I like doing this and that with my information"
 
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
 
         self.collectionView.backgroundColor = UIColor.white
         
         self.profileSaveType = ProfileSaveType.profile
+        
+        self.loadProfileInfo()
        
+    }
+    
+    func setSonProfileImageView() {
+        
+        let userId = PFUser.current()?.objectId
+        
+        if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.avatar {
+            self.sonProfileImageView.image = sonImage
+            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
+            
+            self.sonProfileImageView.layer.shadowColor = UIColor.black.cgColor
+            self.sonProfileImageView.layer.shadowOpacity = 1
+            self.sonProfileImageView.layer.shadowOffset = CGSize.zero
+            self.sonProfileImageView.layer.shadowRadius = 10
+        }
+        
+    }
+    
+    func loadProfileInfo() {
+        
+        let queryUser = PFQuery(className:"Profile")
+        
+        queryUser.whereKey("userId", equalTo: PFUser.current()?.objectId)
+        
+        queryUser.getFirstObjectInBackground { (profile, error) in
+            
+            if error == nil {
+                
+                if let prPF:PFObject = profile {
+                    
+                    self.profilePF = prPF
+                    
+                    if self.profilePF["pictureBackground"] != nil {
+                
+                        let backImage = self.profilePF["pictureBackground"] as! PFFile
+                        
+                        let colorArray:[CGFloat] = self.profilePF["backgroundColor"] as! [CGFloat]
+                        
+                        let bio = self.profilePF["bio"] as! String
+                        
+                        self.bioLabel.text = bio
+                        
+                        let backgroundColor = UIColor.rgb(colorArray[0], green: colorArray[1], blue: colorArray[2])
+                        
+                        self.initialSetting.backColor = backgroundColor
+                        self.profileView.backgroundColor = backgroundColor
+                        
+                        backImage.getDataInBackground { (imageData, error) in
+                            
+                            if error == nil {
+                                
+                                if let imageData = imageData
+                                {
+                                    let image = UIImage(data:imageData)
+                                    
+                                    self.newKenBurnsImageView(image: image!)
+                                    
+                                    self.initialSetting.backImage = image
+                                    
+                                    self.initialSetting.bio = self.bioLabel.text!
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func newKenBurnsImageView(image: UIImage) {
+        self.backImageView.setImage(image)
+        self.backImageView.zoomIntensity = 1.5
+        self.backImageView.setDuration(min: 5, max: 13)
+        self.backImageView.startAnimating()
     }
     
     func handleEditProfile() {
@@ -334,6 +411,7 @@ class ProfileCell: BaseCell,
             DispatchQueue.main.async {
                 
                 self.editProfile = true
+                let w = self.frame.width
                 
                 //-- Bottom single button
                 
@@ -367,7 +445,6 @@ class ProfileCell: BaseCell,
                 
                 //-- Avatar
                 
-                let w = self.frame.width
                 let halfWidth = w/2 - 25
                 
                 self.editAvatarImageView = UIView(frame: CGRect(x:halfWidth, y:25, width:50, height:50))
@@ -417,9 +494,9 @@ class ProfileCell: BaseCell,
                 
                 //-- Bio
                 
-                let bX = w - 60
+                let bX = w - 70
                 
-                self.editBioView = UIView(frame: CGRect(x:bX, y:120, width:50, height:50))
+                self.editBioView = UIView(frame: CGRect(x:bX, y:60, width:50, height:50))
         
                 var editBioButton = UIButton(type: UIButtonType.system)
                 editBioButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
@@ -440,37 +517,96 @@ class ProfileCell: BaseCell,
                 self.editBioView.layer.addSublayer(haloBio)
                 self.editBioView.addSubview(editBioButton)
                 self.registerRowView.addSubview(self.editBioView)
-                
+            
                 self.collectionView.reloadData()
                 
                 self.editCreated = true
             }
         }
-        
     }
     
     func handleSaveProfile() {
+        
+        //NOT WORKING
 
         if self.profileSaveType == ProfileSaveType.profile {
             
+            let backImage:UIImage = UIImage() // = self.backImageView
+
+            let backImagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage, 1.0)!)
+            self.profilePF["pictureBackground"] = backImagePF
+            self.profilePF["bio"] = self.bioLabel.text
+            
+            self.profilePF.saveInBackground(block: { (profile, error) in
+                
+                let userId = PFUser.current()?.objectId
+                
+                let firstName = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
+                
+                let sonImagePF = PFFile(name: "\(firstName)picture.png", data: UIImageJPEGRepresentation(self.sonProfileImageView.image!, 1.0)!)
+            
+                let imageLow = self.sonProfileImageView.image?.lowestQualityJPEGNSData as! Data
+                var smallImage = UIImage(data: imageLow)
+                
+                let sonUser:PFUser = PFUser.current()!
+                
+                sonUser["picture"] = backImagePF
+                
+                sonUser["pictureSmall"] = smallImage
+                
+                sonUser.saveInBackground(block: { (user, error) in
+                    
+                    
+                    
+                })
+            })
             
         } else if self.profileSaveType == ProfileSaveType.color {
             
             //Close color window change button to original label
+            
+            self.clearColorButton()
             
         }
     }
     
     func handleCancelProfile() {
         
-        self.saveProfileButton.isHidden = true
-        self.editProfileButton.isHidden = false
-        self.editFanpageButton.isHidden = false
+        self.profileView.backgroundColor = self.initialSetting.backColor
         
-        self.editBackImageView.isHidden = true
-        self.editAvatarImageView.isHidden = true
-        self.editColorView.isHidden = true
-        self.editBioView.isHidden = true
+        if self.profileSaveType == ProfileSaveType.profile {
+            
+            self.newKenBurnsImageView(image: self.initialSetting.backImage)
+            self.sonProfileImageView.image = self.initialSetting.avatarImage
+            self.setSonProfileImageView()
+            
+            self.bioLabel.text = self.initialSetting.bio
+         
+            self.videosGamves = [VideoGamves]()
+            self.videosGamves = self.initialSetting.videos
+            
+            self.saveProfileButton.isHidden = true
+            self.editProfileButton.isHidden = false
+            self.editFanpageButton.isHidden = false
+            
+            self.editBackImageView.isHidden = true
+            self.editAvatarImageView.isHidden = true
+            self.editColorView.isHidden = true
+            self.editBioView.isHidden = true
+            
+        } else if self.profileSaveType == ProfileSaveType.color {
+         
+            self.clearColorButton()
+            
+        }
+    
+    }
+    
+    func clearColorButton() {
+        
+        self.colorPickerViewController.isHidden = true
+        self.saveProfileButton.setTitle(self.saveDesc, for: .normal)
+        self.profileSaveType = ProfileSaveType.profile
         
     }
     
@@ -489,49 +625,70 @@ class ProfileCell: BaseCell,
     func handleChangeAvatarImage(sender : UIButton) {
         
         //Media Controller Here
-        
     }
 
     
     func handleChangeColor(sender : UIButton) {
         
-        //let width = self.frame.width - 40
-        //let height = self.frame.height - 40
+        if !self.colorCreated {
+    
+            let colorFrame = self.dataView.frame
+            
+            self.colorPickerViewController = ColorPickerViewController(frame: colorFrame)
+            colorPickerViewController.cornerRadius = 20
+            
+            colorPickerViewController.colorPickerView.delegate = self
+            
+            self.addSubview(colorPickerViewController)
+            
+            self.colorCreated = true
+            
+        }  else {
+            
+            self.colorPickerViewController.isHidden = false
         
-        //let colorFrame = CGRect(x: 20, y: 20, width: width, height: height)
+        }
         
-        let colorFrame = self.dataView.frame
-        
-        let colorPickerViewController = ColorPickerViewController(frame: colorFrame)
-        colorPickerViewController.cornerRadius = 20
-        
-        colorPickerViewController.colorPickerView.delegate = self
-        
-        self.addSubview(colorPickerViewController)
-        
-        self.saveProfileButton.setTitle("Save Color", for: .normal)
+        self.saveProfileButton.setTitle(self.colorDesc, for: .normal)
         
         self.profileSaveType = ProfileSaveType.color
         
     }
+
     
-    // MARK: - ColorPickerViewDelegate
+    func handleChangeBio(sender : UIButton) {
+        
+        var alertController = UIAlertController(title: "Slogan ", message: "Enter your slogan", preferredStyle: .alert)
+        
+        let confirmAction = UIAlertAction(title: "Enter", style: .default) { (_) in
+            
+            let bio = alertController.textFields?[0].text
+            
+            self.bioLabel.text = bio
+            
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in }
+    
+        alertController.addTextField { (textField) in
+            textField.placeholder = "New slogan here"
+        }
+        
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancelAction)
+        
+        
+        window?.rootViewController?.present(alertController, animated: true, completion: nil)
+    
+    }
     
     func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath) {
-        
-        //self.selectedColorView.backgroundColor = colorPickerView.colors[indexPath.item]
-        
+ 
         self.profileView.backgroundColor = colorPickerView.colors[indexPath.item]
         
         self.sonProfileImageView.borderColor = colorPickerView.colors[indexPath.item]
         
     }
-    
-    // MARK: - ColorPickerViewDelegateFlowLayout
-    
-    //func colorPickerView(_ colorPickerView: ColorPickerView, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    //    return CGSize(width: 48, height: 48)
-    //}
     
     func colorPickerView(_ colorPickerView: ColorPickerView, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 11
@@ -544,43 +701,9 @@ class ProfileCell: BaseCell,
     func colorPickerView(_ colorPickerView: ColorPickerView, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
-
-    
-    func handleChangeBio(sender : UIButton) {
-        
-        print("changed")
-        
-    }
-    
-    /*func handleChangeSlogan(sender : UIButton) {
-        
-        let alertController = UIAlertController(title: "Slogan ", message: "Enter your slogan", preferredStyle: .alert)
-        
-        let confirmAction = UIAlertAction(title: "Enter", style: .default) { (_) in
-            
-            let bio = alertController.textFields?[0].text
-            
-            self.bioLabel.text = bio
-            
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in }
-        
-        //adding textfields to our dialog box
-        alertController.addTextField { (textField) in
-            textField.placeholder = "New slogan here"
-        }
-        
-        alertController.addAction(confirmAction)
-        alertController.addAction(cancelAction)
-        
-        window?.rootViewController?.present(alertController, animated: true, completion: nil)
-    }*/
-
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -683,6 +806,8 @@ class ProfileCell: BaseCell,
                                     
                                     if ( (countVideos!-1) == count)
                                     {
+                                        self.initialSetting.videos = self.videosGamves
+                                        
                                         self.activityIndicatorView?.stopAnimating()
                                         self.collectionView.reloadData()
                                     }
@@ -807,6 +932,13 @@ class ProfileCell: BaseCell,
     }
 }
 
+class InitialSetting {
+    var backColor:UIColor!
+    var backImage:UIImage!
+    var avatarImage:UIImage!
+    var bio = String()
+    var videos = [VideoGamves]()
+}
 
 
 class ColorPickerViewController: UIView, ColorPickerViewDelegateFlowLayout {
