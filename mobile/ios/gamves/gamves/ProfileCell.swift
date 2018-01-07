@@ -14,13 +14,21 @@ import NVActivityIndicatorView
 import IGColorPicker
 import PulsingHalo
 
-class ProfileCell: BaseCell, 
+
+public enum ProfileSaveType {
+    case profile
+    case color
+}
+
+class ProfileCell: BaseCell,
     UICollectionViewDataSource,
     UICollectionViewDelegate, 
     UICollectionViewDelegateFlowLayout, 
-    UIScrollViewDelegate 
+    UIScrollViewDelegate,
+    ColorPickerViewDelegate
 {
-    
+
+    var profileSaveType:ProfileSaveType!
 
     var metricsHome = [String:Int]()
 
@@ -198,6 +206,8 @@ class ProfileCell: BaseCell,
     var editColorView:UIView!
     var editBioView:UIView!
     
+    
+    
     override func setupViews() {
         super.setupViews()
 
@@ -209,8 +219,6 @@ class ProfileCell: BaseCell,
         print(paddingRegister)
         
         let metricsRegisterView = ["paddingRegister": paddingRegister]
-        
-        print(metricsRegisterView)
         
         self.addSubview(self.profileView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.profileView)
@@ -297,7 +305,7 @@ class ProfileCell: BaseCell,
         
         if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.avatar {
             self.sonProfileImageView.image = sonImage
-            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 4, boderColor: UIColor.gamvesBackgoundColor)
+            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
 
             self.sonProfileImageView.layer.shadowColor = UIColor.black.cgColor
             self.sonProfileImageView.layer.shadowOpacity = 1
@@ -314,6 +322,8 @@ class ProfileCell: BaseCell,
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
 
         self.collectionView.backgroundColor = UIColor.white
+        
+        self.profileSaveType = ProfileSaveType.profile
        
     }
     
@@ -440,9 +450,15 @@ class ProfileCell: BaseCell,
     }
     
     func handleSaveProfile() {
-        
-        
-        
+
+        if self.profileSaveType == ProfileSaveType.profile {
+            
+            
+        } else if self.profileSaveType == ProfileSaveType.color {
+            
+            //Close color window change button to original label
+            
+        }
     }
     
     func handleCancelProfile() {
@@ -479,9 +495,54 @@ class ProfileCell: BaseCell,
     
     func handleChangeColor(sender : UIButton) {
         
-        colorPickerView = ColorPickerView(frame: CGRect(x: 0.0, y: 0.0, width: self.frame.width, height: self.frame.height))
-        self.addSubview(colorPickerView)
+        //let width = self.frame.width - 40
+        //let height = self.frame.height - 40
         
+        //let colorFrame = CGRect(x: 20, y: 20, width: width, height: height)
+        
+        let colorFrame = self.dataView.frame
+        
+        let colorPickerViewController = ColorPickerViewController(frame: colorFrame)
+        colorPickerViewController.cornerRadius = 20
+        
+        colorPickerViewController.colorPickerView.delegate = self
+        
+        self.addSubview(colorPickerViewController)
+        
+        self.saveProfileButton.setTitle("Save Color", for: .normal)
+        
+        self.profileSaveType = ProfileSaveType.color
+        
+    }
+    
+    // MARK: - ColorPickerViewDelegate
+    
+    func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath) {
+        
+        //self.selectedColorView.backgroundColor = colorPickerView.colors[indexPath.item]
+        
+        self.profileView.backgroundColor = colorPickerView.colors[indexPath.item]
+        
+        self.sonProfileImageView.borderColor = colorPickerView.colors[indexPath.item]
+        
+    }
+    
+    // MARK: - ColorPickerViewDelegateFlowLayout
+    
+    //func colorPickerView(_ colorPickerView: ColorPickerView, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    //    return CGSize(width: 48, height: 48)
+    //}
+    
+    func colorPickerView(_ colorPickerView: ColorPickerView, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 11
+    }
+    
+    func colorPickerView(_ colorPickerView: ColorPickerView, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 8
+    }
+    
+    func colorPickerView(_ colorPickerView: ColorPickerView, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 
     
@@ -743,9 +804,57 @@ class ProfileCell: BaseCell,
             self.collectionView.reloadData()
             
         }
+    }
+}
 
-    }    
-  
+
+
+class ColorPickerViewController: UIView, ColorPickerViewDelegateFlowLayout {
+    
+    let backgroundView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.gamvesBackgoundColor
+        return view
+    }()
+    
+    let colorPickerView: ColorPickerView = {
+        let view = ColorPickerView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.backgroundColor = .white
+       
+        // Setup colorPickerView
+        //colorPickerView.delegate = self
+        colorPickerView.layoutDelegate = self
+        colorPickerView.style = .circle
+        colorPickerView.selectionStyle = .check
+        colorPickerView.isSelectedColorTappable = false
+        colorPickerView.preselectedIndex = colorPickerView.colors.indices.first
+        
+        self.addSubview(self.backgroundView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.backgroundView)
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.backgroundView)
+        
+        self.backgroundView.addSubview(self.colorPickerView)
+        self.backgroundView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.colorPickerView)
+        self.backgroundView.addConstraintsWithFormat("V:|[v0]|", views: self.colorPickerView)
+
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    
+    
 }
 
 
