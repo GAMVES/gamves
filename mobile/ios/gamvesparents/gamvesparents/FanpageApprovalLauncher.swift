@@ -138,7 +138,7 @@ class FanpageApprovalLauncher: UIView {
             let infoFrame = CGRect(x: 0, y: Int(fanpageApprovalView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
             
             infoApprovalView = InfoApprovalView(frame: infoFrame, obj: fanpageGamves)
-            view.addSubview(infoApprovalt View)
+            view.addSubview(infoApprovalView)
 
             let diff = Int(videoHeight) + Int(infoHeight)
             let chatHeight = Int(keyWindow.frame.height) - diff

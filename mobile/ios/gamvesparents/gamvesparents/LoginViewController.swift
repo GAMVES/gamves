@@ -358,7 +358,6 @@ class LoginViewController: UIViewController
                     //userTypeTextField.isHidden = true
 
                     
-                    
                 } else if (loginRegisterSegmentedControl.selectedSegmentIndex == 1)
                 {
                     inputsContainerViewHeightAnchor?.constant = inputsContainerViewHeight
@@ -463,10 +462,7 @@ class LoginViewController: UIViewController
             }
             
             user["iDUserType"] = type
-            
-            let relation:PFRelation = user.relation(forKey: "userType")
-            relation.add((Global.userTypes[type]?.userTypeObj)!)
-            
+        
             user.signUpInBackground {
                 (success, error) -> Void in
                 
@@ -480,10 +476,10 @@ class LoginViewController: UIViewController
                     self.activityIndicatorView?.stopAnimating()
                     
                 } else {
-                    // Everything went ok
                     
-                    user["userType"] = type                   
-                   
+                    // Everything went ok
+                    //user["userType"] = type
+                    
                     self.activityIndicatorView?.stopAnimating()
                     
                     self.message="An email has been sent to your inbox. Please confirm, once then press the Login."
@@ -498,26 +494,33 @@ class LoginViewController: UIViewController
                     
                     Global.registerInstallationAndRole(completionHandlerRole: { ( resutl ) -> () in
                         
-                        if resutl
-                        {
+                        if resutl {
 
-                             user.saveInBackground(block: { (resutl, error) in
-                
-                                if error == nil
-                                {
-
-                                    PFUser.logOut()
+                             self.saveNewProfile(completionHandler: { (profile) in
+                                
+                                let relation:PFRelation = user.relation(forKey: "userType")
+                                relation.add((Global.userTypes[type]?.userTypeObj)!)
+                                
+                                let profileRel:PFRelation = user.relation(forKey: "profile")
+                                profileRel.add(profile)
+                                
+                                user.saveInBackground(block: { (resutl, error) in
                                     
-                                } else
-                                {
-                                    print(error)
-                                }
-
-                            })
+                                    if error == nil
+                                    {
+                                        
+                                        PFUser.logOut()
+                                        
+                                    } else
+                                    {
+                                        print(error)
+                                    }
+                                    
+                                })
+                                
+                             })
                         }
-                        
                     })
-
                 }
                 
                 self.isMessage=true
@@ -526,8 +529,34 @@ class LoginViewController: UIViewController
         }
     }
     
-    func handleLogin() 
+    func saveNewProfile(completionHandler : @escaping (_ profile:PFObject) -> ())
     {
+        
+        let profilePF: PFObject = PFObject(className: "Profile")
+        
+        let backImage = UIImage(named: "universe")
+        
+        var backimagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage!, 1.0)!)
+        profilePF.setObject(backimagePF, forKey: "pictureBackground")
+        
+        if let userId = PFUser.current()?.objectId {
+            profilePF["userId"] = userId
+        }
+        
+        profilePF["backgroundColor"] = [228, 239, 245]
+        
+        profilePF.saveInBackground { (resutl, error) in
+            
+            if error == nil {
+                
+                 completionHandler(profilePF)
+            }
+            
+        }
+        
+    }
+    
+    func handleLogin() {
      
         self.activityIndicatorView?.startAnimating()   
         

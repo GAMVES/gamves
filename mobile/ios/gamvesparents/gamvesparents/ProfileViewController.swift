@@ -1349,6 +1349,9 @@ class ProfileViewController: UIViewController,
         let dataPhotoImage = self.sonPhotoImage.highQualityJPEGNSData
         let dataPhotoImageSmall = self.sonPhotoImageSmall.highQualityJPEGNSData
         
+        let imageUniverse = UIImage(named: "universe")
+        let dataPhotoUniverse = imageUniverse?.highQualityJPEGNSData
+        
         let full_name = son_name?.components(separatedBy: " ")
         let firstName = full_name?[0]
         let lastName = full_name?[1]
@@ -1363,7 +1366,9 @@ class ProfileViewController: UIViewController,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
             "dataPhotoImage": dataPhotoImage,
-            "dataPhotoImageSmall": dataPhotoImageSmall ] as [String : Any]
+            "dataPhotoImageSmall": dataPhotoImageSmall,
+            "dataPhotoBackground": dataPhotoUniverse
+            ] as [String : Any]
         
         PFCloud.callFunction(inBackground: "createGamvesUser", withParameters: sonParams) { (result, error) in
          
@@ -1505,6 +1510,31 @@ class ProfileViewController: UIViewController,
         let yourimageSmall = PFFile(name: yourImgName, data: UIImageJPEGRepresentation(self.yourPhotoImageSmall, 1.0)!)
         self.you.setObject(yourimageSmall!, forKey: "pictureSmall")
         
+        let profileRelation = self.you.relation(forKey: "profile")
+        let profileQuery = profileRelation.query()
+        
+        profileQuery.getFirstObjectInBackground { (profilePF, error) in
+            
+            if error == nil {
+                
+                var relation = String()
+                
+                if self.yourTypeId == Global.REGISTER_FATHER {
+                    relation = "father"
+                } else if self.yourTypeId == Global.SPOUSE_MOTHER {
+                    relation = "mother"
+                }
+                
+                let son_name = Global.defaults.string(forKey: "son_name")
+                
+                profilePF?["bio"] = "\(son_name) \(relation)"
+                
+                profilePF?.saveEventually()
+                
+            }
+        }
+        
+    
         let levelRel:PFRelation = self.you.relation(forKey: "level")
         
         //I add the level of all sons
@@ -1515,7 +1545,7 @@ class ProfileViewController: UIViewController,
             let levelObj = Global.levels[levelId]?.levelObj
             levelRel.add(levelObj!)
         }
-    
+        
         self.you.saveInBackground(block: { (resutl, error) in
             
             if error != nil
@@ -1607,8 +1637,7 @@ class ProfileViewController: UIViewController,
             }
             else
             {           
-               
-                
+
                 print(your_family_name)
                 
                 Global.gamvesFamily.familyName = your_family_name!
