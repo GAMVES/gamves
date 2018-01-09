@@ -63,7 +63,7 @@ class ProfileViewController: UIViewController,
     var spousePhotoImageSmall:UIImage!
     var familyPhotoImageSmall:UIImage!
 
-    let schoolsArray: NSMutableArray = []
+    var schoolsArray: NSMutableArray = []
  
     var familyChatId = Int()
     var sonRegisterChatId = Int()
@@ -664,6 +664,8 @@ class ProfileViewController: UIViewController,
     }
 
     func loadSchools(completionHandler : @escaping (_ user:Bool) -> ()) {
+        
+        self.schoolsArray = []
         
         let querySchool = PFQuery(className:"Schools")
         
@@ -1356,6 +1358,8 @@ class ProfileViewController: UIViewController,
         let firstName = full_name?[0]
         let lastName = full_name?[1]
         
+        let schoolId = Global.gamvesFamily.objectId as String
+        
         let sonParams = [
             "user_name" : son_name,
             "user_user_name" : son_user_name,
@@ -1365,6 +1369,7 @@ class ProfileViewController: UIViewController,
             "iDUserType" : type,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
+            "schoolId": schoolId,
             "dataPhotoImage": dataPhotoImage,
             "dataPhotoImageSmall": dataPhotoImageSmall,
             "dataPhotoBackground": dataPhotoUniverse
@@ -1512,7 +1517,6 @@ class ProfileViewController: UIViewController,
         
         let profileRelation = self.you.relation(forKey: "profile")
         let profileQuery = profileRelation.query()
-        
         profileQuery.getFirstObjectInBackground { (profilePF, error) in
             
             if error == nil {
