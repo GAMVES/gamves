@@ -4,10 +4,18 @@
 
 	// -- Add Gamves User as Family from Registrant
 
+	//var http = require('http-get');
+
+	var request_promise = require('request-promise');
+	var concat = require('concat-stream');
+	var fs   = require('fs');
+
 	Parse.Cloud.define("createGamvesUser", function (request, response) {
 
 		var objects = [];
 		var resutlUser;
+		
+		var iDUserType = request.params.iDUserType;
 
 	    var typeQuery = new Parse.Query("UserType");
 	    return typeQuery.get(request.params.userTypeObj).then(function(typeObj) {
@@ -29,26 +37,44 @@
 	    }).then(function(roleObj) {
 
 			objects.push(roleObj);
-	        
+
+			var Profile = Parse.Object.extend("Profile");         
+
+            var profile = new Profile();    
+
+            var dataPhotoBackground = request.params.dataPhotoBackground;
+	    	var fileBackground = new Parse.File("background.png", dataPhotoBackground, "image/png");
+
+			profile.set("pictureBackground", fileBackground);
+
+			profile.set("bio", "Your phrase here");		
+
+			profile.set("backgroundColor", [228, 239, 245]);
+
+			return profile.save(null, {useMasterKey: true})
+
+		}).then(function(profileObj) {
+
+	        objects.push(profileObj);
+
 	        var user_name = request.params.user_name;
 	        var user_user_name = request.params.user_user_name;
 	        var user_email = request.params.user_email;
 	    	var user_password = request.params.user_password;
 	    	var firstName = request.params.firstName;
 	    	var lastName = request.params.lastName;
-	    	var iDUserType = request.params.iDUserType;
 
 	        var dataPhotoImage = request.params.dataPhotoImage;
-	    	var file = new Parse.File(firstName+".png", dataPhotoImage, "image/png");
+	    	var file = new Parse.File(firstName+"picture.png", dataPhotoImage, "image/png");
 
 	    	var dataPhotoImageSmall = request.params.dataPhotoImageSmall;
-	    	var fileSmall = new Parse.File(firstName+"Small.png", dataPhotoImageSmall, "image/png");
+	    	var fileSmall = new Parse.File(firstName+"small.png", dataPhotoImageSmall, "image/png");
 
 	    	var levelObj = request.params.levelObj;
 			var userTypeObj = request.params.userTypeObj;	
 	    
 			var user = new Parse.User();
-			
+
 			user.set("username", user_user_name);
 			user.set("password", user_password);
 			user.set("Name", user_user_name);
@@ -57,6 +83,7 @@
 			user.set("iDUserType", iDUserType);
 			user.set("picture", file);
 			user.set("pictureSmall", fileSmall);
+
 			var lobjectId = objects[1].id;
 
 			if (iDUserType==2 || iDUserType==3) { // only son and daughter
@@ -72,6 +99,9 @@
 		    let relationLevel = user.relation("level")
 		    relationLevel.add(objects[1]);
 
+		    var profileRelation = user.relation("profile");
+			profileRelation.add(objects[3]);
+
 		    return user.signUp(null, {useMasterKey: true} );
 		
 	    }).then(function(userSaved) {
@@ -83,70 +113,100 @@
 
 	    	adminRole.save(null, {useMasterKey: true});
 
-	        return userSaved;
+	    	var profile = objects[3]; 
 
-	    }).then(function(userSaved) {
+	    	profile.set("userId", userSaved.objectId);
 
-			resutlUser = userSaved;
+	        return userSaved.save(null, {useMasterKey: true});
 
-	    	var images = [
-	    		"https://s3.amazonaws.com/gamves/images/universe.jpg",
-	    		"https://s3.amazonaws.com/gamves/images/image_0.jpg",
-	    		"https://s3.amazonaws.com/gamves/images/image_1.jpg",
-	    		"https://s3.amazonaws.com/gamves/images/image_2.jpg",
-	    		"https://s3.amazonaws.com/gamves/images/image_3.jpg",
-	    		"https://s3.amazonaws.com/gamves/images/image_4.jpg"
-	    	];
+	    }).then(function(userSaved) {	
 
-	    	var albumes = _.map(images, function(image) {
-		        return convertUrlsToFilesForAlbums(image);
-		    });
+			if ( iDUserType==2 || iDUserType==3 ) {
 
-		    return albumes;
+				resutlUser = userSaved;
+			
+		    	var files = [
+		    		"https://s3.amazonaws.com/gamves/images/universe.jpg",
+		    		"https://s3.amazonaws.com/gamves/images/image_0.jpg",
+		    		"https://s3.amazonaws.com/gamves/images/image_1.jpg",
+		    		"https://s3.amazonaws.com/gamves/images/image_2.jpg",
+		    		"https://s3.amazonaws.com/gamves/images/image_3.jpg",
+		    		"https://s3.amazonaws.com/gamves/images/image_4.jpg"
+		    	];
 
-		}).then(function(albumesAndImage) {
+		    	
+			    var dataArray=[];
+			    var promises=[];
 
-			var albumes = albumesAndImage[0];
+			    for (var i = 0; i <files.length; i++) {			        	        
+			        let req = request_promise(files[i]);					
+					var write = concat(function(data) {						      					
+						dataArray.push(data);					
+					});
+					req.pipe(write);
+					promises.push(req);
+			    }
 
-			var fileCover = albumesAndImage[1];
+			    Promise.all(promises).then(function() {
 
-	    	var Fanpages = Parse.Object.extend("Fanpages");
+			    	let count = dataArray.length;
+			    	
+			    	var Fanpages = Parse.Object.extend("Fanpages");
+			    	var fanpage = new Fanpages();
 
-	    	var fanpage = new Fanpages();
+			    	var dataPhotoImage = request.params.dataPhotoImage;
+			    	var fileIcon = new Parse.File("icon.png", dataPhotoImage, "image/png");
+			    	fanpage.set("pageIcon", fileIcon);
 
-	    	var dataPhotoImage = request.params.dataPhotoImage;
+					var dataPhotoBackground = request.params.dataPhotoBackground;
+			    	var fileCover = new Parse.File("background.png", dataPhotoBackground, "image/png");
 
-	    	var fileIcon = new Parse.File(firstName+".png", dataPhotoImage, "image/png");
+			    	fanpage.set("pageCover", fileCover);
 
-	    	fanpage.set("pageIcon", fileIcon);
+			    	var user_user_name = request.params.user_user_name;
+			    	fanpage.set("pageName", user_user_name);
 
-	    	fanpage.set("pageCover", fileCover);
+			    	fanpage.save(null, { useMasterKey: true}, {
+			              success: function (fanpageSaved) {        
+			                 
+			                  var albumRelation = fanpageSaved.relation("albums");
 
-	    	var user_user_name = request.params.user_user_name;
+						    	for (var j=0; j < dataArray.length; j++) {
+						    		
+						    		var fanpageId = Math.floor( Math.random() * 100000);			    		
+							        					                
+							        var fileImage = new Parse.File("image.jpg",  dataArray[i] ); // { base64: base64 });
 
-	    	fanpage.set("pageName", user_user_name);
+							        var Albums = Parse.Object.extend("Albums");	 		
+						    		let album = new Albums();
+									album.set("cover", fileImage);
+									album.save(null, {useMasterKey: true});
+						    					    		
+						    		album.set("fanpageId",fanpageId);
+						    		album.save(null, {useMasterKey: true});
 
-	    	var albumRelation = fanpage.get("albums");
+						    		albumRelation.add(album);
 
-	    	for (var j=0; j < albumes.length; j++) {
+						    	}
 
-	    		var fanpageId = Math.floor(Math.random() * 100000);
+						    	fanpageSaved.save(null, {useMasterKey: true});
 
-	    		var album = albumes[j];
+			    				response.success(resutlUser);                  
+			                                                                                                    
+			              },
+			              error: function (error) {
+			                  response.error(error);
+			              }
+			         });
 
-	    		albumRelation.add(album);
+			    });
+			 
+			 } else {
 
-	    		album.set("fanpageId",fanpageId);
+			 	response.success(userSaved);
 
-	    		album.save(null, {useMasterKey: true});
+			 }
 
-	    	}
-
-	    	return fanpage.save(null, {useMasterKey: true});
-
-	   	}).then(function(fanpage) {
-
-	    	response.success(resutlUser);
 
 	    }, function(error) {
 
@@ -156,7 +216,12 @@
 
 	});
 
-	var _ = require('underscore');
+
+	
+
+	
+
+	/*var _ = require('underscore');
 
 	function fileFromUrl(url, name) {
 	    return Parse.Cloud.httpRequest({url: url}).then(function(httpResponse) {
@@ -192,6 +257,6 @@
 	  		}
 	        return [albumsPF,files[0]];
 	    });
-	}
+	}*/
 
 	

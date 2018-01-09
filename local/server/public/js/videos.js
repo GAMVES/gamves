@@ -263,6 +263,8 @@ document.addEventListener("LoadVideo", function(event){
           var order = $("#edit_order_video").val();
           video.set("order", parseInt(order)); 
 
+          video.set("public", true); 
+
           video.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
 
           var vrnd = Math.floor(100000 + Math.random() * 900000);
@@ -273,9 +275,9 @@ document.addEventListener("LoadVideo", function(event){
           video.set("posterId", "gamves_official");           
           video.set("poster_name", "Gamves Official");       
 
-          video.set("source_type", 2);  //YOUTUBE                               
+          video.set("source_type", 2);  //YOUTUBE     
 
-          video.save(null, {
+          video.save(null, { useMasterKey: true}, {
               success: function (savedVideo) {        
                  
                   console.log('Video created successful with name: ' + video.get("title"));

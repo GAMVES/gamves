@@ -9,9 +9,11 @@
     },
     "license": "MIT",
     "dependencies": {
+        "concat-stream": "^1.6.0",
         "node-libcurl": "^1.2.0",
         "parse": "~1.8.0",
         "parse-server": "~2.2.2",
+        "request-promise": "^4.2.2",
         "s3": "^4.4.0",
         "underscore": "^1.8.3",
         "youtube-dl": "^1.12.2"
