@@ -72,9 +72,7 @@
 				        	adminRelation.add(adm);	
 
 							user.signUp(null, {
-								success: function(userLogged) {
-								  
-								  	console.log("LLEGA");
+								success: function(userLogged) {								  	
 								  	
 									var app_id 			= "0123456789";
 									var master_key		= "9876543210";
@@ -94,15 +92,14 @@
 									
 						        	var queryRole = new Parse.Query(Parse.Role);
 									queryRole.equalTo('name', 'admin');
-									queryRole.first({useMasterKey:true}).then(function(adminRole){
-											
-										console.log("entra");
-										console.log(adminRole);										
+									queryRole.first({useMasterKey:true}).then(function(adminRole){								
 
 										var adminRoleRelation = adminRole.relation("users");
 				        				adminRoleRelation.add(userLogged);	
 
 			    						adminRole.save(null, {useMasterKey: true});
+
+			    						loadImagesArray(config);
 
 									});	
 
@@ -126,6 +123,85 @@
 	            error.message("ChatFeed lookup failed");
 	        }
 	    });
+	}
+
+	function loadImagesArray(configPF) {	
+
+		var files = [
+			"https://s3.amazonaws.com/gamves/images/personal.jpg",
+			"https://s3.amazonaws.com/gamves/images/personal_background.jpg",
+			"https://s3.amazonaws.com/gamves/images/trending.jpg",
+			"https://s3.amazonaws.com/gamves/images/trending_background.jpg",    		
+    		"https://s3.amazonaws.com/gamves/images/universe.jpg",
+    		"https://s3.amazonaws.com/gamves/images/image_0.jpg",
+    		"https://s3.amazonaws.com/gamves/images/image_1.jpg",
+    		"https://s3.amazonaws.com/gamves/images/image_2.jpg",
+    		"https://s3.amazonaws.com/gamves/images/image_3.jpg",
+    		"https://s3.amazonaws.com/gamves/images/image_4.jpg"
+    	];
+
+    	var count = files.length;
+
+    	for (var i=0; i<count; i++) {
+
+    		var imagesArray = [];
+
+    		var _url = files[i];
+    		
+    		var cd=0, id=0;
+
+    		var configRel = configPF.relation("images");
+
+    		Parse.Cloud.httpRequest({url: _url}).then(function(httpResponse) {   			
+
+    			var imageBuffer = httpResponse.buffer;
+                var base64 = imageBuffer.toString("base64");                
+
+                var name;
+                if (cd==0) { 
+                	name = "personal";                 
+                } else if (cd==1) { 
+                	name = "personal_background";                 
+                } else if (cd==2) { 
+                	name = "trending"; 
+                } else if (cd==3) { 
+                	name = "trending_background"; 
+                } else if (cd==4) { 
+                	name = "universe"; 
+                } else { 
+                	name = "image_" + cd; 
+                }                
+
+                var Image = Parse.Object.extend("Images");
+				var image = new Image();
+
+                var file = new Parse.File(name+".jpg", { base64: base64 }, "image/png");
+                image.set("image", file);
+                image.set("name", name); 
+
+                image.save(null, {											
+					success: function (savedImage) {	 
+
+						configRel.add(savedImage);
+
+						//console.log("id: "+id);
+						//console.log("count: "+count);
+
+		            	if ( id == (count-1) ){	            				            	
+
+		            		configPF.save();	            		
+		            	}
+		            	id++;
+        			},
+					error: function (response, error) {
+					    console.log('Error: ' + error.message);
+					}
+
+				});
+
+				cd++            	
+       		});    			
+    	}
 	}
 
 

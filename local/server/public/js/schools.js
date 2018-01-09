@@ -248,16 +248,71 @@
               success: function (schoolNew) {
                   console.log('school created successful with name: ' + schoolNew.get("pageName"));
                   $('#edit_model_school').modal('hide');
+                  createCategories(schoolNew);
                   loadschools();
                   clearField();
+                  return schoolNew;
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
               }
+
           });
       }
 
+      function createCategories(schoolNew) {
 
+          /*var queryImage = new Parse.Query("Images");              
+          
+          queryImage.exists("name", "personal");
+          queryImage.exists("name", "personal_background");
+
+          queryImage.exists("name", "trending");
+          queryImage.exists("name", "trending_background");*/
+
+          //query.containedIn("name",
+          //        ["personal", "personal_background", "trending", "trending_background"]);
+
+        
+
+          var queryImages = new Parse.Query("Images");  
+          queryImages.ascending("createdAt");    
+          queryImages.find({
+            success: function (images) {
+
+                  var personal = images[0].get("image");
+                  var personalBackground = images[1].get("image");
+
+                  var Category = Parse.Object.extend("Categories"); 
+
+                  var categoryPersonal = new Category();    
+
+                  categoryPersonal.set("thumbnail", personal);
+                  categoryPersonal.set("backImage", personalBackground);
+                  categoryPersonal.set("schoolId", schoolNew.id);  
+                  categoryPersonal.set("description", "PERSONAL");  
+
+                  categoryPersonal.save();                  
+
+                  var trending = images[2].get("image");
+                  var trendingBackground = images[3].get("image");
+
+                  var categoryTrending = new Category();    
+
+                  categoryTrending.set("thumbnail", trending);
+                  categoryTrending.set("backImage", trendingBackground);
+                  categoryTrending.set("schoolId", schoolNew.id);    
+                  categoryPersonal.set("description", "TRENDING");  
+
+                  categoryTrending.save();                  
+
+               },
+                error: function (error) {
+                    console.log("Error: " + error.code + " " + error.message);
+                }
+           });  
+
+      }
 
       function addGrade() {          
 

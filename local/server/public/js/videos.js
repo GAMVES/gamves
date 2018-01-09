@@ -277,7 +277,7 @@ document.addEventListener("LoadVideo", function(event){
 
           video.set("source_type", 2);  //YOUTUBE     
 
-          video.save(null, { useMasterKey: true}, {
+          video.save(null, {
               success: function (savedVideo) {        
                  
                   console.log('Video created successful with name: ' + video.get("title"));

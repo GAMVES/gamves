@@ -168,10 +168,6 @@
 		});
 	}
 
-
-
-
-
 	// --
 	// Save images for user
 

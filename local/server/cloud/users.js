@@ -6,9 +6,6 @@
 
 	//var http = require('http-get');
 
-	var request_promise = require('request-promise');
-	var concat = require('concat-stream');
-	var fs   = require('fs');
 
 	Parse.Cloud.define("createGamvesUser", function (request, response) {
 
@@ -123,90 +120,114 @@
 
 			if ( iDUserType==2 || iDUserType==3 ) {
 
-				resutlUser = userSaved;
-			
-		    	var files = [
-		    		"https://s3.amazonaws.com/gamves/images/universe.jpg",
-		    		"https://s3.amazonaws.com/gamves/images/image_0.jpg",
-		    		"https://s3.amazonaws.com/gamves/images/image_1.jpg",
-		    		"https://s3.amazonaws.com/gamves/images/image_2.jpg",
-		    		"https://s3.amazonaws.com/gamves/images/image_3.jpg",
-		    		"https://s3.amazonaws.com/gamves/images/image_4.jpg"
-		    	];
+				var queryConfig = new Parse.Query("Config");				   
+			    queryConfig.find({
+			        useMasterKey: true,
+			        success: function(results) {
 
-		    	
-			    var dataArray=[];
-			    var promises=[];
+			        if( results.length > 0) 
+			        {
+			        	var config = results[0];
 
-			    for (var i = 0; i <files.length; i++) {			        	        
-			        let req = request_promise(files[i]);					
-					var write = concat(function(data) {						      					
-						dataArray.push(data);					
-					});
-					req.pipe(write);
-					promises.push(req);
-			    }
+			        	var configRelation = config.relation("images");
+			        	configRelation.ascending("createdAt");	
 
-			    Promise.all(promises).then(function() {
+			            configRelation.find({
+			                success: function (images) {    					        	
 
-			    	let count = dataArray.length;
-			    	
-			    	var Fanpages = Parse.Object.extend("Fanpages");
-			    	var fanpage = new Fanpages();
+								var queryCategory = new Parse.Query("Categories");
+								queryCategory.equalTo('description', 'PERSONAL');
+								queryCategory.equalTo('schoolId', request.params.schoolId);
 
-			    	var dataPhotoImage = request.params.dataPhotoImage;
-			    	var fileIcon = new Parse.File("icon.png", dataPhotoImage, "image/png");
-			    	fanpage.set("pageIcon", fileIcon);
+								queryCategory.first({useMasterKey:true}).then(function(category) {		
 
-					var dataPhotoBackground = request.params.dataPhotoBackground;
-			    	var fileCover = new Parse.File("background.png", dataPhotoBackground, "image/png");
+							    	let count = dataArray.length;
+							    	
+							    	var Fanpages = Parse.Object.extend("Fanpages");
+							    	var fanpage = new Fanpages();
 
-			    	fanpage.set("pageCover", fileCover);
+							    	var dataPhotoImage = request.params.dataPhotoImage;
+							    	var fileIcon = new Parse.File("icon.png", dataPhotoImage, "image/png");
+							    	fanpage.set("pageIcon", fileIcon);
 
-			    	var user_user_name = request.params.user_user_name;
-			    	fanpage.set("pageName", user_user_name);
+									var dataPhotoBackground = request.params.dataPhotoBackground;
+							    	var fileCover = new Parse.File("background.png", dataPhotoBackground, "image/png");
 
-			    	fanpage.save(null, { useMasterKey: true}, {
-			              success: function (fanpageSaved) {        
-			                 
-			                  var albumRelation = fanpageSaved.relation("albums");
+							    	fanpage.set("pageCover", fileCover);
 
-						    	for (var j=0; j < dataArray.length; j++) {
-						    		
-						    		var fanpageId = Math.floor( Math.random() * 100000);			    		
-							        					                
-							        var fileImage = new Parse.File("image.jpg",  dataArray[i] ); // { base64: base64 });
+							    	var user_user_name = request.params.user_user_name;
+							    	fanpage.set("pageName", user_user_name);
 
-							        var Albums = Parse.Object.extend("Albums");	 		
-						    		let album = new Albums();
-									album.set("cover", fileImage);
-									album.save(null, {useMasterKey: true});
-						    					    		
-						    		album.set("fanpageId",fanpageId);
-						    		album.save(null, {useMasterKey: true});
+							    	var categoryName = category["description"]; 
+									
+							    	fanpage.set("categoryName", categoryName);
 
-						    		albumRelation.add(album);
+							    	var categoryRelation = fanpage.relation("category");
+							    	categoryRelation.add(category);
 
-						    	}
+							    	fanpage.save(null, {
+							              success: function (fanpageSaved) {        
+							                 
+							                  var albumRelation = fanpageSaved.relation("albums");
 
-						    	fanpageSaved.save(null, {useMasterKey: true});
+										    	for (var j=0; j <images.length; j++) {
+										    		
+										    		var fanpageId = Math.floor( Math.random() * 100000);			    		
+											        					                
+											        var fileImage = images[j];
 
-			    				response.success(resutlUser);                  
-			                                                                                                    
-			              },
-			              error: function (error) {
-			                  response.error(error);
-			              }
-			         });
+											        var Albums = Parse.Object.extend("Albums");	 		
+										    		let album = new Albums();
 
-			    });
+													album.set("cover", fileImage);															    					    		
+										    		album.set("fanpageId",fanpageId);					    		
+
+										    		album.save(null, {
+											            success: function (albumSaved) {  
+
+											              	albumRelation.add(albumSaved);
+
+											              	if (j==(dataArray-1)) {
+
+												              	fanpageSaved.save(null, {useMasterKey: true});
+
+								    							response.success(resutlUser);   
+								    						}
+
+											        	},
+											            error: function (error) {
+											            	response.error(error);
+											            }
+											         });
+										    	}		              
+
+							              },
+							              error: function (error) {
+							                  response.error(error);
+							              }
+
+									});
+
+						         });
+
+						    },
+				                error: function (error) {
+				                    console.log("Error: " + error.code + " " + error.message);
+				                }
+				            });  
+
+				    	}
+				    },
+			        error: function(error) {						            
+			            console.log(error);
+			        }
+			    }); 
 			 
 			 } else {
 
 			 	response.success(userSaved);
 
 			 }
-
 
 	    }, function(error) {
 
@@ -215,48 +236,6 @@
 	    });		
 
 	});
-
-
 	
-
-	
-
-	/*var _ = require('underscore');
-
-	function fileFromUrl(url, name) {
-	    return Parse.Cloud.httpRequest({url: url}).then(function(httpResponse) {
-	        var imageBuffer = httpResponse.buffer;
-	        var base64 = imageBuffer.toString("base64");
-	        var file = new Parse.File(name, { base64: base64 });
-	        return file.save().then(function() { return file; });
-	    }, function(error) {
-	        return null; 
-	    });
-	}
-
-	function filesFromUrls(urls) {
-	    var promises = _.map(urls, function (url, index) {
-	        return fileFromUrl(url, ''+index);
-	    });
-	    return Parse.Promise.when(promises).then(function() {
-	        return _.toArray(arguments);
-	    });
-	}
-
-	function convertUrlsToFilesForAlbums(images) {
-	  	return filesFromUrls(images).then(function(files) {
-	  		var albumsPF = [];
-	  		var Albums = Parse.Object.extend("Albums");	
-	  		var length = file.length - 1;
-	  		for (var i=0; i<length; i++) {
-	  			var file = files[i];
-	    		let album = new Albums();
-				album.set("cover", file);
-				album.save(null, {useMasterKey: true});
-				albumsPF.push(album);
-	  		}
-	        return [albumsPF,files[0]];
-	    });
-	}*/
 
 	

@@ -57,7 +57,6 @@ Parse.Cloud.afterSave("ChatVideo", function(request) {
         }
 
     });
-    
 });
 
 // --
@@ -377,8 +376,8 @@ Parse.Cloud.define("downloadVideoFromYoutube", function( request, response ) {
 	// Will be called when the download starts.
 	video.on('info', function(info) {
 	  console.log('Download started');
-	  console.log('filename: ' + info.filename);
-	  console.log('size: ' + info.size);
+	  //console.log('filename: ' + info.filename);
+	  //console.log('size: ' + info.size);
 	});
 	 
 	video.pipe(fs.createWriteStream('myvideo.mp4'));
