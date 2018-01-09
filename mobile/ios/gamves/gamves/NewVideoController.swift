@@ -824,6 +824,8 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         
         videoPF["order"] = -1 //LEAVE TO BACKEND
         
+        videoPF["public"] = true
+        
         let fanpageNumericId = Global.getRandomInt()
         videoPF["fanpageId"] = fanpageNumericId
         
