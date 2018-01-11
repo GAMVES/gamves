@@ -154,23 +154,76 @@
 
     		Parse.Cloud.httpRequest({url: _url}).then(function(httpResponse) {   			
 
-    			var imageBuffer = httpResponse.buffer;
-                var base64 = imageBuffer.toString("base64");                
+    			var headers = httpResponse.headers;
+    			var etag = headers.etag.trim(); 
 
-                var name;
-                if (cd==0) { 
-                	name = "personal";                 
-                } else if (cd==1) { 
-                	name = "personal_background";                 
-                } else if (cd==2) { 
-                	name = "trending"; 
-                } else if (cd==3) { 
-                	name = "trending_background"; 
-                } else if (cd==4) { 
-                	name = "universe"; 
-                } else { 
-                	name = "image_" + cd; 
-                }                
+    			etag.replace(/['"]+/g, '')
+
+    			console.log("etag: " + etag);			    			
+
+    			var name;               
+
+				/*var image_0 = 'b095b76aa6ea61c6f47f7e287b3be47a';
+				var image_1 = 'f8c5f0c6fa6f8a8768b8424da17d7d73';
+				var image_2 = 'd5daf2d0f3f511077d91f0e760e2306d';
+				var image_3 = '5dda529539e9809b9c1ed77c19917b76';
+				var image_4 = '34f9a215693a50656ac7828d804bb8d0';
+				var personal = '2a05a8c7c83314a78f5d1b5ffd93a9fd';
+				var personal_background = '7d24bcd5baa229c759587526ffc00551';
+				var trending = 'de45444c2e8a6127a36111e765fbbef9';
+				var trending_background = 'c827df1e0148aa260631f6a3699aa25d';
+				var universe = '168a0ce67bfda7963843b3a43601b886';*/
+
+				var image_0 			= 'a6ea61c6f47f7e287';
+				var image_1 			= 'fa6f8a8768b8424da';
+				var image_2 			= 'f3f511077d91f0e76';
+				var image_3 			= '39e9809b9c1ed77c1';
+				var image_4 			= '693a50656ac7828d8';
+				var personal 			= 'c83314a78f5d1b5ff';
+				var personal_background = 'baa229c759587526f';
+				var trending 			= '2e8a6127a36111e76';
+				var trending_background = '0148aa260631f6a36';
+				var universe 			= '7bfda7963843b3a43';
+
+
+				if (etag.indexOf(image_0) >= 0) {
+
+					name = 'image_0';
+				} else if (etag.indexOf(image_1) >= 0) {
+
+					name = 'image_1';
+				} else if (etag.indexOf(image_2) >= 0) {
+
+					name = 'image_2';
+				} else if (etag.indexOf(image_3) >= 0) {
+
+					name = 'image_3';
+				} else if (etag.indexOf(image_4) >= 0) {
+
+					name = 'image_4';
+				} else if (etag.indexOf(personal) >= 0) {
+					
+					name = 'personal'; 
+				} else if (etag.indexOf(personal_background) >= 0) {
+
+					name = 'personal_background'; 
+				} else if (etag.indexOf(trending) >= 0) {
+
+					name = 'trending';  
+				} else if (etag.indexOf(trending_background) >= 0) {
+
+					name = 'trending_background'; 
+				} else if (etag.indexOf(universe) >= 0) {
+
+					name = 'universe';  
+				}
+
+
+				//console.log("name: " + name);
+				//console.log("---------------------------------");			    			
+
+				var imageBuffer = httpResponse.buffer;
+                var base64 = imageBuffer.toString("base64");                          
 
                 var Image = Parse.Object.extend("Images");
 				var image = new Image();
@@ -199,7 +252,7 @@
 
 				});
 
-				cd++            	
+				cd++;            	
        		});    			
     	}
 	}

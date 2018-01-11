@@ -280,8 +280,33 @@
           queryImages.find({
             success: function (images) {
 
-                  var personal = images[0].get("image");
-                  var personalBackground = images[1].get("image");
+                  var personal, personalBackground, trending, trendingBackground;
+
+                  for (var i=0;i<images.length; i++) {
+
+                    var image = images[i];
+
+                    var name = image.get("name");
+
+                    if (name=="personal") {
+
+                        personal = image.get("image");
+                    
+                    } else if (name=="trending") {
+
+                        trending = image.get("image");
+                                        
+                    } else if (name=="personal_background") {
+
+                        personalBackground = image.get("image");
+                    
+                    } else if (name=="trending_background") {
+
+                      trendingBackground = image.get("image");
+
+                    }
+
+                  }                
 
                   var Category = Parse.Object.extend("Categories"); 
 
@@ -289,20 +314,19 @@
 
                   categoryPersonal.set("thumbnail", personal);
                   categoryPersonal.set("backImage", personalBackground);
-                  categoryPersonal.set("schoolId", schoolNew.id);  
-                  categoryPersonal.set("description", "PERSONAL");  
+                  categoryPersonal.set("schoolId", schoolNew.id);                    
+                  categoryPersonal.set("name", "PERSONAL");
+                  categoryPersonal.set("description", "Personal pages for each registeres kid to customize");                      
 
                   categoryPersonal.save();                  
-
-                  var trending = images[2].get("image");
-                  var trendingBackground = images[3].get("image");
-
+                  
                   var categoryTrending = new Category();    
 
                   categoryTrending.set("thumbnail", trending);
                   categoryTrending.set("backImage", trendingBackground);
                   categoryTrending.set("schoolId", schoolNew.id);    
-                  categoryPersonal.set("description", "TRENDING");  
+                  categoryTrending.set("name", "TRENDING");                    
+                  categoryTrending.set("description", "Most viewed and liked fanpages, trendings in general");                                       
 
                   categoryTrending.save();                  
 
