@@ -702,13 +702,10 @@ class Global: NSObject
                                     {
                                         for school in schools!
                                         {
-                                            self.gamvesFamily.school = school["name"] as! String
+                                            self.gamvesFamily.schoolName = school["name"] as! String
                                         }
                                     }
                                 })
-
-                                
-                                
                             }
                         })
                     }

@@ -183,13 +183,15 @@ class GamvesFamily
     
     var familyName = String()
     var objectId = String()
-    var school = String()
+    var schoolName = String()
     
     var sonRegisterChatId = Int()
     var spouseRegisterChatId = Int()
     var familyChatId = Int()
     
     var familyImage = UIImage()
+    
+    var school = GamvesSchools()
     
     init()
     {

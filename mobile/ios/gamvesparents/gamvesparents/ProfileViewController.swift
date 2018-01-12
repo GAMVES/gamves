@@ -613,19 +613,14 @@ class ProfileViewController: UIViewController,
             
             self.sonUserTypeTextField.text = typeDesc
             
-            let school = Global.gamvesFamily.school
-            
-            print(school)
+            let school = Global.gamvesFamily.schoolName
             
             self.sonSchoolTextField.text = school
             
             self.sonGradeTextField.text = Global.gamvesFamily.sonsUsers[0].levelDescription
             
             self.yourTypeId = PFUser.current()?["iDUserType"] as! Int //Global.gamvesFamily.youUser.typeNumber
-            
-            print(self.yourTypeId)
-            
-
+          
         }
     }
 
@@ -690,6 +685,8 @@ class ProfileViewController: UIViewController,
                         gSchool.schoolOBj = school
                         
                         Global.schools.append(gSchool)
+                        
+                        Global.gamvesFamily.school = gSchool
                         
                         if count == (countSchools - 1)
                         {
@@ -1348,6 +1345,9 @@ class ProfileViewController: UIViewController,
         self.storeImgeLocally(imagePath: self.sonImageName, imageToStore: self.sonPhotoImage)
         self.storeImgeLocally(imagePath: self.sonImageNameSmall, imageToStore: self.sonPhotoImageSmall)
         
+        self.storeImgeLocally(imagePath: self.familyImageName, imageToStore: self.familyPhotoImage)
+        self.storeImgeLocally(imagePath: self.familyImageNameSmall, imageToStore: self.familyPhotoImageSmall)
+        
         let dataPhotoImage = self.sonPhotoImage.highQualityJPEGNSData
         let dataPhotoImageSmall = self.sonPhotoImageSmall.highQualityJPEGNSData
         
@@ -1358,7 +1358,13 @@ class ProfileViewController: UIViewController,
         let firstName = full_name?[0]
         let lastName = full_name?[1]
         
-        let schoolId = Global.gamvesFamily.objectId as String
+        for school in Global.schools {
+            if self.sonSchoolTextField.text == school.schoolName {
+                Global.gamvesFamily.school = school
+            }
+        }
+        
+        let schoolId = Global.gamvesFamily.school.objectId
         
         let sonParams = [
             "user_name" : son_name,
@@ -1446,10 +1452,12 @@ class ProfileViewController: UIViewController,
         let dataPhotoImage = self.spousePhotoImage.highQualityJPEGNSData
         let dataPhotoImageSmall = self.spousePhotoImageSmall.highQualityJPEGNSData
         
-        let sonParams = [
+        let imageUniverse = UIImage(named: "universe")
+        let dataPhotoUniverse = imageUniverse?.highQualityJPEGNSData
+        
+        let momParams = [
             "user_name" : spouse_username,
             "user_user_name" : spouse_email,
-            "user_email" : spouse_email,
             "user_password" : spouse_password,
             "firstName" : firstName,
             "lastName" : lastName,
@@ -1457,9 +1465,12 @@ class ProfileViewController: UIViewController,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
             "dataPhotoImage": dataPhotoImage,
-            "dataPhotoImageSmall": dataPhotoImageSmall ] as [String : Any]
+            "dataPhotoImageSmall": dataPhotoImageSmall,
+            "dataPhotoBackground": dataPhotoUniverse
+            ] as [String : Any]
+
         
-        PFCloud.callFunction(inBackground: "createGamvesUser", withParameters: sonParams) { (result, error) in
+        PFCloud.callFunction(inBackground: "createGamvesUser", withParameters: momParams) { (result, error) in
             
             if error == nil {
                 
@@ -1483,7 +1494,21 @@ class ProfileViewController: UIViewController,
                 })
                 
             } else {
-                print(error)
+                
+                var nsError:NSError = error as! NSError
+                
+                let errorCode = nsError.code
+                
+                switch errorCode {
+                case 209:
+                    print("invalid session token")
+                    break
+                default:
+                    break
+                }
+                
+                print(errorCode)
+                
                 completionHandler(false)
             }
             
@@ -1595,13 +1620,14 @@ class ProfileViewController: UIViewController,
         family["spouseRegisterChatId"]  = self.spouseRegisterChatId
         family["sonSpouseChatId"]  = self.sonSpouseChatId
         
-        let imageFamily = self.familyPhotoImage
+        let imageFamily = self.loadImageFromDisc(imageName: self.familyImageName)
 
-        let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily!, 1.0)!)
+        let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily, 1.0)!)
         family.setObject(pfimage!, forKey: "picture")
 
-        let imageFamilySmall = self.familyPhotoImageSmall
-        let pfimageSmall = PFFile(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall!, 1.0)!)
+        let imageFamilySmall = self.loadImageFromDisc(imageName: self.familyImageNameSmall)
+        
+        let pfimageSmall = PFFile(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall, 1.0)!)
         family.setObject(pfimageSmall!, forKey: "pictureSmall")
         
         for school in Global.schools {
