@@ -20,7 +20,7 @@ class GamvesAudio
     var audioObj:PFObject!
     var url = String()
     var uri:URL!
-    var time = String()
+    var duration = String()
     var chatId = Int()
     var name = String()
 }
@@ -36,6 +36,7 @@ class MessageChat
     var isAdmin:Bool!
     var isAudio:Bool!
     var audio = GamvesAudio()
+    var time = String()
 }
 
 class ChatView: UIView,
@@ -168,7 +169,8 @@ class ChatView: UIView,
     var startTime: Double = 0
     var time: Double = 0
     var elapsed: Double = 0
-
+    
+    var isRecording = Bool()
     
     let backView: UIImageView = {
         let imageView = UIImageView()
@@ -215,7 +217,7 @@ class ChatView: UIView,
         
         self.addConstraintsWithFormat("H:|[v0]|", views: self.messageInputContainerView)
         
-        let editSize:CGFloat = 60
+        let editSize:CGFloat = 65
         
         var height = self.frame.height
         let chatHeightVideo = height - (30 + editSize)
@@ -516,6 +518,8 @@ class ChatView: UIView,
                         
                         message.date = chatVideo.createdAt
                         message.chatId = chatVideo["chatId"] as! Int
+
+                        message.time = chatVideo["time"] as! String
                         
                         if PFUser.current()?.objectId == userId {
                             message.isSender = true
@@ -559,7 +563,7 @@ class ChatView: UIView,
                                     let audio = GamvesAudio()
                                     audio.audioObj = audioPF
                                     audio.url = audioPF?["url"] as! String
-                                    audio.time = audioPF?["time"] as! String
+                                    audio.duration = audioPF?["duration"] as! String
                                     audio.chatId = audioPF?["chatId"] as! Int
                                     
                                 }
@@ -574,13 +578,10 @@ class ChatView: UIView,
                             
                             if (getChatData!-1) == i
                             {
-                                completionHandler(messagesHandeled)
-                                
+                                completionHandler(messagesHandeled)                                
                             }
-                            i = i + 1
-                            
-                        }
-                        
+                            i = i + 1                            
+                        }                        
                     }
                     
                 } else
@@ -611,7 +612,7 @@ class ChatView: UIView,
                 let audio = GamvesAudio()
                 audio.audioObj = audioPF
                 audio.url = audioPF?["url"] as! String
-                audio.time = audioPF?["time"] as! String
+                audio.duration = audioPF?["duration"] as! String
                 audio.chatId = audioPF?["chatId"] as! Int
                 audio.name = audioPF?["name"] as! String
                 
@@ -684,7 +685,7 @@ class ChatView: UIView,
         
         if self.recSendButton.tag == 1
         {
-            
+            self.isRecording = true
             
             self.recSendButton.transform = CGAffineTransform(scaleX: 2, y: 2)
             
@@ -704,8 +705,7 @@ class ChatView: UIView,
         
         } else if self.recSendButton.tag == 2 {
         
-        
-            //Channel exists and isVideo
+            self.isRecording = false            
             
             if self.isVideo && ChatFeedMethods.chatFeeds[self.chatId] == nil
             {
@@ -780,9 +780,13 @@ class ChatView: UIView,
         
         self.recSendButton.setImage(UIImage(named: "rec_off"), for: .normal)
         
-        self.finishRecording(success: true)
+        if self.isRecording {
+        
+            self.finishRecording(success: true)
 
-        self.stopTimer()
+            self.stopTimer()
+            
+        }
         
     }
     
@@ -893,7 +897,7 @@ class ChatView: UIView,
         
         audioPF["chatId"] = self.chatId
         
-        audioPF["time"] = duration
+        audioPF["duration"] = duration
         
         audioPF["name"] = name
         
@@ -996,7 +1000,6 @@ class ChatView: UIView,
                 }
         }
     }
-
     
     
     //-- MESSAGE
@@ -1019,7 +1022,18 @@ class ChatView: UIView,
         
         messagePF["chatId"] = self.chatId
         
-        messagePF["message"] = self.inputTextField.text!
+        messagePF["message"] = self.inputTextField.text!        
+
+        let date = Date()
+        let calendar = Calendar.current
+
+        let minutes = calendar.component(.minute, from: date)
+        let seconds = calendar.component(.second, from: date)              
+        
+        let strMinutes = String(format: "%02d", minutes)
+        let strSeconds = String(format: "%02d", seconds)  
+
+        messagePF["time"] = "\(strMinutes):\(strSeconds)"
         
         UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
         
@@ -1544,8 +1558,8 @@ class ChatView: UIView,
         
         self.messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: inputTextField, recSendButton)
         
-        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: inputTextField)
-        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-5-|", views: recSendButton)
+        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]-10-|", views: inputTextField)
+        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-10-|", views: recSendButton)
         
     }
     
@@ -1562,6 +1576,8 @@ class ChatView: UIView,
         print(message)
         
         var messageText:String = message.message
+       
+        var time:String = message.time
         
         print(messageText)
         
@@ -1583,6 +1599,7 @@ class ChatView: UIView,
         }
         
         cell.messageTextView.text = messageText
+        cell.timeLabel.text = time
         
         let userID = message.userId
         
@@ -1595,7 +1612,15 @@ class ChatView: UIView,
         
         let size = CGSize(width: 250, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+        let eFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+
+        var estimatedFrame = CGRect()
+
+        if eFrame.width < 60 {
+            estimatedFrame = CGRect(x: eFrame.maxX, y: eFrame.maxY, width: 60, height: eFrame.height)
+        } else {
+            estimatedFrame = eFrame
+        }
         
         if message.isSender == nil || !message.isSender
         {
@@ -1620,10 +1645,20 @@ class ChatView: UIView,
                 
                 
             } else {
+
+                let mx = x + 8
+                let mwidth = estimatedFrame.width + 16 
+                let mheight = estimatedFrame.height + 20               
             
-                cell.messageTextView.frame = CGRect(x:x + 8, y:0, width:estimatedFrame.width + 16, height: estimatedFrame.height + 20)
+                cell.messageTextView.frame = CGRect(x:mx, y:0, width:mwidth, height: mheight)
+
+                let bx = x - 10
+                let by:CGFloat = -4
+                var bwidth = estimatedFrame.width + 16 + 8 + 16
+                let bheight = estimatedFrame.height + 20 + 6 + 15 //spare space for text                              
                 
-                cell.bubbleView.frame = CGRect(x:x - 10, y: -4, width:estimatedFrame.width + 16 + 8 + 16, height: estimatedFrame.height + 20 + 6)
+                cell.bubbleView.frame = CGRect(x:bx, y: by, width:bwidth, height: bheight)
+                cell.drawTime(height: bheight)
                 
                 cell.profileImageView.isHidden = false
                 
@@ -1636,7 +1671,7 @@ class ChatView: UIView,
         } else {
             
             var x:CGFloat = 20
-            var width = self.frame.width - 40
+            var width = self.frame.width - 40 
             
             if message.isAudio {
                 
@@ -1664,12 +1699,23 @@ class ChatView: UIView,
                 cell.bubbleImageView.image = ChatLogMessageCell.adminBubbleImage
                 cell.bubbleImageView.tintColor = UIColor.lightGray
                 cell.messageTextView.textColor = UIColor.gray
+
                 
             } else {
+
+                let mx = self.frame.width - estimatedFrame.width - 16 - 16 - 8
+                var mwidth = estimatedFrame.width + 16
+                let mheight = estimatedFrame.height + 20                
                 
-                cell.messageTextView.frame = CGRect(x:self.frame.width - estimatedFrame.width - 16 - 16 - 8,y:0, width:estimatedFrame.width + 16, height:estimatedFrame.height + 20)
-                
-                cell.bubbleView.frame = CGRect(x:self.frame.width - estimatedFrame.width - 16 - 8 - 16 - 10, y: -4, width: estimatedFrame.width + 16 + 8 + 10, height: estimatedFrame.height + 20 + 6)
+                cell.messageTextView.frame = CGRect(x:mx, y:0, width:mwidth, height:mheight)
+
+                var bx = self.frame.width - estimatedFrame.width - 16 - 8 - 16 - 10
+                let by:CGFloat = -4
+                var bwidth = estimatedFrame.width + 16 + 8 + 10
+                let bheight = estimatedFrame.height + 20 + 6 + 15 //spare space for text
+
+                cell.bubbleView.frame = CGRect(x:bx, y:by, width: bwidth, height: bheight)
+                cell.drawTime(height: bheight)
                 
                 cell.profileImageView.isHidden = true
                 
@@ -1678,7 +1724,9 @@ class ChatView: UIView,
                 cell.messageTextView.textColor = UIColor.white
                 
             }
+
         }
+
         return cell
     }
     
@@ -1779,7 +1827,7 @@ class ChatView: UIView,
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
             let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
             
-            return CGSize(width:self.frame.width, height:estimatedFrame.height + 20)
+            return CGSize(width:self.frame.width, height:estimatedFrame.height + 20 + 10)
         }
         
         return CGSize(width:self.frame.width, height:100)
@@ -1839,6 +1887,17 @@ class ChatLogMessageCell: BaseCell {
         slider.layer.masksToBounds = true
         return slider
     }()
+
+    let timeLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "00:00"
+        label.textColor = UIColor.gamvesColor
+        //label.backgroundColor = UIColor.green
+        label.font = UIFont.boldSystemFont(ofSize: 10)
+        //label.textAlignment = .left
+        return label
+    }()
     
     let audioTimeLabel: UILabel = {
         let label = UILabel()
@@ -1850,6 +1909,7 @@ class ChatLogMessageCell: BaseCell {
         return label
     }()
     
+    var isSender = Bool()    
 
     static let grayBubbleImage = UIImage(named: "bubble_gray")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     
@@ -1871,7 +1931,7 @@ class ChatLogMessageCell: BaseCell {
         super.setupViews()
         
         addSubview(bubbleView)
-        addSubview(messageTextView)
+        addSubview(messageTextView)          
         
         print(messageTextView.text)
         
@@ -1879,14 +1939,37 @@ class ChatLogMessageCell: BaseCell {
         addConstraintsWithFormat("H:|-8-[v0(30)]", views: profileImageView)
         addConstraintsWithFormat("V:[v0(30)]|", views: profileImageView)
         profileImageView.backgroundColor = UIColor.red
-        
+
         bubbleView.addSubview(bubbleImageView)
-        bubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
+        bubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)        
         bubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
+
+        //if isSender { }        
+        //bubbleView.addConstraintsWithFormat("V:|[v0][v1(15)]|", views: bubbleImageView, timeLabel)
         
     }
-    
+
+    func drawTime(height: CGFloat) {
+
+         let bHeight = height - 25
+
+        let bubbleMetrics = ["bHeight":bHeight]
+
+        bubbleView.addSubview(timeLabel)     
+        bubbleView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: timeLabel)
+        bubbleView.addConstraintsWithFormat("V:|-bHeight-[v0(15)]-5-|", views: timeLabel, metrics: bubbleMetrics)       
+        
+        if isSender {     
+            timeLabel.textAlignment = .left
+        } else  {
+            timeLabel.textAlignment = .right
+        }
+
+    }
+
     func setAudioControl() {
+
+        let myFrame = bubbleView.frame
         
         self.bubbleView.addSubview(self.playPauseButton)
         self.bubbleView.addConstraintsWithFormat("V:|[v0]|", views: self.playPauseButton)
@@ -1897,7 +1980,7 @@ class ChatLogMessageCell: BaseCell {
         self.bubbleView.addSubview(self.audioTimeLabel)
         self.bubbleView.addConstraintsWithFormat("V:|[v0]|", views: self.audioTimeLabel)
         
-        self.bubbleView.addConstraintsWithFormat("H:|[v0(60)][v1][v2(80)]|", views:
+        self.bubbleView.addConstraintsWithFormat("H:|[v0(40)][v1][v2(80)]|", views:
             self.playPauseButton,
             self.playerSlider,
             self.audioTimeLabel)
