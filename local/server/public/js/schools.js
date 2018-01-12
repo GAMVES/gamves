@@ -260,20 +260,7 @@
           });
       }
 
-      function createCategories(schoolNew) {
-
-          /*var queryImage = new Parse.Query("Images");              
-          
-          queryImage.exists("name", "personal");
-          queryImage.exists("name", "personal_background");
-
-          queryImage.exists("name", "trending");
-          queryImage.exists("name", "trending_background");*/
-
-          //query.containedIn("name",
-          //        ["personal", "personal_background", "trending", "trending_background"]);
-
-        
+      function createCategories(schoolNew) {                
 
           var queryImages = new Parse.Query("Images");  
           queryImages.ascending("createdAt");    
@@ -316,6 +303,7 @@
                   categoryPersonal.set("backImage", personalBackground);
                   categoryPersonal.set("schoolId", schoolNew.id);                    
                   categoryPersonal.set("name", "PERSONAL");
+                  categoryPersonal.set("order", 1);                                      
                   categoryPersonal.set("description", "Personal pages for each registeres kid to customize");                      
 
                   categoryPersonal.save();                  
@@ -325,7 +313,8 @@
                   categoryTrending.set("thumbnail", trending);
                   categoryTrending.set("backImage", trendingBackground);
                   categoryTrending.set("schoolId", schoolNew.id);    
-                  categoryTrending.set("name", "TRENDING");                    
+                  categoryTrending.set("name", "TRENDING");  
+                  categoryTrending.set("order", 0);                                      
                   categoryTrending.set("description", "Most viewed and liked fanpages, trendings in general");                                       
 
                   categoryTrending.save();                  

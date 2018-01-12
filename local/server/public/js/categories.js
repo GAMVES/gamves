@@ -40,7 +40,7 @@ document.addEventListener("LoadCategories", function(event){
                       }
                       var order = categories[i].get("order");
                       item["order"] = order;
-                      var description = categories[i].get("description");
+                      var description = categories[i].get("name");
                       item["description"] = description;
                       if (categories[i].get("backImage") != undefined){
                         var backImage = categories[i].get("backImage");
@@ -234,7 +234,7 @@ document.addEventListener("LoadCategories", function(event){
           var cat = new Category();    
           cat.set("schoolId", schoolId);
           cat.set("thumbnail", parseFileThumbanil);
-          cat.set("description", $("#edit_description").val());
+          cat.set("name", $("#edit_description").val());
           var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
           cat.set("backImage", parseFileBackImage);

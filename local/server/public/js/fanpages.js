@@ -19,7 +19,7 @@ document.addEventListener("LoadFanpage", function(event){
               
               if (category) {
                     categoryPF = category
-                    categoryName = category.get("description");
+                    categoryName = category.get("name");
                     loadFanpages(category);            
               }
           }
@@ -298,6 +298,8 @@ document.addEventListener("LoadFanpage", function(event){
           var order = $("#edit_order_fanpage").val();          
           fanpage.set("order", parseInt(order));  
 
+          fanpage.set("approved", true);  
+
           fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
                                      
           fanpage.save(null, {
@@ -323,7 +325,10 @@ document.addEventListener("LoadFanpage", function(event){
             var album = new Albums();
             album.set("cover", albumImages[i]);
             var fanId = fanpageIdArray[_fId];
-            album.set("fanpageId", fanId);      
+            album.set("fanpageId", fanId);            
+
+            var name = $('#edit_album_name').val();          
+            album.set("name", name);      
 
             album.save(null, {
               success: function (albumStored) {
@@ -349,7 +354,7 @@ document.addEventListener("LoadFanpage", function(event){
 
           $("#edit_modal_fanpage").find("input[type=text], textarea").val("");
           $("#edit_modal_fanpage").find("input[type=file], textarea").val("");
-          $("#edit_order_fanpage").empty();
+          //$("#edit_order_fanpage").empty();
           $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
           $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
 
