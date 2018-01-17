@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import UserNotifications
 import DeviceKit
-
+ 
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
