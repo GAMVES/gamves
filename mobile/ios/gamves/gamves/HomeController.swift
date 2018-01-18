@@ -14,15 +14,18 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     var popup:PopupDialog! = nil
     
-    let homeCellId = "homeCellId"
-    let feedCellId = "feedCellId"
-    let profileCellId = "profileCellId"
+    let homeCellId          = "homeCellId"
+    let feedCellId          = "feedCellId"
+    let notificationCellId  = "notificationCellId"
+    let profileCellId       = "profileCellId"
     
     //let titles = ["Home", "Trending", "Community", "Profile"]
-    let titles = ["Home", "Activity", "Profile"]
+    let titles = ["Home", "Activity", "Notifications", "Profile"]
     
     var cellFree:FeedCell!
     var cellHome:HomeCell!
+    var notificationCell:NotificationCell!
+    var profileHome:ProfileCell!
     
     var locationManager : CLLocationManager = CLLocationManager()
     
@@ -94,6 +97,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(HomeCell.self, forCellWithReuseIdentifier: homeCellId)
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: feedCellId)
+        collectionView?.register(NotificationCell.self, forCellWithReuseIdentifier: notificationCellId)
         collectionView?.register(ProfileCell.self, forCellWithReuseIdentifier: profileCellId)
     
         collectionView?.contentInset = UIEdgeInsetsMake(50, 0, 0, 0)
@@ -180,7 +184,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        menuBar.horizontalBarLeftAnchorConstraint?.constant = scrollView.contentOffset.x / 3
+        menuBar.horizontalBarLeftAnchorConstraint?.constant = scrollView.contentOffset.x / 4
     }
     
     override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
@@ -191,7 +195,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let indexPath = IndexPath(item: Int(index), section: 0)
         menuBar.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionViewScrollPosition())
         
-        setTitleForIndex(Int(index))
+        self.setTitleForIndex(Int(index))
         
         self.reloadFeed(index: Int(index))
     }
@@ -217,6 +221,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         } else if indexPath.item == 1
         {
             identifier = feedCellId
+        } else if indexPath.item == 2
+        {
+            identifier = notificationCellId
         } else
         {
             identifier = profileCellId
@@ -224,17 +231,26 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
         
-        if indexPath.item == 0
-        {
+        if indexPath.item == 0 {
+            
             cellHome = cell as! HomeCell
             cellHome.homeController = self
-        } else if indexPath.item == 1
-        {
+            
+        } else if indexPath.item == 1 {
+            
             cellFree = cell as! FeedCell
             cellFree.homeController = self
+            
+        }  else if indexPath.item == 2 {
+            
+            notificationCell = cell as! NotificationCell
+            notificationCell.homeController = self
+            
+        } else if indexPath.item == 3 {
+            
+            profileHome = cell as! ProfileCell
+            profileHome.homeController = self
         }
-        
-        
         
         return cell
     }

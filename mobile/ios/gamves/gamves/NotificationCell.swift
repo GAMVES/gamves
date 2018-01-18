@@ -1,23 +1,19 @@
-
-
 //
-//  FeedCell.swift
-//  youtube
+//  NotificationCell.swift
+//  gamves
 //
-//  Created by Brian Voong on 7/3/16.
-//  Copyright © 2016 letsbuildthatapp. All rights reserved.
+//  Created by Jose Vigil on 1/16/18.
+//  Copyright © 2018 letsbuildthatapp. All rights reserved.
 //
 
 import UIKit
+import NVActivityIndicatorView
 import Parse
 import ParseLiveQuery
-import Floaty
-import NVActivityIndicatorView
-import PopupDialog
 
-class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, FeedDelegate {
-    
-    var activityView: NVActivityIndicatorView!
+class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+
+	 var activityView: NVActivityIndicatorView!
     
     var homeController: HomeController?    
     
@@ -25,7 +21,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
   
     private var subscription: Subscription<PFObject>!
     
-    var queryChatFeed:PFQuery<PFObject>!
+    var queryNotification:PFQuery<PFObject>!
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -42,10 +38,6 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         super.setupViews()
         
         backgroundColor = .brown
-        
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        
-        appDelegate.delegateFeed = self
     
         addSubview(collectionView)
         addConstraintsWithFormat("H:|[v0]|", views: collectionView)
@@ -56,90 +48,40 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         self.collectionView.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
         
         self.registerLiveQuery()
-        
-        //Floaty.global.rtlMode = true
-        
-        let floaty = Floaty()
-        floaty.addItem(title: "New Group", handler: { item in
 
-            if self.homeController != nil
-            {
-                self.homeController?.selectContact(group: true)
-            }
-            
-        })
-        
-        floaty.addItem(title: "Select Contact", handler: { item in
-            
-            if self.homeController != nil
-            {
-                self.homeController?.selectContact(group: false)
-            }
-        })
-        self.addSubview(floaty)
-        
-        print(Global.chatVideos)
-        
+        self.fetchNotification()        
     }
-    
     
     func registerLiveQuery()
     {
-    
-        queryChatFeed = PFQuery(className: "ChatFeed")
+        queryNotification = PFQuery(className: "Notifications")    
         
-        if let userId = PFUser.current()?.objectId
-        {
-            queryChatFeed.whereKey("members", contains: userId)
-        }
-        
-        self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.created) { _, chatFeed in
+        self.subscription = liveQueryClientFeed.subscribe(queryNotification).handle(Event.created) { _, notification in            
             
-            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int ) -> () in
-                
-                self.collectionView.reloadData()
-                
-            })           
-        }
-        
-        self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.updated) { _, chatFeed in
             
-            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int ) -> () in
-                
-                self.collectionView.reloadData()
-                
-            })
-
-        }
-        
-        //self.fetchFeed()
+        }        
         
         self.collectionView.reloadData()
         
     }
 
-    func fetchFeed()
+    func fetchNotification()
     {
     
         self.activityView.startAnimating()
         
-        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
+        queryNotification.findObjectsInBackground(block: { (notifications, error) in
             
             if error == nil
             {
                 
-                let chatFeddsCount = chatfeeds?.count
+                let notificationsCount = notifications?.count
                 
-                if chatFeddsCount! > 0
+                if notificationsCount! > 0
                 {
-                    let chatfeedsCount =  chatfeeds?.count
-                    
-                    ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Int ) -> () in
-                        
-                        self.collectionView.reloadData()
-                        self.activityView.stopAnimating()
-                        
-                    })
+                   
+
+
                     
                 } else
                 {
@@ -170,22 +112,21 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        print(ChatFeedMethods.chatFeeds.count)
-        return ChatFeedMethods.chatFeeds.count
+        print(Global.notifications.count)
+        return Global.notifications.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MessageCell
-        
-        let index = indexPath.item
-        let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
-        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
-        
-        cell.nameLabel.text = chatfeed.room
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! NotificationFeedCell
 
-        var message:String = chatfeed.text!
+        let index = indexPath.item
+        let notification:GamvesNotification = Global.notifications[index]
+        
+        cell.nameLabel.text = notification.title
+
+        var message:String = notification.description
 
         let delimitator = Global.admin_delimitator
 
@@ -198,34 +139,15 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         } 
 
         cell.messageLabel.text = message
-        cell.profileImageView.image = chatfeed.chatThumbnail
         
-        if chatfeed.lasPoster != nil
-        {
-            let userId = chatfeed.lasPoster!
-            
-            let gamvesUser = Global.userDictionary[userId]
-
-            cell.hasReadImageView.image = gamvesUser?.avatar
-        }
+        cell.profileImageView.image = notification.thumbnail
         
         var image = String()
-        
-        if (chatfeed.isVideoChat)!
-        {
-            image = "movie"
-        } else
-        {
-            image = "group"
-        }
-        
-        let imagetype = UIImage(named: image)
-        cell.isImageView.image = imagetype
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
         
-        let elapsedTimeInSeconds = Date().timeIntervalSince(chatfeed.date!)
+        let elapsedTimeInSeconds = Date().timeIntervalSince(notification.date)
         
         let secondInDays: TimeInterval = 60 * 60 * 24
         
@@ -235,31 +157,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             dateFormatter.dateFormat = "EEE"
         }
         
-        if chatfeed.badgeNumber != nil
-        {
-            if chatfeed.badgeNumber! > 0
-            {
-                let number = chatfeed.badgeNumber
-
-                cell.badgeLabel.isHidden = false
-                
-                if let textNumber = number
-                {
-                    cell.badgeLabel.text = String (textNumber)
-                }
-            
-            } else
-            {
-                cell.badgeLabel.text = ""
-                //cell.badgeLabel.layer.backgroundColor = UIColor.gamvesLightGrayColor.cgColor
-                cell.badgeLabel.isHidden = true
-            }
-        } else
-        {
-            cell.badgeLabel.isHidden = true
-        }
-        
-        cell.timeLabel.text = dateFormatter.string(from: chatfeed.date!)
+        cell.timeLabel.text = dateFormatter.string(from: notification.date)
     
         return cell
     }
@@ -308,22 +206,6 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         }
         
     }
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

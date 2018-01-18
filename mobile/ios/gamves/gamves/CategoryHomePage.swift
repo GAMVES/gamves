@@ -29,7 +29,6 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     
     var activityIndicatorView:NVActivityIndicatorView?
     
-    
     lazy var tableView: UITableView = {
         let rect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         let tv = UITableView(frame: rect)
@@ -239,7 +238,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                         
                         //let cover = pcategory["cover"] as! String
                         
-                        let name = pcategory["description"] as! String
+                        let name = pcategory["name"] as! String
                         
                         let thumbnail = pcategory["thumbnail"] as! PFFile
                         

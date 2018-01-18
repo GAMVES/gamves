@@ -21,6 +21,8 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
 
     var userStatistics = [UserStatistics]()
     
+    var homeController: HomeController?    
+    
     let registerViewContent: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
