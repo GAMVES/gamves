@@ -67,10 +67,22 @@ public class GamvesApplication extends Application
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
+                .applicationId("0123456789")
+                //.clientKey("r1FBMzUkEemRnGllhvZdkFtKknu1CMUXUUwzP6ew")
+                .server("http://192.168.16.22:1337/1/").build()
+        );
+
+        /*Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("qmTbd36dChKyopgav1JVUMGx2vnZSVdclkNpK6YU")
                 .clientKey("r1FBMzUkEemRnGllhvZdkFtKknu1CMUXUUwzP6ew")
                 .server("https://parseapi.back4app.com/").build()
-        );
+        );*/
+
+        /*Parse.initialize(new Parse.Configuration.Builder(this)
+                .applicationId("qmTbd36dChKyopgav1JVUMGx2vnZSVdclkNpK6YU")
+                .clientKey("r1FBMzUkEemRnGllhvZdkFtKknu1CMUXUUwzP6ew")
+                .server("https://parseapi.back4app.com/").build()
+        );*/
 
         //LiveQueryClient.init("wss://gamves.back4app.io", "qmTbd36dChKyopgav1JVUMGx2vnZSVdclkNpK6YU", true);
         //LiveQueryClient.connect();

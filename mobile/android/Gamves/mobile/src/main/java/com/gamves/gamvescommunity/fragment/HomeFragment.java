@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
     private static final int HIDE_SPINNER       = 2;
 
     private int iRow;
-    private CategoryItem categoryItem;
+    //private CategoryItem categoryItem;
 
     private Context context;
     int countCat = 0;
@@ -223,87 +223,91 @@ public class HomeFragment extends Fragment {
         queryCategorie.orderByAscending("order");
 
         //queryCategorie.orderByAscending("likes");
-
-        if (KeySaver.isExist(getActivity(), "language") && !Utils.getSavedLanguage(KeySaver.getIntSavedShare(getActivity(), "language")).contentEquals("none"))
-        {
-            queryCategorie.whereEqualTo("language", Utils.getSavedLanguage(KeySaver.getIntSavedShare(getActivity(), "language")));
-        }
+        //if (KeySaver.isExist(getActivity(), "language") && !Utils.getSavedLanguage(KeySaver.getIntSavedShare(getActivity(), "language")).contentEquals("none"))
+        //{
+        //    queryCategorie.whereEqualTo("language", Utils.getSavedLanguage(KeySaver.getIntSavedShare(getActivity(), "language")));
+        //}
 
         queryCategorie.findInBackground(new FindCallback<ParseObject>() {
 
             @Override
             public void done(List<ParseObject> objectsRow, ParseException e) {
 
-                if (objectsRow != null && iRow < objectsRow.size())
-                {
+                if (objectsRow != null) { // && iRow < objectsRow.size()) {
 
-                    try
-                    {
+                    for (int i=0; i<objectsRow.size(); i++) {
 
-                        final int categoryCount = objectsRow.size();
+                        try {
 
-                        categoryItem = new CategoryItem(context);
-                        categoryItem.setId(objectsRow.get(iRow).getString("objectId"));
-                        categoryItem.setName(objectsRow.get(iRow).getString("description"));
-                        categoryItem.setBackgroundUrl(objectsRow.get(iRow).getString("cover"));
-                        ParseFile thumbnail = (ParseFile) objectsRow.get(iRow).getParseFile("thumbnail");
-                        categoryItem.setThumbnailUrl(thumbnail.getUrl());
+                            final int categoryCount = objectsRow.size();
 
-                        categoryItem.setGradientId(GamvesApplication.getInstance().generateRandonGradient());
+                            final CategoryItem categoryItem = new CategoryItem(context);
+                            categoryItem.setId(objectsRow.get(i).getString("objectId"));
+                            categoryItem.setName(objectsRow.get(i).getString("name"));
+                            categoryItem.setDescription(objectsRow.get(i).getString("description"));
 
-                        final List<FanPageListItem> arrayFanpages = new ArrayList<>();
-                        ParseQuery<ParseObject> queryFanpage = ParseQuery.getQuery("FanPage");
-                        queryFanpage.whereEqualTo("category", objectsRow.get(iRow));
-                        queryFanpage.orderByDescending("date");
+                            ParseFile thumbnail = (ParseFile) objectsRow.get(i).getParseFile("thumbnail");
+                            categoryItem.setThumbnailUrl(thumbnail.getUrl());
 
-                        queryFanpage.findInBackground(new FindCallback<ParseObject>() {
+                            ParseFile backImage = (ParseFile) objectsRow.get(i).getParseFile("backImage");
+                            categoryItem.setBackgroundUrl(backImage.getUrl());
 
-                            @Override
-                            public void done(List<ParseObject> objects, ParseException e) {
+                            categoryItem.setGradientId(GamvesApplication.getInstance().generateRandonGradient());
 
-                                int size = objects.size();
+                            final List<FanPageListItem> arrayFanpages = new ArrayList<>();
+                            ParseQuery<ParseObject> queryFanpage = ParseQuery.getQuery("Fanpages");
+                            queryFanpage.whereEqualTo("category", objectsRow.get(i));
 
-                                for (int j = 0; j < size; j++)
-                                {
+                            //queryFanpage.orderByDescending("date");
 
-                                    FanPageListItem fanpage = new FanPageListItem();
-                                    fanpage.setId(objects.get(j).getString("onjectId"));
+                            queryFanpage.findInBackground(new FindCallback<ParseObject>() {
 
-                                    fanpage.setPageName(objects.get(j).getString("pageName"));
-                                    fanpage.setPageAbout(objects.get(j).getString("pageAbout"));
+                                @Override
+                                public void done(List<ParseObject> objects, ParseException e) {
 
-                                    String icon_url = objects.get(j).getString("pageIcon");
-                                    fanpage.setPageIconUrl(icon_url);
+                                    int size = objects.size();
 
-                                    String cover_url = objects.get(j).getString("pageCover");
-                                    fanpage.setPageCoverUrl(cover_url);
+                                    for (int j = 0; j < size; j++) {
 
-                                    fanpage.setPageLink(objects.get(j).getString("pageLink"));
-                                    fanpage.setPageLikes(objects.get(j).getString("pageLikes"));
+                                        FanPageListItem fanpage = new FanPageListItem();
+                                        fanpage.setId(objects.get(j).getString("onjectId"));
 
-                                    fanpage.setFanpageObject(objects.get(j));
+                                        fanpage.setPageName(objects.get(j).getString("pageName"));
+                                        fanpage.setPageAbout(objects.get(j).getString("pageAbout"));
 
-                                    arrayFanpages.add(fanpage);
+                                        String icon_url = objects.get(j).getString("pageIcon");
+                                        fanpage.setPageIconUrl(icon_url);
 
-                                    if (j == objects.size() - 1)
-                                    {
-                                        categoryItem.setFanpages(arrayFanpages);
-                                        listener.onTaskCompleted();
-                                        countCat++;
+                                        String cover_url = objects.get(j).getString("pageCover");
+                                        fanpage.setPageCoverUrl(cover_url);
+
+                                        fanpage.setPageLink(objects.get(j).getString("pageLink"));
+                                        fanpage.setPageLikes(objects.get(j).getString("pageLikes"));
+
+                                        fanpage.setFanpageObject(objects.get(j));
+
+                                        arrayFanpages.add(fanpage);
+
+                                        if (j == objects.size() - 1) {
+                                            categoryItem.setFanpages(arrayFanpages);
+                                            listener.onTaskCompletedCategory(categoryItem);
+                                            countCat++;
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
 
-                    } catch (Exception e1) {
+                        } catch (Exception e1) {
 
-                        e1.printStackTrace();
+                            e1.printStackTrace();
+                        }
                     }
 
-                } else if (objectsRow != null && iRow == objectsRow.size())
-                {
-                    PAGE_SELETED_ACTION=HIDE_SPINNER;
+                } else if (objectsRow != null && iRow == objectsRow.size()) {
+
+                    PAGE_SELETED_ACTION = HIDE_SPINNER;
                     onPageChangeListener.onPageSelected(0);
+
                 }
             }
         });
@@ -315,9 +319,17 @@ public class HomeFragment extends Fragment {
         @Override
         public void onTaskCompleted()
         {
-            iRow++;
+
+        }
+
+        @Override
+        public void onTaskCompletedCategory(CategoryItem item) {
+
+            //iRow++;
+            String name = item.getName();
+            Log.v("", name);
             LoadCategoryImages loadImages = new LoadCategoryImages();
-            loadImages.execute(categoryItem);
+            loadImages.execute(item);
         }
 
     };
@@ -364,7 +376,7 @@ public class HomeFragment extends Fragment {
             HomeDataSingleton.getInstance().addCategoryItem(result);
             PAGE_SELETED_ACTION=LOAD_FRAGMENT_DATA;
             onPageChangeListener.onPageSelected(0);
-            setCategoryFanPageData();
+            //setCategoryFanPageData();
         }
 
         @Override

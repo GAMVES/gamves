@@ -23,6 +23,7 @@ import android.view.View;
 import com.gamves.gamvescommunity.callbacks.ParseCallback;
 import com.gamves.gamvescommunity.fragment.CommunityFragment;
 import com.gamves.gamvescommunity.fragment.HomeFragment;
+import com.gamves.gamvescommunity.fragment.NotificationFragment;
 import com.gamves.gamvescommunity.fragment.ProfileFragment;
 import com.gamves.gamvescommunity.model.CategoryItem;
 import com.gamves.gamvescommunity.model.FanPageListItem;
@@ -66,6 +67,7 @@ public class TabActivity extends AppCompatActivity implements
 
     public String HOME = "Home";
     public String COMMUNITY = "Community";
+    public String NOTIFICATIONS = "Notifications";
     public String PROFILE = "Profile";
 
     private Context context;
@@ -116,6 +118,9 @@ public class TabActivity extends AppCompatActivity implements
                         tabName = COMMUNITY;
                         break;
                     case 2:
+                        tabName = NOTIFICATIONS;
+                        break;
+                    case 3:
                         tabName = PROFILE;
                         break;
                 }
@@ -131,7 +136,7 @@ public class TabActivity extends AppCompatActivity implements
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             int drawable = 0;
             switch (i) {
                 case 0:
@@ -141,6 +146,9 @@ public class TabActivity extends AppCompatActivity implements
                     drawable = R.drawable.community;
                     break;
                 case 2:
+                    drawable = R.drawable.notification;
+                    break;
+                case 3:
                     drawable = R.drawable.profile;
                     break;
             }
@@ -209,6 +217,9 @@ public class TabActivity extends AppCompatActivity implements
                     CommunityFragment communityFragment = new CommunityFragment();
                     return communityFragment;
                 case 2:
+                    NotificationFragment notificationFragment = new NotificationFragment();
+                        return notificationFragment;
+                case 3:
                     ProfileFragment profileFragment = new ProfileFragment();
                     return profileFragment;
                 default:
@@ -219,7 +230,7 @@ public class TabActivity extends AppCompatActivity implements
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
 
         @Override
