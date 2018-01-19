@@ -840,6 +840,8 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         
         videoPF["poster_name"] = name
         
+        videoPF["folder"] = "stpauls"
+        
         print(videoPF)
         
         videoPF["s3_source"]    = String()
@@ -931,7 +933,11 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         
         let url = self.videoSelLocalUrl
         let remoteName = "\(Global.generateFileName()).mp4"
-        let S3BucketName = "gamves"
+        
+        //HERE SET THE SCHOOL PACKAGE, same that is set to video folder
+        
+        let S3BucketName = "gamves/stpauls" //Modify here to get school short 
+        
         let uploadRequest = AWSS3TransferManagerUploadRequest()!
         uploadRequest.body = url!
         uploadRequest.key = remoteName
