@@ -26,6 +26,8 @@ class Global: NSObject
     
     static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
     
+    static var search_engine = "010975053378915722447:h2ob_fkvam0"
+    
     static var api_image_base = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="
     static var api_image_format = "&format=json"
     
@@ -206,13 +208,17 @@ class Global: NSObject
                                     
                                     print(levelId)
                                     
-                                    let levelGamves = Global.levels[levelId]
+                                    if Global.levels[levelId] != nil {
                                     
-                                    print(levelGamves)
-                                    
-                                    gamvesUser.levelNumber = (levelGamves?.grade)!
-                                    gamvesUser.levelDescription = (levelGamves?.description)!
-                                    gamvesUser.levelId = levelId
+                                        let levelGamves = Global.levels[levelId]
+                                        
+                                        print(levelGamves)
+                                        
+                                        gamvesUser.levelNumber = (levelGamves?.grade)!
+                                        gamvesUser.levelDescription = (levelGamves?.description)!
+                                
+                                        gamvesUser.levelId = levelId
+                                    }
                                     
                                 }
                                 
@@ -848,7 +854,7 @@ class Global: NSObject
         
     }
 
-    static func alertWithTitle(viewController: UIViewController, title: String!, message: String, toFocus:UITextField?)
+    static func alertWithTitle(viewController: UIViewController, title: String!, message: String, toFocus:AnyObject?)
     {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -1153,6 +1159,38 @@ class Global: NSObject
             }
         }
     }
+    
+    static func generateFileName() -> String
+    {
+        var name = String()
+        
+        if let userId = PFUser.current()?.objectId {
+            
+            print(userId)
+            
+            let date = Date()
+            let calendar = Calendar.current
+            
+            let hour = String(calendar.component(.hour, from: date))
+            
+            let minutes = String(calendar.component(.minute, from: date))
+            
+            let seconds = String(calendar.component(.second, from: date))
+            
+            let hm:String = "\(hour)\(minutes)\(seconds)"
+            
+            print(hm)
+            
+            name = "\(userId)_\(hm)"
+            
+            print(name)
+            
+        }
+        
+        return name
+    }
+
+
 }
 
 

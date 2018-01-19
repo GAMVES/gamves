@@ -34,5 +34,7 @@ target 'gamves' do
   pod 'IGColorPicker'
   
   pod 'PulsingHalo'
+
+  #pod 'ABVideoRangeSlider'
   
 end

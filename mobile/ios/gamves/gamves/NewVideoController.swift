@@ -15,22 +15,19 @@ import SwiftyJSON
 import UITextView_Placeholder
 import AVFoundation
 import MobileCoreServices
+import AWSS3
+import AWSCore
 
-
-protocol VideoProtocol {
-    func selectedVideo(videoUrl: String, title: String, description : String, image : UIImage)
-}
-
-protocol SearchProtocol {
-    func setResultOfsearch(videoId: String, title: String, description : String, duration : String, image : UIImage)
-}
-
-class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate {
+class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
+    
+    var type: UploadType!
     
     var homeController: HomeController?
     
     var category = CategoryGamves()
     var fanpage = FanpageGamves()
+    
+    var current : AnyObject?
 
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -82,20 +79,6 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         return tf
     }()
 
-    let fanpageSeparatorView: UIView = {
-        let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    var typeDownPicker: DownPicker!
-    let typeTextField: UITextField = {
-        let tf = UITextField()        
-        tf.translatesAutoresizingMaskIntoConstraints = false        
-        return tf
-    }()
-    
     let categorySeparatorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.gamvesColor
@@ -138,6 +121,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         return view
     }()
 
+    
     //-- youtubeVideoRowView youtube
 
 	let youtubeUrlTextField: UITextField = {
@@ -146,7 +130,8 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.layer.cornerRadius = 5
         tf.backgroundColor = UIColor.white
-        //tf.text = "o7Kd6VVp6jE"        
+        //tf.text = "o7Kd6VVp6jE"   
+        tf.tag = 0
         return tf
     }()     
 
@@ -159,6 +144,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         imageIcon?.maskWithColor(color: UIColor.white)
         button.setImage(imageIcon, for: .normal)
         button.layer.cornerRadius = 5
+        button.isEnabled = false
         return button
     }()
 
@@ -174,12 +160,13 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     lazy var videoButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor        
-        button.setTitle("Record video", for: UIControlState())
+        button.setTitle("Choose video", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.addTarget(self, action: #selector(handleVideo), for: .touchUpInside)       
-        button.layer.cornerRadius = 5 
+        button.layer.cornerRadius = 5
+        button.isEnabled = false
         return button
     }()	
 
@@ -207,7 +194,9 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         cameraButton.contentMode = .scaleAspectFit
         cameraButton.isUserInteractionEnabled = true
         cameraButton.addTarget(self, action: #selector(handleCameraImage), for: .touchUpInside)
+        cameraButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         cameraButton.tag = 0
+        cameraButton.isEnabled = false
         return cameraButton
     }()
 
@@ -231,6 +220,8 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         tf.placeholder = "Title"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.backgroundColor = UIColor.white
+        tf.tag = 1
+        tf.isEnabled = false
         return tf
     }()
 
@@ -242,11 +233,13 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     }()
 
     let descriptionTextView: UITextView  = {
-        let tf = UITextView()
-        tf.placeholder = "Description"
-        tf.font = UIFont.systemFont(ofSize: 16)
-        tf.translatesAutoresizingMaskIntoConstraints = false      
-        return tf
+        let tv = UITextView()
+        tv.placeholder = "Description"
+        tv.font = UIFont.systemFont(ofSize: 16)
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        tv.tag = 2
+        tv.isEditable = false
+        return tv
     }()
    
     //-- save
@@ -259,9 +252,10 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         button.setTitle("Add video to Gamves", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)       
-        button.layer.cornerRadius = 5 
+        button.layer.cornerRadius = 5
+        button.isEnabled = false
         return button
     }()
 
@@ -286,6 +280,8 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     var videoSelThumbnail = UIImage()
     
     var newVideoId = String()
+    
+    var isYoutubeHidden = Bool()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -325,6 +321,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         self.scrollView.addSubview(self.saveButton)
         self.scrollView.addSubview(self.bottomView)
         
+        
         let cwidth:CGFloat = self.view.frame.width
         let cp:CGFloat = 12
         let cs:CGFloat = cwidth - (cp*2)
@@ -335,9 +332,20 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         
         self.metricsNew["cp"]    =  cp
         self.metricsNew["cs"]    =  cs
+        
+        if self.isYoutubeHidden {
+            
+            self.metricsNew["yt"]  =  0
+            self.metricsNew["cy"]  =  0
+            
+        } else {
+            
+            self.metricsNew["yt"]  =  40
+            self.metricsNew["cy"]  =  cp
+        }
 
         self.scrollView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(124)][v2(cp)][v3(40)][v4(cp)][v5(40)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|", views:
+            "V:|[v0(40)][v1(82)][v2(cp)][v3(60)][v4(cy)][v5(yt)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|", views:
             self.welcome,
             self.categoriesContainerView,
             self.categorySeparatorView,            
@@ -368,26 +376,20 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
 		self.categoriesContainerView.addSubview(self.categoryTypeTextField)
         self.categoriesContainerView.addSubview(self.categoryTypeSeparatorView)
-        self.categoriesContainerView.addSubview(self.fanpageTextField)                
-        self.categoriesContainerView.addSubview(self.fanpageSeparatorView)  
-        self.categoriesContainerView.addSubview(self.typeTextField)    
-
+        self.categoriesContainerView.addSubview(self.fanpageTextField)
+    
         self.categoriesContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.categoryTypeTextField)
         self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.categoryTypeSeparatorView)        
         self.categoriesContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.fanpageTextField)
-        self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.fanpageSeparatorView)       
-        self.categoriesContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.typeTextField)                	
-
+        
         self.categoriesContainerView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(2)][v2(40)][v3(2)][v4(40)]|", 
+            "V:|[v0(40)][v1(2)][v2(40)]|",
             views: 
             self.categoryTypeTextField, 
             self.categoryTypeSeparatorView, 
-            self.fanpageTextField,
-            self.fanpageSeparatorView,            
-            self.typeTextField) 
+            self.fanpageTextField)
 
-        self.categoryTypeTextField.becomeFirstResponder()
+        //self.categoryTypeTextField.becomeFirstResponder()
 
         var catArray = [String]()
         
@@ -402,17 +404,10 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
         self.categoryDownPicker.addTarget(self, action: #selector(selectedCategory), for: UIControlEvents.valueChanged )
 
-        let types: NSMutableArray = ["Youtube", "Local"]		
-        self.typeDownPicker = DownPicker(textField: typeTextField, withData:types as! [Any])
-        self.typeDownPicker.setPlaceholder("Tap to choose type of video...")
-
-        self.typeDownPicker.addTarget(self, action: #selector(selectedType), for: UIControlEvents.valueChanged )
-        
         self.fanpageDownPicker = DownPicker(textField: fanpageTextField)
 
         self.fanpageDownPicker.isEnabled = false
-        self.typeDownPicker.isEnabled = false        
-
+        
 		//-- youtubeVideoRowView youtube
 
 		self.youtubeVideoRowView.addSubview(self.youtubeUrlTextField)
@@ -427,8 +422,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
 		//-- youtubeVideoRowView local
 
-		self.localVideoRowView.addSubview(self.videoButton)
-				
+		self.localVideoRowView.addSubview(self.videoButton)				
 
 		self.localVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.videoButton)
         self.localVideoRowView.addConstraintsWithFormat("H:|[v0]|", views:
@@ -466,26 +460,25 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 			self.titleDescSeparatorView,
 			self.descriptionTextView)	
 		
-		//self.videoButton.isHidden = true
-		//self.uploadButton.isHidden = true
-
-		//self.youtubeUrlTextField.isHidden = true
-		//self.searchButton.isHidden = true
-
 		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
-		//self.handleSearch()*/ 
-        
         //Looks for single or multiple taps.
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
-
+        if isYoutubeHidden {
+        
+            self.prepTextFields(inView: [self.titleDescContainerView])
+            
+        } else {
+            
+            self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
+            
+        }
+        
     }
     
     func backButtonPressed(sender: UIBarButtonItem)
     {
-        //self.delegateFeed.uploadData()
-        //self.navigationController?.popViewController(animated: true)
         self.navigationController?.popToRootViewController(animated: true)
     }
     
@@ -497,11 +490,8 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     override func viewWillLayoutSubviews() {
         
         self.scrollView.contentSize.width = self.view.frame.width
-    }
-    
-    override func textFieldDidEndEditing(_ textField: UITextField) {
-        
-    }
+    }    
+   
     
     func selectedCategory(picker: DownPicker)
     {
@@ -553,44 +543,13 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
             }
         }
         
-        self.typeDownPicker.isEnabled = true
-
-        self.typeTextField.becomeFirstResponder()
-
+        self.videoButton.isEnabled = true
+        self.cameraButton.isEnabled = true
+        self.titleTextField.isEnabled = true
+        self.descriptionTextView.isEditable = true
+        
     }
 
-
-    func selectedType(picker: DownPicker)
-    {
-
-		self.titleDescContainerView.isHidden = false
-		self.youtubeVideoRowView.isHidden = false
-		self.previewVideoRowView.isHidden = false
-
-    	let value = picker.getTextField().text
-
-    	if value == "Youtube"
-    	{
-            
-			//self.youtubeUrlTextField.alpha = 1
-			//self.searchButton.alpha = 1
-            //self.youtubeVideoRowView.alpha = 1
-
-			//self.videoButton.alpha = 0.25
-			//self.uploadButton.alpha = 0.25
-            
-            self.youtubeUrlTextField.isUserInteractionEnabled = true
-            self.searchButton.isUserInteractionEnabled = true
-            
-            self.videoButton.isUserInteractionEnabled = false
-            
-
-    	} else if value == "Local" {
-            self.videoButton.isUserInteractionEnabled = true
-            self.youtubeUrlTextField.isUserInteractionEnabled = false
-            self.searchButton.isUserInteractionEnabled = false            
-    	}  
-    }
     
     var thumbnailImage      = UIImage()
     var thumbnail_url       = String()
@@ -706,11 +665,20 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     func categoryFieldDidChange(_ textField: UITextField) {
 
 	}
+    
+    func handleVideo() {
+        self.type = UploadType.local
+        let media = MediaController()
+        media.delegate = self
+        media.delegateSearch = self
+        media.termToSearch = fanpageTextField.text!
+        media.setType(type: MediaType.selectVideo)
+        navigationController?.pushViewController(media, animated: true)
+    }
 
-	func handleSearch()
-    {
-
-        //searchController.isGroup = group
+	func handleSearch() {
+        self.type = UploadType.youtube
+        searchController.termToSearch = fanpageTextField.text!
         searchController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
@@ -719,32 +687,32 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
 
   
     func handleCameraImage() {
-        print("handleCameraImage")
-        
-        //let mediaPickerController = MediaPickerController(type: MediaPickerControllerType.imageOnly, presentingViewController: self )
-        //mediaPickerController.show()
-        
-        let takePictures = TakePictures()
-        takePictures.setType(type: TakePictureType.selectImage)
-        navigationController?.pushViewController(takePictures, animated: true)
+        let media = MediaController()
+        media.delegate = self
+        media.delegateSearch = self
+        media.termToSearch = fanpageTextField.text!
+        media.setType(type: MediaType.selectImage)
+        navigationController?.pushViewController(media, animated: true)
     }
     
     func didPickImage(_ image: UIImage){
         self.cameraButton.setImage(image, for: .normal)
         self.videoSelThumbnail = image
     }
-    func didPickVideo(url: URL, data: Data, thumbnail: UIImage){
+    
+    func didPickVideo(url: URL, data: Data, thumbnail: UIImage) {
+        
         self.videoSelLocalUrl = url
         self.videoSelData = data
+        self.videoSelThumbnail = thumbnail
+        
+        DispatchQueue.main.async()
+        {
+            self.cameraButton.setImage(thumbnail, for: .normal)
+        }
+        
     }
 
-   	func handleVideo() {
-        print("handleUpload")
-        let takePictures = TakePictures()
-        takePictures.setType(type: TakePictureType.selectVideo)
-        navigationController?.pushViewController(takePictures, animated: true)
-    }
-    
     func setResultOfsearch(videoId: String, title: String, description : String, duration: String, image : UIImage)
     {
     	self.videoId = videoId
@@ -752,11 +720,21 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
     	self.videoDescription = description
     	self.thumbnailImage = image
 
-        self.video_url = "https://www.youtube.com/watch?v=" + self.videoId
-        self.youtubeUrlTextField.text = self.video_url
+        if !isYoutubeHidden {
+            self.video_url = "https://www.youtube.com/watch?v=" + self.videoId
+            self.youtubeUrlTextField.text = self.video_url
+        }
+        
     	self.titleTextField.text = title
     	self.descriptionTextView.text = description
     	self.cameraButton.setImage(image, for: .normal)
+        
+        self.saveButton.isEnabled = true
+        
+    }
+    
+    func setVideoSearchType(type: UploadType) {
+        self.type = type
     }
     
     func handleSave() {
@@ -766,112 +744,233 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
             
             self.activityIndicatorView?.startAnimating()
             
-            let params = ["videoId":videoId] as [String : Any]
-            
-            PFCloud.callFunction(inBackground: "getYoutubeVideoInfo", withParameters: params) { (result, error) in
+            if self.type == UploadType.local {
                 
-                if error == nil
-                {
+                var json = [String:Any]()
+                
+                self.uploadToS3(completionHandler: { (url) in
                     
-                    do {
-                        
-                        if let json = result as? [String:Any] {
-                            
-                            print(json)
-                            
-                            self.videoTitle       = json["fulltitle"] as! String
-                            self.videoDescription = (json["description"] as? String)!
-                            self.thumbnail_url    = (json["thumbnail"] as? String)!
-                            
-                            let upload_date     = json["upload_date"] as? String
-                            let view_count      = json["view_count"] as! Double
-                            let tags            = json["tags"] as! NSArray
-                            let duration        = json["duration"] as! String
-                            let categoriesArray = json["categories"] as! NSArray
-                            let like_count      = json["like_count"] as! Double
-                            
-                            let videoPF: PFObject = PFObject(className: "Videos")
-                            
-                            videoPF["title"] = self.titleTextField.text
-                            
-                            videoPF["description"] = self.descriptionTextView.text
-                            
-                            let videoNumericId = Global.getRandomInt()
-
-                            videoPF["videoId"] = videoNumericId as Int
-                            
-                            videoPF["downloaded"]   = false
-                            videoPF["removed"]      = false
-                            videoPF["authorized"]    = false
-    
-                            videoPF["categoryName"] = self.category.name
-
-                            videoPF["s3_source"]    =  String()
-                            videoPF["ytb_source"]   =  self.video_url
-                            videoPF["ytb_thumbnail_source"] = self.thumbnail_url
-                            videoPF["ytb_videoId"]  = self.videoId
-    
-                            videoPF["ytb_upload_date"]  = upload_date
-                            videoPF["ytb_view_count"]   = view_count     
-                            videoPF["ytb_tags"]         = tags
-                            videoPF["ytb_duration"]     = duration
-                            videoPF["ytb_categories"]   = categoriesArray         
-                            videoPF["ytb_like_count"]   = like_count                                          
-                            
-                            videoPF["order"] = -1 //LEAVE TO BACKEND 
-
-                            let fanpageNumericId = Global.getRandomInt()
-                            videoPF["fanpageId"] = fanpageNumericId
-                            
-                            //videoPF["videoId"] = self.videoId
-                            
-                            videoPF["fanpageObjId"] = self.fanpage.fanpageObj?.objectId
-
-                            videoPF["posterId"] = PFUser.current()?.objectId
-                            
-                            let userId = PFUser.current()?.objectId
-                            let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
-                            
-                            videoPF["poster_name"] = name
-                                
-                            print(videoPF)
-
-                            videoPF.saveInBackground { (resutl, error) in
-                                
-                                if error == nil
-                                {
-                                    
-                                    let approvals: PFObject = PFObject(className: "Approvals")
-                                    
-                                    approvals["videoId"] = videoNumericId
-                                    approvals["posterId"] = PFUser.current()?.objectId                                    
-                                    let familyId = Global.gamvesFamily.objectId
-                                    approvals["familyId"] = familyId
-                                    approvals["approved"] = 0
-                                    
-                                    approvals.saveInBackground { (resutl, error) in
-                                        
-                                        if error == nil {
-                                            
-                                            self.activityIndicatorView?.startAnimating()
-                                            
-                                            self.navigationController?.popToRootViewController(animated: true)
-                                            
-                                            let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
-                                            Global.alertWithTitle(viewController: self, title: "Video Uploaded!", message: message, toFocus: self.categoryTypeTextField)
-                                            
-                                        }
-                                    }
-                                }                       
-                            }
-                        }
-                        
-                    } catch let err {
-                        print(err.localizedDescription)
-                    }                    
-                }
-            }           
+                    json["downloaded"] = true
+                    json["removed"] = true
+                    json["s3_source"] = url.absoluteString
+                    json["authorized"] = false
+                    
+                    json["fulltitle"] = self.titleTextField.text
+                    json["description"] = self.descriptionTextView.text
+                    
+                    self.saveVideo(json: json)
+                    
+                })
+               
+                
+            } else if self.type == UploadType.youtube {
+             
+                self.saveYoutubeVideo(url: nil)
+                
+            }
+            
         }
+    }
+    
+    func saveYoutubeVideo(url:URL?) {
+        
+        let params = ["videoId":videoId] as [String : Any]
+        
+        PFCloud.callFunction(inBackground: "getYoutubeVideoInfo", withParameters: params) { (result, error) in
+            
+            if error == nil
+            {
+                
+                do {
+                    
+                    if var json = result as? [String:Any] {
+                        
+                        print(json)
+                    
+                        json["downloaded"] = false
+                        json["removed"] = false
+                        json["authorized"] = false
+                        
+                        self.saveVideo(json: json)
+                    }
+                    
+                } catch let err {
+                    print(err.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    func saveVideo( json : [String:Any] ) {
+        
+        self.videoTitle       = json["fulltitle"] as! String
+        //self.videoDescription = (json["description"] as? String)!
+        
+        let videoPF: PFObject = PFObject(className: "Videos")
+        
+        videoPF["title"] = self.titleTextField.text
+        videoPF["description"] = self.descriptionTextView.text
+        
+        let videoNumericId = Global.getRandomInt()
+        
+        videoPF["videoId"] = videoNumericId as Int
+    
+        videoPF["downloaded"]   = json["downloaded"] as! Bool
+        videoPF["removed"]      = json["removed"] as! Bool
+        videoPF["authorized"]    = json["authorized"] as! Bool
+        
+        videoPF["categoryName"] = self.category.name
+        
+        videoPF["order"] = -1 //LEAVE TO BACKEND
+        
+        videoPF["public"] = true
+        
+        let fanpageNumericId = Global.getRandomInt()
+        videoPF["fanpageId"] = fanpageNumericId
+        
+        //videoPF["videoId"] = self.videoId
+        
+        videoPF["fanpageObjId"] = self.fanpage.fanpageObj?.objectId
+        
+        videoPF["posterId"] = PFUser.current()?.objectId
+        
+        let userId = PFUser.current()?.objectId
+        let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
+        
+        videoPF["poster_name"] = name
+        
+        videoPF["folder"] = "stpauls"
+        
+        print(videoPF)
+        
+        videoPF["s3_source"]    = String()
+        
+        if json["s3_source"] != nil {
+            
+            videoPF["s3_source"] = json["s3_source"]
+            
+            let filename = "\(Global.generateFileName()).png"
+            
+            let thumbnail = PFFile(name: filename, data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
+            
+            videoPF.setObject(thumbnail!, forKey: "thumbnail")
+            
+            videoPF["source_type"] = 1
+        
+        } else  {
+            
+            let upload_date     = json["upload_date"] as? String
+            let view_count      = json["view_count"] as! Double
+            let tags            = json["tags"] as! NSArray
+            let duration        = json["duration"] as! String
+            let categoriesArray = json["categories"] as! NSArray
+            let like_count      = json["like_count"] as! Double
+        
+            self.thumbnail_url    = (json["thumbnail"] as? String)!
+            
+            videoPF["ytb_source"]   =  self.video_url
+            videoPF["ytb_thumbnail_source"] = self.thumbnail_url
+            videoPF["ytb_videoId"]  = self.videoId
+            
+            videoPF["ytb_upload_date"]  = upload_date
+            videoPF["ytb_view_count"]   = view_count
+            videoPF["ytb_tags"]         = tags
+            videoPF["ytb_duration"]     = duration
+            videoPF["ytb_categories"]   = categoriesArray
+            videoPF["ytb_like_count"]   = like_count
+            
+            videoPF["source_type"] = 2
+            
+        }
+     
+        videoPF.saveInBackground { (resutl, error) in
+            
+            if error == nil
+            {
+                
+                let approvals: PFObject = PFObject(className: "Approvals")
+                
+                approvals["referenceId"] = videoNumericId
+                approvals["posterId"] = PFUser.current()?.objectId
+                let familyId = Global.gamvesFamily.objectId
+                approvals["familyId"] = familyId
+                approvals["approved"] = 0
+                approvals["title"] = self.videoTitle
+                approvals["type"] = 1
+                
+                approvals.saveInBackground { (resutl, error) in
+                    
+                    if error == nil {
+                        
+                        self.activityIndicatorView?.startAnimating()
+                        
+                        let title = "Video Uploaded!"
+                        let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
+                        
+                        let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                        
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                            
+                            self.navigationController?.popToRootViewController(animated: true)
+                            
+                        }))
+                        
+                        self.present(alert, animated: true)
+                    }
+                }
+            }
+        }
+    }
+    
+    func uploadToS3(completionHandler : @escaping (_ resutl:URL) -> ()){
+        
+        let accessKey = "AKIAJP4GPKX77DMBF5AQ"
+        let secretKey = "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"
+        let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
+        let configuration = AWSServiceConfiguration(region: AWSRegionType.USEast1, credentialsProvider: credentialsProvider)
+        AWSServiceManager.default().defaultServiceConfiguration = configuration
+        
+        let url = self.videoSelLocalUrl
+        let remoteName = "\(Global.generateFileName()).mp4"
+        
+        //HERE SET THE SCHOOL PACKAGE, same that is set to video folder
+        
+        let S3BucketName = "gamves/stpauls" //Modify here to get school short 
+        
+        let uploadRequest = AWSS3TransferManagerUploadRequest()!
+        uploadRequest.body = url!
+        uploadRequest.key = remoteName
+        uploadRequest.bucket = S3BucketName
+        uploadRequest.contentType = "video/mp4" //"image/jpeg"
+        uploadRequest.acl = .publicRead
+        
+        let transferManager = AWSS3TransferManager.default()
+        transferManager.upload(uploadRequest).continueWith { (task) -> Any? in
+            
+            if let error = task.error {
+                print("Upload failed with error: (\(error.localizedDescription))")
+            }
+            //if let exception = task.exception {
+            //    print("Upload failed with exception (\(exception))")
+            //}
+            
+            if task.result != nil {
+                
+                let url = AWSS3.default().configuration.endpoint.url
+                
+                if let publicURL = url?.appendingPathComponent(uploadRequest.bucket!).appendingPathComponent(uploadRequest.key!) {
+                
+                    completionHandler(publicURL)
+                    
+                    print("Uploaded to:\(publicURL)")
+                    
+                }
+                
+            }
+            return nil
+            
+        }
+        
     }
     
     func checErrors() -> Bool
@@ -904,14 +1003,7 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
             message += "Fanpage is empty"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.fanpageTextField)
             
-        } else if ((self.typeDownPicker.getTextField().text == "Youtube") && (self.youtubeUrlTextField.text?.isEmpty)!)
-        {
-            errors = true
-            message += "Youtube video is empty"
-            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.youtubeUrlTextField)
-            
-        }
-        else if (self.titleTextField.text?.characters.count)! < 8
+        } else if (self.titleTextField.text?.characters.count)! < 1
         {
             errors = true
             message += "The title of the video is empty"
@@ -926,10 +1018,5 @@ class NewVideoController: UIViewController, SearchProtocol, TakePicturesDelegate
         return errors
     }
 
-    
-    
-
 }
-
-
 

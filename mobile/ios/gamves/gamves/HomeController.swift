@@ -282,14 +282,29 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return newvideo
     }()
     
+    lazy var newFanpageController: NewFanpageController = {
+        let newvideo = NewFanpageController()
+        newvideo.homeController = self
+        return newvideo
+    }()
+    
     func addNewVideo()
     {        
+        newVideoController.isYoutubeHidden = true
         newVideoController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(newVideoController, animated: true)
-    }    
-
+    }
+    
+    func addNewFanpage()
+    {
+        newFanpageController.view.backgroundColor = UIColor.white
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(newFanpageController, animated: true)
+    }
+    
     lazy var groupNameViewController: GroupNameViewController = {
         let groupName = GroupNameViewController()
         groupName.homeController = self

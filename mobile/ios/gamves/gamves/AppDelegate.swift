@@ -24,6 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     var inBackground = Bool()
     
     var gamvesApplication:UIApplication?
+    
+    var online = Bool()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -39,93 +41,111 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         if Reachability.isConnectedToNetwork() == true
         {
+            
+            online = true
+            
             loadParse(application: application, launchOptions: launchOptions)
             print("Internet connection OK")
             
             reached = true
             
-        } else {
-            print("Internet connection FAILED")
-        }
-        
-         UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
-        
-         application.statusBarStyle = .lightContent
-        
-        // get rid of black bar underneath navbar
-        UINavigationBar.appearance().shadowImage = UIImage()
-        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        
-        if let user = PFUser.current()
-        {
-            window?.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))
-        } else
-        {
-            window?.rootViewController = UINavigationController(rootViewController: LoginController())
-        }
-        
-        print(PFUser.current()?.username)
-        
-        let statusBarBackgroundView = UIView()
-        statusBarBackgroundView.backgroundColor = UIColor.gamvesBlackColor
-        
-        window?.addSubview(statusBarBackgroundView)
-        window?.addConstraintsWithFormat("H:|[v0]|", views: statusBarBackgroundView)
-        window?.addConstraintsWithFormat("V:|[v0(20)]", views: statusBarBackgroundView)
-        
-        
-        if #available(iOS 10.0, *)
-        {
-            let center = UNUserNotificationCenter.current()
-            center.delegate = self
-            center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
+            
+            UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
+            
+            application.statusBarStyle = .lightContent
+            
+            // get rid of black bar underneath navbar
+            UINavigationBar.appearance().shadowImage = UIImage()
+            UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+            
+            if let user = PFUser.current()
+            {
+                window?.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))
+            } else
+            {
+                window?.rootViewController = UINavigationController(rootViewController: LoginController())
+            }
+            
+            print(PFUser.current()?.username)
+            
+            let statusBarBackgroundView = UIView()
+            statusBarBackgroundView.backgroundColor = UIColor.gamvesBlackColor
+            
+            window?.addSubview(statusBarBackgroundView)
+            window?.addConstraintsWithFormat("H:|[v0]|", views: statusBarBackgroundView)
+            window?.addConstraintsWithFormat("V:|[v0(20)]", views: statusBarBackgroundView)
+            
+            
+            if #available(iOS 10.0, *)
+            {
+                let center = UNUserNotificationCenter.current()
+                center.delegate = self
+                center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
+                    
+                    if error == nil {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    }
+                }
                 
-                if error == nil {
+            } else {
+                
+                if #available(iOS 7, *)
+                {
+                    //application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
+                    registerApplicationForPushNotifications(application: application)
+                } else {
+                    
+                    let notificationTypes: UIUserNotificationType = [UIUserNotificationType.alert, UIUserNotificationType.badge, UIUserNotificationType.sound]
+                    
+                    let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
+                    
+                    UIApplication.shared.registerUserNotificationSettings(notificationSettings)
                     UIApplication.shared.registerForRemoteNotifications()
                 }
             }
             
-        } else {
             
-            if #available(iOS 7, *)
-            {
-                //application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
-                registerApplicationForPushNotifications(application: application)
-            } else {
+            if PFUser.current() != nil {
                 
-                let notificationTypes: UIUserNotificationType = [UIUserNotificationType.alert, UIUserNotificationType.badge, UIUserNotificationType.sound]
+                Global.loaLevels()
                 
-                let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
-                
-                UIApplication.shared.registerUserNotificationSettings(notificationSettings)
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-        }
-        
-        
-        if PFUser.current() != nil {
-            
-            Global.loaLevels()
-            
-            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-                
-                Global.familyLoaded = true
-                
-                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
-                
-                    Global.chatFeedLoaded = true
+                Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                    
+                    Global.familyLoaded = true
+                    
+                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
+                        
+                        Global.chatFeedLoaded = true
+                        
+                    })
                     
                 })
                 
-            })
+                self.loadChatChannels()
+                
+                NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
+            }
             
-            self.loadChatChannels()
-
+        } else {
             
+            window?.rootViewController = UINavigationController(rootViewController: NoConnectionController())
+            
+            let title = "Internet Connection"
+            let message = "Your device is not connected to the Internet, please check your connection. The app is closing.. bye!"
+            
+            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+            
+            // add an action (button)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                
+                exit(0)
+                
+            }))
+            
+            // show the alert
+            self.window?.rootViewController?.present(alert, animated: true, completion: nil)
             
         }
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
         
         return true
         
@@ -246,7 +266,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.inBackground = true
         
-        Global.updateUserOnline(online: false)
+        if online {
+            Global.updateUserOnline(online: false)
+        }
         
     }
 
@@ -266,7 +288,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.inBackground = true
         
-        Global.updateUserOnline(online: false)
+        if online {
+            Global.updateUserOnline(online: false)
+        }
         
     }
 
@@ -278,14 +302,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.gamvesApplication = application
         
-        Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
+        if online {
+        
+            Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
 
-            print(badgeNumber)
-            self.gamvesApplication?.applicationIconBadgeNumber = badgeNumber
-        
-        })
-        
-        Global.updateUserOnline(online: true)
+                print(badgeNumber)
+                self.gamvesApplication?.applicationIconBadgeNumber = badgeNumber
+            
+            })
+            
+            Global.updateUserOnline(online: true)
+            
+        }
     
     }
 
@@ -295,7 +323,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.inBackground = true
         
-        Global.updateUserOnline(online: false)
+        if online {
+        
+            Global.updateUserOnline(online: false)
+        }
 
     }
     

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchCell: UITableViewCell {
+class SearchVideoCell: UITableViewCell {
     
     var checked = Bool()
     
