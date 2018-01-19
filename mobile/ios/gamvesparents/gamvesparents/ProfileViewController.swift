@@ -1311,6 +1311,8 @@ class ProfileViewController: UIViewController,
             let level = Global.levels[l]
             if level?.fullDesc == son_grade {
                 levelObj = (level?.levelObj)!
+                
+                PFPush.subscribeToChannel(inBackground: levelObj)
             }
         }
         
