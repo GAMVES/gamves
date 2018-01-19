@@ -21,11 +21,15 @@ class Setting: NSObject {
 enum SettingName: String
 {
     case Cancel = "Cancel & Dismiss Completely"
-    case Settings = "Settings"
-    case TermsPrivacy = "Terms & privacy policy"
-    case SendFeedback = "Send Feedback"
-    case Help = "Help"
-    case SwitchAccount = "Switch Account"
+    
+    case Notifications  = "Notifications"
+    case History        = "History"
+    case WatchLater     = "Watch Later"
+    case Likes          = "Likes"
+    case Settings       = "Settings"    
+    case Feedback   = "Send Feedback"
+    //case Help = "Help"
+    case SwitchAccount = "Log out"
 }
 
 class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -44,16 +48,29 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
     
     let settings: [Setting] =
     {
-        let settingsSetting = Setting(name: .Settings, imageName: "settings")
-        
+
+        let settingsSetting = Setting(name: .Settings, imageName: "settings")    
+        let notificationSetting = Setting(name: .Notifications, imageName: "notifications")  
+        let historySetting = Setting(name: .History, imageName: "history")  
+        let laterSetting = Setting(name: .WatchLater, imageName: "watch_later")  
+        let likeSetting = Setting(name: .Likes, imageName: "like")  
+        let feedbackSetting = Setting(name: .Feedback, imageName: "feedback")  
         let cancelSetting = Setting(name: .Cancel, imageName: "cancel")
         
-        return [settingsSetting,
+        return [ settingsSetting, 
+                notificationSetting,
+                historySetting,
+                laterSetting,
+                likeSetting,
+                feedbackSetting,                   
+                cancelSetting ]
+
+        /*return [settingsSetting,
                 Setting(name: .TermsPrivacy, imageName: "privacy"),
                 Setting(name: .SendFeedback, imageName: "feedback"),
                 Setting(name: .Help, imageName: "help"),
                 Setting(name: .SwitchAccount, imageName: "switch_account"), cancelSetting
-        ]
+        ]*/
     }()
     
     var homeController: HomeController?

@@ -483,22 +483,7 @@ class FanpagePage: UIViewController,
                 }
             }
         })
-    }
-
-    func getImageVideo(videothumburl: String, video:VideoGamves, completionHandler : (_ video:VideoGamves) -> Void)
-    {
-        
-        if let vurl = URL(string: videothumburl)
-        {
-            
-            if let data = try? Data(contentsOf: vurl)
-            {
-                video.image = UIImage(data: data)!
-                
-                completionHandler(video)
-            }
-        }
-    }
+    } 
 
 
      func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

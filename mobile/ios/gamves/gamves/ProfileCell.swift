@@ -11,22 +11,98 @@
 import UIKit
 import Parse
 import NVActivityIndicatorView
+import IGColorPicker
+import PulsingHalo
+import KenBurns
 
-class ProfileCell: BaseCell, UIScrollViewDelegate,
- UICollectionViewDataSource,
+public enum ProfileSaveType {
+    case profile
+    case color
+}
+
+class ProfileCell: BaseCell,
+    UICollectionViewDataSource,
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout {
-    
+    UICollectionViewDelegateFlowLayout, 
+    UIScrollViewDelegate,
+    ColorPickerViewDelegate
+{
+
+    var profileSaveType:ProfileSaveType!
+
     var metricsHome = [String:Int]()
 
     var userStatistics = [UserStatistics]()
+
+    var videosGamves  = [VideoGamves]()
+    let cellVideoCollectionId = "cellVideoCollectionId"
     
-    let registerViewContent: UIView = {
+    let profileView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.gamvesBackgoundColor
         return view
     }()
+    
+    // SON VIEW
+    
+    let registerRowView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false        
+        return view
+    }()
+
+    var backImageView: KenBurnsImageView = {
+        let imageView = KenBurnsImageView()
+        imageView.contentMode = .scaleAspectFill //.scaleFill
+        imageView.clipsToBounds = true     
+        //imageView.image = UIImage(named: "universe")
+        return imageView
+    }()
+    
+    let leftregisterRowView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        //view.backgroundColor = UIColor.white
+        return view
+    }()
+    
+    var sonProfileImageView: CustomImageView = {
+        let imageView = CustomImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
+    let rightregisterRowView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        //view.backgroundColor = UIColor.white
+        return view
+    }()
+    
+    let sonLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.textAlignment = .left
+        //label.backgroundColor = UIColor.green
+        return label
+    }()
+    
+
+    let bioLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray        
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textAlignment = .center        
+        return label
+    }()
+
+    // DATA
     
     let lineView: UIView = {
         let view = UIView()
@@ -38,143 +114,11 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
     let dataView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.white
+        //v.backgroundColor = UIColor.white
         return v
     }()
     
-    // SON VIEW
-    
-    let registerRowView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        //view.backgroundColor = UIColor.blue
-        return view
-    }()
-    
-    let leftregisterRowView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.white
-        return view
-    }()
-    
-    var sonProfileImageView: CustomImageView = {
-        let imageView = CustomImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.masksToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-
-    let rightregisterRowView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.white
-        return view
-    }()
-    
-    let sonLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.gray
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.textAlignment = .left
-        label.backgroundColor = UIColor.white
-        return label
-    }()   
-
-    lazy var familyPhotoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "family_photo")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoImageView)))
-        imageView.isUserInteractionEnabled = true     
-        imageView.tag = 3           
-        return imageView
-    }()
-
-
-    //--
-    // FAMILY VIEW
-
-    let familyRowView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        //view.backgroundColor = UIColor.blue
-        return view
-    }()
-
-    var familyLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        //label.backgroundColor = UIColor.white        
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = UIColor.gray
-        return label
-    }()
-
-    let photosContainerView: UIView = {
-        let view = UIView()
-        //view.backgroundColor = UIColor.white
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.masksToBounds = true
-        return view
-    }()
-    
-    let homeBackgroundView: UIView = {
-        let view = UIView()
-        //view.backgroundColor = UIColor.white
-        return view
-    }()
-    
-    lazy var registerPhotoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "register_photo")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleregisterPhotoImageView)))
-        imageView.isUserInteractionEnabled = true        
-        imageView.tag = 1
-        return imageView
-    }()   
-
-    var checkLabelRegister: UILabel = {
-        let label = UILabel()
-        return label
-    }()
-
-    lazy var spousePhotoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "spouse_photo")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSpousePhotoImageView)))        
-        imageView.isUserInteractionEnabled = true     
-        imageView.tag = 2           
-        return imageView
-    }()
-
-    var checkLabelSpouse: UILabel = {
-        let label = UILabel()
-        return label
-    }()
-
-    lazy var groupPhotoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "your_photo")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleGroupPhotoImageView)))        
-        imageView.isUserInteractionEnabled = true     
-        imageView.tag = 0           
-        return imageView
-    }()
-
-    var checkLabelGroup: UILabel = {
-        let label = UILabel()
-        return label
-    }()  
+    // DATA VIEW
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -194,6 +138,58 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
         return v
     }()
 
+
+    lazy var editProfileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor        
+        button.setTitle("Edit Profile", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(handleEditProfile), for: .touchUpInside)
+        button.layer.cornerRadius = 5 
+        return button
+    }()
+    
+    lazy var editFanpageButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor
+        button.setTitle("Edit Fanpage", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(handleEditFanpage), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+    
+    var saveDesc:String  = "Save Profile"
+    var colorDesc:String = "Choose Color"
+    
+    lazy var saveProfileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor
+        //button.setTitle(colorDesc, for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(handleSaveProfile), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+    
+    lazy var cancelProfileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gambesDarkColor
+        button.setTitle("Cancel", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.addTarget(self, action: #selector(handleCancelProfile), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+
     lazy var chatViewController: ChatViewController = {
         let launcher = ChatViewController()
         return launcher
@@ -203,47 +199,81 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
     
     var cellId = String()
     
-    var registerOnline = Bool()
+    var colorPickerView: ColorPickerView!
+    var colorPickerViewController:ColorPickerViewController!
 
-    var youRegisterChatId = Int()
-    var youSpouseChatId = Int()
-    var groupChatId = Int()
-   
+    var editProfile = Bool()
+    var editCreated = Bool()
+    var colorCreated = Bool()
+    
+    var editBackImageView:UIView!
+    var editAvatarImageView:UIView!
+    var editColorView:UIView!
+    var editBioView:UIView!
+    
+    var initialSetting = InitialSetting()
+    
+    var profilePF:PFObject!
     
     override func setupViews() {
         super.setupViews()
+
+        self.saveProfileButton.setTitle(saveDesc, for: .normal)
+        
+        self.getProfileVideos()
         
         let width = self.frame.width
-        let paddingRegister = (width - 80)/2
+        let paddingRegister = (width - 100)/2
+        
+        print(paddingRegister)
+        
         let metricsRegisterView = ["paddingRegister": paddingRegister]
         
-        print(metricsRegisterView)
-
-        self.addSubview(self.registerViewContent)
-        self.addConstraintsWithFormat("H:|[v0]|", views: self.registerViewContent)
+        self.addSubview(self.profileView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.profileView)
         
         self.addSubview(self.lineView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)
  
         self.addSubview(self.dataView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.dataView)
+
+        self.addSubview(self.footerView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)        
         
-        self.addConstraintsWithFormat("V:|[v0(250)][v1(2)][v2]|", views: 
-            self.registerViewContent, 
+        self.addConstraintsWithFormat("V:|[v0(220)][v1(1)][v2][v3(70)]|", views:
+            self.profileView, 
             self.lineView, 
-            self.dataView, 
-            metrics: metricsRegisterView)
+            self.dataView,
+            self.footerView)        
         
-        // SON VIEW
-
-        //registerViewContent.backgroundColor = UIColor.red       
+        // SON VIEW  
         
-        self.registerViewContent.addSubview(self.registerRowView)
-        self.registerViewContent.addConstraintsWithFormat("H:|[v0]|", views: self.registerRowView)
-        self.registerViewContent.addConstraintsWithFormat("V:|-10-[v0(paddingRegister)]|", views: self.registerRowView,
+        self.profileView.addSubview(self.backImageView)
+        self.profileView.addSubview(self.registerRowView)
+        self.profileView.addSubview(self.sonLabel)
+        self.profileView.addSubview(self.bioLabel)
+
+        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
+        self.profileView.addConstraintsWithFormat("V:|[v0(100)]|", views:
+            self.backImageView)        
+        
+        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.registerRowView)
+        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
+        self.profileView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.bioLabel)
+        self.profileView.addConstraintsWithFormat("V:|-50-[v0(100)]-5-[v1(20)][v2]|", views:
+            self.registerRowView,
+            self.sonLabel,
+            self.bioLabel,
             metrics: metricsRegisterView)
 
-        //registerViewContent.backgroundColor = UIColor.blue 
+        self.profileView.bringSubview(toFront: self.registerRowView)
+        
+        let userId = PFUser.current()?.objectId
+        
+        let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
+        self.sonLabel.text = name
+        self.sonLabel.textAlignment = NSTextAlignment.center
         
         self.registerRowView.addSubview(self.leftregisterRowView)
         self.registerRowView.addSubview(self.sonProfileImageView)
@@ -251,192 +281,429 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
         
         self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.leftregisterRowView)
         self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.sonProfileImageView)
-        self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.rightregisterRowView)    
+        self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.rightregisterRowView)            
         
-        
-        self.registerRowView.addConstraintsWithFormat("H:|[v0(paddingRegister)][v1(80)][v2(paddingRegister)]|", views: 
+        self.registerRowView.addConstraintsWithFormat("H:|[v0(paddingRegister)][v1(100)][v2(paddingRegister)]|", views: 
             self.leftregisterRowView, 
             self.sonProfileImageView, 
             self.rightregisterRowView, 
             metrics: metricsRegisterView)
+
+        self.footerView.addSubview(self.editProfileButton)
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.editProfileButton)
+        
+        self.footerView.addSubview(self.editFanpageButton)
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.editFanpageButton)
+        
+        let splitFooter = (width - 60)/2
+        
+        let metricsFooterView = ["sf": splitFooter]
+        
+        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.editProfileButton, self.editFanpageButton, metrics: metricsFooterView)
+        
+        self.footerView.addSubview(self.saveProfileButton)
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.saveProfileButton)
+        self.saveProfileButton.isHidden = true
+        
+        self.footerView.addSubview(self.cancelProfileButton)
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.cancelProfileButton)
+        self.saveProfileButton.isHidden = true
+        
+        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.saveProfileButton, self.cancelProfileButton, metrics: metricsFooterView)
+        
+        self.setSonProfileImageView()
+
+        self.dataView.addSubview(self.collectionView)
+        self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView) 
+        self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.collectionView) 
        
+        //self.bioLabel.text = "I like doing this and that with my information"
+
+        self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
+
+        self.collectionView.backgroundColor = UIColor.white
+        
+        self.profileSaveType = ProfileSaveType.profile
+        
+        self.loadProfileInfo()
+       
+    }
+    
+    func setSonProfileImageView() {
+        
         let userId = PFUser.current()?.objectId
-        print(userId)
         
         if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.avatar {
             self.sonProfileImageView.image = sonImage
-            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.white)
+            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
+            
+            self.sonProfileImageView.layer.shadowColor = UIColor.black.cgColor
+            self.sonProfileImageView.layer.shadowOpacity = 1
+            self.sonProfileImageView.layer.shadowOffset = CGSize.zero
+            self.sonProfileImageView.layer.shadowRadius = 10
         }
         
-        var metricsVerBudge = [String:Int]()
-
-        let topPadding = 40
-        let midPadding =  topPadding / 2
-        let smallPadding =  midPadding / 2
-        let photoSize:Int = (Int(width) / 4)
-        let padding = photoSize / 4      
-
-        self.metricsHome["topPadding"]      = topPadding
-        self.metricsHome["midPadding"]      = midPadding
-        self.metricsHome["smallPadding"]    = smallPadding
-        self.metricsHome["photoSize"]       = photoSize
-        self.metricsHome["padding"]         = padding
-
-        metricsVerBudge["verPadding"] = photoSize - 25   
-
-        self.registerViewContent.addSubview(self.sonLabel)
-        self.registerViewContent.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
-
-
-        self.registerViewContent.addSubview(self.photosContainerView)
-        self.registerViewContent.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
+    }
+    
+    func loadProfileInfo() {
         
-        self.registerViewContent.addConstraintsWithFormat("V:|-10-[v0(80)][v1(30)][v2(photoSize)]-30-|", 
-            views: 
-            self.registerRowView, 
-            self.sonLabel, 
-            self.photosContainerView, 
-            metrics:self.metricsHome)
+        let queryUser = PFQuery(className:"Profile")
         
+        queryUser.whereKey("userId", equalTo: PFUser.current()?.objectId)
         
-        let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
-        self.sonLabel.text = "Clemente"
-        self.sonLabel.textAlignment = NSTextAlignment.center
-
-        // FAMILY       
-
-        self.checkLabelRegister =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
-        self.checkLabelSpouse =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
-        self.checkLabelGroup =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)        
-  
-
-        self.photosContainerView.addSubview(self.registerPhotoImageView)
-        self.photosContainerView.addSubview(self.checkLabelRegister)
-
-        self.photosContainerView.addSubview(self.spousePhotoImageView)
-        self.photosContainerView.addSubview(self.checkLabelSpouse)
-
-        self.photosContainerView.addSubview(self.groupPhotoImageView)
-        self.photosContainerView.addSubview(self.checkLabelGroup)
-        
-        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.registerPhotoImageView)
-        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.spousePhotoImageView)
-        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.groupPhotoImageView)
-        
-        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelRegister, metrics: metricsVerBudge)    
-        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelSpouse, metrics: metricsVerBudge)
-        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelGroup, metrics: metricsVerBudge)
-        
-        self.photosContainerView.addConstraintsWithFormat(
-            "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-[v2(photoSize)]-padding-|", views:
-            self.registerPhotoImageView,
-            self.spousePhotoImageView,
-            self.groupPhotoImageView,
-            metrics: metricsHome)   
-
-
-        var metricsHorBudge = [String:Int]()
-
-        let paddingBudge = (padding + photoSize) - 25
-
-        metricsHorBudge["registerPadding"]      = paddingBudge 
-        metricsHorBudge["spousePadding"]   = (paddingBudge * 2) + 25
-        metricsHorBudge["groupPadding"]    = (paddingBudge * 3) + 50
-
-        self.photosContainerView.addConstraintsWithFormat("H:|-registerPadding-[v0(25)]", views: self.checkLabelRegister, metrics: metricsHorBudge)
-        self.photosContainerView.addConstraintsWithFormat("H:|-spousePadding-[v0(25)]", views: self.checkLabelSpouse, metrics: metricsHorBudge)
-        self.photosContainerView.addConstraintsWithFormat("H:|-groupPadding-[v0(25)]", views: self.checkLabelGroup, metrics: metricsHorBudge)
+        queryUser.getFirstObjectInBackground { (profile, error) in
+            
+            if error == nil {
                 
-        //NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
-        
-        //NotificationCenter.default.addObserver(self, selector: #selector(chatFeedLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
-        
-        self.activityIndicatorView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
-
-        
-        self.dataView.addSubview(self.collectionView)
-        self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)
-        self.dataView.addConstraintsWithFormat("V:|-20-[v0]-20-|", views: self.collectionView)
-
-        self.dataView.backgroundColor = UIColor.gamvesBackgoundColor
-
-        // DATA VIEW
-               
-       /*self.dataView.addSubview(self.familyLabel)        
-        self.dataView.addSubview(self.sonLabel)
-        self.dataView.addSubview(self.collectionView)
-        self.dataView.addSubview(self.footerView)
-        
-        self.dataView.addConstraintsWithFormat("H:|[v0]|", views: self.familyLabel)        
-        self.dataView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
-        self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)
-        self.dataView.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)
-        
-        
-        
-        self.dataView.addConstraintsWithFormat(
-            "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-midPadding-[v2(midPadding)][v3(300)][v4(30)]|", views:
-            self.familyLabel,
-            //self.photosContainerView,
-            self.sonLabel,
-            self.collectionView,
-            self.footerView,
-            metrics: metricsHome)
-
-        self.checkLabelRegister =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
-        self.checkLabelSpouse =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
-        self.checkLabelGroup =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)        */
-
+                if let prPF:PFObject = profile {
+                    
+                    self.profilePF = prPF
+                    
+                    if self.profilePF["pictureBackground"] != nil {
                 
+                        let backImage = self.profilePF["pictureBackground"] as! PFFile
+                        
+                        let colorArray:[CGFloat] = self.profilePF["backgroundColor"] as! [CGFloat]
+                        
+                        let bio = self.profilePF["bio"] as! String
+                        
+                        self.bioLabel.text = bio
+                        
+                        let backgroundColor = UIColor.rgb(colorArray[0], green: colorArray[1], blue: colorArray[2])
+                        
+                        self.initialSetting.backColor = backgroundColor
+                        self.profileView.backgroundColor = backgroundColor
+                        
+                        backImage.getDataInBackground { (imageData, error) in
+                            
+                            if error == nil {
+                                
+                                if let imageData = imageData
+                                {
+                                    let image = UIImage(data:imageData)
+                                    
+                                    self.newKenBurnsImageView(image: image!)
+                                    
+                                    self.initialSetting.backImage = image
+                                    
+                                    self.initialSetting.bio = self.bioLabel.text!
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func newKenBurnsImageView(image: UIImage) {
+        self.backImageView.setImage(image)
+        self.backImageView.zoomIntensity = 1.5
+        self.backImageView.setDuration(min: 5, max: 13)
+        self.backImageView.startAnimating()
+    }
+    
+    func handleEditProfile() {
+        
+        if !self.editCreated {
+        
+            DispatchQueue.main.async {
+                
+                self.editProfile = true
+                let w = self.frame.width
+                
+                //-- Bottom single button
+                
+                self.saveProfileButton.isHidden = false
+                self.editProfileButton.isHidden = true
+                self.editFanpageButton.isHidden = true
+                
+                //-- Background
+                
+                self.editBackImageView = UIView(frame: CGRect(x:30, y:30, width:50, height:50))
+                
+                var editBackImageButton = UIButton(type: UIButtonType.system)
+                editBackImageButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+                let imageBack = UIImage(named: "camera_black")
+                imageBack?.maskWithColor(color: UIColor.gamvesBackgoundColor)
+                editBackImageButton.setImage(imageBack, for: .normal)
+                editBackImageButton.isUserInteractionEnabled = true
+                editBackImageButton.addTarget(self, action: #selector(self.handleChangeBackgoundImage), for: .touchUpInside)
+                
+                let haloBack = PulsingHaloLayer()
+                haloBack.position.x = editBackImageButton.center.x
+                haloBack.position.y = editBackImageButton.center.y
+                haloBack.haloLayerNumber = 5
+                haloBack.backgroundColor = UIColor.gamvesBackgoundColor.cgColor
+                haloBack.radius = 40
+                haloBack.start()
+                
+                self.editBackImageView.layer.addSublayer(haloBack)
+                self.editBackImageView.addSubview(editBackImageButton)
+                self.profileView.addSubview(self.editBackImageView)
+                
+                //-- Avatar
+                
+                let halfWidth = w/2 - 25
+                
+                self.editAvatarImageView = UIView(frame: CGRect(x:halfWidth, y:25, width:50, height:50))
+                
+                var editAvatarButton = UIButton(type: UIButtonType.system)
+                editAvatarButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+                let imageAvatar = UIImage(named: "camera_black")
+                editAvatarButton.setImage(imageAvatar, for: .normal)
+                editAvatarButton.addTarget(self, action: #selector(self.handleChangeAvatarImage), for: .touchUpInside)
+                editAvatarButton.isUserInteractionEnabled = true
+                
+                let haloAvatar = PulsingHaloLayer()
+                haloAvatar.position.x = editAvatarButton.center.x
+                haloAvatar.position.y = editAvatarButton.center.y
+                haloAvatar.haloLayerNumber = 5
+                haloAvatar.backgroundColor = UIColor.gamvesBackgoundColor.cgColor
+                haloAvatar.radius = 40
+                haloAvatar.start()
+                
+                self.editAvatarImageView.layer.addSublayer(haloAvatar)
+                self.editAvatarImageView.addSubview(editAvatarButton)
+                self.registerRowView.addSubview(self.editAvatarImageView)
+                
+                //-- Color
+                
+                self.editColorView = UIView(frame: CGRect(x:30, y:60, width:50, height:50))
+                
+                var editColorButton = UIButton(type: UIButtonType.system)
+                editColorButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+                let imageColor = UIImage(named: "color")
+                imageColor?.maskWithColor(color: UIColor.lightGray)
+                editColorButton.setImage(imageColor, for: .normal)
+                editColorButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
+                editColorButton.isUserInteractionEnabled = true
+                
+                let haloColor = PulsingHaloLayer()
+                haloColor.position.x = editColorButton.center.x
+                haloColor.position.y = editColorButton.center.y
+                haloColor.haloLayerNumber = 5
+                haloColor.backgroundColor = UIColor.lightGray.cgColor
+                haloColor.radius = 40
+                haloColor.start()
+
+                self.editColorView.layer.addSublayer(haloColor)
+                self.editColorView.addSubview(editColorButton)
+                self.registerRowView.addSubview(self.editColorView)
+                
+                //-- Bio
+                
+                let bX = w - 70
+                
+                self.editBioView = UIView(frame: CGRect(x:bX, y:60, width:50, height:50))
+        
+                var editBioButton = UIButton(type: UIButtonType.system)
+                editBioButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
+                let imageBio = UIImage(named: "edit")
+                imageBio?.maskWithColor(color: UIColor.lightGray)
+                editBioButton.setImage(imageBio, for: .normal)
+                editBioButton.addTarget(self, action: #selector(self.handleChangeBio), for: .touchUpInside)
+                editBioButton.isUserInteractionEnabled = true
+                
+                let haloBio = PulsingHaloLayer()
+                haloBio.position.x = editBioButton.center.x
+                haloBio.position.y = editBioButton.center.y
+                haloBio.haloLayerNumber = 5
+                haloBio.backgroundColor = UIColor.lightGray.cgColor
+                haloBio.radius = 40
+                haloBio.start()
+                
+                self.editBioView.layer.addSublayer(haloBio)
+                self.editBioView.addSubview(editBioButton)
+                self.registerRowView.addSubview(self.editBioView)
+            
+                self.collectionView.reloadData()
+                
+                self.editCreated = true
+            }
+        }
+    }
+    
+    func handleSaveProfile() {
+        
+        //NOT WORKING
+
+        if self.profileSaveType == ProfileSaveType.profile {
+            
+            let backImage:UIImage = UIImage() // = self.backImageView
+
+            let backImagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage, 1.0)!)
+            self.profilePF["pictureBackground"] = backImagePF
+            self.profilePF["bio"] = self.bioLabel.text
+            
+            self.profilePF.saveInBackground(block: { (profile, error) in
+                
+                let userId = PFUser.current()?.objectId
+                
+                let firstName = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
+                
+                let sonImagePF = PFFile(name: "\(firstName)picture.png", data: UIImageJPEGRepresentation(self.sonProfileImageView.image!, 1.0)!)
+            
+                let imageLow = self.sonProfileImageView.image?.lowestQualityJPEGNSData as! Data
+                var smallImage = UIImage(data: imageLow)
+                
+                let sonUser:PFUser = PFUser.current()!
+                
+                sonUser["picture"] = backImagePF
+                
+                sonUser["pictureSmall"] = smallImage
+                
+                sonUser.saveInBackground(block: { (user, error) in
+                    
+                    
+                    
+                })
+            })
+            
+        } else if self.profileSaveType == ProfileSaveType.color {
+            
+            //Close color window change button to original label
+            
+            self.clearColorButton()
+            
+        }
+    }
+    
+    func handleCancelProfile() {
+        
+        self.profileView.backgroundColor = self.initialSetting.backColor
+        
+        if self.profileSaveType == ProfileSaveType.profile {
+            
+            self.newKenBurnsImageView(image: self.initialSetting.backImage)
+            self.sonProfileImageView.image = self.initialSetting.avatarImage
+            self.setSonProfileImageView()
+            
+            self.bioLabel.text = self.initialSetting.bio
          
-        self.cellId = "homeCellId"        
-        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
-        self.collectionView.register(ProfileCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
+            self.videosGamves = [VideoGamves]()
+            self.videosGamves = self.initialSetting.videos
+            
+            self.saveProfileButton.isHidden = true
+            self.editProfileButton.isHidden = false
+            self.editFanpageButton.isHidden = false
+            
+            self.editBackImageView.isHidden = true
+            self.editAvatarImageView.isHidden = true
+            self.editColorView.isHidden = true
+            self.editBioView.isHidden = true
+            
+        } else if self.profileSaveType == ProfileSaveType.color {
+         
+            self.clearColorButton()
+            
+        }
+    
+    }
+    
+    func clearColorButton() {
         
-        //self.activityIndicatorView?.startAnimating()
+        self.colorPickerViewController.isHidden = true
+        self.saveProfileButton.setTitle(self.saveDesc, for: .normal)
+        self.profileSaveType = ProfileSaveType.profile
         
-        self.checkLabelRegister.isHidden = true
-        self.checkLabelSpouse.isHidden = true
-        self.checkLabelGroup.isHidden = true
+    }
+    
+    func handleEditFanpage() {
         
+        //Call branch add code here
+        
+    }
+    
+    func handleChangeBackgoundImage(sender : UIButton) {
+        
+        //Media Controller Here
+        
+    }
+    
+    func handleChangeAvatarImage(sender : UIButton) {
+        
+        //Media Controller Here
+    }
 
-        let _notifications = UserStatistics()
-        _notifications.desc = "Notifications"
-        _notifications.icon = UIImage(named: "notifications")!
-        self.userStatistics.append(_notifications)
+    
+    func handleChangeColor(sender : UIButton) {
+        
+        if !self.colorCreated {
+    
+            let colorFrame = self.dataView.frame
+            
+            self.colorPickerViewController = ColorPickerViewController(frame: colorFrame)
+            colorPickerViewController.cornerRadius = 20
+            
+            colorPickerViewController.colorPickerView.delegate = self
+            
+            self.addSubview(colorPickerViewController)
+            
+            self.colorCreated = true
+            
+        }  else {
+            
+            self.colorPickerViewController.isHidden = false
+        
+        }
+        
+        self.saveProfileButton.setTitle(self.colorDesc, for: .normal)
+        
+        self.profileSaveType = ProfileSaveType.color
+        
+    }
 
-        let _history = UserStatistics()
-        _history.desc = "History"
-        _history.data = "12 videos"
-        _history.icon = UIImage(named: "history")!
-        self.userStatistics.append(_history)
-
-        let _watchLater = UserStatistics()
-        _watchLater.desc = "Watch later"
-        _watchLater.data = "2 videos"
-        _watchLater.icon = UIImage(named: "watch_later")!
-        self.userStatistics.append(_watchLater)
-
-        let _likedVideos = UserStatistics()
-        _likedVideos.desc = "Videos liked"
-        _likedVideos.data = "12 videos"
-        _likedVideos.icon = UIImage(named: "like_gray")!
-        self.userStatistics.append(_likedVideos)    
-
+    
+    func handleChangeBio(sender : UIButton) {
+        
+        var alertController = UIAlertController(title: "Slogan ", message: "Enter your slogan", preferredStyle: .alert)
+        
+        let confirmAction = UIAlertAction(title: "Enter", style: .default) { (_) in
+            
+            let bio = alertController.textFields?[0].text
+            
+            self.bioLabel.text = bio
+            
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in }
+    
+        alertController.addTextField { (textField) in
+            textField.placeholder = "New slogan here"
+        }
+        
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancelAction)
+        
+        
+        window?.rootViewController?.present(alertController, animated: true, completion: nil)
+    
+    }
+    
+    func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath) {
+ 
+        self.profileView.backgroundColor = colorPickerView.colors[indexPath.item]
+        
+        self.sonProfileImageView.borderColor = colorPickerView.colors[indexPath.item]
+        
+    }
+    
+    func colorPickerView(_ colorPickerView: ColorPickerView, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 11
+    }
+    
+    func colorPickerView(_ colorPickerView: ColorPickerView, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 8
+    }
+    
+    func colorPickerView(_ colorPickerView: ColorPickerView, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        if Global.familyLoaded {
-            self.familyLoaded()
-        }
-        
-        if Global.chatFeedLoaded {
-            self.chatFeedLoaded()
-        }
-        
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -447,250 +714,278 @@ class ProfileCell: BaseCell, UIScrollViewDelegate,
         
     }
 
-    func chatFeedLoaded() {
+    func getProfileVideos()
+    {
         
-        let sonRegisterChatId:Int = Global.gamvesFamily.sonRegisterChatId
-        if ChatFeedMethods.chatFeeds[sonRegisterChatId]! != nil
-        {
-            let registerBadge = ChatFeedMethods.chatFeeds[sonRegisterChatId]?.badgeNumber
+        self.activityIndicatorView?.startAnimating()
+        
+        let queryvideos = PFQuery(className:"Videos")      
+
+        if let userId = PFUser.current()?.objectId {
+
+            print(userId)
             
-            if registerBadge! > 0
+            queryvideos.whereKey("posterId", equalTo: userId)    
+        }        
+
+        queryvideos.findObjectsInBackground(block: { (videoObjects, error) in
+            
+            if error != nil
             {
-                self.checkLabelRegister.isHidden = false
+                print("error")
                 
-                let sob = "\(registerBadge!)"
+            } else {
                 
-                self.checkLabelRegister.text = sob
+                let countVideosLoaded = Int()
+                
+                var countVideos = videoObjects?.count
+                var count = 0
+                
+                print(countVideos)
+                
+                if countVideos! > 0
+                {
+                    if let videoArray = videoObjects
+                    {
+                        for qvideoinfo in videoArray
+                        {
+                            
+                            let video = VideoGamves()
+                            
+                            var videothum = qvideoinfo["thumbnail"] as! PFFile
+                            
+                            video.title                     = qvideoinfo["title"] as! String
+                            video.description               = qvideoinfo["description"] as! String
+                            video.thumbnail                 = videothum
+                            video.categoryName              = qvideoinfo["categoryName"] as! String
+                            video.videoId                   = qvideoinfo["videoId"] as! Int
+                            video.s3_source                 = qvideoinfo["s3_source"] as! String
+                            video.ytb_thumbnail_source      = qvideoinfo["ytb_thumbnail_source"] as! String
+                            video.ytb_videoId               = qvideoinfo["ytb_videoId"] as! String
+                            
+                            let dateStr = qvideoinfo["ytb_upload_date"] as! String
+                            let dateDouble = Double(dateStr)
+                            let date = NSDate(timeIntervalSince1970: dateDouble!)
+                            
+                            video.ytb_upload_date           = date as Date
+                            video.ytb_view_count            = qvideoinfo["ytb_view_count"] as! Int
+                            video.ytb_tags                  = qvideoinfo["ytb_tags"] as! [String]
+                            
+                            let durStr = qvideoinfo["ytb_upload_date"] as! String
+                            let durDouble = Double(durStr)
+                            video.ytb_duration              = durDouble!
+                            
+                            video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]
+                            video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
+                            video.order                     = qvideoinfo["order"] as! Int
+                            video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
+                            
+                            video.posterId                  = qvideoinfo["posterId"] as! String
+                            
+                            print(video.posterId)                            
+                                                        
+                            video.posterName                = qvideoinfo["poster_name"] as! String
+                            
+                            video.published                 = qvideoinfo.createdAt! as Date
+                            
+                            video.videoObj = qvideoinfo
+                            
+                            video.checked                   = qvideoinfo["public"] as! Bool
+                            
+                            videothum.getDataInBackground(block: { (data, error) in
+                                
+                                if error == nil{
+                                    
+                                    video.image = UIImage(data: data!)!
+                                    
+                                    self.videosGamves.append(video)
+                                    
+                                    print("***********")
+                                    print("countVideos: \(countVideos!)")
+                                    print("countVideosLoaded: \(countVideosLoaded)")
+                                    
+                                    if ( (countVideos!-1) == count)
+                                    {
+                                        self.initialSetting.videos = self.videosGamves
+                                        
+                                        self.activityIndicatorView?.stopAnimating()
+                                        self.collectionView.reloadData()
+                                    }
+                                    count = count + 1
+                                }
+                            })
+                        }
+                    }
+                }
             }
-            
-        }
-        
-        let spouseRegisterChatId:Int = Global.gamvesFamily.sonSpouseChatId
-        if ChatFeedMethods.chatFeeds[spouseRegisterChatId]! != nil
-        {
-            let spouseBadge = ChatFeedMethods.chatFeeds[spouseRegisterChatId]?.badgeNumber
-            
-            if spouseBadge! > 0
-            {
-                self.checkLabelSpouse.isHidden = false
-                
-                let spb = "\(spouseBadge!)"
-               
-                self.checkLabelSpouse.text = spb
-            }
-        }
-        
-        let groupChatId:Int = Global.gamvesFamily.familyChatId
-        if ChatFeedMethods.chatFeeds[groupChatId]! != nil
-        {
-            let groupBadge = ChatFeedMethods.chatFeeds[groupChatId]?.badgeNumber       
-            
-            if groupBadge! > 0
-            {
-                self.checkLabelGroup.isHidden = false
-                
-                let grb = "\(groupBadge!)"
-                
-                self.checkLabelGroup.text = grb
-            }
-            
-        }
-        
-        self.familyLoaded()
-    }
-    
-    func familyLoaded()
-    {
-        self.familyLabel.text = "Clemente"// Global.gamvesFamily.familyName
-
-        let registerId = Global.gamvesFamily.registerUser.userId
-        if Global.userDictionary[registerId] != nil
-        {
-            self.sonLabel.text = Global.userDictionary[registerId]?.firstName
-            self.registerPhotoImageView.image = Global.userDictionary[registerId]?.avatar
-            Global.setRoundedImage(image: self.registerPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
-        }
-        
-        let spouseId = Global.gamvesFamily.spouseUser.userId
-        if Global.userDictionary[spouseId] != nil
-        {
-            self.spousePhotoImageView.image = Global.userDictionary[spouseId]?.avatar
-            Global.setRoundedImage(image: self.spousePhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
-        }
-        
-        
-        self.groupPhotoImageView.image = Global.gamvesFamily.familyImage
-        Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.gamvesColor)
-        
-        self.activityIndicatorView?.stopAnimating()
-        
-        //self.initializeOnlineSubcritpion()
-        
-    }
-
-    
-    func generateGroupImage() -> UIImage
-    {
-        let LeftImage = self.registerPhotoImageView.image // 355 X 200
-        let RightImage = self.spousePhotoImageView.image  // 355 X 60
-        
-        let size = CGSize(width: LeftImage!.size.width, height: LeftImage!.size.height)
-        
-        
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        
-        LeftImage?.draw(in: CGRect(x: 0, y: 0, width:size.width, height: size.height))
-        RightImage?.draw(in: CGRect(x: size.width/2, y: 0, width:size.width, height: size.height))
-        
-        var newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        
-        return newImage
-    }
-
-    func handleregisterPhotoImageView(sender: UITapGestureRecognizer)
-    {
-        
-        var sonRegisterChatId:Int = Global.gamvesFamily.sonRegisterChatId
-    
-        if ChatFeedMethods.chatFeeds[sonRegisterChatId]! != nil
-        {
-            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[sonRegisterChatId]!
-            
-            var users = [GamvesParseUser]()
-            users.append(Global.gamvesFamily.registerUser)
-            users.append(Global.gamvesFamily.youUser)
-
-            self.chatViewController.chatId = sonRegisterChatId
-            self.chatViewController.gamvesUsers = users
-            self.chatViewController.room = chatfeed.room!
-            self.chatViewController.view.backgroundColor = UIColor.white
-           
-            //navigationController?.pushViewController(self.chatViewController, animated: true)
-    
-        }
-        
-    }
-
-    func handleSpousePhotoImageView(sender: UITapGestureRecognizer)
-    {
-        
-        var sonSpouseChatId:Int = Global.gamvesFamily.sonSpouseChatId
-        
-        if ChatFeedMethods.chatFeeds[sonSpouseChatId]! != nil
-        {
-            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[sonSpouseChatId]!
-            
-            var users = [GamvesParseUser]()
-            users.append(Global.gamvesFamily.spouseUser)
-            users.append(Global.gamvesFamily.youUser)
-            
-            self.chatViewController.chatId = sonSpouseChatId
-            self.chatViewController.gamvesUsers = users
-            self.chatViewController.room = chatfeed.room!
-            //self.chatViewController.isStandAlone = true
-            self.chatViewController.view.backgroundColor = UIColor.white
-            
-            //navigationController?.pushViewController(self.chatViewController, animated: true)
-            
-        }
-        
-    }
-
-    func handleGroupPhotoImageView(sender: UITapGestureRecognizer)
-    {
-        var familyChatId:Int = Global.gamvesFamily.familyChatId
-        
-        if ChatFeedMethods.chatFeeds[familyChatId]! != nil
-        {
-            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[familyChatId]!
-            
-            var users = [GamvesParseUser]()
-            users.append(Global.gamvesFamily.registerUser)
-            users.append(Global.gamvesFamily.spouseUser)
-            users.append(Global.gamvesFamily.youUser)
-            
-            self.chatViewController.chatId = familyChatId
-            self.chatViewController.gamvesUsers = users
-            self.chatViewController.room = chatfeed.room!
-            //self.chatViewController.isStandAlone = true
-            self.chatViewController.view.backgroundColor = UIColor.white
-            
-            //navigationController?.pushViewController(self.chatViewController, animated: true)
-            
-        }
-
-    }
-
-   
-    ////collectionView
+        })
+    } 
 
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return userStatistics.count
+        
+        var count = 0
+        count = self.videosGamves.count      
+        return count
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+             
+        let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ProfileCollectionViewCell
+        cellVideo.thumbnailImageView.image = videosGamves[indexPath.row].image
         
-        let id = indexPath.row
+        let posterId = videosGamves[indexPath.row].posterId
         
-        var stats = self.userStatistics[id]
+        if posterId == Global.gamves_official {
+            
+            cellVideo.userProfileImageView.image = UIImage(named:"gamves_icons_white")
+            
+        } else if let imagePoster = Global.userDictionary[posterId] {
+            
+            cellVideo.userProfileImageView.image = imagePoster.avatar
+        }
+        
+        if self.editProfile {
+        
+            if videosGamves[indexPath.row].checked {
+                
+                cellVideo.checkView.isHidden = false
+            
+            } else {
+                
+                cellVideo.checkView.isHidden = true
+            }
+            
+        } else {
+            
+            cellVideo.checkView.isHidden = true
+        }
+        
+        cellVideo.videoName.text = videosGamves[indexPath.row].title
+        
+        let published = String(describing: videosGamves[indexPath.row].published)
+        
+        let shortDate = published.components(separatedBy: " at ")
+        
+        cellVideo.videoDatePublish.text = shortDate[0] 
+        
+        return cellVideo
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout:
+        UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        var size = CGSize()      
+       
+        let height = (self.frame.width - 16 - 16) * 9 / 16
+           
+        size = CGSize(width: self.frame.width, height: height + 16 + 88)
         
         
-        cell.descLabel.text = stats.desc
-        cell.dataLabel.text = stats.data        
+        return size //CGSize(width: view.frame.width, height: height + 16 + 88)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        
+        var spacing = CGFloat()        
+        spacing = 0       
+        return spacing
+        
+    }
+    
    
-        cell.iconImageView.image = stats.icon
-        
-        if id > 0
-        {
-            cell.iconImageView.alpha = 0.4
-        }
-        
-        return cell
-    }    
-    
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let userStatistic = userStatistics[indexPath.row]
-
-
-        /*if let description = userStatistic.description {
-            
-            let size = CGSize(width:250, height:1000)
-            
-            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
-            
-            return CGSize(width:self.frame.width, height:estimatedFrame.height + 20)
-        }*/
-        
-        return CGSize(width:self.collectionView.frame.width, height:50)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(8, 0, 0, 0)
-    }
-    
-    
-    func changeSingleUserStatus(onlineMessage:PFObject)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        let isOnline = onlineMessage["isOnline"] as! Bool
         
-        if isOnline
-        {
-            self.registerOnline = true
-        } else
-        {
-            self.registerOnline = false
+        if !self.editProfile {
+            
+            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
+
+            let videoLauncher = VideoLauncher()
+            
+            let video = videosGamves[indexPath.row]
+        
+            videoLauncher.showVideoPlayer(videoGamves: video)
+            
+        } else {
+            
+            
+            let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell
+            
+            if videosGamves[indexPath.row].checked {
+            
+                videosGamves[indexPath.row].checked = false
+                
+            } else {
+                
+                videosGamves[indexPath.row].checked = true
+            }
+            
+            self.collectionView.reloadData()
+            
         }
+    }
+}
+
+class InitialSetting {
+    var backColor:UIColor!
+    var backImage:UIImage!
+    var avatarImage:UIImage!
+    var bio = String()
+    var videos = [VideoGamves]()
+}
+
+
+class ColorPickerViewController: UIView, ColorPickerViewDelegateFlowLayout {
+    
+    let backgroundView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.gamvesBackgoundColor
+        return view
+    }()
+    
+    let colorPickerView: ColorPickerView = {
+        let view = ColorPickerView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
-        self.collectionView.reloadData()
+        self.backgroundColor = .white
+       
+        // Setup colorPickerView
+        //colorPickerView.delegate = self
+        colorPickerView.layoutDelegate = self
+        colorPickerView.style = .circle
+        colorPickerView.selectionStyle = .check
+        colorPickerView.isSelectedColorTappable = false
+        colorPickerView.preselectedIndex = colorPickerView.colors.indices.first
+        
+        self.addSubview(self.backgroundView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.backgroundView)
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.backgroundView)
+        
+        self.backgroundView.addSubview(self.colorPickerView)
+        self.backgroundView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.colorPickerView)
+        self.backgroundView.addConstraintsWithFormat("V:|[v0]|", views: self.colorPickerView)
+
         
     }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    
     
 }
 

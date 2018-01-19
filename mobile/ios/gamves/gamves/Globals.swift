@@ -1150,12 +1150,9 @@ class Global: NSObject
                     })
                     
                 }
-                
             }
         }
-        
     }
-
 }
 
 

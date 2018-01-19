@@ -89,20 +89,6 @@ class GamvesGender
 
 class VideoGamves
 {
-    /*var video_category = String()
-    var video_title = String()    
-    var video_fromName = String()
-    var description = String()    
-    var thum_image = UIImage()    
-    var thumbnail:PFFile?
-    var video_url = String()    
-    var fanpageId = Int()    
-    var videoId = String()    
-    var videoobj:PFObject?    
-    var videoType = Int()
-    var youtubeId = String()    
-    var image = UIImage()*/
-
     var title = String()
     var description = String()
     var videoId = Int()
@@ -125,6 +111,7 @@ class VideoGamves
     var posterName = String()
     var posterImage = UIImage()
     var published = Date()
+    var checked = Bool()
 
 }
 
