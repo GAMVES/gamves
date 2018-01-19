@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Parse
 
+
 class ChatFeed
 {
     // Insert code here to add functionality to your managed object subclass
