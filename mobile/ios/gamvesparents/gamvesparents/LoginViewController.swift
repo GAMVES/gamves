@@ -14,8 +14,11 @@ import NVActivityIndicatorView
 
 class LoginViewController: UIViewController
 {
-
+    var tabBarViewController:TabBarViewController?
+    
     var okLogin = Bool()
+    
+    var isRegistered = Bool()
 
     var activityIndicatorView:NVActivityIndicatorView?
     
@@ -32,7 +35,7 @@ class LoginViewController: UIViewController
         return label
     }()
     
-    let loginBackgroundView: UIView = {
+    let backView: UIView = {
         let view = UIView()
         //view.backgroundColor = UIColor.gamvesColor
         view.backgroundColor = UIColor.white
@@ -40,7 +43,7 @@ class LoginViewController: UIViewController
         return view
     }()
     
-    let inputsContainerView: UIView = {
+    let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -123,7 +126,6 @@ class LoginViewController: UIViewController
     }()
 
     var userTypeDownPicker: DownPicker!
-  
     let userTypeTextField: UITextField = {
         let tf = UITextField()        
         tf.translatesAutoresizingMaskIntoConstraints = false        
@@ -145,9 +147,9 @@ class LoginViewController: UIViewController
 
     var isMessage = Bool()
     var message = String()
-    var inputsContainerViewHeight = CGFloat()
+    var containerViewHeight = CGFloat()
     
-    var inputsContainerViewHeightAnchor: NSLayoutConstraint?
+    var containerViewHeightAnchor: NSLayoutConstraint?
     var nameTextFieldHeightAnchor: NSLayoutConstraint?
     var emailTextFieldHeightAnchor: NSLayoutConstraint?
     var passwordTextFieldHeightAnchor: NSLayoutConstraint?
@@ -165,131 +167,126 @@ class LoginViewController: UIViewController
     let expHeight:CGFloat   = 50
     let scHeight:CGFloat    = 36
     let icHeight:CGFloat    = 160
+    let icHeightLogin:CGFloat    = 160
     let cbHeight:CGFloat    = 70
     let lrbHeight:CGFloat   = 60
+    
+    var metricsDict:[String:Any]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor.gamvesColor
         
-        self.view.addSubview(self.loginBackgroundView)
+        self.view.addSubview(self.backView)
         
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.loginBackgroundView)
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.loginBackgroundView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.backView)
+        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.backView)
         
-        self.loginBackgroundView.backgroundColor = UIColor.gamvesColor
+        self.backView.backgroundColor = UIColor.gamvesColor
         
-        //let checkFrame = CGRect(x: 0, y: 0, width: 0, height: cbHeight)
-        //checkBoxView = CheckBoxView(frame: checkFrame)
-        //checkBoxView.backgroundColor = UIColor.blue
+        self.backView.addSubview(explainLabel)
+        self.backView.addSubview(loginRegisterSegmentedControl)
+        self.backView.addSubview(containerView)
+        self.backView.addSubview(registerLabel)
+        self.backView.addSubview(loginRegisterButton)
+        self.backView.addSubview(bottomView)
+        
+        containerView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        containerView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: -24).isActive = true
+        
+        containerViewHeightAnchor = containerView.heightAnchor.constraint(equalToConstant: icHeight)
+        containerViewHeightAnchor?.isActive = true
+        
+        self.metricsDict = [String:Any]()
+        
+        self.metricsDict["mTop" ] = mTop
+        self.metricsDict["expHeight" ] = expHeight
+        self.metricsDict["scHeight" ] = scHeight
+        self.metricsDict["icHeight" ] = icHeight
+        self.metricsDict["lrbHeight" ] = lrbHeight
 
-        self.loginBackgroundView.addSubview(explainLabel)
-        self.loginBackgroundView.addSubview(loginRegisterSegmentedControl)
-        self.loginBackgroundView.addSubview(inputsContainerView)
-        self.loginBackgroundView.addSubview(registerLabel)
-        //self.loginBackgroundView.addSubview(checkBoxView)
-        self.loginBackgroundView.addSubview(loginRegisterButton)
-        self.loginBackgroundView.addSubview(bottomView)
-
-
+        backView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.explainLabel)
+        backView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.loginRegisterSegmentedControl)
         
-        inputsContainerView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        inputsContainerView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: -24).isActive = true
+        backView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.loginRegisterButton)
+        backView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)
         
-        inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: icHeight)
-        inputsContainerViewHeightAnchor?.isActive = true
-        
-        //inputsContainerView.backgroundColor = UIColor.blue
-        
-        let metricsDict = [
-            "mTop"      :  mTop,
-            "expHeight" : expHeight,
-            "scHeight"  : scHeight,
-            "icHeight"  : icHeight,
-            //"cbHeight"  : cbHeight,
-            "lrbHeight" : lrbHeight ]
-
-        loginBackgroundView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.explainLabel)
-        loginBackgroundView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.loginRegisterSegmentedControl)
-        loginBackgroundView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.loginRegisterButton)
-        loginBackgroundView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)
-        
-        self.loginBackgroundView.addConstraintsWithFormat(
+        self.backView.addConstraintsWithFormat(
             "V:|-mTop-[v0(expHeight)]-10-[v1(scHeight)]-10-[v2(icHeight)]-10-[v3(lrbHeight)][v4]|", 
             views: self.explainLabel, 
             self.loginRegisterSegmentedControl, 
-            self.inputsContainerView, 
-            //self.checkBoxView, 
+            self.containerView,
             self.loginRegisterButton, 
             self.bottomView,
             metrics: metricsDict)
         
-        inputsContainerView.addSubview(nameTextField)
-        inputsContainerView.addSubview(nameSeparatorView)
-        inputsContainerView.addSubview(emailTextField)
-        inputsContainerView.addSubview(emailSeparatorView)
-        inputsContainerView.addSubview(passwordTextField)
-        inputsContainerView.addSubview(userTypeSeparatorView)
-        inputsContainerView.addSubview(userTypeTextField)  
-       
+        containerView.addSubview(nameTextField)
+        containerView.addSubview(nameSeparatorView)
+        containerView.addSubview(emailTextField)
+        containerView.addSubview(emailSeparatorView)
+        containerView.addSubview(passwordTextField)
+        containerView.addSubview(userTypeSeparatorView)
+        containerView.addSubview(userTypeTextField)
         
         //Name
-        nameTextField.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive = true
-        nameTextField.topAnchor.constraint(equalTo: inputsContainerView.topAnchor).isActive = true        
-        nameTextField.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
-        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+        nameTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 12).isActive = true
+        nameTextField.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+        nameTextField.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
         nameTextFieldHeightAnchor?.isActive = true
         
         //Name Separator
-        nameSeparatorView.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor).isActive = true
+        nameSeparatorView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
         nameSeparatorView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor).isActive = true
-        nameSeparatorView.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
+        nameSeparatorView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
         nameSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
         //Email
-        emailTextField.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive = true
+        emailTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 12).isActive = true
         emailTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor).isActive = true
-        emailTextField.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
-        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+        emailTextField.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
         emailTextFieldHeightAnchor?.isActive = true
         
         //Email Separator
-        emailSeparatorView.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor).isActive = true
+        emailSeparatorView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
         emailSeparatorView.topAnchor.constraint(equalTo: emailTextField.bottomAnchor).isActive = true
-        emailSeparatorView.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
+        emailSeparatorView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
         emailSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
         //Password
-        passwordTextField.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive = true
+        passwordTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 12).isActive = true
         passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor).isActive = true
-        passwordTextField.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
-        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+        passwordTextField.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
         passwordTextFieldHeightAnchor?.isActive = true  
 
         //need x, y, width, height constraints
-        userTypeSeparatorView.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor).isActive = true
+        userTypeSeparatorView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
         userTypeSeparatorView.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor).isActive = true
-        userTypeSeparatorView.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
+        userTypeSeparatorView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
         userTypeSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
       
         //need x, y, width, height constraints
-        userTypeTextField.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive = true
+        userTypeTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 12).isActive = true
         userTypeTextField.topAnchor.constraint(equalTo: userTypeSeparatorView.bottomAnchor).isActive = true        
-        userTypeTextField.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
-        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+        userTypeTextField.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
         userTypeTextFieldHeightAnchor?.isActive = true
   
         let parents: NSMutableArray = ["Father", "Mother"]
         self.userTypeDownPicker = DownPicker(textField: userTypeTextField, withData:parents as! [Any])
-        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/4)
+        
+        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/4)
+        
         userTypeDownPicker.setPlaceholder("Tap to choose relationship...")          
         
         //Register Message
-        registerLabel.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 0).isActive = true
-        registerLabel.topAnchor.constraint(equalTo: inputsContainerView.topAnchor).isActive = true
-        registerLabel.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
-        registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor)
+        registerLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0).isActive = true
+        registerLabel.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
+        registerLabel.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: containerView.heightAnchor)
         registerLabel.backgroundColor = UIColor.gambesDarkColor
         registerLabel.frame.size.width = registerLabel.intrinsicContentSize.width - 40
         registerLabel.textAlignment = .center
@@ -307,6 +304,11 @@ class LoginViewController: UIViewController
         //    self.firstTFBecomeFirstResponder(view: self.view)
         //}
         
+        if self.isRegistered {
+            self.loginRegisterSegmentedControl.selectedSegmentIndex = 0
+            self.handleLoginRegisterChange()
+        }
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -314,16 +316,16 @@ class LoginViewController: UIViewController
         // Dispose of any resources that can be recreated.
     }
     
-    func keyBoardWillShow(notification: NSNotification) {
+    @objc func keyBoardWillShow(notification: NSNotification) {
         //logoImageView.isHidden = true
     }
     
     
-    func keyBoardWillHide(notification: NSNotification) {
+    @objc func keyBoardWillHide(notification: NSNotification) {
         //logoImageView.isHidden = false
     }
     
-    func handleLoginRegisterChange()
+    @objc func handleLoginRegisterChange()
     {
         
         if Reachability.isConnectedToNetwork() == true
@@ -337,57 +339,70 @@ class LoginViewController: UIViewController
                 if (loginRegisterSegmentedControl.selectedSegmentIndex == 0)
                 {
                     
-                    inputsContainerViewHeight = (inputsContainerViewHeightAnchor?.constant)!
-                    
-                    print(inputsContainerViewHeight)
-                    
-                    inputsContainerViewHeightAnchor?.constant = 80
-                    
-                    self.hideName()
+                   
+                    self.hideNameAndRelationship()
                     
                     emailTextFieldHeightAnchor?.isActive = false
-                    emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+                    emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
                     emailTextFieldHeightAnchor?.isActive = true
                     emailTextField.isHidden = false
                     
                     passwordTextFieldHeightAnchor?.isActive = false
-                    passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+                    passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
                     passwordTextFieldHeightAnchor?.isActive = true
                     passwordTextField.isHidden = false
                     
+                    // Fucking self.containerView is not changing height
+                    
                     //userTypeTextField.isHidden = true
-
+                    
+                    /*containerViewHeight = (containerViewHeightAnchor?.constant)!
+                    print(containerViewHeight)
+                    
+                    containerViewHeightAnchor?.isActive = false
+                    containerViewHeightAnchor?.constant = containerViewHeight / 2
+                    containerViewHeightAnchor?.isActive = true
+                    
+                    self.containerView.layoutIfNeeded()
+                    self.containerView.layoutSubviews()
+                    
+                    containerViewHeight = (containerViewHeightAnchor?.constant)!
+                    print(containerViewHeight)*/
+                    
+                    let rect = CGRect(x: self.containerView.frame.minX, y: self.containerView.frame.minY, width: self.containerView.frame.width, height: 80)
+                    
+                    self.containerView.frame = rect
                     
                 } else if (loginRegisterSegmentedControl.selectedSegmentIndex == 1)
                 {
-                    inputsContainerViewHeightAnchor?.constant = inputsContainerViewHeight
+                    containerViewHeightAnchor?.constant = containerViewHeight
                     
                     nameTextFieldHeightAnchor?.isActive = false
-                    nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+                    nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
                     nameTextFieldHeightAnchor?.isActive = true
                     nameTextField.isHidden = false
                     
                     emailTextFieldHeightAnchor?.isActive = false
-                    emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+                    emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
                     emailTextFieldHeightAnchor?.isActive = true
                     emailTextField.isHidden = false
                     
                     passwordTextFieldHeightAnchor?.isActive = false
-                    passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/4)
+                    passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
                     passwordTextFieldHeightAnchor?.isActive = true
                     passwordTextField.isHidden = false
                     
                 }
                 
                 registerLabelHeightAnchor?.isActive = false
-                registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
+                registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
                 registerLabelHeightAnchor?.isActive = true
                 registerLabel.isHidden = true
                 
             } else
             {
                 
-                self.hideName()
+                self.hideNameAndRelationship()
                 self.hideShowMessage(bol:true)
                 self.isMessage = false
                 
@@ -403,7 +418,7 @@ class LoginViewController: UIViewController
         }
     }
     
-    func handleLoginRegister()
+    @objc func handleLoginRegister()
     {
         if !okLogin
         {
@@ -420,7 +435,7 @@ class LoginViewController: UIViewController
             self.loginRegisterSegmentedControl.selectedSegmentIndex = 0
             self.handleLoginRegisterChange()
             
-            self.okLogin=false
+            self.okLogin = false
             
         }
     }
@@ -590,18 +605,114 @@ class LoginViewController: UIViewController
                 self.isMessage=true
                 self.handleLoginRegisterChange()
                 
-            }
-            else {
+            } else {
                 
                 let emailVerified = user?["emailVerified"]
                 
-                if emailVerified as! Bool == true
-                {
-                    self.activityIndicatorView?.stopAnimating()   
+                if emailVerified as! Bool == true {
                     
                     UserDefaults.standard.setIsLoggedIn(value: true)
                     
-                    self.dismiss(animated: true, completion: nil)
+                    if self.isRegistered {                    
+                    
+                        Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                            
+                            UserDefaults.standard.setIsLoggedIn(value: true)                            
+                            UserDefaults.standard.setIsRegistered(value: true)
+                            
+                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                            
+                            //FAMILY
+                            
+                            Global.defaults.set(true, forKey: "profile_completed")
+                            Global.defaults.set(true, forKey: "family_exist")
+                            Global.defaults.set(true, forKey: "son_exist")
+                            
+                            let your_family_name = Global.gamvesFamily.familyName
+                            Global.defaults.set(your_family_name, forKey: "your_family_name")
+                            
+                            //YOU
+
+                            let email = Global.gamvesFamily.youUser.email
+                            Global.defaults.set(email, forKey: "your_email")
+                            
+                            let password = Global.gamvesFamily.youUser.email
+                            Global.defaults.set(password, forKey: "your_password")
+                            
+                            let your_username = Global.gamvesFamily.youUser.userName
+                            Global.defaults.set(your_username, forKey: "your_username")
+                            
+                            let youImage:UIImage = Global.gamvesFamily.youUser.avatar
+                            
+                            Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore:                  youImage)
+                            
+                            let youImageLow = youImage.lowestQualityJPEGNSData as Data
+                            var youSmallImage = UIImage(data: youImageLow)
+                            
+                            Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youSmallImage!)
+                            
+                            //SPOUSE
+                            
+                            let spouse_username = Global.gamvesFamily.spouseUser.userName
+                            Global.defaults.set(spouse_username, forKey: "spouse_username")
+                            
+                            let spouse_email = Global.gamvesFamily.spouseUser.email
+                            Global.defaults.set(spouse_email, forKey: "spouse_email")
+                          
+                            let spouseImage:UIImage = Global.gamvesFamily.spouseUser.avatar
+                            
+                            Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: spouseImage)
+                            
+                            let spouseImageLow = spouseImage.lowestQualityJPEGNSData as Data
+                            var spouseSmallImage = UIImage(data: spouseImageLow)
+                            
+                            Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: spouseSmallImage!)
+                            
+                            //SON
+                            
+                            let sonUser:GamvesParseUser = Global.gamvesFamily.sonsUsers[0]
+                            
+                            let son_name = sonUser.name
+                            Global.defaults.set(son_name, forKey: "son_name")
+                            
+                            let son_username = sonUser.userName
+                            Global.defaults.set(son_username, forKey: "son_username")
+                            
+                            let son_type = sonUser.typeNumber
+                            Global.defaults.set(son_type, forKey: "son_type")
+                            
+                            let son_school = Global.gamvesFamily.school.schoolName
+                            Global.defaults.set(son_school, forKey: "son_school")
+                            
+                            if let son_userId = sonUser.userObj.objectId {
+                                Global.defaults.set(son_userId, forKey: "son_userId")
+                                Global.defaults.set(son_userId, forKey: "son_object_id")
+                            }
+                            
+                            let sonImage:UIImage = Global.gamvesFamily.sonsUsers[0].avatar
+                            
+                            Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: sonImage)
+                            
+                            let sonImageLow = sonImage.lowestQualityJPEGNSData as Data
+                            var sonSmallImage = UIImage(data: sonImageLow)
+                            
+                            Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)             
+                            
+                            self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
+                            
+                            self.tabBarViewController?.selectedIndex = 0 //Home
+                            
+                            self.activityIndicatorView?.stopAnimating()   
+                            self.dismiss(animated: true, completion: nil)
+                            
+                        })
+                        
+                    } else {
+                        
+                        self.activityIndicatorView?.stopAnimating()
+                        self.dismiss(animated: true, completion: nil)
+                        
+                    }
                 }
                 else
                 {
@@ -615,22 +726,22 @@ class LoginViewController: UIViewController
     func hideShowMessage(bol:Bool)
     {
         emailTextFieldHeightAnchor?.isActive = false
-        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
+        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
         emailTextFieldHeightAnchor?.isActive = true
         emailTextField.isHidden = bol
         
         passwordTextFieldHeightAnchor?.isActive = false
-        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
+        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
         passwordTextFieldHeightAnchor?.isActive = true
         passwordTextField.isHidden = bol
 
         userTypeTextFieldHeightAnchor?.isActive = false
-        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
+        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
         userTypeTextFieldHeightAnchor?.isActive = true
         userTypeTextField.isHidden = bol
         
         registerLabelHeightAnchor?.isActive = false
-        registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1)
+        registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1)
         registerLabelHeightAnchor?.isActive = true
         registerLabel.isHidden = !bol
         registerLabel.text = message
@@ -691,12 +802,18 @@ class LoginViewController: UIViewController
     }
     
 
-    func hideName()
+    func hideNameAndRelationship()
     {
         nameTextFieldHeightAnchor?.isActive = false
-        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
+        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
         nameTextFieldHeightAnchor?.isActive = true
         nameTextField.isHidden = true
+        
+        userTypeTextFieldHeightAnchor?.isActive = false
+        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
+        userTypeTextFieldHeightAnchor?.isActive = true
+        userTypeTextField.isHidden = true
+            
     }
     
     func handleSelectProfileImageView()

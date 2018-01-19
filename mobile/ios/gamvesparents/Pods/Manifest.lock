@@ -1,4 +1,7 @@
 PODS:
+  - AWSCore (2.6.10)
+  - AWSS3 (2.6.10):
+    - AWSCore (= 2.6.10)
   - BEMCheckBox (1.4.1)
   - Bolts-Swift (1.3.0)
   - Bolts/Tasks (1.8.4)
@@ -22,6 +25,7 @@ PODS:
   - youtube-ios-player-helper (0.1.6)
 
 DEPENDENCIES:
+  - AWSS3
   - BEMCheckBox
   - DeviceKit
   - DownPicker
@@ -57,6 +61,8 @@ CHECKOUT OPTIONS:
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 SPEC CHECKSUMS:
+  AWSCore: 5bb072a6b5b185f43ddbd239d6554d2f8a285ad2
+  AWSS3: 1124570c2c2dba6be7e6e67d123cc5181073c53d
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
   Bolts-Swift: fa98d1b59fc1acea9b21a21306dcdca1c85e3737
@@ -73,6 +79,6 @@ SPEC CHECKSUMS:
   TaskQueue: c1c02deebf2665b8e625fc46dd37a29b1de8056e
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
 
-PODFILE CHECKSUM: f79fce72b8b837f7003295d654a0ccb15930c02e
+PODFILE CHECKSUM: 5c99e0f072d706351b79b26a042c2e07942dd076
 
-COCOAPODS: 1.2.1.beta.1
+COCOAPODS: 1.3.1

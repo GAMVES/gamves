@@ -59,7 +59,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         return button
     }()
     
-    func skip() {
+    @objc func skip() {
         // we only need to lines to do this
         pageControl.currentPage = pages.count - 1
         nextPage()
@@ -73,7 +73,16 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         return button
     }()
     
-    func nextPage() {
+    lazy var alreadyRegisteredButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Already Registered", for: .normal)
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(loginPage), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func nextPage() {
         //we are on the last page
         if pageControl.currentPage == pages.count {
             return
@@ -93,6 +102,10 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         pageControl.currentPage += 1
     }
     
+    @objc func loginPage() {
+        self.showLoginController(registered: true)
+    }
+    
     var pageControlBottomAnchor: NSLayoutConstraint?
     var skipButtonTopAnchor: NSLayoutConstraint?
     var nextButtonTopAnchor: NSLayoutConstraint?
@@ -108,15 +121,20 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         view.addSubview(pageControl)
         view.addSubview(skipButton)
         view.addSubview(nextButton)
+        view.addSubview(alreadyRegisteredButton)
         
-        pageControlBottomAnchor = pageControl.anchor(nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 40)[1]
+        pageControlBottomAnchor = pageControl.anchor(nil, left: view.leftAnchor, bottom: collectionView.bottomAnchor, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant:0, rightConstant: 0, widthConstant: 0, heightConstant: 40)[1]
         
         skipButtonTopAnchor = skipButton.anchor(view.topAnchor, left: view.leftAnchor, bottom: nil, right: nil, topConstant: 16, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 60, heightConstant: 50).first
         
         nextButtonTopAnchor = nextButton.anchor(view.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, topConstant: 16, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 60, heightConstant: 50).first
         
         //use autolayout instead
-        collectionView.anchorToTop(view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
+        collectionView.anchorToTop(view.topAnchor, left: view.leftAnchor, bottom: alreadyRegisteredButton.topAnchor, right: view.rightAnchor)
+        
+        alreadyRegisteredButton.anchor(collectionView.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, topConstant: 16, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: view.frame.width, heightConstant: 60).first
+        
+        //alreadyRegisteredButton.anchorToTop(collectionView.bottomAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor)
         
         registerCells()
     
@@ -129,7 +147,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHide), name: .UIKeyboardWillHide, object: nil)
     }
     
-    func keyboardHide() {
+    @objc func keyboardHide() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
@@ -137,7 +155,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
             }, completion: nil)
     }
     
-    func keyboardShow() {
+    @objc func keyboardShow() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
             
             let y: CGFloat = UIDevice.current.orientation.isLandscape ? -100 : -50
@@ -171,7 +189,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     fileprivate func moveControlConstraintsOffScreen() {
-        pageControlBottomAnchor?.constant = 40
+        pageControlBottomAnchor?.constant = 120
         skipButtonTopAnchor?.constant = -40
         nextButtonTopAnchor?.constant = -40
     }
@@ -233,9 +251,9 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     
-    func showLoginController()
+    func showLoginController(registered: Bool)
     {
-        tabBarViewController?.showLoginController()
+        tabBarViewController?.showLoginController(registered: registered)
     }
     
     func setTabBaerProfileTab()

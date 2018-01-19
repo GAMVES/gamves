@@ -82,7 +82,7 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
     var checkboxTerms = BEMCheckBox()
 
     let termsAndConditionsLabel: UILabel = {
-        let label = UILabel()        
+        let label = UILabel()
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 18)
         let underlineAttribute = [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue]
@@ -101,7 +101,7 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
     var checkboxLicence = BEMCheckBox()
     
     let licenceAgreementLabel: UILabel = {
-        let label = UILabel()        
+        let label = UILabel()
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 18)
         let underlineAttribute = [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue]
@@ -110,8 +110,7 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
         label.numberOfLines = 2
         return label
     }()
-
-
+    
     lazy var nextButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor
@@ -194,9 +193,9 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
             
     }
 
-    func handleNext()
+    @objc func handleNext()
     {       
-        self.tutorialController?.showLoginController()      
+        self.tutorialController?.showLoginController(registered: false)
     }
     
     required init?(coder aDecoder: NSCoder) {

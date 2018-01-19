@@ -380,13 +380,6 @@ class ProfileViewController: UIViewController,
         return view
     }()
     
-    var sonImageName = "sonImage"
-    var sonImageNameSmall = "sonImageSmall"
-    var spouseImageName = "spouseImage"
-    var spouseImageNameSmall = "spouseImageSmall"
-    var familyImageName = "familyImage"
-    var familyImageNameSmall = "familyImageSmall"
-
     var sonNameContainerViewHeightAnchor: NSLayoutConstraint?
     
     var sonSaving = Bool()
@@ -407,7 +400,7 @@ class ProfileViewController: UIViewController,
 
         let attr = NSDictionary(object: UIFont(name: "Arial", size: 16.0)!, forKey: NSFontAttributeName as NSCopying)
         self.segmentedControl.setTitleTextAttributes(attr as [NSObject : AnyObject] , for: .normal)
-
+        
         self.scrollView.addSubview(self.photosContainerView)
         self.scrollView.addSubview(self.segmentedControl)
 
@@ -855,7 +848,7 @@ class ProfileViewController: UIViewController,
             metrics: metricsProfile)
     }
 
-    func handleSegmentedChange() {
+    @objc func handleSegmentedChange() {
         
         if self.segmentedControl.selectedSegmentIndex == 0
         {
@@ -939,18 +932,18 @@ class ProfileViewController: UIViewController,
                             
                             self.son = user as! PFUser
                            
-                            self.sonPhotoImage = self.loadImageFromDisc(imageName: self.sonImageName)
+                            self.sonPhotoImage = self.loadImageFromDisc(imageName: Global.sonImageName)
                             self.sonPhotoImageView.image = self.sonPhotoImage
                             self.makeRounded(imageView:self.sonPhotoImageView)
                             
-                            self.sonPhotoImageSmall = self.loadImageFromDisc(imageName: self.sonImageNameSmall)
+                            self.sonPhotoImageSmall = self.loadImageFromDisc(imageName: Global.sonImageNameSmall)
                             
-                            self.familyPhotoImage = self.loadImageFromDisc(imageName: self.familyImageName)
+                            self.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
                             self.familyPhotoImageView.image = self.familyPhotoImage
                             self.makeRounded(imageView:self.familyPhotoImageView)
                             
-                            self.familyPhotoImage = self.loadImageFromDisc(imageName: self.familyImageName)
-                            self.familyPhotoImageSmall = self.loadImageFromDisc(imageName: self.familyImageNameSmall)
+                            self.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
+                            self.familyPhotoImageSmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
                             
                             self.sonNameTextField.text = user["Name"] as! String
                             self.sonUserTextField.text = user["username"] as! String                            
@@ -1006,24 +999,7 @@ class ProfileViewController: UIViewController,
                 }
             }
         }
-        
-        
-        
-    } 
-    
-    func storeImgeLocally(imagePath: String, imageToStore:UIImage) {
-        
-        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imagePath).png"
-        
-        let imageUrl: URL = URL(fileURLWithPath: imagePath)
-        
-        do {
-            try? UIImagePNGRepresentation(imageToStore)?.write(to: imageUrl)
-        } catch {
-            
-        }
     }
-
     
     func loadImageFromDisc(imageName: String) -> UIImage {
         
@@ -1040,7 +1016,7 @@ class ProfileViewController: UIViewController,
         return imageLoaded
     }
 
-    func handleSave()
+    @objc func handleSave()
     {
         DispatchQueue.main.async() {
             self.activityIndicatorView?.startAnimating()
@@ -1136,13 +1112,9 @@ class ProfileViewController: UIViewController,
                                                         ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
                                                         
                                                     })
-                                                    
                                                 }
-                                                    
                                             })
-                                            
                                         }
-                                        
                                     })
                                 }
                             })
@@ -1342,11 +1314,11 @@ class ProfileViewController: UIViewController,
             }
         }
         
-        self.storeImgeLocally(imagePath: self.sonImageName, imageToStore: self.sonPhotoImage)
-        self.storeImgeLocally(imagePath: self.sonImageNameSmall, imageToStore: self.sonPhotoImageSmall)
+        Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: self.sonPhotoImage)
+        Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: self.sonPhotoImageSmall)
         
-        self.storeImgeLocally(imagePath: self.familyImageName, imageToStore: self.familyPhotoImage)
-        self.storeImgeLocally(imagePath: self.familyImageNameSmall, imageToStore: self.familyPhotoImageSmall)
+        Global.storeImgeLocally(imagePath: Global.familyImageName, imageToStore: self.familyPhotoImage)
+        Global.storeImgeLocally(imagePath: Global.familyImageNameSmall, imageToStore: self.familyPhotoImageSmall)
         
         let dataPhotoImage = self.sonPhotoImage.highQualityJPEGNSData
         let dataPhotoImageSmall = self.sonPhotoImageSmall.highQualityJPEGNSData
@@ -1446,8 +1418,8 @@ class ProfileViewController: UIViewController,
             levelObj = Global.levels[levelId]?.levelObj
         }
         
-        self.storeImgeLocally(imagePath: self.spouseImageName, imageToStore: self.spousePhotoImage)
-        self.storeImgeLocally(imagePath: self.spouseImageNameSmall, imageToStore: self.spousePhotoImageSmall)
+        Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: self.spousePhotoImage)
+        Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: self.spousePhotoImageSmall)
         
         let dataPhotoImage = self.spousePhotoImage.highQualityJPEGNSData
         let dataPhotoImageSmall = self.spousePhotoImageSmall.highQualityJPEGNSData
@@ -1620,12 +1592,12 @@ class ProfileViewController: UIViewController,
         family["spouseRegisterChatId"]  = self.spouseRegisterChatId
         family["sonSpouseChatId"]  = self.sonSpouseChatId
         
-        let imageFamily = self.loadImageFromDisc(imageName: self.familyImageName)
+        let imageFamily = self.loadImageFromDisc(imageName: Global.familyImageName)
 
         let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily, 1.0)!)
         family.setObject(pfimage!, forKey: "picture")
 
-        let imageFamilySmall = self.loadImageFromDisc(imageName: self.familyImageNameSmall)
+        let imageFamilySmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
         
         let pfimageSmall = PFFile(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall, 1.0)!)
         family.setObject(pfimageSmall!, forKey: "pictureSmall")
@@ -1793,7 +1765,7 @@ class ProfileViewController: UIViewController,
     }
 
    
-    func handlePhotoImageView(sender: UITapGestureRecognizer)
+    @objc func handlePhotoImageView(sender: UITapGestureRecognizer)
     {
         
         self.selectedImageView = (sender.view as? UIImageView)!
@@ -1900,7 +1872,7 @@ class ProfileViewController: UIViewController,
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHide), name: .UIKeyboardWillHide, object: nil)
     }
     
-    func keyboardHide() {
+    @objc func keyboardHide() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
@@ -1908,7 +1880,7 @@ class ProfileViewController: UIViewController,
         }, completion: nil)
     }
     
-    func keyboardShow() {
+    @objc func keyboardShow() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             let y: CGFloat = UIDevice.current.orientation.isLandscape ? -100 : -50

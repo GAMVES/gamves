@@ -29,6 +29,8 @@ target 'gamvesparents' do
   
   pod 'youtube-ios-player-helper', '~> 0.1.4'
   
+  pod 'AWSS3'
+  
   # pod 'MercadoPagoSDK', '3.7.1'
     
 end

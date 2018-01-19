@@ -36,7 +36,7 @@ class FanpageApprovalView: UIView {
         return button
     }()
 
-    func handleDownButton() 
+    @objc func handleDownButton() 
     {
         
         UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {

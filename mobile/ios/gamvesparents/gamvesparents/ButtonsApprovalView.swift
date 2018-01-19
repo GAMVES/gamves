@@ -97,17 +97,17 @@ class ButtonsApprovalView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func touchUpApprove() {
+    @objc func touchUpApprove() {
         
         updateApprovalStatus(videoId: self.videoId, status: 1);
     }
     
-    func touchUpReject() {
+    @objc func touchUpReject() {
         
         updateApprovalStatus(videoId: self.videoId, status: -1);
     }
     
-    func touchUpLater() {
+    @objc func touchUpLater() {
         
         self.closeApprovalWindow()
     }

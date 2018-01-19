@@ -69,7 +69,7 @@ class InfoApprovalView: UIView {
     {
         super.init(frame: frame)
         
-        let type = type(of: obj)
+        //let type = type(of: obj)
         
         if (obj is VideoGamves) {
             

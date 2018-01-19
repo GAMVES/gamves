@@ -23,6 +23,8 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
     
     var profileViewController : ProfileViewController!
     
+    //var isRegistered = Bool()
+    
     lazy var chatLauncher: ChatViewController = {
         let launcher = ChatViewController()
         return launcher
@@ -98,22 +100,25 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
         
-        
     }
     
-    func familyLoaded() {
+    @objc func familyLoaded() {
         profileViewController.familyLoaded()
     }
     
-    func levelsLoaded() {
+    @objc func levelsLoaded() {
         profileViewController.levelsLoaded()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
-        if !isHasProfileInfo()
+        if !isHasProfileInfo() && !isHasRegistered()
         {
             self.selectedIndex = 2
+        } else
+        {
+            self.selectedIndex = 0
+            
         }
 
         if isLoggedIn()
@@ -138,8 +143,11 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         return UserDefaults.standard.isHasProfileInfo()
     }
 
+    fileprivate func isHasRegistered() -> Bool {
+        return UserDefaults.standard.isRegistered()
+    }
     
-    func showTutorialController() 
+    @objc func showTutorialController() 
     {
         self.tutorialController.tabBarViewController = self
         present(self.tutorialController, animated: true, completion: {
@@ -148,10 +156,16 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         
     }
     
-    func showLoginController() {
+    func showLoginController(registered: Bool) {
+        
+        UserDefaults.standard.setIsRegistered(value: registered)
         
         let loginController = LoginViewController()
-        self.tutorialController.dismiss(animated: true)
+        
+        loginController.isRegistered = registered
+        loginController.tabBarViewController = self
+        self.tutorialController.dismiss(animated: true)        
+        
         present(loginController, animated: true, completion: {
             //perhaps we'll do something here later
             self.blurVisualEffectView?.removeFromSuperview()
@@ -159,10 +173,10 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         
     }
     
-    func handleSignOut()
+    func handleSignOut(registered: Bool)
     {
         UserDefaults.standard.setIsLoggedIn(value: false)        
-        let tutorialController = TutorialController()
+        let tutorialController = TutorialController()        
         present(tutorialController, animated: true, completion: nil)
     }
     

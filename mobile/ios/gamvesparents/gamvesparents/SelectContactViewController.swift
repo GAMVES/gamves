@@ -58,7 +58,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
         self.fetchUsers()
     }
     
-    func moveNext()
+    @objc func moveNext()
     {
         var selectedUsers:[GamvesParseUser] = self.countChecked()
         if selectedUsers.count > 1

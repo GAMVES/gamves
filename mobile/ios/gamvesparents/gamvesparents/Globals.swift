@@ -26,6 +26,15 @@ class Global: NSObject
     
     static var userTypes = Dictionary<Int, UserTypeGamves>()
     
+    static var youImageName = "youImage"
+    static var youImageNameSmall = "youImageSmall"
+    static var sonImageName = "sonImage"
+    static var sonImageNameSmall = "sonImageSmall"
+    static var spouseImageName = "spouseImage"
+    static var spouseImageNameSmall = "spouseImageSmall"
+    static var familyImageName = "familyImage"
+    static var familyImageNameSmall = "familyImageSmall"
+    
     /*static func getUserTypeObjById(id:Int) -> PFObject {
         
         var obj:PFObject!
@@ -54,6 +63,7 @@ class Global: NSObject
     static var approvals = [Approvals]()
     
     static var admin_delimitator:String = "---is_admin_chat---"
+    static var audio_delimitator:String = "---is_audio_chat---"
 
     static var defaults = UserDefaults.standard
     
@@ -627,7 +637,7 @@ class Global: NSObject
             
             let familyQuery = PFQuery(className:"Family")
             familyQuery.whereKey("members", equalTo: PFUser.current())
-            familyQuery.cachePolicy = .cacheElseNetwork
+            //familyQuery.cachePolicy = .cacheElseNetwork
             familyQuery.findObjectsInBackground(block: { (families, error) in
                 
                 if error == nil
@@ -640,9 +650,7 @@ class Global: NSObject
                         
                         self.gamvesFamily.sonRegisterChatId = family["sonRegisterChatId"] as! Int
                         self.gamvesFamily.spouseRegisterChatId = family["spouseRegisterChatId"] as! Int
-                        self.gamvesFamily.objectId = family.objectId!
-                        
-                        
+                        self.gamvesFamily.objectId = family.objectId!                
                         
                         let picture = family["picture"] as! PFFile
                         
@@ -994,7 +1002,18 @@ class Global: NSObject
         }
     }
     
-
+    static func storeImgeLocally(imagePath: String, imageToStore:UIImage) {
+        
+        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imagePath).png"
+        
+        let imageUrl: URL = URL(fileURLWithPath: imagePath)
+        
+        do {
+            try? UIImagePNGRepresentation(imageToStore)?.write(to: imageUrl)
+        } catch {
+            
+        }
+    }
 }
 
 

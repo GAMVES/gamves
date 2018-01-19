@@ -36,7 +36,7 @@ class VideoApprovalPlayerView: UIView {
         return button
     }()
 
-    func handleDownButton() 
+    @objc func handleDownButton() 
     {
         
         UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
@@ -82,7 +82,7 @@ class VideoApprovalPlayerView: UIView {
         })
     }
     
-    func wasDragged(gestureRecognizer: UIPanGestureRecognizer) {
+    @objc func wasDragged(gestureRecognizer: UIPanGestureRecognizer) {
         
         if gestureRecognizer.state == UIGestureRecognizerState.began || gestureRecognizer.state ==
         UIGestureRecognizerState.changed
@@ -141,7 +141,7 @@ class VideoApprovalPlayerView: UIView {
     
     var isPlaying = false
     
-    func handlePause() {
+    @objc func handlePause() {
         if isPlaying {
             player?.pause()
             pausePlayButton.setImage(UIImage(named: "play"), for: UIControlState())
@@ -181,7 +181,7 @@ class VideoApprovalPlayerView: UIView {
         return slider
     }()
     
-    func handleSliderChange() 
+    @objc func handleSliderChange() 
     {
         print(videoSlider.value)
         
