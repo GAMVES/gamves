@@ -212,6 +212,7 @@ Parse.Cloud.afterSave("Videos", function(request) {
 	var downloaded = request.object.get("downloaded");
 	var removed = request.object.get("removed");
 	var source_type = request.object.get("source_type");
+	var folder = request.object.get("folder");
 
 
 	if ( source_type == 1 ) { //LOCAL
@@ -273,7 +274,8 @@ Parse.Cloud.afterSave("Videos", function(request) {
 							  },
 						      body: {
 						        "ytb_videoId": vId,
-						        "objectId": pfVideoId            
+						        "objectId": pfVideoId,
+						        "folder" : folder          
 						      },	      
 						      success: function(httpResponse) {          
 						          console.log(httpResponse);			 
@@ -357,59 +359,117 @@ Parse.Cloud.afterSave("Config", function(request) {
 });
 
 
-Parse.Cloud.define("downloadVideoFromYoutube", function( request, response ) {
 
-	//var members = request.object.get("members");
-	//var chatId = request.object.get("chatId");
-	//var lastPoster = request.object.get("lastPoster");
+Parse.Cloud.afterSave("Approvals", function(request) {
+	
+	var approved = request.object.get("approved");
+	var notified = request.object.get("notified");
 
-	var videoId = request.params.videoId;
+	var type = request.object.get("type");
+	var posterId = request.object.get("posterId");
+	var title = request.object.get("title");
+	var referenceId = request.object.get("referenceId");
+	var familyId = request.object.get("familyId");	
 
-	var fs = require('fs');
-	var youtubedl = require('youtube-dl');
-	var video = youtubedl('http://www.youtube.com/watch?v='+videoId,
-	  // Optional arguments passed to youtube-dl.
-	  ['--format=18'],
-	  // Additional options can be given for calling `child_process.execFile()`.
-	  { cwd: __dirname });
-	 
-	// Will be called when the download starts.
-	video.on('info', function(info) {
-	  console.log('Download started');
-	  //console.log('filename: ' + info.filename);
-	  //console.log('size: ' + info.size);
-	});
-	 
-	video.pipe(fs.createWriteStream('myvideo.mp4'));
+	var levelObjectId, typeDesc;	
 
-	video.on('end', function() {
-	  
-	  console.log('finished downloading!');
+	if (approved && !notified) { 
 
-	  var params = {
-		  localFile: "myvideo.mp4",
-		  s3Params: {
-		    Bucket: "gamves.videos",
-		    Key: "myvideo.mp4",
-		    // other options supported by putObject, except Body and ContentLength.
-		    // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
-		  },
-		};
-
-		var uploader = client.uploadFile(params);
-		uploader.on('error', function(err) {
-		  console.error("unable to upload:", err.stack);
-		});
-		uploader.on('progress', function() {
-		  console.log("progress", uploader.progressMd5Amount,
-		            uploader.progressAmount, uploader.progressTotal);
-		});
-		uploader.on('end', function() {
-		  console.log("done uploading");
-		});
+		var Notification = Parse.Object.extend("Notifications");         
+        var notification = new Notification();
 
 
-	});
-  
+		var userQuery = new new Parse.Query(Parse.User);
+		userQuery.equalTo("objectId", posterId);
+	    return typeQuery.first().then(function(user) {
+
+	    	notification.set("posterName", user.get("Name"));
+	    	notification.set("posterAvatar", user.get("picture"));
+
+	    	levelObjectId = user.get("levelObjId");
+
+	    	if type == 1 {
+
+	    		typeDesc = "video";
+
+		        var videoQuery = new Parse.Query("Videos");
+		        videoQuery.equalTo("objectId", referenceId);
+		        return videoQuery.first();
+
+		    } else if type == 2 {
+
+		    	typeDesc = "fanpage";
+
+		    	var fanpagelQuery = new Parse.Query("Fanpages");
+		        fanpagelQuery.equalTo("objectId", referenceId);
+		        return fanpagelQuery.first();
+
+		    }
+
+
+	    }).then(function(object) {
+
+	    	if type == 1 {
+
+	    		notification.set("title", user.get("pageName"));
+	    		notification.set("description", user.get("title"));
+	    		notification.set("icon", user.get("thumbnail"));
+	    		notification.set("referenceId", user.get("videoId"));
+	    		notification.set("date", user.get("createdAt"));
+
+	    	} else if type == 2 {
+
+	    		notification.set("title", user.get("pageName"));
+	    		notification.set("description", user.get("pageAbout"));
+	    		notification.set("icon", user.get("pageIcon"));
+	    		notification.set("cover", user.get("pageCover"));
+	    		notification.set("referenceId", user.get("fanpageId"));
+	    		notification.set("date", user.get("createdAt"));
+
+	    	}
+
+	    	return notification.save(null, {useMasterKey: true});
+
+		}).then(function(notificationSaved) {
+
+			var title = "New " + typeDesc + " from " + notificationSaved.get("posterName");   
+			var alert = "";//request.params.alert;
+			var channels = levelObjectId; //request.params.channels;
+			var data = notificationSaved.get("title"); //request.params.data;
+
+		    Parse.Push.send({
+		        channels:[channels],
+		        data: {
+		          "title": title,
+		          "alert": alert,
+		          "data": data
+		        }
+		    }, {
+		        useMasterKey: true,
+		        success: function () {
+		            response.success('Success!');
+		        },
+		        error: function (error) {
+		            response.error('Error! ' + error.message);
+		        }
+		    });
+
+
+	    }, function(error) {	    
+
+	        response.error(error);
+
+	    });		
+
+
+		
+
+
+
+	}
+
+	
+
+
 });
 

@@ -16,16 +16,17 @@
     // Update the Job status message
     status.message("I just started");
 
+    var ytb_videoId = request.params.ytb_videoId;
+    var objectId = request.params.objectId;
+    var folder = request.params.folder;
+
     var path = require('path');
     var s3 = require('s3');
 
-    var s3bucket = "gamves";
-    var s3key = "AKIAJP4GPKX77DMBF5AQ";
-    var s3secret = "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";
-    var s3region = "us-east-1"; 
-    var s3endpoint = s3bucket  + ".s3.amazonaws.com";
+    var s3bucket = "gamves/"+folder+"/videos";
+    var s3endpoint = s3bucket  + ".s3.amazonaws.com";       
 
-    var client = s3.createClient({
+    var clientDownload = s3.createClient({
       maxAsyncS3: 20,     // this is the default
       s3RetryCount: 3,    // this is the default
       s3RetryDelay: 1000, // this is the default
@@ -40,10 +41,7 @@
         // any other options are passed to new AWS.S3()
         // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#constructor-property
       },
-    });
-
-    var ytb_videoId = request.params.ytb_videoId;
-    var objectId = request.params.objectId;
+    });    
 
     var queryVideos = new Parse.Query("Videos");
     queryVideos.equalTo("objectId", objectId);
@@ -65,7 +63,7 @@
             video.on('end', function() {                
 
                 var params = { localFile: videoName, s3Params: { Bucket: s3bucket, Key: videoName, ACL: 'public-read'},};
-                var uploader = client.uploadFile(params);
+                var uploader = clientDownload.uploadFile(params);
 
                 uploader.on('error', function(err) { console.error("unable to upload:", err.stack); });                
                 uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });

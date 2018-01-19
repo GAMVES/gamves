@@ -244,6 +244,7 @@
           var school = new Schools();    
           school.set("thumbnail", parseFileThumbanil);
           school.set("name", $("#edit_name").val());              
+          school.set("short", $("#edit_short").val());  
           school.save(null, {
               success: function (schoolNew) {
                   console.log('school created successful with name: ' + schoolNew.get("pageName"));
