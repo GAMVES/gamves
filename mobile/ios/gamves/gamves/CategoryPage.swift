@@ -86,7 +86,6 @@ UICollectionViewDelegateFlowLayout {
         return cv
     }()
    
-
     func handleBackButton() 
     {
         print("hola") 

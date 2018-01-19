@@ -514,7 +514,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
 
     func swipeLeftClose()
     {
-
+        
         if self.videoPlayerView.isVideoDown
         {
 
@@ -543,9 +543,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
                         subview.removeFromSuperview()
                     }
                 }
-                
             })
-
         }
     }  
 
@@ -556,7 +554,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
         if (self.infoView != nil)
         {
             self.infoView.isHidden = true
-            self.chatView.dismissKeyboard()
+            //self.chatView.dismissKeyboard()
         }
         
         let keyHeight = self.keyWindoHeight
@@ -589,7 +587,6 @@ class VideoLauncher: UIView, KeyboardDelegate {
         
         self.chatView.frame.size.height = self.originaChatHeightPosition        
     }
-
 
     /*func draggedView(sender: UIPanGestureRecognizer)
     {

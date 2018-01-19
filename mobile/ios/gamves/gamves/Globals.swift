@@ -13,7 +13,6 @@ import PopupDialog
 
 class Global: NSObject
 {
-    
     static var userTypes = Dictionary<Int, UserTypeGamves>()
     
     static var levels = Dictionary<String, LevelsGamves>()
@@ -38,8 +37,8 @@ class Global: NSObject
     static var api_suggestion_mid = "&key="
     static var api_suggestion_close = "=5&alt=json"
     
-    
     static var admin_delimitator:String = "---is_admin_chat---"
+    static var audio_delimitator:String = "---is_audio_chat---"
     
     static var key_you_spouse_chat_id = "you_spouse_chat_id"
     static var key_you_son_chat_id = "you_son_chat_id"
@@ -79,8 +78,6 @@ class Global: NSObject
     static var chatVideos = Dictionary<Int, VideoGamves>()
     
     static var hasNewFeed = Bool()
-    
-    //static var categories_gamves  = [CategoryGamves]()
     
     static var categories_gamves = Dictionary<Int, CategoryGamves>()
     
@@ -222,7 +219,6 @@ class Global: NSObject
                                 adduserToFamilyFromGlobal(gamvesUser: gamvesUser)
                                 
                                 completionHandler(gamvesUser)
-                                
                                 
                             }
                         }

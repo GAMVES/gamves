@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Parse
 
+
 class ChatFeed
 {
     // Insert code here to add functionality to your managed object subclass
@@ -25,7 +26,7 @@ class ChatFeed
     var usersLoaded:Bool?
     var imagesLoaded:Bool?
     var badgeIsActive:Bool?
-    var badgeNumber:Int?
+    var badgeNumber:Int?    
 }
 
 

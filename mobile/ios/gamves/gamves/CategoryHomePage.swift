@@ -239,7 +239,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                         
                         //let cover = pcategory["cover"] as! String
                         
-                        let name = pcategory["description"] as! String
+                        let name = pcategory["name"] as! String
                         
                         let thumbnail = pcategory["thumbnail"] as! PFFile
                         

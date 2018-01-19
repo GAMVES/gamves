@@ -189,18 +189,45 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
 
         var message:String = chatfeed.text!
 
-        let delimitator = Global.admin_delimitator
+        let admin_delimitator = Global.admin_delimitator
 
-        if message.range(of:delimitator) != nil
-        {            
-            if let range = message.range(of: delimitator) 
-            {
+        if message.range(of:admin_delimitator) != nil {
+            if let range = message.range(of: admin_delimitator) {
                 message.removeSubrange(range)
             }
 
-        } 
+        }
+        
+        let audio_delimitator = Global.audio_delimitator
+        
+        if message.range(of:audio_delimitator) != nil {
+            
+            if let range = message.range(of: audio_delimitator) {
 
-        cell.messageLabel.text = message
+                message.removeSubrange(range)
+                
+                if (message.contains("____"))
+                {
+                    let messageArr : [String] = message.components(separatedBy: "____")
+                    
+                    var audioId : String = messageArr[0]
+                    var audioTime : String = messageArr[1]
+                    
+                    let attachment = NSTextAttachment()
+                    attachment.image = UIImage(named: "rec_on")
+                    let attachmentString = NSAttributedString(attachment: attachment)
+                    let myString = NSMutableAttributedString(string: audioTime)
+                    myString.append(attachmentString)
+                    cell.messageLabel.attributedText = myString
+
+                }
+            }
+        
+        } else {
+            
+            cell.messageLabel.text = message
+        }
+        
         cell.profileImageView.image = chatfeed.chatThumbnail
         
         if chatfeed.lasPoster != nil
