@@ -18,7 +18,7 @@ class Global: NSObject
     
     static var levels = Dictionary<String, LevelsGamves>()
     
-    static var localWs = "wss://192.168.1.103:1337/1/"
+    static var localWs = "wss://192.168.16.22:1337/1/"
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard
@@ -37,7 +37,6 @@ class Global: NSObject
     static var api_suggestion_base = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q="
     static var api_suggestion_mid = "&key="
     static var api_suggestion_close = "=5&alt=json"
-    
     
     static var admin_delimitator:String = "---is_admin_chat---"
     
