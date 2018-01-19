@@ -141,11 +141,11 @@ extension LoginViewController : UITextFieldDelegate {
         return false
     }
     
-    func doBtnPrev(_ sender: Any) {
+    @objc func doBtnPrev(_ sender: Any) {
         let _ = makeTFFirstResponder(next: false)
     }
     
-    func doBtnNext(_ sender: Any) {
+    @objc func doBtnNext(_ sender: Any) {
         let _ = makeTFFirstResponder(next: true)
     }
     
@@ -161,7 +161,7 @@ extension LoginViewController : UITextFieldDelegate {
         return false
     }
     
-    func doBtnClose(_ sender: Any) {
+    @objc func doBtnClose(_ sender: Any) {
         submitForm()
     }
     

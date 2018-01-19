@@ -26,6 +26,15 @@ class Global: NSObject
     
     static var userTypes = Dictionary<Int, UserTypeGamves>()
     
+    static var youImageName = "youImage"
+    static var youImageNameSmall = "youImageSmall"
+    static var sonImageName = "sonImage"
+    static var sonImageNameSmall = "sonImageSmall"
+    static var spouseImageName = "spouseImage"
+    static var spouseImageNameSmall = "spouseImageSmall"
+    static var familyImageName = "familyImage"
+    static var familyImageNameSmall = "familyImageSmall"
+    
     /*static func getUserTypeObjById(id:Int) -> PFObject {
         
         var obj:PFObject!
@@ -54,6 +63,7 @@ class Global: NSObject
     static var approvals = [Approvals]()
     
     static var admin_delimitator:String = "---is_admin_chat---"
+    static var audio_delimitator:String = "---is_audio_chat---"
 
     static var defaults = UserDefaults.standard
     
@@ -627,7 +637,7 @@ class Global: NSObject
             
             let familyQuery = PFQuery(className:"Family")
             familyQuery.whereKey("members", equalTo: PFUser.current())
-            familyQuery.cachePolicy = .cacheElseNetwork
+            //familyQuery.cachePolicy = .cacheElseNetwork
             familyQuery.findObjectsInBackground(block: { (families, error) in
                 
                 if error == nil
@@ -640,9 +650,7 @@ class Global: NSObject
                         
                         self.gamvesFamily.sonRegisterChatId = family["sonRegisterChatId"] as! Int
                         self.gamvesFamily.spouseRegisterChatId = family["spouseRegisterChatId"] as! Int
-                        self.gamvesFamily.objectId = family.objectId!
-                        
-                        
+                        self.gamvesFamily.objectId = family.objectId!                
                         
                         let picture = family["picture"] as! PFFile
                         
@@ -702,13 +710,10 @@ class Global: NSObject
                                     {
                                         for school in schools!
                                         {
-                                            self.gamvesFamily.school = school["name"] as! String
+                                            self.gamvesFamily.schoolName = school["name"] as! String
                                         }
                                     }
                                 })
-
-                                
-                                
                             }
                         })
                     }
@@ -786,7 +791,7 @@ class Global: NSObject
                         
                         let approval = Approvals()
                         approval.objectId = approvalObj.objectId!
-                        approval.videoId = approvalObj["videoId"] as! Int
+                        approval.referenceId = approvalObj["referenceId"] as! Int
                         
                         let approved = approvalObj["approved"] as! Int
                             
@@ -796,56 +801,116 @@ class Global: NSObject
                                 countNotApproved = countNotApproved + 1
                         }
                         
-                        let queryVideo = PFQuery(className:"Videos")
-                        queryVideo.whereKey("videoId", equalTo: approval.videoId)
-                        queryVideo.findObjectsInBackground { (videoObjects, error) in
-                            
-                            if error != nil
-                            {
-                                print("error")
-                            } else
-                            {
-                                if let videoObjects = videoObjects
+                        let type = approvalObj["type"] as! Int
+                        
+                        if type == 1 {
+                        
+                            let queryVideo = PFQuery(className:"Videos")
+                            queryVideo.whereKey("referenceId", equalTo: approval.referenceId)
+                            queryVideo.getFirstObjectInBackground(block: { (videoObject, error) in
+                                
+                                if error != nil
                                 {
+                                    print("error")
                                     
-                                    for videoObject in videoObjects
-                                    {
+                                } else {
+                                    
+                                    let thumImage = videoObject?["thumbnail"] as! PFFile
+                                    let videoId = videoObject?["videoId"] as! Int
+                                    thumImage.getDataInBackground(block: { (data, error) in
                                         
-                                        let thumImage = videoObject["thumbnail"] as! PFFile
-                                        
-                                        let videoId = videoObject["videoId"] as! Int                                     
-                                        
-                                        thumImage.getDataInBackground(block: { (data, error) in
+                                        if error == nil
+                                        {
+                                            let thumbImage = UIImage(data:data!)
                                             
-                                            if error == nil
-                                            {
-                                                let thumbImage = UIImage(data:data!)
-                                                
-                                                approval.thumbnail = thumbImage
-                                                
-                                                let gamvesVideo = Global.parseVideo(video: videoObject, chatId : videoId, videoImage: thumbImage! )
-                                                
-                                                approval.video = gamvesVideo
-                                                
-                                                approval.videoTitle = videoObject["title"] as! String
-                                                approval.videoDescription = videoObject["description"] as! String
-                                                
-                                                self.approvals.append(approval)
-                                                
-                                                if (countAapprovals-1) == count {
-                                                    completionHandler(countNotApproved)
-                                                }
-                                                count = count + 1
+                                            approval.thumbnail = thumbImage
+                                            
+                                            let gamvesVideo = Global.parseVideo(video: videoObject!, chatId : videoId, videoImage: thumbImage! )
+                                            
+                                            approval.video = gamvesVideo
+                                            
+                                            approval.title = videoObject?["title"] as! String
+                                            approval.description = videoObject?["description"] as! String
+                                            
+                                            self.approvals.append(approval)
+                                            
+                                            if (countAapprovals-1) == count {
+                                                completionHandler(countNotApproved)
                                             }
-                                        })
-                                    }
+                                            count = count + 1
+                                        }
+                                    })
+
                                 }
-                            }
+                                
+                            })
+                            
+                            
+                        } else if type == 2 {
+                            
+                            
+                            let queryFanpage = PFQuery(className:"Fanpages")
+                            queryFanpage.whereKey("referenceId", equalTo: approval.referenceId)
+                            
+                            queryFanpage.getFirstObjectInBackground(block: { (fanpageObject, error) in
+                                
+                                if error != nil
+                                {
+                                    print("error")
+                                    
+                                } else {
+                                    
+                                    let icon = fanpageObject?["pageIcon"] as! PFFile
+                                    
+                                    let fanpageId = fanpageObject?["fanpageId"] as! Int
+                                    
+                                    icon.getDataInBackground(block: { (data, error) in
+                                        
+                                        if error == nil
+                                        {
+                                            let iconImage = UIImage(data:data!)
+                                            
+                                            approval.thumbnail = iconImage
+                                            
+                                            let gamvesFanpage = Global.parseFanpage(fanpage: fanpageObject!, fanpageId : fanpageId, fanpageImage: iconImage! )
+                                            
+                                            approval.fanpage = gamvesFanpage
+                                            
+                                            approval.title = fanpageObject?["title"] as! String
+                                            approval.description = fanpageObject?["description"] as! String
+                                            
+                                            self.approvals.append(approval)
+                                            
+                                            if (countAapprovals-1) == count {
+                                                completionHandler(countNotApproved)
+                                            }
+                                            count = count + 1
+                                        }
+                                    })
+                                }
+                            })
                         }
                     }
                 }
             }
         }
+    }
+    
+    static func parseFanpage(fanpage:PFObject, fanpageId :Int, fanpageImage: UIImage ) -> FanpageGamves
+    {
+        
+        let fanpageGamves = FanpageGamves()
+        
+        let name = fanpage["pageName"] as! String
+        
+        fanpageGamves.name = name
+        
+        let fanpageId = fanpage["fanpageId"] as! Int
+        
+        fanpageGamves.fanpageId = fanpageId
+    
+        return fanpageGamves
+        
     }
     
     
@@ -895,6 +960,8 @@ class Global: NSObject
     }
     
     
+    
+    
     static func isKeyPresentInUserDefaults(key: String) -> Bool {
         return UserDefaults.standard.object(forKey: key) != nil
     }
@@ -935,7 +1002,18 @@ class Global: NSObject
         }
     }
     
-
+    static func storeImgeLocally(imagePath: String, imageToStore:UIImage) {
+        
+        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imagePath).png"
+        
+        let imageUrl: URL = URL(fileURLWithPath: imagePath)
+        
+        do {
+            try? UIImagePNGRepresentation(imageToStore)?.write(to: imageUrl)
+        } catch {
+            
+        }
+    }
 }
 
 

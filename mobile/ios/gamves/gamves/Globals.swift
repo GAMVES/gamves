@@ -17,7 +17,7 @@ class Global: NSObject
     
     static var levels = Dictionary<String, LevelsGamves>()
     
-    static var localWs = "wss://192.168.16.22:1337/1/"
+    static var localWs = "wss://192.168.1.43:1337/1/"
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard
@@ -26,7 +26,13 @@ class Global: NSObject
     
     static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
     
+<<<<<<< HEAD
     static var search_engine = "010975053378915722447:h2ob_fkvam0"
+=======
+    // KEY      AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU
+    
+    // ENGINE   010975053378915722447:h2ob_fkvam0
+>>>>>>> origin/parents_temporary
     
     static var api_image_base = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="
     static var api_image_format = "&format=json"

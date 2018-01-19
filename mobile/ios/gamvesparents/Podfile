@@ -2,14 +2,10 @@
 # platform :ios, '9.0'
 
 target 'gamvesparents' do
-  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  
   use_frameworks!
 
   # Pods for gamvesparents
-
-
-  
-  #pod 'Parse'
 
   pod 'DeviceKit'
   
@@ -32,5 +28,9 @@ target 'gamvesparents' do
   pod 'TaskQueue'
   
   pod 'youtube-ios-player-helper', '~> 0.1.4'
+  
+  pod 'AWSS3'
+  
+  # pod 'MercadoPagoSDK', '3.7.1'
     
 end

@@ -337,7 +337,7 @@ class HomeViewController: UIViewController,
   
   
     
-    func chatFeedLoaded()
+    @objc func chatFeedLoaded()
     {
         let sonRegisterChatId:Int = Global.gamvesFamily.sonRegisterChatId
         if ChatFeedMethods.chatFeeds[sonRegisterChatId]! != nil
@@ -389,7 +389,7 @@ class HomeViewController: UIViewController,
         //self.familyLoaded()
     }
     
-    func familyLoaded()
+    @objc func familyLoaded()
     {
         
         let familyId = Global.gamvesFamily.objectId
@@ -462,7 +462,7 @@ class HomeViewController: UIViewController,
         return newImage
     }
 
-    func handleSonPhotoImageView(sender: UITapGestureRecognizer)
+    @objc func handleSonPhotoImageView(sender: UITapGestureRecognizer)
     {
         
         let sonRegisterChatId:Int = Global.gamvesFamily.sonRegisterChatId
@@ -486,7 +486,7 @@ class HomeViewController: UIViewController,
         
     }
 
-    func handleSpousePhotoImageView(sender: UITapGestureRecognizer)
+    @objc func handleSpousePhotoImageView(sender: UITapGestureRecognizer)
     {
         
         let spouseRegisterChatId:Int = Global.gamvesFamily.spouseRegisterChatId
@@ -511,7 +511,7 @@ class HomeViewController: UIViewController,
     	
     }
 
-    func handleGroupPhotoImageView(sender: UITapGestureRecognizer)
+    @objc func handleGroupPhotoImageView(sender: UITapGestureRecognizer)
     {
         let familyChatId:Int = Global.gamvesFamily.familyChatId
         
@@ -626,6 +626,7 @@ class HomeViewController: UIViewController,
             
         } else if indexPath.row == 3 {
         
+            
             approvalViewController.homeViewController = self
             approvalViewController.view.backgroundColor = UIColor.white
             navigationController?.navigationBar.tintColor = UIColor.white
@@ -633,7 +634,8 @@ class HomeViewController: UIViewController,
             navigationController?.pushViewController(approvalViewController, animated: true)
             tabBarController?.tabBar.isHidden = true
             
-        }      
+            
+        }
         
     }
     

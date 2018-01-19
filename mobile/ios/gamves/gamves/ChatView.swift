@@ -860,10 +860,13 @@ class ChatView: UIView,
                         })
                     }
                 }
+<<<<<<< HEAD
                 
             } else
             {
                 self.sendMessage(sendPush: true)
+=======
+>>>>>>> origin/parents_temporary
             }
         }
         

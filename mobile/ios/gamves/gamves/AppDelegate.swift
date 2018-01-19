@@ -172,8 +172,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         //Local
         let configuration = ParseClientConfiguration {
-            $0.applicationId = "0123456789"            
-            $0.server = "http://192.168.16.22:1337/1/"
+            $0.applicationId = "0123456789"
+            $0.server = "http://192.168.1.43:1337/1/"
         }
         Parse.initialize(with: configuration)
 

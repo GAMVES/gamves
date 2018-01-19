@@ -63,7 +63,7 @@ class ProfileViewController: UIViewController,
     var spousePhotoImageSmall:UIImage!
     var familyPhotoImageSmall:UIImage!
 
-    let schoolsArray: NSMutableArray = []
+    var schoolsArray: NSMutableArray = []
  
     var familyChatId = Int()
     var sonRegisterChatId = Int()
@@ -380,13 +380,6 @@ class ProfileViewController: UIViewController,
         return view
     }()
     
-    var sonImageName = "sonImage"
-    var sonImageNameSmall = "sonImageSmall"
-    var spouseImageName = "spouseImage"
-    var spouseImageNameSmall = "spouseImageSmall"
-    var familyImageName = "familyImage"
-    var familyImageNameSmall = "familyImageSmall"
-
     var sonNameContainerViewHeightAnchor: NSLayoutConstraint?
     
     var sonSaving = Bool()
@@ -407,7 +400,7 @@ class ProfileViewController: UIViewController,
 
         let attr = NSDictionary(object: UIFont(name: "Arial", size: 16.0)!, forKey: NSFontAttributeName as NSCopying)
         self.segmentedControl.setTitleTextAttributes(attr as [NSObject : AnyObject] , for: .normal)
-
+        
         self.scrollView.addSubview(self.photosContainerView)
         self.scrollView.addSubview(self.segmentedControl)
 
@@ -613,19 +606,14 @@ class ProfileViewController: UIViewController,
             
             self.sonUserTypeTextField.text = typeDesc
             
-            let school = Global.gamvesFamily.school
-            
-            print(school)
+            let school = Global.gamvesFamily.schoolName
             
             self.sonSchoolTextField.text = school
             
             self.sonGradeTextField.text = Global.gamvesFamily.sonsUsers[0].levelDescription
             
             self.yourTypeId = PFUser.current()?["iDUserType"] as! Int //Global.gamvesFamily.youUser.typeNumber
-            
-            print(self.yourTypeId)
-            
-
+          
         }
     }
 
@@ -665,6 +653,8 @@ class ProfileViewController: UIViewController,
 
     func loadSchools(completionHandler : @escaping (_ user:Bool) -> ()) {
         
+        self.schoolsArray = []
+        
         let querySchool = PFQuery(className:"Schools")
         
         querySchool.findObjectsInBackground(block: { (schools, error) in
@@ -688,6 +678,8 @@ class ProfileViewController: UIViewController,
                         gSchool.schoolOBj = school
                         
                         Global.schools.append(gSchool)
+                        
+                        Global.gamvesFamily.school = gSchool
                         
                         if count == (countSchools - 1)
                         {
@@ -856,7 +848,7 @@ class ProfileViewController: UIViewController,
             metrics: metricsProfile)
     }
 
-    func handleSegmentedChange() {
+    @objc func handleSegmentedChange() {
         
         if self.segmentedControl.selectedSegmentIndex == 0
         {
@@ -940,18 +932,18 @@ class ProfileViewController: UIViewController,
                             
                             self.son = user as! PFUser
                            
-                            self.sonPhotoImage = self.loadImageFromDisc(imageName: self.sonImageName)
+                            self.sonPhotoImage = self.loadImageFromDisc(imageName: Global.sonImageName)
                             self.sonPhotoImageView.image = self.sonPhotoImage
                             self.makeRounded(imageView:self.sonPhotoImageView)
                             
-                            self.sonPhotoImageSmall = self.loadImageFromDisc(imageName: self.sonImageNameSmall)
+                            self.sonPhotoImageSmall = self.loadImageFromDisc(imageName: Global.sonImageNameSmall)
                             
-                            self.familyPhotoImage = self.loadImageFromDisc(imageName: self.familyImageName)
+                            self.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
                             self.familyPhotoImageView.image = self.familyPhotoImage
                             self.makeRounded(imageView:self.familyPhotoImageView)
                             
-                            self.familyPhotoImage = self.loadImageFromDisc(imageName: self.familyImageName)
-                            self.familyPhotoImageSmall = self.loadImageFromDisc(imageName: self.familyImageNameSmall)
+                            self.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
+                            self.familyPhotoImageSmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
                             
                             self.sonNameTextField.text = user["Name"] as! String
                             self.sonUserTextField.text = user["username"] as! String                            
@@ -1007,24 +999,7 @@ class ProfileViewController: UIViewController,
                 }
             }
         }
-        
-        
-        
-    } 
-    
-    func storeImgeLocally(imagePath: String, imageToStore:UIImage) {
-        
-        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imagePath).png"
-        
-        let imageUrl: URL = URL(fileURLWithPath: imagePath)
-        
-        do {
-            try? UIImagePNGRepresentation(imageToStore)?.write(to: imageUrl)
-        } catch {
-            
-        }
     }
-
     
     func loadImageFromDisc(imageName: String) -> UIImage {
         
@@ -1041,7 +1016,7 @@ class ProfileViewController: UIViewController,
         return imageLoaded
     }
 
-    func handleSave()
+    @objc func handleSave()
     {
         DispatchQueue.main.async() {
             self.activityIndicatorView?.startAnimating()
@@ -1137,13 +1112,9 @@ class ProfileViewController: UIViewController,
                                                         ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
                                                         
                                                     })
-                                                    
                                                 }
-                                                    
                                             })
-                                            
                                         }
-                                        
                                     })
                                 }
                             })
@@ -1340,18 +1311,37 @@ class ProfileViewController: UIViewController,
             let level = Global.levels[l]
             if level?.fullDesc == son_grade {
                 levelObj = (level?.levelObj)!
+                
+                if let levelObjId = levelObj.objectId {
+                
+                    PFPush.subscribeToChannel(inBackground: levelObjId)
+                }
             }
         }
         
-        self.storeImgeLocally(imagePath: self.sonImageName, imageToStore: self.sonPhotoImage)
-        self.storeImgeLocally(imagePath: self.sonImageNameSmall, imageToStore: self.sonPhotoImageSmall)
+        Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: self.sonPhotoImage)
+        Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: self.sonPhotoImageSmall)
+        
+        Global.storeImgeLocally(imagePath: Global.familyImageName, imageToStore: self.familyPhotoImage)
+        Global.storeImgeLocally(imagePath: Global.familyImageNameSmall, imageToStore: self.familyPhotoImageSmall)
         
         let dataPhotoImage = self.sonPhotoImage.highQualityJPEGNSData
         let dataPhotoImageSmall = self.sonPhotoImageSmall.highQualityJPEGNSData
         
+        let imageUniverse = UIImage(named: "universe")
+        let dataPhotoUniverse = imageUniverse?.highQualityJPEGNSData
+        
         let full_name = son_name?.components(separatedBy: " ")
         let firstName = full_name?[0]
         let lastName = full_name?[1]
+        
+        for school in Global.schools {
+            if self.sonSchoolTextField.text == school.schoolName {
+                Global.gamvesFamily.school = school
+            }
+        }
+        
+        let schoolId = Global.gamvesFamily.school.objectId
         
         let sonParams = [
             "user_name" : son_name,
@@ -1362,8 +1352,11 @@ class ProfileViewController: UIViewController,
             "iDUserType" : type,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
+            "schoolId": schoolId,
             "dataPhotoImage": dataPhotoImage,
-            "dataPhotoImageSmall": dataPhotoImageSmall ] as [String : Any]
+            "dataPhotoImageSmall": dataPhotoImageSmall,
+            "dataPhotoBackground": dataPhotoUniverse
+            ] as [String : Any]
         
         PFCloud.callFunction(inBackground: "createGamvesUser", withParameters: sonParams) { (result, error) in
          
@@ -1430,16 +1423,18 @@ class ProfileViewController: UIViewController,
             levelObj = Global.levels[levelId]?.levelObj
         }
         
-        self.storeImgeLocally(imagePath: self.spouseImageName, imageToStore: self.spousePhotoImage)
-        self.storeImgeLocally(imagePath: self.spouseImageNameSmall, imageToStore: self.spousePhotoImageSmall)
+        Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: self.spousePhotoImage)
+        Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: self.spousePhotoImageSmall)
         
         let dataPhotoImage = self.spousePhotoImage.highQualityJPEGNSData
         let dataPhotoImageSmall = self.spousePhotoImageSmall.highQualityJPEGNSData
         
-        let sonParams = [
+        let imageUniverse = UIImage(named: "universe")
+        let dataPhotoUniverse = imageUniverse?.highQualityJPEGNSData
+        
+        let momParams = [
             "user_name" : spouse_username,
             "user_user_name" : spouse_email,
-            "user_email" : spouse_email,
             "user_password" : spouse_password,
             "firstName" : firstName,
             "lastName" : lastName,
@@ -1447,9 +1442,12 @@ class ProfileViewController: UIViewController,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
             "dataPhotoImage": dataPhotoImage,
-            "dataPhotoImageSmall": dataPhotoImageSmall ] as [String : Any]
+            "dataPhotoImageSmall": dataPhotoImageSmall,
+            "dataPhotoBackground": dataPhotoUniverse
+            ] as [String : Any]
+
         
-        PFCloud.callFunction(inBackground: "createGamvesUser", withParameters: sonParams) { (result, error) in
+        PFCloud.callFunction(inBackground: "createGamvesUser", withParameters: momParams) { (result, error) in
             
             if error == nil {
                 
@@ -1473,7 +1471,21 @@ class ProfileViewController: UIViewController,
                 })
                 
             } else {
-                print(error)
+                
+                var nsError:NSError = error as! NSError
+                
+                let errorCode = nsError.code
+                
+                switch errorCode {
+                case 209:
+                    print("invalid session token")
+                    break
+                default:
+                    break
+                }
+                
+                print(errorCode)
+                
                 completionHandler(false)
             }
             
@@ -1505,6 +1517,30 @@ class ProfileViewController: UIViewController,
         let yourimageSmall = PFFile(name: yourImgName, data: UIImageJPEGRepresentation(self.yourPhotoImageSmall, 1.0)!)
         self.you.setObject(yourimageSmall!, forKey: "pictureSmall")
         
+        let profileRelation = self.you.relation(forKey: "profile")
+        let profileQuery = profileRelation.query()
+        profileQuery.getFirstObjectInBackground { (profilePF, error) in
+            
+            if error == nil {
+                
+                var relation = String()
+                
+                if self.yourTypeId == Global.REGISTER_FATHER {
+                    relation = "father"
+                } else if self.yourTypeId == Global.SPOUSE_MOTHER {
+                    relation = "mother"
+                }
+                
+                let son_name = Global.defaults.string(forKey: "son_name")
+                
+                profilePF?["bio"] = "\(son_name) \(relation)"
+                
+                profilePF?.saveEventually()
+                
+            }
+        }
+        
+    
         let levelRel:PFRelation = self.you.relation(forKey: "level")
         
         //I add the level of all sons
@@ -1515,7 +1551,7 @@ class ProfileViewController: UIViewController,
             let levelObj = Global.levels[levelId]?.levelObj
             levelRel.add(levelObj!)
         }
-    
+        
         self.you.saveInBackground(block: { (resutl, error) in
             
             if error != nil
@@ -1561,13 +1597,14 @@ class ProfileViewController: UIViewController,
         family["spouseRegisterChatId"]  = self.spouseRegisterChatId
         family["sonSpouseChatId"]  = self.sonSpouseChatId
         
-        let imageFamily = self.familyPhotoImage
+        let imageFamily = self.loadImageFromDisc(imageName: Global.familyImageName)
 
-        let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily!, 1.0)!)
+        let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily, 1.0)!)
         family.setObject(pfimage!, forKey: "picture")
 
-        let imageFamilySmall = self.familyPhotoImageSmall
-        let pfimageSmall = PFFile(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall!, 1.0)!)
+        let imageFamilySmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
+        
+        let pfimageSmall = PFFile(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall, 1.0)!)
         family.setObject(pfimageSmall!, forKey: "pictureSmall")
         
         for school in Global.schools {
@@ -1607,8 +1644,7 @@ class ProfileViewController: UIViewController,
             }
             else
             {           
-               
-                
+
                 print(your_family_name)
                 
                 Global.gamvesFamily.familyName = your_family_name!
@@ -1734,7 +1770,7 @@ class ProfileViewController: UIViewController,
     }
 
    
-    func handlePhotoImageView(sender: UITapGestureRecognizer)
+    @objc func handlePhotoImageView(sender: UITapGestureRecognizer)
     {
         
         self.selectedImageView = (sender.view as? UIImageView)!
@@ -1841,7 +1877,7 @@ class ProfileViewController: UIViewController,
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHide), name: .UIKeyboardWillHide, object: nil)
     }
     
-    func keyboardHide() {
+    @objc func keyboardHide() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
@@ -1849,7 +1885,7 @@ class ProfileViewController: UIViewController,
         }, completion: nil)
     }
     
-    func keyboardShow() {
+    @objc func keyboardShow() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             let y: CGFloat = UIDevice.current.orientation.isLandscape ? -100 : -50

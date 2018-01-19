@@ -81,24 +81,28 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
         let index = indexPath.item
         let approval:Approvals = Global.approvals[index]
         
-        print(approval.videoTitle)
+        print(approval.title)
         
-        cell.nameLabel.text = approval.videoTitle
+        cell.nameLabel.text = approval.title
         
-        cell.statusLabel.text = "APPROVED"
-        
-        cell.profileImageView.image = approval.thumbnail!
-        
-        let approved = approval.approved
-        
-        if approved == 1
-        {
+        if approval.approved == 0 || approval.approved == 2 { // NOT
+            
+            cell.statusLabel.text = "NOT APPROVED"
             cell.checkLabel.isHidden = false
-        } else if approved == 0
-        {
+            
+        } else if approval.approved == 1 { //APPROVED
+        
+            cell.statusLabel.text = "APPROVED"
             cell.checkLabel.isHidden = true
         }
-
+        
+        if approval.type == 1 { //Video
+            
+        } else if approval.type == 2 { //Fanpage
+            
+        }
+        
+        cell.profileImageView.image = approval.thumbnail!
         
         return cell
     }
@@ -114,13 +118,23 @@ class ApprovalViewControlle: UIViewController, UICollectionViewDataSource, UICol
    
         if self.homeViewController != nil {
             
-            var video = VideoGamves()
+            if approval.type == 1 { //Video
+                
+                var video = VideoGamves()
+                
+                video = Global.chatVideos[approval.referenceId]!
+                
+                let videoApprovalLauncher = VideoApprovalLauncher()
+                videoApprovalLauncher.delegate = self
+                videoApprovalLauncher.showVideoPlayer(videoGamves: video)
+                
+            } else if approval.type == 2 { //Fanpage
+                
+                
+                
+            }
             
-            video = Global.chatVideos[approval.videoId]!
             
-            let videoApprovalLauncher = VideoApprovalLauncher()
-            videoApprovalLauncher.delegate = self
-            videoApprovalLauncher.showVideoPlayer(videoGamves: video)
         }
     }
     

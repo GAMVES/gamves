@@ -28,6 +28,8 @@
 		8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D7201F7AD44500F2A121 /* HomeViewController.swift */; };
 		8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */; };
 		8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */; };
+		822010B81FFAD684008C9027 /* FanpageApprovalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */; };
+		822010BA1FFAD960008C9027 /* ButtonsApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */; };
 		8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */; };
 		8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */; };
 		8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */; };
@@ -91,6 +93,8 @@
 		8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		8212D72F1F7C0A8400F2A121 /* gamvesparents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = gamvesparents.entitlements; sourceTree = "<group>"; };
+		822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FanpageApprovalLauncher.swift; sourceTree = "<group>"; };
+		822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsApprovalView.swift; sourceTree = "<group>"; };
 		8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalViewControlle.swift; sourceTree = "<group>"; };
 		8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalCell.swift; sourceTree = "<group>"; };
 		8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoApprovalView.swift; sourceTree = "<group>"; };
@@ -305,7 +309,9 @@
 		82E372441FB16AC6000AD7EB /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */,
 				82E372451FB16AD9000AD7EB /* VideoApprovalLauncher.swift */,
+				822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -442,13 +448,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-gamvesparents-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C9BEB4D1E9458B8C3912A7A4 /* [CP] Embed Pods Frameworks */ = {
@@ -457,9 +466,44 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AWSCore/AWSCore.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSS3/AWSS3.framework",
+				"${BUILT_PRODUCTS_DIR}/BEMCheckBox/BEMCheckBox.framework",
+				"${BUILT_PRODUCTS_DIR}/Bolts-Swift/BoltsSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
+				"${BUILT_PRODUCTS_DIR}/DownPicker/DownPicker.framework",
+				"${BUILT_PRODUCTS_DIR}/Floaty/Floaty.framework",
+				"${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework",
+				"${BUILT_PRODUCTS_DIR}/Parse/Parse.framework",
+				"${BUILT_PRODUCTS_DIR}/ParseLiveQuery/ParseLiveQuery.framework",
+				"${BUILT_PRODUCTS_DIR}/PopupDialog/PopupDialog.framework",
+				"${BUILT_PRODUCTS_DIR}/RSKImageCropper/RSKImageCropper.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
+				"${BUILT_PRODUCTS_DIR}/TaskQueue/TaskQueue.framework",
+				"${BUILT_PRODUCTS_DIR}/youtube-ios-player-helper/youtube_ios_player_helper.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSS3.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BEMCheckBox.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BoltsSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DownPicker.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Floaty.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NVActivityIndicatorView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Parse.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ParseLiveQuery.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PopupDialog.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSKImageCropper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TaskQueue.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/youtube_ios_player_helper.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -493,6 +537,7 @@
 				82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions.swift in Sources */,
 				829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */,
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
+				822010BA1FFAD960008C9027 /* ButtonsApprovalView.swift in Sources */,
 				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
 				C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */,
@@ -505,6 +550,7 @@
 				8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */,
 				827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */,
 				82E372481FB16C32000AD7EB /* InfoView.swift in Sources */,
+				822010B81FFAD684008C9027 /* FanpageApprovalLauncher.swift in Sources */,
 				82E3723F1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift in Sources */,
 				82E372371FB16550000AD7EB /* GroupNameViewController.swift in Sources */,
 				8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */,

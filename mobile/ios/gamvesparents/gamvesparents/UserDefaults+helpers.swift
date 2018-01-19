@@ -13,6 +13,7 @@ extension UserDefaults {
     enum UserDefaultsKeys: String {
         case isLoggedIn
         case isHasProfileInfo
+        case isRegistered
     }
     
     func setIsLoggedIn(value: Bool) {
@@ -32,6 +33,16 @@ extension UserDefaults {
     func isHasProfileInfo() -> Bool {
         return bool(forKey: UserDefaultsKeys.isHasProfileInfo.rawValue)
     }
+    
+    func setIsRegistered(value: Bool) {
+        set(value, forKey: UserDefaultsKeys.isRegistered.rawValue)
+        synchronize()
+    }
+    
+    func isRegistered() -> Bool {
+        return bool(forKey: UserDefaultsKeys.isRegistered.rawValue)
+    }
+    
     
     
 }
