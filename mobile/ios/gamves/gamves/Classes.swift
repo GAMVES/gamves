@@ -10,6 +10,18 @@ import Foundation
 import UIKit
 import Parse
 
+class GamvesNotification
+{
+    var objectId = String()
+    var thumbnail:UIImage?
+    var referenceId = Int()
+    var title = String()
+    var description = String()
+    var date = Date()
+    var video = VideoGamves()
+    var fanpage = FanpageGamves()
+    var type = Int()
+}
 
 class ChatFeed
 {

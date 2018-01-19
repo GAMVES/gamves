@@ -28,6 +28,8 @@ class ProfileCell: BaseCell,
     ColorPickerViewDelegate
 {
 
+    var homeController: HomeController?
+    
     var profileSaveType:ProfileSaveType!
 
     var metricsHome = [String:Int]()
@@ -35,14 +37,21 @@ class ProfileCell: BaseCell,
     var userStatistics = [UserStatistics]()
 
     var videosGamves  = [VideoGamves]()
-    let cellVideoCollectionId = "cellVideoCollectionId"
-    
+    let cellVideoCollectionId = "cellVideoCollectionId"    
+
     let profileView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.gamvesBackgoundColor
+        view.backgroundColor = UIColor.white
         return view
     }()
+    
+    let registerViewContent: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()  
     
     // SON VIEW
     

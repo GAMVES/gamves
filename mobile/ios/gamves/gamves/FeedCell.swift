@@ -99,9 +99,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
                 
                 self.collectionView.reloadData()
                 
-            })
-
-            
+            })           
         }
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.updated) { _, chatFeed in
@@ -193,17 +191,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
 
         if message.range(of:admin_delimitator) != nil {
             if let range = message.range(of: admin_delimitator) {
-                message.removeSubrange(range)
-            }
-
-        }
-        
-        let audio_delimitator = Global.audio_delimitator
-        
-        if message.range(of:audio_delimitator) != nil {
             
-            if let range = message.range(of: audio_delimitator) {
-
                 message.removeSubrange(range)
                 
                 if (message.contains("____"))
@@ -226,6 +214,19 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         } else {
             
             cell.messageLabel.text = message
+        }
+        
+        
+        let audio_delimitator = Global.audio_delimitator
+        
+        if message.range(of:audio_delimitator) != nil {
+        
+            if let range = message.range(of: audio_delimitator) {
+    
+                //HERE SHOW AUDIO MESSAGE
+                
+            }
+            
         }
         
         cell.profileImageView.image = chatfeed.chatThumbnail
