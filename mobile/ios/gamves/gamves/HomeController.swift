@@ -62,34 +62,17 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         setupMenuBar()
         setupNavBarButtons()
         
-        //Global.buildPopup(viewController:self, title: "Hola", message: "Este es un mensaje")
-        
-        
-        
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        
-        //Got to Feed if there is a Badge
-        //let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        //if (appDelegate.gamvesApplication?.applicationIconBadgeNumber)! > 0
-        //{
-            //Move to the next index, could not do it.
-        //}
+        //Global.buildPopup(viewController:self, title: "Hola", message: "Este es un mensaje")   
         
     }
     
     override func viewDidLayoutSubviews() {
         //print("did")
-        
-        
     }
     
-    func setupCollectionView()
-    {
-        if let flowLayout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
-        {
+    func setupCollectionView() {
+        
+        if let flowLayout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
             flowLayout.scrollDirection = .horizontal
             flowLayout.minimumLineSpacing = 0
         }
@@ -141,17 +124,11 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         scrollToMenuIndex(2)
     }
     
-    func scrollToMenuIndex(_ menuIndex: Int)
-    {
-        
+    func scrollToMenuIndex(_ menuIndex: Int) {
         let indexPath = IndexPath(item: menuIndex, section: 0)
-        
         collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition(), animated: true)
-        
         setTitleForIndex(menuIndex)
-        
         self.reloadFeed(index: menuIndex)
-        
     }
     
     fileprivate func setTitleForIndex(_ index: Int) {
@@ -168,13 +145,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }()
     
     fileprivate func setupMenuBar() {
-        navigationController?.hidesBarsOnSwipe = true
         
-        /*let redView = UIView()
-        redView.backgroundColor = UIColor.gamvesBlackColor // .rgb(230, green: 32, blue: 31)
-        view.addSubview(redView)
-        view.addConstraintsWithFormat("H:|[v0]|", views: redView)
-        view.addConstraintsWithFormat("V:[v0(50)]", views: redView)*/
+        //navigationController?.hidesBarsOnSwipe = true
         
         view.addSubview(menuBar)
         view.addConstraintsWithFormat("H:|[v0]|", views: menuBar)
@@ -187,8 +159,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         menuBar.horizontalBarLeftAnchorConstraint?.constant = scrollView.contentOffset.x / 4
     }
     
-    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
-    {
+    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
         let index = targetContentOffset.pointee.x / view.frame.width
         
@@ -196,14 +167,11 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         menuBar.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionViewScrollPosition())
         
         self.setTitleForIndex(Int(index))
-        
         self.reloadFeed(index: Int(index))
     }
     
-    func reloadFeed(index : Int)
-    {
-        if cellFree != nil && index == 1
-        {
+    func reloadFeed(index : Int) {
+        if cellFree != nil && index == 1 {
             cellFree.reloadCollectionView()
         }
     }
@@ -283,8 +251,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return selector
     }()
     
-    func selectContact(group: Bool)
-    {
+    func selectContact(group: Bool) {
         selectContactViewController.isGroup = group
         selectContactViewController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
@@ -304,8 +271,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return newvideo
     }()
     
-    func addNewVideo()
-    {        
+    func addNewVideo() {
         newVideoController.isYoutubeHidden = true
         newVideoController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
@@ -313,8 +279,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.pushViewController(newVideoController, animated: true)
     }
     
-    func addNewFanpage()
-    {
+    func addNewFanpage() {
         newFanpageController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
@@ -327,8 +292,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return groupName
     }()
     
-    func selectGroupName(users: [GamvesParseUser])
-    {
+    func selectGroupName(users: [GamvesParseUser]) {
         groupNameViewController.view.backgroundColor = UIColor.white
         groupNameViewController.gamvesUsers = users
         navigationController?.navigationBar.tintColor = UIColor.white

@@ -39,8 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         var reached = false
         
-        if Reachability.isConnectedToNetwork() == true
-        {
+        if Reachability.isConnectedToNetwork() == true {
             
             online = true
             
@@ -48,7 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             print("Internet connection OK")
             
             reached = true
-            
             
             UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
             
@@ -58,11 +56,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             UINavigationBar.appearance().shadowImage = UIImage()
             UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
             
-            if let user = PFUser.current()
-            {
+            if let user = PFUser.current() {
                 window?.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))
-            } else
-            {
+            } else {
                 window?.rootViewController = UINavigationController(rootViewController: LoginController())
             }
             
@@ -74,7 +70,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             window?.addSubview(statusBarBackgroundView)
             window?.addConstraintsWithFormat("H:|[v0]|", views: statusBarBackgroundView)
             window?.addConstraintsWithFormat("V:|[v0(20)]", views: statusBarBackgroundView)
-            
             
             if #available(iOS 10.0, *)
             {

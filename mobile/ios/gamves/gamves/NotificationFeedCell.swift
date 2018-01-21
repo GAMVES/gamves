@@ -109,7 +109,7 @@ class NotificationFeedCell: BaseCell {
         
         self.separatorView.backgroundColor = UIColor.lightGray
         
-        self.checkView = UIView()       
+        self.checkView = UIView()
         
         var checkLabel = UILabel()
         

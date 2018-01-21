@@ -9,7 +9,6 @@
 import UIKit
 import Floaty
 
-
 class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDelegate, CellDelegate {
     
     var homeController: HomeController?
