@@ -1,7 +1,7 @@
-require('./functions')
-require('./jobs')
-require('./init')
-require('./users')
+require('./functions');
+require('./jobs');
+require('./init');
+require('./users');
 
 /*
 * If you want to use Advanced Cloud Code,
@@ -361,7 +361,7 @@ Parse.Cloud.afterSave("Config", function(request) {
 
 
 Parse.Cloud.afterSave("Approvals", function(request) {
-	
+
 	var approved = request.object.get("approved");
 	var notified = request.object.get("notified");
 
@@ -370,72 +370,84 @@ Parse.Cloud.afterSave("Approvals", function(request) {
 	var title = request.object.get("title");
 	var referenceId = request.object.get("referenceId");
 	var familyId = request.object.get("familyId");	
-
-	var levelObjectId, typeDesc;	
+	
 
 	if (approved && !notified) { 
 
 		var Notification = Parse.Object.extend("Notifications");         
-        var notification = new Notification();
+        var notification = new Notification();	
 
+        var dataPush = [];
 
-		var userQuery = new new Parse.Query(Parse.User);
+		var userQuery = new Parse.Query(Parse.User);
 		userQuery.equalTo("objectId", posterId);
-	    return typeQuery.first().then(function(user) {
+	    userQuery.first().then(function(user) {
 
 	    	notification.set("posterName", user.get("Name"));
 	    	notification.set("posterAvatar", user.get("picture"));
 
-	    	levelObjectId = user.get("levelObjId");
+	    	if (type == 1) {
 
-	    	if type == 1 {
-
-	    		typeDesc = "video";
+	    		var vtitle = "New video from " + user.get("Name");
+	    		dataPush.push(vtitle);
 
 		        var videoQuery = new Parse.Query("Videos");
-		        videoQuery.equalTo("objectId", referenceId);
+		        videoQuery.equalTo("videoId", referenceId);
 		        return videoQuery.first();
 
-		    } else if type == 2 {
+		    } else if (type == 2) {
 
-		    	typeDesc = "fanpage";
+		    	var ftitle = "New fanpage from " + user.get("Name");
+		    	dataPush.push(ftitle);
 
 		    	var fanpagelQuery = new Parse.Query("Fanpages");
-		        fanpagelQuery.equalTo("objectId", referenceId);
+		        fanpagelQuery.equalTo("fanpageId", referenceId);
 		        return fanpagelQuery.first();
-
 		    }
-
 
 	    }).then(function(object) {
 
-	    	if type == 1 {
+	    	if (type == 1) { 
 
-	    		notification.set("title", user.get("pageName"));
-	    		notification.set("description", user.get("title"));
-	    		notification.set("icon", user.get("thumbnail"));
-	    		notification.set("referenceId", user.get("videoId"));
-	    		notification.set("date", user.get("createdAt"));
+				notification.set("title", object.get("title"));
+	    		notification.set("description", object.get("description"));	    		
+	    		notification.set("cover", object.get("thumbnail"));
+	    		notification.set("referenceId", object.get("videoId"));
+	    		notification.set("date", object.get("createdAt"));
+	    		notification.set("date", object.get("createdAt"));
+	    		notification.set("video", object);
 
-	    	} else if type == 2 {
+	    	} else if (type == 2) {
 
-	    		notification.set("title", user.get("pageName"));
-	    		notification.set("description", user.get("pageAbout"));
-	    		notification.set("icon", user.get("pageIcon"));
-	    		notification.set("cover", user.get("pageCover"));
-	    		notification.set("referenceId", user.get("fanpageId"));
-	    		notification.set("date", user.get("createdAt"));
-
+	    		notification.set("title", object.get("pageName"));
+	    		notification.set("description", object.get("pageAbout"));
+	    		notification.set("cover", object.get("thumbnail"));	    		
+	    		notification.set("referenceId", object.get("fanpageId"));
+	    		notification.set("fanpage", object);
 	    	}
+
+	    	notification.set("type", type);
 
 	    	return notification.save(null, {useMasterKey: true});
 
 		}).then(function(notificationSaved) {
 
-			var title = "New " + typeDesc + " from " + notificationSaved.get("posterName");   
-			var alert = "";//request.params.alert;
-			var channels = levelObjectId; //request.params.channels;
-			var data = notificationSaved.get("title"); //request.params.data;
+			var familyQuery = new Parse.Query("Family");
+	        familyQuery.equalTo("objectId", familyId);
+	        return familyQuery.first();
+
+	    }).then(function(family) {	
+
+	    	var levelRelation = family.relation("level").query();
+	        return levelRelation.find();
+
+	    }).then(function(levels) {	
+
+			var title = dataPush[0];
+			var alert = "this is an alert";
+			var level = levels[0];
+			var channels = level["id"];
+			var data = "";
 
 		    Parse.Push.send({
 		        channels:[channels],
@@ -447,10 +459,14 @@ Parse.Cloud.afterSave("Approvals", function(request) {
 		    }, {
 		        useMasterKey: true,
 		        success: function () {
-		            response.success('Success!');
+		            
+		        	notification.set("notified", true);		            
+		            notification.save(null, {useMasterKey: true});
+
 		        },
 		        error: function (error) {
-		            response.error('Error! ' + error.message);
+		            //response.error('Error! ' + error.message);
+		            console.log('Error: ' + error.message);
 		        }
 		    });
 
@@ -460,16 +476,7 @@ Parse.Cloud.afterSave("Approvals", function(request) {
 	        response.error(error);
 
 	    });		
-
-
-		
-
-
-
 	}
-
-	
-
 
 });
 

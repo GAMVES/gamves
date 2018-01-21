@@ -289,7 +289,7 @@
 	// --
 	// Upload Video To S3.
 
-	Parse.Cloud.define("uploadVideoToS3", function( request, response ) {
+	/*Parse.Cloud.define("uploadVideoToS3", function( request, response ) {
 
 		var video = request.params.video;
 
@@ -315,4 +315,4 @@
 			  console.log("done uploading");
 			});
 
-	});
+	});*/

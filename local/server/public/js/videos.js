@@ -258,7 +258,7 @@ document.addEventListener("LoadVideo", function(event){
           video.set("ytb_tags", tags);
           video.set("ytb_duration", duration);         
           video.set("ytb_categories", categories);         
-          video.set("ytb_like_count", like_count);                      
+          //video.set("ytb_like_count", like_count);                      
 
           var order = $("#edit_order_video").val();
           video.set("order", parseInt(order)); 

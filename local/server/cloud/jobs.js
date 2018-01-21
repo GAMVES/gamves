@@ -24,7 +24,11 @@
     var s3 = require('s3');
 
     var s3bucket = "gamves/"+folder+"/videos";
-    var s3endpoint = s3bucket  + ".s3.amazonaws.com";       
+    var s3endpoint = s3bucket  + ".s3.amazonaws.com";      
+
+    var s3key = "AKIAJP4GPKX77DMBF5AQ";
+    var s3secret = "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";
+    var s3region = "us-east-1";  
 
     var clientDownload = s3.createClient({
       maxAsyncS3: 20,     // this is the default
@@ -77,7 +81,7 @@
                        var imageBuffer = httpResponse.buffer;
                        var base64 = imageBuffer.toString("base64");
                        var file = new Parse.File(ytb_videoId+".jpg", { base64: base64 });                    
-                       var baseUrl = "https://s3.amazonaws.com/gamves"; //s3.getPublicUrl(s3bucket, s3key, s3region);
+                       var baseUrl = "https://s3.amazonaws.com/" + s3bucket; //s3.getPublicUrl(s3bucket, s3key, s3region);
                        var uploadedUrl = baseUrl + "/" + videoName; 
 
                        videoObject.save({                             
