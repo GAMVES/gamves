@@ -450,7 +450,7 @@ class FanpagePage: UIViewController,
                             video.ytb_duration              = durDouble!
                             
                             video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]
-                            video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
+                            //video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
                             video.order                     = qvideoinfo["order"] as! Int
                             video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
                             
@@ -552,9 +552,9 @@ class FanpagePage: UIViewController,
         {
             let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell
             
-            cellVideo.thumbnailImageView.image = videosGamves[indexPath.row].image
+            cellVideo.thumbnailImageView.image = self.videosGamves[indexPath.row].image
             
-            let posterId = videosGamves[indexPath.row].posterId
+            let posterId = self.videosGamves[indexPath.row].posterId
             
             if posterId == Global.gamves_official {
                 
@@ -634,7 +634,7 @@ class FanpagePage: UIViewController,
 
             let videoLauncher = VideoLauncher()
             
-            let video = videosGamves[indexPath.row]
+            let video = self.videosGamves[indexPath.row]
             video.fanpageId = fanpageGamves.fanpageId
             
             videoLauncher.showVideoPlayer(videoGamves: video)

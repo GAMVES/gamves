@@ -45,10 +45,9 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         
         self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
         
-        self.collectionView.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
+        self.collectionView.register(NotificationFeedCell.self, forCellWithReuseIdentifier: cellId)
         
         self.registerLiveQuery()
-
         self.fetchNotification()        
     }
     
@@ -58,6 +57,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         
         self.subscription = liveQueryClientFeed.subscribe(queryNotification).handle(Event.created) { _, notification in            
             
+            self.fetchNotification()
             
         }        
         
@@ -76,12 +76,81 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
             {
                 
                 let notificationsCount = notifications?.count
-                
                 if notificationsCount! > 0
                 {
+
+                    var count = 0
+                    
+                    for notificationPF in notifications! {
                    
+                        let notification = GamvesNotification()
 
+                        notification.objectId = (notificationPF.objectId as? String)!
+                        notification.title = (notificationPF["title"] as? String)!
+                        notification.referenceId = (notificationPF["referenceId"] as? Int)!
+                        notification.description = (notificationPF["description"] as? String)!
+                        notification.date = (notificationPF.createdAt as? Date)!
 
+                        let type =  notificationPF["type"] as? Int 
+
+                        if type == 1 { //video
+
+                            let videoGamves = VideoGamves()
+                            let videoObj = notificationPF["video"] as? PFObject
+                            videoGamves.videoObj = videoObj
+                            notification.video = videoGamves
+                            
+                        } else if type == 2 { //Fanpage
+                            
+                            let fanpageGamves = FanpageGamves()
+                            let fanpageObj = notificationPF["fanpage"] as? PFObject
+                            fanpageGamves.fanpageObj = fanpageObj
+                            notification.fanpage = fanpageGamves
+                        }
+ 
+                        if let objectId:String = notificationPF.objectId {
+                            notification.objectId = objectId   
+                        }               
+
+                        notification.type = type!
+
+                        let cover = notificationPF["cover"] as! PFFile
+
+                        let avatar = notificationPF["posterAvatar"] as! PFFile
+
+                        avatar.getDataInBackground(block: { (imageAvatar, error) in
+                
+                            if error == nil {
+
+                                if let imageAvatarData = imageAvatar {
+
+                                    notification.avatar = UIImage(data:imageAvatarData)                                  
+
+                                    cover.getDataInBackground(block: { (imageCover, error) in
+                
+                                        if error == nil {
+
+                                            if let imageCoverData = imageCover {
+
+                                                notification.cover = UIImage(data:imageCoverData)
+
+                                                Global.notifications.append(notification)
+
+                                                if count == (notificationsCount! - 1) {
+
+                                                    self.collectionView.reloadData()
+
+                                                    self.activityView.stopAnimating()
+                                                }
+                                                
+                                                count = count + 1
+                                            }
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                    }
                     
                 } else
                 {
@@ -124,7 +193,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         let index = indexPath.item
         let notification:GamvesNotification = Global.notifications[index]
         
-        cell.nameLabel.text = notification.title
+        cell.notificationName.text = notification.title
 
         var message:String = notification.description
 
@@ -138,9 +207,11 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
             }
         } 
 
-        cell.messageLabel.text = message
+        cell.descriptionTextView.text = message
         
-        cell.profileImageView.image = notification.thumbnail
+        cell.userProfileImageView.image = notification.avatar
+        
+        cell.thumbnailImageView.image = notification.cover
         
         var image = String()
         
@@ -157,15 +228,20 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
             dateFormatter.dateFormat = "EEE"
         }
         
-        cell.timeLabel.text = dateFormatter.string(from: notification.date)
+        cell.notficationDatePublish.text = dateFormatter.string(from: notification.date)
     
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
+        var size = CGSize()
+
+        let height = (self.frame.width - 16 - 16) * 9 / 16
+            
+        size = CGSize(width: self.frame.width, height: height + 16 + 88)
         
-        return CGSize(width: self.frame.width, height: 100)
+        return size //CGSize(width: self.frame.width, height: 100)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -422,12 +422,12 @@ UICollectionViewDelegateFlowLayout {
         
         var catArray = [String]()
         
-        let ids = Array(Global.categories_gamves.keys)
-        
+        let ids = Array(Global.categories_gamves.keys)        
+        var categories = [String]()
         for i in ids {
-            catArray.append((Global.categories_gamves[i]?.name)!)
+            let cat = Global.categories_gamves[i]?.name as! String
+            categories.append(cat)
         }
-        let categories: NSMutableArray = catArray as! NSMutableArray
         self.categoryDownPicker = DownPicker(textField: categoryTypeTextField, withData:categories as! [Any])
         self.categoryDownPicker.setPlaceholder("Tap to choose category...")
 
@@ -486,7 +486,7 @@ UICollectionViewDelegateFlowLayout {
         {
             fanArray.append(fan.name)
         }
-        let fanpages = fanArray as! NSMutableArray
+        let fanpages = fanArray //as! NSMutableArray
     
     }
     

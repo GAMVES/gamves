@@ -8,127 +8,140 @@
 
 
 import UIKit
+import PulsingHalo
 
 class NotificationFeedCell: BaseCell {
     
-    override var isHighlighted: Bool {
-        didSet {
-            backgroundColor = isHighlighted ? UIColor(red: 0, green: 134/255, blue: 249/255, alpha: 1) : UIColor.white
-            nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
-            timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
-            messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
-        }
-    }
-
-    var profileImageView: UIImageView = {
-        let imageView = UIImageView()
+    var checked = Bool()
+    
+    let thumbnailImageView: CustomImageView = {
+        let imageView = CustomImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 34
-        imageView.layer.masksToBounds = true
+        imageView.clipsToBounds = true
         return imageView
     }()
     
-    var dividerLineView: UIView = {
+    let rowView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
+        view.backgroundColor = UIColor.white
         return view
     }()
     
-    var nameLabel: UILabel = {
+    let userProfileImageView: CustomImageView = {
+        let imageView = CustomImageView()
+        imageView.layer.cornerRadius = 25
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
+    let labelsView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        return view
+    }()
+    
+    let notificationName: UILabel = {
         let label = UILabel()
-        label.text = "Mark Zuckerberg"
         label.font = UIFont.systemFont(ofSize: 18)
         return label
     }()
     
-    var messageLabel: UILabel = {
+    let notficationDatePublish: UILabel = {
         let label = UILabel()
-        label.text = "Your friend's message and something else..."
-        label.textColor = UIColor.darkGray
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 10)
         return label
     }()
     
-    var timeLabel: UILabel = {
-        let label = UILabel()
-        label.text = "12:05 pm"
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textAlignment = .right
-        return label
+    let descriptionTextView: UITextView = {
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.textContainerInset = UIEdgeInsetsMake(0, -4, 0, 0)
+        textView.textColor = UIColor.lightGray
+        return textView
     }()
     
-    var hasReadImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 10
-        imageView.layer.masksToBounds = true
-        return imageView
+    let separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        return view
     }()
     
-    var isImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 10
-        imageView.layer.masksToBounds = true
-        return imageView
+    var checkView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        return view
     }()
     
-    var badgeLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textAlignment = .right
-        return label
-    }()
-
+    var titleLabelHeightConstraint: NSLayoutConstraint?
     
-    override func setupViews() {
+    override func setupViews()
+    {
         
-        addSubview(profileImageView)
-        addSubview(dividerLineView)
+        addSubview(thumbnailImageView)
+        addSubview(rowView)
+        addSubview(separatorView)
         
-        setupContainerView()
+        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: thumbnailImageView)
+        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: rowView)
+        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: separatorView)
         
-        addConstraintsWithFormat("H:|-12-[v0(68)]", views: profileImageView)
-        addConstraintsWithFormat("V:[v0(68)]", views: profileImageView)
+        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(50)]-10-[v2(1)]|",
+                                 views: thumbnailImageView, rowView, separatorView)
         
-        addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        rowView.addSubview(userProfileImageView)
+        rowView.addSubview(labelsView)
         
-        addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
+        rowView.addConstraintsWithFormat("H:|[v0(50)]|", views: userProfileImageView)
+        rowView.addConstraintsWithFormat("V:|[v0(50)]|", views: userProfileImageView)
         
-    }
-    
-    fileprivate func setupContainerView() {
-        let containerView = UIView()
-        addSubview(containerView)
+        rowView.addConstraintsWithFormat("H:|-50-[v0]|", views: labelsView)
+        rowView.addConstraintsWithFormat("V:|[v0(50)]|", views: labelsView)
         
-        addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
-        addConstraintsWithFormat("V:[v0(50)]", views: containerView)
+        labelsView.addSubview(notificationName)
+        labelsView.addSubview(notficationDatePublish)
         
-        addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        labelsView.addConstraintsWithFormat("H:|-10-[v0]|", views: notificationName)
+        labelsView.addConstraintsWithFormat("V:|[v0(25)]|", views: notificationName)
         
-        badgeLabel =  Global.createCircularLabel(text: "✓", size: 25, fontSize: 13.0, borderWidth: 0.0, color: UIColor.gamvesColor)
+        labelsView.addConstraintsWithFormat("H:|-10-[v0]|", views: notficationDatePublish)
+        labelsView.addConstraintsWithFormat("V:|-25-[v0(25)]|", views: notficationDatePublish)
         
-        containerView.addSubview(nameLabel)
-        containerView.addSubview(messageLabel)
-        containerView.addSubview(timeLabel)
-        containerView.addSubview(isImageView)
-        containerView.addSubview(hasReadImageView)
-        containerView.addSubview(badgeLabel)
-
-        containerView.addConstraintsWithFormat("H:|[v0][v1(80)]-12-|", views: nameLabel, timeLabel)
+        self.separatorView.backgroundColor = UIColor.lightGray
         
-        containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, messageLabel)
+        self.checkView = UIView()       
         
-        containerView.addConstraintsWithFormat("H:|[v0]-8-[v1(20)]-8-[v2(20)]-8-[v3(25)]-12-|", views: messageLabel, isImageView, hasReadImageView, badgeLabel)
+        var checkLabel = UILabel()
         
-        containerView.addConstraintsWithFormat("V:|[v0(24)]", views: timeLabel)
+        checkLabel =  Global.createCircularLabel(text: "New", size: 60, fontSize: 20.0, borderWidth: 3.0, color: UIColor.red)
         
-        containerView.addConstraintsWithFormat("V:[v0(20)]|", views: isImageView)
+        let haloCheck = PulsingHaloLayer()
+        haloCheck.position.x = checkLabel.center.x
+        haloCheck.position.y = checkLabel.center.y
+        haloCheck.haloLayerNumber = 5
+        haloCheck.backgroundColor = UIColor.white.cgColor
+        haloCheck.radius = 100
+        haloCheck.start()
         
-        containerView.addConstraintsWithFormat("V:[v0(20)]|", views: hasReadImageView)
+        self.checkView.layer.addSublayer(haloCheck)
         
-        containerView.addConstraintsWithFormat("V:[v0(25)]|", views: badgeLabel)
+        let cw = self.frame.width
+        let ch = cw * 9 / 16
+        
+        let pr = cw - 100
+        let pt = ch - 80
+        
+        let paddingMetrics = ["pr":pr,"pt":pt]
+        
+        self.addSubview(self.checkView)
+        self.addConstraintsWithFormat("H:|-pr-[v0(30)]", views: self.checkView, metrics : paddingMetrics)
+        self.addConstraintsWithFormat("V:|-pt-[v0(30)]", views: self.checkView, metrics : paddingMetrics)
+        
+        self.checkView.addSubview(checkLabel)
+        self.checkView.addConstraintsWithFormat("H:|[v0(60)]|", views: checkLabel)
+        self.checkView.addConstraintsWithFormat("V:|[v0(60)]|", views: checkLabel)
+        
+        
     }
     
 }

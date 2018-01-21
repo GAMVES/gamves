@@ -535,7 +535,7 @@ class ChatView: UIView,
             }
         }
         
-        self.initializeSubscription()
+        self.initializeChatSubscription()
         
     }
     
@@ -756,7 +756,7 @@ class ChatView: UIView,
     }
     
     
-    func initializeSubscription()
+    func initializeChatSubscription()
     {
         
         let videoQuery = PFQuery(className: "ChatVideo").whereKey("chatId", equalTo: self.chatId)

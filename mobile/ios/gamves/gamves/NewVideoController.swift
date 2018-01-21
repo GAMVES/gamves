@@ -391,14 +391,20 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
 
         //self.categoryTypeTextField.becomeFirstResponder()
 
-        var catArray = [String]()
-        
+        /*var catArray = [String]()
         let ids = Array(Global.categories_gamves.keys)
-        
         for i in ids {
             catArray.append((Global.categories_gamves[i]?.name)!)
         }
-        let categories: NSMutableArray = catArray as! NSMutableArray
+        let categories: NSMutableArray = catArray as! NSMutableArray*/
+        
+        let ids = Array(Global.categories_gamves.keys)
+        var categories = [String]()
+        for i in ids {
+            let cat = Global.categories_gamves[i]?.name as! String
+            categories.append(cat)
+        }
+        
         self.categoryDownPicker = DownPicker(textField: categoryTypeTextField, withData:categories as! [Any])
         self.categoryDownPicker.setPlaceholder("Tap to choose category...")
 
@@ -517,7 +523,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         {
             fanArray.append(fan.name)
         }
-        let fanpages = fanArray as! NSMutableArray
+        let fanpages = fanArray //as! NSMutableArray
         self.fanpageDownPicker.setData(fanpages as! [Any])
         self.fanpageDownPicker.setPlaceholder("Tap to choose fanpage...")
 
@@ -864,7 +870,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             let tags            = json["tags"] as! NSArray
             let duration        = json["duration"] as! String
             let categoriesArray = json["categories"] as! NSArray
-            let like_count      = json["like_count"] as! Double
+            //let like_count      = json["like_count"] as! Int
         
             self.thumbnail_url    = (json["thumbnail"] as? String)!
             
@@ -877,7 +883,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             videoPF["ytb_tags"]         = tags
             videoPF["ytb_duration"]     = duration
             videoPF["ytb_categories"]   = categoriesArray
-            videoPF["ytb_like_count"]   = like_count
+            //videoPF["ytb_like_count"]   = like_count
             
             videoPF["source_type"] = 2
             

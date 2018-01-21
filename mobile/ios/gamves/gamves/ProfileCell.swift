@@ -785,7 +785,7 @@ class ProfileCell: BaseCell,
                             video.ytb_duration              = durDouble!
                             
                             video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]
-                            video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
+                            //video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
                             video.order                     = qvideoinfo["order"] as! Int
                             video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
                             

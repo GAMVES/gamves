@@ -13,7 +13,8 @@ import Parse
 class GamvesNotification
 {
     var objectId = String()
-    var thumbnail:UIImage?
+    var avatar:UIImage?
+    var cover:UIImage?    
     var referenceId = Int()
     var title = String()
     var description = String()
@@ -114,7 +115,7 @@ class VideoGamves
     var ytb_tags = [String]()
     var ytb_duration = Double()
     var ytb_categories = [String]()
-    var ytb_like_count = Int()
+    //var ytb_like_count = Int()
     var order = Int()
     var fanpageId = Int()
     var image = UIImage()
