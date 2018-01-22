@@ -768,6 +768,10 @@ UICollectionViewDelegateFlowLayout {
             
             fanpagePF["approved"] = false
             
+            let userPointer = PFObject(withoutDataWithClassName: "User", objectId: PFUser.current()?.objectId)
+            
+            fanpagePF["author"] = userPointer
+            
             fanpagePF.saveInBackground(block: { (fanpge, error) in
                 
                 if error == nil {

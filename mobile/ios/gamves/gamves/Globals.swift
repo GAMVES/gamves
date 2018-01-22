@@ -101,6 +101,8 @@ class Global: NSObject
     {
         let userId = user.objectId!
         
+        print(user.username)
+        
         if self.userDictionary[userId] == nil
         {
             
@@ -119,7 +121,6 @@ class Global: NSObject
             }
             
             gamvesUser.isRegister = registered
-            
             
             gamvesUser.userName = user["username"] as! String
             

@@ -146,8 +146,14 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     fileprivate func setupMenuBar() {
         
-        //navigationController?.hidesBarsOnSwipe = true
+        navigationController?.hidesBarsOnSwipe = true
         
+        let redView = UIView()
+         redView.backgroundColor = UIColor.gamvesBlackColor // .rgb(230, green: 32, blue: 31)
+         view.addSubview(redView)
+         view.addConstraintsWithFormat("H:|[v0]|", views: redView)
+         view.addConstraintsWithFormat("V:[v0(50)]", views: redView)
+
         view.addSubview(menuBar)
         view.addConstraintsWithFormat("H:|[v0]|", views: menuBar)
         view.addConstraintsWithFormat("V:[v0(50)]", views: menuBar)

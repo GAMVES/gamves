@@ -19,7 +19,43 @@ class FanpageCollectionViewCell: BaseCell {
         return imageView
     }()
     
+    let detailView: UIView = {
+        let view = UIView()
+        //view.backgroundColor = UIColor.cyan
+        return view
+    }()
+    
     let userProfileImageView: CustomImageView = {
+        let imageView = CustomImageView()
+        //imageView.image = UIImage(named: "taylor_swift_profile")
+        imageView.layer.cornerRadius = 22
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
+        return label
+    }()
+    
+    let centerlView: UIView = {
+        let view = UIView()
+        //view.backgroundColor = UIColor.cyan
+        return view
+    }()
+    
+    let createdByLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "created by"
+        label.font = UIFont.systemFont(ofSize: 9)
+        return label
+    }()
+    
+    let authorImageView: CustomImageView = {
         let imageView = CustomImageView()
         //imageView.image = UIImage(named: "taylor_swift_profile")
         imageView.layer.cornerRadius = 22
@@ -34,55 +70,54 @@ class FanpageCollectionViewCell: BaseCell {
         return view
     }()
     
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        //label.text = "Taylor Swift - Blank Space"
-        label.numberOfLines = 2
-        return label
-    }()
-    
     var titleLabelHeightConstraint: NSLayoutConstraint?
+    var createdByViewHeightConstraint: NSLayoutConstraint?
     
+    var isLineHidden = Bool()
+
     override func setupViews() 
     {
         addSubview(thumbnailImageView)
+        addSubview(detailView)
         addSubview(separatorView)
-        addSubview(userProfileImageView)
-        addSubview(titleLabel)
-        
-        //addSubview(subtitleTextView)
         
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: thumbnailImageView)
-        
-        addConstraintsWithFormat("H:|-16-[v0(44)]", views: userProfileImageView)
-        
-        //vertical constraints
-        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(44)]-8-[v2(1)]|", views: thumbnailImageView, userProfileImageView, separatorView)
-        
+        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: detailView)
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: separatorView)
+        
+        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(44)]-8-[v2(1)]|", views: thumbnailImageView, detailView, separatorView)
+        
+        detailView.addSubview(userProfileImageView)
+        detailView.addSubview(titleLabel)
+        detailView.addSubview(centerlView)
+        detailView.addSubview(createdByLabel)
+        detailView.addSubview(authorImageView)
+        
+        detailView.addConstraintsWithFormat("V:|[v0]|", views: userProfileImageView)
+        detailView.addConstraintsWithFormat("V:|[v0]|", views: titleLabel)
+        detailView.addConstraintsWithFormat("V:|[v0]|", views: centerlView)
+        detailView.addConstraintsWithFormat("V:|[v0]-30-|", views: createdByLabel)
+        detailView.addConstraintsWithFormat("V:|[v0]|", views: authorImageView)
+        
+        addConstraintsWithFormat("H:|[v0(44)]-8-[v1(200)][v2][v3(50)][v4(44)]|", views:
+            userProfileImageView,
+            titleLabel,
+            centerlView,
+            createdByLabel,
+            authorImageView)
 
         self.separatorView.backgroundColor = UIColor.gray
         
-        //top constraint
-        addConstraint(NSLayoutConstraint(item: titleLabel, attribute: .top, relatedBy: .equal, toItem: thumbnailImageView, attribute: .bottom, multiplier: 1, constant: 8))
-        //left constraint
-        addConstraint(NSLayoutConstraint(item: titleLabel, attribute: .left, relatedBy: .equal, toItem: userProfileImageView, attribute: .right, multiplier: 1, constant: 8))
-        //right constraint
-        addConstraint(NSLayoutConstraint(item: titleLabel, attribute: .right, relatedBy: .equal, toItem: thumbnailImageView, attribute: .right, multiplier: 1, constant: 0))
+    }
+    
+    override func layoutSubviews() {
         
-        //height constraint
-        titleLabelHeightConstraint = NSLayoutConstraint(item: titleLabel, attribute: .height, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 0, constant: 44)
-        addConstraint(titleLabelHeightConstraint!)
+        if isLineHidden {
+            
+            self.separatorView.isHidden = true
+            
+        }
         
-        //top constraint
-        /*addConstraint(NSLayoutConstraint(item: subtitleTextView, attribute: .top, relatedBy: .equal, toItem: titleLabel, attribute: .bottom, multiplier: 1, constant: 4))
-        //left constraint
-        addConstraint(NSLayoutConstraint(item: subtitleTextView, attribute: .left, relatedBy: .equal, toItem: userProfileImageView, attribute: .right, multiplier: 1, constant: 8))
-        //right constraint
-        addConstraint(NSLayoutConstraint(item: subtitleTextView, attribute: .right, relatedBy: .equal, toItem: thumbnailImageView, attribute: .right, multiplier: 1, constant: 0))
-        //height constraint
-        addConstraint(NSLayoutConstraint(item: subtitleTextView, attribute: .height, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 0, constant: 25))*/
     }
 
     

@@ -11,11 +11,12 @@ import Parse
 import NVActivityIndicatorView
 
 let fanpageCell = "fanpageCell"
+let fanpageTrendingCell = "fanpageTrendingCell"
 
 class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDelegate  {
     
     let categorySectionCellId = "categorySectionCellId"
-    let categoryCollectionCellId = "categoryCollectionCellId"    
+    let categoryCollectionCellId = "categoryCollectionCellId"
 
     var width = CGFloat()
     var height = CGFloat()
@@ -94,8 +95,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         }
         print(indexPath.row)
         storedOffsets[indexPath.row] = tableViewCell.collectionViewOffset
-    }    
-   
+    }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
     {
@@ -128,7 +128,30 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        return 150
+        var size = CGFloat()
+        
+        if Global.categories_gamves.count > 0 {
+        
+            let id = indexPath.section
+        
+            let categoryName = Global.categories_gamves[id]?.name
+        
+            if categoryName == "TRENDING" {
+                
+                var height = (view.frame.width - 16 - 16) * 9 / 16
+                height = height + 16 + 88
+                size =  height
+                
+            } else {
+                size = 150
+            }
+        
+        } else {
+            size = 150
+        }
+        
+        return size
+
     }
 
    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {        
@@ -280,7 +303,6 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                 }
                                                 
                                                 let order = pcategory["order"] as! Int
-
                                                 
                                                 Global.categories_gamves[order] = cat
 
@@ -305,7 +327,6 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                             count  = count + 1
                                             
                                         }
-                                        
                                     })
                                 }
                             }
@@ -334,10 +355,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
             
             queryFanpage.whereKey("category", equalTo: category)
             
-            //queryFanpage.cachePolicy = .cacheElseNetwork
-            
-            if !Global.hasDateChanged()
-            {
+            if !Global.hasDateChanged() {
                 queryFanpage.cachePolicy = .cacheElseNetwork
             }
             
@@ -379,48 +397,72 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                             let icon  = fpObj["pageIcon"] as! PFFile
                             let about  = fpObj["pageAbout"] as! String
                             
-                            icon.getDataInBackground(block: { (iconImageData, error) in
+                            let authorRelation = fpObj["author"] as! PFRelation
+                            let queryAuthor = authorRelation.query()
+                            queryAuthor.findObjectsInBackground(block: { (users, error) in
                                 
-                                if error == nil
-                                {
+                                if error == nil {
                                     
-                                    let iconImage = UIImage(data: iconImageData!)
-                                    
-                                    fan.icon_image = iconImage!
-                                    fan.name =  name
-                                    fan.about = about
-                                    
-                                    cover.getDataInBackground(block: { (coverImageData, error) in
+                                    for user in users! {
                                         
-                                        if error == nil
-                                        {
-                                            
-                                            let coverImage = UIImage(data:coverImageData!)
-                                            fan.cover_image = coverImage!
-                                            
-                                            cat.fanpages.append(fan)
-                                            
-                                            print(fanpageAmount)
-                                            print(count)
-                                            //print(lastCategory)
-                                            
-                                            if  (fanpageAmount-1) == count //&& lastCategory )
-                                            {
-                                                self.dalaLoaded=true
-                                                
-                                                DispatchQueue.main.async {
-                                                    self.tableView.isHidden = false
-                                                    self.activityIndicatorView?.stopAnimating()
-                                                    self.tableView.reloadData()
-                                                }
-                                                
-                                            }
-                                            DispatchQueue.main.async{
-                                                self.tableView.reloadData()
-                                            }
-                                            count = count + 1
+                                        var isFamily = Bool()
+                                        let author = user as! PFUser
+                                        
+                                        if author.objectId == PFUser.current()?.objectId {
+                                            isFamily = true
                                         }
-                                    })
+                                        
+                                        Global.addUserToDictionary(user: author, isFamily: isFamily, completionHandler: { (gamvedUser) in
+                                            
+                                            fan.author = author as! PFUser
+                                            fan.author_image = gamvedUser.avatar
+                                            
+                                            icon.getDataInBackground(block: { (iconImageData, error) in
+                                                
+                                                if error == nil
+                                                {
+                                                    
+                                                    let iconImage = UIImage(data: iconImageData!)
+                                                    
+                                                    fan.icon_image = iconImage!
+                                                    fan.name =  name
+                                                    fan.about = about
+                                                    
+                                                    cover.getDataInBackground(block: { (coverImageData, error) in
+                                                        
+                                                        if error == nil
+                                                        {
+                                                            
+                                                            let coverImage = UIImage(data:coverImageData!)
+                                                            fan.cover_image = coverImage!
+                                                            
+                                                            cat.fanpages.append(fan)
+                                                            
+                                                            print(fanpageAmount)
+                                                            print(count)
+                                                            //print(lastCategory)
+                                                            
+                                                            if  (fanpageAmount-1) == count //&& lastCategory )
+                                                            {
+                                                                self.dalaLoaded=true
+                                                                
+                                                                DispatchQueue.main.async {
+                                                                    self.tableView.isHidden = false
+                                                                    self.activityIndicatorView?.stopAnimating()
+                                                                    self.tableView.reloadData()
+                                                                }
+                                                                
+                                                            }
+                                                            DispatchQueue.main.async{
+                                                                self.tableView.reloadData()
+                                                            }
+                                                            count = count + 1
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                        })
+                                    }
                                 }
                             })
                         }
@@ -437,7 +479,7 @@ protocol CellDelegate : class
 }
 
 extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource {
- 
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
              
         let id = collectionView.tag as Int
@@ -453,31 +495,46 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: fanpageCell, for: indexPath) as! CategoryCollectionViewCell
-        
         let id = collectionView.tag
         
         let row = indexPath.row
         
         print(Global.categories_gamves[id]?.name)
         
-        print(id)        
-        print(row)
-        
-        print(Global.categories_gamves[id]?.fanpages.count)
-
         let fanpage = Global.categories_gamves[id]?.fanpages[row]
         
-        print(fanpage?.name)
-
-        cell.fanpageImageView.layer.masksToBounds = true
-        cell.fanpageImageView.layer.cornerRadius = 5
+        if Global.categories_gamves[id]?.name == "TRENDING" {
+            
+            var tcell = collectionView.dequeueReusableCell(withReuseIdentifier: fanpageTrendingCell, for: indexPath) as! FanpageCollectionViewCell
+            
+            tcell.isLineHidden  = true
+            
+            tcell.thumbnailImageView.image = fanpage?.cover_image
+            
+            tcell.titleLabel.text = fanpage?.name
+            
+            tcell.userProfileImageView.image = fanpage?.icon_image
+            
+            tcell.authorImageView.image = fanpage?.author_image
+            
+            return tcell
+            
+        } else {
+            
+            var ccell = collectionView.dequeueReusableCell(withReuseIdentifier: fanpageCell, for: indexPath) as! CategoryCollectionViewCell
+            
+            ccell.fanpageImageView.layer.masksToBounds = true
+            ccell.fanpageImageView.layer.cornerRadius = 5
+            
+            ccell.fanpageImageView.image = fanpage?.icon_image
+            
+            ccell.fanpageName.text = fanpage?.name
+            
+            return ccell
+            
+        }
         
-        cell.fanpageImageView.image = fanpage?.icon_image
-        
-        cell.fanpageName.text = fanpage?.name
-        
-        return cell
+        return UICollectionViewCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
@@ -499,16 +556,26 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
             delegate?.setCurrentPage(current: 2, direction: UIPageViewControllerNavigationDirection.forward, data: fanpage)
         }
         
-    }   
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize 
-    {        
-        return CGSize(width: 100, height: 150)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize 
     {
-      return CGSize(width: 100, height: 150)
+      //return CGSize(width: 100, height: 150)
+        
+        var size = CGSize()
+        
+        let id = collectionView.tag
+        
+        if Global.categories_gamves[id]?.name == "TRENDING" {
+            
+            let height = (view.frame.width - 16 - 16) * 9 / 16
+            size =  CGSize(width: view.frame.width, height: height + 16 + 88)
+            
+        } else {
+            size = CGSize(width: 100, height: 150)
+        }
+        
+        return size
     }    
     
 }

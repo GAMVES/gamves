@@ -153,9 +153,11 @@ class FanpageGamves
     var icon    = String()
     var link    = String()
     var about   = String()
+    var author  = PFUser()
     
     var cover_image = UIImage()
     var icon_image  = UIImage()
+    var author_image  = UIImage()
     
     var videos = [VideoGamves]()
     

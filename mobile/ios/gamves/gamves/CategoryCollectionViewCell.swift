@@ -39,6 +39,7 @@ class CategoryCollectionViewCell: BaseCell
         view.backgroundColor = UIColor.lightGray
         return view
     }()
+    
 
     override func setupViews() {
         super.setupViews()

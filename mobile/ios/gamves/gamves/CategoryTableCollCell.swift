@@ -8,17 +8,18 @@
 
 import UIKit
 
-class CategoryTableCollCell: UITableViewCell {
+class CategoryTableCollCell: UITableViewCell, UIScrollViewDelegate {
 
-
-	let cellCollectionId = "cellCollectionId"  
+	let cellCollectionId = "cellCollectionId"
     
+    var horizontalLeftAnchorConstraint: NSLayoutConstraint?
+    
+    private var startingScrollingOffset = CGPoint.zero
 
 	lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = UIColor.white
-        //cv.dataSource = self
         //cv.delegate = self
         return cv
     }()
@@ -36,7 +37,6 @@ class CategoryTableCollCell: UITableViewCell {
            layout.scrollDirection = .horizontal
         }
         
-        
         addSubview(cellBackgroundView)
         addConstraintsWithFormat("H:|[v0]|", views: cellBackgroundView)
         addConstraintsWithFormat("V:|[v0]|", views: cellBackgroundView)
@@ -46,6 +46,7 @@ class CategoryTableCollCell: UITableViewCell {
         addConstraintsWithFormat("V:|[v0]|", views: collectionView)
         
         collectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: fanpageCell)
+        collectionView.register(FanpageCollectionViewCell.self, forCellWithReuseIdentifier: fanpageTrendingCell)
         
         let descgradient = "gradient_3"
         let gr = Gradients()
@@ -60,6 +61,23 @@ class CategoryTableCollCell: UITableViewCell {
         
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    
+        horizontalLeftAnchorConstraint?.constant = collectionView.contentOffset.x / 4
+        
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
+        let index = collectionView.contentOffset.x / collectionView.frame.width
+        
+        let indexPath = IndexPath(item: Int(index), section: 0)
+        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionViewScrollPosition())
+
+    }
+    
+
+        
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }    
@@ -69,6 +87,12 @@ class CategoryTableCollCell: UITableViewCell {
 extension CategoryTableCollCell {
     
     func setCollectionViewDataSourceDelegate<D: UICollectionViewDataSource & UICollectionViewDelegate>(_ dataSourceDelegate: D, forRow row: Int) {
+        
+        if row == 0 {
+            
+            Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: nil, repeats: true)
+            
+        }
         
         collectionView.delegate = dataSourceDelegate
         collectionView.dataSource = dataSourceDelegate
@@ -80,6 +104,27 @@ extension CategoryTableCollCell {
         collectionView.backgroundColor = UIColor.gamvesBackgoundColor
         
         collectionView.reloadData()
+    }
+    
+    func scrollAutomatically(_ timer1: Timer) {
+        
+        for cell in collectionView.visibleCells {
+            let indexPath: IndexPath? = collectionView.indexPath(for: cell)
+            let count = Global.categories_gamves[collectionView.tag]?.fanpages.count
+            
+            if ((indexPath?.row)!  < count! - 1){
+                let indexPath1: IndexPath?
+                indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)
+                
+                collectionView.scrollToItem(at: indexPath1!, at: .right, animated: true)
+            }
+            else{
+                let indexPath1: IndexPath?
+                indexPath1 = IndexPath.init(row: 0, section: (indexPath?.section)!)
+                collectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
+            }
+            
+        }
     }
     
     var collectionViewOffset: CGFloat
