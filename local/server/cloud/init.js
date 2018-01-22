@@ -61,54 +61,78 @@
 					admin.set(d, "Administrator");					
 
 					admin.save(null, {											
-						success: function (adm) {							
+						success: function (adm) {		
 
-						    var user = new Parse.User();
-							user.set("username", _admuser);
-							user.set("password", "lo vas a lograr");
-							user.set("iDUserType", -1);
+							var app_icon_url 	= "https://s3.amazonaws.com/gamves/config/gamves.png";					
 
-							var adminRelation = user.relation("userType");
-				        	adminRelation.add(adm);	
+							Parse.Cloud.httpRequest({url: app_icon_url}).then(function(httpResponse) {
+                      
+		                       	var imageBuffer = httpResponse.buffer;
+		                       	var base64 = imageBuffer.toString("base64");
+		                       	var iconFile = new Parse.File("gamves.png", { base64: base64 });                    
+		                       
+		                       	var user = new Parse.User();
+								user.set("username", _admuser);
+								user.set("name", "Gamves Admin");
+								user.set("firstName", "Gamves");
+								user.set("lastName", "Admin");
+								user.set("pictureSmall", iconFile);
+								user.set("password", "lo vas a lograr");
+								user.set("iDUserType", -1);
 
-							user.signUp(null, {
-								success: function(userLogged) {								  	
-								  	
-									var app_id 			= "0123456789";
-									var master_key		= "9876543210";
-									var server_url 		= "http://192.168.13.22:1337/1/";	
-									var app_icon_url 	= "https://api-parseground.s3.amazonaws.com/deab76060e176261cfdbb8d779dd1e32_gamves_icons_white.png";
-									var hasIcon 		= false;
+								var adminRelation = user.relation("userType");
+					        	adminRelation.add(adm);	
 
-									var Config = Parse.Object.extend("Config");
-									var config = new Config();
+								user.signUp(null, {
+									success: function(userLogged) {								  	
+									  	
+										var app_id 			= "0123456789";
+										var master_key		= "9876543210";
+										var server_url 		= "http://192.168.13.22:1337/1/";	
+										
+										var hasIcon 		= false;
 
-									config.set("server_url", server_url); 
-									config.set("app_id", app_id);
-									config.set("master_key", master_key);
-									config.set("app_icon_url", app_icon_url);                  
-									config.set("hasIcon", hasIcon);                  
-									config.save();
-									
-						        	var queryRole = new Parse.Query(Parse.Role);
-									queryRole.equalTo('name', 'admin');
-									queryRole.first({useMasterKey:true}).then(function(adminRole){								
+										var Config = Parse.Object.extend("Config");
+										var config = new Config();
 
-										var adminRoleRelation = adminRole.relation("users");
-				        				adminRoleRelation.add(userLogged);	
+										config.set("server_url", server_url); 
+										config.set("app_id", app_id);
+										config.set("master_key", master_key);
+										config.set("app_icon_url", app_icon_url);  
+										user.set("iconPicture", iconFile);
+										config.set("hasIcon", hasIcon);                  
+										config.save();
+										
+							        	var queryRole = new Parse.Query(Parse.Role);
+										queryRole.equalTo('name', 'admin');
+										queryRole.first({useMasterKey:true}).then(function(adminRole){								
 
-			    						adminRole.save(null, {useMasterKey: true});
+											var adminRoleRelation = adminRole.relation("users");
+					        				adminRoleRelation.add(userLogged);	
 
-			    						loadImagesArray(config);
+				    						adminRole.save(null, {useMasterKey: true});
 
-									});	
+				    						loadImagesArray(config);
 
-								},
-								error: function(user, error) {
-									  // Show the error message somewhere and let the user try again.
-									  alert("Error: " + error.code + " " + error.message);
-								}
-							});
+										});	
+
+									},
+									error: function(user, error) {
+										  // Show the error message somewhere and let the user try again.
+										  alert("Error: " + error.code + " " + error.message);
+									}
+								});
+		                                                   
+		                                                            
+		                  }, function(error) {                    
+		                      status.error("Error downloading thumbnail"); 
+		                  });
+
+
+
+
+
+						    
 
 						},
 						error: function (response, error) {

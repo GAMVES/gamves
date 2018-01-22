@@ -280,39 +280,56 @@ document.addEventListener("LoadFanpage", function(event){
         }
       }
 
-      function saveFanpage() {          
+      function saveFanpage() {      
 
-          var Fanpage = Parse.Object.extend("Fanpages");         
+          var userQuery = new Parse.Query(Parse.User);
+          userQuery.equalTo("username", "gamvesadmin");
+          userQuery.first().then(function(user) {    
 
-          var fanpage = new Fanpage();    
-          fanpage.set("category", categoryPF);
+              var Fanpage = Parse.Object.extend("Fanpages");         
 
-          var fanpageName = $("#edit_name_fanpage").val();
+              var fanpage = new Fanpage();
 
-          fanpage.set("pageName", fanpageName);
-          fanpage.set("pageAbout", $("#edit_about").val());
-          fanpage.set("pageIcon", parseFileIcon);
-          fanpage.set("pageCover", parseFileCover);
-          fanpage.set("categoryName", categoryName);
+              var categoryRelation = fanpage.relation("category");
+              categoryRelation.add(categoryPF);
 
-          var order = $("#edit_order_fanpage").val();          
-          fanpage.set("order", parseInt(order));  
+              var fanpageName = $("#edit_name_fanpage").val();
 
-          fanpage.set("approved", true);  
+              fanpage.set("pageName", fanpageName);
+              fanpage.set("pageAbout", $("#edit_about").val());
+              fanpage.set("pageIcon", parseFileIcon);
+              fanpage.set("pageCover", parseFileCover);
+              fanpage.set("categoryName", categoryName);
 
-          fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
-                                     
-          fanpage.save(null, {
-              success: function (pet) {
-                  console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
-                  $('#edit_modal_fanpage').modal('hide');
-                  loadFanpages(categoryPF);
-                  clearField();
-              },
-              error: function (response, error) {
-                  console.log('Error: ' + error.message);
-              }
-          });
+              var order = $("#edit_order_fanpage").val();          
+              fanpage.set("order", parseInt(order));  
+
+              fanpage.set("author", user)
+
+              fanpage.set("approved", true);  
+
+              fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
+                                         
+              fanpage.save(null, {
+                  success: function (pet) {
+                      console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
+                      $('#edit_modal_fanpage').modal('hide');
+                      loadFanpages(categoryPF);
+                      clearField();
+                  },
+                  error: function (response, error) {
+                      console.log('Error: ' + error.message);
+                  }
+              });
+
+             }, function(error) {     
+
+              response.error(error);
+
+          }); 
+
+
+          
       }
       
 
