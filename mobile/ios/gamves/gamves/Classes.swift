@@ -42,7 +42,6 @@ class ChatFeed
     var badgeNumber:Int?    
 }
 
-
 class GamvesParseUser
 {
     var userObj:PFUser! = nil

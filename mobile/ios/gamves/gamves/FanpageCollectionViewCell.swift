@@ -52,6 +52,7 @@ class FanpageCollectionViewCell: BaseCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "created by"
         label.font = UIFont.systemFont(ofSize: 9)
+        label.textColor = UIColor.gray
         return label
     }()
     

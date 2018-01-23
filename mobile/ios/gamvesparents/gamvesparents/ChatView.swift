@@ -327,7 +327,7 @@ class ChatView: UIView,
         self.bringSubview(toFront: self.messageInputContainerView)
         
     }
-    
+
     private func setupInputComponents() {
         
         self.messageInputContainerView.addSubview(inputTextField)

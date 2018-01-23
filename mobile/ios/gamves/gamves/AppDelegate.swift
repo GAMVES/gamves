@@ -26,6 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     var gamvesApplication:UIApplication?
     
     var online = Bool()
+    var connect = Bool()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -39,7 +40,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         var reached = false
         
-        if Reachability.isConnectedToNetwork() == true {
+        //Uncomment
+        //if Reachability.isConnectedToNetwork() == true {
+        
+        connect = true
+        
+        if connect {
             
             online = true
             
@@ -111,9 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
                         
                         Global.chatFeedLoaded = true
-                        
                     })
-                    
                 })
                 
                 self.loadChatChannels()
@@ -168,7 +172,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //Local
         let configuration = ParseClientConfiguration {
             $0.applicationId = "0123456789"
-            $0.server = "http://192.168.16.22:1337/1/"
+            $0.server = "http://127.0.0.1:1337/1/"
         }
         Parse.initialize(with: configuration)
 
@@ -226,8 +230,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
-        print(userInfo)
-        
         if let data = userInfo["data"] as? [String:Any] {
             let message = data["message"]
             print(message)
@@ -243,8 +245,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         self.gamvesApplication = application
         
         Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
-            
-            print(badgeNumber)
+        
             self.gamvesApplication?.applicationIconBadgeNumber = badgeNumber
             
         })
@@ -319,17 +320,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         self.inBackground = true
         
         if online {
-        
             Global.updateUserOnline(online: false)
         }
 
     }
     
-        
-    
-    
-    func handleLogin()
-    {
+    func handleLogin() {
         self.loadChatChannels()
     }
     
@@ -362,18 +358,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     if chatfeedsCount! > 0
                     {
                         
-                        for feed in chatfeeds!
-                        {
+                        for feed in chatfeeds! {
+                            
                             let chatId:Int = feed["chatId"] as! Int
                             
                             let chatIdStr = String(chatId) as String
                             
                             PFPush.subscribeToChannel(inBackground: chatIdStr)
-                            
                         }
-                        
                     }
-                    
                 }
             }
         })

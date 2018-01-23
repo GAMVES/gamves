@@ -10,6 +10,18 @@ import Foundation
 import UIKit
 import Parse
 
+class HistoryGamves
+{
+    var objectId = String()
+    var thumbnail:UIImage?
+    var referenceId = Int()
+    var title = String()
+    var description = String()
+    var videoId = Int()
+    var videoGamves = VideoGamves()
+}
+
+
 class ChatFeed
 {
     // Insert code here to add functionality to your managed object subclass
@@ -20,7 +32,7 @@ class ChatFeed
     var chatThumbnail:UIImage?
     var userThumbnail:UIImage?
     var chatId:Int?
-    var lastPoster: String?
+    var lasPoster: String?
     var users: [GamvesParseUser]?
     var usersLoaded:Bool?
     var imagesLoaded:Bool?

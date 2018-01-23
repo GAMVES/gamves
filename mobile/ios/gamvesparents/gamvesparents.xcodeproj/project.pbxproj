@@ -30,7 +30,14 @@
 		8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */; };
 		822010B81FFAD684008C9027 /* FanpageApprovalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */; };
 		822010BA1FFAD960008C9027 /* ButtonsApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */; };
-		8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */; };
+		82557C4D2016CE2B00752301 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C4C2016CE2B00752301 /* HistoryViewController.swift */; };
+		82557C4F2016CED100752301 /* HistroyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C4E2016CED100752301 /* HistroyCell.swift */; };
+		82557C512016CFDC00752301 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C502016CFDB00752301 /* ActivityViewController.swift */; };
+		82557C532016D00A00752301 /* ActivityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C522016D00900752301 /* ActivityCell.swift */; };
+		82557C552016DBDE00752301 /* NoConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C542016DBDE00752301 /* NoConnectionController.swift */; };
+		82557C5F20173C0100752301 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C5E20173C0100752301 /* LocationViewController.swift */; };
+		82557C6120175CB300752301 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C6020175CB300752301 /* Date+Extension.swift */; };
+		8262CDFC1FE1FE1D003F9C9D /* ApprovalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */; };
 		8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */; };
 		8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */; };
 		827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827FE2F61FAE599100A32994 /* CheckBoxView.swift */; };
@@ -95,7 +102,14 @@
 		8212D72F1F7C0A8400F2A121 /* gamvesparents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = gamvesparents.entitlements; sourceTree = "<group>"; };
 		822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FanpageApprovalLauncher.swift; sourceTree = "<group>"; };
 		822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsApprovalView.swift; sourceTree = "<group>"; };
-		8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalViewControlle.swift; sourceTree = "<group>"; };
+		82557C4C2016CE2B00752301 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
+		82557C4E2016CED100752301 /* HistroyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistroyCell.swift; sourceTree = "<group>"; };
+		82557C502016CFDB00752301 /* ActivityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
+		82557C522016D00900752301 /* ActivityCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityCell.swift; sourceTree = "<group>"; };
+		82557C542016DBDE00752301 /* NoConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NoConnectionController.swift; path = ../../gamves/gamves/NoConnectionController.swift; sourceTree = "<group>"; };
+		82557C5E20173C0100752301 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		82557C6020175CB300752301 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalViewController.swift; sourceTree = "<group>"; };
 		8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalCell.swift; sourceTree = "<group>"; };
 		8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoApprovalView.swift; sourceTree = "<group>"; };
 		827FE2F61FAE599100A32994 /* CheckBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxView.swift; sourceTree = "<group>"; };
@@ -221,6 +235,7 @@
 				8212D7051F78439400F2A121 /* Color+Extensions.swift */,
 				C70156201D8DC3B0003E25AF /* UIView+Extensions.swift */,
 				8212D70E1F7A71CF00F2A121 /* Label+Extension.swift */,
+				82557C6020175CB300752301 /* Date+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -254,8 +269,11 @@
 		8262CDFA1FE1FE0F003F9C9D /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				82557C4C2016CE2B00752301 /* HistoryViewController.swift */,
+				82557C502016CFDB00752301 /* ActivityViewController.swift */,
 				82E3722C1FB16109000AD7EB /* SelectContactViewController.swift */,
-				8262CDFB1FE1FE1D003F9C9D /* ApprovalViewControlle.swift */,
+				8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */,
+				82557C5E20173C0100752301 /* LocationViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -299,6 +317,8 @@
 			isa = PBXGroup;
 			children = (
 				82E3723C1FB166F5000AD7EB /* VideoCell.swift */,
+				82557C522016D00900752301 /* ActivityCell.swift */,
+				82557C4E2016CED100752301 /* HistroyCell.swift */,
 				8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */,
 				82E372311FB16385000AD7EB /* ContactCell.swift */,
 				82E3722F1FB1637C000AD7EB /* MessageCell.swift */,
@@ -309,6 +329,7 @@
 		82E372441FB16AC6000AD7EB /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				82557C542016DBDE00752301 /* NoConnectionController.swift */,
 				822010B71FFAD684008C9027 /* FanpageApprovalLauncher.swift */,
 				82E372451FB16AD9000AD7EB /* VideoApprovalLauncher.swift */,
 				822010B91FFAD960008C9027 /* ButtonsApprovalView.swift */,
@@ -535,8 +556,10 @@
 				82E372251FAFD530000AD7EB /* Globals.swift in Sources */,
 				82E3722D1FB16109000AD7EB /* SelectContactViewController.swift in Sources */,
 				82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions.swift in Sources */,
+				82557C512016CFDC00752301 /* ActivityViewController.swift in Sources */,
 				829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */,
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
+				82557C4F2016CED100752301 /* HistroyCell.swift in Sources */,
 				822010BA1FFAD960008C9027 /* ButtonsApprovalView.swift in Sources */,
 				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
@@ -553,22 +576,27 @@
 				822010B81FFAD684008C9027 /* FanpageApprovalLauncher.swift in Sources */,
 				82E3723F1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift in Sources */,
 				82E372371FB16550000AD7EB /* GroupNameViewController.swift in Sources */,
-				8262CDFC1FE1FE1D003F9C9D /* ApprovalViewControlle.swift in Sources */,
+				8262CDFC1FE1FE1D003F9C9D /* ApprovalViewController.swift in Sources */,
+				82557C552016DBDE00752301 /* NoConnectionController.swift in Sources */,
+				82557C6120175CB300752301 /* Date+Extension.swift in Sources */,
 				82E372461FB16AD9000AD7EB /* VideoApprovalLauncher.swift in Sources */,
 				C7B401FF1D78C167001D8ED4 /* AppDelegate.swift in Sources */,
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
 				C73A31971DA3064A00C86C96 /* TabBarViewController.swift in Sources */,
+				82557C4D2016CE2B00752301 /* HistoryViewController.swift in Sources */,
 				C7B402111D78C404001D8ED4 /* PageCell.swift in Sources */,
 				C7A47C981D8E409C00E7BB0C /* AgreementCell.swift in Sources */,
 				82B7EB7F1FAB772600C61A6B /* LoginViewController+Extensions.swift in Sources */,
 				82E3723D1FB166F5000AD7EB /* VideoCell.swift in Sources */,
 				82E372321FB16385000AD7EB /* ContactCell.swift in Sources */,
 				82E3723B1FB16676000AD7EB /* ChatView.swift in Sources */,
+				82557C532016D00A00752301 /* ActivityCell.swift in Sources */,
 				8212D70A1F78490C00F2A121 /* Colors.swift in Sources */,
 				8212D6F11F73707800F2A121 /* Reachability.swift in Sources */,
 				82E372391FB1665A000AD7EB /* Protocols.swift in Sources */,
 				82E372431FB169D0000AD7EB /* UIImage+Extension.swift in Sources */,
+				82557C5F20173C0100752301 /* LocationViewController.swift in Sources */,
 				8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */,
 				8212D7061F78439400F2A121 /* Color+Extensions.swift in Sources */,
 				828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */,

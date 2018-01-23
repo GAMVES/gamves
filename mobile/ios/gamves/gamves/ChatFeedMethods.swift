@@ -44,20 +44,17 @@ class ChatFeedMethods: NSObject
             
             print(chatFeddsCount)
             
-            if chatFeddsCount! > 0
-            {
+            if chatFeddsCount! > 0 {
+                
                 let chatfeedsCount =  chatfeeds?.count
                 
                 self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( chatId:Int ) -> () in
                 
-                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyChatFeed), object: self)
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyChatFeed), object: self)
 
-                        completionHandlerChatId(chatId)
-                    
+                    completionHandlerChatId(chatId)
                 })
-            
             }
-            
         })
     }
     

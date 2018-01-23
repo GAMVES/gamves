@@ -304,6 +304,8 @@ class VideoLauncher: UIView, KeyboardDelegate {
 
     var originalVideoFrame = CGRect()
     var downVideoFrame = CGRect()
+    
+    var videoId = Int()
 
     func showVideoPlayer(videoGamves: VideoGamves){
         
@@ -313,6 +315,8 @@ class VideoLauncher: UIView, KeyboardDelegate {
         let videoUrl = videoGamves.s3_source
         let videoObj = videoGamves.videoObj
         let videoId = videoObj?["videoId"] as! Int
+        
+        self.videoId = videoId
 
         //let first5VideoId = videoId.substring(to:videoId.index(videoId.startIndex, offsetBy: 5))
         //let viId:Int = Int(first5VideoId)!
@@ -347,7 +351,6 @@ class VideoLauncher: UIView, KeyboardDelegate {
             swipeDown.delaysTouchesEnded = false
             videoPlayerView.addGestureRecognizer(swipeDown)           
             
-
             let swipeUp: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(self.swipedDownVideo))
             swipeUp.direction = .up
             swipeUp.cancelsTouchesInView = false
@@ -389,7 +392,9 @@ class VideoLauncher: UIView, KeyboardDelegate {
             
             keyWindow.addSubview(view)
 
-            view.tag = 1                                   
+            view.tag = 1
+            
+            self.saveHistroy()
             
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
                 
@@ -587,128 +592,22 @@ class VideoLauncher: UIView, KeyboardDelegate {
         
         self.chatView.frame.size.height = self.originaChatHeightPosition        
     }
-
-    /*func draggedView(sender: UIPanGestureRecognizer)
-    {
-       
-        if sender.state == UIGestureRecognizerState.began
-        {
-            self.videoPlayerView.hideControllers()
-            self.videoPlayerView.layer.borderWidth = 1.0
-            self.videoPlayerView.layer.borderColor = UIColor.white.cgColor
-
-            UIApplication.shared.keyWindow?.backgroundColor = UIColor(white: 1, alpha: 0.0)
+    
+    
+    func saveHistroy() {
         
-        }
+        let histroyPF: PFObject = PFObject(className: "History")
         
-        //else if sender.state == UIGestureRecognizerState.
-        //{
-        //    self.shrinkVideoDown()
-        //}
+        histroyPF["videoId"] = self.videoId
         
-        self.view.bringSubview(toFront: sender.view!)
-        
-        let translation = sender.translation(in: self.view)
-
-        print(translation.y)
- 
-        sender.view!.center = CGPoint(x: sender.view!.center.x, y: sender.view!.center.y + translation.y)
-
-        sender.setTranslation(CGPoint.zero, in: self.view)       
-        
-        print("translation: \(translation.y)")
-        //print(valpha)      
-
-        if translation.y == 0.0
-        {
-            return
-        }
-
-        if translation.y >= 0 //going down
-        {
+        if let userId = PFUser.current()?.objectId {
             
-            if valpha >= 0.0
-            {
-                valpha = valpha - 0.005            
-            }     
-
-
-        } else  //going up
-        {
+            histroyPF["userId"] = userId
             
-            if valpha <= 0.9
-            {
-                valpha = valpha + 0.005
-            }           
-
         }
-
-        //let frame:CGRect = self.getFrameFromPan(value: translation.y)
-
-        //self.videoPlayerView.frame = frame
-        //self.videoPlayerView.playerLayer.frame = frame         
-
-        print(valpha)
-
-        self.infoView.center = CGPoint(x: self.infoView.center.x, y: self.infoView.center.y + translation.y)
-        sender.setTranslation(CGPoint.zero, in: self.infoView)
-        //self.infoView.alpha = CGFloat(valpha)        
-
-        self.chatView.center = CGPoint(x: self.chatView.center.x, y: self.infoView.center.y + translation.y)
-        sender.setTranslation(CGPoint.zero, in: self.chatView)
-        //self.chatView.alpha = CGFloat(valpha)
-
-        //let middle = self.keyWindoHeight / 4
-        //if sender.view!.center.y > middle
-        //{            
-        //}                   
+        
+        histroyPF.saveEventually()
+        
     }
-
-    func getFrameFromPan(value:CGFloat) -> CGRect
-    {
-
-        let xCurrX = self.videoPlayerView.frame.origin.x
-        let yCurrY = self.videoPlayerView.frame.origin.y
-        let yCurrHeight = self.videoPlayerView.frame.height
-        let yCurrWidth = self.videoPlayerView.frame.width
-
-        print("____________________")
-
-        print(xCurrX)
-        print(yCurrY)        
-        print(yCurrWidth)
-        print(yCurrHeight)
-
-        print("--------------------")
-
-        let ratio = yCurrWidth / yCurrHeight
-        //print("ratio: \(ratio)")
-        let newHeight = yCurrHeight - value
-        let newWidth = newHeight * ratio
-
-        let centerWidth = self.keyWindoWidth / 2
-        //print("centerWidth: \(centerWidth) ")
-        let halfNewWidth = newWidth / 2
-        //print("halfNewWidth: \(halfNewWidth) ")
-        let newX = centerWidth - halfNewWidth
-        //print("newX: \(newX) ")
-
-        let diffHeight = yCurrHeight - newHeight 
-        //print("diffHeight: \(diffHeight) ")
-        let midDistance = diffHeight / 2
-        let newY = yCurrY + midDistance
-        //print("newY: \(newY) ")
-
-        let newFrame = CGRect(x: newX, y: newY, width: newWidth, height: newHeight)  
-
-        print(newX)
-        print(newY)
-        print(newWidth)
-        print(newHeight)
-
-        return newFrame
-
-    }*/
-       
     
 }

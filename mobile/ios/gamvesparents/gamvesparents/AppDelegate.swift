@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     var window: UIWindow?
     
     var gamvesApplication:UIApplication?
+    
+    var connect = Bool()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {       
         
@@ -30,16 +32,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
       
         var reached = false
         
-        if Reachability.isConnectedToNetwork() == true
-        {
+        //if Reachability.isConnectedToNetwork() == true
+            
+        connect = true
+        
+        if connect {
+    
             loadParse(application: application, launchOptions: launchOptions)
             print("Internet connection OK")
             
             reached = true
             
         } else {
-            print("Internet connection FAILED")
-            exit(0)
+            
+            window?.rootViewController = UINavigationController(rootViewController: NoConnectionController())
+            
+            let title = "Internet Connection"
+            let message = "Your device is not connected to the Internet, please check your connection. The app is closing.. bye!"
+            
+            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+            
+            // add an action (button)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                
+                exit(0)
+                
+            }))
+            
+            // show the alert
+            self.window?.rootViewController?.present(alert, animated: true, completion: nil)
         }
         
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -310,12 +331,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         })
     }
-
-
-
-
-    
-    
 
 }
 

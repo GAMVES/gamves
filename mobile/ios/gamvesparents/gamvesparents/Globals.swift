@@ -18,10 +18,10 @@ class Global: NSObject
     
     static var schools = [GamvesSchools]()
     
-    static var serverUrl = "http://192.168.16.22:1337/1/"
+    static var serverUrl = "http://127.0.0.1:1337/1/"
     //static var serverUrl = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
-    static var localWs = "wss://192.168.16.22:1337/1/"
+    static var localWs = "wss://127.0.0.1:1337/1/"
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var userTypes = Dictionary<Int, UserTypeGamves>()
@@ -61,6 +61,7 @@ class Global: NSObject
     static var REGISTER_FATHER  = 5
         
     static var approvals = [Approvals]()
+    static var histories = [HistoryGamves]()
     
     static var admin_delimitator:String = "---is_admin_chat---"
     static var audio_delimitator:String = "---is_audio_chat---"
@@ -571,11 +572,7 @@ class Global: NSObject
         return abs(randomNumber)
     }
    
-    
-    
-    
-    static func getBadges(chatId:Int, completionHandler : @escaping (_ resutl:Int) -> ())
-    {
+    static func getBadges(chatId:Int, completionHandler : @escaping (_ resutl:Int) -> ()) {
         
         let badgesQuery = PFQuery(className:"Badges")
         

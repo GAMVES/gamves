@@ -203,9 +203,9 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         cell.profileImageView.image = chatfeed.chatThumbnail
         
-        if chatfeed.lastPoster != nil
+        if chatfeed.lasPoster != nil
         {
-            let userId = chatfeed.lastPoster!
+            let userId = chatfeed.lasPoster!
             
             let gamvesUser = Global.userDictionary[userId]
             
@@ -285,8 +285,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         let isVideoChat:Bool = chatfeed.isVideoChat! as Bool
         
-        if isVideoChat
-        {
+        if isVideoChat {
             
             let chatId = chatfeed.chatId! as Int
             print(chatId)
@@ -299,13 +298,11 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
             let videoApprovalLauncher = VideoApprovalLauncher()
             videoApprovalLauncher.showVideoPlayer(videoGamves: video)
             
-        } else
-        {
+        } else {
             
             self.openChat(room: chatfeed.room!, chatId: chatfeed.chatId!, users: chatfeed.users!)
         
         }
-        
     }
     
     func selectContact(group: Bool)
@@ -318,7 +315,6 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         navigationController?.pushViewController(selectContactViewController, animated: true)
         tabBarController?.tabBar.isHidden = true
     }
-    
     
     func openChat(room: String, chatId:Int, users:[GamvesParseUser])
     {

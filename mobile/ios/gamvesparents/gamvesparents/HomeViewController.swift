@@ -37,10 +37,21 @@ class HomeViewController: UIViewController,
     var youSpouseChatId = Int()
     var groupChatId = Int()
     
-    var approvalViewController: ApprovalViewControlle = {
-        let selector = ApprovalViewControlle()
+    var approvalViewController: ApprovalViewController = {
+        let selector = ApprovalViewController()
         return selector
     }()
+    
+    var historyViewControlle: HistoryViewController = {
+        let selector = HistoryViewController()
+        return selector
+    }()
+    
+    var activityViewControlle: ActivityViewController = {
+        let selector = ActivityViewController()
+        return selector
+    }()
+    
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -48,7 +59,6 @@ class HomeViewController: UIViewController,
         //v.backgroundColor = UIColor.white
         return v
     }()
-    
 
     var familyLabel: UILabel = {
         let label = UILabel()
@@ -307,8 +317,10 @@ class HomeViewController: UIViewController,
         _history.desc = "History"
         _history.id = 5
         _history.icon = UIImage(named: "history")!
-        self.userStatistics.append(_history)        
-
+        self.userStatistics.append(_history)
+    
+        NotificationCenter.default.addObserver(self, selector: #selector(getTimeCount), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+    
     }
  
 
@@ -335,7 +347,76 @@ class HomeViewController: UIViewController,
         tabBarController?.tabBar.isHidden = false
     }
   
-  
+    func getTimeCount() {
+        
+        let queryTimeCount = PFQuery(className:"TimeOnline")
+        
+        let userId:String = Global.gamvesFamily.sonsUsers[0].userId
+        print(userId)
+        queryTimeCount.whereKey("userId", equalTo: userId)
+        
+        queryTimeCount.order(byDescending: "createdAt")
+        
+        if let initWeek = Date().startOfWeek {
+            
+            let minute:TimeInterval = 60.0
+            let hour:TimeInterval = 60.0 * minute
+            let day:TimeInterval = 24 * hour
+            let week:TimeInterval = 7 * day
+            
+            let endweek = Date(timeInterval: week, since: initWeek)
+            
+            queryTimeCount.whereKey("createdAt", greaterThanOrEqualTo: initWeek)
+            queryTimeCount.whereKey("updatedAt", lessThanOrEqualTo: endweek)
+            
+        }
+    
+        queryTimeCount.findObjectsInBackground { (times, error) in
+            
+            if error == nil
+            {
+                
+                for time in times! {
+                    
+                    let timeStarted = time["timeStarted"] as! Date
+                    let timeEnded = time["timeEnded"] as! Date
+                    
+                    print(timeStarted)
+                    print(timeEnded)
+                    
+                    let interval = timeEnded.timeIntervalSince(timeStarted)
+                    
+                    print(interval)
+                    
+                    let stringInterval = self.stringFromTimeInterval(interval: interval)
+                    
+                    print(stringInterval)
+                    
+                }
+            }
+        }
+    }
+    
+    func stringFromTimeInterval(interval: TimeInterval) -> String {
+        let interval = Int(interval)
+        let seconds = interval % 60
+        let minutes = (interval / 60) % 60
+        let hours = (interval / 3600)
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+    }
+    
+    func generateDates(startDate :Date?, addbyUnit:Calendar.Component, value : Int) -> [Date] {
+        
+        var dates = [Date]()
+        var date = startDate!
+        let endDate = Calendar.current.date(byAdding: addbyUnit, value: value, to: date)!
+        while date < endDate {
+            date = Calendar.current.date(byAdding: addbyUnit, value: 1, to: date)!
+            dates.append(date)
+        }
+        return dates
+    }
+
     
     @objc func chatFeedLoaded()
     {
@@ -616,17 +697,16 @@ class HomeViewController: UIViewController,
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {    
         
-        if indexPath.row == 0 {
+        if indexPath.row == 0 { //Online
             
-        } else if indexPath.row == 1 {
+        } else if indexPath.row == 1 { //Location
             
         
-        } else if indexPath.row == 2 {
+        } else if indexPath.row == 2 { //Week Count
             
             
-        } else if indexPath.row == 3 {
-        
-            
+        } else if indexPath.row == 3 { //Approval
+
             approvalViewController.homeViewController = self
             approvalViewController.view.backgroundColor = UIColor.white
             navigationController?.navigationBar.tintColor = UIColor.white
@@ -634,6 +714,23 @@ class HomeViewController: UIViewController,
             navigationController?.pushViewController(approvalViewController, animated: true)
             tabBarController?.tabBar.isHidden = true
             
+        } else if indexPath.row == 4 { //Activity
+            
+            activityViewControlle.homeViewController = self
+            activityViewControlle.view.backgroundColor = UIColor.white
+            navigationController?.navigationBar.tintColor = UIColor.white
+            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            navigationController?.pushViewController(activityViewControlle, animated: true)
+            tabBarController?.tabBar.isHidden = true
+        
+        } else if indexPath.row == 5 { //History
+            
+            historyViewControlle.homeViewController = self
+            historyViewControlle.view.backgroundColor = UIColor.white
+            navigationController?.navigationBar.tintColor = UIColor.white
+            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            navigationController?.pushViewController(historyViewControlle, animated: true)
+            tabBarController?.tabBar.isHidden = true
             
         }
         
