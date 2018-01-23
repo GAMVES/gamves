@@ -8,10 +8,10 @@ databaseUri || console.log('DATABASE_URI not specified, falling back to localhos
 var port = process.env.PORT || 1337;
 var api = new ParseServer(
 {
-  databaseURI: databaseUri                 || 'mongodb://192.168.16.22:27017/db',
+  databaseURI: databaseUri                 || 'mongodb://127.0.0.1:27017/db',
   appId      : process.env.APP_ID          || '0123456789',
   masterKey  : process.env.MASTER_KEY      || '9876543210', //Add your master key here. Keep it secret!
-  serverURL  : process.env.SERVER_URL      || 'http://192.168.16.22:' + port + '/1',   
+  serverURL  : process.env.SERVER_URL      || 'http://127.0.0.1:' + port + '/1',   
   
   // If you change the cloud/main.js to another path
   // it wouldn't work on SashiDo :( ... so Don't change this.
@@ -44,7 +44,7 @@ app.use(mountPath, api);
 
 
 var httpServer = require('http').createServer(app);
-httpServer.listen(port, function(){ console.log('Running on http://192.168.16.22:' + port); });
+httpServer.listen(port, function(){ console.log('Running on http://127.0.0.1:' + port); });
 
 // This will enable the Live Query real-time server
 ParseServer.createLiveQueryServer(httpServer);
