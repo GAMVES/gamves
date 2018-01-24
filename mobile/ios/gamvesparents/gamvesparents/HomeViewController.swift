@@ -818,13 +818,8 @@ class HomeViewController: UIViewController,
                         self._approval.approval = count as Int
                         
                 })
-                
-                
             }
-            
         }
-
-        
     }
     
     func changeSingleUserStatus(onlineMessage:PFObject)

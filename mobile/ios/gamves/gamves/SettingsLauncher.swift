@@ -20,16 +20,16 @@ class Setting: NSObject {
 
 enum SettingName: String
 {
-    case Cancel = "Cancel & Dismiss Completely"
+    //case Notifications    = "Notifications"
+    //case WatchLater       = "Watch Later"
+    //case Likes            = "Likes"
+    //case Help             = "Help"
     
-    case Notifications  = "Notifications"
-    case History        = "History"
-    case WatchLater     = "Watch Later"
-    case Likes          = "Likes"
-    case Settings       = "Settings"    
-    case Feedback   = "Send Feedback"
-    //case Help = "Help"
-    case SwitchAccount = "Log out"
+    case Cancel             = "Cancel & Dismiss Completely"
+    case History            = "History"
+    case Feedback           = "Send Feedback"
+    case Settings           = "Settings"
+    case SwitchAccount      = "Log out"
 }
 
 class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -49,28 +49,22 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
     let settings: [Setting] =
     {
 
-        let settingsSetting = Setting(name: .Settings, imageName: "settings")    
-        let notificationSetting = Setting(name: .Notifications, imageName: "notifications")  
-        let historySetting = Setting(name: .History, imageName: "history")  
-        let laterSetting = Setting(name: .WatchLater, imageName: "watch_later")  
-        let likeSetting = Setting(name: .Likes, imageName: "like")  
-        let feedbackSetting = Setting(name: .Feedback, imageName: "feedback")  
+        //let notificationSetting = Setting(name: .Notifications, imageName: "notifications")
+        //let laterSetting = Setting(name: .WatchLater, imageName: "watch_later")
+        //let likeSetting = Setting(name: .Likes, imageName: "like")
+        
+        let historySetting = Setting(name: .History, imageName: "history")
+        let feedbackSetting = Setting(name: .Feedback, imageName: "feedback")
+        let settingsSetting = Setting(name: .Settings, imageName: "settings")
+        let logoutSetting = Setting(name: .SwitchAccount, imageName: "switch_account")
         let cancelSetting = Setting(name: .Cancel, imageName: "cancel")
         
-        return [ settingsSetting, 
-                notificationSetting,
-                historySetting,
-                laterSetting,
-                likeSetting,
-                feedbackSetting,                   
-                cancelSetting ]
+        return [ historySetting,
+                 feedbackSetting,
+                 settingsSetting,
+                 logoutSetting,
+                 cancelSetting ]
 
-        /*return [settingsSetting,
-                Setting(name: .TermsPrivacy, imageName: "privacy"),
-                Setting(name: .SendFeedback, imageName: "feedback"),
-                Setting(name: .Help, imageName: "help"),
-                Setting(name: .SwitchAccount, imageName: "switch_account"), cancelSetting
-        ]*/
     }()
     
     var homeController: HomeController?

@@ -17,7 +17,6 @@
 		82418F381EF8600500D7E6BC /* CategoryHomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82418F371EF8600500D7E6BC /* CategoryHomePage.swift */; };
 		82418F3D1EF86FBC00D7E6BC /* FanpagePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82418F3C1EF86FBC00D7E6BC /* FanpagePage.swift */; };
 		8241FFF12012349700B84899 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8241FFF02012349700B84899 /* ProfileViewController.swift */; };
-		8241FFF320127C6600B84899 /* MediaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8241FFF220127C6600B84899 /* MediaController.swift */; };
 		82477BB620090DD000A45922 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82477BB520090DD000A45922 /* ChatView.swift */; };
 		824E67BF1F544DDD0025096D /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824E67BE1F544DDD0025096D /* LoginController.swift */; };
 		824E67C11F5458130025096D /* LoginController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824E67C01F5458130025096D /* LoginController+Extension.swift */; };
@@ -45,6 +44,7 @@
 		826844581FF058F3008BA13B /* NoConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826844571FF058F3008BA13B /* NoConnectionController.swift */; };
 		8268445A1FF2950E008BA13B /* NewVideoController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826844591FF2950E008BA13B /* NewVideoController+Extensions.swift */; };
 		8268445C1FF2A82B008BA13B /* LoginController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8268445B1FF2A82B008BA13B /* LoginController+Extensions.swift */; };
+		826B8CC420184C37008C19A3 /* MediaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826B8CC320184C37008C19A3 /* MediaController.swift */; };
 		826D58341F8D98C50014A2C8 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826D58331F8D98C50014A2C8 /* ProfileCell.swift */; };
 		826D58391F8ED7570014A2C8 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826D58381F8ED7570014A2C8 /* MessageCell.swift */; };
 		8272A2AC1FD7D5FA00D14A76 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8272A2AB1FD7D5FA00D14A76 /* CameraController.swift */; };
@@ -109,7 +109,6 @@
 		82418F371EF8600500D7E6BC /* CategoryHomePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryHomePage.swift; sourceTree = "<group>"; };
 		82418F3C1EF86FBC00D7E6BC /* FanpagePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FanpagePage.swift; sourceTree = "<group>"; };
 		8241FFF02012349700B84899 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		8241FFF220127C6600B84899 /* MediaController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MediaController.swift; path = ../../../../../gamves_branches/add/gamves/mobile/ios/gamves/gamves/MediaController.swift; sourceTree = "<group>"; };
 		82477BB520090DD000A45922 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		824E67BE1F544DDD0025096D /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		824E67C01F5458130025096D /* LoginController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController+Extension.swift"; sourceTree = "<group>"; };
@@ -138,6 +137,7 @@
 		826844571FF058F3008BA13B /* NoConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoConnectionController.swift; sourceTree = "<group>"; };
 		826844591FF2950E008BA13B /* NewVideoController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewVideoController+Extensions.swift"; sourceTree = "<group>"; };
 		8268445B1FF2A82B008BA13B /* LoginController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController+Extensions.swift"; sourceTree = "<group>"; };
+		826B8CC320184C37008C19A3 /* MediaController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaController.swift; sourceTree = "<group>"; };
 		826D58331F8D98C50014A2C8 /* ProfileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		826D58381F8ED7570014A2C8 /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		8272A2AB1FD7D5FA00D14A76 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
@@ -305,7 +305,7 @@
 		825C6CA41FDA4CC1005A762F /* record */ = {
 			isa = PBXGroup;
 			children = (
-				8241FFF220127C6600B84899 /* MediaController.swift */,
+				826B8CC320184C37008C19A3 /* MediaController.swift */,
 				8294F9D11FDA4EF80082D99D /* RecordVideoViewController.swift */,
 				8294F9D31FDA4EFC0082D99D /* MergeVideoViewController.swift */,
 				8294F9CF1FDA4EF40082D99D /* PlayVideoViewController.swift */,
@@ -715,8 +715,8 @@
 				82E1AC281FF62FD600209AEF /* SearchSingleImageCell.swift in Sources */,
 				8278277A1FE1789200162102 /* ProfileCollectionViewCell.swift in Sources */,
 				826844561FF048D1008BA13B /* RangeSlider.swift in Sources */,
-				8241FFF320127C6600B84899 /* MediaController.swift in Sources */,
 				824E67D41F5D781C0025096D /* InfoView.swift in Sources */,
+				826B8CC420184C37008C19A3 /* MediaController.swift in Sources */,
 				82DD00371F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift in Sources */,
 				82970BA41F1DBFF000F6ABAD /* VideoPage.swift in Sources */,
 				82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */,
