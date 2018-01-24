@@ -186,19 +186,45 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         cell.nameLabel.text = chatfeed.room
 
-        var message:String = chatfeed.text!
-
-        let delimitator = Global.admin_delimitator
-
-        if message.range(of:delimitator) != nil
-        {            
-            if let range = message.range(of: delimitator) 
-            {
+        var message = String()
+        
+        let admin_delimitator = Global.admin_delimitator
+        let audio_delimitator = Global.audio_delimitator
+        
+        message = chatfeed.text!
+        
+        if message.range(of:admin_delimitator) != nil {
+            
+            if let range = message.range(of: admin_delimitator) {
+                
                 message.removeSubrange(range)
+                
             }
-
-        } 
-
+            
+        } else if message.range(of:audio_delimitator) != nil {
+            
+            if let range = message.range(of: audio_delimitator) {
+                
+                message.removeSubrange(range)
+                
+                if (message.contains("----")) {
+                    
+                    let messageArr : [String] = message.components(separatedBy: "----")
+                    
+                    var audioId : String = messageArr[0]
+                    var audioTime : String = messageArr[1]
+                    
+                    cell.isAudioIcon = true
+                    
+                    message = "      \(audioTime)"
+                    
+                }
+            }
+        } else {
+            
+            cell.isAudioIcon = false
+        }
+        
         cell.messageLabel.text = message
         
         cell.profileImageView.image = chatfeed.chatThumbnail

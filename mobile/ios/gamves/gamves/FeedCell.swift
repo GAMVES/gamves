@@ -185,49 +185,48 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         cell.nameLabel.text = chatfeed.room
 
-        var message:String = chatfeed.text!
+        var message = String()
 
         let admin_delimitator = Global.admin_delimitator
+        let audio_delimitator = Global.audio_delimitator
+        
+        message = chatfeed.text!
 
         if message.range(of:admin_delimitator) != nil {
+            
             if let range = message.range(of: admin_delimitator) {
             
                 message.removeSubrange(range)
                 
-                if (message.contains("____"))
-                {
-                    let messageArr : [String] = message.components(separatedBy: "____")
+            }
+        
+        } else if message.range(of:audio_delimitator) != nil {
+            
+            if let range = message.range(of: audio_delimitator) {
+                
+                message.removeSubrange(range)
+                
+                if (message.contains("----")) {
+                    
+                    let messageArr : [String] = message.components(separatedBy: "----")
                     
                     var audioId : String = messageArr[0]
                     var audioTime : String = messageArr[1]
                     
-                    let attachment = NSTextAttachment()
-                    attachment.image = UIImage(named: "rec_on")
-                    let attachmentString = NSAttributedString(attachment: attachment)
-                    let myString = NSMutableAttributedString(string: audioTime)
-                    myString.append(attachmentString)
-                    cell.messageLabel.attributedText = myString
-
+                    cell.isAudioIcon = true
+                    
+                    message = "      \(audioTime)"
+                    
                 }
             }
-        
         } else {
             
-            cell.messageLabel.text = message
+            cell.isAudioIcon = false
         }
         
+        cell.messageLabel.text = message
         
-        let audio_delimitator = Global.audio_delimitator
         
-        if message.range(of:audio_delimitator) != nil {
-        
-            if let range = message.range(of: audio_delimitator) {
-    
-                //HERE SHOW AUDIO MESSAGE
-                
-            }
-            
-        }
         
         cell.profileImageView.image = chatfeed.chatThumbnail
         

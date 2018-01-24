@@ -561,8 +561,8 @@ class ChatView: UIView,
                     
                     var messagesHandeled = [MessageChat]()
                     
-                    for chatVideo in chatVideos!
-                    {
+                    for chatVideo in chatVideos! {
+                        
                         let message = MessageChat()
                         let userId = chatVideo["userId"] as! String
                         
@@ -595,11 +595,9 @@ class ChatView: UIView,
                         //Apply
                         message.message = messageText
                         
-                        if (messageText.contains(Global.audio_delimitator))
-                        {
+                        if (messageText.contains(Global.audio_delimitator)) {
                             
                             message.isAudio = true
-                            
                             
                             self.getAudio(id: i, messageText: messageText, completionHandler: { (gamvesAudio) in
                                 
