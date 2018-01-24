@@ -33,7 +33,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
         return cv
     }()
     
-    let approvlCellId = "approvlCellId"
+    let activityCellId = "activityCellId"
     
     var familyId = String()
 
@@ -47,18 +47,18 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
     
-        self.collectionView.register(ApprovalCell.self, forCellWithReuseIdentifier: approvlCellId)
-        
-        self.collectionView.reloadData()
+        self.collectionView.register(ActivityCell.self, forCellWithReuseIdentifier: activityCellId)
         
         self.familyId = Global.gamvesFamily.objectId
+        
+        //self.queryActivity()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    func queryActivity() {
+    /*func queryActivity() {
         
         let queryChatFeed = PFQuery(className: "ChatFeed")
         
@@ -78,7 +78,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
                 })
             }
         })
-    }
+    }*/
     
     func closedRefresh() {
         
@@ -97,10 +97,13 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: approvlCellId, for: indexPath) as! ActivityCell
+        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: activityCellId, for: indexPath) as! ActivityCell
+        
+        let lkeys = Array(ChatFeedMethods.chatFeeds.keys)
         
         let index = indexPath.item
-        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[index]!
+        let indexKey = lkeys[index]
+        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[indexKey]!
         
         cell.nameLabel.text = chatfeed.room
         

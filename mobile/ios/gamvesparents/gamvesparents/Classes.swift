@@ -122,7 +122,7 @@ class VideoGamves
     var ytb_duration = String()        
     var ytb_categories = [String]()
 
-    var ytb_like_count = Int() 
+    //var ytb_like_count = Int()
     var fanpageId = Int()  
     var posterId = String()  
     

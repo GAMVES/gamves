@@ -178,6 +178,8 @@ class HomeViewController: UIViewController,
 
     var photoCornerRadius = Int()
     
+    var countWeekTime = TimeInterval()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -386,13 +388,20 @@ class HomeViewController: UIViewController,
                     
                     let interval = timeEnded.timeIntervalSince(timeStarted)
                     
-                    print(interval)
-                    
-                    let stringInterval = self.stringFromTimeInterval(interval: interval)
-                    
-                    print(stringInterval)
+                    self.countWeekTime = self.countWeekTime + interval
                     
                 }
+                
+                let stringInterval = self.stringFromTimeInterval(interval: self.countWeekTime)
+                
+                let timecounted = "\(stringInterval) hs"
+                
+                print(self.userStatistics[2].data)
+                
+                self.userStatistics[2].data = timecounted
+                
+                self.collectionView.reloadData()
+                
             }
         }
     }

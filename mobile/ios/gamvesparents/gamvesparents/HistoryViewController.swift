@@ -36,6 +36,9 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
     let historyCellId = "historyCellId"
     
     var familyId = String()
+    
+    var countHistory = Int()
+    var countHistories = Int()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,8 +51,6 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
     
         self.collectionView.register(HistoryCell.self, forCellWithReuseIdentifier: historyCellId)
-        
-        self.collectionView.reloadData()
         
         self.familyId = Global.gamvesFamily.objectId
         
@@ -64,9 +65,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
         historyQuery.findObjectsInBackground { (histories, error) in
             if error == nil {
                 
-                var countHistory = histories?.count
-                
-                var count = Int()
+                self.countHistories = (histories?.count)!
                 
                 for history in histories! {
                     
@@ -76,45 +75,70 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
                     
                     historyGamves.videoId = videoId
                     
-                    let videoQuery = PFQuery(className: "Videos")
-                    videoQuery.whereKey("videoId", equalTo: videoId)
-                    
-                    videoQuery.findObjectsInBackground(block: { (videoObjs, error) in
+                    if Global.chatVideos[videoId] != nil {
                         
-                        if error == nil {
+                        historyGamves.videoGamves = Global.chatVideos[videoId]!
+                        
+                        self.appendVideoToHistoryAndCount(history: historyGamves)
+                        
+                    } else {
+                        
+                        let videoQuery = PFQuery(className: "Videos")
+                        videoQuery.whereKey("videoId", equalTo: videoId)
+                        
+                        videoQuery.findObjectsInBackground(block: { (videoObjs, error) in
                             
-                            for video in videoObjs! {
-                            
-                                let thumbnail = video["thumbnail"] as! PFFile
+                            if error == nil {
                                 
-                                thumbnail.getDataInBackground(block: { (data, error) in
+                                for video in videoObjs! {
                                     
-                                    if error == nil {
+                                    let thumbnail = video["thumbnail"] as! PFFile
+                                    
+                                    thumbnail.getDataInBackground(block: { (data, error) in
                                         
-                                        let thumbImage = UIImage(data:data!)
-                                        
-                                        let  videoGamves = Global.parseVideo(video: video, chatId : videoId, videoImage: thumbImage! )
-                                        
-                                        historyGamves.videoGamves = videoGamves
-                                        
-                                        Global.histories.append(historyGamves)
-                                        
-                                        if ( countHistory! - 1 ) == count {
+                                        if error == nil {
                                             
-                                            DispatchQueue.main.async {
-                                                self.collectionView.reloadData()
-                                            }
+                                            let thumbImage = UIImage(data:data!)
+                                            
+                                            let  videoGamves = Global.parseVideo(video: video, chatId : videoId, videoImage: thumbImage! )
+                                            
+                                            historyGamves.videoGamves = videoGamves
+                                            
+                                            self.appendVideoToHistoryAndCount(history: historyGamves)
+                                            
                                         }
-                                        
-                                        count = count + 1
-                                    }
-                                })
+                                    })
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
             }
         }
+    }
+    
+    func appendVideoToHistoryAndCount(history: HistoryGamves){
+        
+        history.videoGamves.thumbnail.getDataInBackground { (data, error) in
+            
+            if error == nil {
+                
+                let image = UIImage(data: data!)
+                
+                history.videoGamves.image = image!
+            
+                Global.histories.append(history)
+                
+                if ( self.countHistories - 1 ) == self.countHistory {
+                    
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadData()
+                    }
+                }
+            }
+        }
+        
+        self.countHistory = self.countHistory + 1
     }
 
     override func didReceiveMemoryWarning() {
@@ -132,7 +156,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let countItems = Global.approvals.count
+        let countItems = Global.histories.count
         print(countItems)
         return countItems
     }
@@ -144,9 +168,9 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
         let index = indexPath.item
         let history:HistoryGamves = Global.histories[index]
     
-        cell.nameLabel.text = history.title
+        cell.nameLabel.text = history.videoGamves.title
 
-        cell.profileImageView.image = history.thumbnail!
+        cell.profileImageView.image = history.videoGamves.image
         
         return cell
     }

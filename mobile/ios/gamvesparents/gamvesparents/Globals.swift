@@ -940,7 +940,7 @@ class Global: NSObject
             videoGamves.ytb_duration = video["ytb_duration"] as! String     
             videoGamves.ytb_categories = video["ytb_categories"] as! [String]
 
-            videoGamves.ytb_like_count = video["ytb_like_count"] as! Int
+            //videoGamves.ytb_like_count = video["ytb_like_count"] as! Int
         }
         
         videoGamves.fanpageId = video["fanpageId"] as! Int
