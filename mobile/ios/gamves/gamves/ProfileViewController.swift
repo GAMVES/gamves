@@ -128,7 +128,6 @@ class ProfileViewController: UIViewController,
         return v
     }()
 
-
     lazy var chatButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor        
@@ -226,6 +225,7 @@ class ProfileViewController: UIViewController,
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.registerRowView)
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
         self.profileView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.bioLabel)
+        
         self.profileView.addConstraintsWithFormat("V:|-50-[v0(100)]-5-[v1(20)][v2]|", views:
             self.registerRowView,
             self.sonLabel,

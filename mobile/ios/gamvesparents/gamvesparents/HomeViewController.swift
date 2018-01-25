@@ -60,18 +60,29 @@ class HomeViewController: UIViewController,
         return v
     }()
 
-    var familyLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        //label.backgroundColor = UIColor.white        
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = UIColor.gray
-        return label
+    let headerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.gamvesBackgoundColor
+        return view
+    }()
+    
+    let lineView: UIView = {
+         let v = UIView()
+         v.translatesAutoresizingMaskIntoConstraints = false
+         v.backgroundColor = UIColor.gray
+         return v
+    }()
+
+    var backImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill //.scaleFill
+        imageView.clipsToBounds = true
+        return imageView
     }()
 
     let photosContainerView: UIView = {
         let view = UIView()
-        //view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
         return view
@@ -79,7 +90,6 @@ class HomeViewController: UIViewController,
     
     let homeBackgroundView: UIView = {
         let view = UIView()
-        //view.backgroundColor = UIColor.white
         return view
     }()
 	
@@ -98,39 +108,7 @@ class HomeViewController: UIViewController,
         let label = UILabel()
         return label
     }()
-
-    lazy var spousePhotoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "spouse_photo")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSpousePhotoImageView)))        
-        imageView.isUserInteractionEnabled = true     
-        imageView.tag = 2           
-        return imageView
-    }()
-
-    var checkLabelSpouse: UILabel = {
-        let label = UILabel()
-        return label
-    }()
-
-    lazy var groupPhotoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "your_photo")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleGroupPhotoImageView)))        
-        imageView.isUserInteractionEnabled = true     
-        imageView.tag = 0           
-        return imageView
-    }()
-
-    var checkLabelGroup: UILabel = {
-        let label = UILabel()
-        return label
-    }()
-
+    
     var sonLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -139,25 +117,25 @@ class HomeViewController: UIViewController,
         return label
     }()   
     
+    let dataView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()
+
 
      lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        //cv.backgroundColor = UIColor.white
+        cv.backgroundColor = UIColor.white
         cv.dataSource = self
         cv.delegate = self
         return cv
     }()
-
-    let footerView: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        //v.backgroundColor = UIColor.red
-        return v
-    }()
-
+    
     lazy var chatViewController: ChatViewController = {
         let launcher = ChatViewController()
         return launcher
@@ -186,94 +164,92 @@ class HomeViewController: UIViewController,
          tabBarController?.tabBar.isHidden = false
         
          self.cellId = "homeCellId"
-
-         self.view.backgroundColor = UIColor.gamvesBackgoundColor
-         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
-
+    
         self.view.addSubview(self.scrollView)
-        self.scrollView.addSubview(self.familyLabel)
-        self.scrollView.addSubview(self.photosContainerView)
-        self.scrollView.addSubview(self.sonLabel)        
-        self.scrollView.addSubview(self.collectionView)       
-        self.scrollView.addSubview(self.footerView)
-
+        
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)
         self.view.addConstraintsWithFormat("V:|[v0]-50-|", views: self.scrollView)
         
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.familyLabel)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
-        self.scrollView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)        
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)        
+        self.scrollView.addSubview(self.headerView)
+        self.scrollView.addSubview(self.lineView)
+        self.scrollView.addSubview(self.dataView)
+        
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.headerView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.dataView)
         
         let width:Int = Int(view.frame.size.width)
+        let height:Int = Int(view.frame.size.height)
         
         let topPadding = 40
         let midPadding =  topPadding / 2
         let smallPadding =  midPadding / 2
-        let photoSize = width / 5
-        let padding = (width - (photoSize * 3))  / 4
+        let photoSize = width / 3
+        let padding = (width - photoSize) / 2
         self.photoCornerRadius = photoSize / 2
-
+        let dataHeight = height - 221
+        
         self.metricsHome["topPadding"]      = topPadding
         self.metricsHome["midPadding"]      = midPadding
         self.metricsHome["smallPadding"]    = smallPadding
         self.metricsHome["photoSize"]       = photoSize
-        self.metricsHome["padding"]         = padding    
-
+        self.metricsHome["padding"]         = padding
+        self.metricsHome["dataHeight"]      = dataHeight
+        
         self.scrollView.addConstraintsWithFormat(
-         "V:|-midPadding-[v0(midPadding)]-midPadding-[v1(photoSize)]-50-[v2(midPadding)]-10-[v3(300)][v4(30)]|", views:
-         self.familyLabel,
-         self.photosContainerView,
-         self.sonLabel,
-         self.collectionView,        
-         self.footerView,
-         metrics: metricsHome)
-
+            "V:|[v0(220)][v1(1)][v2(dataHeight)]|", views:
+            self.headerView,
+            self.lineView,
+            self.dataView,
+            metrics: self.metricsHome)
+        
+        self.headerView.addSubview(self.backImageView)
+        self.headerView.addSubview(self.photosContainerView)
+        self.headerView.addSubview(self.sonLabel)
+        
+        self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
+        
+        self.headerView.addConstraintsWithFormat("V:|[v0(100)]|", views: self.backImageView)
+        
+        self.scrollView.addConstraintsWithFormat(
+            "V:|-40-[v0(photoSize)][v1]|", views:
+            self.photosContainerView,
+            self.sonLabel,
+            metrics: self.metricsHome)
         
         self.checkLabelSon =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
-        self.checkLabelSpouse =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
-        self.checkLabelGroup =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)        
-
+        
         self.photosContainerView.addSubview(self.sonPhotoImageView)
         self.photosContainerView.addSubview(self.checkLabelSon)
-
-        self.photosContainerView.addSubview(self.spousePhotoImageView)
-        self.photosContainerView.addSubview(self.checkLabelSpouse)
-
-        self.photosContainerView.addSubview(self.groupPhotoImageView)
-        self.photosContainerView.addSubview(self.checkLabelGroup)
         
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonPhotoImageView)
-        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.spousePhotoImageView)
-        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.groupPhotoImageView)
-
-        var metricsVerBudge = [String:Int]()
-
-        metricsVerBudge["verPadding"] = photoSize - 25 
         
-        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelSon, metrics: metricsVerBudge)    
-        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelSpouse, metrics: metricsVerBudge)
-        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelGroup, metrics: metricsVerBudge)
+        var metricsVerBudge = [String:Int]()
+        
+        metricsVerBudge["verPadding"] = photoSize - 25
+        
+        self.photosContainerView.addConstraintsWithFormat("V:|-verPadding-[v0(25)]", views: self.checkLabelSon, metrics: metricsVerBudge)
         
         self.photosContainerView.addConstraintsWithFormat(
-            "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-[v2(photoSize)]-padding-|", views:
+            "H:|-padding-[v0(photoSize)]-padding-|", views:
             self.sonPhotoImageView,
-            self.spousePhotoImageView,
-            self.groupPhotoImageView,
             metrics: metricsHome)
-
+        
         var metricsHorBudge = [String:Int]()
-
+        
         let paddingBudge = (padding + photoSize) - 25
-
-        metricsHorBudge["sonPadding"]      = paddingBudge 
+        
+        metricsHorBudge["sonPadding"]      = paddingBudge
         metricsHorBudge["spousePadding"]   = (paddingBudge * 2) + 25
         metricsHorBudge["groupPadding"]    = (paddingBudge * 3) + 50
-
+        
         self.photosContainerView.addConstraintsWithFormat("H:|-sonPadding-[v0(25)]", views: self.checkLabelSon, metrics: metricsHorBudge)
-        self.photosContainerView.addConstraintsWithFormat("H:|-spousePadding-[v0(25)]", views: self.checkLabelSpouse, metrics: metricsHorBudge)
-        self.photosContainerView.addConstraintsWithFormat("H:|-groupPadding-[v0(25)]", views: self.checkLabelGroup, metrics: metricsHorBudge)
+        
+        self.dataView.addSubview(self.collectionView)
+        self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)
+        self.dataView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
         
         NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
         
@@ -286,9 +262,7 @@ class HomeViewController: UIViewController,
         self.activityIndicatorView?.startAnimating()
         
         self.checkLabelSon.isHidden = true
-        self.checkLabelSpouse.isHidden = true
-        self.checkLabelGroup.isHidden = true
-             
+        
         _status.desc = "Offline"
         _status.icon = UIImage(named: "status_offline")!
         _status.id = 0
@@ -321,10 +295,49 @@ class HomeViewController: UIViewController,
         _history.icon = UIImage(named: "history")!
         self.userStatistics.append(_history)
     
-        NotificationCenter.default.addObserver(self, selector: #selector(getTimeCount), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onFamilyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
     
     }
+    
+    func onFamilyLoaded() {
+        self.getTimeCount()
+        self.loadProfileInfo()
+    }
  
+    func loadProfileInfo() {
+        
+        let queryUser = PFQuery(className:"Profile")
+        
+        queryUser.whereKey("userId", equalTo: Global.gamvesFamily.sonsUsers[0].userId)
+        
+        queryUser.getFirstObjectInBackground { (profile, error) in
+            
+            if error == nil {
+                
+                if let prPF:PFObject = profile {
+                
+                    if prPF["pictureBackground"] != nil {
+                        
+                        let backImage = prPF["pictureBackground"] as! PFFile
+                    
+                        backImage.getDataInBackground { (imageData, error) in
+                            
+                            if error == nil {
+                                
+                                if let imageData = imageData {
+                                    
+                                    let image = UIImage(data:imageData)
+                                    
+                                    self.backImageView.image = image
+                                
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
      func openMapForPlace() {
 
@@ -445,7 +458,7 @@ class HomeViewController: UIViewController,
             
         }
         
-        let spouseRegisterChatId:Int = Global.gamvesFamily.spouseRegisterChatId
+        /*let spouseRegisterChatId:Int = Global.gamvesFamily.spouseRegisterChatId
         if ChatFeedMethods.chatFeeds[spouseRegisterChatId]! != nil
         {
             let spouseBadge = ChatFeedMethods.chatFeeds[spouseRegisterChatId]?.badgeNumber
@@ -474,7 +487,7 @@ class HomeViewController: UIViewController,
                 self.checkLabelGroup.text = grb
             }
             
-        }
+        }*/
         
         //self.familyLoaded()
     }
@@ -493,7 +506,6 @@ class HomeViewController: UIViewController,
             
         })
         
-        self.familyLabel.text = Global.gamvesFamily.familyName
 
         if self.isKeyPresentInUserDefaults(key:"son_object_id")
         {
@@ -502,11 +514,11 @@ class HomeViewController: UIViewController,
             {
                 self.sonLabel.text = Global.userDictionary[sonId]?.firstName
                 self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
-                Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)
+                Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
             }
         }
         
-        if self.isKeyPresentInUserDefaults(key:"spouse_object_id")
+        /*if self.isKeyPresentInUserDefaults(key:"spouse_object_id")
         {
             
             let spouseId = Global.defaults.object(forKey: "spouse_object_id") as! String
@@ -515,10 +527,10 @@ class HomeViewController: UIViewController,
                 self.spousePhotoImageView.image = Global.userDictionary[spouseId]?.avatar
                 Global.setRoundedImage(image: self.spousePhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)
             }
-        }
+        }*/
         
-        self.groupPhotoImageView.image = Global.gamvesFamily.familyImage //self.generateGroupImage() 
-        Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)
+        /*self.groupPhotoImageView.image = Global.gamvesFamily.familyImage //self.generateGroupImage()
+        Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)*/
         
         self.activityIndicatorView?.stopAnimating()
         
@@ -536,7 +548,7 @@ class HomeViewController: UIViewController,
     func generateGroupImage() -> UIImage
     {
         let LeftImage = self.sonPhotoImageView.image // 355 X 200
-        let RightImage = self.spousePhotoImageView.image  // 355 X 60
+        //let RightImage = self.spousePhotoImageView.image  // 355 X 60
         
         let size = CGSize(width: LeftImage!.size.width, height: LeftImage!.size.height)
         
@@ -544,7 +556,7 @@ class HomeViewController: UIViewController,
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
         
         LeftImage?.draw(in: CGRect(x: 0, y: 0, width:size.width, height: size.height))
-        RightImage?.draw(in: CGRect(x: size.width/2, y: 0, width:size.width, height: size.height))
+        //RightImage?.draw(in: CGRect(x: size.width/2, y: 0, width:size.width, height: size.height))
         
         var newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()

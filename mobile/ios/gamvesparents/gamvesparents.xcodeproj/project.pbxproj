@@ -38,6 +38,7 @@
 		82557C5F20173C0100752301 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C5E20173C0100752301 /* LocationViewController.swift */; };
 		82557C6120175CB300752301 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C6020175CB300752301 /* Date+Extension.swift */; };
 		8262CDFC1FE1FE1D003F9C9D /* ApprovalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */; };
+		826B8CC720191F21008C19A3 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826B8CC620191F21008C19A3 /* AccountViewController.swift */; };
 		8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */; };
 		8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */; };
 		827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827FE2F61FAE599100A32994 /* CheckBoxView.swift */; };
@@ -110,6 +111,7 @@
 		82557C5E20173C0100752301 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		82557C6020175CB300752301 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalViewController.swift; sourceTree = "<group>"; };
+		826B8CC620191F21008C19A3 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalCell.swift; sourceTree = "<group>"; };
 		8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoApprovalView.swift; sourceTree = "<group>"; };
 		827FE2F61FAE599100A32994 /* CheckBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxView.swift; sourceTree = "<group>"; };
@@ -257,11 +259,12 @@
 		8212D71F1F7AD42000F2A121 /* TabBarControllers */ = {
 			isa = PBXGroup;
 			children = (
+				826B8CC520191EF8008C19A3 /* Profile */,
 				829F01191FC325EB00B8F2BD /* Cells */,
 				8212D71D1F7AC16E00F2A121 /* ChatFeedViewController.swift */,
 				8212D7201F7AD44500F2A121 /* HomeViewController.swift */,
-				8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */,
 				8212D72A1F7AF3CC00F2A121 /* SettingsViewController.swift */,
+				826B8CC620191F21008C19A3 /* AccountViewController.swift */,
 			);
 			name = TabBarControllers;
 			sourceTree = "<group>";
@@ -276,6 +279,14 @@
 				82557C5E20173C0100752301 /* LocationViewController.swift */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		826B8CC520191EF8008C19A3 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				8212D7281F7AF3BD00F2A121 /* ProfileViewController.swift */,
+			);
+			name = Profile;
 			sourceTree = "<group>";
 		};
 		829F01191FC325EB00B8F2BD /* Cells */ = {
@@ -561,6 +572,7 @@
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
 				82557C4F2016CED100752301 /* HistroyCell.swift in Sources */,
 				822010BA1FFAD960008C9027 /* ButtonsApprovalView.swift in Sources */,
+				826B8CC720191F21008C19A3 /* AccountViewController.swift in Sources */,
 				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
 				C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */,
