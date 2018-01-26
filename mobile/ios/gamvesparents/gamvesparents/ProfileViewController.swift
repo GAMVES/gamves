@@ -523,6 +523,13 @@ class ProfileViewController: UIViewController,
             self.segmentedControl.setEnabled(true, forSegmentAt: 1)
             
         }       
+    
+        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
+        
         
     }
     

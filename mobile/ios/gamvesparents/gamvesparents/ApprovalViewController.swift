@@ -18,7 +18,7 @@ protocol ApprovalProtocol {
 
 class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ApprovalProtocol {
     
-    var homeViewController:HomeViewController? 
+    var homeViewController:HomeViewController?
     
     var isGroup = Bool()
     

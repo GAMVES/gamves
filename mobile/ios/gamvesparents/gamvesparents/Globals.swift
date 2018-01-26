@@ -85,6 +85,7 @@ class Global: NSObject
     static var notificationKeyFamilyLoaded  = "com.gamves.gamvesparent.familyLoaded"
     static var notificationKeyLevelsLoaded  = "com.gamves.gamvesparent.levelsLoaded"
     static var notificationKeyChatFeed      = "com.gamves.gamvesparent.chatfeed"
+    static var notificationKeyLoadFamilyDataGromGlobal  = "com.gamves.gamvesparent.loadfamilydatagromglobal"
     
     static var badgeNumber = Bool()
     

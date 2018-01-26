@@ -112,7 +112,7 @@ class HomeViewController: UIViewController,
     var sonLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        //label.backgroundColor = UIColor.white
+        label.textColor = UIColor.gray
         label.font = UIFont.boldSystemFont(ofSize: 20)
         return label
     }()   
@@ -457,39 +457,7 @@ class HomeViewController: UIViewController,
             }
             
         }
-        
-        /*let spouseRegisterChatId:Int = Global.gamvesFamily.spouseRegisterChatId
-        if ChatFeedMethods.chatFeeds[spouseRegisterChatId]! != nil
-        {
-            let spouseBadge = ChatFeedMethods.chatFeeds[spouseRegisterChatId]?.badgeNumber
-            
-            if spouseBadge! > 0
-            {
-                self.checkLabelSpouse.isHidden = false
-                
-                let spb = "\(spouseBadge!)"
-               
-                self.checkLabelSpouse.text = spb
-            }
-        }
-        
-        let groupChatId:Int = Global.gamvesFamily.familyChatId
-        if ChatFeedMethods.chatFeeds[groupChatId]! != nil
-        {
-            let groupBadge = ChatFeedMethods.chatFeeds[groupChatId]?.badgeNumber       
-            
-            if groupBadge! > 0
-            {
-                self.checkLabelGroup.isHidden = false
-                
-                let grb = "\(groupBadge!)"
-                
-                self.checkLabelGroup.text = grb
-            }
-            
-        }*/
-        
-        //self.familyLoaded()
+
     }
     
     @objc func familyLoaded()

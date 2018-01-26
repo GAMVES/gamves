@@ -10,7 +10,9 @@ import UIKit
 
 class AccountViewController: UIViewController {
     
+    var homeViewController:HomeViewController?
     
+    var tabBarViewController:TabBarViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()

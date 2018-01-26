@@ -21,7 +21,9 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         
     var didFindLocation = Bool()
     
-    var profileViewController : ProfileViewController!
+    //var profileViewController : ProfileViewController!
+    
+    var accountViewController: AccountViewController!
     
     //var isRegistered = Bool()
     
@@ -82,33 +84,32 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         let activiyTitle = "Activity"
         self.chatFeedViewController.title = activiyTitle
         
-        profileViewController = ProfileViewController()
+        accountViewController = AccountViewController()
+        accountViewController.tabBarViewController = self
+        let accountNavController = UINavigationController(rootViewController: accountViewController)
+        accountViewController.tabBarItem.image = UIImage(named: "profile")
+        let accountTitle = "Account"
+        accountViewController.title = accountTitle
+        
+        /*profileViewController = ProfileViewController()
         profileViewController.tabBarViewController = self
         let profileNavController = UINavigationController(rootViewController: profileViewController)
         profileNavController.tabBarItem.image = UIImage(named: "profile")
         let profileTitle = "Profile"
-        profileViewController.title = profileTitle
+        profileViewController.title = profileTitle*/
         
-        viewControllers = [homeNavController, chatFeedNavController, profileNavController]
+        viewControllers = [homeNavController, chatFeedNavController, accountViewController]
 
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
         blurVisualEffectView?.frame = view.bounds
         self.view.addSubview(blurVisualEffectView!)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
         
     }
     
-    @objc func familyLoaded() {
-        profileViewController.familyLoaded()
-    }
-    
-    @objc func levelsLoaded() {
-        profileViewController.levelsLoaded()
-    }
+   
     
     override func viewDidAppear(_ animated: Bool) {
         

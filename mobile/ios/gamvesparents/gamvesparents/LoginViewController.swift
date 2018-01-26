@@ -698,7 +698,10 @@ class LoginViewController: UIViewController
                             
                             Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)             
                             
-                            self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
+                            //self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
+                            
+                            
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: self)
                             
                             self.tabBarViewController?.selectedIndex = 0 //Home
                             
