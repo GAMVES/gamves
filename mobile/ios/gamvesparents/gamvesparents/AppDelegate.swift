@@ -32,11 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
       
         var reached = false
         
-        //if Reachability.isConnectedToNetwork() == true
+        //connect = true
+        //if connect {
             
-        connect = true
-        
-        if connect {
+        if Reachability.isConnectedToNetwork() == true {
     
             loadParse(application: application, launchOptions: launchOptions)
             print("Internet connection OK")
