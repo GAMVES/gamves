@@ -116,8 +116,22 @@ class HomeViewController: UIViewController,
         label.font = UIFont.boldSystemFont(ofSize: 20)
         return label
     }()   
+
+    let dataLeftView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()
     
     let dataView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()
+
+    let dataRightView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.white
@@ -208,12 +222,12 @@ class HomeViewController: UIViewController,
         self.headerView.addSubview(self.sonLabel)
         
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
+        self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
+        self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
         
         self.headerView.addConstraintsWithFormat("V:|[v0(100)]|", views: self.backImageView)
         
-        self.scrollView.addConstraintsWithFormat(
+        self.headerView.addConstraintsWithFormat(
             "V:|-40-[v0(photoSize)][v1]|", views:
             self.photosContainerView,
             self.sonLabel,
@@ -246,10 +260,19 @@ class HomeViewController: UIViewController,
         metricsHorBudge["groupPadding"]    = (paddingBudge * 3) + 50
         
         self.photosContainerView.addConstraintsWithFormat("H:|-sonPadding-[v0(25)]", views: self.checkLabelSon, metrics: metricsHorBudge)
-        
-        self.dataView.addSubview(self.collectionView)
-        self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)
-        self.dataView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
+     
+        self.dataView.addSubview(self.dataLeftView)
+        self.dataView.addSubview(self.collectionView)        
+        self.dataView.addSubview(self.dataRightView)
+
+        self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.collectionView)
+        self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.dataLeftView)
+        self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.dataRightView)
+
+        self.dataView.addConstraintsWithFormat("H:|[v0(20)][v1][v2(20)]|", views: 
+            self.dataLeftView, 
+            self.collectionView, 
+            self.dataRightView)        
         
         NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
         
@@ -301,10 +324,11 @@ class HomeViewController: UIViewController,
     
     func onFamilyLoaded() {
         self.getTimeCount()
-        self.loadProfileInfo()
+        self.loadSonProfileInfo()
+        self.loadYourProfileInfo()        
     }
  
-    func loadProfileInfo() {
+    func loadSonProfileInfo() {
         
         let queryUser = PFQuery(className:"Profile")
         
@@ -330,6 +354,45 @@ class HomeViewController: UIViewController,
                                     
                                     self.backImageView.image = image
                                 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func loadYourProfileInfo() {
+        
+        let queryUser = PFQuery(className:"Profile")
+        
+        if let userId = PFUser.current()?.objectId {
+            queryUser.whereKey("userId", equalTo: userId)
+        }
+        
+        queryUser.getFirstObjectInBackground { (profile, error) in
+            
+            if error == nil {
+                
+                if let prPF:PFObject = profile {
+                    
+                    if prPF["pictureBackground"] != nil {
+                        
+                        let backImage = prPF["pictureBackground"] as! PFFile
+                        
+                        backImage.getDataInBackground { (imageData, error) in
+                            
+                            if error == nil {
+                                
+                                if let imageData = imageData {
+                                    
+                                    let image = UIImage(data:imageData)
+                                    
+                                    //self.backImageView.image = image
+                                    
+                                    Global.yourAccountBackImage = image!
+                                    
                                 }
                             }
                         }
@@ -613,7 +676,7 @@ class HomeViewController: UIViewController,
     ////collectionView
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return userStatistics.count
+        return self.userStatistics.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

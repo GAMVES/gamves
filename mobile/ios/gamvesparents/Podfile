@@ -31,6 +31,8 @@ target 'gamvesparents' do
   
   pod 'AWSS3'
   
+  pod	 'Stripe'
+  
   # pod 'MercadoPagoSDK', '3.7.1'
     
 end

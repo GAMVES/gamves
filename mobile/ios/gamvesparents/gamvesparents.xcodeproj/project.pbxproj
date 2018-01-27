@@ -39,6 +39,7 @@
 		82557C6120175CB300752301 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82557C6020175CB300752301 /* Date+Extension.swift */; };
 		8262CDFC1FE1FE1D003F9C9D /* ApprovalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */; };
 		826B8CC720191F21008C19A3 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826B8CC620191F21008C19A3 /* AccountViewController.swift */; };
+		826B8CC9201CCBD5008C19A3 /* AccountCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826B8CC8201CCBD5008C19A3 /* AccountCollectionViewCell.swift */; };
 		8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */; };
 		8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */; };
 		827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827FE2F61FAE599100A32994 /* CheckBoxView.swift */; };
@@ -112,6 +113,7 @@
 		82557C6020175CB300752301 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalViewController.swift; sourceTree = "<group>"; };
 		826B8CC620191F21008C19A3 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		826B8CC8201CCBD5008C19A3 /* AccountCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCollectionViewCell.swift; sourceTree = "<group>"; };
 		8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApprovalCell.swift; sourceTree = "<group>"; };
 		8271ECCF1FE9552D004160B9 /* InfoApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoApprovalView.swift; sourceTree = "<group>"; };
 		827FE2F61FAE599100A32994 /* CheckBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxView.swift; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				829F011A1FC3261500B8F2BD /* HomeCollectionViewCell.swift */,
+				826B8CC8201CCBD5008C19A3 /* AccountCollectionViewCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -513,6 +516,7 @@
 				"${BUILT_PRODUCTS_DIR}/PopupDialog/PopupDialog.framework",
 				"${BUILT_PRODUCTS_DIR}/RSKImageCropper/RSKImageCropper.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+				"${BUILT_PRODUCTS_DIR}/Stripe/Stripe.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
 				"${BUILT_PRODUCTS_DIR}/TaskQueue/TaskQueue.framework",
 				"${BUILT_PRODUCTS_DIR}/youtube-ios-player-helper/youtube_ios_player_helper.framework",
@@ -533,6 +537,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PopupDialog.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSKImageCropper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stripe.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TaskQueue.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/youtube_ios_player_helper.framework",
@@ -602,6 +607,7 @@
 				82B7EB7F1FAB772600C61A6B /* LoginViewController+Extensions.swift in Sources */,
 				82E3723D1FB166F5000AD7EB /* VideoCell.swift in Sources */,
 				82E372321FB16385000AD7EB /* ContactCell.swift in Sources */,
+				826B8CC9201CCBD5008C19A3 /* AccountCollectionViewCell.swift in Sources */,
 				82E3723B1FB16676000AD7EB /* ChatView.swift in Sources */,
 				82557C532016D00A00752301 /* ActivityCell.swift in Sources */,
 				8212D70A1F78490C00F2A121 /* Colors.swift in Sources */,

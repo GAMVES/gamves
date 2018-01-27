@@ -72,7 +72,6 @@ class Global: NSObject
     static var keyYour = "yourPhotoImage"
     static var keySon = "sonPhotoImage"
 
-
     static var key_you_spouse_chat_id = "you_spouse_chat_id"
     static var key_you_son_chat_id = "you_son_chat_id"
     static var key_you_spouse_son_chat_id = "you_spouse_son_chat_id"
@@ -96,6 +95,8 @@ class Global: NSObject
     static var chatVideos = Dictionary<Int, VideoGamves>()
     
     static var hasNewFeed = Bool()
+    
+    static var yourAccountBackImage = UIImage()
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
     {

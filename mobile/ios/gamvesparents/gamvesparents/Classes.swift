@@ -263,5 +263,13 @@ class UserStatistics
     var data = String()
     var icon = UIImage()
     var approval = Int()
-    
 }
+
+class AccountButton
+{
+    var id = Int()
+    var desc = String()
+    var icon = UIImage()
+}
+
+
