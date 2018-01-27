@@ -38,19 +38,33 @@ class HomeCollectionViewCell: BaseCell {
         label.numberOfLines = 2
         return label
     }()
+
+    let backView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        view.layer.cornerRadius = 10
+        view.layer.borderColor = UIColor.gamvesColor.cgColor
+        view.layer.borderWidth = 1.5
+        return view
+    }()
     
     override func setupViews() {
         super.setupViews()
+
+        self.contentView.addSubview(self.backView)
+        self.contentView.addConstraintsWithFormat("H:|[v0]|", views: self.backView)
+        self.contentView.addConstraintsWithFormat("V:|-7-[v0]-7-|", views: self.backView)
         
-        self.contentView.addSubview(self.iconImageView)
-        self.contentView.addSubview(self.descLabel)
-        self.contentView.addSubview(self.dataLabel)
+        self.backView.addSubview(self.iconImageView)
+        self.backView.addSubview(self.descLabel)
+        self.backView.addSubview(self.dataLabel)
         
-        self.contentView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.iconImageView)
-        self.contentView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.descLabel)
-        self.contentView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.dataLabel)
+        self.backView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.iconImageView)
+        self.backView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.descLabel)
+        self.backView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.dataLabel)
         
-        self.contentView.addConstraintsWithFormat("H:|-15-[v0(30)]-10-[v1][v2(100)]|", views: self.iconImageView, self.descLabel, self.dataLabel)
+        self.backView.addConstraintsWithFormat("H:|-15-[v0(30)]-10-[v1][v2(100)]|", views: self.iconImageView, self.descLabel, self.dataLabel)
         
     }
     

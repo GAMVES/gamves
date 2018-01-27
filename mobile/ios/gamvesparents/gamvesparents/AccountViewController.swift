@@ -176,6 +176,8 @@ class AccountViewController: UIViewController,
         self.backImageView.image = Global.yourAccountBackImage
         self.sonPhotoImageView.image = Global.gamvesFamily.youUser.avatar
 
+        self.yourLabel.text = Global.gamvesFamily.youUser.name
+
         self.photosContainerView.addSubview(self.sonPhotoImageView)
         
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonPhotoImageView)

@@ -265,9 +265,9 @@ class HomeViewController: UIViewController,
         self.dataView.addSubview(self.collectionView)        
         self.dataView.addSubview(self.dataRightView)
 
-        self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.collectionView)
-        self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.dataLeftView)
-        self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.dataRightView)
+        self.dataView.addConstraintsWithFormat("V:|-7-[v0]|", views: self.collectionView)
+        self.dataView.addConstraintsWithFormat("V:|-7-[v0]|", views: self.dataLeftView)
+        self.dataView.addConstraintsWithFormat("V:|-7-[v0]|", views: self.dataRightView)
 
         self.dataView.addConstraintsWithFormat("H:|[v0(20)][v1][v2(20)]|", views: 
             self.dataLeftView, 
@@ -803,7 +803,7 @@ class HomeViewController: UIViewController,
             return CGSize(width:self.frame.width, height:estimatedFrame.height + 20)
         }*/
         
-        return CGSize(width:self.collectionView.frame.width, height:50)
+        return CGSize(width:self.collectionView.frame.width, height: 65)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
