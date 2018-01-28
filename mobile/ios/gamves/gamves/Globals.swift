@@ -19,7 +19,13 @@ class Global: NSObject
     
     static var levels = Dictionary<String, LevelsGamves>()
     
-    static var localWs = "wss://127.0.0.1:1337/1/"
+    
+    //static var serverUrl = "http://127.0.0.1:1337/1/"
+    static var serverUrl = "http://192.168.16.22:1337/1/"
+    
+    //static var localWs = "wss://127.0.0.1:1337/1/"
+    static var localWs = "wss://192.168.16.22:1337/1/"
+    
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard
@@ -1068,67 +1074,53 @@ class Global: NSObject
         
     }
    
-    static func updateUserOnline(online : Bool) {
+    static func updateUserStatus(status : Int) {
         
-        let queryOnine = PFQuery(className:"UserOnline")
-        queryOnine.whereKey("userId", equalTo: PFUser.current()?.objectId)
-        queryOnine.findObjectsInBackground { (usersOnline, error) in
-            
-            if error != nil
-            {
-                print("error")
-                
-            } else {
-                
-                if (usersOnline?.count)!>0
-                {
-                    for userOnline in usersOnline!
-                    {
-                        userOnline["isOnline"] = online
-                        
-                        userOnline.saveInBackground(block: { (resutl, error) in
-                            print("saved")
-                        })
-                        
-                    }
-                    
-                } else
-                {
-                    let userOnline = PFObject(className: "UserOnline")
-                    userOnline["userId"] = PFUser.current()?.objectId
-                    userOnline["isOnline"] = online
-                    
-                    userOnline.saveInBackground(block: { (resutl, error) in
-                        print("saved")
-                    })
-                    
-                }
-            }
+        DispatchQueue.main.async {
+            self.updateTimeOnline(status: status)
         }
         
-        self.updateTimeOnline(online: online)
+        let queryOnine = PFQuery(className:"UserStatus")
         
+        if let userId = PFUser.current()?.objectId {
+            queryOnine.whereKey("userId", equalTo: userId)
+        }    
+        
+        queryOnine.getFirstObjectInBackground { (userStatus, error) in
+            
+            if userStatus != nil {
+                
+                userStatus!["status"] = status
+                userStatus?.saveEventually()
+            } else {
+                
+                let newUserStatus = PFObject(className: "UserStatus")
+                newUserStatus["userId"] = PFUser.current()?.objectId
+                newUserStatus["status"] = status
+                newUserStatus.saveEventually()
+            }
+        }
     }
     
-    static func updateTimeOnline(online : Bool) {
+    static func updateTimeOnline(status : Int) {
         
-        print(online)
-    
-        if online {
+        if status == 2 || Global.timeOnlinePF == nil {
             
             var timeOnline = PFObject(className: "TimeOnline")
-            timeOnline["userId"] = PFUser.current()?.objectId
+            if let userId = PFUser.current()?.objectId {
+                timeOnline["userId"] = userId
+            }
+            
             let datePF = Date()
             timeOnline["timeStarted"] = datePF
+            timeOnline["statusStarted"] = status
             
             timeOnline.saveInBackground(block: { (resutl, error) in
-            
                 Global.timeOnlinePF = timeOnline
-                
             })
             
-        } else
-        {
+        } else {
+            
             let timeOnlinePF = Global.timeOnlinePF
             
             if let objectId = PFUser.current()?.objectId {
@@ -1137,6 +1129,8 @@ class Global: NSObject
             
             let datePF = Date()
             timeOnlinePF!["timeEnded"] = datePF
+            
+            timeOnlinePF!["statusEnded"] = status
             timeOnlinePF?.saveEventually()
             
         }

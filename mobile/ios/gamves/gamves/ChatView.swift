@@ -1311,14 +1311,14 @@ class ChatView: UIView,
     {
         let userId = self.gamvesUsers[0].userId
         
-        let onlineQuery = PFQuery(className: "UserOnline").whereKey("userId", equalTo: userId)
+        let onlineQuery = PFQuery(className: "UserStatus").whereKey("userId", equalTo: userId)
         
         onlineSubscription = onlineClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
             
             self.changeSingleUserStatus(onlineMessage:onlineMessage)
         }
         
-        let queryOnine = PFQuery(className:"UserOnline")
+        let queryOnine = PFQuery(className:"UserStatus")
         queryOnine.whereKey("userId", equalTo: userId)
         queryOnine.findObjectsInBackground { (usersOnline, error) in
             
@@ -1341,13 +1341,18 @@ class ChatView: UIView,
     
     func changeSingleUserStatus(onlineMessage:PFObject)
     {
-        let isOnline = onlineMessage["isOnline"] as! Bool
+        let status = onlineMessage["status"] as! Int
         
-        if isOnline
-        {
+        if status == 2 {
+            
             delegateNavBar.updateSubTitle(latelText: "Online")
-        } else
-        {
+            
+        } else if status == 1 {
+            
+            delegateNavBar.updateSubTitle(latelText: "Idle")
+            
+        } else if status == 0 {
+            
             let updatedAt = onlineMessage.updatedAt as! Date
             
             let dateFormatter = DateFormatter()

@@ -11,7 +11,6 @@ import Parse
 import UserNotifications
 import DeviceKit
 
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
@@ -171,7 +170,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //Local
         let configuration = ParseClientConfiguration {
             $0.applicationId = "0123456789"
-            $0.server = "http://127.0.0.1:1337/1/"
+            $0.server = Global.serverUrl
         }
         Parse.initialize(with: configuration)
 
@@ -243,13 +242,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.gamvesApplication = application
         
-        Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
+        if online && PFUser.current() != nil {
         
-            self.gamvesApplication?.applicationIconBadgeNumber = badgeNumber
+            Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
             
-        })
+                self.gamvesApplication?.applicationIconBadgeNumber = badgeNumber
+                
+            })
 
-        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+        }
         
     }
     
@@ -259,12 +261,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
         
-        self.inBackground = true
-        
-        if online {
-            Global.updateUserOnline(online: false)
-        }
-        
+        /*self.inBackground = true
+        if online && PFUser.current() != nil {
+            Global.updateUserOnline(online: false, idle: false)
+        }*/
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
@@ -273,7 +273,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
         self.inBackground = true
-        
+        if online && PFUser.current() != nil {
+            Global.updateUserStatus(status: 1)
+        }
         
     }
   
@@ -283,8 +285,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.inBackground = true
         
-        if online {
-            Global.updateUserOnline(online: false)
+        if online && PFUser.current() != nil {
+            Global.updateUserStatus(status: 1)
         }
         
     }
@@ -297,7 +299,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.gamvesApplication = application
         
-        if online {
+        if online && PFUser.current() != nil {
         
             Global.loadBargesNumberForUser(completionHandler: { ( badgeNumber ) -> () in
 
@@ -306,7 +308,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
             })
             
-            Global.updateUserOnline(online: true)
+            Global.updateUserStatus(status: 2)
             
         }
     
@@ -318,8 +320,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.inBackground = true
         
-        if online {
-            Global.updateUserOnline(online: false)
+        if online && PFUser.current() != nil {
+            Global.updateUserStatus(status: 0)
         }
 
     }
@@ -335,8 +337,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         queryChatFeed = PFQuery(className: "ChatFeed")
         
-        if let userId = PFUser.current()?.objectId
-        {
+        if let userId = PFUser.current()?.objectId {
             queryChatFeed.whereKey("members", contains: userId)
         }
         
@@ -348,8 +349,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 
                 print(chatFeddsCount)
                 
-                if chatFeddsCount! > 0
-                {
+                if chatFeddsCount! > 0 {
+                    
                     let chatfeedsCount =  chatfeeds?.count
                     
                     print(chatfeedsCount)
