@@ -35,13 +35,12 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
 
         let imageUser:UIImage!
         
-        if gamvesUsers.count>2
-        {
+        if gamvesUsers.count > 2 {
+            
             imageUser = UIImage(named: "community")
-        } else
-        {
+        } else {
+            
             imageUser = gamvesUsers[0].avatar
-
         }
     
         print(gamvesUsers[0].name)
@@ -56,9 +55,14 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         buttonAvatar.setImage(imageUser, for: UIControlState.normal)
         buttonAvatar.addTarget(self, action: #selector(backButtonPressed(sender:)), for: .touchUpInside)
         
-        buttonAvatar.frame = CGRect(x:0, y:0, width:30, height:30)
-        buttonAvatar.layer.cornerRadius = 15
+        buttonAvatar.frame = CGRect(x:0, y:0, width:40, height:40)
+        buttonAvatar.layer.cornerRadius = 20
         buttonAvatar.clipsToBounds = true
+        
+        if #available(iOS 9.0, *) {
+            buttonAvatar.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            buttonAvatar.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        }
         
         let avatarButton = UIBarButtonItem(customView: buttonAvatar)
         let arrowButton = UIBarButtonItem(customView: buttonArrowBack)

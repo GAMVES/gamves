@@ -40,12 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         var reached = false
         
+        //connect = true
+        //if connect {
+            
         //Uncomment
-        //if Reachability.isConnectedToNetwork() == true {
-        
-        connect = true
-        
-        if connect {
+        if Reachability.isConnectedToNetwork() {
             
             online = true
             
