@@ -19,13 +19,12 @@ import com.gamves.gamvescommunity.fragment.HomeFragment;
 import java.util.List;
 
 import com.gamves.gamvescommunity.R;
-import com.gamves.gamvescommunity.model.CategoryItem;
 import com.gamves.gamvescommunity.model.FanPageListItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
 import com.gamves.gamvescommunity.utils.CustomFontTextView;
 
 /**
- * Created by mariano on 4/18/16.
+ * Created by Jose on 4/18/16.
  **/
 public class RecyclerHomeFanpageAdapter extends RecyclerView.Adapter<RecyclerHomeFanpageAdapter.ViewHolder> {
 
@@ -54,7 +53,7 @@ public class RecyclerHomeFanpageAdapter extends RecyclerView.Adapter<RecyclerHom
     @Override
     public void onBindViewHolder(RecyclerHomeFanpageAdapter.ViewHolder holder, int position) {
 
-        final FanPageListItem fragmentItem = HomeDataSingleton.getInstance().getCategoryList().get(this.position).getFanpages().get(position);
+        final FanPageListItem fragmentItem = DataSingleton.getInstance().getCategoryList().get(this.position).getFanpages().get(position);
 
         try
         {
@@ -100,7 +99,7 @@ public class RecyclerHomeFanpageAdapter extends RecyclerView.Adapter<RecyclerHom
 
     @Override
     public int getItemCount() {
-        List<FanPageListItem> fantList = HomeDataSingleton.getInstance().getCategoryList().get(this.position).getFanpages();
+        List<FanPageListItem> fantList = DataSingleton.getInstance().getCategoryList().get(this.position).getFanpages();
         return fantList != null ? fantList.size() : 0;
     }
 
@@ -140,7 +139,7 @@ public class RecyclerHomeFanpageAdapter extends RecyclerView.Adapter<RecyclerHom
             {
                 int position = getAdapterPosition();
 
-                FanPageListItem fanpage = HomeDataSingleton.getInstance().getCategoryList().get(mainPosition).getFanpages().get(position);
+                FanPageListItem fanpage = DataSingleton.getInstance().getCategoryList().get(mainPosition).getFanpages().get(position);
 
                 fanpage.setActive(true);
 

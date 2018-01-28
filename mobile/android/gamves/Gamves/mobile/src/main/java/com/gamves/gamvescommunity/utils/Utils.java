@@ -56,7 +56,7 @@ import java.util.TimeZone;
 import com.gamves.gamvescommunity.R;
 
 /**
- * Created by mariano on 2/27/16.
+ * Created by Jose on 2/27/16.
  **/
 public class Utils {
 

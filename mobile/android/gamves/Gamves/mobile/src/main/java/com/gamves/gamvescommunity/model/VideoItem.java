@@ -1,7 +1,7 @@
 package com.gamves.gamvescommunity.model;
 
 /**
- * Created by mariano on 4/20/16.
+ * Created by Jose on 4/20/16.
  */
 public class VideoItem {
 

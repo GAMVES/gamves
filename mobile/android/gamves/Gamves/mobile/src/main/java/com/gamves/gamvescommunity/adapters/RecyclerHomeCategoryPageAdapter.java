@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.gamves.gamvescommunity.fragment.HomeFragment;
 import com.gamves.gamvescommunity.model.CategoryItem;
 import com.gamves.gamvescommunity.model.FanPageListItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
 import com.gamves.gamvescommunity.utils.GamvesLinearLayoutManager;
 
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 import com.gamves.gamvescommunity.R;
 
 /**
- * Created by mariano on 4/18/16.
+ * Created by Jose on 4/18/16.
  **/
 public class RecyclerHomeCategoryPageAdapter extends RecyclerView.Adapter<RecyclerHomeCategoryPageAdapter.ViewHolder> {
 
@@ -55,20 +55,20 @@ public class RecyclerHomeCategoryPageAdapter extends RecyclerView.Adapter<Recycl
     public void onBindViewHolder(RecyclerHomeCategoryPageAdapter.ViewHolder holder, int position)
     {
 
-        int size = HomeDataSingleton.getInstance().getCategoryList().size();
+        int size = DataSingleton.getInstance().getCategoryList().size();
         if (size==0)
             return;
 
 
-        Bitmap thumbnailBitmap = HomeDataSingleton.getInstance().getCategoryList().get(position).getThumbnailBitmap();
+        Bitmap thumbnailBitmap = DataSingleton.getInstance().getCategoryList().get(position).getThumbnailBitmap();
 
         holder.mThumbImg.setImageBitmap(thumbnailBitmap);
 
-        Bitmap backgroundBitmap = HomeDataSingleton.getInstance().getCategoryList().get(position).getBackgroundBitmap();
+        Bitmap backgroundBitmap = DataSingleton.getInstance().getCategoryList().get(position).getBackgroundBitmap();
 
         holder.mBackgroundImg.setImageBitmap(backgroundBitmap);
 
-        int gradiendId = HomeDataSingleton.getInstance().getCategoryList().get(position).getGradientId();
+        int gradiendId = DataSingleton.getInstance().getCategoryList().get(position).getGradientId();
 
         Glide.with(context)
                 .load("")
@@ -77,7 +77,7 @@ public class RecyclerHomeCategoryPageAdapter extends RecyclerView.Adapter<Recycl
 
         holder.mGradientImg.setImageAlpha(200);
 
-        String name = HomeDataSingleton.getInstance().getCategoryList().get(position).getName();
+        String name = DataSingleton.getInstance().getCategoryList().get(position).getName();
 
         holder.mNameText.setText(name);
 
@@ -102,7 +102,7 @@ public class RecyclerHomeCategoryPageAdapter extends RecyclerView.Adapter<Recycl
 
     @Override
     public int getItemCount() {
-        int count = HomeDataSingleton.getInstance().getCategoryList().size();
+        int count = DataSingleton.getInstance().getCategoryList().size();
         return count;
     }
 
@@ -155,7 +155,7 @@ public class RecyclerHomeCategoryPageAdapter extends RecyclerView.Adapter<Recycl
         public void onItemClick(View v, int position, int mainPosition)
         {
 
-            CategoryItem category = HomeDataSingleton.getInstance().getCategoryList().get(mainPosition);
+            CategoryItem category = DataSingleton.getInstance().getCategoryList().get(mainPosition);
 
             category.setActive(true);
 

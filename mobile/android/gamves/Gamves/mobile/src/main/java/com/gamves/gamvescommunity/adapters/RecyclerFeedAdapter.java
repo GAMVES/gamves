@@ -9,26 +9,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.gamves.gamvescommunity.model.VideosListItem;
 import com.gamves.gamvescommunity.R;
+import com.gamves.gamvescommunity.model.CategoryItem;
+import com.gamves.gamvescommunity.model.FanPageListItem;
+import com.gamves.gamvescommunity.model.FeedItem;
+import com.google.gson.Gson;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.List;
 
 /**
  * Created by Jose on 4/18/16.
  **/
-public class RecyclerVideosAdapter extends RecyclerView.Adapter<RecyclerVideosAdapter.ViewHolder> {
+public class RecyclerFeedAdapter extends RecyclerView.Adapter<RecyclerFeedAdapter.ViewHolder> {
 
     private Context context;
-    private List<VideosListItem> itemList;
+    private List<FeedItem> feedList;
 
     private OnItemClickListener mItemClickListener;
 
     private int mainPosition;
 
-    public RecyclerVideosAdapter(Context context, List<VideosListItem> itemList) {
-        this.itemList = itemList;
+    public RecyclerFeedAdapter(Context context, List<FeedItem> feedList) {
+        this.feedList = feedList;
         this.context = context;
     }
 
@@ -39,13 +42,13 @@ public class RecyclerVideosAdapter extends RecyclerView.Adapter<RecyclerVideosAd
     }
 
     @Override
-    public void onBindViewHolder(RecyclerVideosAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerFeedAdapter.ViewHolder holder, int position) {
 
-        VideosListItem videoItem = itemList.get(position);
+        FeedItem feedItem = feedList.get(position);
 
-        holder.mVideoThumb.setImageBitmap(itemList.get(position).getThumbnailBitmap());
+        holder.mVideoThumb = feedItem.getChatThumbnail();
 
-        holder.mTextDescription.setText(itemList.get(position).getDescription());
+        holder.mTextDescription.setText(feedItem.getText());
     }
 
     @Override
@@ -55,7 +58,7 @@ public class RecyclerVideosAdapter extends RecyclerView.Adapter<RecyclerVideosAd
 
     @Override
     public int getItemCount() {
-        return itemList != null ? itemList.size() : 0;
+        return feedList != null ? feedList.size() : 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.SurfaceView;
 
 /**
- * Created by mariano on 3/3/16.
+ * Created by Jose on 3/3/16.
  **/
 public class WideVideoView extends SurfaceView {
 

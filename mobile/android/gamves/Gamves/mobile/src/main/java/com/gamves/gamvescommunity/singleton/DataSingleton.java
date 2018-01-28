@@ -2,6 +2,7 @@ package com.gamves.gamvescommunity.singleton;
 
 import com.gamves.gamvescommunity.model.CategoryItem;
 import com.gamves.gamvescommunity.model.FanPageListItem;
+import com.gamves.gamvescommunity.model.FeedItem;
 import com.gamves.gamvescommunity.model.VideosListItem;
 
 import java.util.ArrayList;
@@ -11,20 +12,22 @@ import java.util.List;
  * Created by jose on 7/15/17.
  */
 
-public class HomeDataSingleton 
+public class DataSingleton
 {
 
     private List<CategoryItem> categoryList;
 
- 	private static HomeDataSingleton instance = null;
-   	protected HomeDataSingleton() {
+    private List<FeedItem> feedList;
+
+ 	private static DataSingleton instance = null;
+   	protected DataSingleton() {
     	// Exists only to defeat instantiation.
         categoryList = new ArrayList<>();
    	}
-   	public static HomeDataSingleton getInstance() {
+   	public static DataSingleton getInstance() {
       
       	if(instance == null) {
-         	instance = new HomeDataSingleton();
+         	instance = new DataSingleton();
       	}
       	return instance;
    }
@@ -43,8 +46,8 @@ public class HomeDataSingleton
         this.categoryList.add(categoryItem);
     }
 
-    public CategoryItem getActiveCategory()
-    {
+    public CategoryItem getActiveCategory() {
+
         CategoryItem catItem = null;
         for (int i=0; i<categoryList.size(); i++)
         {
@@ -55,7 +58,6 @@ public class HomeDataSingleton
         }
         return catItem;
     }
-
 
     public FanPageListItem getActiveFanpage()
     {
@@ -94,6 +96,16 @@ public class HomeDataSingleton
     }
 
 
+    public List<FeedItem> getFeedList() {
+        return feedList;
+    }
 
+    public void setFeedList(List<FeedItem> feedList) {
+        this.feedList = feedList;
+    }
+
+    public void addFeedToFeeList(FeedItem feedItem) {
+   	    this.feedList.add(feedItem);
+    }
 
 }

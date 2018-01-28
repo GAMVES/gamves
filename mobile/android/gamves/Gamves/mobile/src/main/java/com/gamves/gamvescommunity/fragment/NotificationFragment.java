@@ -24,7 +24,7 @@ import com.gamves.gamvescommunity.VideoDetail;
 import com.gamves.gamvescommunity.adapters.RecyclerVideosAdapter;
 import com.gamves.gamvescommunity.model.FanPageListItem;
 import com.gamves.gamvescommunity.model.VideosListItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -165,7 +165,7 @@ public class NotificationFragment extends BaseFragment {
     public void updateData()
     {
 
-        fanpageActive = HomeDataSingleton.getInstance().getActiveFanpage();
+        fanpageActive = DataSingleton.getInstance().getActiveFanpage();
 
         fanpage_cover.setImageBitmap(fanpageActive.getPageCover());
 
@@ -278,13 +278,13 @@ public class NotificationFragment extends BaseFragment {
         @Override
         protected void onPostExecute(VideosListItem result)
         {
-            HomeDataSingleton.getInstance().addVideoToFunpage(result);
+            DataSingleton.getInstance().addVideoToFunpage(result);
 
             if (result.getId() == (videosCount-1))
             {
-                videoList = HomeDataSingleton.getInstance().getActiveFanpage().getVideos();
+                videoList = DataSingleton.getInstance().getActiveFanpage().getVideos();
 
-                int amount = HomeDataSingleton.getInstance().getActiveFanpage().getVideos().size();
+                int amount = DataSingleton.getInstance().getActiveFanpage().getVideos().size();
 
                 String vamount = Integer.toString(amount);
 

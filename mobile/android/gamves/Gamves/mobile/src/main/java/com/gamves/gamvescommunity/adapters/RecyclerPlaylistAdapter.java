@@ -14,7 +14,7 @@ import com.gamves.gamvescommunity.model.VideosPlayListItem;
 import java.util.List;
 
 /**
- * Created by mariano on 2/23/16.
+ * Created by Jose on 2/23/16.
  **/
 
 public class RecyclerPlaylistAdapter extends RecyclerView.Adapter<RecyclerPlaylistAdapter.ViewHolder> {

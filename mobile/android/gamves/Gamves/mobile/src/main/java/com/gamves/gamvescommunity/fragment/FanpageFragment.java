@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,19 +19,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gamves.gamvescommunity.GamvesApplication;
 import com.gamves.gamvescommunity.R;
 import com.gamves.gamvescommunity.VideoDetail;
 import com.gamves.gamvescommunity.adapters.RecyclerVideosAdapter;
-import com.gamves.gamvescommunity.model.CategoryItem;
 import com.gamves.gamvescommunity.model.FanPageListItem;
 import com.gamves.gamvescommunity.model.VideosListItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
-import com.gamves.gamvescommunity.utils.KeySaver;
-import com.gamves.gamvescommunity.utils.Utils;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
@@ -41,7 +35,6 @@ import com.wang.avi.AVLoadingIndicatorView;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -172,7 +165,7 @@ public class FanpageFragment extends BaseFragment {
     public void updateData()
     {
 
-        fanpageActive = HomeDataSingleton.getInstance().getActiveFanpage();
+        fanpageActive = DataSingleton.getInstance().getActiveFanpage();
 
         fanpage_cover.setImageBitmap(fanpageActive.getPageCover());
 
@@ -285,13 +278,13 @@ public class FanpageFragment extends BaseFragment {
         @Override
         protected void onPostExecute(VideosListItem result)
         {
-            HomeDataSingleton.getInstance().addVideoToFunpage(result);
+            DataSingleton.getInstance().addVideoToFunpage(result);
 
             if (result.getId() == (videosCount-1))
             {
-                videoList = HomeDataSingleton.getInstance().getActiveFanpage().getVideos();
+                videoList = DataSingleton.getInstance().getActiveFanpage().getVideos();
 
-                int amount = HomeDataSingleton.getInstance().getActiveFanpage().getVideos().size();
+                int amount = DataSingleton.getInstance().getActiveFanpage().getVideos().size();
 
                 String vamount = Integer.toString(amount);
 

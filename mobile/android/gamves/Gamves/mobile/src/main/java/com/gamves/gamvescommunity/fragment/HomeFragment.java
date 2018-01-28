@@ -19,10 +19,8 @@ import com.gamves.gamvescommunity.R;
 import com.gamves.gamvescommunity.callbacks.ParseCallback;
 import com.gamves.gamvescommunity.model.CategoryItem;
 import com.gamves.gamvescommunity.model.FanPageListItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
 import com.gamves.gamvescommunity.utils.HomeViewPager;
-import com.gamves.gamvescommunity.utils.KeySaver;
-import com.gamves.gamvescommunity.utils.Utils;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -373,7 +371,7 @@ public class HomeFragment extends Fragment {
         @Override
         protected void onPostExecute(CategoryItem result)
         {
-            HomeDataSingleton.getInstance().addCategoryItem(result);
+            DataSingleton.getInstance().addCategoryItem(result);
             PAGE_SELETED_ACTION=LOAD_FRAGMENT_DATA;
             onPageChangeListener.onPageSelected(0);
             //setCategoryFanPageData();

@@ -24,7 +24,7 @@ import java.net.URLConnection;
 import com.gamves.gamvescommunity.R;
 
 /**
- * Created by mariano on 3/5/16.
+ * Created by Jose on 3/5/16.
  **/
 public class DownloadService extends Service {
 

@@ -3,7 +3,7 @@ package com.gamves.gamvescommunity.model;
 import android.graphics.Bitmap;
 
 /**
- * Created by mariano on 4/20/16.
+ * Created by jose on 4/20/16.
  */
 public class VideosListItem {
 

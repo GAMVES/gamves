@@ -18,7 +18,7 @@ import com.gamves.gamvescommunity.R;
 import java.util.List;
 
 /**
- * Created by mariano on 4/18/16.
+ * Created by Jose on 4/18/16.
  **/
 public class RecyclerCategoryAdapter extends RecyclerView.Adapter<RecyclerCategoryAdapter.ViewHolder> {
 

@@ -20,8 +20,6 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import tgio.parselivequery.LiveQueryClient;
-
 /**
  * Created by jose on 6/12/17.
  */

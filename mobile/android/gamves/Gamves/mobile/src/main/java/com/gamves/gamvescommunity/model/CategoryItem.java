@@ -22,7 +22,7 @@ import java.util.List;
 import com.gamves.gamvescommunity.R;
 
 /**
- * Created by mariano on 4/20/16.
+ * Created by Jose on 4/20/16.
  **/
 public class CategoryItem {
 

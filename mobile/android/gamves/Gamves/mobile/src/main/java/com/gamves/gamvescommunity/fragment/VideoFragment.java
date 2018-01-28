@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.gamves.gamvescommunity.R;
 import com.gamves.gamvescommunity.model.CategoryItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
 
 
 /**
@@ -41,8 +41,8 @@ public class VideoFragment extends BaseFragment {
 
         homeFragment = ((HomeFragment)this.getParentFragment());
 
-        if (HomeDataSingleton.getInstance().hasCategories())
-            categoryItem = HomeDataSingleton.getInstance().getActiveCategory();
+        if (DataSingleton.getInstance().hasCategories())
+            categoryItem = DataSingleton.getInstance().getActiveCategory();
 
         super.onCreate(savedInstanceState);
     }

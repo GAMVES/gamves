@@ -22,7 +22,7 @@ import java.util.Locale;
 import com.gamves.gamvescommunity.R;
 
 /**
- * Created by mariano on 2/23/16.
+ * Created by Jose on 2/23/16.
  **/
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {

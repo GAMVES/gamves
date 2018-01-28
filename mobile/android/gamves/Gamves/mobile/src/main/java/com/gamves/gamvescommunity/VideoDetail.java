@@ -26,7 +26,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -37,13 +36,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -51,11 +47,11 @@ import android.widget.TextView;
 
 import com.gamves.gamvescommunity.adapters.ListMessageAdapter;
 import com.gamves.gamvescommunity.adapters.RecyclerAdapter;
-import com.gamves.gamvescommunity.adapters.RecyclerOfflineAdapter;
+import com.gamves.gamvescommunity.components.ChatView;
 import com.gamves.gamvescommunity.model.Consersation;
 import com.gamves.gamvescommunity.model.Message;
 import com.gamves.gamvescommunity.model.VideosListItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
 import com.gamves.gamvescommunity.utils.CheckConnection;
 import com.gamves.gamvescommunity.utils.Utils;
 import com.gamves.gamvescommunity.utils.VideoControllerView;
@@ -81,7 +77,6 @@ import com.panframe.android.lib.PFAssetStatus;
 import com.panframe.android.lib.PFNavigationMode;
 import com.panframe.android.lib.PFObjectFactory;
 import com.panframe.android.lib.PFView;
-import com.parse.CountCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
@@ -97,7 +92,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -105,15 +99,19 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import tgio.parselivequery.BaseQuery;
-import tgio.parselivequery.LiveQueryClient;
-import tgio.parselivequery.LiveQueryEvent;
-import tgio.parselivequery.Subscription;
-import tgio.parselivequery.interfaces.OnListener;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseLiveQueryClient;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SubscriptionHandling;
 
 import com.gamves.gamvescommunity.model.ParseAuxiliars.GamvesParseUser;
 
 import com.parse.ParseUser;
+import com.parse.livequery.BuildConfig;
 
 /**
  * Created by jose on 9/15/17.
@@ -139,8 +137,6 @@ public class VideoDetail extends VideoBaseActivity
 
     private SurfaceHolder videoHolder;
 
-    private RecyclerView recyclerChat;
-    private LinearLayoutManager mLinearLayoutManager;
     private MediaRouter mMediaRouter;
     private MediaRouteSelector mMediaRouteSelector;
     private MediaRouterCallback mMediaRouterCallback;
@@ -154,7 +150,6 @@ public class VideoDetail extends VideoBaseActivity
 
     private String videoTitle = "";
     private String videoDescription = "";
-
 
     private VideoControllerView controller;
     private ViewGroup videoContainer;
@@ -188,28 +183,9 @@ public class VideoDetail extends VideoBaseActivity
     private ImageButton playPause;
     private boolean isShowControls = false;
 
-    private ListMessageAdapter adapter;
-    private Consersation consersation;
-    public static HashMap<String, Bitmap> bitmapAvataFriend;
+    private int videoId;
 
-    private ImageButton btnSend;
-
-    // Subscription being made that receives every message
-    private Subscription sub;
-
-    private EditText messageEdit;
-
-    public static final int VIEW_TYPE_USER_MESSAGE = 0;
-    public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
-
-    private String videoId;
-
-    private int counti = 0;
-    private int countPics = 1;
-
-    private Boolean avatarsLoaded=false, dataLoaded=false;
-
-    private Hashtable<String, GamvesParseUser> userChat = new Hashtable<String, GamvesParseUser>();
+    private ChatView chatView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -220,117 +196,14 @@ public class VideoDetail extends VideoBaseActivity
 
         setContentView(R.layout.activity_video_detail);
 
+        chatView = (ChatView) findViewById(R.id.chatVideo);
+
         videoActivityView = (RelativeLayout) findViewById(R.id.videoActivityView);
 
-        consersation = new Consersation();
 
-        new Thread(new Runnable(){
-
-            @Override
-            public void run()
-            {
-                countUsersOnChat();
-            }
-
-        }).start();
 
         Intent intent = getIntent();
-        videoId = intent.getStringExtra("videoId");        
-
-        //Load LiveQuery
-        new LoadLiveQueryClient(new OnLiveQueryCompleted() {
-
-            @Override
-            public void onLiveQueryCompleted()
-            {
-
-                // If a message is created, we add to the text field
-                sub.on(LiveQueryEvent.CREATE, new OnListener()
-                {
-                    @Override
-                    public void on(JSONObject object)
-                    {
-                        try
-                        {
-
-                            Message newMessage = new Message();
-                            newMessage.message = (String) ((JSONObject) object.get("object")).get("message");
-                            newMessage.userId = (String) ((JSONObject) object.get("object")).get("userId");
-                            newMessage.videoId = (String) ((JSONObject) object.get("object")).get("videoId");
-                            newMessage.fanpageId = (String) ((JSONObject) object.get("object")).get("fanpageId");
-
-                            String time = (String) ((JSONObject) object.get("object")).get("createdAt");
-                            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                            Date date = sd.parse(time);
-                            newMessage.setDateTime(date);
-
-                            consersation.getListMessageData().add(newMessage);
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //ADD MESSAGE TO RECYCLEVIEW
-                                    adapter.notifyDataSetChanged();
-                                    mLinearLayoutManager.scrollToPosition(consersation.getListMessageData().size() - 1);
-                                }
-                            });
-
-                        } catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                        } catch (java.text.ParseException e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-            }
-
-        }).execute();
-
-        messageEdit = (EditText) findViewById(R.id.editWriteMessage);
-
-
-        btnSend = (ImageButton) findViewById(R.id.btnSend);
-
-        // Implementing the actions that our app will have
-        // Starting with the sendButton functionality
-
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-
-                String messageToSend = messageEdit.getText().toString();
-
-                Log.i("Message", "created correctly, "+messageToSend);
-
-                //Creating and sending the message
-                ParseObject message = new ParseObject("ChatVideo");
-                message.put("message", messageToSend);
-                message.put("fanpageId", "4523453");
-                message.put("videoId", videoId);
-                message.put("userId", ParseUser.getCurrentUser().getObjectId());
-
-                message.saveInBackground(new SaveCallback() {
-
-                    @Override
-                    public void done(ParseException e) {
-                        Log.i("Message", "Sent correctly");
-                    }
-
-                });
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Setting the text blank again
-                        //UDATE RECYCLEVIEW
-                        //message.setText("");
-                    }
-                });
-            }
-        });
+        videoId = intent.getIntExtra("videoId", 0);
 
         mCastManager = VideoCastManager.getInstance();
 
@@ -352,7 +225,7 @@ public class VideoDetail extends VideoBaseActivity
 
         initMediaRouter();
 
-        List<VideosListItem> videoList = HomeDataSingleton.getInstance().getActiveFanpage().getVideos();
+        List<VideosListItem> videoList = DataSingleton.getInstance().getActiveFanpage().getVideos();
 
         for (int i=0; i<videoList.size(); i++)
         {
@@ -515,15 +388,6 @@ public class VideoDetail extends VideoBaseActivity
                 nextVideo();
             }
         });
-      
-        mLinearLayoutManager = new LinearLayoutManager(VideoDetail.this);
-        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
-
-        assert recyclerChat != null;
-        recyclerChat.setLayoutManager(mLinearLayoutManager);
-       
 
         if (savedInstanceState != null) {
             pos = savedInstanceState.getInt("pos");
@@ -541,234 +405,6 @@ public class VideoDetail extends VideoBaseActivity
     public interface OnLiveQueryCompleted
     {
         void onLiveQueryCompleted();
-    }
-
-    class LoadLiveQueryClient extends AsyncTask<String, Void, Boolean> {
-
-        private Exception exception;
-
-        private OnLiveQueryCompleted listener;
-
-        public LoadLiveQueryClient(OnLiveQueryCompleted listener) {
-            this.listener = listener;
-        }
-
-        protected Boolean doInBackground(String... urls)
-        {
-
-            try {
-
-                ///// CHAT //////
-                LiveQueryClient.init("wss://gamves.back4app.io", "qmTbd36dChKyopgav1JVUMGx2vnZSVdclkNpK6YU", true);
-                LiveQueryClient.connect();
-
-                try {
-
-                    // Subscription being made that receives every message
-                    sub = new BaseQuery.Builder("ChatVideo")
-                            .addField("message")
-                            .addField("videoId")
-                            .addField("userId")
-                            .addField("fanpageId")
-                            .addField("createdAt")
-                            .build()
-                            .subscribe();
-
-                } catch (Exception ex)
-                {
-                    Log.v("", ex.getMessage());
-                    return false;
-                }
-
-                this.listener.onLiveQueryCompleted();
-
-                return true;
-            } catch (Exception e) {
-                this.exception = e;
-
-                return null;
-            }
-
-        }
-
-    }
-
-    private void countUsersOnChat()
-    {
-
-        final ParseQuery<ParseObject> queryChatVideo = ParseQuery.getQuery("ChatVideo");
-        queryChatVideo.whereEqualTo("videoId", videoId);
-        queryChatVideo.findInBackground(new FindCallback<ParseObject>()
-        {
-            @Override
-            public void done(List<ParseObject> usersChats, ParseException e)
-            {
-
-                if (usersChats != null && e == null)
-                {
-                    try
-                    {
-                        final int chatsCount = usersChats.size();
-
-                        for (int i = 0; i < chatsCount; i++)
-                        {
-                            String userId = usersChats.get(i).getString("userId");
-
-                            if (!userChat.containsKey(userId))
-                            {
-                                GamvesParseUser gamvesUser = new GamvesParseUser();
-                                gamvesUser.setUserId(userId);
-                                userChat.put(userId, gamvesUser);
-                            }
-
-                            if (i==(chatsCount-1))
-                            {
-                                getVideoData(userChat.size());
-                            }
-                        }
-                    } catch (Exception errorDownload) {
-
-                        errorDownload.printStackTrace();
-                    }
-                }
-
-
-
-            }
-        });
-
-
-    }
-
-
-
-    private void getVideoData(final int usersCount)
-    {
-
-        final ParseQuery<ParseObject> queryChatVideo = ParseQuery.getQuery("ChatVideo");
-        videoId = "52345234";
-        queryChatVideo.whereEqualTo("videoId", videoId);
-        queryChatVideo.findInBackground(new FindCallback<ParseObject>() {
-
-            @Override
-            public void done(List<ParseObject> chats, ParseException e) {
-
-                if (chats != null && e == null)
-                {
-                    try
-                    {
-                        final int chatsCount = chats.size();
-
-                        //ArrayList<Message> listMessageData = new ArrayList<Message>();
-
-                        for (int i = 0; i < chatsCount; i++)
-                        {
-
-                            counti = i;
-
-                            final Message storedMessage = new Message();
-                            storedMessage.setMessage(chats.get(i).getString("message"));
-                            storedMessage.setUserId(chats.get(i).getString("userId"));
-                            storedMessage.setVideoId(chats.get(i).getString("videoId"));
-                            storedMessage.setFanpageId(chats.get(i).getString("fanpageId"));
-
-                            Date date = chats.get(i).getDate("createdAt");
-                            //SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                            //storedMessage.setTimestamp(sd.parse(date.toString()).getTime());
-                            storedMessage.setDateTime(date);
-
-                            //listMessageData.add(storedMessage);
-
-                            consersation.addMessage(storedMessage);
-
-                            if (!consersation.isAvatarDownloaded(storedMessage.getUserId()))
-                            {
-                                ParseQuery<ParseUser> queryUser = ParseUser.getQuery();
-                                final String userId = storedMessage.getUserId();
-                                queryUser.whereEqualTo("objectId", userId);
-                                queryUser.getFirstInBackground(new GetCallback<ParseUser>() {
-
-                                    @Override
-                                    public void done(ParseUser usersObject, ParseException errorUser) {
-
-                                        if (errorUser == null && usersObject != null)
-                                        {
-                                            try
-                                            {
-                                                if (userChat.containsKey(userId))
-                                                {
-                                                    GamvesParseUser gamvesUse = userChat.get(userId);
-                                                    gamvesUse.setGamvesUser(usersObject);
-                                                }
-
-                                                ParseFile picture = usersObject.getParseFile("pictureSmall");
-
-                                                picture.getDataInBackground(new GetDataCallback() {
-
-                                                    @Override
-                                                    public void done(byte[] data, ParseException e)
-                                                    {
-                                                        Bitmap bitMapImage = BitmapFactory.decodeByteArray(data, 0, data.length);
-                                                        consersation.addBitmapToAvatar(storedMessage.getUserId(), bitMapImage);
-
-                                                        if (countPics == usersCount)
-                                                        {
-                                                            avatarsLoaded = true;
-                                                            if (dataLoaded)
-                                                            {
-                                                                loadChats();
-                                                            }
-                                                        }
-                                                        countPics++;
-                                                    }
-                                                });
-
-
-                                            } catch (Exception errorParse) {
-                                                errorParse.printStackTrace();
-                                            }
-
-
-                                        } else
-                                        {
-                                            errorUser.getStackTrace();
-                                        }
-
-                                    }
-                                });
-
-                            }
-
-                            if (counti == (chatsCount - 1))
-                            {
-                                dataLoaded = true;
-                                if (avatarsLoaded)
-                                {
-                                    loadChats();
-                                }
-
-                            }
-
-                        }
-
-                    } catch (Exception errorDownload) {
-
-                        errorDownload.printStackTrace();
-                    }
-                }
-            }
-        });
-
-    }
-
-    private void loadChats()
-    {
-        adapter = new ListMessageAdapter(this, consersation);
-        recyclerChat.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        mLinearLayoutManager.scrollToPosition(consersation.getListMessageData().size() - 1);
-        dataLoaded = false;
-        avatarsLoaded = false;
     }
 
     @Override
@@ -1038,9 +674,6 @@ public class VideoDetail extends VideoBaseActivity
             e.printStackTrace();
         }
 
-
-        mLinearLayoutManager.scrollToPositionWithOffset(position, 6);
-
     }
 
     private void initVideo() {
@@ -1128,8 +761,6 @@ public class VideoDetail extends VideoBaseActivity
             } catch (NullPointerException | IllegalStateException | IOException e) {
                 e.printStackTrace();
             }
-
-            mLinearLayoutManager.scrollToPositionWithOffset(position, 6);
            
 
         } else if (!CheckConnection.isConnected(VideoDetail.this)) {
@@ -1173,7 +804,7 @@ public class VideoDetail extends VideoBaseActivity
         rew.setVisibility(View.GONE);
     }
 
-    RecyclerAdapter.OnItemClickListener onItemClickListener = new RecyclerAdapter.OnItemClickListener() {
+    /*RecyclerAdapter.OnItemClickListener onItemClickListener = new RecyclerAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
             resetVr();
@@ -1183,7 +814,7 @@ public class VideoDetail extends VideoBaseActivity
             //initVideo(copyArray.get(VideoDetail.this.position).getVideoId());
             initVideo();
         }
-    };
+    };*/
 
     /*RecyclerOfflineAdapter.OnItemClickListener onOfflineItemClickListener = new RecyclerOfflineAdapter.OnItemClickListener() {
         @Override

@@ -2,10 +2,7 @@ package com.gamves.gamvescommunity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,35 +12,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.gamves.gamvescommunity.callbacks.ParseCallback;
 import com.gamves.gamvescommunity.fragment.CommunityFragment;
 import com.gamves.gamvescommunity.fragment.HomeFragment;
 import com.gamves.gamvescommunity.fragment.NotificationFragment;
 import com.gamves.gamvescommunity.fragment.ProfileFragment;
-import com.gamves.gamvescommunity.model.CategoryItem;
-import com.gamves.gamvescommunity.model.FanPageListItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
-import com.gamves.gamvescommunity.utils.KeySaver;
-import com.gamves.gamvescommunity.utils.Utils;
-import com.parse.FindCallback;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.wang.avi.AVLoadingIndicatorView;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TabActivity extends AppCompatActivity implements
         CommunityFragment.OnFragmentInteractionListener,

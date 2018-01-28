@@ -17,7 +17,7 @@ import com.gamves.gamvescommunity.R;
 import com.gamves.gamvescommunity.adapters.RecyclerCategoryAdapter;
 import com.gamves.gamvescommunity.model.CategoryItem;
 import com.gamves.gamvescommunity.model.FanPageListItem;
-import com.gamves.gamvescommunity.singleton.HomeDataSingleton;
+import com.gamves.gamvescommunity.singleton.DataSingleton;
 import com.wang.avi.AVLoadingIndicatorView;
 
 
@@ -134,9 +134,9 @@ public class CategoryFragment extends BaseFragment {
     public void updateData()
     {
 
-        CategoryItem catItem = HomeDataSingleton.getInstance().getActiveCategory();
+        CategoryItem catItem = DataSingleton.getInstance().getActiveCategory();
 
-        CategoryItem categoryItem = HomeDataSingleton.getInstance().getActiveCategory();
+        CategoryItem categoryItem = DataSingleton.getInstance().getActiveCategory();
 
         category_cover.setImageBitmap(categoryItem.getBackgroundBitmap());
 
@@ -172,7 +172,7 @@ public class CategoryFragment extends BaseFragment {
         @Override
         public void onItemClick(View v, int position)
         {
-            CategoryItem category = HomeDataSingleton.getInstance().getActiveCategory();
+            CategoryItem category = DataSingleton.getInstance().getActiveCategory();
 
             category.setActive(true);
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by mariano on 4/20/16.
+ * Created by Jose on 4/20/16.
  **/
 public class FanPageListItem {
 

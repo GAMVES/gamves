@@ -21,7 +21,7 @@ import com.gamves.gamvescommunity.R;
 import com.gamves.gamvescommunity.utils.Utils;
 
 /**
- * Created by mariano on 2/23/16.
+ * Created by Jose on 2/23/16.
  **/
 
 public class RecyclerOfflineAdapter extends RecyclerView.Adapter<RecyclerOfflineAdapter.ViewHolder> {

@@ -28,7 +28,7 @@ import java.util.Random;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 /**
- * Created by mariano on 4/23/16.
+ * Created by Jose on 4/23/16.
  **/
 public class VideosOffline extends AppCompatActivity {
 

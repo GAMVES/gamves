@@ -11,14 +11,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gamves.gamvescommunity.GamvesApplication;
+import com.gamves.gamvescommunity.R;
 import com.gamves.gamvescommunity.VideoDetail;
+import com.gamves.gamvescommunity.components.ChatView;
 import com.gamves.gamvescommunity.model.Consersation;
 
 import java.util.HashMap;
 
 import com.gamves.gamvescommunity.interfaces.*;
-
-import com.gamves.gamvescommunity.R;
 import com.parse.ParseUser;
 
 /**
@@ -39,10 +39,10 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if (viewType == VideoDetail.VIEW_TYPE_FRIEND_MESSAGE) {
+        if (viewType == ChatView.VIEW_TYPE_FRIEND_MESSAGE) {
             View view = LayoutInflater.from(context).inflate(R.layout.rc_item_message_friend, parent, false);
             return new ItemMessageFriendHolder(view);
-        } else if (viewType == VideoDetail.VIEW_TYPE_USER_MESSAGE) {
+        } else if (viewType == ChatView.VIEW_TYPE_USER_MESSAGE) {
             View view = LayoutInflater.from(context).inflate(R.layout.rc_item_message_user, parent, false);
             return new ItemMessageUserHolder(view);
         }
@@ -98,7 +98,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemViewType(int position) {
         String userId =  ParseUser.getCurrentUser().getObjectId();
-        int type = consersation.getListMessageData().get(position).userId.equals(userId) ? VideoDetail.VIEW_TYPE_USER_MESSAGE : VideoDetail.VIEW_TYPE_FRIEND_MESSAGE;
+        int type = consersation.getListMessageData().get(position).userId.equals(userId) ? ChatView.VIEW_TYPE_USER_MESSAGE : ChatView.VIEW_TYPE_FRIEND_MESSAGE;
         return type;
     }
 
