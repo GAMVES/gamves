@@ -31,6 +31,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     
     var type: MediaType!
     var searchType: SearchType!
+    var searchSize:SearchSize!
 
     let mediaPicker = UIImagePickerController()
     
@@ -872,6 +873,7 @@ private extension MediaController {
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.searchController.type = self.searchType
+                    self.searchController.searchSize = self.searchSize
                     self.searchController.termToSearch = self.termToSearch
                     self.searchController.delegateMedia = self.delegate
                     self.searchController.multiselect = self.isImageMultiSelection
@@ -917,6 +919,7 @@ private extension MediaController {
                     
                     self.delegateSearch?.setVideoSearchType(type: UploadType.youtube)
                     self.searchController.type = SearchType.isVideo
+                    self.searchController.searchSize = self.searchSize
                     self.searchController.termToSearch = self.termToSearch
                     self.searchController.delegateMedia = self.delegate
                     self.searchController.delegateSearch = self.delegateSearch

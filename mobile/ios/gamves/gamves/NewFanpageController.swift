@@ -18,6 +18,23 @@ import MobileCoreServices
 import AWSS3
 import AWSCore
 
+class PaddedTextField: UITextField {
+    
+    let padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 5);
+    
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+    
+    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+    
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+}
+
 protocol VideoProtocol {
     func selectedVideo(videoUrl: String, title: String, description : String, image : UIImage)
 }
@@ -30,6 +47,13 @@ protocol SearchProtocol {
 public enum UploadType {
     case youtube
     case local
+}
+
+
+public enum TouchedButton {
+    case iconImage
+    case coverImage
+    case addButton
 }
 
 class NewFanpageController: UIViewController,
@@ -50,6 +74,8 @@ UICollectionViewDelegateFlowLayout {
     var current : AnyObject?
     
     var imagesArray = [UIImage]()
+    
+    var touchedButton : TouchedButton!
     
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -82,8 +108,8 @@ UICollectionViewDelegateFlowLayout {
     }()
     
     var categoryDownPicker: DownPicker!
-    let categoryTypeTextField: UITextField = {
-        let tf = UITextField()
+    let categoryTypeTextField: PaddedTextField = {
+        let tf = PaddedTextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
@@ -105,8 +131,8 @@ UICollectionViewDelegateFlowLayout {
         return view
     }()
     
-    let nameTextField: UITextField = {
-        let tf = UITextField()
+    let nameTextField: PaddedTextField = {
+        let tf = PaddedTextField()
         tf.placeholder = "Fanpage name"
         tf.font = UIFont.systemFont(ofSize: 16)
         tf.translatesAutoresizingMaskIntoConstraints = false
@@ -124,6 +150,7 @@ UICollectionViewDelegateFlowLayout {
         let tv = UITextView()
         tv.placeholder = "About this fanpage"
         tv.font = UIFont.systemFont(ofSize: 16)
+        tv.textContainerInset = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5);
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
     }()
@@ -135,32 +162,41 @@ UICollectionViewDelegateFlowLayout {
         return view
     }()
     
-    //-- ICON
+    //-- IMAGES
     
     let imagesView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+
+    //-- ICON
     
-    let iconConteinerView: UIView = {
+    let iconContView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.gamvesBackgoundColor
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
         return view
     }()
-    
-    lazy var iconButton: UIButton = {
-        let button = UIButton()
-        let image = UIImage(named: "camera")
-        button.setImage(image, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.contentMode = .scaleAspectFit
-        button.isUserInteractionEnabled = true
-        button.addTarget(self, action: #selector(handleIcon), for: .touchUpInside)
-        button.tag = 0
-        return button
+
+     let iconLabel: PaddingLabel = {
+        let label = PaddingLabel()
+        label.text = "Avatar"
+        label.font = UIFont.boldSystemFont(ofSize: 15)
+        //label.backgroundColor = UIColor.white
+        label.textColor = UIColor.white
+        label.textAlignment = .center        
+        return label
+    }()   
+
+    var iconImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "camera")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit        
+        imageView.isUserInteractionEnabled = true                
+        return imageView
     }()
     
     let imageSeparatorView: UIView = {
@@ -169,27 +205,78 @@ UICollectionViewDelegateFlowLayout {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    let coverConteinerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.gamvesBackgoundColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 5
-        return view
-    }()
-    
-    lazy var coverButton: UIButton = {
-        let button = UIButton()
-        let image = UIImage(named: "camera")
-        button.setImage(image, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.contentMode = .scaleAspectFit
+
+    var iconButton: UIButton = {
+        let button = UIButton()        
+        button.translatesAutoresizingMaskIntoConstraints = false        
         button.isUserInteractionEnabled = true
-        button.addTarget(self, action: #selector(handleCover), for: .touchUpInside)
-        button.setTitle("Select icon", for: UIControlState())
-        button.tag = 0
+        button.addTarget(self, action: #selector(handleIcon), for: .touchUpInside)          
+        button.layer.cornerRadius = 5   
+        //button.backgroundColor = UIColor.gray   
         return button
     }()
+    
+    var backgroundIconImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.autoresizingMask =  [.flexibleWidth, .flexibleHeight]
+        imageView.backgroundColor = UIColor.green
+        imageView.layer.cornerRadius = 5
+        return imageView
+    }()
+
+    //-- COVER
+    
+    let coverContView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesBackgoundColor        
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 5        
+        return view
+    }()
+
+    var coverImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "camera")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSonPhotoImageView)))
+        imageView.isUserInteractionEnabled = true        
+        //imageView.tag = 1
+        return imageView
+    }()
+
+    let coverLabel: PaddingLabel = {
+        let label = PaddingLabel()
+        label.text = "Background image"
+        label.font = UIFont.boldSystemFont(ofSize: 15)
+        //label.backgroundColor = UIColor.white
+        label.numberOfLines = 2
+        label.textColor = UIColor.white
+        label.textAlignment = .center        
+        return label
+    }()
+
+    var coverButton: UIButton = {
+        let button = UIButton()        
+        button.translatesAutoresizingMaskIntoConstraints = false        
+        button.isUserInteractionEnabled = true
+        button.addTarget(self, action: #selector(handleCover), for: .touchUpInside)          
+        button.layer.cornerRadius = 5              
+        //button.backgroundColor = UIColor.gray
+        return button
+    }()
+
+    var backgroundCoverImage: UIImageView = {
+        let imageView = UIImageView()        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.autoresizingMask =  [.flexibleWidth, .flexibleHeight]
+        imageView.backgroundColor = UIColor.green
+        imageView.layer.cornerRadius = 5
+        return imageView
+    }()    
     
     let imagesViewSeparatorView: UIView = {
         let view = UIView()
@@ -240,6 +327,17 @@ UICollectionViewDelegateFlowLayout {
         button.borderWidth = 2
         return button
     }()
+
+    let imagesLabel: PaddingLabel = {
+        let label = PaddingLabel()
+        label.text = "Fanpage images list"
+        label.font = UIFont.boldSystemFont(ofSize: 15)
+        //label.backgroundColor = UIColor.white
+        label.numberOfLines = 2
+        label.textColor = UIColor.white
+        label.textAlignment = .center        
+        return label
+    }()
     
     //-- BOTTOM
     
@@ -273,12 +371,10 @@ UICollectionViewDelegateFlowLayout {
     
     var newVideoId = String()
     
-    var touchedButton = UIButton()
-    
     let cellImageCollectionId = "cellImageCollectionId"
     
-    var iconImage = UIImage()
-    var coverImage = UIImage()
+    var selectedIconImage = UIImage()
+    var selectedCoverImage = UIImage()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -381,29 +477,50 @@ UICollectionViewDelegateFlowLayout {
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.bottomView, metrics: metricsNew)
         
-        self.imagesView.addSubview(self.iconConteinerView)
+        self.imagesView.addSubview(self.iconContView)
         self.imagesView.addSubview(self.imageSeparatorView)
-        self.imagesView.addSubview(self.coverConteinerView)
+        self.imagesView.addSubview(self.coverContView)
+        self.imagesView.addSubview(self.iconButton)
         
-        self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.iconConteinerView)
+        self.imagesView.addSubview(self.coverButton) 
+        self.imagesView.addSubview(self.backgroundCoverImage)
+        self.imagesView.addSubview(self.backgroundIconImage)
+        
+        self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.iconContView)
         self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.imageSeparatorView)
-        self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.coverConteinerView)
+        self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.coverContView)
         
         self.imagesView.addConstraintsWithFormat(
             "H:|[v0(80)][v1(cp)][v2]|", views:
-            self.iconConteinerView,
+            self.iconContView,
             self.imageSeparatorView,
-            self.coverConteinerView,
+            self.coverContView,
             metrics: metricsNew)
         
-        self.iconConteinerView.addSubview(self.iconButton)
-        self.iconConteinerView.addConstraintsWithFormat("H:|[v0(80)]|", views: self.iconButton)
-        self.iconConteinerView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.iconButton)
+        self.iconContView.addSubview(self.iconImage)
+        self.iconContView.addSubview(self.iconLabel)
+      
+        self.iconContView.addConstraintsWithFormat("H:|-15-[v0(50)]-15-|", views: self.iconImage)        
+        self.iconContView.addConstraintsWithFormat("H:|[v0(80)]|", views: self.iconLabel)        
+
+        self.iconContView.addConstraintsWithFormat(
+            "V:|-5-[v0(50)][v1(20)]-5-|", views:
+            self.iconImage,
+            self.iconLabel)
+
+        //iconImage.backgroundColor = UIColor.red
+        //iconLabel.backgroundColor = UIColor.green                
         
-        self.coverConteinerView.addSubview(self.coverButton)
-        self.coverConteinerView.addConstraintsWithFormat("H:|[v0(80)]|", views: self.coverButton)
-        self.coverConteinerView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.coverButton)
-        
+        self.coverContView.addSubview(self.coverImage)
+        self.coverContView.addSubview(self.coverLabel)        
+
+        self.coverContView.addConstraintsWithFormat("H:|-15-[v0(50)][v1]-20-|", views: 
+            self.coverImage,
+            self.coverLabel)
+
+        self.coverContView.addConstraintsWithFormat("V:|-5-[v0(50)]-25-|", views: self.coverImage)
+        self.coverContView.addConstraintsWithFormat("V:|-5-[v0(70)]-5-|", views: self.coverLabel)
+
         self.imagesListView.addSubview(self.collectionView)
         self.imagesListView.addConstraintsWithFormat("V:|-10-[v0(80)]-10-|", views: self.collectionView)
         
@@ -419,6 +536,8 @@ UICollectionViewDelegateFlowLayout {
             self.imagesSeparatorView,
             self.addButton,
             metrics: metricsNew)
+
+        self.imagesListView.addSubview(self.imagesLabel)        
         
         var catArray = [String]()
         
@@ -446,15 +565,32 @@ UICollectionViewDelegateFlowLayout {
         
     }
     
-    func backButtonPressed(sender: UIBarButtonItem)
-    {
+    override func viewDidLayoutSubviews() {
+
+        DispatchQueue.main.async {        
+            
+            self.iconButton.frame = self.iconContView.bounds
+
+            var frc: CGRect = self.coverContView.frame
+            self.coverButton.frame = frc
+            self.backgroundCoverImage.frame = frc
+            
+            var fri: CGRect = self.iconContView.frame
+            self.backgroundIconImage.frame = fri
+
+            self.imagesLabel.frame = self.collectionView.bounds
+            
+        }
+        
+    }
+    
+    func backButtonPressed(sender: UIBarButtonItem) {
         //self.delegateFeed.uploadData()
         //self.navigationController?.popViewController(animated: true)
         self.navigationController?.popToRootViewController(animated: true)
     }
     
-    func dismissKeyboard()
-    {
+    func dismissKeyboard() {
         self.view.endEditing(true)
     }
     
@@ -599,62 +735,78 @@ UICollectionViewDelegateFlowLayout {
         super.didReceiveMemoryWarning()        
     }
     
-    
-    
     func categoryFieldDidChange(_ textField: UITextField) {
 
 	}
 
 	func handleSearch() {
         self.type = UploadType.youtube
-        
     }
 
-    
     func handleCover() {
-        self.touchedButton = coverButton
+        self.touchedButton = TouchedButton.coverImage
         let media = MediaController()
         media.isImageMultiSelection = false
         media.delegate = self
+        media.termToSearch = self.nameTextField.text!
         media.setType(type: MediaType.selectImage)
         media.searchType = SearchType.isSingleImage
+        media.searchSize = SearchSize.imageSmall
         navigationController?.pushViewController(media, animated: true)
     }
   
     func handleIcon() {
-        self.touchedButton = iconButton
+        self.touchedButton = TouchedButton.iconImage
         let media = MediaController()
         media.delegate = self
         media.setType(type: MediaType.selectImage)
+        media.termToSearch = self.nameTextField.text!
         media.searchType = SearchType.isImageGallery
+        media.searchSize = SearchSize.imageSmall
         navigationController?.pushViewController(media, animated: true)
     }
     
     func handleAddImages() {
-        self.touchedButton = addButton
+        self.touchedButton = TouchedButton.addButton
         let media = MediaController()
         media.delegate = self
         media.isImageMultiSelection = true
         media.setType(type: MediaType.selectImage)
+        media.termToSearch = self.nameTextField.text!
         media.searchType = SearchType.isSingleImage
+        media.searchSize = SearchSize.imageLarge
         navigationController?.pushViewController(media, animated: true)
     }
 
     func didPickImage(_ image: UIImage){
         
-        if self.touchedButton == iconButton {
+        if self.touchedButton == TouchedButton.iconImage {
         
-            self.iconImage = image
+            self.selectedIconImage = image
             
-            self.touchedButton.setImage(image, for: .normal)
+            //self.iconButton.setImage(image, for: .normal)            
+            //self.iconButton.layer.cornerRadius = 5
+            //self.iconButton.imageView?.contentMode = UIViewContentMode.scaleAspectFill
+            
+            let size = CGSize(width: self.backgroundIconImage.frame.width, height: self.backgroundIconImage.frame.height)
+            
+            self.backgroundIconImage.image = self.scaleUIImageToSize(image: image, size: size)
+            
+            self.backgroundIconImage.layer.cornerRadius = 5
+            self.backgroundIconImage.clipsToBounds = true
+            
+        } else if self.touchedButton == TouchedButton.coverImage {
+
+            self.selectedCoverImage = image
         
-        } else if self.touchedButton == coverButton {
+            let size = CGSize(width: self.backgroundCoverImage.frame.width, height: self.backgroundCoverImage.frame.height)
+        
+            self.backgroundCoverImage.image = self.scaleUIImageToSize(image: image, size: size)
+        
+            self.backgroundCoverImage.layer.cornerRadius = 5
+            self.backgroundCoverImage.clipsToBounds = true
             
-            self.coverImage = image
-            
-            self.touchedButton.setImage(image, for: .normal)
-            
-        } else if self.touchedButton == addButton {
+        } else if self.touchedButton == TouchedButton.addButton {
             
             self.imagesArray.append(image)
             self.collectionView.reloadData()
@@ -662,6 +814,19 @@ UICollectionViewDelegateFlowLayout {
         }
         
         
+    }
+
+    func scaleUIImageToSize( image: UIImage, size: CGSize) -> UIImage {
+        let hasAlpha = false
+        let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
+
+        UIGraphicsBeginImageContextWithOptions(size, !hasAlpha, scale)
+        image.draw(in: CGRect(origin: .zero, size: size))
+
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return scaledImage!
     }
     
     func didPickImages(_ images: [UIImage]){
@@ -748,13 +913,13 @@ UICollectionViewDelegateFlowLayout {
             
             let filenameIcon = "icon.png"
             
-            let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.iconImage, 1.0)!)
+            let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.selectedIconImage, 1.0)!)
             
             fanpagePF.setObject(iconImageFile, forKey: "pageIcon")
             
             let coverIcon = "cover.png"
             
-            let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.coverImage, 1.0)!)
+            let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.selectedCoverImage, 1.0)!)
         
             fanpagePF.setObject(coverImageFile, forKey: "pageCover")
             

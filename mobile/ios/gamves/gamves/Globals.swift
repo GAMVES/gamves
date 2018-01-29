@@ -276,7 +276,6 @@ class Global: NSObject
                 
                 Global.gamvesFamily.spouseUser = gamvesUser
             }
-            
         }
         
         self.userDictionary[gamvesUser.userId] = gamvesUser

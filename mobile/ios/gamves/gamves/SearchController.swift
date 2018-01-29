@@ -57,6 +57,13 @@ public enum SearchType {
     case isVideo
 }
 
+
+public enum SearchSize {    
+    case noSize
+    case imageSmall
+    case imageLarge    
+}
+
 class SearchController: UIViewController, 
     UITableViewDelegate, UITableViewDataSource,
     UISearchResultsUpdating, UISearchBarDelegate,
@@ -100,6 +107,7 @@ class SearchController: UIViewController,
     
     var isSuggestion = Bool()
     var type:SearchType!
+    var searchSize:SearchSize!
     var searchImages = [SearchImage]()
     var rowGalleryImage = RowGalleryImage()
     var rowGalleryImages = [RowGalleryImage]()
@@ -200,9 +208,16 @@ class SearchController: UIViewController,
             
             self.searchController.isActive = true
             
-            self.searchController.searchBar.becomeFirstResponder()
+            //self.searchController.searchBar.becomeFirstResponder()
             
             self.searchController.searchBar.text = self.termToSearch
+
+            var single = Bool()
+            if self.type == SearchType.isSingleImage {
+                single = true
+            } 
+
+            self.findImagesFromSuggestion(suggestion: self.termToSearch, isSingle: single) 
             
         }
     }
@@ -782,7 +797,17 @@ class SearchController: UIViewController,
         searchController.searchBar.isLoading = true
         self.activityIndicatorView?.startAnimating()
         
-        var urlString:String = "https://www.googleapis.com/customsearch/v1?key=\(Global.api_key)&cx=\(Global.search_engine)&q=\(suggestion)&searchType=image&start=\(self.start)&end=\(self.end)&alt=json"
+        var size = String()
+        
+        if self.searchSize == SearchSize.imageLarge {
+            size = "imgSize=large"
+        } else if self.searchSize == SearchSize.imageSmall {
+            size = ""
+        } else if self.searchSize == SearchSize.noSize {
+            size = ""
+        }
+        
+        var urlString:String = "https://www.googleapis.com/customsearch/v1?key=\(Global.api_key)&cx=\(Global.search_engine)&q=\(suggestion)&searchType=image&\(size)&start=\(self.start)&end=\(self.end)&alt=json"
         
         print(urlString)
         
@@ -820,7 +845,9 @@ class SearchController: UIViewController,
                                 
                                 image.thumbnailLink = imageDict["thumbnailLink"]?.stringValue as! String
                                 
-                                let thUrl = URL(string: image.thumbnailLink)!
+                                print(image.link)
+                                
+                                let thUrl = URL(string: image.link)!
                                 let sessionCover = URLSession(configuration: .default)
                                 print(thUrl)
                                 

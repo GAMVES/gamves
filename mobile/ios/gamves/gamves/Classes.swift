@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 import Parse
 
-class GamvesNotification
-{
+class GamvesNotification {
+
     var objectId = String()
     var avatar:UIImage?
     var cover:UIImage?    
@@ -24,8 +24,8 @@ class GamvesNotification
     var type = Int()
 }
 
-class ChatFeed
-{
+class ChatFeed {
+
     // Insert code here to add functionality to your managed object subclass
     var date: Date?
     var room: String?
@@ -42,8 +42,8 @@ class ChatFeed
     var badgeNumber:Int?    
 }
 
-class GamvesParseUser
-{
+class GamvesParseUser {
+
     var userObj:PFUser! = nil
     var name = String()
     var firstName = String()
@@ -75,8 +75,8 @@ class GamvesParseUser
 }
 
 
-class LevelsGamves
-{
+class LevelsGamves {
+
     var objectId = String()
     var description = String()
     var grade = Int()
@@ -84,8 +84,8 @@ class LevelsGamves
     var levelObj:PFObject?
 }
 
-class UserTypeGamves
-{
+class UserTypeGamves {
+
     var objectId = String()
     var description = String()
     var idUserType = Int()
@@ -93,14 +93,14 @@ class UserTypeGamves
 }
 
 
-class GamvesGender
-{
+class GamvesGender {
+
     var male =  Bool()
     var female =  Bool()
 }
 
-class VideoGamves
-{
+class VideoGamves {
+
     var title = String()
     var description = String()
     var videoId = Int()
@@ -127,8 +127,8 @@ class VideoGamves
 
 }
 
-class CategoryGamves
-{
+class CategoryGamves {
+
     var cover = String()
     var name = String()
     
@@ -144,8 +144,8 @@ class CategoryGamves
     var order = Int()
 }
 
-class FanpageGamves
-{
+class FanpageGamves {
+
     var fanpageId = Int()
     var cover   = String()
     var name    = String()
@@ -168,8 +168,8 @@ class FanpageGamves
     var fanpage_images  = [FanpageImageGamves]()
 }
 
-class FanpageImageGamves
-{
+class FanpageImageGamves {
+
     var objectId = String()
     var source = String()
     var name = String()
@@ -177,61 +177,15 @@ class FanpageImageGamves
 }
 
 struct Page {
+
     let title: String
     let message: String
     let imageName: String
 }
 
-/*class GamvesFamily
-{
-    var sonsUsers:[GamvesParseUser]!
-    var youUser:GamvesParseUser!
-    var spouseUser:GamvesParseUser!
-    
-    var familyName = String()
-    var objectId = String()
-    var school = String()
-    
-    var sonChatId = Int()
-    var spouseChatId = Int()
-    var familyChatId = Int()
-    
-    var familyImage = UIImage()
-    
-    init()
-    {
-        self.sonsUsers = [GamvesParseUser]()
-    }
-    
-    func getFamilyUserById(userId : String) -> GamvesParseUser?
-    {
-        if youUser.userId == userId
-        {
-            return youUser
-            
-        } else if spouseUser.userId == userId
-        {
-            return spouseUser
-        }
-        
-        var sonwithId = GamvesParseUser()
-        
-        for son in sonsUsers
-        {
-            if son.userId == userId
-            {
-                sonwithId = son
-                
-            }
-        }
-        
-        return sonwithId
-    }
-    
-}*/
 
-class GamvesFamily
-{
+class GamvesFamily {
+
     var sonsUsers:[GamvesParseUser]!
     var levels:[LevelsGamves]!
     
@@ -282,10 +236,8 @@ class GamvesFamily
     
 }
 
-
-
-class UserStatistics
-{
+class UserStatistics {
+    
     var desc = String()
     var data = String()
     var icon = UIImage()

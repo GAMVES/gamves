@@ -302,7 +302,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		825C6CA41FDA4CC1005A762F /* record */ = {
+		825C6CA41FDA4CC1005A762F /* capture */ = {
 			isa = PBXGroup;
 			children = (
 				826B8CC320184C37008C19A3 /* MediaController.swift */,
@@ -311,7 +311,7 @@
 				8294F9CF1FDA4EF40082D99D /* PlayVideoViewController.swift */,
 				824EDD761FDD5DB300D513D8 /* TakePicturesController.swift */,
 			);
-			name = record;
+			name = capture;
 			sourceTree = "<group>";
 		};
 		826D58371F8ED7310014A2C8 /* feed */ = {
@@ -471,7 +471,7 @@
 			children = (
 				82E1AC291FF688C800209AEF /* search */,
 				82E1AC231FF422D400209AEF /* NewFanpageController.swift */,
-				825C6CA41FDA4CC1005A762F /* record */,
+				825C6CA41FDA4CC1005A762F /* capture */,
 				822D620B1FD62F830025481E /* cells */,
 				C77B55181CFFF3AD00FF375C /* HomeController.swift */,
 				824E67BE1F544DDD0025096D /* LoginController.swift */,
