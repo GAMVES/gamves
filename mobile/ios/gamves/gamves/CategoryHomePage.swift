@@ -269,14 +269,12 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                         
                         thumbnail.getDataInBackground(block: { (imageData, error) in
                             
-                            if error == nil
-                            {
+                            if error == nil {
                                 
-                                if let imageData = imageData
-                                {
+                                if let imageData = imageData {
+                                    
                                     let image = UIImage(data:imageData)
                                     
-                                    //cat.cover = cover
                                     cat.name = name
                                     cat.thum_image = image!
                                     
@@ -285,21 +283,16 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                     
                                     print(backImage)
                                     
-                                    
-                                     backImage.getDataInBackground(block: { (backImageData, error) in
+                                    backImage.getDataInBackground(block: { (backImageData, error) in
                                         
-                                        if error == nil
-                                        {
+                                        if error == nil {
                                             
-                                            if let backImageData = backImageData
-                                            {
+                                            if let backImageData = backImageData {
                                                 
                                                 let coverImage = UIImage(data:backImageData)
                                                 
-                                                if ((coverImage) != nil)
-                                                {
+                                                if ((coverImage) != nil) {
                                                     cat.cover_image = coverImage!
-
                                                 }
                                                 
                                                 let order = pcategory["order"] as! Int
@@ -311,21 +304,23 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                 print(count)
                                                 print(total)
                                                 
-                                                if count == total
-                                                {
+                                                if count == total {
+                                                    
                                                     last = true
                                                     Global.sortCategoryByOrder()
                                                     self.tableView.reloadData()
-                                                    DispatchQueue.main.async {
-                                                        self.loadFanpagesFromCategories()
-                                                    }
+                                                    
+                                                    self.loadFanpagesFromCategories(completionHandler: { ( loaded:Bool ) -> () in
+                                                        
+                                                        DispatchQueue.main.async {
+                                                            self.tableView.isHidden = false
+                                                            self.activityIndicatorView?.stopAnimating()
+                                                            self.tableView.reloadData()
+                                                        }
+                                                    })
                                                 }
-                                                
-                                                //self.loadFunpageByCategory(cat: cat, lastCategory: last)
+                                                count  = count + 1
                                             }
-                                            
-                                            count  = count + 1
-                                            
                                         }
                                     })
                                 }
@@ -337,8 +332,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         }
     }
     
-    func loadFanpagesFromCategories()
-    {
+    func loadFanpagesFromCategories(completionHandler : @escaping (_ resutl:Bool) -> ()) {
+    
         let ids = Array(Global.categories_gamves.keys)
         
         for i in ids {
@@ -354,6 +349,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
             print(category?.objectId)
             
             queryFanpage.whereKey("category", equalTo: category)
+            
+            queryFanpage.whereKey("approved", equalTo: true)
             
             if !Global.hasDateChanged() {
                 queryFanpage.cachePolicy = .cacheElseNetwork
@@ -377,94 +374,86 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                         
                         var count = 0
                         
-                        for fanpage in fanpagesArray
-                        {
-                            
-                            //Download Images
-                            Downloader.loadFanpageImages(fanpage: fanpage)
-                            
-                            let fan = FanpageGamves()
-                            
-                            let fpObj:PFObject = fanpage
-                            
-                            fan.fanpageObj = fpObj
-                            fan.categoryObj = cat.cateobj
-                            fan.categoryName = fpObj["categoryName"] as! String
-                            
-                            let fanpageId = fpObj["fanpageId"] as! Int
-                            let cover = fpObj["pageCover"] as! PFFile
-                            let name  = fpObj["pageName"] as! String
-                            let icon  = fpObj["pageIcon"] as! PFFile
-                            let about  = fpObj["pageAbout"] as! String
-                            
-                            let authorRelation = fpObj["author"] as! PFRelation
-                            let queryAuthor = authorRelation.query()
-                            queryAuthor.findObjectsInBackground(block: { (users, error) in
+                        if fanpageAmount > 0 {
+                        
+                            for fanpage in fanpagesArray {
                                 
-                                if error == nil {
+                                //Download Images
+                                Downloader.loadFanpageImages(fanpage: fanpage)
+                                
+                                let fan = FanpageGamves()
+                                
+                                let fpObj:PFObject = fanpage
+                                
+                                fan.fanpageObj = fpObj
+                                fan.categoryObj = cat.cateobj
+                                fan.categoryName = fpObj["categoryName"] as! String
+                                
+                                let fanpageId = fpObj["fanpageId"] as! Int
+                                let cover = fpObj["pageCover"] as! PFFile
+                                let name  = fpObj["pageName"] as! String
+                                let icon  = fpObj["pageIcon"] as! PFFile
+                                let about  = fpObj["pageAbout"] as! String
+                                
+                                let authorRelation = fpObj["author"] as! PFRelation
+                                let queryAuthor = authorRelation.query()
+                                queryAuthor.findObjectsInBackground(block: { (users, error) in
                                     
-                                    for user in users! {
+                                    if error == nil {
                                         
-                                        var isFamily = Bool()
-                                        let author = user as! PFUser
-                                        
-                                        if author.objectId == PFUser.current()?.objectId {
-                                            isFamily = true
-                                        }
-                                        
-                                        Global.addUserToDictionary(user: author, isFamily: isFamily, completionHandler: { (gamvedUser) in
+                                        for user in users! {
                                             
-                                            fan.author = author as! PFUser
-                                            fan.author_image = gamvedUser.avatar
+                                            var isFamily = Bool()
+                                            let author = user as! PFUser
                                             
-                                            icon.getDataInBackground(block: { (iconImageData, error) in
+                                            if author.objectId == PFUser.current()?.objectId {
+                                                isFamily = true
+                                            }
+                                            
+                                            Global.addUserToDictionary(user: author, isFamily: isFamily, completionHandler: { (gamvedUser) in
                                                 
-                                                if error == nil
-                                                {
+                                                fan.author = author as! PFUser
+                                                fan.author_image = gamvedUser.avatar
+                                                
+                                                icon.getDataInBackground(block: { (iconImageData, error) in
                                                     
-                                                    let iconImage = UIImage(data: iconImageData!)
-                                                    
-                                                    fan.icon_image = iconImage!
-                                                    fan.name =  name
-                                                    fan.about = about
-                                                    
-                                                    cover.getDataInBackground(block: { (coverImageData, error) in
+                                                    if error == nil {
                                                         
-                                                        if error == nil
-                                                        {
+                                                        let iconImage = UIImage(data: iconImageData!)
+                                                        
+                                                        fan.icon_image = iconImage!
+                                                        fan.name =  name
+                                                        fan.about = about
+                                                        
+                                                        cover.getDataInBackground(block: { (coverImageData, error) in
                                                             
-                                                            let coverImage = UIImage(data:coverImageData!)
-                                                            fan.cover_image = coverImage!
-                                                            
-                                                            cat.fanpages.append(fan)
-                                                            
-                                                            print(fanpageAmount)
-                                                            print(count)
-                                                            //print(lastCategory)
-                                                            
-                                                            if  (fanpageAmount-1) == count //&& lastCategory )
-                                                            {
-                                                                self.dalaLoaded=true
+                                                            if error == nil {
                                                                 
-                                                                DispatchQueue.main.async {
-                                                                    self.tableView.isHidden = false
-                                                                    self.activityIndicatorView?.stopAnimating()
-                                                                    self.tableView.reloadData()
+                                                                let coverImage = UIImage(data:coverImageData!)
+                                                                fan.cover_image = coverImage!
+                                                                
+                                                                cat.fanpages.append(fan)
+                                                                
+                                                                if  (fanpageAmount-1) == count {
+                                                                    self.dalaLoaded=true
+                                                                    completionHandler(true)
                                                                 }
-                                                                
+                                                                count = count + 1
                                                             }
-                                                            DispatchQueue.main.async{
-                                                                self.tableView.reloadData()
-                                                            }
-                                                            count = count + 1
-                                                        }
-                                                    })
-                                                }
+                                                        })
+                                                    }
+                                                })
                                             })
-                                        })
+                                        }
                                     }
-                                }
-                            })
+                                })
+                            }
+                        
+                        } else {
+                            
+                            self.dalaLoaded = true
+                            completionHandler(true)
+                            
                         }
                     }
                 }

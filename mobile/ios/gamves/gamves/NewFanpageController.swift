@@ -221,7 +221,7 @@ UICollectionViewDelegateFlowLayout {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.autoresizingMask =  [.flexibleWidth, .flexibleHeight]
-        imageView.backgroundColor = UIColor.green
+        //imageView.backgroundColor = UIColor.green
         imageView.layer.cornerRadius = 5
         return imageView
     }()
@@ -273,7 +273,7 @@ UICollectionViewDelegateFlowLayout {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.autoresizingMask =  [.flexibleWidth, .flexibleHeight]
-        imageView.backgroundColor = UIColor.green
+        //imageView.backgroundColor = UIColor.green
         imageView.layer.cornerRadius = 5
         return imageView
     }()    
@@ -375,6 +375,10 @@ UICollectionViewDelegateFlowLayout {
     
     var selectedIconImage = UIImage()
     var selectedCoverImage = UIImage()
+
+    var collRect:CGRect!
+    
+    var fanpageOrder = Int()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -579,6 +583,8 @@ UICollectionViewDelegateFlowLayout {
             self.backgroundIconImage.frame = fri
 
             self.imagesLabel.frame = self.collectionView.bounds
+
+            self.collRect = self.collectionView.frame
             
         }
         
@@ -623,6 +629,8 @@ UICollectionViewDelegateFlowLayout {
             fanArray.append(fan.name)
         }
         let fanpages = fanArray //as! NSMutableArray
+        
+        self.queryFanpageOrder()
     
     }
     
@@ -809,10 +817,9 @@ UICollectionViewDelegateFlowLayout {
         } else if self.touchedButton == TouchedButton.addButton {
             
             self.imagesArray.append(image)
-            self.collectionView.reloadData()
+            self.collectionView.reloadData()            
             
         }
-        
         
     }
 
@@ -834,7 +841,7 @@ UICollectionViewDelegateFlowLayout {
         for image in images {
             self.imagesArray.append(image)
         }
-        
+        self.imagesLabel.isHidden = true
         self.collectionView.reloadData()
     }
     
@@ -850,14 +857,12 @@ UICollectionViewDelegateFlowLayout {
         navigationController?.pushViewController(media, animated: true)
     }
     
-    func setResultOfsearch(videoId: String, title: String, description : String, duration: String, image : UIImage)
-    {
+    func setResultOfsearch(videoId: String, title: String, description : String, duration: String, image : UIImage) {
     	self.videoId = videoId
     	self.videoTitle = title
     	self.videoDescription = description
     	self.thumbnailImage = image
         self.video_url = "https://www.youtube.com/watch?v=" + self.videoId
-    	
     }
     
     func setVideoSearchType(type: UploadType) {
@@ -911,6 +916,8 @@ UICollectionViewDelegateFlowLayout {
             
             fanpagePF["pageAbout"] = self.aboutTextField.text
             
+            fanpagePF["order"] = self.fanpageOrder
+            
             let filenameIcon = "icon.png"
             
             let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.selectedIconImage, 1.0)!)
@@ -927,15 +934,18 @@ UICollectionViewDelegateFlowLayout {
             
             fanpagePF["fanpageId"] = fanpageId
             
-            fanpagePF["category"] = self.category.cateobj
+            let categoryRelation = fanpagePF.relation(forKey: "category")
+            categoryRelation.add(self.category.cateobj!)
             
             fanpagePF["categoryName"] = self.category.name
             
             fanpagePF["approved"] = false
             
-            let userPointer = PFObject(withoutDataWithClassName: "User", objectId: PFUser.current()?.objectId)
+            //let userPointer = PFObject(withoutDataWithClassName: "User", objectId: PFUser.current()?.objectId)            
+            //fanpagePF["author"] = userPointer
             
-            fanpagePF["author"] = userPointer
+            let authorRelation = fanpagePF.relation(forKey: "author")
+            authorRelation.add(PFUser.current()!)
             
             fanpagePF.saveInBackground(block: { (fanpge, error) in
                 
@@ -970,8 +980,13 @@ UICollectionViewDelegateFlowLayout {
                             
                             self.activityIndicatorView?.startAnimating()
                             
+                            var message = String()
+                            
+                            if let fanpageName = self.nameTextField.text {
+                                message = "The fanpage \(fanpageName) has been created and sent to your parents for appoval. Thanks for submitting!"
+                            }
+                            
                             let title = "Fanpage created!"
-                            let message = "The fanpage \(self.nameTextField.text) has been created and sent to your parents for appoval. Thanks for submitting!"
                             
                             let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                             
@@ -992,9 +1007,33 @@ UICollectionViewDelegateFlowLayout {
         }
     }
     
+    func queryFanpageOrder() {
+        
+        let queryFanpages = PFQuery(className: "Fanpages")
+        print(self.category.name)
+        queryFanpages.whereKey("category", equalTo: self.category.cateobj)
+        queryFanpages.order(byDescending: "order")
+        queryFanpages.getFirstObjectInBackground { (fanpage, error) in
+            
+            if error == nil
+            {
+                let count = fanpage!["order"] as! Int
+                
+                self.fanpageOrder = count + 1
+                
+                print("error: \(error)")
+                
+            } else {
+                
+                self.fanpageOrder = 0
+                
+            }
+        }
+    }
+        
     
-    func checErrors() -> Bool
-    {
+    
+    func checErrors() -> Bool {
         var errors = false
         let title = "Error"
         var message = ""
@@ -1053,20 +1092,25 @@ UICollectionViewDelegateFlowLayout {
         
         let cellImage = collectionView.dequeueReusableCell(withReuseIdentifier: cellImageCollectionId, for: indexPath) as! ImagesCollectionViewCell
         
-        cellImage.imageView.image = self.imagesArray[indexPath.row]
+        cellImage.imageView.image = self.imagesArray[indexPath.row]        
         
-        return cellImage
         
         return cellImage
     }
     
-    /*func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+     
+        let height = self.collRect.height
         
-        let height = (view.frame.width - 16 - 16) * 9 / 16
+        //let width = (height * 16 / 9) + 32
         
-        return CGSize(width: view.frame.width, height: height + 16 + 88)
+        let count:CGFloat = CGFloat(self.imagesArray.count)
         
-    }*/
+        let width =  CGFloat(collectionView.frame.size.width / count)
+        
+        return CGSize(width: width, height: height)
+        
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0

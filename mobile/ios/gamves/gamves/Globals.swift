@@ -13,6 +13,8 @@ import PopupDialog
 
 class Global: NSObject
 {
+    static var device = String()
+    
     static var notifications = [GamvesNotification]()
 
     static var userTypes = Dictionary<Int, UserTypeGamves>()
@@ -266,7 +268,17 @@ class Global: NSObject
                 
                 Global.gamvesFamily.youUser = gamvesUser
                 Global.gamvesFamily.sonsUsers.append(gamvesUser)
-                Global.gamvesFamily.levels.append(self.levels[gamvesUser.levelId]!)
+                
+                let typeNumber = gamvesUser.typeNumber
+                
+                if typeNumber == Global.SON || typeNumber == Global.DAUGHTER {
+                
+                    print(gamvesUser.levelId)
+                    let level = self.levels[gamvesUser.levelId]!
+                
+                    Global.gamvesFamily.levels.append(level)
+                    
+                }
                 
             } else if gamvesUser.typeNumber == Global.REGISTER_MOTHER ||  gamvesUser.typeNumber == Global.REGISTER_FATHER {
                 

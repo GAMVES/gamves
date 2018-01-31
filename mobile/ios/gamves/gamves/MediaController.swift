@@ -252,6 +252,13 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         return search
     }()
     
+    let ipadAnchor: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()
+    
     var termToSearch = String()
 
     override func viewDidLoad() {
@@ -275,12 +282,30 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         
         self.mediaPicker.delegate = self
         
+        if Global.device.lowercased().range(of:"ipad") != nil {
+            
+            self.backgroundView.addSubview(self.ipadAnchor)
+            
+            ipadAnchor.center.x = self.view.center.x
+            ipadAnchor.frame.origin.y = self.view.frame.height - (ipadAnchor.frame.height * 3)
+    
+        }
+        
     }
     
     func shoOptions() {
         
         let actionSheet = self.optionsActionSheet
-        self.present(actionSheet, animated: true, completion: nil)
+        
+        if Global.device.lowercased().range(of:"ipad") != nil {
+            
+            actionSheet.popoverPresentationController?.sourceView = self.view
+            actionSheet.popoverPresentationController?.sourceRect = ipadAnchor.frame
+    
+            self.present(actionSheet, animated: true, completion: nil)
+        }
+        
+        
     }
     
     
@@ -952,9 +977,8 @@ private extension MediaController {
             DispatchQueue.main.async {
                 self.navigationController?.popViewController(animated: true)
             }
-        
         }
-    
+        
         actionSheet.addAction(cancelAction)
     }
     

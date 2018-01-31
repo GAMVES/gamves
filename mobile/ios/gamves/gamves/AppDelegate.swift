@@ -31,6 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         Global.forceFromNetworkCache = true
         
+        let deviceobj = Device()
+        let device:String = "\(deviceobj)"
+        Global.device = device
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         

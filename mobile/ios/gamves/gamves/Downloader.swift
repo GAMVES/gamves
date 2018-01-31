@@ -100,7 +100,7 @@ class Downloader: NSObject
                                         
                                         if (countFanpageAlbums!-1) == count
                                         {
-                                            let fanpageId = fanpageAlbum["fanpageId"] as! Int
+                                            let fanpageId = fanpageAlbum["referenceId"] as! Int
                                             
                                             self.fanpageImagesDictionary[fanpageId] = images
                                         }
