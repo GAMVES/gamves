@@ -232,69 +232,81 @@ document.addEventListener("LoadVideo", function(event){
 
       });     
 
-      function saveVideo() {          
+      function saveVideo() { 
 
-          var Videos = Parse.Object.extend("Videos");
-          var video = new Videos();              
+          var userQuery = new Parse.Query(Parse.User);         
+          userQuery.equalTo("username", "gamvesadmin");
+          userQuery.first({
+              success: function (userAdmin) {
+                  
+                  if (userAdmin) { 
+                        
+                    var Videos = Parse.Object.extend("Videos");
+                    var video = new Videos();              
 
-          video.set("downloaded", false);
-          video.set("removed", false);
-          video.set("authorized", true);
+                    video.set("downloaded", false);
+                    video.set("removed", false);
+                    video.set("authorized", true);
 
-          video.set("title", title);
-          video.set("description", desc);          
+                    video.set("title", title);
+                    video.set("description", desc);          
 
-          video.set("categoryName", categoryName);
+                    video.set("categoryName", categoryName);
 
-          video.set("poster", );          
+                    video.set("posterId", userAdmin.id);          
+                    video.set("poster_name", userAdmin.get("Name"));          
 
-          video.set("s3_source", "");
-          video.set("ytb_source", videoUrl);
-          video.set("ytb_thumbnail_source", thumbnailUrl);
-          video.set("ytb_videoId", vId);
+                    video.set("s3_source", "");
+                    video.set("ytb_source", videoUrl);
+                    video.set("ytb_thumbnail_source", thumbnailUrl);
+                    video.set("ytb_videoId", vId);
 
-          video.set("ytb_upload_date", upload_date);          
-          video.set("ytb_view_count", view_count);       
-          video.set("ytb_tags", tags);
-          video.set("ytb_duration", duration);         
-          video.set("ytb_categories", categories);         
-          //video.set("ytb_like_count", like_count);                      
+                    video.set("ytb_upload_date", upload_date);          
+                    video.set("ytb_view_count", view_count);       
+                    video.set("ytb_tags", tags);
+                    video.set("ytb_duration", duration);         
+                    video.set("ytb_categories", categories);         
+                    //video.set("ytb_like_count", like_count);                      
 
-          var order = $("#edit_order_video").val();
-          video.set("order", parseInt(order)); 
+                    var order = $("#edit_order_video").val();
+                    video.set("order", parseInt(order)); 
 
-          video.set("public", true); 
+                    video.set("public", true); 
 
-          video.set("folder", "stpauls"); //Here TODO query School short and put as folder.  
+                    video.set("folder", "stpauls"); //Here TODO query School short and put as folder.  
 
-          video.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
+                    video.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
 
-          var vrnd = Math.floor(100000 + Math.random() * 900000);
-          video.set("videoId", vrnd);              
+                    var vrnd = Math.floor(100000 + Math.random() * 900000);
+                    video.set("videoId", vrnd);              
 
-          video.set("fanpageObjId", fanpageObj.id); 
+                    video.set("fanpageObjId", fanpageObj.id); 
 
-          video.set("posterId", "gamves_official");           
-          video.set("poster_name", "Gamves Official");       
+                    video.set("posterId", "gamves_official");           
+                    video.set("poster_name", "Gamves Official");       
 
-          video.set("source_type", 2);  //YOUTUBE     
+                    video.set("source_type", 2);  //YOUTUBE     
 
-          video.save(null, {
-              success: function (savedVideo) {        
-                 
-                  console.log('Video created successful with name: ' + video.get("title"));
-                 
-                  $('#edit_model_video').modal('hide');
+                    video.save(null, {
+                        success: function (savedVideo) {        
+                           
+                            console.log('Video created successful with name: ' + video.get("title"));
+                           
+                            $('#edit_model_video').modal('hide');
 
-                  clearField();
-                  searchVideo(fanpage);                   
-                                                                                                    
-              },
-              error: function (response, error) {
-                    $('#error_message').html("<p>" + errort + "</p>");
-                  console.log('Error: ' + error.message);
+                            clearField();
+                            searchVideo(fanpage);                   
+                                                                                                              
+                        },
+                        error: function (response, error) {
+                              $('#error_message').html("<p>" + errort + "</p>");
+                            console.log('Error: ' + error.message);
+                        }
+                    });
+
+                  }
               }
-          });
+          });          
       }         
 
       function clearField(){

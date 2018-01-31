@@ -92,7 +92,7 @@ document.addEventListener("LoadFanpage", function(event){
                             },
                             "images": function(column, row) {
                                 var fpid = fanpageIdArray[(row.id-1)];  
-                                return "<button type=\"button\ data-fanpage=\"" + fpid + "\" class=\"btn btn-xs btn-default command-images\" data-row-id=\"" + row.id + "\">Grades</button>&nbsp;";                                       
+                                return "<button type=\"button\ data-fanpage=\"" + fpid + "\" class=\"btn btn-xs btn-default command-images\" data-row-id=\"" + row.id + "\">Images</button>&nbsp;";                                       
                             }                   
                           }               
 
@@ -304,7 +304,8 @@ document.addEventListener("LoadFanpage", function(event){
               var order = $("#edit_order_fanpage").val();          
               fanpage.set("order", parseInt(order));  
 
-              fanpage.set("author", user)
+               var authorRelation = fanpage.relation("author");
+              authorRelation.add(user);             
 
               fanpage.set("approved", true);  
 

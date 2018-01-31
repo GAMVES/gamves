@@ -224,7 +224,7 @@ Parse.Cloud.afterSave("Videos", function(request) {
 		if (!removed && downloaded) {
 
 			var ytb_videoId = request.object.get("ytb_videoId");
-			var videoFile = ytb_videoId + ".mp4";
+			var videoFile = "download/" + ytb_videoId + ".mp4";
 			var fs = require('fs'); 
 		    fs.unlinkSync(videoFile);
 		    if ( !fs.existsSync(videoFile) ) {	      	
@@ -262,29 +262,52 @@ Parse.Cloud.afterSave("Videos", function(request) {
 
 							var vId       = request.object.get("ytb_videoId");
 							var pfVideoId = request.object.id;
-						    
-						    Parse.Cloud.httpRequest({
-						      
-						      method: "POST",
-						      url: serverUrl + "jobs/downloader",
-						      headers: {
-							    	"X-Parse-Application-Id": _appId,
-							    	"X-Parse-Master-Key": _mKey,
-							    	"Content-Type": "application/json"
-							  },
-						      body: {
-						        "ytb_videoId": vId,
-						        "objectId": pfVideoId,
-						        "folder" : folder          
-						      },	      
-						      success: function(httpResponse) {          
-						          console.log(httpResponse);			 
-						      },
-						      error: function(httpResponse) {
-						          console.log('Error! ' + httpResponse);
-						      }
 
-						    });
+							var paramsDownload =  {
+								"ytb_videoId": vId,
+						        "objectId": pfVideoId
+						    };
+
+							downloadVideo(paramsDownload, function(resutl){
+
+								var videoName = resutl.videoName;
+								var videoObject = resutl.videoObject;
+
+								var thumbSource = videoObject.get("ytb_thumbnail_source");
+
+								var paramsUpload =  {
+									"videoName": videoName,
+							        "folder" : folder 
+							    };
+
+								uploadVideo(paramsUpload, function(resutl){
+
+									var s3bucket = resutl.s3bucket;
+									var s3endpoint = resutl.s3endpoint;
+
+									Parse.Cloud.httpRequest({url: thumbSource}).then(function(httpResponse) {
+                  
+				                       var imageBuffer = httpResponse.buffer;
+				                       var base64 = imageBuffer.toString("base64");
+				                       var file = new Parse.File(ytb_videoId+".jpg", { base64: base64 });                    
+				                       var baseUrl = "https://s3.amazonaws.com/" + s3bucket; 
+				                       var uploadedUrl = baseUrl + "/" + videoName; 
+
+				                       videoObject.save({                             
+				                          removed: false, 
+				                          thumbnail: file,
+				                          s3_source: uploadedUrl,
+				                          downloaded: true,
+				                          source_type: 2
+				                        }, { useMasterKey: true } );   
+				                                                            
+				                  	}, function(error) {                    
+				                      console.log("Error downloading thumbnail"); 
+				                  	});
+
+								});
+
+							});
 					    } 
 			        },
 			        error: function(error) {						            
@@ -292,13 +315,89 @@ Parse.Cloud.afterSave("Videos", function(request) {
 			        }
 			    });  
 
-			});		
-		
+			});
 		} 
 	}
 
 });
 
+function downloadVideo(params, callback ) {
+
+	var ytb_videoId = params.ytb_videoId;
+	var objectId = params.objectId;
+
+    var queryVideos = new Parse.Query("Videos");
+    queryVideos.equalTo("objectId", objectId);
+
+    queryVideos.find().then(function(results) {
+
+    	if( results.length > 0) 
+        {
+            var videoObject = results[0];
+            var fs = require('fs');
+            var youtubedl = require('youtube-dl');
+            var video = youtubedl('http://www.youtube.com/watch?v='+ytb_videoId, ['--format=18'], { cwd: __dirname });             
+            var videoName = "download/" + ytb_videoId + '.mp4';
+
+            video.pipe(fs.createWriteStream(videoName));
+
+            video.on('end', function() { 
+            	 
+            	callback({"videoName":videoName, "videoObject":videoObject, });
+
+	        });   
+       }	  
+
+    }, function(error) {	    
+
+        response.error(error);
+
+    });	
+
+
+};
+
+function uploadVideo(params, callback) {
+
+	var folder = params.folder;
+	var videoName = params.videoName;
+
+	var path = require('path');
+    var s3 = require('s3');
+    
+    var s3key = "AKIAJP4GPKX77DMBF5AQ";
+    var s3secret = "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";
+    var s3region = "us-east-1";  
+
+    var clientDownload = s3.createClient({
+      maxAsyncS3: 20,     // this is the default
+      s3RetryCount: 3,    // this is the default
+      s3RetryDelay: 1000, // this is the default
+      multipartUploadThreshold: 20971520, // this is the default (20 MB)
+      multipartUploadSize: 15728640, // this is the default (15 MB)
+      s3Options: {
+        accessKeyId: s3key,
+        secretAccessKey: s3secret,
+        region: s3region,
+      },
+    });   
+
+	var s3bucket = "gamves/"+folder+"/videos";
+    var s3endpoint = s3bucket  + ".s3.amazonaws.com";      
+
+	var paramsUploader = { localFile: videoName, s3Params: { Bucket: s3bucket, Key: videoName, ACL: 'public-read'},};
+
+	var uploader = clientDownload.uploadFile(paramsUploader);
+
+	uploader.on('error', function(err) { console.error("unable to upload:", err.stack); });                
+	uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
+	  
+	uploader.on('end', function() {
+
+		callback({"s3bucket":s3bucket, "s3endpoint":s3endpoint});
+
+	});  
+};
 
 function saveFanpage(request, callback) {
 

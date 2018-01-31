@@ -73,9 +73,9 @@
 		                       
 		                       	var user = new Parse.User();
 								user.set("username", _admuser);
-								user.set("name", "Gamves Admin");
+								user.set("name", "Gamves Official");
 								user.set("firstName", "Gamves");
-								user.set("lastName", "Admin");
+								user.set("lastName", "Official");
 								user.set("pictureSmall", iconFile);
 								user.set("password", "lo vas a lograr");
 								user.set("iDUserType", -1);
@@ -88,7 +88,7 @@
 									  	
 										var app_id 			= "0123456789";
 										var master_key		= "9876543210";
-										var server_url 		= "http://192.168.13.22:1337/1/";	
+										var server_url 		= "http://192.168.16.22:1337/1/";	
 										
 										var hasIcon 		= false;
 

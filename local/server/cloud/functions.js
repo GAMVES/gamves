@@ -73,8 +73,6 @@
 	});
 
 
-
-
 	// --
 	// Subscribe users array to channels for new chat. 
 
@@ -94,8 +92,6 @@
 	});
 
 
-
-
 	// --
 	// SubscribeMeToChannel
 
@@ -107,8 +103,6 @@
 		subscribeSingleUserToChannel(userId, channelName, response);
 		
 	});
-
-
 
 
 	// --
@@ -217,44 +211,6 @@
 	     });
 	});
 
-
-
-
-	// --
-	// Run job to download video. 
-
-	var _appId      = '0123456789';
-	var _mKey       = "9876543210";
-
-	Parse.Cloud.define("postDownloadVideoJob", function( request, response ) {
-
-		var serverUrl = request.params.serverUrl;
-		var vId       = request.params.ytb_videoId;
-		var pfVideoId = request.params.pfVideoId;
-	    
-	    Parse.Cloud.httpRequest({
-	      method: "POST",
-	      url: serverUrl + "jobs/downloader",
-	      headers: {
-		    	"X-Parse-Application-Id": _appId,
-		    	"X-Parse-Master-Key": _mKey,
-		    	"Content-Type": "application/json"
-		  },
-	      body: {
-	        "ytb_videoId": vId,
-	        "objectId": pfVideoId            
-	      },	      
-	      success: function(httpResponse) {          
-	          response.success();			 
-	      },
-	      error: function(httpResponse) {
-	          response.error("failed");
-	      }
-	    });  
-	});
-
-
-
 	// --
 	// Get Video Info.
 
@@ -285,34 +241,6 @@
 
 	});
 
+	
 
-	// --
-	// Upload Video To S3.
-
-	/*Parse.Cloud.define("uploadVideoToS3", function( request, response ) {
-
-		var video = request.params.video;
-
-		var params = {
-			  localFile: video,
-			  s3Params: {
-			    Bucket: "gamves.videos",
-			    Key: video,
-			    // other options supported by putObject, except Body and ContentLength.
-			    // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
-			  },
-			};
-
-			var uploader = client.uploadFile(params);
-			uploader.on('error', function(err) {
-			  console.error("unable to upload:", err.stack);
-			});
-			uploader.on('progress', function() {
-			  console.log("progress", uploader.progressMd5Amount,
-			            uploader.progressAmount, uploader.progressTotal);
-			});
-			uploader.on('end', function() {
-			  console.log("done uploading");
-			});
-
-	});*/
+	
