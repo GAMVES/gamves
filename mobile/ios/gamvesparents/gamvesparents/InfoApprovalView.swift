@@ -16,17 +16,25 @@ class InfoApprovalView: UIView {
 	let infoContView: UIView = {
         let view = UIView()
         //view.backgroundColor = UIColor(white: 0, alpha: 1)
-        view.backgroundColor = UIColor.red
+        view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()     
+    }()
+    
+    let titleContView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
     let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
         label.text = "Title:"
-        label.font = UIFont.boldSystemFont(ofSize: 17)
+        //label.font = UIFont.boldSystemFont(ofSize: 17)
+        label.font = label.font.withSize(14)
         label.textAlignment = .left
         return label
     }()
@@ -35,17 +43,24 @@ class InfoApprovalView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
-        label.font = label.font.withSize(14)
+        label.font = UIFont.boldSystemFont(ofSize: 25)
         label.textAlignment = .left
         return label
-    }()   
-
+    }()
+    
+    let descContView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     let descLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
         label.text = "Description:"
-        label.font = UIFont.boldSystemFont(ofSize: 17)
+        label.font = label.font.withSize(14)
         label.textAlignment = .left
         return label
     }()
@@ -55,7 +70,7 @@ class InfoApprovalView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
         //label.font = UIFont.boldSystemFont(ofSize: 10)
-        label.font = label.font.withSize(14)
+        label.font = UIFont.boldSystemFont(ofSize: 17)
         label.textAlignment = .left
         label.numberOfLines = 5
         //label.backgroundColor = UIColor.lightGray
@@ -65,11 +80,8 @@ class InfoApprovalView: UIView {
     ///////////////////////////////////////////////////
 
 
-    init(frame: CGRect, obj: AnyObject)
-    {
-        super.init(frame: frame)
-        
-        //let type = type(of: obj)
+    init(frame: CGRect, obj: AnyObject) {
+        super.init(frame: frame)    
         
         if (obj is VideoGamves) {
             
@@ -93,34 +105,42 @@ class InfoApprovalView: UIView {
 
         self.infoContView.frame = frame
 
-        self.addSubview(self.infoContView)     
+        self.addSubview(self.infoContView)
+        
         self.addConstraintsWithFormat("H:|[v0]|", views: self.infoContView)
         self.addConstraintsWithFormat("V:|[v0]|", views: self.infoContView)    
 
-        self.infoContView.backgroundColor = UIColor.white
+        //self.infoContView.backgroundColor = UIColor.white
         
-        self.infoContView.addSubview(self.titleLabel)
-        self.infoContView.addSubview(self.infoTitleLabel)       
-
-        self.infoContView.addSubview(self.descLabel)
-        self.infoContView.addSubview(self.infoDescLabel)
-
-
-        self.infoContView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.titleLabel)
-        self.infoContView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.infoTitleLabel)
+        self.infoContView.addSubview(self.titleContView)
+        self.infoContView.addSubview(self.descContView)
         
-        self.infoContView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.descLabel)
-        self.infoContView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.infoDescLabel)
+        self.infoContView.addConstraintsWithFormat("H:|[v0]|", views: self.titleContView)
+        self.infoContView.addConstraintsWithFormat("H:|[v0]|", views: self.descContView)
         
-        self.infoContView.addConstraintsWithFormat("V:|-20-[v0(15)][v1(30)]-10-[v2(20)][v3]|", 
-            views: 
-            self.titleLabel, 
-            self.infoTitleLabel,            
+        self.infoContView.addConstraintsWithFormat("V:|[v0(40)][v1]|", views:
+            self.titleContView,
+            self.descContView)
+        
+        self.titleContView.addSubview(self.titleLabel)
+        self.titleContView.addSubview(self.infoTitleLabel)
+
+        self.titleContView.addConstraintsWithFormat("H:|-5-[v0(50)][v1]|", views:
+            self.titleLabel,
+            self.infoTitleLabel)
+        
+        self.titleContView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.titleLabel)
+        self.titleContView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.infoTitleLabel)
+        
+        self.descContView.addSubview(self.infoDescLabel)
+        self.descContView.addSubview(self.descLabel)
+
+        self.descContView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: self.descLabel)
+        self.descContView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: self.infoDescLabel)
+        
+        self.descContView.addConstraintsWithFormat("V:|-20-[v0(20)][v1]|", views:
             self.descLabel,
             self.infoDescLabel)
-
-        self.infoTitleLabel.text = self.videoGamves.title
-        self.infoDescLabel.text = self.videoGamves.description              
         
     } 
     

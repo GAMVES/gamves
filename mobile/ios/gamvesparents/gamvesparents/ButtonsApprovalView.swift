@@ -9,13 +9,18 @@
 import UIKit
 import Parse
 
+enum ApprovalType {
+    case TypeVideo
+    case TypeFanpage
+}
+
 class ButtonsApprovalView: UIView {
     
     
     lazy var approveButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gamvesSemaphorGreenColor
-        button.setTitle("APPROVE VIDEO", for: UIControlState())
+        //button.setTitle("APPROVE VIDEO", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -27,7 +32,7 @@ class ButtonsApprovalView: UIView {
     lazy var rejectButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gamvesSemaphorRedColor
-        button.setTitle("REJECT VIDEO", for: UIControlState())
+        //button.setTitle("REJECT VIDEO", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -55,23 +60,52 @@ class ButtonsApprovalView: UIView {
     }()
     
     var playerView:VideoApprovalPlayerView!
-    
-    var videoId = Int()
+    var fanpageView:FanpageApprovalView!
+
+    var referenceId = Int()
     
     var delegate:ApprovalProtocol!
     
-
-    init(frame: CGRect, playerView:VideoApprovalPlayerView?, videoId:Int?, delegate:ApprovalProtocol) {
-        
+    var approvalType:ApprovalType!
+    
+    init(frame: CGRect, obj: AnyObject, referenceId:Int?, delegate:ApprovalProtocol) {
         super.init(frame: frame)
         
-        if playerView != nil {
-            
-            self.playerView = playerView
-            self.videoId = videoId!
-        }
+        //let type = type(of: obj)
         
         self.delegate = delegate
+        
+        if (obj is VideoApprovalPlayerView) {
+            
+            self.approvalType = ApprovalType.TypeVideo
+            
+            let videoApprovalPlayerView = obj as! VideoApprovalPlayerView
+            
+            if videoApprovalPlayerView != nil {
+                
+                self.approveButton.setTitle("APPROVE VIDEO", for: UIControlState())
+                self.rejectButton.setTitle("REJECT VIDEO", for: UIControlState())
+               
+                self.playerView = videoApprovalPlayerView
+                self.referenceId = videoApprovalPlayerView.videoId
+            }
+            
+        } else if (obj is FanpageApprovalView) {
+            
+            self.approvalType = ApprovalType.TypeFanpage
+            
+            let fanpageApprovalView = obj as! FanpageApprovalView
+            
+            if fanpageApprovalView != nil {
+                
+                self.approveButton.setTitle("APPROVE FANPAGE", for: UIControlState())
+                self.rejectButton.setTitle("REJECT FANPAGE", for: UIControlState())
+                
+                self.fanpageView = fanpageApprovalView
+                self.referenceId = fanpageApprovalView.fanpageId
+            }
+            
+        }
     }
     
     func addSubViews() {
@@ -99,12 +133,12 @@ class ButtonsApprovalView: UIView {
     
     @objc func touchUpApprove() {
         
-        updateApprovalStatus(videoId: self.videoId, status: 1);
+        updateApprovalStatus(referenceId: self.referenceId, status: 1);
     }
     
     @objc func touchUpReject() {
         
-        updateApprovalStatus(videoId: self.videoId, status: -1);
+        updateApprovalStatus(referenceId: self.referenceId, status: -1);
     }
     
     @objc func touchUpLater() {
@@ -116,21 +150,24 @@ class ButtonsApprovalView: UIView {
         
         //REMOVE IF EXISTS VIDEO RUNNING
         for subview in (UIApplication.shared.keyWindow?.subviews)! {
+            
             if (subview.tag == 1)
             {
-                self.playerView.handleDownButton()
-                self.playerView.handlePause()
+                if self.approvalType == ApprovalType.TypeVideo {
+                    self.playerView.handleDownButton()
+                    self.playerView.handlePause()
+                }
                 subview.removeFromSuperview()
             }
         }
     }
     
-    func updateApprovalStatus(videoId:Int,  status: Int){
+    func updateApprovalStatus(referenceId:Int,  status: Int){
         
-        print(videoId)
+        print(referenceId)
         
         let queryApprovals = PFQuery(className: "Approvals")
-        queryApprovals.whereKey("videoId", equalTo: videoId)
+        queryApprovals.whereKey("referenceId", equalTo: referenceId)
         queryApprovals.getFirstObjectInBackground { (approval, error) in
             
             if error != nil

@@ -208,6 +208,12 @@ class VideoApprovalPlayerView: UIView {
         self.videoLauncher = videoLauncherVidew
         self.keyWindow = view
     }
+    
+    var videoId = Int()
+    
+    func setVideoId(videoId: Int) {
+        self.videoId = videoId
+    }
 
     var videoUrl = String()
 
@@ -389,7 +395,7 @@ class VideoApprovalLauncher: UIView {
             let apprY = Int(videoApprovalPlayerView.frame.height) + Int(infoApprovalView.frame.height)
             let apprFrame = CGRect(x: 0, y: apprY, width: Int(keyWindow.frame.width), height: chatHeight)
             
-            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame, playerView: videoApprovalPlayerView, videoId: videoId, delegate: self.delegate)
+            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame, obj: videoApprovalPlayerView, referenceId: videoId, delegate: self.delegate)
             buttonsApprovalView.backgroundColor = UIColor.gamvesBackgoundColor
             view.addSubview(buttonsApprovalView)
             buttonsApprovalView.addSubViews()

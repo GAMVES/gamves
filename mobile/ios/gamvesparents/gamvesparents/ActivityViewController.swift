@@ -82,7 +82,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func closedRefresh() {
         
-        Global.approvals = [Approvals]()
+        //Global.approvals = [Approvals]()
         
         Global.getApprovasByFamilyId(familyId: self.familyId) { ( count ) in
             

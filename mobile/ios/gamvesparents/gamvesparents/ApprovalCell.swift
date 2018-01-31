@@ -34,6 +34,7 @@ class ApprovalCell: BaseCell {
         return view
     }()
     
+    
     var nameLabel: UILabel = {
         let label = UILabel()
         //label.text = "Mark Zuckerberg"
@@ -54,6 +55,13 @@ class ApprovalCell: BaseCell {
         return label
     }()
 
+    let typeLabel: UILabel = {
+        let label = UILabel()
+        //label.text = "Your friend's message and something else..."
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.systemFont(ofSize: 14)
+        return label
+    }()
     
     override func setupViews() {
         
@@ -73,18 +81,23 @@ class ApprovalCell: BaseCell {
         addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
         addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
         
-        addConstraintsWithFormat("H:|-60-[v0(30)]", views: checkLabel)
+        addConstraintsWithFormat("H:|-50-[v0(30)]", views: checkLabel)
         addConstraintsWithFormat("V:|-60-[v0(30)]", views: checkLabel)
     
     }
     
     fileprivate func setupContainerView() {
+        
         let containerView = UIView()
+        let nameStatusView = UIView()
         
         addSubview(containerView)
+        addSubview(nameStatusView)
         
-        addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
+        addConstraintsWithFormat("H:|-90-[v0][v1(100)]|", views: containerView, nameStatusView)
+        
         addConstraintsWithFormat("V:[v0(50)]", views: containerView)
+        addConstraintsWithFormat("V:[v0(50)]", views: nameStatusView)
         
         addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
@@ -92,10 +105,12 @@ class ApprovalCell: BaseCell {
         containerView.addSubview(statusLabel)
         
         containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: nameLabel)
-        
         containerView.addConstraintsWithFormat("V:|[v0]-10-[v1(24)]|", views: nameLabel, statusLabel)
-        
         containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: statusLabel)
+        
+        nameStatusView.addSubview(typeLabel)
+        nameStatusView.addConstraintsWithFormat("H:|[v0]-20-|", views: typeLabel)
+        nameStatusView.addConstraintsWithFormat("V:|-20-[v0]|", views: typeLabel)
         
     }
    

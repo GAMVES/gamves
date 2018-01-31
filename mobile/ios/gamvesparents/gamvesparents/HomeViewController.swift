@@ -457,14 +457,18 @@ class HomeViewController: UIViewController,
                 for time in times! {
                     
                     let timeStarted = time["timeStarted"] as! Date
-                    let timeEnded = time["timeEnded"] as! Date
                     
-                    print(timeStarted)
-                    print(timeEnded)
-                    
-                    let interval = timeEnded.timeIntervalSince(timeStarted)
-                    
-                    self.countWeekTime = self.countWeekTime + interval
+                    if time["timeEnded"] != nil {
+                        
+                        let timeEnded = time["timeEnded"] as! Date
+                        
+                        print(timeStarted)
+                        print(timeEnded)
+                        
+                        let interval = timeEnded.timeIntervalSince(timeStarted)
+                        
+                        self.countWeekTime = self.countWeekTime + interval
+                    }
                     
                 }
                 
@@ -720,7 +724,9 @@ class HomeViewController: UIViewController,
             
             cell.dataLabel.text = String(stats.approval)
         
-            cell.backgroundColor = UIColor.gamvesColor
+            cell.backView.backgroundColor = UIColor.gamvesColor
+            
+            
             cell.layer.cornerRadius = 10
             
         }
@@ -818,7 +824,7 @@ class HomeViewController: UIViewController,
         {
             let userId = Global.userDictionary[sonId]?.userId
             
-            let onlineQuery = PFQuery(className: "UserOnline").whereKey("userId", equalTo: userId)
+            let onlineQuery = PFQuery(className: "UserStatus").whereKey("userId", equalTo: userId)
             
             self.sonSubscription = liveQueryClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
                 
