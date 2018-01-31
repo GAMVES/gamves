@@ -767,6 +767,7 @@ UICollectionViewDelegateFlowLayout {
         self.touchedButton = TouchedButton.iconImage
         let media = MediaController()
         media.delegate = self
+        media.isImageMultiSelection = false
         media.setType(type: MediaType.selectImage)
         media.termToSearch = self.nameTextField.text!
         media.searchType = SearchType.isImageGallery

@@ -150,7 +150,6 @@ class SearchController: UIViewController,
         
         if multiselect {
             
-            
             let width = self.view.frame.width
 
             self.buttonView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: 50))
@@ -343,6 +342,10 @@ class SearchController: UIViewController,
                                 cells.checkLabel.isHidden = true
                                 cells.isHighlighted = true
                             }
+                            
+                        } else {
+                            
+                            cells.checkLabel.isHidden = true
                         }
                         
                     }
