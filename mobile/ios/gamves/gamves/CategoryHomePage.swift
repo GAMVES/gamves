@@ -30,6 +30,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     
     var activityIndicatorView:NVActivityIndicatorView?
     
+    var refreshControl: UIRefreshControl!
+    
     lazy var tableView: UITableView = {
         let rect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         let tv = UITableView(frame: rect)
@@ -62,6 +64,11 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         self.tableView.backgroundColor = UIColor.gamvesBackgoundColor
         
         self.loadCategories()
+        
+        refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(loadCategories), for: UIControlEvents.valueChanged)
+        tableView.addSubview(refreshControl) // not required when using UITableViewController
     }   
       
     
@@ -178,9 +185,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         }
      
         headerView.layer.borderWidth  = 0
-    
         headerView.tag = section
-
         headerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(clickSection)))
 
         return headerView
@@ -316,6 +321,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                             self.tableView.isHidden = false
                                                             self.activityIndicatorView?.stopAnimating()
                                                             self.tableView.reloadData()
+                                                            self.refreshControl.endRefreshing()
                                                         }
                                                     })
                                                 }
