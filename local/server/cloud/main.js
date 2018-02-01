@@ -471,7 +471,7 @@ Parse.Cloud.afterSave("Approvals", function(request) {
 	var familyId = request.object.get("familyId");	
 	
 
-	if (approved && !notified) { 
+	if (approved==1 && !notified) { 
 
 		var Notification = Parse.Object.extend("Notifications");         
         var notification = new Notification();	
@@ -506,22 +506,22 @@ Parse.Cloud.afterSave("Approvals", function(request) {
 
 	    }).then(function(object) {
 
-	    	if (type == 1) { 
+	    	if (type == 1) { //Video
 
 				notification.set("title", object.get("title"));
 	    		notification.set("description", object.get("description"));	    		
 	    		notification.set("cover", object.get("thumbnail"));
 	    		notification.set("referenceId", object.get("videoId"));
 	    		notification.set("date", object.get("createdAt"));
-	    		notification.set("date", object.get("createdAt"));
 	    		notification.set("video", object);
 
-	    	} else if (type == 2) {
+	    	} else if (type == 2) { //Fanpage
 
 	    		notification.set("title", object.get("pageName"));
 	    		notification.set("description", object.get("pageAbout"));
-	    		notification.set("cover", object.get("thumbnail"));	    		
+	    		notification.set("cover", object.get("pageCover"));	    		
 	    		notification.set("referenceId", object.get("fanpageId"));
+	    		notification.set("date", object.get("createdAt"));
 	    		notification.set("fanpage", object);
 	    	}
 
