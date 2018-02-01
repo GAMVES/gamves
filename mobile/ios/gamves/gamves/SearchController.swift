@@ -214,7 +214,9 @@ class SearchController: UIViewController,
             var single = Bool()
             if self.type == SearchType.isSingleImage {
                 single = true
-            } 
+            }
+            
+            self.lastTerm = self.termToSearch
 
             self.findImagesFromSuggestion(suggestion: self.termToSearch, isSingle: single) 
             

@@ -357,6 +357,8 @@ UICollectionViewDelegateFlowLayout {
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)
         button.layer.cornerRadius = 5
+        //button.isExclusiveTouch = true
+        button.tag = 0
         return button
     }()
     
@@ -870,141 +872,148 @@ UICollectionViewDelegateFlowLayout {
     
     }
     
-    func handleSave() {
+    func handleSave(sender : UIButton) {
         
         if !checErrors()
         {
+            if sender.tag == 0 {
             
-            var albumsPF = [PFObject]()
-            
-            self.activityIndicatorView?.startAnimating()
-            
-            var count = 1
-            
-            let fanpagePF: PFObject = PFObject(className: "Fanpages")
-            
-            let fanpageAlbumRelation = fanpagePF.relation(forKey: "albums")
-            
-            for image in self.imagesArray {
-            
-                let albumPF: PFObject = PFObject(className: "Albums")
+                sender.tag = 1
                 
-                let filename = "\(Global.generateFileName()).png"
+                sender.isEnabled = false
                 
-                let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
+                var albumsPF = [PFObject]()
                 
-                albumPF["cover"] = imageFile
+                self.activityIndicatorView?.startAnimating()
                 
-                albumPF["name"] = "\(count)"
+                var count = 1
                 
-                do {
+                let fanpagePF: PFObject = PFObject(className: "Fanpages")
                 
-                   try albumPF.saveInBackground()
+                let fanpageAlbumRelation = fanpagePF.relation(forKey: "albums")
                 
-                } catch let error {
-                    print(error.localizedDescription)
+                for image in self.imagesArray {
+                
+                    let albumPF: PFObject = PFObject(className: "Albums")
+                    
+                    let filename = "\(Global.generateFileName()).png"
+                    
+                    let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
+                    
+                    albumPF["cover"] = imageFile
+                    
+                    albumPF["name"] = "\(count)"
+                    
+                    do {
+                    
+                       try albumPF.saveInBackground()
+                    
+                    } catch let error {
+                        print(error.localizedDescription)
+                    }
+                    
+                    fanpageAlbumRelation.add(albumPF)
+                    
+                    albumsPF.append(albumPF)
+                    
+                    count = count + 1
+                    
                 }
                 
-                fanpageAlbumRelation.add(albumPF)
+                fanpagePF["pageName"] = self.nameTextField.text
                 
-                albumsPF.append(albumPF)
+                fanpagePF["pageAbout"] = self.aboutTextField.text
                 
-                count = count + 1
+                fanpagePF["order"] = self.fanpageOrder
                 
-            }
-            
-            fanpagePF["pageName"] = self.nameTextField.text
-            
-            fanpagePF["pageAbout"] = self.aboutTextField.text
-            
-            fanpagePF["order"] = self.fanpageOrder
-            
-            let filenameIcon = "icon.png"
-            
-            let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.selectedIconImage, 1.0)!)
-            
-            fanpagePF.setObject(iconImageFile, forKey: "pageIcon")
-            
-            let coverIcon = "cover.png"
-            
-            let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.selectedCoverImage, 1.0)!)
-        
-            fanpagePF.setObject(coverImageFile, forKey: "pageCover")
-            
-            var fanpageId = Global.getRandomInt()
-            
-            fanpagePF["fanpageId"] = fanpageId
-            
-            let categoryRelation = fanpagePF.relation(forKey: "category")
-            categoryRelation.add(self.category.cateobj!)
-            
-            fanpagePF["categoryName"] = self.category.name
-            
-            fanpagePF["approved"] = false
-            
-            //let userPointer = PFObject(withoutDataWithClassName: "User", objectId: PFUser.current()?.objectId)            
-            //fanpagePF["author"] = userPointer
-            
-            let authorRelation = fanpagePF.relation(forKey: "author")
-            authorRelation.add(PFUser.current()!)
-            
-            fanpagePF.saveInBackground(block: { (fanpge, error) in
+                let filenameIcon = "icon.png"
                 
-                if error == nil {
+                let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.selectedIconImage, 1.0)!)
+                
+                fanpagePF.setObject(iconImageFile, forKey: "pageIcon")
+                
+                let coverIcon = "cover.png"
+                
+                let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.selectedCoverImage, 1.0)!)
+            
+                fanpagePF.setObject(coverImageFile, forKey: "pageCover")
+                
+                var fanpageId = Global.getRandomInt()
+                
+                fanpagePF["fanpageId"] = fanpageId
+                
+                let categoryRelation = fanpagePF.relation(forKey: "category")
+                categoryRelation.add(self.category.cateobj!)
+                
+                fanpagePF["categoryName"] = self.category.name
+                
+                fanpagePF["approved"] = false
+                fanpagePF["notified"] = false
+                
+                //let userPointer = PFObject(withoutDataWithClassName: "User", objectId: PFUser.current()?.objectId)
+                //fanpagePF["author"] = userPointer
+                
+                let authorRelation = fanpagePF.relation(forKey: "author")
+                authorRelation.add(PFUser.current()!)
+                
+                fanpagePF.saveInBackground(block: { (fanpge, error) in
                     
-                    for albumObj  in albumsPF {
+                    if error == nil {
                         
-                        albumObj["referenceId"] = fanpageId
-                       
-                        do {
+                        for albumObj  in albumsPF {
                             
-                            try albumObj.saveInBackground()
-                            
-                        } catch let error {
-                            print(error.localizedDescription)
-                        }
-                    }
-            
-                    let approvals: PFObject = PFObject(className: "Approvals")
-                    
-                    approvals["referenceId"] = fanpageId
-                    approvals["posterId"] = PFUser.current()?.objectId
-                    let familyId = Global.gamvesFamily.objectId
-                    approvals["familyId"] = familyId
-                    approvals["approved"] = 0
-                    approvals["title"] = self.nameTextField.text
-                    approvals["type"] = 2
-                    
-                    approvals.saveInBackground { (resutl, error) in
-                        
-                        if error == nil {
-                            
-                            self.activityIndicatorView?.startAnimating()
-                            
-                            var message = String()
-                            
-                            if let fanpageName = self.nameTextField.text {
-                                message = "The fanpage \(fanpageName) has been created and sent to your parents for appoval. Thanks for submitting!"
+                            albumObj["referenceId"] = fanpageId
+                           
+                            do {
+                                
+                                try albumObj.saveInBackground()
+                                
+                            } catch let error {
+                                print(error.localizedDescription)
                             }
+                        }
+                
+                        let approvals: PFObject = PFObject(className: "Approvals")
+                        
+                        approvals["referenceId"] = fanpageId
+                        approvals["posterId"] = PFUser.current()?.objectId
+                        let familyId = Global.gamvesFamily.objectId
+                        approvals["familyId"] = familyId
+                        approvals["approved"] = 0
+                        approvals["notified"] = false
+                        approvals["title"] = self.nameTextField.text
+                        approvals["type"] = 2
+                        
+                        approvals.saveInBackground { (resutl, error) in
                             
-                            let title = "Fanpage created!"
-                            
-                            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
-                            
-                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                            if error == nil {
                                 
-                                self.navigationController?.popToRootViewController(animated: true)
+                                self.activityIndicatorView?.startAnimating()
                                 
-                            }))
-                            
-                            self.present(alert, animated: true)
-                            
+                                var message = String()
+                                
+                                if let fanpageName = self.nameTextField.text {
+                                    message = "The fanpage \(fanpageName) has been created and sent to your parents for appoval. Thanks for submitting!"
+                                }
+                                
+                                let title = "Fanpage created!"
+                                
+                                let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                                
+                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                                    
+                                    self.navigationController?.popToRootViewController(animated: true)
+                                    
+                                }))
+                                
+                                self.present(alert, animated: true)
+                                
+                            }
                         }
                     }
-                }
-                
-            })
-            
+                    
+                })
+            }
         }
     }
     
