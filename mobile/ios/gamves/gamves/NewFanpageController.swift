@@ -62,7 +62,8 @@ MediaDelegate,
 UICollectionViewDataSource,
 UICollectionViewDelegate,
 UICollectionViewDelegateFlowLayout,
-SelectorProtocol {
+SelectorProtocol,
+ChooseAvatarProtocol {
     
     var activityIndicatorView:NVActivityIndicatorView?
     
@@ -175,7 +176,16 @@ SelectorProtocol {
 
     //-- ICON
     
-    let iconContView: UIView = {
+    var chooseAvatarView:ChooseAvatarView!
+    
+    let imageSeparatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    /*let iconContView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.gamvesBackgoundColor
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -227,7 +237,7 @@ SelectorProtocol {
         //imageView.backgroundColor = UIColor.green
         imageView.layer.cornerRadius = 5
         return imageView
-    }()
+    }()*/
 
     //-- COVER
     
@@ -492,27 +502,32 @@ SelectorProtocol {
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.bottomView, metrics: metricsNew)
         
-        self.imagesView.addSubview(self.iconContView)
+        let avRect = CGRect(x: 0, y: 0, width: 80, height: 80)
+        self.chooseAvatarView = ChooseAvatarView(frame: avRect)
+        self.chooseAvatarView.delegateChooseAvatar = self
+        
+        self.imagesView.addSubview(self.chooseAvatarView)
         self.imagesView.addSubview(self.imageSeparatorView)
         self.imagesView.addSubview(self.coverContView)
-        self.imagesView.addSubview(self.iconButton)
+        
+        //self.imagesView.addSubview(self.iconButton)
         
         self.imagesView.addSubview(self.coverButton) 
         self.imagesView.addSubview(self.backgroundCoverImage)
-        self.imagesView.addSubview(self.backgroundIconImage)
+        //self.imagesView.addSubview(self.backgroundIconImage)
         
-        self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.iconContView)
+        self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.chooseAvatarView)
         self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.imageSeparatorView)
         self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.coverContView)
         
         self.imagesView.addConstraintsWithFormat(
             "H:|[v0(80)][v1(cp)][v2]|", views:
-            self.iconContView,
+            self.chooseAvatarView,
             self.imageSeparatorView,
             self.coverContView,
             metrics: metricsNew)
         
-        self.iconContView.addSubview(self.iconImage)
+        /*self.iconContView.addSubview(self.iconImage)
         self.iconContView.addSubview(self.iconLabel)
       
         self.iconContView.addConstraintsWithFormat("H:|-15-[v0(50)]-15-|", views: self.iconImage)        
@@ -521,7 +536,7 @@ SelectorProtocol {
         self.iconContView.addConstraintsWithFormat(
             "V:|-5-[v0(50)][v1(20)]-5-|", views:
             self.iconImage,
-            self.iconLabel)
+            self.iconLabel)*/
 
         //iconImage.backgroundColor = UIColor.red
         //iconLabel.backgroundColor = UIColor.green                
@@ -582,17 +597,16 @@ SelectorProtocol {
     
     override func viewDidLayoutSubviews() {
 
-        DispatchQueue.main.async {        
+        DispatchQueue.main.async {
             
-            self.iconButton.frame = self.iconContView.bounds
-
+            self.chooseAvatarView.iconButton.frame = self.chooseAvatarView.frame
+            self.chooseAvatarView.backgroundIconImage.frame = self.chooseAvatarView.frame
+            
+            
             var frc: CGRect = self.coverContView.frame
             self.coverButton.frame = frc
             self.backgroundCoverImage.frame = frc
             
-            var fri: CGRect = self.iconContView.frame
-            self.backgroundIconImage.frame = fri
-
             self.imagesLabel.frame = self.collectionView.bounds
 
             self.collRect = self.collectionView.frame
@@ -615,12 +629,16 @@ SelectorProtocol {
         self.nameTextField.text = ""
         self.aboutTextField.text = ""
         
-        self.iconImage.image = nil
-        self.backgroundIconImage.image = nil
+        self.chooseAvatarView.clear()
+        
         self.backgroundCoverImage.image = nil
         
+        self.selectorView.collectionView.deselectAllItems()
+        
         self.imagesArray = [UIImage]()
-        self.collectionView.reloadData()
+        self.chooseAvatarView.clear()
+    
+        
         
     }
     
@@ -767,6 +785,8 @@ SelectorProtocol {
         media.searchSize = SearchSize.imageSmall
         navigationController?.pushViewController(media, animated: true)
     }
+    
+    
   
     func handleIcon() {
         self.touchedButton = TouchedButton.iconImage
@@ -802,12 +822,12 @@ SelectorProtocol {
             //self.iconButton.layer.cornerRadius = 5
             //self.iconButton.imageView?.contentMode = UIViewContentMode.scaleAspectFill
             
-            let size = CGSize(width: self.backgroundIconImage.frame.width, height: self.backgroundIconImage.frame.height)
+            let size = CGSize(width: self.chooseAvatarView.backgroundIconImage.frame.width, height: self.chooseAvatarView.backgroundIconImage.frame.height)
             
-            self.backgroundIconImage.image = self.scaleUIImageToSize(image: image, size: size)
+            self.chooseAvatarView.backgroundIconImage.image = self.scaleUIImageToSize(image: image, size: size)
             
-            self.backgroundIconImage.layer.cornerRadius = 5
-            self.backgroundIconImage.clipsToBounds = true
+            self.chooseAvatarView.backgroundIconImage.layer.cornerRadius = 5
+            self.chooseAvatarView.backgroundIconImage.clipsToBounds = true
             
         } else if self.touchedButton == TouchedButton.coverImage {
 
@@ -1072,7 +1092,7 @@ SelectorProtocol {
             message += "Please provide and about description"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.aboutTextField)
             
-        }  else if self.iconImage == nil
+        }  else if self.chooseAvatarView.iconImage == nil
         {
             errors = true
             message += "Icon image is empty please add a new image"

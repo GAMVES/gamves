@@ -520,6 +520,8 @@ SelectorProtocol {
         The button should be an invisible button above and below the image and the label as same means as the fanpage.
         Copy!
         */
+        
+        
     }
     
     //func dismissKeyboard()

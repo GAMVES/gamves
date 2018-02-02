@@ -329,7 +329,6 @@ class SearchController: UIViewController,
                 
             } else if type == SearchType.isSingleImage {
                 
-                
                 var cells = tableView.dequeueReusableCell(withIdentifier: self.cellImageSearch) as! SearchSingleImageCell
                 
                 if let searchImage = self.searchImages[index] as! SearchImage? {
@@ -363,6 +362,8 @@ class SearchController: UIViewController,
             } else if type == SearchType.isImageGallery {
              
                 var cellg = tableView.dequeueReusableCell(withIdentifier: self.cellGallerySearch) as! SearchGridImageCell
+                
+                print(rowGalleryImages.count)
                 
                 if let gallery = self.rowGalleryImages[index] as! RowGalleryImage? {
                     
@@ -827,7 +828,7 @@ class SearchController: UIViewController,
         Alamofire.request(urlwithPercentEscapes!, method: .get)
             .responseJSON { response in
                 
-                print("Success: \(response.result.isSuccess)")
+                //print("Success: \(response.result.isSuccess)")
                 
                 switch response.result {
                 case .success:
@@ -838,7 +839,7 @@ class SearchController: UIViewController,
                         var i = 0
                         var countItems = items.count
                         
-                        print(countItems)
+                        //print(countItems)
                         
                         var countr = 0
                         
@@ -852,15 +853,15 @@ class SearchController: UIViewController,
                             
                             if let imageDict = item["image"].dictionary {
                                 
-                                print(imageDict)
+                                //print(imageDict)
                                 
                                 image.thumbnailLink = imageDict["thumbnailLink"]?.stringValue as! String
                                 
-                                print(image.link)
+                                //print(image.link)
                                 
                                 let thUrl = URL(string: image.link)!
                                 let sessionCover = URLSession(configuration: .default)
-                                print(thUrl)
+                                //print(thUrl)
                                 
                                 let downloadCover = sessionCover.dataTask(with: thUrl) {
                                     (data, response, error) in
@@ -875,10 +876,6 @@ class SearchController: UIViewController,
                                     }
                                     
                                     if error == nil {
-                                        
-                                        if data == nil {
-                                            print(thUrl)
-                                        }
                                         
                                         image.image = UIImage(data:data)!
                                         

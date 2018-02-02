@@ -531,7 +531,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         
         var showOptions = Bool()
         
-        if type == MediaType.selectVideo {
+        if self.type == MediaType.selectVideo {
         
             if isLocalVideo {
                 
@@ -544,7 +544,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
                 showOptions = true
             }
             
-        } else if type == MediaType.selectImage {
+        } else if self.type == MediaType.selectImage {
             
             if !self.isLocalImage {
         
@@ -897,6 +897,7 @@ private extension MediaController {
                 
                 let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
+                    print(self.searchType)
                     self.searchController.type = self.searchType
                     self.searchController.searchSize = self.searchSize
                     self.searchController.termToSearch = self.termToSearch
