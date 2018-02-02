@@ -154,6 +154,7 @@ class ChatFeedMethods: NSObject
                 
                 let videosQuery = PFQuery(className:"Videos")
                 videosQuery.whereKey("videoId", equalTo: videoId)
+                videosQuery.whereKey("approved", equalTo: true)
                 videosQuery.findObjectsInBackground(block: { (videos, error) in
                     
                     if error != nil

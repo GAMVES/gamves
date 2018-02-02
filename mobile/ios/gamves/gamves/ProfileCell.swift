@@ -735,7 +735,9 @@ class ProfileCell: BaseCell,
             print(userId)
             
             queryvideos.whereKey("posterId", equalTo: userId)    
-        }        
+        }
+        
+        queryvideos.whereKey("approved", equalTo: true)
 
         queryvideos.findObjectsInBackground(block: { (videoObjects, error) in
             
