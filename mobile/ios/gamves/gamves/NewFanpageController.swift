@@ -61,7 +61,8 @@ SearchProtocol,
 MediaDelegate,
 UICollectionViewDataSource,
 UICollectionViewDelegate,
-UICollectionViewDelegateFlowLayout {
+UICollectionViewDelegateFlowLayout,
+SelectorProtocol {
     
     var activityIndicatorView:NVActivityIndicatorView?
     
@@ -107,12 +108,14 @@ UICollectionViewDelegateFlowLayout {
         return view
     }()
     
-    var categoryDownPicker: DownPicker!
+    var selectorView:SelectorView!
+    
+    /*var categoryDownPicker: DownPicker!
     let categoryTypeTextField: PaddedTextField = {
         let tf = PaddedTextField()
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
-    }()
+    }()*/
     
     let categorySeparatorView: UIView = {
         let view = UIView()
@@ -399,7 +402,7 @@ UICollectionViewDelegateFlowLayout {
 
         //-- categoriesContainerView
         
-        self.categoryTypeTextField.addTarget(self, action: #selector(self.categoryFieldDidChange(_:)), for: .editingChanged)
+        //self.categoryTypeTextField.addTarget(self, action: #selector(self.categoryFieldDidChange(_:)), for: .editingChanged)
 
         self.view.addSubview(self.scrollView)
 		self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView) 
@@ -427,7 +430,7 @@ UICollectionViewDelegateFlowLayout {
         self.scrollView.addSubview(self.bottomView)
         
         self.scrollView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(40)][v2(cp)][v3(120)][v4(cp)][v5(80)][v6(cp)][v7(100)][v8(cp)][v9(60)][v10]|", views:
+            "V:|[v0(40)][v1(150)][v2(cp)][v3(120)][v4(cp)][v5(80)][v6(cp)][v7(100)][v8(cp)][v9(60)][v10]|", views:
             self.welcome,
             self.categoriesContainerView,
             self.categorySeparatorView,
@@ -443,12 +446,17 @@ UICollectionViewDelegateFlowLayout {
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.welcome, metrics: metricsNew)
         
-        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.categoriesContainerView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.categoriesContainerView, metrics: 
+            metricsNew)
         
-        self.categoriesContainerView.addSubview(self.categoryTypeTextField)
+        let selectorWidth = cwidth - 20
+        let selRect = CGRect(x: 0, y: 0, width: cwidth, height: 150)
+        self.selectorView = SelectorView(frame: selRect)
+        self.selectorView.delegateSelector = self
         
-        self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.categoryTypeTextField)
-        self.categoriesContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.categoryTypeTextField)
+        self.categoriesContainerView.addSubview(self.selectorView)
+        self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.selectorView)
+        self.categoriesContainerView.addConstraintsWithFormat("V:|[v0(150)]|", views: self.selectorView)
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.categorySeparatorView, metrics: metricsNew)
         
@@ -470,7 +478,7 @@ UICollectionViewDelegateFlowLayout {
             metrics: metricsNew)
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.imagesView, metrics: metricsNew)
-        
+
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.imagesViewSeparatorView, metrics: metricsNew)
         
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.aboutSeparatorView, metrics: metricsNew)
@@ -553,15 +561,15 @@ UICollectionViewDelegateFlowLayout {
             let cat = Global.categories_gamves[i]?.name as! String
             categories.append(cat)
         }
-        self.categoryDownPicker = DownPicker(textField: categoryTypeTextField, withData:categories as! [Any])
+        
+        /*self.categoryDownPicker = DownPicker(textField: categoryTypeTextField, withData:categories as! [Any])
         self.categoryDownPicker.setPlaceholder("Tap to choose category...")
-
-        self.categoryDownPicker.addTarget(self, action: #selector(selectedCategory), for: UIControlEvents.valueChanged )
+        self.categoryDownPicker.addTarget(self, action: #selector(selectedCategory), for: UIControlEvents.valueChanged )*/
 
 		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
         //Looks for single or multiple taps.
-        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        //self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
         self.collectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
     
@@ -587,10 +595,18 @@ UICollectionViewDelegateFlowLayout {
             self.imagesLabel.frame = self.collectionView.bounds
 
             self.collRect = self.collectionView.frame
-            
         }
         
     }
+    
+    func categorySelected(category : CategoryGamves){
+        print(category.name)
+        self.category = category
+        self.nameTextField.becomeFirstResponder()
+    }
+    
+    func fanpageSelected(category : FanpageGamves){} //NA
+    
     
     func backButtonPressed(sender: UIBarButtonItem) {
         //self.delegateFeed.uploadData()
@@ -608,7 +624,7 @@ UICollectionViewDelegateFlowLayout {
     }    
    
     
-    func selectedCategory(picker: DownPicker)
+    /*func selectedCategory(picker: DownPicker)
     {
         print("changed")
         
@@ -634,7 +650,7 @@ UICollectionViewDelegateFlowLayout {
         
         self.queryFanpageOrder()
     
-    }
+    }*/
     
     var thumbnailImage      = UIImage()
     var thumbnail_url       = String()
@@ -846,6 +862,7 @@ UICollectionViewDelegateFlowLayout {
         }
         self.imagesLabel.isHidden = true
         self.collectionView.reloadData()
+        
     }
     
     
@@ -1048,13 +1065,15 @@ UICollectionViewDelegateFlowLayout {
         let title = "Error"
         var message = ""
         
-        if (self.categoryTypeTextField.text?.isEmpty)!
+        /*if (self.categoryTypeTextField.text?.isEmpty)!
         {
             errors = true
             message += "Catgory is empty"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.categoryTypeTextField)
     
-        } else if (self.nameTextField.text?.isEmpty)!
+        } else */
+ 
+        if (self.nameTextField.text?.isEmpty)!
         {
             errors = true
             message += "Fanpage name cannot be empty"

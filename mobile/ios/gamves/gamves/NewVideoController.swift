@@ -873,7 +873,6 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             //let like_count      = json["like_count"] as! Int
         
             self.thumbnail_url    = (json["thumbnail"] as? String)!
-            
             videoPF["ytb_source"]   =  self.video_url
             videoPF["ytb_thumbnail_source"] = self.thumbnail_url
             videoPF["ytb_videoId"]  = self.videoId
@@ -884,7 +883,6 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             videoPF["ytb_duration"]     = duration
             videoPF["ytb_categories"]   = categoriesArray
             //videoPF["ytb_like_count"]   = like_count
-            
             videoPF["source_type"] = 2
             
         }
@@ -901,6 +899,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
                 let familyId = Global.gamvesFamily.objectId
                 approvals["familyId"] = familyId
                 approvals["approved"] = 0
+                approvals["notified"] = false
                 approvals["title"] = self.videoTitle
                 approvals["type"] = 1
                 

@@ -82,6 +82,8 @@
 		82E1AC2B1FF6B5AA00209AEF /* SearchGridImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E1AC2A1FF6B5AA00209AEF /* SearchGridImageCell.swift */; };
 		82E372291FAFD5CF000AD7EB /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E372281FAFD5CF000AD7EB /* Classes.swift */; };
 		82E66DB91FD4B51000968E88 /* NewVideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E66DB81FD4B51000968E88 /* NewVideoController.swift */; };
+		82FFF52A2022CF6E005F45AA /* SelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FFF5292022CF6E005F45AA /* SelectorView.swift */; };
+		82FFF52F2022D795005F45AA /* CatFanSelectorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FFF52E2022D795005F45AA /* CatFanSelectorViewCell.swift */; };
 		AA17A4B5A7E45A0EC31B12C3 /* Pods_gamves.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C5EB34FC19283B9FAC429A7 /* Pods_gamves.framework */; };
 		C7027A1D1D262CE1007AA9BF /* ApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7027A1C1D262CE1007AA9BF /* ApiService.swift */; };
 		C7027A691D296DE4007AA9BF /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7027A681D296DE4007AA9BF /* FeedCell.swift */; };
@@ -175,6 +177,8 @@
 		82E1AC2A1FF6B5AA00209AEF /* SearchGridImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchGridImageCell.swift; sourceTree = "<group>"; };
 		82E372281FAFD5CF000AD7EB /* Classes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
 		82E66DB81FD4B51000968E88 /* NewVideoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewVideoController.swift; sourceTree = "<group>"; };
+		82FFF5292022CF6E005F45AA /* SelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorView.swift; sourceTree = "<group>"; };
+		82FFF52E2022D795005F45AA /* CatFanSelectorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFanSelectorViewCell.swift; sourceTree = "<group>"; };
 		9C5EB34FC19283B9FAC429A7 /* Pods_gamves.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gamves.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7027A1C1D262CE1007AA9BF /* ApiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiService.swift; sourceTree = "<group>"; };
 		C7027A681D296DE4007AA9BF /* FeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
@@ -376,6 +380,23 @@
 			name = search;
 			sourceTree = "<group>";
 		};
+		82FFF5282022CF12005F45AA /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				82FFF52B2022D350005F45AA /* cells */,
+				82FFF5292022CF6E005F45AA /* SelectorView.swift */,
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
+		82FFF52B2022D350005F45AA /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				82FFF52E2022D795005F45AA /* CatFanSelectorViewCell.swift */,
+			);
+			name = cells;
+			sourceTree = "<group>";
+		};
 		9DEB3289D81DABFA5FB5E9EB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -469,6 +490,7 @@
 		C77B55531D02346C00FF375C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				82FFF5282022CF12005F45AA /* Components */,
 				82E1AC291FF688C800209AEF /* search */,
 				82E1AC231FF422D400209AEF /* NewFanpageController.swift */,
 				825C6CA41FDA4CC1005A762F /* capture */,
@@ -690,6 +712,7 @@
 				C7E095CF1D15C0020081F88C /* SettingCell.swift in Sources */,
 				82E66DB91FD4B51000968E88 /* NewVideoController.swift in Sources */,
 				82BAAF2E1EFE453E0021C405 /* Globals.swift in Sources */,
+				82FFF52A2022CF6E005F45AA /* SelectorView.swift in Sources */,
 				82477BB620090DD000A45922 /* ChatView.swift in Sources */,
 				825C30761FA4FD0900A018FE /* Feeds.swift in Sources */,
 				C77B55521D02345100FF375C /* VideoCell.swift in Sources */,
@@ -721,6 +744,7 @@
 				82970BA41F1DBFF000F6ABAD /* VideoPage.swift in Sources */,
 				82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */,
 				82BD5EFF1F93AC9600BD8760 /* ContactCell.swift in Sources */,
+				82FFF52F2022D795005F45AA /* CatFanSelectorViewCell.swift in Sources */,
 				824E67C41F58D5D00025096D /* FanpageCollectionViewCell.swift in Sources */,
 				82418F361EF853E400D7E6BC /* HomeCell.swift in Sources */,
 				82C6F7581F8AA8F50090C725 /* ImageView+Extensions.swift in Sources */,

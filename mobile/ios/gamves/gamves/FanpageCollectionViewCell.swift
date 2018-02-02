@@ -10,7 +10,6 @@ import UIKit
 
 class FanpageCollectionViewCell: BaseCell {
     
-       
     let thumbnailImageView: CustomImageView = {
         let imageView = CustomImageView()
         //imageView.image = UIImage(named: "taylor_swift_blank_space")
@@ -82,11 +81,11 @@ class FanpageCollectionViewCell: BaseCell {
         addSubview(detailView)
         addSubview(separatorView)
         
-        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: thumbnailImageView)
-        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: detailView)
-        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: separatorView)
+        addConstraintsWithFormat("H:|-10-[v0]-10-|", views: thumbnailImageView)
+        addConstraintsWithFormat("H:|-10-[v0]-10-|", views: detailView)
+        addConstraintsWithFormat("H:|-10-[v0]-10-|", views: separatorView)
         
-        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(44)]-8-[v2(1)]|", views: thumbnailImageView, detailView, separatorView)
+        addConstraintsWithFormat("V:|-10-[v0]-5-[v1(44)]-5-[v2(1)]|", views: thumbnailImageView, detailView, separatorView)
         
         detailView.addSubview(userProfileImageView)
         detailView.addSubview(titleLabel)

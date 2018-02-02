@@ -207,18 +207,24 @@ class SearchController: UIViewController,
             
             self.searchController.isActive = true
             
-            //self.searchController.searchBar.becomeFirstResponder()
-            
             self.searchController.searchBar.text = self.termToSearch
 
-            var single = Bool()
-            if self.type == SearchType.isSingleImage {
-                single = true
-            }
+            if self.type == SearchType.isImageGallery ||  self.type == SearchType.isSingleImage {
             
-            self.lastTerm = self.termToSearch
+                var single = Bool()
+                if self.type == SearchType.isSingleImage {
+                    single = true
+                }
+                
+                self.lastTerm = self.termToSearch
 
-            self.findImagesFromSuggestion(suggestion: self.termToSearch, isSingle: single) 
+                self.findImagesFromSuggestion(suggestion: self.termToSearch, isSingle: single)
+                
+            } else if self.type == SearchType.isVideo {
+                
+                self.findVideoFromSuggestion(suggestion:  self.termToSearch)
+                
+            }
             
         }
     }
@@ -805,14 +811,14 @@ class SearchController: UIViewController,
         var size = String()
         
         if self.searchSize == SearchSize.imageLarge {
-            size = "imgSize=large"
+            size = "imgSize=large&"
         } else if self.searchSize == SearchSize.imageSmall {
             size = ""
         } else if self.searchSize == SearchSize.noSize {
             size = ""
         }
         
-        var urlString:String = "https://www.googleapis.com/customsearch/v1?key=\(Global.api_key)&cx=\(Global.search_engine)&q=\(suggestion)&searchType=image&\(size)&start=\(self.start)&end=\(self.end)&alt=json"
+        var urlString:String = "https://www.googleapis.com/customsearch/v1?key=\(Global.api_key)&cx=\(Global.search_engine)&q=\(suggestion)&searchType=image&\(size)start=\(self.start)&end=\(self.end)&alt=json"
         
         print(urlString)
         
@@ -870,10 +876,13 @@ class SearchController: UIViewController,
                                     
                                     if error == nil {
                                         
+                                        if data == nil {
+                                            print(thUrl)
+                                        }
+                                        
                                         image.image = UIImage(data:data)!
                                         
                                         if !isSingle {
-                                        
                                             
                                             countr = countr + 1
                                             
