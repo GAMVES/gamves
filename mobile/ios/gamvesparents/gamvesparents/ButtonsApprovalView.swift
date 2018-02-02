@@ -75,6 +75,8 @@ class ButtonsApprovalView: UIView {
         
         self.delegate = delegate
         
+        self.referenceId = referenceId!
+        
         if (obj is VideoApprovalPlayerView) {
             
             self.approvalType = ApprovalType.TypeVideo
@@ -87,7 +89,7 @@ class ButtonsApprovalView: UIView {
                 self.rejectButton.setTitle("REJECT VIDEO", for: UIControlState())
                
                 self.playerView = videoApprovalPlayerView
-                self.referenceId = videoApprovalPlayerView.videoId
+                //self.referenceId = videoApprovalPlayerView.videoId
             }
             
         } else if (obj is FanpageApprovalView) {
@@ -102,7 +104,7 @@ class ButtonsApprovalView: UIView {
                 self.rejectButton.setTitle("REJECT FANPAGE", for: UIControlState())
                 
                 self.fanpageView = fanpageApprovalView
-                self.referenceId = fanpageApprovalView.fanpageId
+                //self.referenceId = fanpageApprovalView.fanpageId
             }
             
         }
@@ -182,6 +184,25 @@ class ButtonsApprovalView: UIView {
                     
                     if self.approvalType == ApprovalType.TypeVideo { //Update Video Approval
                         
+                        let queryApprovals = PFQuery(className: "Videos")
+                        queryApprovals.whereKey("videoId", equalTo: referenceId)
+                        queryApprovals.getFirstObjectInBackground { (video, error) in
+                            
+                            if error != nil
+                            {
+                                print("error")
+                                
+                            } else {
+                                
+                                video!["approved"] = true
+                                
+                                video?.saveEventually()
+                                
+                                self.delegate.closedRefresh()
+                                self.closeApprovalWindow()
+                                
+                            }
+                        }
                         
                         
                     } else if self.approvalType == ApprovalType.TypeFanpage {

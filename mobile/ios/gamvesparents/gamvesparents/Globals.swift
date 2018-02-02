@@ -811,12 +811,13 @@ class Global: NSObject
                             if type == 1 {
                             
                                 let queryVideo = PFQuery(className:"Videos")
-                                queryVideo.whereKey("referenceId", equalTo: approval.referenceId)
+                                print(approval.referenceId)
+                                queryVideo.whereKey("videoId", equalTo: approval.referenceId)
                                 queryVideo.getFirstObjectInBackground(block: { (videoObject, error) in
                                     
                                     if error != nil
                                     {
-                                        print("error")
+                                        print("error: \(error)")
                                         
                                     } else {
                                         
