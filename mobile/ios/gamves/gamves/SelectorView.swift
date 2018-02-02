@@ -10,7 +10,13 @@ import UIKit
 
 protocol SelectorProtocol {
     func categorySelected(category : CategoryGamves)
-    func fanpageSelected(category : FanpageGamves)
+    func fanpageSelected(fanpage : FanpageGamves)
+    func reoadFanpageCollection()
+}
+
+enum SelectorType {
+    case TypeCategory
+    case TypeFanpage
 }
 
 class SelectorView: BaseCell,
@@ -18,6 +24,8 @@ class SelectorView: BaseCell,
     UICollectionViewDelegate,
     UICollectionViewDelegateFlowLayout
 {
+    
+    var gamvesFanpage = [FanpageGamves]()
     
     var delegateSelector:SelectorProtocol!
     
@@ -36,7 +44,6 @@ class SelectorView: BaseCell,
         cv.layer.cornerRadius = 5
         cv.dataSource = self
         cv.delegate = self
-        //cv.isMultipleTouchEnabled = false
         cv.backgroundColor = UIColor.gambesDarkColor
         return cv
     }()
@@ -44,6 +51,8 @@ class SelectorView: BaseCell,
     let catFanSelectorId = "catFanSelectorId"
     
     var selectedIndePath = IndexPath()
+    
+    var selectorType:SelectorType!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -68,10 +77,16 @@ class SelectorView: BaseCell,
 
         self.collectionView.register(CatFanSelectorViewCell.self, forCellWithReuseIdentifier: self.catFanSelectorId)
         
-        //DispatchQueue.main.async {
-        //    self.collectionView.reloadData()
-        //}
-        
+    }
+    
+    func setSelectorType(type:SelectorType) {
+        self.selectorType = type
+    }
+    
+    func loadFanpage(categoryId:Int) {
+        self.gamvesFanpage = (Global.categories_gamves[categoryId]?.fanpages)!
+        self.collectionView.reloadData()
+        self.delegateSelector.reoadFanpageCollection()
     }
     
     
@@ -80,8 +95,22 @@ class SelectorView: BaseCell,
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let countCats = Global.categories_gamves.count
-        return countCats
+        
+        var count = Int()
+        
+        if self.selectorType == SelectorType.TypeCategory {
+        
+           count = Global.categories_gamves.count
+        
+        } else if self.selectorType == SelectorType.TypeFanpage {
+            
+           count = self.gamvesFanpage.count
+            
+        }
+        
+        print(count)
+        
+        return count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -90,12 +119,23 @@ class SelectorView: BaseCell,
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+       
         var cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.catFanSelectorId, for: indexPath) as! CatFanSelectorViewCell
         
         let index = indexPath.item
-        let category = Global.categories_gamves[index]
-        cell.avatarImage.image = category?.thum_image
-        cell.nameLabel.text = category?.name
+        
+        if self.selectorType == SelectorType.TypeCategory {
+            
+            let category = Global.categories_gamves[index]
+            cell.avatarImage.image = category?.thum_image
+            cell.nameLabel.text = category?.name
+            
+        } else if self.selectorType == SelectorType.TypeFanpage {
+            
+            let fanpage = self.gamvesFanpage[indexPath.row]
+            cell.avatarImage.image = fanpage.icon_image
+            cell.nameLabel.text = fanpage.name
+        }
         
         return cell
     }
@@ -111,10 +151,17 @@ class SelectorView: BaseCell,
         cell.avatarImage.backgroundColor = UIColor.black
         cell.separatorView.backgroundColor = UIColor.black
         
-        let category = Global.categories_gamves[indexPath.item]
+        if self.selectorType == SelectorType.TypeCategory {
         
-        delegateSelector.categorySelected(category: category!)
-        
+            let category = Global.categories_gamves[indexPath.item]
+            delegateSelector.categorySelected(category: category!)
+            
+        } else if self.selectorType == SelectorType.TypeFanpage {
+            
+            let fanpage = gamvesFanpage[indexPath.item]
+            delegateSelector.fanpageSelected(fanpage: fanpage)
+            
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -140,6 +187,14 @@ class SelectorView: BaseCell,
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension UICollectionView {
+    func deselectAllItems(animated: Bool = false) {
+        for indexPath in self.indexPathsForSelectedItems ?? [] {
+            self.deselectItem(at: indexPath, animated: animated)
+        }
     }
 }
 

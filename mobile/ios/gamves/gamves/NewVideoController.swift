@@ -18,7 +18,10 @@ import MobileCoreServices
 import AWSS3
 import AWSCore
 
-class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
+class NewVideoController: UIViewController,
+SearchProtocol,
+MediaDelegate,
+SelectorProtocol {
     
     var type: UploadType!
     
@@ -26,9 +29,8 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
     
     var category = CategoryGamves()
     var fanpage = FanpageGamves()
-    
     var current : AnyObject?
-
+    
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
@@ -51,18 +53,10 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
 
     let categoriesContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 5
         view.layer.masksToBounds = true
         return view
-    }()
-
-    var categoryDownPicker: DownPicker!
-    let categoryTypeTextField: UITextField = {
-        let tf = UITextField()        
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        return tf
     }()
 
     let categoryTypeSeparatorView: UIView = {
@@ -70,21 +64,25 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()  
-
-    var fanpageDownPicker: DownPicker!
-    let fanpageTextField: UITextField = {
-        let tf = UITextField()        
-        tf.translatesAutoresizingMaskIntoConstraints = false        
-        return tf
     }()
-
+    
+    var selectorCategoryView:SelectorView!
+    
     let categorySeparatorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+
+    /*var fanpageDownPicker: DownPicker!
+    let fanpageTextField: UITextField = {
+        let tf = UITextField()        
+        tf.translatesAutoresizingMaskIntoConstraints = false        
+        return tf
+    }()*/
+
+    var selectorFanpageView:SelectorView!
 
     //-- VIDEO
 
@@ -302,7 +300,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         
         //-- categoriesContainerView
         
-        self.categoryTypeTextField.addTarget(self, action: #selector(self.categoryFieldDidChange(_:)), for: .editingChanged)
+        //self.categoryTypeTextField.addTarget(self, action: #selector(self.categoryFieldDidChange(_:)), for: .editingChanged)
 
 		self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView) 
 		self.view.addConstraintsWithFormat("V:|[v0]|", views: self.scrollView)
@@ -345,7 +343,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         }
 
         self.scrollView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(82)][v2(cp)][v3(60)][v4(cy)][v5(yt)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|", views:
+            "V:|[v0(40)][v1(320)][v2(cp)][v3(60)][v4(cy)][v5(yt)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|", views:
             self.welcome,
             self.categoriesContainerView,
             self.categorySeparatorView,            
@@ -370,33 +368,32 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.saveButton, metrics: metricsNew)
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.bottomView, metrics: metricsNew)
         
-	   //-- categoriesContainerView
-
-        self.categoryTypeTextField.addTarget(self, action: #selector(self.categoryFieldDidChange(_:)), for: .editingChanged)
-
-		self.categoriesContainerView.addSubview(self.categoryTypeTextField)
+	    //-- categoriesContainerView
+        
+        let selectorWidth = cwidth - 20
+        let selRect = CGRect(x: 0, y: 0, width: cwidth, height: 150)
+        
+        self.selectorCategoryView = SelectorView(frame: selRect)
+        self.selectorCategoryView.setSelectorType(type: SelectorType.TypeCategory)
+        self.selectorCategoryView.delegateSelector = self
+        
+        self.categoriesContainerView.addSubview(self.selectorCategoryView)
+        self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.selectorCategoryView)
+        
         self.categoriesContainerView.addSubview(self.categoryTypeSeparatorView)
-        self.categoriesContainerView.addSubview(self.fanpageTextField)
-    
-        self.categoriesContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.categoryTypeTextField)
-        self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.categoryTypeSeparatorView)        
-        self.categoriesContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.fanpageTextField)
+        
+        self.selectorFanpageView = SelectorView(frame: selRect)
+        self.selectorFanpageView.delegateSelector = self
+        self.selectorFanpageView.setSelectorType(type: SelectorType.TypeFanpage)
+        self.categoriesContainerView.addSubview(self.selectorFanpageView)
+        self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.selectorFanpageView)
         
         self.categoriesContainerView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(2)][v2(40)]|",
-            views: 
-            self.categoryTypeTextField, 
-            self.categoryTypeSeparatorView, 
-            self.fanpageTextField)
-
-        //self.categoryTypeTextField.becomeFirstResponder()
-
-        /*var catArray = [String]()
-        let ids = Array(Global.categories_gamves.keys)
-        for i in ids {
-            catArray.append((Global.categories_gamves[i]?.name)!)
-        }
-        let categories: NSMutableArray = catArray as! NSMutableArray*/
+            "V:|[v0(150)][v1(20)][v2(150)]|",
+            views:
+            self.selectorCategoryView,
+            self.categoryTypeSeparatorView,
+            self.selectorFanpageView)
         
         let ids = Array(Global.categories_gamves.keys)
         var categories = [String]()
@@ -404,16 +401,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             let cat = Global.categories_gamves[i]?.name as! String
             categories.append(cat)
         }
-        
-        self.categoryDownPicker = DownPicker(textField: categoryTypeTextField, withData:categories as! [Any])
-        self.categoryDownPicker.setPlaceholder("Tap to choose category...")
-
-        self.categoryDownPicker.addTarget(self, action: #selector(selectedCategory), for: UIControlEvents.valueChanged )
-
-        self.fanpageDownPicker = DownPicker(textField: fanpageTextField)
-
-        self.fanpageDownPicker.isEnabled = false
-        
+    
 		//-- youtubeVideoRowView youtube
 
 		self.youtubeVideoRowView.addSubview(self.youtubeUrlTextField)
@@ -442,8 +430,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
 
 		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.thumbnailConteinerView)		
 		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.thumbnailSeparatorView)	
-		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.titleDescContainerView)			
-
+		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.titleDescContainerView)
 		self.previewVideoRowView.addConstraintsWithFormat("H:|[v0(120)][v1(2)][v2]|", views: 
 			self.thumbnailConteinerView,
 			self.thumbnailSeparatorView,
@@ -469,7 +456,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
 		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
         //Looks for single or multiple taps.
-        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        //self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
         if isYoutubeHidden {
         
@@ -483,58 +470,70 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         
     }
     
-    func backButtonPressed(sender: UIBarButtonItem)
-    {
+    func categorySelected(category: CategoryGamves) {
+        
+        var id = Int()
+        let ids = Array(Global.categories_gamves.keys)
+        var categories = [String]()
+        for i in ids {
+            let cat = Global.categories_gamves[i]?.name as! String
+            if category.name == cat {
+                id = i
+            }
+        }
+        self.category = category
+        self.selectorFanpageView.loadFanpage(categoryId: id)
+        
+    }
+    
+    func fanpageSelected(fanpage: FanpageGamves) {
+        
+        self.fanpage = fanpage
+        
+        self.videoButton.isEnabled = true
+        self.cameraButton.isEnabled = true
+        self.titleTextField.isEnabled = true
+        self.descriptionTextView.isEditable = true
+
+    }
+    
+    func reoadFanpageCollection() {
+        self.selectorFanpageView.collectionView.reloadData()
+    }
+    
+    func backButtonPressed(sender: UIBarButtonItem) {
         self.navigationController?.popToRootViewController(animated: true)
     }
     
-    func dismissKeyboard()
-    {
-        self.view.endEditing(true)
+    func clearAll() {
+        
+        self.selectorCategoryView.collectionView.deselectAllItems()
+        self.selectorFanpageView.collectionView.deselectAllItems()
+        
+        self.videoButton.isEnabled = false
+        self.saveButton.isEnabled = false
+        
+        self.titleTextField.text = ""
+        self.descriptionTextView.text = ""
+        
+        /* Missing here.
+        The button should be an invisible button above and below the image and the label as same means as the fanpage.
+        Copy!
+        */
     }
+    
+    //func dismissKeyboard()
+    //{
+    //    self.view.endEditing(true)
+    //}
     
     override func viewWillLayoutSubviews() {
         
         self.scrollView.contentSize.width = self.view.frame.width
+        
     }    
-   
-    
-    func selectedCategory(picker: DownPicker)
-    {
-        print("changed")
-        
-        self.fanpageDownPicker.isEnabled = true
-        
-        let value = picker.getTextField().text
-        let fanpage = FanpageGamves()
-        
-        let ids = Array(Global.categories_gamves.keys)
-        
-        for i in ids {
-            let cat = Global.categories_gamves[i]
-            if cat?.name == value
-            {
-                self.category = cat!
-            }
-        }
-        
-        var fanArray = [String]()
-        for fan in self.category.fanpages
-        {
-            fanArray.append(fan.name)
-        }
-        let fanpages = fanArray //as! NSMutableArray
-        self.fanpageDownPicker.setData(fanpages as! [Any])
-        self.fanpageDownPicker.setPlaceholder("Tap to choose fanpage...")
 
-        self.fanpageDownPicker.addTarget(self, action: #selector(selectedFanpage), for: UIControlEvents.valueChanged )
-
-        self.fanpageDownPicker.becomeFirstResponder()        
-                
-    }
-
-    func selectedFanpage(picker: DownPicker)
-    {
+    /*func selectedFanpage(picker: DownPicker) {
 
         let value = picker.getTextField().text
         print(value)
@@ -553,9 +552,7 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         self.cameraButton.isEnabled = true
         self.titleTextField.isEnabled = true
         self.descriptionTextView.isEditable = true
-        
-    }
-
+    }*/
     
     var thumbnailImage      = UIImage()
     var thumbnail_url       = String()
@@ -677,14 +674,16 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         let media = MediaController()
         media.delegate = self
         media.delegateSearch = self
-        media.termToSearch = fanpageTextField.text!
+        //media.termToSearch = fanpageTextField.text!
+        media.termToSearch = self.fanpage.name
         media.setType(type: MediaType.selectVideo)
         navigationController?.pushViewController(media, animated: true)
     }
 
 	func handleSearch() {
         self.type = UploadType.youtube
-        searchController.termToSearch = fanpageTextField.text!
+        //searchController.termToSearch = fanpageTextField.text!
+        searchController.termToSearch = self.fanpage.name
         searchController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
@@ -696,7 +695,8 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
         let media = MediaController()
         media.delegate = self
         media.delegateSearch = self
-        media.termToSearch = fanpageTextField.text!
+        //media.termToSearch = fanpageTextField.text!
+        media.termToSearch = self.fanpage.name
         media.setType(type: MediaType.selectImage)
         navigationController?.pushViewController(media, animated: true)
     }
@@ -996,7 +996,8 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             message += "Please choose a video"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
             
-        } else if (self.categoryTypeTextField.text?.isEmpty)!
+        }
+        /*else if (self.categoryTypeTextField.text?.isEmpty)!
         {
             errors = true
             message += "Catgory is empty"
@@ -1008,7 +1009,9 @@ class NewVideoController: UIViewController, SearchProtocol, MediaDelegate {
             message += "Fanpage is empty"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.fanpageTextField)
             
-        } else if (self.titleTextField.text?.characters.count)! < 1
+        }*/
+ 
+        else if (self.titleTextField.text?.characters.count)! < 1
         {
             errors = true
             message += "The title of the video is empty"

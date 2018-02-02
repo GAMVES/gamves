@@ -78,6 +78,8 @@ SelectorProtocol {
     
     var touchedButton : TouchedButton!
     
+    var selectorView:SelectorView!
+    
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
@@ -107,8 +109,6 @@ SelectorProtocol {
         //view.backgroundColor = UIColor.white
         return view
     }()
-    
-    var selectorView:SelectorView!
     
     /*var categoryDownPicker: DownPicker!
     let categoryTypeTextField: PaddedTextField = {
@@ -452,6 +452,7 @@ SelectorProtocol {
         let selectorWidth = cwidth - 20
         let selRect = CGRect(x: 0, y: 0, width: cwidth, height: 150)
         self.selectorView = SelectorView(frame: selRect)
+        self.selectorView.setSelectorType(type: SelectorType.TypeCategory)
         self.selectorView.delegateSelector = self
         
         self.categoriesContainerView.addSubview(self.selectorView)
@@ -605,8 +606,23 @@ SelectorProtocol {
         self.nameTextField.becomeFirstResponder()
     }
     
-    func fanpageSelected(category : FanpageGamves){} //NA
+    func fanpageSelected(fanpage : FanpageGamves){} //NA
     
+    func reoadFanpageCollection() {}
+    
+    func clearAll() {
+        
+        self.nameTextField.text = ""
+        self.aboutTextField.text = ""
+        
+        self.iconImage.image = nil
+        self.backgroundIconImage.image = nil
+        self.backgroundCoverImage.image = nil
+        
+        self.imagesArray = [UIImage]()
+        self.collectionView.reloadData()
+        
+    }
     
     func backButtonPressed(sender: UIBarButtonItem) {
         //self.delegateFeed.uploadData()
@@ -623,35 +639,6 @@ SelectorProtocol {
         self.scrollView.contentSize.width = self.view.frame.width
     }    
    
-    
-    /*func selectedCategory(picker: DownPicker)
-    {
-        print("changed")
-        
-        let value = picker.getTextField().text
-        let fanpage = FanpageGamves()
-        
-        let ids = Array(Global.categories_gamves.keys)
-        
-        for i in ids {
-            let cat = Global.categories_gamves[i]
-            if cat?.name == value
-            {
-                self.category = cat!
-            }
-        }
-        
-        var fanArray = [String]()
-        for fan in self.category.fanpages
-        {
-            fanArray.append(fan.name)
-        }
-        let fanpages = fanArray //as! NSMutableArray
-        
-        self.queryFanpageOrder()
-    
-    }*/
-    
     var thumbnailImage      = UIImage()
     var thumbnail_url       = String()
     var author_name         = String()
@@ -1019,6 +1006,7 @@ SelectorProtocol {
                                 
                                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
                                     
+                                    self.clearAll()
                                     self.navigationController?.popToRootViewController(animated: true)
                                     
                                 }))
@@ -1028,7 +1016,6 @@ SelectorProtocol {
                             }
                         }
                     }
-                    
                 })
             }
         }
