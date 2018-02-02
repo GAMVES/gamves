@@ -728,12 +728,8 @@ class ProfileViewController: UIViewController,
             self.familyPhotoImageView, 
             metrics: metricsProfile)
 
-        //self.photosContainerView.addConstraintsWithFormat(
-        //    "H:|-photoSize-[v0(photoSize)]-photoSize-|", views: 
-        //    self.sonPhotoImageView, metrics: metricsProfile)
-
         self.sonPhotoImageView.isHidden    = false
-        self.familyPhotoImageView.isHidden    = false
+        self.familyPhotoImageView.isHidden = false
 
         self.yourPhotoImageView.isHidden    = true
         self.spousePhotoImageView.isHidden  = true

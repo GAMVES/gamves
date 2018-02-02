@@ -180,9 +180,32 @@ class ButtonsApprovalView: UIView {
                 
                 approval?.saveInBackground(block: { (resutl, error) in
                     
-                    self.delegate.closedRefresh()
-                    self.closeApprovalWindow()
-                    
+                    if self.approvalType == ApprovalType.TypeVideo { //Update Video Approval
+                        
+                        
+                        
+                    } else if self.approvalType == ApprovalType.TypeFanpage {
+                        
+                        let queryApprovals = PFQuery(className: "Fanpages")
+                        queryApprovals.whereKey("fanpageId", equalTo: referenceId)
+                        queryApprovals.getFirstObjectInBackground { (fanpage, error) in
+                        
+                            if error != nil
+                            {
+                                print("error")
+                                
+                            } else {
+                                
+                                fanpage!["approved"] = true
+                                
+                                fanpage?.saveEventually()
+                                
+                                self.delegate.closedRefresh()
+                                self.closeApprovalWindow()
+                                
+                            }
+                        }
+                    }
                     
                 })
             }

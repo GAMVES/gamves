@@ -53,6 +53,11 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
         
         self.familyId = Global.gamvesFamily.objectId
     }
+    
+
+    override func viewDidAppear(_ animated: Bool) {
+        self.collectionView.reloadData()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

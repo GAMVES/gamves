@@ -107,12 +107,12 @@ class FanpageApprovalView: UIView,
         self.avataCoverContView.addSubview(self.coverImage)
         
         self.avataCoverContView.addConstraintsWithFormat("V:|-5-[v0]|", views: self.avatarImage, metrics:metricsFan)
+        
         self.avataCoverContView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.coverImage)
         
         self.avataCoverContView.addConstraintsWithFormat("H:|-5-[v0]-15-[v1(coverWidth)]-5-|", views: self.avatarImage, self.coverImage, metrics:metricsFan)
         
         self.collectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellFanId)
-        
     }
     
     override func layoutSubviews() {
