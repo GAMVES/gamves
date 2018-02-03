@@ -93,8 +93,8 @@ class SelectorView: BaseCell,
         self.selectorType = type
     }
     
-    func loadFanpage(categoryId:Int) {
-        self.gamvesFanpage = (self.categoriesGamves[categoryId].fanpages)
+    func loadFanpage(category:CategoryGamves) {
+        self.gamvesFanpage = category.fanpages
         self.collectionView.reloadData()
         self.delegateSelector.reoadFanpageCollection()
     }

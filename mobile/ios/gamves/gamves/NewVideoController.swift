@@ -471,18 +471,7 @@ SelectorProtocol {
     }
     
     func categorySelected(category: CategoryGamves) {
-        
-        var id = Int()
-        let ids = Array(Global.categories_gamves.keys)
-        var categories = [String]()
-        for i in ids {
-            let cat = Global.categories_gamves[i]?.name as! String
-            if category.name == cat {
-                id = i
-            }
-        }
-        self.category = category
-        self.selectorFanpageView.loadFanpage(categoryId: id)
+        self.selectorFanpageView.loadFanpage(category: category)
         
     }
     

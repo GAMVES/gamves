@@ -301,10 +301,11 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
             
             actionSheet.popoverPresentationController?.sourceView = self.view
             actionSheet.popoverPresentationController?.sourceRect = ipadAnchor.frame
-    
-            self.present(actionSheet, animated: true, completion: nil)
+
         }
         
+        self.present(actionSheet, animated: true, completion: nil)
+
         
     }
     
