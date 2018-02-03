@@ -25,6 +25,8 @@ class SelectorView: BaseCell,
     UICollectionViewDelegateFlowLayout
 {
     
+    var categoriesGamves = [CategoryGamves]()
+    
     var gamvesFanpage = [FanpageGamves]()
     
     var delegateSelector:SelectorProtocol!
@@ -77,6 +79,14 @@ class SelectorView: BaseCell,
 
         self.collectionView.register(CatFanSelectorViewCell.self, forCellWithReuseIdentifier: self.catFanSelectorId)
         
+        let ids = Array(Global.categories_gamves.keys)
+        for i in ids {
+            let cat = Global.categories_gamves[i]?.name as! String
+            if cat != "TRENDING" && cat != "PERSONAL" {
+                self.categoriesGamves.append(Global.categories_gamves[i]!)
+            }
+        }
+        
     }
     
     func setSelectorType(type:SelectorType) {
@@ -84,7 +94,7 @@ class SelectorView: BaseCell,
     }
     
     func loadFanpage(categoryId:Int) {
-        self.gamvesFanpage = (Global.categories_gamves[categoryId]?.fanpages)!
+        self.gamvesFanpage = (self.categoriesGamves[categoryId].fanpages)
         self.collectionView.reloadData()
         self.delegateSelector.reoadFanpageCollection()
     }
@@ -100,7 +110,7 @@ class SelectorView: BaseCell,
         
         if self.selectorType == SelectorType.TypeCategory {
         
-           count = Global.categories_gamves.count
+           count = self.categoriesGamves.count
         
         } else if self.selectorType == SelectorType.TypeFanpage {
             
@@ -126,9 +136,9 @@ class SelectorView: BaseCell,
         
         if self.selectorType == SelectorType.TypeCategory {
             
-            let category = Global.categories_gamves[index]
-            cell.avatarImage.image = category?.thum_image
-            cell.nameLabel.text = category?.name
+            let category = self.categoriesGamves[index]
+            cell.avatarImage.image = category.thum_image
+            cell.nameLabel.text = category.name
             
         } else if self.selectorType == SelectorType.TypeFanpage {
             
@@ -153,8 +163,8 @@ class SelectorView: BaseCell,
         
         if self.selectorType == SelectorType.TypeCategory {
         
-            let category = Global.categories_gamves[indexPath.item]
-            delegateSelector.categorySelected(category: category!)
+            let category = self.categoriesGamves[indexPath.item]
+            delegateSelector.categorySelected(category: category)
             
         } else if self.selectorType == SelectorType.TypeFanpage {
             

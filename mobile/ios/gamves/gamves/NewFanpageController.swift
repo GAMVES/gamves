@@ -513,7 +513,7 @@ ChooseAvatarProtocol {
         //self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
         
         self.prepTextFields(inView: [self.namesView])
-        
+
     }
     
     override func viewDidLayoutSubviews() {
