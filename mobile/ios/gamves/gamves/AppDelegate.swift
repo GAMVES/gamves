@@ -64,6 +64,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             UINavigationBar.appearance().shadowImage = UIImage()
             UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
             
+            DispatchQueue.main.async {
+                self.loadAditionalData()
+            }
+            
             if let user = PFUser.current() {
                 window?.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))
             } else {
@@ -108,25 +112,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
             
             
-            if PFUser.current() != nil {
-                
-                Global.loaLevels()
-                
-                Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-                    
-                    Global.familyLoaded = true
-                    
-                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
-                        
-                        Global.chatFeedLoaded = true
-                    })
-                })
-                
-                self.loadChatChannels()
-                
-                NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
-            }
-            
         } else {
             
             window?.rootViewController = UINavigationController(rootViewController: NoConnectionController())
@@ -150,6 +135,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         return true
         
+    }
+    
+    func loadAditionalData() {
+        
+        if PFUser.current() != nil {
+            
+            Global.loaLevels()
+            
+            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                
+                Global.familyLoaded = true
+                
+                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
+                    
+                    Global.chatFeedLoaded = true
+                })
+            })
+            
+            self.loadChatChannels()
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
+        }
     }
     
     func registerApplicationForPushNotifications(application: UIApplication) {
