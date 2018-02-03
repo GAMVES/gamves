@@ -505,25 +505,6 @@ SelectorProtocol {
         self.navigationController?.popToRootViewController(animated: true)
     }
     
-    func clearAll() {
-        
-        self.selectorCategoryView.collectionView.deselectAllItems()
-        self.selectorFanpageView.collectionView.deselectAllItems()
-        
-        self.videoButton.isEnabled = false
-        self.saveButton.isEnabled = false
-        
-        self.titleTextField.text = ""
-        self.descriptionTextView.text = ""
-        
-        /* Missing here.
-        The button should be an invisible button above and below the image and the label as same means as the fanpage.
-        Copy!
-        */
-        
-        
-    }
-    
     //func dismissKeyboard()
     //{
     //    self.view.endEditing(true)
@@ -918,7 +899,9 @@ SelectorProtocol {
                         
                         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
                             
+                            self.activityIndicatorView?.stopAnimating()
                             self.navigationController?.popToRootViewController(animated: true)
+                            self.homeController?.clearNewVideo()
                             
                         }))
                         

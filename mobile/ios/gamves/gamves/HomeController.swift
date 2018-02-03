@@ -239,8 +239,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return launcher
     }()
     
-    func openChat(room: String, chatId:Int, users:[GamvesParseUser])
-    {
+    func openChat(room: String, chatId:Int, users:[GamvesParseUser]) {
+        
         self.chatLauncher.chatId = chatId
         self.chatLauncher.gamvesUsers = users
         self.chatLauncher.delegateFeed = cellFree
@@ -272,9 +272,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }()
     
     lazy var newFanpageController: NewFanpageController = {
-        let newvideo = NewFanpageController()
-        newvideo.homeController = self
-        return newvideo
+        let newFanpage = NewFanpageController()
+        newFanpage.homeController = self
+        return newFanpage
     }()
     
     func addNewVideo() {
@@ -290,6 +290,16 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(newFanpageController, animated: true)
+    }
+    
+    func clearNewFanpage() {
+        self.newFanpageController = NewFanpageController()
+        newFanpageController.homeController = self
+    }
+    
+    func clearNewVideo() {
+        self.newVideoController = NewVideoController()
+        newVideoController.homeController = self
     }
     
     lazy var groupNameViewController: GroupNameViewController = {

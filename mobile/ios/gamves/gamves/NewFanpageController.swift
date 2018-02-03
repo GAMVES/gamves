@@ -71,7 +71,7 @@ ChooseAvatarProtocol {
     
     var homeController: HomeController?
     
-    var category = CategoryGamves()
+    var category:CategoryGamves?
 
     var current : AnyObject?
     
@@ -110,13 +110,6 @@ ChooseAvatarProtocol {
         //view.backgroundColor = UIColor.white
         return view
     }()
-    
-    /*var categoryDownPicker: DownPicker!
-    let categoryTypeTextField: PaddedTextField = {
-        let tf = PaddedTextField()
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        return tf
-    }()*/
     
     let categorySeparatorView: UIView = {
         let view = UIView()
@@ -184,60 +177,6 @@ ChooseAvatarProtocol {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    /*let iconContView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.gamvesBackgoundColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 5
-        return view
-    }()
-
-     let iconLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        label.text = "Avatar"
-        label.font = UIFont.boldSystemFont(ofSize: 15)
-        //label.backgroundColor = UIColor.white
-        label.textColor = UIColor.white
-        label.textAlignment = .center        
-        return label
-    }()   
-
-    var iconImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "camera")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit        
-        imageView.isUserInteractionEnabled = true                
-        return imageView
-    }()
-    
-    let imageSeparatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    var iconButton: UIButton = {
-        let button = UIButton()        
-        button.translatesAutoresizingMaskIntoConstraints = false        
-        button.isUserInteractionEnabled = true
-        button.addTarget(self, action: #selector(handleIcon), for: .touchUpInside)          
-        button.layer.cornerRadius = 5   
-        //button.backgroundColor = UIColor.gray   
-        return button
-    }()
-    
-    var backgroundIconImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        imageView.autoresizingMask =  [.flexibleWidth, .flexibleHeight]
-        //imageView.backgroundColor = UIColor.green
-        imageView.layer.cornerRadius = 5
-        return imageView
-    }()*/
 
     //-- COVER
     
@@ -527,20 +466,6 @@ ChooseAvatarProtocol {
             self.coverContView,
             metrics: metricsNew)
         
-        /*self.iconContView.addSubview(self.iconImage)
-        self.iconContView.addSubview(self.iconLabel)
-      
-        self.iconContView.addConstraintsWithFormat("H:|-15-[v0(50)]-15-|", views: self.iconImage)        
-        self.iconContView.addConstraintsWithFormat("H:|[v0(80)]|", views: self.iconLabel)        
-
-        self.iconContView.addConstraintsWithFormat(
-            "V:|-5-[v0(50)][v1(20)]-5-|", views:
-            self.iconImage,
-            self.iconLabel)*/
-
-        //iconImage.backgroundColor = UIColor.red
-        //iconLabel.backgroundColor = UIColor.green                
-        
         self.coverContView.addSubview(self.coverImage)
         self.coverContView.addSubview(self.coverLabel)        
 
@@ -577,10 +502,6 @@ ChooseAvatarProtocol {
             let cat = Global.categories_gamves[i]?.name as! String
             categories.append(cat)
         }
-        
-        /*self.categoryDownPicker = DownPicker(textField: categoryTypeTextField, withData:categories as! [Any])
-        self.categoryDownPicker.setPlaceholder("Tap to choose category...")
-        self.categoryDownPicker.addTarget(self, action: #selector(selectedCategory), for: UIControlEvents.valueChanged )*/
 
 		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
 
@@ -623,24 +544,6 @@ ChooseAvatarProtocol {
     func fanpageSelected(fanpage : FanpageGamves){} //NA
     
     func reoadFanpageCollection() {}
-    
-    func clearAll() {
-        
-        self.nameTextField.text = ""
-        self.aboutTextField.text = ""
-        
-        self.chooseAvatarView.clear()
-        
-        self.backgroundCoverImage.image = nil
-        
-        self.selectorView.collectionView.deselectAllItems()
-        
-        self.imagesArray = [UIImage]()
-        self.chooseAvatarView.clear()
-    
-        
-        
-    }
     
     func backButtonPressed(sender: UIBarButtonItem) {
         //self.delegateFeed.uploadData()
@@ -818,10 +721,6 @@ ChooseAvatarProtocol {
         
             self.selectedIconImage = image
             
-            //self.iconButton.setImage(image, for: .normal)            
-            //self.iconButton.layer.cornerRadius = 5
-            //self.iconButton.imageView?.contentMode = UIViewContentMode.scaleAspectFill
-            
             let size = CGSize(width: self.chooseAvatarView.backgroundIconImage.frame.width, height: self.chooseAvatarView.backgroundIconImage.frame.height)
             
             self.chooseAvatarView.backgroundIconImage.image = self.scaleUIImageToSize(image: image, size: size)
@@ -967,15 +866,12 @@ ChooseAvatarProtocol {
                 fanpagePF["fanpageId"] = fanpageId
                 
                 let categoryRelation = fanpagePF.relation(forKey: "category")
-                categoryRelation.add(self.category.cateobj!)
+                categoryRelation.add((self.category?.cateobj!)!)
                 
-                fanpagePF["categoryName"] = self.category.name
+                fanpagePF["categoryName"] = self.category?.name
                 
                 fanpagePF["approved"] = false
                 fanpagePF["notified"] = false
-                
-                //let userPointer = PFObject(withoutDataWithClassName: "User", objectId: PFUser.current()?.objectId)
-                //fanpagePF["author"] = userPointer
                 
                 let authorRelation = fanpagePF.relation(forKey: "author")
                 authorRelation.add(PFUser.current()!)
@@ -1026,7 +922,8 @@ ChooseAvatarProtocol {
                                 
                                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
                                     
-                                    self.clearAll()
+                                    self.activityIndicatorView?.stopAnimating()
+                                    self.homeController?.clearNewFanpage()
                                     self.navigationController?.popToRootViewController(animated: true)
                                     
                                 }))
@@ -1044,8 +941,8 @@ ChooseAvatarProtocol {
     func queryFanpageOrder() {
         
         let queryFanpages = PFQuery(className: "Fanpages")
-        print(self.category.name)
-        queryFanpages.whereKey("category", equalTo: self.category.cateobj)
+        print(self.category?.name)
+        queryFanpages.whereKey("category", equalTo: self.category?.cateobj)
         queryFanpages.order(byDescending: "order")
         queryFanpages.getFirstObjectInBackground { (fanpage, error) in
             
@@ -1072,15 +969,13 @@ ChooseAvatarProtocol {
         let title = "Error"
         var message = ""
         
-        /*if (self.categoryTypeTextField.text?.isEmpty)!
-        {
+        if (self.category == nil) {
+            
             errors = true
             message += "Catgory is empty"
-            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.categoryTypeTextField)
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
     
-        } else */
- 
-        if (self.nameTextField.text?.isEmpty)!
+        } else if (self.nameTextField.text?.isEmpty)!
         {
             errors = true
             message += "Fanpage name cannot be empty"
