@@ -278,7 +278,7 @@ class HomeViewController: UIViewController,
         
         NotificationCenter.default.addObserver(self, selector: #selector(chatFeedLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor, x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
         

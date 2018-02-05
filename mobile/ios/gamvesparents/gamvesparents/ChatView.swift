@@ -14,6 +14,7 @@ import PopupDialog
 import AVFoundation
 import AWSS3
 import AWSCore
+import ISEmojiView
 
 class GamvesAudio
 {
@@ -37,6 +38,7 @@ class MessageChat
     var isAudio:Bool!
     var audio = GamvesAudio()
     var time = String()
+    var isDownloadingAudio = Bool()
 }
 
 class ChatTextField: UITextField {
@@ -62,17 +64,20 @@ class ChatView: UIView,
     UICollectionViewDelegateFlowLayout,
     UITextFieldDelegate,
     AVAudioRecorderDelegate,
-    AVAudioPlayerDelegate
+    ISEmojiViewDelegate,
+    TimerDelegate
 {
     
     var activityView: NVActivityIndicatorView!
     
     let chatClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
     let feedClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
+    let audioClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
     let onlineClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
     
     private var chatSubscription: Subscription<PFObject>!
     private var feedSubscription: Subscription<PFObject>!
+    private var audioSubscription: Subscription<PFObject>!
     private var onlineSubscription: Subscription<PFObject>!
     
     var messages = [MessageChat]()
@@ -175,30 +180,13 @@ class ChatView: UIView,
     var tabGesture = UITapGestureRecognizer()
     
     // RECORDING
-    
-    var audioPlayer : AVAudioPlayer!
     var recordingSession : AVAudioSession!
     var audioRecorder    :AVAudioRecorder!
     var settings         = [String : Int]()
     var audioRecorded:GamvesAudio!
     var fileManager:FileManager!
-    var timer = Timer()
-    var startTime: Double = 0
-    var time: Double = 0
-    //var elapsed: Double = 0
     
-    enum MediaStatus {
-        case isRecording
-        case isNotRecording
-        case isPlaying
-        case isPaused
-        case isIdle
-    }
-    var mediaStatus:MediaStatus!
-    
-    var delegateDuration:UpdateDuration!
-    
-    var updater : CADisplayLink! = nil
+    //var delegateChat:UpdateChatCell!
     
     let backView: UIImageView = {
         let imageView = UIImageView()
@@ -208,14 +196,29 @@ class ChatView: UIView,
         return imageView
     }()
     
+    let emojiView = ISEmojiView()
+    
+    enum RecordStatus {
+        case isRecording
+        case isNotRecording
+    }
+    
+    var recordingStatus = RecordStatus.isNotRecording
+    
+    var chatTextTimer:ChatTimer!
+    
     init(frame: CGRect, isVideo:Bool) {
         super.init(frame: frame)
         
         self.frame = frame
         
-        self.mediaStatus = MediaStatus.isIdle
-        
         self.inputTextField.delegate = self
+        
+        emojiView.delegate = self
+        self.inputTextField.inputView = emojiView
+        
+        self.chatTextTimer = ChatTimer()
+        self.chatTextTimer.delegate = self
         
         self.isVideo = isVideo
         
@@ -248,7 +251,7 @@ class ChatView: UIView,
         
         let editSize:CGFloat = 65
         
-        var height = self.frame.height
+        let height = self.frame.height
         let chatHeightVideo = height - (30 + editSize)
         let chatHeight = height - editSize
         
@@ -285,7 +288,7 @@ class ChatView: UIView,
         
         self.tabGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         
-        self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+        self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray,x: 0, y: 0, width: 80.0, height: 80.0)
         
         recordingSession = AVAudioSession.sharedInstance()
         
@@ -327,7 +330,21 @@ class ChatView: UIView,
         self.bringSubview(toFront: self.messageInputContainerView)
         
     }
-
+    
+    // callback when tap a emoji on keyboard
+    func emojiViewDidSelectEmoji(emojiView: ISEmojiView, emoji: String) {
+        self.inputTextField.insertText(emoji)
+    }
+    
+    // callback when tap delete button on keyboard
+    func emojiViewDidPressDeleteButton(emojiView: ISEmojiView) {
+        self.inputTextField.deleteBackward()
+    }
+    
+    func timeCount(time: String) {
+        self.inputTextField.text = time
+    }
+    
     private func setupInputComponents() {
         
         self.messageInputContainerView.addSubview(inputTextField)
@@ -380,8 +397,7 @@ class ChatView: UIView,
         fatalError("init(coder:) has not been implemented")
     }
     
-    func loadChatFeed()
-    {
+    func loadChatFeed() {
         
         self.activityView.startAnimating()
         
@@ -390,8 +406,8 @@ class ChatView: UIView,
         queryChatFeed.whereKey("chatId", equalTo: self.chatId)
         queryChatFeed.findObjectsInBackground { (chatFeeds, error) in
             
-            if error != nil
-            {
+            if error != nil {
+                
                 print("error")
                 
             } else {
@@ -409,8 +425,7 @@ class ChatView: UIView,
                         total = chatsAmount - 1
                         var i = 0
                         
-                        for chatFeed in chatFeeds
-                        {
+                        for chatFeed in chatFeeds {
                             
                             self.chatFeed = chatFeed
                             
@@ -497,8 +512,6 @@ class ChatView: UIView,
                                                         
                                                     }
                                                     
-                                                    
-                                                    
                                                 })
                                                 
                                                 if self.isSingleUser() && !self.isVideo
@@ -535,7 +548,7 @@ class ChatView: UIView,
             }
         }
         
-        self.initializeSubscription()
+        self.initializeChatSubscription()
         
     }
     
@@ -561,8 +574,8 @@ class ChatView: UIView,
                     
                     var messagesHandeled = [MessageChat]()
                     
-                    for chatVideo in chatVideos! {
-                        
+                    for chatVideo in chatVideos!
+                    {
                         let message = MessageChat()
                         let userId = chatVideo["userId"] as! String
                         
@@ -595,11 +608,12 @@ class ChatView: UIView,
                         //Apply
                         message.message = messageText
                         
-                        if (messageText.contains(Global.audio_delimitator)) {
+                        if (messageText.contains(Global.audio_delimitator))
+                        {
                             
                             message.isAudio = true
                             
-                            self.getAudio(id: i, messageText: messageText, completionHandler: { (gamvesAudio) in
+                            self.getAudio(id: i, messageText: messageText, completionHandler: { (gamvesAudio, id) in
                                 
                                 message.audio = gamvesAudio
                                 
@@ -610,31 +624,7 @@ class ChatView: UIView,
                                     completionHandler(messagesHandeled)
                                     
                                 }
-                                i = i + 1
-                                
-                            })
-                            
-                            let messageArr : [String] = messageText.components(separatedBy: Global.audio_delimitator)
-                            
-                            let audioArr : [String] = messageArr[1].components(separatedBy: "----")
-                            
-                            var audioId : String = messageArr[0]
-                            var audioTime : String = messageArr[1]
-                            
-                            let queryAudio = PFQuery(className:"Audios")
-                            queryAudio.whereKey("objectId", equalTo: audioId)
-                            
-                            queryAudio.getFirstObjectInBackground(block: { (audioPF, error) in
-                                
-                                if error == nil {
-                                    
-                                    let audio = GamvesAudio()
-                                    audio.audioObj = audioPF
-                                    audio.url = audioPF?["url"] as! String
-                                    audio.duration = audioPF?["duration"] as! String
-                                    audio.chatId = audioPF?["chatId"] as! Int
-                                    
-                                }
+                                i = id + 1
                                 
                             })
                             
@@ -660,8 +650,7 @@ class ChatView: UIView,
         })
     }
     
-    func getAudio(id: Int, messageText: String, completionHandler : @escaping (_ resutl:GamvesAudio) -> ()) {
-        
+    func getAudio(id: Int, messageText: String, completionHandler : @escaping (_ resutl:GamvesAudio, _ id:Int) -> ()) {
         
         let messageArr : [String] = messageText.components(separatedBy: Global.audio_delimitator)
         
@@ -673,43 +662,50 @@ class ChatView: UIView,
         let queryAudio = PFQuery(className:"Audios")
         queryAudio.whereKey("objectId", equalTo: audioId)
         
-        queryAudio.getFirstObjectInBackground(block: { (audioPF, error) in
+        print(audioId)
+        
+        queryAudio.getFirstObjectInBackground(block: { (_audio, error) in
             
             if error == nil {
                 
-                let audio = GamvesAudio()
-                audio.audioObj = audioPF
-                audio.url = audioPF?["url"] as! String
-                audio.duration = audioPF?["duration"] as! String
-                audio.chatId = audioPF?["chatId"] as! Int
-                audio.name = audioPF?["name"] as! String
-                audio.uri = self.directoryURL(name: audio.name) as! URL
-                
-                DispatchQueue.main.async {
-                    self.doanloadIfExistAudio(id: id, url:audio.url, name:audio.name)
+                if let audioPF:PFObject = _audio {
+                    
+                    let audio = GamvesAudio()
+                    audio.audioObj = audioPF
+                    audio.duration = audioPF["duration"] as! String
+                    audio.chatId = audioPF["chatId"] as! Int
+                    audio.name = audioPF["name"] as! String
+                    
+                    if audioPF["url"] != nil {
+                        
+                        audio.url = audioPF["url"] as! String
+                        audio.uri = self.directoryURL(name: audio.name) as! URL
+                        
+                        self.downloadIfNotExistAudio(id: id, url:audio.url, name:audio.name, completionHandler: { ( urlS3 ) -> () in
+                            
+                            audio.uri = urlS3
+                            audio.url = urlS3.path
+                        })
+                    }
+                    
+                    completionHandler(audio, id)
                 }
                 
-                completionHandler(audio)
             } else {
                 print(error)
             }
-            
-            
         })
-        
     }
     
-    func doanloadIfExistAudio(id: Int, url:String, name:String) {
+    func downloadIfNotExistAudio(id: Int, url:String, name:String, completionHandler : @escaping (_ urlS3:URL) -> ()) {
         
         let chatIdDirectory = self.createIfNotExistChatFolder()
-        
-        let chatIdDirectoryUrl = URL(fileURLWithPath: chatIdDirectory)
         
         print(chatIdDirectory)
         
         //let localAudio = "\(chatIdDirectory)/\(name)"
         
-        let localAudio = chatIdDirectoryUrl.appendingPathComponent(name)
+        let localAudio = chatIdDirectory.appendingPathComponent(name)
         
         print(localAudio)
         
@@ -743,10 +739,7 @@ class ChatView: UIView,
                     print("error writing file \(name) : \(error)")
                 }
                 
-                
-                
-                //HANDLE DOWNLOAD
-                self.messages[id].audio.uri = localAudio
+                completionHandler(localAudio)
                 
             }
             downloadPicTask.resume()
@@ -754,7 +747,7 @@ class ChatView: UIView,
     }
     
     
-    func initializeSubscription()
+    func initializeChatSubscription()
     {
         
         let videoQuery = PFQuery(className: "ChatVideo").whereKey("chatId", equalTo: self.chatId)
@@ -773,7 +766,84 @@ class ChatView: UIView,
             
             self.clearBargesForChatId()
         }
+        
+        let audioQuery = PFQuery(className: "Audios").whereKey("chatId", equalTo: self.chatId)
+        
+        self.audioSubscription = audioClient.subscribe(audioQuery).handle(Event.updated) { _, audioPF in
+            
+            var sender = Bool()
+            
+            let userId = audioPF["senderId"] as! String
+            
+            if userId == PFUser.current()?.objectId {
+                sender = true
+            }
+            
+            if audioPF["url"] != nil && !sender {
+                
+                print(audioPF["url"])
+                
+                let url = audioPF["url"] as! String
+                
+                self.getMessageByAudioName(audio:audioPF, completionHandler: { ( message, indexPath ) -> () in
+                    
+                    let audio = message.audio
+                    
+                    self.downloadIfNotExistAudio(id: indexPath.row, url:url, name:audio.name, completionHandler: { ( urlS3 ) -> () in
+                        
+                        self.messages[indexPath.row].isDownloadingAudio = false
+                        self.messages[indexPath.row].audio.uri = urlS3
+                        self.messages[indexPath.row].audio.url = urlS3.path
+                        
+                        DispatchQueue.main.async {
+                            
+                            let cell = self.collectionView.cellForItem(at: indexPath) as! ChatLogMessageCell
+                            cell.isDownloadingAudio = false
+                            
+                            cell.profileImageView.isHidden = false
+                            
+                            //NOT WORKING
+                            if let indicator = cell.progressView {
+                                if indicator.isAnimating {
+                                    cell.progressView.stopAnimating()
+                                }
+                            }
+                        }
+                    })
+                })
+            }
+        }
     }
+    
+    func getMessageByAudioName(audio: PFObject, completionHandler : @escaping (_ message:MessageChat,_ indexPath:IndexPath ) -> ()) {
+        
+        let audioName = audio["name"] as! String
+        
+        var count = 0
+        
+        for message in messages {
+            
+            if message.isAudio {
+                
+                print(audioName)
+                
+                let audioStoredName = message.audio.name
+                
+                print(audioStoredName)
+                
+                if audioName == audioStoredName {
+                    
+                    let indexPath = IndexPath(item: count, section: 0)
+                    
+                    completionHandler(message , indexPath)
+                }
+            }
+            count = count + 1
+        }
+        
+    }
+    
+    
     
     @objc func handleSendRec()
     {
@@ -782,7 +852,7 @@ class ChatView: UIView,
         {
             //self.isRecording = true
             
-            self.mediaStatus = MediaStatus.isRecording
+            self.recordingStatus = RecordStatus.isRecording
             
             self.recSendButton.transform = CGAffineTransform(scaleX: 2, y: 2)
             
@@ -795,8 +865,9 @@ class ChatView: UIView,
                 self.startRecording()
                 
                 //self.startCounting()
+                //self.startRecordTimer()
                 
-                self.startRecordTimer()
+                self.chatTextTimer.startTimer()
                 
             }
             
@@ -804,7 +875,7 @@ class ChatView: UIView,
             
             //self.isRecording = false
             
-            self.mediaStatus = MediaStatus.isNotRecording
+            self.recordingStatus = RecordStatus.isNotRecording
             
             if self.isVideo && ChatFeedMethods.chatFeeds[self.chatId] == nil
             {
@@ -879,7 +950,7 @@ class ChatView: UIView,
         
         //if self.isRecording {
         
-        if mediaStatus == MediaStatus.isRecording {
+        if recordingStatus == RecordStatus.isRecording {
             
             self.finishRecording(success: true)
         }
@@ -893,37 +964,42 @@ class ChatView: UIView,
         
         let chatIdDirectory = self.createIfNotExistChatFolder()
         
-        let urls = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-        let documentDirectory = urls[0] as NSURL
+        let soundURL = chatIdDirectory.appendingPathComponent(name)
         
-        let soundURL = documentDirectory.appendingPathComponent(name)
+        print(soundURL)
         
         return soundURL as NSURL?
         
     }
     
+    func contentsOf(folder: URL) -> [URL] {
+        let fileManager = FileManager.default
+        do {
+            let contents = try fileManager.contentsOfDirectory(atPath: folder.path)
+            let urls = contents.map { return folder.appendingPathComponent($0) }
+            return urls
+        } catch {
+            return []
+        }
+    }
     
-    func createIfNotExistChatFolder() -> String {
+    
+    func createIfNotExistChatFolder() -> URL {
         
-        let documentDirectoy: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])"
+        let directory = self.fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        let chatIdString = "\(self.chatId)"
+        let chatIdDirectory = directory[0].appendingPathComponent(chatIdString, isDirectory: true)
         
-        print(self.chatId)
-        
-        let chatIdDirectory = "\(documentDirectoy)/\(self.chatId)"
-        
-        print(chatIdDirectory)
-        
-        if !self.fileManager.fileExists(atPath: chatIdDirectory) {
+        if !self.fileManager.fileExists(atPath: chatIdDirectory.path) {
             
             do {
-                try FileManager.default.createDirectory(atPath: chatIdDirectory, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(atPath: chatIdDirectory.path, withIntermediateDirectories: true, attributes: nil)
             } catch let error as NSError {
                 NSLog("Unable to create directory \(error.debugDescription)")
             }
         }
         
         return chatIdDirectory
-        
     }
     
     func startRecording() {
@@ -967,7 +1043,7 @@ class ChatView: UIView,
         
         self.audioRecorder.stop()
         
-        self.stopTimer()
+        self.chatTextTimer.stopTimer()
         
         if success {
             
@@ -984,7 +1060,6 @@ class ChatView: UIView,
         } else {
             
             self.audioRecorder = nil
-            
             print("Somthing Wrong.")
         }
         
@@ -1232,91 +1307,103 @@ class ChatView: UIView,
     }
     
     
-    func updateMessageFromServer(chatMessage: PFObject)
-    {
+    func updateMessageFromServer(chatMessage: PFObject) {
         
-        DispatchQueue.main.async
+        DispatchQueue.main.async {
+            
+            self.inputTextField.text = ""
+            
+            let message = MessageChat()
+            var textMessage = chatMessage["message"] as! String
+            
+            let userId = chatMessage["userId"] as! String
+            message.userId = userId
+            message.chatId = chatMessage["chatId"] as! Int
+            message.date = chatMessage.updatedAt
+            
+            message.time = chatMessage["time"] as! String
+            
+            if let gamvesUser = Global.userDictionary[userId]
             {
-                self.inputTextField.text = ""
-                
-                let message = MessageChat()
-                var textMessage = chatMessage["message"] as! String
-                
-                let userId = chatMessage["userId"] as! String
-                message.userId = userId
-                message.chatId = chatMessage["chatId"] as! Int
-                message.date = chatMessage.updatedAt
-                
-                message.time = chatMessage["time"] as! String
-                
-                if let gamvesUser = Global.userDictionary[userId]
-                {
-                    message.isSender = gamvesUser.isSender
-                } else if userId == PFUser.current()?.objectId
-                {
-                    message.isSender = true
-                }
-                
-                if (textMessage.contains(Global.audio_delimitator))
-                {
-                    message.isAudio = true
-                    
-                } else {
-                    
-                    message.isAudio = false
-                    
-                }
-                
-                let delimitator = Global.admin_delimitator
-                
-                if textMessage.range(of:delimitator) != nil {
-                    
-                    message.isAdmin = true
-                    
-                    if let range = textMessage.range(of: delimitator) {
-                        
-                        textMessage.removeSubrange(range)
-                        
-                    }
-                    
-                } else {
-                    
-                    message.isAdmin = false
-                }
-                
-                message.message = textMessage
-                
-                let gamvesUser = Global.userDictionary[userId]!
-                
                 message.isSender = gamvesUser.isSender
+            } else if userId == PFUser.current()?.objectId
+            {
+                message.isSender = true
+            }
+            
+            if (textMessage.contains(Global.audio_delimitator))
+            {
+                message.isAudio = true
                 
-                if ChatFeedMethods.chatFeeds[self.chatId] != nil
-                {
-                    ChatFeedMethods.chatFeeds[self.chatId]?.text = textMessage
+                //if video does not exist download it.
+                
+                if !message.isSender {
+                    
+                    message.isDownloadingAudio = true
                 }
                 
-                self.messages.append(message)
+                self.getAudio(id: self.messages.count, messageText: textMessage, completionHandler: { (gamvesAudio, id) in
+                    
+                    self.messages[id].audio = gamvesAudio
+                    
+                })
                 
-                let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+            } else {
                 
-                self.collectionView.insertItems(at: [indexPath])
-                self.scrollToLast()
+                message.isAudio = false
+                
+            }
+            
+            let delimitator = Global.admin_delimitator
+            
+            if textMessage.range(of:delimitator) != nil {
+                
+                message.isAdmin = true
+                
+                if let range = textMessage.range(of: delimitator) {
+                    
+                    textMessage.removeSubrange(range)
+                    
+                }
+                
+            } else {
+                
+                message.isAdmin = false
+            }
+            
+            message.message = textMessage
+            
+            let gamvesUser = Global.userDictionary[userId]!
+            
+            message.isSender = gamvesUser.isSender
+            
+            if ChatFeedMethods.chatFeeds[self.chatId] != nil
+            {
+                ChatFeedMethods.chatFeeds[self.chatId]?.text = textMessage
+            }
+            
+            self.messages.append(message)
+            
+            let indexPath = IndexPath(item: self.messages.count - 1, section: 0)
+            
+            self.collectionView.insertItems(at: [indexPath])
+            
+            self.scrollToLast()
         }
     }
     
-    
-    func initializeOnlineSubcritpion()
-    {
+    func initializeOnlineSubcritpion() {
+        
         let userId = self.gamvesUsers[0].userId
         
-        let onlineQuery = PFQuery(className: "UserOnline").whereKey("userId", equalTo: userId)
+        let onlineQuery = PFQuery(className: "UserStatus").whereKey("userId", equalTo: userId)
         
         onlineSubscription = onlineClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
             
             self.changeSingleUserStatus(onlineMessage:onlineMessage)
         }
         
-        let queryOnine = PFQuery(className:"UserOnline")
+        let queryOnine = PFQuery(className:"UserStatus")
         queryOnine.whereKey("userId", equalTo: userId)
         queryOnine.findObjectsInBackground { (usersOnline, error) in
             
@@ -1339,13 +1426,18 @@ class ChatView: UIView,
     
     func changeSingleUserStatus(onlineMessage:PFObject)
     {
-        let isOnline = onlineMessage["isOnline"] as! Bool
+        let status = onlineMessage["status"] as! Int
         
-        if isOnline
-        {
+        if status == 2 {
+            
             delegateNavBar.updateSubTitle(latelText: "Online")
-        } else
-        {
+            
+        } else if status == 1 {
+            
+            delegateNavBar.updateSubTitle(latelText: "Idle")
+            
+        } else if status == 0 {
+            
             let updatedAt = onlineMessage.updatedAt as! Date
             
             let dateFormatter = DateFormatter()
@@ -1367,8 +1459,7 @@ class ChatView: UIView,
         }
     }
     
-    func addNewFeedAppendUser(completionHandler : @escaping (_ resutl:Bool) -> ())
-    {
+    func addNewFeedAppendUser(completionHandler : @escaping (_ resutl:Bool) -> ()) {
         
         let random = Int()
         
@@ -1730,12 +1821,9 @@ class ChatView: UIView,
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+        print(indexPath)
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogMessageCell
-        
-        
-        if indexPath.row == 4 {
-            print("aca")
-        }
         
         var message = self.messages[indexPath.row]
         
@@ -1770,8 +1858,8 @@ class ChatView: UIView,
             cell.messageTextView.text = messageText
             cell.timeLabel.text = time
             cell.isAudio = false
-            
         }
+        
         
         let userID = message.userId
         
@@ -1808,9 +1896,7 @@ class ChatView: UIView,
             let height = estimatedFrame.height + 20
             
             cell.bubbleView.frame = CGRect(x: xAdmin, y: -4, width: widthAdmin, height: height + 6)
-            
             cell.messageTextView.frame = CGRect(x: xAdmin + 20, y: 0, width: widthAdmin-20, height: height)
-            
             cell.profileImageView.isHidden = true
             
             cell.bubbleImageView.image = ChatLogMessageCell.adminBubbleImage
@@ -1839,28 +1925,22 @@ class ChatView: UIView,
             
             if message.isAudio {
                 
+                cell.gamvesAudio = message.audio
+                
                 cell.bHeight = bheight
-                cell.chatView = self
                 
                 cell.bubbleImageView.image = ChatLogMessageCell.audioBubbleImage
                 cell.audioDurationLabel.text = message.audio.duration
                 print(indexPath.row)
                 
                 cell.isSender = false
-                
-                //DispatchQueue.main.async {
-                //    cell.setAudioControl(view: self)
-                //}
-                
                 cell.playPauseButton.tag = indexPath.row
-                cell.playPauseButton.addTarget(self, action: #selector(handlePlayPause), for: .touchDown)
                 
-                //Not working
-                //cell.playerSlider.addTarget(self, action: #selector(sliderTouchUp), for: .touchUpInside)
+                if message.isDownloadingAudio {
+                    cell.isDownloadingAudio = true
+                }
                 
             } else {
-                
-                //cell.drawTime(height: bheight)
                 
                 cell.profileImageView.isHidden = false
                 cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
@@ -1886,202 +1966,35 @@ class ChatView: UIView,
             
             if message.isAudio {
                 
-                cell.bHeight = bheight
-                cell.chatView = self
+                cell.gamvesAudio = message.audio
                 
+                cell.bHeight = bheight
                 cell.bubbleImageView.image = ChatLogMessageCell.audioBubbleImage
                 cell.audioDurationLabel.text = message.audio.duration
                 print(indexPath.row)
                 
                 cell.isSender = true
-                
-                //DispatchQueue.main.async {
-                //    cell.setAudioControl(view: self)
-                //}
-                
                 cell.playPauseButton.tag = indexPath.row
-                cell.playPauseButton.addTarget(self, action: #selector(handlePlayPause), for: .touchDown)
                 
-                //Not working
-                //cell.playerSlider.addTarget(self, action: #selector(sliderTouchUp), for: .touchUpInside)
+                if message.isDownloadingAudio {
+                    cell.isDownloadingAudio = true
+                }
                 
             } else {
                 
                 cell.bubbleImageView.image = ChatLogMessageCell.blueBubbleImage
-                //cell.drawTime(height: bheight)
                 cell.profileImageView.isHidden = true
                 cell.bubbleImageView.tintColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
                 cell.messageTextView.textColor = UIColor.white
                 
             }
-            
         }
-        
         return cell
-    }
-    
-    //func sliderTouchUp(sender: Any) {
-    //     self.delegateDuration.seekSlider(slider: sender as! UISlider)
-    //}
-    
-    @objc func handlePlayPause(sender: AnyObject) {
-        
-        if mediaStatus == MediaStatus.isPlaying {
-            
-            self.audioPlayer.pause()
-            self.stopTimer()
-            self.delegateDuration.showPlayIcon()
-            
-        } else if mediaStatus == MediaStatus.isPaused {
-            
-            self.audioPlayer.play()
-            self.startTimer()
-            self.delegateDuration.showPauseIcon()
-            
-        } else if mediaStatus == MediaStatus.isIdle {
-            
-            self.playAudio(sender: sender)
-            self.delegateDuration.showPauseIcon()
-        }
-        
     }
     
     func createFrame(eFrame:CGRect, width: CGFloat, height: CGFloat) -> CGRect {
         return CGRect(x: eFrame.maxX, y: eFrame.maxY, width: width, height: height)
     }
-    
-    
-    //-- PLAY AUDIO
-    
-    func playAudio(sender: AnyObject) {
-        
-        let button = sender as! UIButton
-        let index = button.tag as Int
-        let message = self.messages[index] as MessageChat
-        let audio = message.audio as GamvesAudio
-        
-        //let url:URL  //URL(fileURLWithPath:)
-        
-        //print(url)
-        
-        self.delegateDuration.setDuration(time: audio.duration)
-        
-        self.updater = CADisplayLink(target: self, selector: #selector(ChatView.trackAudio))
-        self.updater.frameInterval = 1
-        self.updater.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
-        
-        let localAudio:URL = audio.uri
-        
-        if !fileManager.fileExists(atPath: localAudio.path) {
-            
-            let url = URL(fileURLWithPath: localAudio.path)
-            
-            do {
-                
-                self.audioPlayer = try! AVAudioPlayer(contentsOf: url)
-                
-            } catch  {
-                print("error writing file \(localAudio.lastPathComponent) : \(error)")
-            }
-            
-            self.audioPlayer.prepareToPlay()
-            self.audioPlayer.delegate = self
-            self.audioPlayer.volume = 1.0
-            self.audioPlayer.play()
-            
-            self.mediaStatus = MediaStatus.isPlaying
-            
-            self.startTimer()
-        }
-    }
-    
-    
-    @objc func trackAudio() {
-        let normalizedTime = Float(self.audioPlayer.currentTime * 100.0 / self.audioPlayer.duration)
-        self.delegateDuration.updateSlider(value: normalizedTime)
-    }
-    
-    func startRecordTimer() {
-        self.startTimer()
-    }
-    
-    func startTimer(){
-        
-        DispatchQueue.main.async {
-            
-            self.startTime = Date().timeIntervalSinceReferenceDate //- self.elapsed
-            self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.timerRunning), userInfo: nil, repeats: true)
-            
-        }
-    }
-    
-    func stopTimer() {
-        
-        timer.invalidate()
-        
-        if self.mediaStatus == MediaStatus.isRecording {
-            
-            self.inputTextField.text = ""
-            
-        }
-    }
-    
-    @objc func timerRunning() {
-        
-        time = Date().timeIntervalSinceReferenceDate - startTime
-        
-        let minutes = UInt8(time / 60.0)
-        time -= (TimeInterval(minutes) * 60)
-        
-        let seconds = UInt8(time)
-        time -= TimeInterval(seconds)
-        
-        let strMinutes = String(format: "%02d", minutes)
-        let strSeconds = String(format: "%02d", seconds)
-        
-        let timeCount = "\(strMinutes):\(strSeconds)"
-        
-        if mediaStatus == MediaStatus.isRecording {
-            
-            self.inputTextField.text = "     \(timeCount)"
-            
-        } else if mediaStatus == MediaStatus.isPlaying {
-            
-            self.delegateDuration.updateTime(time: timeCount)
-            
-        }
-    }
-    
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        print(flag)
-        self.mediaStatus = MediaStatus.isIdle
-        self.stopTimer()
-        self.delegateDuration.updateTime(time: "00:00")
-        self.delegateDuration.showPlayIcon()
-    }
-    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?){
-        print(error.debugDescription)
-    }
-    internal func audioPlayerBeginInterruption(_ player: AVAudioPlayer){
-        print(player.debugDescription)
-    }
-    
-    
-    func sliderValueChanged(sender: AnyObject) {
-        
-        let slider = sender as! UISlider
-        
-        let indexPath = IndexPath(row: slider.tag, section: 0)
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogMessageCell
-        
-        for view in cell.subviews {
-            if let label = view as? UILabel {
-                label.text = "\(slider.value)"
-            }
-        }
-    }
-    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
@@ -2092,8 +2005,6 @@ class ChatView: UIView,
             let size = CGSize(width:250, height:1000)
             
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            
-            //[NSAttributedStringKey.fontNSAttributedStringKey.font: UIFont.systemFont(ofSize: 18)], context: nil)
             
             let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
             
@@ -2117,18 +2028,21 @@ class ChatView: UIView,
 }
 
 
-protocol UpdateDuration {
+class ChatLogMessageCell: BaseCell,
+    AVAudioPlayerDelegate,
+    TimerDelegate
+{
     
-    func setDuration(time: String)
-    func showPlayIcon()
-    func showPauseIcon()
-    func updateTime(time: String)
-    func updateSlider(value: Float)
-    func seekSlider(slider:UISlider)
+    var gamvesAudio = GamvesAudio()
     
-}
-
-class ChatLogMessageCell: BaseCell, UpdateDuration  {
+    //--
+    // AUDIO
+    
+    var updater : CADisplayLink! = nil
+    var audioPlayer : AVAudioPlayer!
+    
+    var progressView: NVActivityIndicatorView!
+    var isDownloadingAudio = Bool()
     
     let messageTextView: UITextView = {
         let textView = UITextView()
@@ -2180,9 +2094,6 @@ class ChatLogMessageCell: BaseCell, UpdateDuration  {
     
     var playPauseButton: UIButton = {
         let button = UIButton(type: .system)
-        let playImage = UIImage(named: "play")
-        playImage?.maskWithColor(color: UIColor.gamvesColor)
-        button.setImage(playImage, for: UIControlState.normal)
         return button
     }()
     
@@ -2240,7 +2151,6 @@ class ChatLogMessageCell: BaseCell, UpdateDuration  {
         return label
     }()
     
-    var chatView:ChatView!
     var bHeight = CGFloat()
     var isSender = Bool()
     var isAudio = Bool()
@@ -2261,6 +2171,15 @@ class ChatLogMessageCell: BaseCell, UpdateDuration  {
         return imageView
     }()
     
+    enum PayerStatus {
+        case isPlaying
+        case isPaused
+        case isIdle
+    }
+    var playerStatus:PayerStatus!
+    
+    var audioTimer:ChatTimer!
+    
     override func setupViews() {
         super.setupViews()
         
@@ -2269,20 +2188,11 @@ class ChatLogMessageCell: BaseCell, UpdateDuration  {
         
         print(messageTextView.text)
         
-        //if !self.isAudio {
-        
-        //    addSubview(profileImageView)
-        //    addConstraintsWithFormat("H:|-8-[v0(30)]", views: profileImageView)
-        //    addConstraintsWithFormat("V:[v0(30)]|", views: profileImageView)
-        //    profileImageView.backgroundColor = UIColor.red
-        //}
-        
         bubbleView.addSubview(bubbleImageView)
         bubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
         bubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
         
-        //if isSender { }
-        //bubbleView.addConstraintsWithFormat("V:|[v0][v1(15)]|", views: bubbleImageView, timeLabel)
+        self.playerStatus = PayerStatus.isIdle
         
     }
     
@@ -2304,11 +2214,12 @@ class ChatLogMessageCell: BaseCell, UpdateDuration  {
         
         /////////////////
         
-        //self.chatView = view
-        
         if self.isAudio {
             
-            self.chatView.delegateDuration = self
+            self.playerStatus = PayerStatus.isIdle
+            
+            self.audioTimer = ChatTimer()
+            self.audioTimer.delegate = self
             
             let myFrame = bubbleView.frame
             
@@ -2325,7 +2236,6 @@ class ChatLogMessageCell: BaseCell, UpdateDuration  {
             self.playContainerView.addSubview(self.profileContainerView)
             self.playContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.profileContainerView)
             
-            
             if isSender {
                 
                 self.playContainerView.addConstraintsWithFormat("H:|[v0(60)][v1][v2(60)]|", views:
@@ -2341,13 +2251,20 @@ class ChatLogMessageCell: BaseCell, UpdateDuration  {
                                                                 self.centralContainerView)
             }
             
-            playButtonView.backgroundColor = UIColor.green
-            centralContainerView.backgroundColor = UIColor.cyan
-            profileContainerView.backgroundColor = UIColor.red
+            self.playButtonView.backgroundColor = UIColor.green
+            self.centralContainerView.backgroundColor = UIColor.cyan
+            self.profileContainerView.backgroundColor = UIColor.red
+            
+            let playImage = UIImage(named: "play")
+            playImage?.maskWithColor(color: UIColor.gamvesColor)
+            self.playPauseButton.setImage(playImage, for: UIControlState.normal)
+            self.playPauseButton.addTarget(self, action:#selector(playPause(button:)), for: .touchUpInside)
             
             self.playButtonView.addSubview(self.playPauseButton)
             self.playButtonView.addConstraintsWithFormat("H:|-10-[v0(40)]-10-|", views: self.playPauseButton)
             self.playButtonView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.playPauseButton)
+            
+            self.playerSlider.addTarget(self, action:#selector(sliderValueDidChange(sender:)), for: .valueChanged)
             
             self.centralContainerView.addSubview(self.playerSlider)
             self.centralContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.playerSlider)
@@ -2377,45 +2294,183 @@ class ChatLogMessageCell: BaseCell, UpdateDuration  {
             self.profileContainerView.addConstraintsWithFormat("H:|-10-[v0(40)]-10-|", views: self.profileImageView)
             self.profileContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.profileImageView)
             
+            if self.isDownloadingAudio {
+                
+                self.progressView = Global.setActivityIndicator(container: self.profileContainerView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
+                
+                self.profileImageView.isHidden = true
+                
+                self.progressView.startAnimating()
+                
+            }
+        }
+    }
+    
+    func playPause(button: UIButton) {
+        
+        if self.playerStatus == PayerStatus.isPlaying {
+            
+            self.audioPlayer.pause()
+            
+            self.audioTimer.stopTimer()
+            //self.showPlayIcon()
+            
+        } else if self.playerStatus == PayerStatus.isPaused {
+            
+            self.audioPlayer.play()
+            self.audioTimer.startTimer()
+            //self.showPauseIcon()
+            
+        } else if self.playerStatus == PayerStatus.isIdle {
+            
+            self.playAudio()
+            //self.showPauseIcon()
         }
         
     }
     
-    func setDuration(time: String) {
-        self.audioDurationLabel.text = time
-    }
+    //-- PLAY AUDIO
     
-    func updateTime(time: String) {
-        self.audioCountabel.text = time
-    }
-    
-    func updateSlider(value: Float) {
-        self.playerSlider.value = value
-    }
-    
-    func seekSlider(slider:UISlider) {
+    func playAudio() {
         
-        //self.chatView.audioPlayer.currentTime = TimeInterval(slider.value)
-        //self.chatView.audioPlayer.play()
+        self.audioDurationLabel.text = self.gamvesAudio.duration
+        
+        self.updater = CADisplayLink(target: self, selector: #selector(trackAudio))
+        self.updater.frameInterval = 1
+        self.updater.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
+        
+        print(self.gamvesAudio.url)
+        
+        let localAudio:URL = self.gamvesAudio.uri
+        
+        if ( FileManager.default.fileExists(atPath: (localAudio.path)) ) {
+            
+            let url = URL(fileURLWithPath: localAudio.path)
+            
+            do {
+                
+                self.audioPlayer = try! AVAudioPlayer(contentsOf: url)
+                
+            } catch  {
+                print("error writing file \(localAudio.lastPathComponent) : \(error)")
+            }
+            
+            self.audioPlayer.prepareToPlay()
+            self.audioPlayer.delegate = self
+            self.audioPlayer.volume = 1.0
+            self.audioPlayer.play()
+            
+            self.playerStatus = PayerStatus.isPlaying
+            
+            self.audioTimer.startTimer()
+        }
     }
     
-    func showPauseIcon(){
-        let pauseImage = UIImage(named: "pause")
-        pauseImage?.maskWithColor(color: UIColor.gamvesColor)
-        self.playPauseButton.setImage(pauseImage, for: UIControlState.normal)
+    func timeCount(time: String) {
+        
+        DispatchQueue.main.async {
+            self.audioCountabel.text = time
+        }
+        
     }
+    
+    @objc func trackAudio() {
+        let normalizedTime = Float(self.audioPlayer.currentTime * 100.0 / self.audioPlayer.duration)
+        self.playerSlider.value = normalizedTime
+    }
+    
+    func startRecordTimer() {
+        self.audioTimer.startTimer()
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        self.playerStatus = PayerStatus.isIdle
+        self.audioTimer.stopTimer()
+        self.audioCountabel.text = "00:00"
+        self.showPlayIcon()
+    }
+    
+    /*func showPauseIcon(){
+     DispatchQueue.main.async {
+     let pauseImage = UIImage(named: "pause")
+     pauseImage?.maskWithColor(color: UIColor.gamvesColor)
+     self.playPauseButton.setImage(pauseImage, for: UIControlState.normal)
+     }
+     }*/
     
     func showPlayIcon(){
-        let playImage = UIImage(named: "play")
-        playImage?.maskWithColor(color: UIColor.gamvesColor)
-        self.playPauseButton.setImage(playImage, for: UIControlState.normal)
+        DispatchQueue.main.async {
+            let playImage = UIImage(named: "play")
+            playImage?.maskWithColor(color: UIColor.gamvesColor)
+            self.playPauseButton.setImage(playImage, for: UIControlState.normal)
+        }
+    }
+    
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?){
+        print(error.debugDescription)
+    }
+    internal func audioPlayerBeginInterruption(_ player: AVAudioPlayer){
+        print(player.debugDescription)
+    }
+    
+    func sliderValueDidChange(sender: AnyObject) {
+        
+    }
+    
+    func stopSpinner() {
+        self.progressView.stopAnimating()
     }
     
 }
 
-extension Date {
-    func toMillis() -> Int64! {
-        return Int64(self.timeIntervalSince1970 * 1000)
+protocol TimerDelegate {
+    func timeCount(time: String)
+}
+
+class ChatTimer: NSObject {
+    
+    var timer = Timer()
+    var startTime: Double = 0
+    var time: Double = 0
+    
+    var delegate:TimerDelegate!
+    
+    override init() {
+        
     }
+    
+    func startTimer(){
+        
+        DispatchQueue.main.async {
+            
+            self.startTime = Date().timeIntervalSinceReferenceDate //- self.elapsed
+            self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.timerRunning), userInfo: nil, repeats: true)
+        }
+    }
+    
+    func stopTimer() {
+        self.timer.invalidate()
+    }
+    
+    @objc func timerRunning() {
+        
+        time = Date().timeIntervalSinceReferenceDate - startTime
+        
+        let minutes = UInt8(time / 60.0)
+        time -= (TimeInterval(minutes) * 60)
+        
+        let seconds = UInt8(time)
+        time -= TimeInterval(seconds)
+        
+        let strMinutes = String(format: "%02d", minutes)
+        let strSeconds = String(format: "%02d", seconds)
+        
+        let timeCount = "\(strMinutes):\(strSeconds)"
+        
+        self.delegate.timeCount(time: timeCount)
+        
+    }
+    
+    
 }
 
