@@ -37,4 +37,6 @@ target 'gamves' do
 
   #pod 'ABVideoRangeSlider'
   
+  pod 'ISEmojiView'
+  
 end

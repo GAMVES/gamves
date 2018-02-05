@@ -12,6 +12,7 @@ PODS:
   - Floaty (4.0.0)
   - IGColorPicker (0.3.0):
     - M13Checkbox (~> 2.2.0)
+  - ISEmojiView (0.0.6)
   - KenBurns (0.2.8):
     - CalmParametricAnimations (~> 1.0.1)
     - SDWebImage (~> 3.8.2)
@@ -43,6 +44,7 @@ DEPENDENCIES:
   - DownPicker
   - Floaty (from `https://github.com/kciter/Floaty.git`, tag `4.0.0`)
   - IGColorPicker
+  - ISEmojiView
   - KenBurns
   - NVActivityIndicatorView
   - ParseLiveQuery
@@ -74,6 +76,7 @@ SPEC CHECKSUMS:
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   Floaty: df27b72d9ed1e58d48aa3717327ffdb857268c63
   IGColorPicker: 645a9523b5ff756bf29e0a858d2fe06ea7b910ff
+  ISEmojiView: 2ab7c5ad9c58a318cefcf407af374464ccc56f1d
   KenBurns: 9224ab7ac7cda5e7fc6659fa6f2875f73360483c
   M13Checkbox: 9989b7e275f18493bd33b960dc68374c47d0027b
   NVActivityIndicatorView: d3738df7e2e476aca0ba6bf32a8c9fbcfc33d64b
@@ -87,6 +90,6 @@ SPEC CHECKSUMS:
   UITextView+Placeholder: 77680995fcdd07c3f52ec92fe1150874a2ac89ff
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 88ff1256b50ecb0f18011b2dd2e0faf3348dd317
+PODFILE CHECKSUM: b987ffaca0e16307d6727b4543585372c34968b8
 
 COCOAPODS: 1.3.1
