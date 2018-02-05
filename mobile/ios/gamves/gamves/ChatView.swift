@@ -43,7 +43,7 @@ class MessageChat
 
 class ChatTextField: UITextField {
     
-    let padding = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 5);
+    let padding = UIEdgeInsets(top: 0, left: 40, bottom: 0, right: 5);
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {
         return UIEdgeInsetsInsetRect(bounds, padding)
@@ -176,6 +176,31 @@ class ChatView: UIView,
         button.tag = 1
         return button
     }()
+
+    lazy var emojisKeyboardButton: UIButton = {
+        let button = UIButton(type: .system)
+        let emoticonImage = UIImage(named: "insert_emoticon")
+        emoticonImage?.maskWithColor(color: UIColor.gamvesColor)
+        button.setImage(emoticonImage, for: UIControlState.normal)
+        button.addTarget(self, action: #selector(handleEmoticonsKeyboard), for: .touchUpInside)
+        button.layer.cornerRadius = 25
+        button.tag = 1
+        return button
+    }()
+
+    lazy var imageButton: UIButton = {
+        let button = UIButton(type: .system)
+        let sendImage = UIImage(named: "rec_off")
+        sendImage?.maskWithColor(color: UIColor.gamvesColor)
+        button.setImage(sendImage, for: UIControlState.normal)
+        button.addTarget(self, action: #selector(handleSendRec), for: .touchDown)
+        button.addTarget(self, action: #selector(handleSendRecUp), for: .touchUpInside)
+        button.backgroundColor = UIColor.gamvesBlackColor
+        button.layer.cornerRadius = 25
+        button.tag = 1
+        return button
+    }()
+
     
     var tabGesture = UITapGestureRecognizer()
     
@@ -207,6 +232,8 @@ class ChatView: UIView,
     
     var chatTextTimer:ChatTimer!
     
+    var emoticonKeyboardState:EmoticonKeyboardState!
+    
     init(frame: CGRect, isVideo:Bool) {
         super.init(frame: frame)
         
@@ -214,8 +241,7 @@ class ChatView: UIView,
         
         self.inputTextField.delegate = self
     
-        emojiView.delegate = self
-        self.inputTextField.inputView = emojiView
+        self.emoticonKeyboardState = EmoticonKeyboardState.isKeyboard
         
         self.chatTextTimer = ChatTimer()
         self.chatTextTimer.delegate = self
@@ -265,8 +291,6 @@ class ChatView: UIView,
         {
             self.addConstraintsWithFormat("V:|-3-[v0(chatHeight)][v1(editSize)]|", views: self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
         }
-        
-        //self.messageInputContainerView.backgroundColor = UIColor.blue
         
         self.chatHolderView.addSubview(self.chatImageView)
         self.chatHolderView.addSubview(self.chatLabel)
@@ -347,13 +371,21 @@ class ChatView: UIView,
     
     private func setupInputComponents() {
         
-        self.messageInputContainerView.addSubview(inputTextField)
-        self.messageInputContainerView.addSubview(recSendButton)
+        self.messageInputContainerView.addSubview(self.inputTextField)
+        self.messageInputContainerView.addSubview(self.recSendButton)
+        self.messageInputContainerView.addSubview(self.emojisKeyboardButton)
         
-        self.messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: inputTextField, recSendButton)
+        self.messageInputContainerView.backgroundColor = UIColor.cyan
         
-        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]-10-|", views: inputTextField)
-        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-10-|", views: recSendButton)
+        self.messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: self.inputTextField, self.recSendButton)
+        
+        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]-10-|", views: self.inputTextField)
+        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-10-|", views: self.recSendButton)
+        
+        self.messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: self.inputTextField, self.recSendButton)
+        
+        self.messageInputContainerView.addConstraintsWithFormat("H:|-12-[v0(40)]|", views: self.emojisKeyboardButton)
+        self.messageInputContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.emojisKeyboardButton)
         
     }
     
@@ -938,10 +970,6 @@ class ChatView: UIView,
         
     }
     
-    //func startCounting() {
-    
-    //}
-    
     @objc func handleSendRecUp()
     {
         self.recSendButton.transform = CGAffineTransform(scaleX: 1, y: 1)
@@ -970,6 +998,40 @@ class ChatView: UIView,
         
         return soundURL as NSURL?
         
+    }
+    
+    enum EmoticonKeyboardState {
+        case isEmoticon
+        case isKeyboard
+    }
+    
+    @objc func handleEmoticonsKeyboard() {
+        
+        if self.emoticonKeyboardState == EmoticonKeyboardState.isKeyboard {
+        
+            emojiView.delegate = self
+            self.inputTextField.inputView = emojiView
+            
+            let keyboard_image = UIImage(named: "keyboard")
+            keyboard_image?.maskWithColor(color: UIColor.lightGray)
+            self.emojisKeyboardButton.setImage(keyboard_image, for: UIControlState.normal)
+            
+            self.emoticonKeyboardState = EmoticonKeyboardState.isEmoticon
+            
+        } else if self.emoticonKeyboardState == EmoticonKeyboardState.isEmoticon {
+            
+            self.inputTextField.inputView = nil
+            self.inputTextField.reloadInputViews()
+            
+            let emoticon_image = UIImage(named: "insert_emoticon")
+            emoticon_image?.maskWithColor(color: UIColor.lightGray)
+            self.emojisKeyboardButton.setImage(emoticon_image, for: UIControlState.normal)
+            
+            self.emoticonKeyboardState = EmoticonKeyboardState.isKeyboard
+            
+        }
+            
+        self.inputTextField.becomeFirstResponder()
     }
     
     func contentsOf(folder: URL) -> [URL] {
