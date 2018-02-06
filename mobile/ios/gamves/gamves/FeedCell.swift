@@ -186,23 +186,23 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         cell.nameLabel.text = chatfeed.room
 
         var message = String()
-
-        let admin_delimitator = Global.admin_delimitator
-        let audio_delimitator = Global.audio_delimitator
         
         message = chatfeed.text!
 
-        if message.range(of:admin_delimitator) != nil {
+        if message.range(of:Global.admin_delimitator) != nil {
             
-            if let range = message.range(of: admin_delimitator) {
+            if let range = message.range(of: Global.admin_delimitator) {
             
                 message.removeSubrange(range)
                 
             }
-        
-        } else if message.range(of:audio_delimitator) != nil {
             
-            if let range = message.range(of: audio_delimitator) {
+            cell.isAudioIcon = false
+            cell.isPictureIcon = false
+        
+        } else if message.range(of:Global.audio_delimitator) != nil {
+            
+            if let range = message.range(of: Global.audio_delimitator) {
                 
                 message.removeSubrange(range)
                 
@@ -214,19 +214,43 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
                     var audioTime : String = messageArr[1]
                     
                     cell.isAudioIcon = true
+                    cell.isPictureIcon = false
                     
                     message = "      \(audioTime)"
                     
                 }
             }
+            
+        } else if message.range(of:Global.picture_delimitator) != nil {
+            
+            if let range = message.range(of: Global.picture_delimitator) {
+                
+                message.removeSubrange(range)
+                
+                if (message.contains("----")) {
+                    
+                    let messageArr : [String] = message.components(separatedBy: "----")
+                    
+                    var pictureId : String = messageArr[0]
+                    var chatId : String = messageArr[1]
+                    
+                    cell.isAudioIcon = false
+                    cell.isPictureIcon = true
+                    
+                    
+                    message = "      Photo"
+                    
+                }
+            }
+            
         } else {
             
             cell.isAudioIcon = false
+            cell.isPictureIcon = false
+            
         }
         
         cell.messageLabel.text = message
-        
-        
         
         cell.profileImageView.image = chatfeed.chatThumbnail
         

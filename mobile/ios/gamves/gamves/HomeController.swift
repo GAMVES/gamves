@@ -10,6 +10,10 @@ import UIKit
 import Parse
 import PopupDialog
 
+protocol HomeDelegate {
+    func openMediaController()
+}
+
 class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CLLocationManagerDelegate {
     
     var popup:PopupDialog! = nil
@@ -118,6 +122,18 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
+    }
+    
+    func openSearch(target:AnyObject, isImageMultiSelection:Bool, type: MediaType, termToSearch: String, searchType:SearchType, searchSize:SearchSize) {
+        
+        let media = MediaController()
+        media.delegate = target as! MediaDelegate
+        media.isImageMultiSelection = isImageMultiSelection
+        media.setType(type: type)
+        media.termToSearch = termToSearch
+        media.searchType = searchType
+        media.searchSize = searchSize
+        navigationController?.pushViewController(media, animated: true)
     }
     
     func handleSearch() {

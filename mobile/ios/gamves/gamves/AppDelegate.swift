@@ -24,6 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     var gamvesApplication:UIApplication?
     
+    var homeController:HomeController!
+    
     var online = Bool()
     var connect = Bool()
 
@@ -40,6 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
+        
+        homeController = HomeController(collectionViewLayout: layout)
         
         var reached = false
         
@@ -69,9 +73,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
             
             if let user = PFUser.current() {
-                window?.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))
+                
+                window?.rootViewController = UINavigationController(rootViewController: homeController)
+                
             } else {
+                
                 window?.rootViewController = UINavigationController(rootViewController: LoginController())
+                
             }
             
             print(PFUser.current()?.username)

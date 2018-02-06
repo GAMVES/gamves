@@ -934,7 +934,7 @@ private extension MediaController {
                 let chooseExistingAction = UIAlertAction(title: self.chooseExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
                     
                     self.isLocalVideo = true
-                self.delegateSearch?.setVideoSearchType(type: UploadType.local)
+                    self.delegateSearch?.setVideoSearchType(type: UploadType.local)
                     self.mediaPicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
                     self.mediaPicker.mediaTypes = self.chooseExistingMediaTypes
                     self.present(self.mediaPicker, animated: true, completion: nil)

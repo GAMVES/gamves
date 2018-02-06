@@ -57,6 +57,7 @@ class Global: NSObject
     
     static var admin_delimitator:String = "---is_admin_chat---"
     static var audio_delimitator:String = "---is_audio_chat---"
+    static var picture_delimitator:String = "---is_picture_chat---"
     
     static var key_you_spouse_chat_id = "you_spouse_chat_id"
     static var key_you_son_chat_id = "you_son_chat_id"
@@ -1192,6 +1193,8 @@ class Global: NSObject
         
         return name
     }
+    
+    
 
 
 }
