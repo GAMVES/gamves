@@ -308,7 +308,7 @@ class ChatView: UIView,
         
         let height = self.frame.height
         let chatHeightVideo = height - (30 + editSize)
-        let chatHeight = height - ( editSize + 10 )
+        let chatHeight = height - ( editSize + 5 )
         
         let metricsMessageView = ["editSize" : editSize, "chatHeightVideo" : chatHeightVideo, "chatHeight" : chatHeight]
         
@@ -318,7 +318,7 @@ class ChatView: UIView,
             self.addConstraintsWithFormat("V:|[v0(30)][v1(chatHeightVideo)][v2(editSize)]|", views: self.titleContainerView, self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
         } else
         {
-            self.addConstraintsWithFormat("V:|-3-[v0(chatHeight)][v1(editSize)]|", views: self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
+            self.addConstraintsWithFormat("V:|[v0(chatHeight)][v1(editSize)]|", views: self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
         }
         
         self.chatHolderView.addSubview(self.chatImageView)
@@ -702,10 +702,13 @@ class ChatView: UIView,
                             
                             message.isAudio = false
                             message.isPicture = true
+                            message.isDownloadingPicture = true
                             
                             self.getPicture(id: i, messageText: messageText, completionHandler: { (gamvesPicture, id) in
                                 
                                 message.picture = gamvesPicture
+                                
+                                message.isDownloadingPicture = false
                                 
                                 messagesHandeled.append(message)
                                 
@@ -820,32 +823,18 @@ class ChatView: UIView,
                     
                     picture.pictureSmall = imageSmall
                     
-                    completionHandler(picture, id)
-                    
-                    imageSmall.getDataInBackground(block: { (imageSmallData, errir) in
+                    imageSmall.getDataInBackground(block: { (imageSmallData, error) in
                         
                         if error == nil {
                             
                             var pictrureSmallImage = UIImage(data:imageSmallData!)
                             
-                            image.getDataInBackground(block: { (imageData, error) in
-                                
-                                if error == nil {
-                                    
-                                    var pictrureImage = UIImage(data:imageSmallData!)
-                                    
-                                    let indexPath = IndexPath(item: id, section: 0)
-                                    
-                                    //let cell = self.collectionView.cellForItem(at: indexPath) as! ChatLogMessageCell
-                                    
-                                    //cell.isDownloadingPicture = false
-                                    
-                                    //qcell.progressImage.stopAnimating()
-                                    
-                                }
-                            })
+                            picture.imageSmall = pictrureSmallImage!
+                    
+                            completionHandler(picture, id)
                         }
                     })
+                    
                 }
                 
             } else {
@@ -2012,7 +2001,6 @@ class ChatView: UIView,
                                     appDelegate.gamvesApplication?.applicationIconBadgeNumber = badgeNumber
                                     
                                 })
-                                
                             })
                         }
                     }
@@ -2022,9 +2010,21 @@ class ChatView: UIView,
     }
     
     /*override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        self.scrollToLast()
+        
+        self.downloadImagesFromArray()
+    
+        self.collectionView.removeObserver(self, forKeyPath: "contentSize")
+        
     }*/
     
+    /*
+     let indexPath = IndexPath(item: i, section: 0)
+     let cell = self.collectionView.cellForItem(at: indexPath) as! ChatLogMessageCell
+     cell.isDownloadingPicture = false
+     cell.progressImage.stopAnimating()
+     cell.pictureImageButton.setBackgroundImage(pictrureSmallImage, for: .normal)
+     */
+
     func scrollToLast()
     {
         let lastItem = self.messages.count - 1
@@ -2130,12 +2130,16 @@ class ChatView: UIView,
         
         var time:String = message.time
         
+        cell.timeLabel.text = time
+        
         print(messageText)
         
         if message.isAdmin
         {
             message.isAdmin = true
             message.isSender = true
+            
+            //cell.timeLabel.isHidden = false
             
         } else
         {
@@ -2145,24 +2149,29 @@ class ChatView: UIView,
         if message.isAudio || message.isPicture {
             
             cell.messageTextView.isHidden = true
-            cell.timeLabel.isHidden = true
             
             if message.isPicture {
                 
                 cell.isPicture = true
                 cell.isAudio = false
                 
+                //cell.timeLabel.isHidden = false
+                
             } else if message.isAudio {
                 
                 cell.isPicture = false
                 cell.isAudio = true
                 
+                //cell.timeLabel.isHidden = true
+                
             }
             
         } else {
             
+            //cell.timeLabel.isHidden = false
+            //cell.timeLabel.text = time
+            
             cell.messageTextView.text = messageText
-            cell.timeLabel.text = time
             cell.isAudio = false
             cell.isPicture = false
         }
@@ -2238,7 +2247,10 @@ class ChatView: UIView,
                 cell.bHeight = self.pictureHeight
                 
                 cell.bubbleImageView.image = ChatLogMessageCell.grayPictureBubbleImage
-                cell.pictureImageButton.setBackgroundImage(message.picture.image, for: .normal)
+                cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
+                cell.pictureImageView.image = message.picture.imageSmall
+                
+                //cell.pictureImageButton.setBackgroundImage(message.picture.image, for: .normal)
                 
                 cell.isSender = false
                 
@@ -2293,7 +2305,9 @@ class ChatView: UIView,
                 cell.bHeight = self.pictureHeight
                 
                 cell.bubbleImageView.image = ChatLogMessageCell.bluePictureBubbleImage
-                cell.pictureImageButton.setBackgroundImage(message.picture.image, for: .normal)
+                cell.bubbleImageView.tintColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
+                
+                cell.pictureImageView.image = message.picture.imageSmall
                 
                 cell.isSender = true
                 
@@ -2483,7 +2497,7 @@ TimerDelegate
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "00:00"
-        label.textColor = UIColor.gamvesColor
+        label.textColor = UIColor.white
         //label.backgroundColor = UIColor.green
         label.font = UIFont.boldSystemFont(ofSize: 10)
         //label.textAlignment = .left
@@ -2517,12 +2531,21 @@ TimerDelegate
         return label
     }()
     
-    let pictureImageButton: UIButton = {
-        let imageView = UIButton()
+    let pictureImageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 5
         imageView.layer.masksToBounds = true
+        imageView.layer.backgroundColor = UIColor.green.cgColor
         return imageView
+    }()
+    
+    let pictureImageButton: UIButton = {
+        let button = UIButton()
+        button.contentMode = .scaleAspectFill
+        button.layer.cornerRadius = 5
+        button.layer.masksToBounds = true
+        return button
     }()
     
     static let grayBubbleImage = UIImage(named: "bubble_gray")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
@@ -2561,11 +2584,9 @@ TimerDelegate
         addSubview(bubbleView)
         addSubview(messageTextView)
         
-        print(messageTextView.text)
-        
-        bubbleView.addSubview(bubbleImageView)
-        bubbleView.addConstraintsWithFormat("H:|[v0]|", views: bubbleImageView)
-        bubbleView.addConstraintsWithFormat("V:|[v0]|", views: bubbleImageView)
+        self.bubbleView.addSubview(self.bubbleImageView)
+        self.bubbleView.addConstraintsWithFormat("H:|[v0]|", views: self.bubbleImageView)
+        self.bubbleView.addConstraintsWithFormat("V:|[v0]|", views: self.bubbleImageView)
         
         self.playerStatus = PayerStatus.isIdle
     
@@ -2573,18 +2594,26 @@ TimerDelegate
     
     override func layoutSubviews() {
         
-        let bH = self.bHeight - 25
+        print(self.bHeight)
+        print(self.frame.height)
         
-        let bubbleMetrics = ["bHeight":bH]
+        let bHeight = self.frame.height - 10
         
-        bubbleView.addSubview(timeLabel)
-        bubbleView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: timeLabel)
-        bubbleView.addConstraintsWithFormat("V:|-bHeight-[v0(15)]-5-|", views: timeLabel, metrics: bubbleMetrics)
+        let bubbleMetrics = ["bHeight" : bHeight]
         
-        if isSender {
-            timeLabel.textAlignment = .left
+        if self.timeLabel.isHidden {
+            print(messageTextView.text)
+            print("hidden")
+        }
+        
+        self.bubbleView.addSubview(self.timeLabel)
+        self.bubbleView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: self.timeLabel)
+        self.bubbleView.addConstraintsWithFormat("V:|-bHeight-[v0(15)]|", views: self.timeLabel, metrics: bubbleMetrics)
+        
+        if self.isSender {
+            self.timeLabel.textAlignment = .left
         } else  {
-            timeLabel.textAlignment = .right
+            self.timeLabel.textAlignment = .right
         }
         
         /////////////////
@@ -2681,15 +2710,17 @@ TimerDelegate
             
         } else if self.isPicture {
             
+            self.bubbleView.addSubview(self.pictureImageView)
+            self.bubbleView.addConstraintsWithFormat("H:|-10-[v0]-15-|", views: self.pictureImageView)
+            self.bubbleView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.pictureImageView)
+            
             self.pictureImageButton.addTarget(self, action:#selector(showImage(button:)), for: .touchUpInside)
             
-            self.bubbleView.addSubview(self.pictureImageButton)
-            self.bubbleView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: self.pictureImageButton)
-            self.bubbleView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.pictureImageButton)
+            self.pictureImageButton.frame = self.pictureImageView.frame
             
             if self.isDownloadingPicture {
                 
-                self.progressImage = Global.setActivityIndicator(container: self.bubbleView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
+                self.progressImage = Global.setActivityIndicator(container: self.bubbleView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 0, y: 0, width: 80.0, height: 80.0)
                 
                 self.progressImage.startAnimating()
                 
@@ -2770,7 +2801,6 @@ TimerDelegate
         DispatchQueue.main.async {
             self.audioCountabel.text = time
         }
-        
     }
     
     @objc func trackAudio() {
@@ -2869,7 +2899,6 @@ class ChatTimer: NSObject {
         self.delegate.timeCount(time: timeCount)
         
     }
-    
     
 }
 

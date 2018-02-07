@@ -226,7 +226,7 @@ class Global: NSObject
                                     
                                     print(levelId)
                                     
-                                    //if Global.levels[levelId] != nil {
+                                    if Global.levels[levelId] != nil {
                                     
                                         let levelGamves = Global.levels[levelId]
                                         
@@ -236,7 +236,7 @@ class Global: NSObject
                                         gamvesUser.levelDescription = (levelGamves?.description)!
                                 
                                         gamvesUser.levelId = levelId
-                                    //}
+                                    }
                                     
                                 }
                                 

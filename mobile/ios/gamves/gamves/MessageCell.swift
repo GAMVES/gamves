@@ -85,6 +85,7 @@ class MessageCell: BaseCell {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
         imageView.image = UIImage(named: "rec_on")
+        imageView.isHidden = true
         return imageView
     }()
     
@@ -93,6 +94,7 @@ class MessageCell: BaseCell {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
         imageView.image = UIImage(named: "camera_black")
+        imageView.isHidden = true
         return imageView
     }()
     
@@ -112,9 +114,6 @@ class MessageCell: BaseCell {
         addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
         
     }
-    
-    var isAudioIcon = Bool()
-    var isPictureIcon = Bool()
     
     fileprivate func setupContainerView() {
         let containerView = UIView()
@@ -156,19 +155,7 @@ class MessageCell: BaseCell {
         containerView.addConstraintsWithFormat("H:|[v0(20)]|", views: self.pictureIconView)
         containerView.addConstraintsWithFormat("V:|-28-[v0(20)]|", views: self.pictureIconView)
         
-        self.audioIconView.isHidden = true
-        self.pictureIconView.isHidden = true
-        
-    }
-    
-    override func layoutSubviews() {
-        
-        if self.isAudioIcon {
-            self.audioIconView.isHidden = false
-       
-        } else if self.isPictureIcon {
-            self.pictureIconView.isHidden = false
-        }
+
     }
     
 }

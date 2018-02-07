@@ -197,8 +197,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
                 
             }
             
-            cell.isAudioIcon = false
-            cell.isPictureIcon = false
+            cell.audioIconView.isHidden = true
+            cell.pictureIconView.isHidden = true
         
         } else if message.range(of:Global.audio_delimitator) != nil {
             
@@ -213,8 +213,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
                     var audioId : String = messageArr[0]
                     var audioTime : String = messageArr[1]
                     
-                    cell.isAudioIcon = true
-                    cell.isPictureIcon = false
+                    cell.audioIconView.isHidden = false
+                    cell.pictureIconView.isHidden = true
                     
                     message = "      \(audioTime)"
                     
@@ -234,19 +234,18 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
                     var pictureId : String = messageArr[0]
                     var chatId : String = messageArr[1]
                     
-                    cell.isAudioIcon = false
-                    cell.isPictureIcon = true
+                    cell.audioIconView.isHidden = true
+                    cell.pictureIconView.isHidden = false
                     
-                    
-                    message = "      Photo"
+                    message = "        Photo"
                     
                 }
             }
             
         } else {
             
-            cell.isAudioIcon = false
-            cell.isPictureIcon = false
+            cell.audioIconView.isHidden = true
+            cell.pictureIconView.isHidden = true
             
         }
         
