@@ -43,7 +43,8 @@ class MessageChat
     var userId = String()
     var userName = String()
     
-    var date: Date?
+    var createdAt:Date!
+    var date:Date!
     var isSender:Bool!
     var isAdmin:Bool!
     
@@ -566,13 +567,11 @@ class ChatView: UIView,
                                             {
                                                 self.loadChatsVideos(chatFeed: chatFeed, userCount: usersAmount, completionHandler: { ( messagesHandeled ) -> () in
                                                     
-                                                    //Here sort or append new chats if brought by chunks
+                                                    var sortedMessages = messagesHandeled.sorted(by: {
+                                                        $0.date.compare($1.date) == .orderedAscending
+                                                    })
                                                     
-                                                    messagesHandeled.sorted(by: {$0.date! < $1.date! })
-                                                    
-                                                    print(messagesHandeled)
-                                                    
-                                                    self.messages = messagesHandeled
+                                                    self.messages = sortedMessages
                                                     
                                                     DispatchQueue.main.async {
                                                         
@@ -653,6 +652,8 @@ class ChatView: UIView,
                         var messageText = chatVideo["message"] as! String
                         
                         message.date = chatVideo.createdAt
+                        message.createdAt = chatVideo.createdAt
+                        
                         message.chatId = chatVideo["chatId"] as! Int
                         
                         let dateFormatter = DateFormatter()
@@ -2124,6 +2125,13 @@ class ChatView: UIView,
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        for message in messages {
+            print(message.message)
+            print(message.date)
+            print("-----------------------------------------")
+        }
+        
         return messages.count
     }
     
