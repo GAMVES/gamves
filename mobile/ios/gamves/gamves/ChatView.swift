@@ -2386,19 +2386,6 @@ class ChatView: UIView,
         let estimatedFrame = getEstimatedFrame(message: message)
         
         return CGSize(width:self.frame.width, height:estimatedFrame.height + 20 + 10)
-        
-        /*if let messageText = message.message {
-            
-            let size = CGSize(width:250, height:1000)
-            
-            let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            
-            let estimatedFrame = NSString(string: messageText).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
-            
-            return CGSize(width:self.frame.width, height:estimatedFrame.height + 20 + 10)
-        }
-         
-        return CGSize(width:self.frame.width, height:100)*/
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -2836,6 +2823,7 @@ TimerDelegate
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         self.playerStatus = PayerStatus.isIdle
         self.audioTimer.stopTimer()
+        self.audioTimer.invalidate()
         self.audioCountabel.text = "00:00"
         self.showPlayIcon()
     }
@@ -2862,6 +2850,8 @@ TimerDelegate
     internal func audioPlayerBeginInterruption(_ player: AVAudioPlayer){
         print(player.debugDescription)
     }
+    
+    
         
     func sliderValueDidChange(sender: AnyObject) {
         
@@ -2899,6 +2889,10 @@ class ChatTimer: NSObject {
     }
     
     func stopTimer() {
+        self.timer.invalidate()
+    }
+    
+    func invalidate() {
         self.timer.invalidate()
     }
     
