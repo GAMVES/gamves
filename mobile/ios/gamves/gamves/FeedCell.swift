@@ -57,39 +57,30 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         self.registerLiveQuery()
         
-        //Floaty.global.rtlMode = true
-        
         let floaty = Floaty()
         floaty.addItem(title: "New Group", handler: { item in
 
-            if self.homeController != nil
-            {
+            if self.homeController != nil {
                 self.homeController?.selectContact(group: true)
             }
-            
         })
         
         floaty.addItem(title: "Select Contact", handler: { item in
             
-            if self.homeController != nil
-            {
+            if self.homeController != nil {
                 self.homeController?.selectContact(group: false)
             }
         })
+        
         self.addSubview(floaty)
-        
-        print(Global.chatVideos)
-        
     }
     
     
-    func registerLiveQuery()
-    {
+    func registerLiveQuery() {
     
         queryChatFeed = PFQuery(className: "ChatFeed")
         
-        if let userId = PFUser.current()?.objectId
-        {
+        if let userId = PFUser.current()?.objectId {
             queryChatFeed.whereKey("members", contains: userId)
         }
         
@@ -98,7 +89,6 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int ) -> () in
                 
                 self.collectionView.reloadData()
-                
             })           
         }
         
@@ -107,42 +97,34 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int ) -> () in
                 
                 self.collectionView.reloadData()
-                
             })
-
         }
-        
-        //self.fetchFeed()
         
         self.collectionView.reloadData()
         
     }
 
-    func fetchFeed()
-    {
+    func fetchFeed() {
     
         self.activityView.startAnimating()
         
         queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
             
-            if error == nil
-            {
+            if error == nil {
                 
                 let chatFeddsCount = chatfeeds?.count
                 
-                if chatFeddsCount! > 0
-                {
+                if chatFeddsCount! > 0 {
+                    
                     let chatfeedsCount =  chatfeeds?.count
                     
                     ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Int ) -> () in
                         
                         self.collectionView.reloadData()
                         self.activityView.stopAnimating()
-                        
                     })
                     
-                } else
-                {
+                } else {
                     self.activityView.stopAnimating()
                 }
                 
@@ -152,30 +134,26 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     }
     
     
-    func uploadData()
-    {
+    func uploadData() {
         self.reloadCollectionView()
     }
     
-    func reloadCollectionView()
-    {
+    func reloadCollectionView() {
+        
         ChatFeedMethods.sortFeedByDate()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-        {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.collectionView.reloadData()
         }
     }
     
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
-    {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         print(ChatFeedMethods.chatFeeds.count)
         return ChatFeedMethods.chatFeeds.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-    {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MessageCell
         
@@ -192,9 +170,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         if message.range(of:Global.admin_delimitator) != nil {
             
             if let range = message.range(of: Global.admin_delimitator) {
-            
                 message.removeSubrange(range)
-                
             }
             
             cell.audioIconView.isHidden = true
@@ -238,7 +214,6 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
                     cell.pictureIconView.isHidden = false
                     
                     message = "        Photo"
-                    
                 }
             }
             
@@ -253,73 +228,54 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         cell.profileImageView.image = chatfeed.chatThumbnail
         
-        if chatfeed.lasPoster != nil
-        {
-            let userId = chatfeed.lasPoster!
+        if chatfeed.lasPoster != nil {
             
+            let userId = chatfeed.lasPoster!
             let gamvesUser = Global.userDictionary[userId]
-
             cell.hasReadImageView.image = gamvesUser?.avatar
         }
         
         var image = String()
         
-        if (chatfeed.isVideoChat)!
-        {
+        if (chatfeed.isVideoChat)! {
             image = "movie"
-        } else
-        {
+        } else {
             image = "group"
         }
         
         let imagetype = UIImage(named: image)
         cell.isImageView.image = imagetype
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h:mm a"
+        let elapsedTime = chatfeed.date?.elapsedTime
         
-        let elapsedTimeInSeconds = Date().timeIntervalSince(chatfeed.date!)
+        cell.timeLabel.text = elapsedTime
         
-        let secondInDays: TimeInterval = 60 * 60 * 24
-        
-        if elapsedTimeInSeconds > 7 * secondInDays {
-            dateFormatter.dateFormat = "MM/dd/yy"
-        } else if elapsedTimeInSeconds > secondInDays {
-            dateFormatter.dateFormat = "EEE"
-        }
-        
-        if chatfeed.badgeNumber != nil
-        {
-            if chatfeed.badgeNumber! > 0
-            {
+        if chatfeed.badgeNumber != nil {
+            
+            if chatfeed.badgeNumber! > 0 {
+                
                 let number = chatfeed.badgeNumber
-
                 cell.badgeLabel.isHidden = false
                 
-                if let textNumber = number
-                {
+                if let textNumber = number {
                     cell.badgeLabel.text = String (textNumber)
                 }
             
-            } else
-            {
+            } else {
+                
                 cell.badgeLabel.text = ""
                 //cell.badgeLabel.layer.backgroundColor = UIColor.gamvesLightGrayColor.cgColor
                 cell.badgeLabel.isHidden = true
             }
-        } else
-        {
+            
+        } else {
             cell.badgeLabel.isHidden = true
         }
         
-        cell.timeLabel.text = dateFormatter.string(from: chatfeed.date!)
-    
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
-        
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.frame.width, height: 100)
     }
     
@@ -335,8 +291,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         let isVideoChat:Bool = chatfeed.isVideoChat! as Bool
         
-        if isVideoChat
-        {
+        if isVideoChat {
             
             let chatId = chatfeed.chatId! as Int
             print(chatId)
@@ -351,15 +306,12 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             let videoLauncher = VideoLauncher()
             videoLauncher.showVideoPlayer(videoGamves: video)
             
-        } else
-        {
-            if self.homeController != nil
-            {
+        } else {
+            
+            if self.homeController != nil {
                 self.homeController?.openChat(room: chatfeed.room!, chatId: chatfeed.chatId!, users: chatfeed.users!)
             }
-            
         }
-        
     }
 }
 

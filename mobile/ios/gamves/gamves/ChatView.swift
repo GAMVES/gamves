@@ -655,7 +655,20 @@ class ChatView: UIView,
                         message.date = chatVideo.createdAt
                         message.chatId = chatVideo["chatId"] as! Int
                         
-                        message.time = chatVideo["time"] as! String
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "h:mm a"
+                        
+                        let elapsedTimeInSeconds = Date().timeIntervalSince(message.date!)
+                        
+                        let secondInDays: TimeInterval = 60 * 60 * 24
+                        
+                        if elapsedTimeInSeconds > 7 * secondInDays {
+                            dateFormatter.dateFormat = "MM/dd/yy"
+                        } else if elapsedTimeInSeconds > secondInDays {
+                            dateFormatter.dateFormat = "EEE"
+                        }
+                        
+                        message.time = dateFormatter.string(from: message.date!)
                         
                         let delimitator = Global.admin_delimitator
                         if messageText.range(of:delimitator) != nil {

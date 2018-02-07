@@ -76,6 +76,7 @@ class ChatFeedMethods: NSObject
             chatfeed.room = room
             
             chatfeed.date = chatFeedObj.updatedAt
+            
             chatfeed.lasPoster = chatFeedObj["lastPoster"] as? String
             let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
             chatfeed.isVideoChat = isVideoChat
