@@ -69,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
             
             DispatchQueue.main.async {
-                self.loadAditionalData()
+                Global.loadAditionalData()
             }
             
             if let user = PFUser.current() {
@@ -143,28 +143,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         return true
         
-    }
-    
-    func loadAditionalData() {
-        
-        if PFUser.current() != nil {
-            
-            Global.loaLevels()
-            
-            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-                
-                Global.familyLoaded = true
-                
-                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
-                    
-                    Global.chatFeedLoaded = true
-                })
-            })
-            
-            self.loadChatChannels()
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
-        }
     }
     
     func registerApplicationForPushNotifications(application: UIApplication) {
@@ -345,51 +323,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     }
     
-    func handleLogin() {
-        self.loadChatChannels()
-    }
-    
-    func loadChatChannels()
-    {
-        
-        var queryChatFeed = PFQuery(className: "ChatFeed")
-        
-        queryChatFeed = PFQuery(className: "ChatFeed")
-        
-        if let userId = PFUser.current()?.objectId {
-            queryChatFeed.whereKey("members", contains: userId)
-        }
-        
-        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
-            
-            if chatfeeds != nil {
-            
-                let chatFeddsCount = chatfeeds?.count
-                
-                print(chatFeddsCount)
-                
-                if chatFeddsCount! > 0 {
-                    
-                    let chatfeedsCount =  chatfeeds?.count
-                    
-                    print(chatfeedsCount)
-                    
-                    if chatfeedsCount! > 0
-                    {
-                        
-                        for feed in chatfeeds! {
-                            
-                            let chatId:Int = feed["chatId"] as! Int
-                            
-                            let chatIdStr = String(chatId) as String
-                            
-                            PFPush.subscribeToChannel(inBackground: chatIdStr)
-                        }
-                    }
-                }
-            }
-        })
-    }
     
 }
 

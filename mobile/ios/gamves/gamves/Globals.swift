@@ -330,164 +330,7 @@ class Global: NSObject
         }
     }
    
-    
-    /*static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
-    {
-        let userId = user.objectId!
-        
-        if self.userDictionary[userId] == nil
-        {
-            
-            let gamvesUser = GamvesParseUser()
-            
-            gamvesUser.name = user["Name"] as! String
-            gamvesUser.userId = user.objectId!
-            
-            gamvesUser.firstName = user["firstName"] as! String
-            gamvesUser.lastName = user["lastName"] as! String
-            
-            gamvesUser.userName = user["username"] as! String
-            
-            //gamvesUser.email = user.email!
-            
-            if user["status"] != nil
-            {
-                gamvesUser.status = user["status"] as! String
-            }
-            
-            if PFUser.current()?.objectId == userId
-            {
-                gamvesUser.isSender = true
-            }
-            
-            gamvesUser.gamvesUser = user
-            
-            let levelRelation = user.relation(forKey: "level") as PFRelation
-            
-            let queryLevel = levelRelation.query()
-            
-            queryLevel.findObjectsInBackground(block: { (levels, error) in
-                
-                if error == nil
-                {
-                    let countLevels = levels?.count
-                    var count = 0
-                    
-                    for level in levels!
-                    {
-                        gamvesUser.levelNumber = level["grade"] as! Int
-                        gamvesUser.levelDescription = level["description"] as! String
-                        
-                        if user["pictureSmall"] != nil
-                        {
-                            
-                            let picture = user["pictureSmall"] as! PFFile
-                            
-                            picture.getDataInBackground(block: { (data, error) in
-                                
-                                if (error != nil)
-                                {
-                                    print(error)
-                                } else
-                                {
-                                    
-                                    let image = UIImage(data: data!)
-                                    gamvesUser.avatar = image!
-                                    gamvesUser.isAvatarDownloaded = true
-                                    gamvesUser.isAvatarQuened = false
-                                    
-                                    var typeNumber = user["iDUserType"] as! Int
-                                    
-                                    print(gamvesUser.firstName)
-                                    
-                                    gamvesUser.typeNumber = typeNumber
-                                    
-                                    if user["isRegister"] != nil {
-                                    
-                                        let register = user["isRegister"] as! Bool
-                                        gamvesUser.isRegister = register
-                                        
-                                    }
-                                    
-                                    print(gamvesUser.typeNumber)
-                                    
-                                    //No me interesa
-                                    //gamvesUser.typeDescription = user["description"] as! String
-                                    
-                                    if isFamily
-                                    {
-                                        var gender = GamvesGender()
-                                        
-                                        if typeNumber == 0 || typeNumber == 4
-                                        {
-                                            if typeNumber == 0
-                                            {
-                                                gender.female = true
-                                            } else if typeNumber == 4
-                                            {
-                                                gender.male = true
-                                            }
-                                            gamvesUser.gender = gender
-                                            
-                                            Global.gamvesFamily.youUser = gamvesUser
-                                            
-                                        } else if typeNumber == 1 || typeNumber == 5
-                                        {
-                                            if typeNumber == 1
-                                            {
-                                                gender.female = true
-                                            } else if typeNumber == 5
-                                            {
-                                                gender.male = true
-                                            }
-                                            
-                                            gamvesUser.gender = gender
-                                            
-                                            Global.gamvesFamily.spouseUser = gamvesUser
-                                            
-                                        } else if typeNumber == 2 || typeNumber == 3
-                                        {
-                                            
-                                            if typeNumber == 2
-                                            {
-                                                gender.male = true
-                                            } else if typeNumber == 3
-                                            {
-                                                gender.male = false
-                                            }
-                                            gamvesUser.gender = gender
-                                            
-                                            Global.gamvesFamily.sonsUsers.append(gamvesUser)
-                                        }
-                                    }
-                                    
-                                    if count == (countLevels!-1)
-                                    {
-                                        
-                                        self.userDictionary[userId] = gamvesUser
-                                        
-                                        completionHandler(gamvesUser)
-                                        
-                                    }
-                                    
-                                    count = count + 1
-                                    
-                                }
-                                
-                            })
-                        }
-                    }
-                }
-            })
-            
-        } else {
-            
-            completionHandler(self.userDictionary[userId]!)
-        }
-    }*/
-    
-    
-    
+
     static func setTitle(title:String, subtitle:String) -> UIView
     {
         let titleLabel = UILabel(frame: CGRect(x:0, y:-2, width:0, height:0))
@@ -945,7 +788,76 @@ class Global: NSObject
         
     }
     
-    static func loaLevels() {
+    static func loadAditionalData() {
+        
+        if PFUser.current() != nil {
+            
+            Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
+                
+                Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                    
+                    Global.familyLoaded = true
+                    
+                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
+                        
+                        Global.chatFeedLoaded = true
+                    })
+                })
+            })
+            
+            self.loadChatChannels()
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
+        }
+    }
+    
+    func handleLogin() {
+        Global.loadChatChannels()
+    }
+    
+    static func loadChatChannels()
+    {
+        
+        var queryChatFeed = PFQuery(className: "ChatFeed")
+        
+        queryChatFeed = PFQuery(className: "ChatFeed")
+        
+        if let userId = PFUser.current()?.objectId {
+            queryChatFeed.whereKey("members", contains: userId)
+        }
+        
+        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
+            
+            if chatfeeds != nil {
+                
+                let chatFeddsCount = chatfeeds?.count
+                
+                print(chatFeddsCount)
+                
+                if chatFeddsCount! > 0 {
+                    
+                    let chatfeedsCount =  chatfeeds?.count
+                    
+                    print(chatfeedsCount)
+                    
+                    if chatfeedsCount! > 0
+                    {
+                        
+                        for feed in chatfeeds! {
+                            
+                            let chatId:Int = feed["chatId"] as! Int
+                            
+                            let chatIdStr = String(chatId) as String
+                            
+                            PFPush.subscribeToChannel(inBackground: chatIdStr)
+                        }
+                    }
+                }
+            }
+        })
+    }
+    
+    static func loaLevels(completionHandler : @escaping (_ resutl:Bool) -> ()){
         
         let queryLevel = PFQuery(className:"Level")
         queryLevel.order(byAscending: "order")
@@ -979,6 +891,8 @@ class Global: NSObject
                         
                         if (countLevels-1)  == count {
                             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: self)
+                            
+                            completionHandler(true)
                         }
                         count = count + 1
                         

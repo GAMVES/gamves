@@ -262,6 +262,10 @@ class LoginController: UIViewController {
                      
                      }*/
                     
+                    //User and family info
+                    DispatchQueue.main.async {
+                        Global.loadAditionalData()
+                    }
                     
                     //Check fisrt login
                     
