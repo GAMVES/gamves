@@ -613,100 +613,104 @@ class LoginViewController: UIViewController
                     
                     UserDefaults.standard.setIsLoggedIn(value: true)
                     
-                    if self.isRegistered {                    
+                    if self.isRegistered {
+                        
+                        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
                     
-                        Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-                            
-                            UserDefaults.standard.setIsLoggedIn(value: true)                            
-                            UserDefaults.standard.setIsRegistered(value: true)
-                            
-                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-                            
-                            //FAMILY
-                            
-                            Global.defaults.set(true, forKey: "profile_completed")
-                            Global.defaults.set(true, forKey: "family_exist")
-                            Global.defaults.set(true, forKey: "son_exist")
-                            
-                            let your_family_name = Global.gamvesFamily.familyName
-                            Global.defaults.set(your_family_name, forKey: "your_family_name")
-                            
-                            //YOU
+                            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                                
+                                UserDefaults.standard.setIsLoggedIn(value: true)
+                                UserDefaults.standard.setIsRegistered(value: true)
+                                
+                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                                
+                                //FAMILY
+                                
+                                Global.defaults.set(true, forKey: "profile_completed")
+                                Global.defaults.set(true, forKey: "family_exist")
+                                Global.defaults.set(true, forKey: "son_exist")
+                                
+                                let your_family_name = Global.gamvesFamily.familyName
+                                Global.defaults.set(your_family_name, forKey: "your_family_name")
+                                
+                                //YOU
 
-                            let email = Global.gamvesFamily.youUser.email
-                            Global.defaults.set(email, forKey: "your_email")
-                            
-                            let password = Global.gamvesFamily.youUser.email
-                            Global.defaults.set(password, forKey: "your_password")
-                            
-                            let your_username = Global.gamvesFamily.youUser.userName
-                            Global.defaults.set(your_username, forKey: "your_username")
-                            
-                            let youImage:UIImage = Global.gamvesFamily.youUser.avatar
-                            
-                            Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore:                  youImage)
-                            
-                            let youImageLow = youImage.lowestQualityJPEGNSData as Data
-                            var youSmallImage = UIImage(data: youImageLow)
-                            
-                            Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youSmallImage!)
-                            
-                            //SPOUSE
-                            
-                            let spouse_username = Global.gamvesFamily.spouseUser.userName
-                            Global.defaults.set(spouse_username, forKey: "spouse_username")
-                            
-                            let spouse_email = Global.gamvesFamily.spouseUser.email
-                            Global.defaults.set(spouse_email, forKey: "spouse_email")
-                          
-                            let spouseImage:UIImage = Global.gamvesFamily.spouseUser.avatar
-                            
-                            Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: spouseImage)
-                            
-                            let spouseImageLow = spouseImage.lowestQualityJPEGNSData as Data
-                            var spouseSmallImage = UIImage(data: spouseImageLow)
-                            
-                            Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: spouseSmallImage!)
-                            
-                            //SON
-                            
-                            let sonUser:GamvesParseUser = Global.gamvesFamily.sonsUsers[0]
-                            
-                            let son_name = sonUser.name
-                            Global.defaults.set(son_name, forKey: "son_name")
-                            
-                            let son_username = sonUser.userName
-                            Global.defaults.set(son_username, forKey: "son_username")
-                            
-                            let son_type = sonUser.typeNumber
-                            Global.defaults.set(son_type, forKey: "son_type")
-                            
-                            let son_school = Global.gamvesFamily.school.schoolName
-                            Global.defaults.set(son_school, forKey: "son_school")
-                            
-                            if let son_userId = sonUser.userObj.objectId {
-                                Global.defaults.set(son_userId, forKey: "son_userId")
-                                Global.defaults.set(son_userId, forKey: "son_object_id")
-                            }
-                            
-                            let sonImage:UIImage = Global.gamvesFamily.sonsUsers[0].avatar
-                            
-                            Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: sonImage)
-                            
-                            let sonImageLow = sonImage.lowestQualityJPEGNSData as Data
-                            var sonSmallImage = UIImage(data: sonImageLow)
-                            
-                            Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)             
-                            
-                            //self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
-                            
-                            
-                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: self)
-                            
-                            self.tabBarViewController?.selectedIndex = 0 //Home
-                            
-                            self.activityIndicatorView?.stopAnimating()   
-                            self.dismiss(animated: true, completion: nil)
+                                let email = Global.gamvesFamily.youUser.email
+                                Global.defaults.set(email, forKey: "your_email")
+                                
+                                let password = Global.gamvesFamily.youUser.email
+                                Global.defaults.set(password, forKey: "your_password")
+                                
+                                let your_username = Global.gamvesFamily.youUser.userName
+                                Global.defaults.set(your_username, forKey: "your_username")
+                                
+                                let youImage:UIImage = Global.gamvesFamily.youUser.avatar
+                                
+                                Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore:                  youImage)
+                                
+                                let youImageLow = youImage.lowestQualityJPEGNSData as Data
+                                var youSmallImage = UIImage(data: youImageLow)
+                                
+                                Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youSmallImage!)
+                                
+                                //SPOUSE
+                                
+                                let spouse_username = Global.gamvesFamily.spouseUser.userName
+                                Global.defaults.set(spouse_username, forKey: "spouse_username")
+                                
+                                let spouse_email = Global.gamvesFamily.spouseUser.email
+                                Global.defaults.set(spouse_email, forKey: "spouse_email")
+                              
+                                let spouseImage:UIImage = Global.gamvesFamily.spouseUser.avatar
+                                
+                                Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: spouseImage)
+                                
+                                let spouseImageLow = spouseImage.lowestQualityJPEGNSData as Data
+                                var spouseSmallImage = UIImage(data: spouseImageLow)
+                                
+                                Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: spouseSmallImage!)
+                                
+                                //SON
+                                
+                                let sonUser:GamvesParseUser = Global.gamvesFamily.sonsUsers[0]
+                                
+                                let son_name = sonUser.name
+                                Global.defaults.set(son_name, forKey: "son_name")
+                                
+                                let son_username = sonUser.userName
+                                Global.defaults.set(son_username, forKey: "son_username")
+                                
+                                let son_type = sonUser.typeNumber
+                                Global.defaults.set(son_type, forKey: "son_type")
+                                
+                                let son_school = Global.gamvesFamily.school.schoolName
+                                Global.defaults.set(son_school, forKey: "son_school")
+                                
+                                if let son_userId = sonUser.userObj.objectId {
+                                    Global.defaults.set(son_userId, forKey: "son_userId")
+                                    Global.defaults.set(son_userId, forKey: "son_object_id")
+                                }
+                                
+                                let sonImage:UIImage = Global.gamvesFamily.sonsUsers[0].avatar
+                                
+                                Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: sonImage)
+                                
+                                let sonImageLow = sonImage.lowestQualityJPEGNSData as Data
+                                var sonSmallImage = UIImage(data: sonImageLow)
+                                
+                                Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)
+                                
+                                //self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
+                                
+                                
+                                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: self)
+                                
+                                self.tabBarViewController?.selectedIndex = 0 //Home
+                                
+                                self.activityIndicatorView?.stopAnimating()
+                                self.dismiss(animated: true, completion: nil)
+                                
+                            })
                             
                         })
                         

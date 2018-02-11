@@ -52,7 +52,7 @@ class MessageCell: BaseCell {
     var timeLabel: UILabel = {
         let label = UILabel()
         label.text = "12:05 pm"
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.systemFont(ofSize: 13)
         label.textAlignment = .right
         return label
     }()
@@ -85,6 +85,16 @@ class MessageCell: BaseCell {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
         imageView.image = UIImage(named: "rec_on")
+        imageView.isHidden = true
+        return imageView
+    }()
+    
+    var pictureIconView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
+        imageView.image = UIImage(named: "camera_black")
+        imageView.isHidden = true
         return imageView
     }()
     
@@ -105,8 +115,6 @@ class MessageCell: BaseCell {
         
     }
     
-    var isAudioIcon = Bool()
-    
     fileprivate func setupContainerView() {
         let containerView = UIView()
         addSubview(containerView)
@@ -125,8 +133,9 @@ class MessageCell: BaseCell {
         containerView.addSubview(hasReadImageView)
         containerView.addSubview(badgeLabel)
         containerView.addSubview(audioIconView)
+        containerView.addSubview(pictureIconView)
         
-        containerView.addConstraintsWithFormat("H:|[v0][v1(80)]-12-|", views: nameLabel, timeLabel)
+        containerView.addConstraintsWithFormat("H:|[v0][v1(110)]-12-|", views: nameLabel, timeLabel)
         
         containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, messageLabel)
         
@@ -143,15 +152,11 @@ class MessageCell: BaseCell {
         containerView.addConstraintsWithFormat("H:|[v0(20)]|", views: self.audioIconView)
         containerView.addConstraintsWithFormat("V:|-28-[v0(20)]|", views: self.audioIconView)
         
-        self.audioIconView.isHidden = true
+        containerView.addConstraintsWithFormat("H:|[v0(20)]|", views: self.pictureIconView)
+        containerView.addConstraintsWithFormat("V:|-28-[v0(20)]|", views: self.pictureIconView)
         
-    }
-    
-    override func layoutSubviews() {
         
-        if self.isAudioIcon {
-            self.audioIconView.isHidden = false
-        }
     }
     
 }
+

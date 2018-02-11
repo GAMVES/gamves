@@ -10,14 +10,21 @@
 import UIKit
 import Parse
 
-class ChatFeedMethods: NSObject
-{    
+class ChatFeedMethods: NSObject {
     
     static var chatFeeds = Dictionary<Int, ChatFeed>()
 
-    static func sortFeedByDate()
-    {
-        self.chatFeeds.sorted(by: {$0.value.date! > $1.value.date! })
+    static func sortFeedByDate() {
+        
+        var sortedFeeds = self.chatFeeds.sorted(by: {
+            $0.value.date?.compare($1.value.date!) == .orderedAscending
+        })
+        
+        self.chatFeeds = Dictionary<Int, ChatFeed>()
+        
+        for sorted in sortedFeeds {
+            self.chatFeeds[sorted.key] = sorted.value
+        }
     }
     
     static func queryFeed(chatId:Int?, completionHandlerChatId : @escaping (_ chatId:Int) -> ()?)
@@ -129,12 +136,12 @@ class ChatFeedMethods: NSObject
                                 
                                 print(counter)
                                 
-                                self.sortFeedByDate()
-                                
                                 self.chatFeeds[chatId] = chatfeed
                                 
                                 if (chatfeedsCount-1) == fcount
                                 {
+                                    self.sortFeedByDate()
+                                    
                                     completionHandler(chatId)
                                 }
                                 

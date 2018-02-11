@@ -14,6 +14,9 @@ import PopupDialog
 class Global: NSObject
 {
     
+    static var pictureRecorded = GamvesPicture()
+    static var audioRecorded = GamvesAudio()
+    
     static var levels = Dictionary<String, LevelsGamves>()
     
     static var schools = [GamvesSchools]()
@@ -66,6 +69,7 @@ class Global: NSObject
     
     static var admin_delimitator:String = "---is_admin_chat---"
     static var audio_delimitator:String = "---is_audio_chat---"
+    static var picture_delimitator:String = "---is_picture_chat---"
 
     static var defaults = UserDefaults.standard
     
@@ -85,6 +89,7 @@ class Global: NSObject
     static var notificationKeyFamilyLoaded  = "com.gamves.gamvesparent.familyLoaded"
     static var notificationKeyLevelsLoaded  = "com.gamves.gamvesparent.levelsLoaded"
     static var notificationKeyChatFeed      = "com.gamves.gamvesparent.chatfeed"
+    static var notificationYourAccountInfoLoaded  = "com.gamves.gamvesparent.notificationYourAccountInfoLoaded"
     static var notificationKeyLoadFamilyDataGromGlobal  = "com.gamves.gamvesparent.loadfamilydatagromglobal"
     
     static var badgeNumber = Bool()
@@ -247,8 +252,7 @@ class Global: NSObject
             completionHandler(self.userDictionary[userId]!)
         }
     }
-    
-    
+        
     static func adduserToFamilyFromGlobal(gamvesUser : GamvesParseUser){
         
         if let myId = PFUser.current()?.objectId {
@@ -738,7 +742,7 @@ class Global: NSObject
     }
     
     
-    static func loaLevels() {
+    static func loaLevels(completionHandler : @escaping (_ resutl:Bool) -> ()){
         
         let queryLevel = PFQuery(className:"Level")
         queryLevel.order(byAscending: "order")
@@ -772,9 +776,12 @@ class Global: NSObject
                         
                         if (countLevels-1)  == count {
                             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: self)
+                            
+                            completionHandler(true)
                         }
                         count = count + 1
-                    }                        
+                        
+                    }
                 }
             }
         }

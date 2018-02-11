@@ -158,8 +158,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         self.reloadCollectionView()
     }
     
-    func reloadCollectionView()
-    {
+    func reloadCollectionView() {
+        
         ChatFeedMethods.sortFeedByDate()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
@@ -187,23 +187,21 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         cell.nameLabel.text = chatfeed.room
 
         var message = String()
-        
-        let admin_delimitator = Global.admin_delimitator
-        let audio_delimitator = Global.audio_delimitator
-        
+    
         message = chatfeed.text!
         
-        if message.range(of:admin_delimitator) != nil {
+        if message.range(of:Global.admin_delimitator) != nil {
             
-            if let range = message.range(of: admin_delimitator) {
-                
+            if let range = message.range(of: Global.admin_delimitator) {
                 message.removeSubrange(range)
-                
             }
             
-        } else if message.range(of:audio_delimitator) != nil {
+            cell.audioIconView.isHidden = true
+            cell.pictureIconView.isHidden = true
             
-            if let range = message.range(of: audio_delimitator) {
+        } else if message.range(of:Global.audio_delimitator) != nil {
+            
+            if let range = message.range(of: Global.audio_delimitator) {
                 
                 message.removeSubrange(range)
                 
@@ -214,15 +212,38 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
                     var audioId : String = messageArr[0]
                     var audioTime : String = messageArr[1]
                     
-                    cell.isAudioIcon = true
+                    cell.audioIconView.isHidden = false
+                    cell.pictureIconView.isHidden = true
                     
                     message = "      \(audioTime)"
                     
                 }
             }
+            
+        } else if message.range(of:Global.picture_delimitator) != nil {
+            
+            if let range = message.range(of: Global.picture_delimitator) {
+                
+                message.removeSubrange(range)
+                
+                if (message.contains("----")) {
+                    
+                    let messageArr : [String] = message.components(separatedBy: "----")
+                    
+                    var pictureId : String = messageArr[0]
+                    var chatId : String = messageArr[1]
+                    
+                    cell.audioIconView.isHidden = true
+                    cell.pictureIconView.isHidden = false
+                    
+                    message = "        Photo"
+                }
+            }
+            
         } else {
             
-            cell.isAudioIcon = false
+            cell.audioIconView.isHidden = true
+            cell.pictureIconView.isHidden = true
         }
         
         cell.messageLabel.text = message
@@ -251,18 +272,9 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         let imagetype = UIImage(named: image)
         cell.isImageView.image = imagetype
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h:mm a"
+        let elapsedTime = chatfeed.date?.elapsedTime
         
-        let elapsedTimeInSeconds = Date().timeIntervalSince(chatfeed.date!)
-        
-        let secondInDays: TimeInterval = 60 * 60 * 24
-        
-        if elapsedTimeInSeconds > 7 * secondInDays {
-            dateFormatter.dateFormat = "MM/dd/yy"
-        } else if elapsedTimeInSeconds > secondInDays {
-            dateFormatter.dateFormat = "EEE"
-        }
+        cell.timeLabel.text = elapsedTime
         
         if chatfeed.badgeNumber != nil
         {
@@ -287,8 +299,6 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         {
             cell.badgeLabel.isHidden = true
         }
-        
-        cell.timeLabel.text = dateFormatter.string(from: chatfeed.date!)
         
         return cell
     }

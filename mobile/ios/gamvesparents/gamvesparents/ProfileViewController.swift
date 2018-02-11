@@ -492,44 +492,45 @@ class ProfileViewController: UIViewController,
             self.son = PFUser.current()
         }
         
-        Global.loaLevels()
+        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
     
-        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
-            
-            tabBarController?.tabBar.isHidden = true
-            
-            if Global.isKeyPresentInUserDefaults(key: "son_userId") {
+            if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
                 
-                self.loadSonSpouseDataIfFamilyDontExist()
+                self.tabBarController?.tabBar.isHidden = true
                 
-                self.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                if Global.isKeyPresentInUserDefaults(key: "son_userId") {
+                    
+                    self.loadSonSpouseDataIfFamilyDontExist()
+                    
+                    self.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                
+                } else {
+                    
+                    self.segmentedControl.setEnabled(false, forSegmentAt: 1)
+                }
             
             } else {
                 
-                self.segmentedControl.setEnabled(false, forSegmentAt: 1)
+                self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
+            
+                DispatchQueue.main.async() {
+                    self.makeRounded(imageView:self.yourPhotoImageView)
+                    self.makeRounded(imageView:self.sonPhotoImageView)
+                    self.makeRounded(imageView:self.spousePhotoImageView)
+                    self.makeRounded(imageView:self.familyPhotoImageView)
+                }
+                
+                self.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                
             }
         
-        } else {
+            NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
             
-            self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
-        
-            DispatchQueue.main.async() {
-                self.makeRounded(imageView:self.yourPhotoImageView)
-                self.makeRounded(imageView:self.sonPhotoImageView)
-                self.makeRounded(imageView:self.spousePhotoImageView)
-                self.makeRounded(imageView:self.familyPhotoImageView)
-            }
+            NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
             
-            self.segmentedControl.setEnabled(true, forSegmentAt: 1)
-            
-        }       
-    
-        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
-        
+        })
         
     }
     

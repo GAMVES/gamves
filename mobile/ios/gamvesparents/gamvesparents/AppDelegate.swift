@@ -69,15 +69,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         if PFUser.current() != nil
         {
-            Global.loaLevels()
+            Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
             
-            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-            
-                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-            
-            })
+                Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                
+                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                
+                })
 
-            self.loadChatChannels()
+                self.loadChatChannels()
+                
+            })
         
         }
         
@@ -329,6 +331,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 }
             }
         })
+    }
+    
+    func openSearch(params:[String : Any]) {
+        //self.homeController.openSearch(params:params)
     }
 
 }

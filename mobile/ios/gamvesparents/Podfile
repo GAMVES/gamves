@@ -38,5 +38,7 @@ target 'gamvesparents' do
   pod 'ImageSlideshow', '~> 1.4'
   
   # pod 'MercadoPagoSDK', '3.7.1'
+  
+  pod 'ISEmojiView'
     
 end

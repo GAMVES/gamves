@@ -173,11 +173,6 @@ class AccountViewController: UIViewController,
             self.yourLabel,
             metrics: metricsHeader)
         
-        self.backImageView.image = Global.yourAccountBackImage
-        self.sonPhotoImageView.image = Global.gamvesFamily.youUser.avatar
-
-        self.yourLabel.text = Global.gamvesFamily.youUser.name
-
         self.photosContainerView.addSubview(self.sonPhotoImageView)
         
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonPhotoImageView)
@@ -228,8 +223,21 @@ class AccountViewController: UIViewController,
         self.buttonsView.addConstraintsWithFormat("H:|[v0(20)][v1][v2(20)]|", views: 
             self.buttonLeftView, 
             self.collectionView, 
-            self.buttonRightView)              
-
+            self.buttonRightView)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(yourAccountInfoLoaded), name: NSNotification.Name(rawValue: Global.notificationYourAccountInfoLoaded), object: nil)
+        
+    }
+    
+    func familyLoaded() {
+        self.sonPhotoImageView.image = Global.gamvesFamily.youUser.avatar
+        self.yourLabel.text = Global.gamvesFamily.youUser.name
+    }
+    
+    func yourAccountInfoLoaded() {
+        self.backImageView.image = Global.yourAccountBackImage
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {        

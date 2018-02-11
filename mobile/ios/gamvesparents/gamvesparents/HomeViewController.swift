@@ -393,6 +393,8 @@ class HomeViewController: UIViewController,
                                     
                                     Global.yourAccountBackImage = image!
                                     
+                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationYourAccountInfoLoaded), object: self)
+                                    
                                 }
                             }
                         }
