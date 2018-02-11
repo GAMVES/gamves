@@ -312,16 +312,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		825C6CA41FDA4CC1005A762F /* capture */ = {
+		825C6CA41FDA4CC1005A762F /* media */ = {
 			isa = PBXGroup;
 			children = (
+				82E1AC291FF688C800209AEF /* search */,
 				826B8CC320184C37008C19A3 /* MediaController.swift */,
 				8294F9D11FDA4EF80082D99D /* RecordVideoViewController.swift */,
+				826844551FF048D1008BA13B /* RangeSlider.swift */,
 				8294F9D31FDA4EFC0082D99D /* MergeVideoViewController.swift */,
 				8294F9CF1FDA4EF40082D99D /* PlayVideoViewController.swift */,
 				824EDD761FDD5DB300D513D8 /* TakePicturesController.swift */,
 			);
-			name = capture;
+			name = media;
 			sourceTree = "<group>";
 		};
 		826D58371F8ED7310014A2C8 /* feed */ = {
@@ -383,6 +385,7 @@
 		82E1AC291FF688C800209AEF /* search */ = {
 			isa = PBXGroup;
 			children = (
+				822D620B1FD62F830025481E /* cells */,
 				822D62091FD5FCCE0025481E /* SearchController.swift */,
 			);
 			name = search;
@@ -474,7 +477,6 @@
 		C77B554D1D0233F800FF375C /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				826844551FF048D1008BA13B /* RangeSlider.swift */,
 				C75742B61D5D93FA001C066C /* VideoLauncher.swift */,
 				826844571FF058F3008BA13B /* NoConnectionController.swift */,
 			);
@@ -500,10 +502,8 @@
 			isa = PBXGroup;
 			children = (
 				82FFF5282022CF12005F45AA /* Components */,
-				82E1AC291FF688C800209AEF /* search */,
 				82E1AC231FF422D400209AEF /* NewFanpageController.swift */,
-				825C6CA41FDA4CC1005A762F /* capture */,
-				822D620B1FD62F830025481E /* cells */,
+				825C6CA41FDA4CC1005A762F /* media */,
 				C77B55181CFFF3AD00FF375C /* HomeController.swift */,
 				824E67BE1F544DDD0025096D /* LoginController.swift */,
 				8272A2AB1FD7D5FA00D14A76 /* CameraController.swift */,

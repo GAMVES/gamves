@@ -75,6 +75,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         var widthLeft = CGFloat()
         widthLeft = self.view.frame.width - (arrowButton.width + avatarButton.width)
         
+        
     }
     
     func backButtonPressed(sender: UIBarButtonItem)
@@ -141,7 +142,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         
         let chatFrame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         
-        chatView = ChatView(frame: chatFrame, isVideo: false)
+        chatView = ChatView(frame: chatFrame, isVideo: false)  
         
         params = ["chatId": chatId, "isVideoChat": false, "gamvesUsers": gamvesUsers, "navBarProtocol": self, "delegate": self] as [String : Any]
         
@@ -180,7 +181,6 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     {
         self.chatView.frame.size.height = self.view.frame.height
     }
-    
 
 }
 

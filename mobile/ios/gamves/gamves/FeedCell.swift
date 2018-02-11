@@ -103,6 +103,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         self.collectionView.reloadData()
         
     }
+    
 
     func fetchFeed() {
     

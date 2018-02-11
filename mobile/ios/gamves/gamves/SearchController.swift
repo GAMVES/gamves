@@ -64,6 +64,16 @@ public enum SearchSize {
     case imageLarge    
 }
 
+public enum UploadType {
+    case youtube
+    case local
+}
+
+protocol SearchProtocol {
+    func setResultOfsearch(videoId: String, title: String, description : String, duration : String, image : UIImage)
+    func setVideoSearchType(type: UploadType)
+}
+
 class SearchController: UIViewController, 
     UITableViewDelegate, UITableViewDataSource,
     UISearchResultsUpdating, UISearchBarDelegate,

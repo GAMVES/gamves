@@ -13,6 +13,10 @@ import PopupDialog
 
 class Global: NSObject
 {
+    
+    static var pictureRecorded = GamvesPicture()
+    static var audioRecorded = GamvesAudio()
+    
     static var device = String()
     
     static var notifications = [GamvesNotification]()
@@ -20,7 +24,6 @@ class Global: NSObject
     static var userTypes = Dictionary<Int, UserTypeGamves>()
     
     static var levels = Dictionary<String, LevelsGamves>()
-    
     
     //static var serverUrl = "http://127.0.0.1:1337/1/"
     static var serverUrl = "http://192.168.16.22:1337/1/"
@@ -69,6 +72,7 @@ class Global: NSObject
     static var notificationKeyLoggedin      = "com.gamves.gamvesparent.loggedin"
     static var notificationKeyCloseVideo    = "com.gamves.gamves.closeVideo"
     static var notificationKeyLevelsLoaded  = "com.gamves.gamvesparent.levelsLoaded"
+    static var notificationKeyMediaDelegate  = "com.gamves.gamvesparent.notificationKeyMediaDelegate"
         
     static var REGISTER_MOTHER  = 0
     static var SPOUSE_MOTHER    = 1
@@ -237,7 +241,6 @@ class Global: NSObject
                                 
                                         gamvesUser.levelId = levelId
                                     }
-                                    
                                 }
                                 
                                 adduserToFamilyFromGlobal(gamvesUser: gamvesUser)

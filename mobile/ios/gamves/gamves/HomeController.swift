@@ -124,15 +124,14 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
     }
     
-    func openSearch(target:AnyObject, isImageMultiSelection:Bool, type: MediaType, termToSearch: String, searchType:SearchType, searchSize:SearchSize) {
-        
+    func openSearch(params:[String : Any]) {
         let media = MediaController()
-        media.delegate = target as! MediaDelegate
-        media.isImageMultiSelection = isImageMultiSelection
-        media.setType(type: type)
-        media.termToSearch = termToSearch
-        media.searchType = searchType
-        media.searchSize = searchSize
+        media.delegate = params["targer"] as! MediaDelegate
+        media.isImageMultiSelection = params["isImageMultiSelection"] as! Bool
+        media.setType(type: params["type"] as! MediaType)
+        media.termToSearch = params["termToSearch"] as! String
+        media.searchType = params["searchType"] as! SearchType
+        media.searchSize = params["searchSize"] as! SearchSize
         navigationController?.pushViewController(media, animated: true)
     }
     

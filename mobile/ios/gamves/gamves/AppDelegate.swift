@@ -323,6 +323,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     }
     
+    func openSearch(params:[String : Any]) {        
+        self.homeController.openSearch(params:params)
+    }
+    
     
 }
 

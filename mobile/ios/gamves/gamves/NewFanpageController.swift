@@ -39,17 +39,6 @@ protocol VideoProtocol {
     func selectedVideo(videoUrl: String, title: String, description : String, image : UIImage)
 }
 
-protocol SearchProtocol {
-    func setResultOfsearch(videoId: String, title: String, description : String, duration : String, image : UIImage)
-    func setVideoSearchType(type: UploadType)
-}
-
-public enum UploadType {
-    case youtube
-    case local
-}
-
-
 public enum TouchedButton {
     case iconImage
     case coverImage

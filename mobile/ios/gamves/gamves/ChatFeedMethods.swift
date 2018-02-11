@@ -10,14 +10,27 @@
 import UIKit
 import Parse
 
-class ChatFeedMethods: NSObject
-{    
+class ChatFeedMethods: NSObject {
     
     static var chatFeeds = Dictionary<Int, ChatFeed>()
 
-    static func sortFeedByDate()
-    {
-        self.chatFeeds.sorted(by: {$0.value.date! > $1.value.date! })
+    static func sortFeedByDate() {
+        
+        var sortedFeeds = self.chatFeeds.sorted(by: {
+            $0.value.date?.compare($1.value.date!) == .orderedDescending
+        })
+        
+        self.chatFeeds = Dictionary<Int, ChatFeed>()
+        
+        for sorted in sortedFeeds {
+            self.chatFeeds[sorted.key] = sorted.value
+        }
+    }
+    
+    func before(value1: String, value2: String) -> Bool {
+        // One string is alphabetically first.
+        // ... True means value1 precedes value2.
+        return value1 < value2;
     }
     
     static func queryFeed(chatId:Int?, completionHandlerChatId : @escaping (_ chatId:Int) -> ()?)
@@ -125,16 +138,12 @@ class ChatFeedMethods: NSObject
                                 
                                 chatfeed.badgeNumber = counter
                                 
-                                print(chatId)
-                                
-                                print(counter)
-                                
-                                self.sortFeedByDate()
-                                
                                 self.chatFeeds[chatId] = chatfeed
                         
-                                if (chatfeedsCount-1) == fcount
-                                {
+                                if (chatfeedsCount-1) == fcount {
+                                
+                                    self.sortFeedByDate()
+                                    
                                     completionHandler(chatId)
                                 }
                                 
