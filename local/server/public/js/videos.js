@@ -294,9 +294,32 @@ document.addEventListener("LoadVideo", function(event){
                            
                             $('#edit_model_video').modal('hide');
 
-                            clearField();
-                            searchVideo(fanpage);                   
-                                                                                                              
+                            var Notification = Parse.Object.extend("Notifications");         
+                            var notification = new Notification();  
+
+                            notification.set("posterName", userAdmin.get("Name"));
+                            notification.set("posterAvatar", userAdmin.get("picture"));
+
+                            notification.set("title", video.get("title"));
+                            notification.set("description", video.get("description"));         
+                            notification.set("cover", video.get("thumbnail"));
+                            notification.set("referenceId", video.get("videoId"));
+                            notification.set("date", video.get("createdAt"));
+                            notification.set("video", video);
+
+                            notification.set("type", type);
+
+                            notification.save(null, {
+                                success: function (savedVideo) {
+                                  clearField();
+                                  searchVideo(fanpage);    
+                                },
+                                error: function (response, error) {
+                                      $('#error_message').html("<p>" + errort + "</p>");
+                                      console.log('Error: ' + error.message);
+                                }
+                            });              
+                                                                                                
                         },
                         error: function (response, error) {
                               $('#error_message').html("<p>" + errort + "</p>");

@@ -53,7 +53,7 @@ Parse.Cloud.afterSave("ChatVideo", function(request) {
         },
         error: function(error) {
             error.message("ChatFeed lookup failed");
-            response.error(error);
+            //response.error(error);
         }
 
     });
@@ -337,7 +337,7 @@ function downloadVideo(params, callback ) {
             var fs = require('fs');
             var youtubedl = require('youtube-dl');
             var video = youtubedl('http://www.youtube.com/watch?v='+ytb_videoId, ['--format=18'], { cwd: __dirname });             
-            var videoName = "download/" + ytb_videoId + '.mp4';
+            var videoName = ytb_videoId + '.mp4';
 
             video.pipe(fs.createWriteStream(videoName));
 

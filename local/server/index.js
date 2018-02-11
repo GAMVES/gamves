@@ -19,7 +19,7 @@ var api = new ParseServer(
 
   liveQuery:
   {
-    classNames: ['UserOnline', 'ChatFeed', 'ChatVideo', 'Approvals'] // List of classes to support for query subscriptions example: [ 'Posts', 'Comments' ]
+    classNames: ['UserOnline', 'ChatFeed', 'ChatVideo', 'Approvals', 'Audios'] // List of classes to support for query subscriptions example: [ 'Posts', 'Comments' ]
   },
   
 });
