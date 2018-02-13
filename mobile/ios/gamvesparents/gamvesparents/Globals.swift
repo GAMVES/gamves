@@ -1132,6 +1132,22 @@ class Global: NSObject
             
         }
     }
+    
+    static func isAudio(type: MessageType) -> Bool {
+        if type == MessageType.isAudio || type == MessageType.isAudioDownloading {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    static func isPicture(type: MessageType) -> Bool {
+        if type == MessageType.isPicture || type == MessageType.isPictureDownloading {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 
