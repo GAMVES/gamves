@@ -37,6 +37,16 @@ class GamvesAudio
     var name = String()
 }
 
+enum MessageType {
+    case isAdmin
+    case isAudio
+    case isAudioDownloading
+    case isPicture
+    case isPictureDownloading
+    case isText
+    case isVideo
+}
+
 class MessageChat
 {
     var message:String!
@@ -47,19 +57,21 @@ class MessageChat
     var createdAt:Date!
     var date:Date!
     var isSender:Bool!
-    var isAdmin:Bool!
     
-    var isAudio:Bool!
+    //var isAdmin:Bool!
+    //var isAudio:Bool!
+    //var isPicture:Bool!
+    
     var audio = GamvesAudio()
     var audioLocalUri:URL!
-    var isDownloadingAudio = Bool()
+    //var isDownloadingAudio = Bool()
     
-    var isPicture:Bool!
     var picture = GamvesPicture()
-    var isDownloadingPicture = Bool()
+    //var isDownloadingPicture = Bool()
     
     var time = String()
     
+    var type:MessageType!
 }
 
 class ChatTextField: UITextField {
@@ -86,8 +98,8 @@ class ChatView: UIView,
     UITextFieldDelegate,
     AVAudioRecorderDelegate,
     ISEmojiViewDelegate,
-    TimerDelegate
-    //MediaDelegate
+    TimerDelegate,
+    MediaDelegate
 {
     
     var activityView: NVActivityIndicatorView!
@@ -118,7 +130,7 @@ class ChatView: UIView,
     var gamvesUsersPFuser = [PFUser]()
     
     var chatFeed:PFObject!
-    var delegate:KeyboardDelegate!
+    var keyboardDelegate:KeyboardDelegate!
     var delegateNavBar:NavBarDelegate!
     var isVideo = Bool()
     
@@ -172,7 +184,7 @@ class ChatView: UIView,
         return cv
     }()
     
-    let messageInputContainerView: UIView = {
+    let messageContainerView: UIView = {
         let view = UIView()
         //view.backgroundColor = UIColor.white
         return view
@@ -198,6 +210,8 @@ class ChatView: UIView,
         button.setImage(sendImage, for: UIControlState.normal)
         button.addTarget(self, action: #selector(handleSendRec), for: .touchDown)
         button.addTarget(self, action: #selector(handleSendRecUp), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleSendRecUp), for: .touchUpOutside)
+        button.addTarget(self, action: #selector(handleSendRecUp), for: .touchCancel)
         button.backgroundColor = UIColor.gamvesBlackColor
         button.layer.cornerRadius = 25
         button.tag = 1
@@ -307,9 +321,11 @@ class ChatView: UIView,
         
         self.collectionView.register(ChatLogMessageCell.self, forCellWithReuseIdentifier: cellId)
         
-        self.addSubview(self.messageInputContainerView)
+        //self.collectionView.transform = CGAffineTransform.init(rotationAngle: (-(CGFloat)(Double.pi)))
         
-        self.addConstraintsWithFormat("H:|[v0]|", views: self.messageInputContainerView)
+        self.addSubview(self.messageContainerView)
+        
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.messageContainerView)
         
         let editSize:CGFloat = 65
         
@@ -322,10 +338,10 @@ class ChatView: UIView,
         if isVideo
         {
             
-            self.addConstraintsWithFormat("V:|[v0(30)][v1(chatHeightVideo)][v2(editSize)]|", views: self.titleContainerView, self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
+            self.addConstraintsWithFormat("V:|[v0(30)][v1(chatHeightVideo)][v2(editSize)]|", views: self.titleContainerView, self.collectionView, self.messageContainerView, metrics: metricsMessageView)
         } else
         {
-            self.addConstraintsWithFormat("V:|[v0(chatHeight)][v1(editSize)]|", views: self.collectionView, self.messageInputContainerView, metrics: metricsMessageView)
+            self.addConstraintsWithFormat("V:|[v0(chatHeight)][v1(editSize)]|", views: self.collectionView, self.messageContainerView, metrics: metricsMessageView)
         }
         
         self.chatHolderView.addSubview(self.chatImageView)
@@ -336,7 +352,7 @@ class ChatView: UIView,
         self.chatHolderView.addConstraintsWithFormat("V:|-5-[v0(19.5)]-5-|", views: self.chatImageView)
         self.chatHolderView.addConstraintsWithFormat("V:|[v0(29.5)]|", views: self.chatLabel)
         
-        self.bottomConstraint = NSLayoutConstraint(item: self.messageInputContainerView, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0)
+        self.bottomConstraint = NSLayoutConstraint(item: self.messageContainerView, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: 0)
         
         self.addConstraint(self.bottomConstraint!)
         
@@ -389,18 +405,8 @@ class ChatView: UIView,
         self.addConstraintsWithFormat("V:|[v0]|", views: self.backView)
         
         self.bringSubview(toFront: self.collectionView)
-        self.bringSubview(toFront: self.messageInputContainerView)
+        self.bringSubview(toFront: self.messageContainerView)
         
-    }
-    
-    // callback when tap a emoji on keyboard
-    func emojiViewDidSelectEmoji(emojiView: ISEmojiView, emoji: String) {
-        self.inputTextField.insertText(emoji)
-    }
-    
-    // callback when tap delete button on keyboard
-    func emojiViewDidPressDeleteButton(emojiView: ISEmojiView) {
-        self.inputTextField.deleteBackward()
     }
     
     func timeCount(time: String) {
@@ -413,30 +419,32 @@ class ChatView: UIView,
     
     private func setupInputComponents() {
         
-        self.messageInputContainerView.addSubview(self.inputTextField)
-        self.messageInputContainerView.addSubview(self.recSendButton)
-        self.messageInputContainerView.addSubview(self.emojisKeyboardButton)
-        self.messageInputContainerView.addSubview(self.picureButton)
+        self.messageContainerView.addSubview(self.inputTextField)
+        self.messageContainerView.addSubview(self.recSendButton)
+        self.messageContainerView.addSubview(self.emojisKeyboardButton)
+        self.messageContainerView.addSubview(self.picureButton)
         
-        self.messageInputContainerView.backgroundColor = UIColor.gamvesColor
+        self.messageContainerView.backgroundColor = UIColor.gamvesColor
         
-        self.messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: self.inputTextField, self.recSendButton)
+        self.messageContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: self.inputTextField, self.recSendButton)
         
-        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0]-10-|", views: self.inputTextField)
-        self.messageInputContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-10-|", views: self.recSendButton)
+        self.messageContainerView.addConstraintsWithFormat("V:|-5-[v0]-10-|", views: self.inputTextField)
+        self.messageContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-10-|", views: self.recSendButton)
         
-        self.messageInputContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: self.inputTextField, self.recSendButton)
+        self.messageContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: self.inputTextField, self.recSendButton)
         
-        self.messageInputContainerView.addConstraintsWithFormat("H:|-12-[v0(40)]|", views: self.emojisKeyboardButton)
-        self.messageInputContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.emojisKeyboardButton)
+        self.messageContainerView.addConstraintsWithFormat("H:|-12-[v0(40)]|", views: self.emojisKeyboardButton)
+        self.messageContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.emojisKeyboardButton)
         
         let width = self.frame.width
         let paddingleft = width - 110
         
         let metricsImage = ["paddingleft":paddingleft]
         
-        self.messageInputContainerView.addConstraintsWithFormat("H:|-paddingleft-[v0(40)]-60-|", views: self.picureButton, metrics: metricsImage)
-        self.messageInputContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.picureButton)
+        self.messageContainerView.addConstraintsWithFormat("H:|-paddingleft-[v0(40)]-60-|", views: self.picureButton, metrics: metricsImage)
+        self.messageContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.picureButton)
+        
+        self.messageContainerView.bringSubview(toFront: self.recSendButton)
         
     }
     
@@ -455,7 +463,7 @@ class ChatView: UIView,
             self.thumbnailImage = parameters["thumbnailImage"] as! UIImage
         }
         if parameters["delegate"] != nil {
-            self.delegate = parameters["delegate"] as! KeyboardDelegate
+            self.keyboardDelegate = parameters["delegate"] as! KeyboardDelegate
         }
         if parameters["navBarProtocol"] != nil {
             self.delegateNavBar = parameters["navBarProtocol"] as! NavBarDelegate
@@ -657,6 +665,9 @@ class ChatView: UIView,
                     for chatVideo in chatVideos!
                     {
                         let message = MessageChat()
+                        
+                        message.type = MessageType.isText
+                        
                         let userId = chatVideo["userId"] as! String
                         
                         message.userId = userId
@@ -682,18 +693,14 @@ class ChatView: UIView,
                         
                         message.time = dateFormatter.string(from: message.date!)
                         
-                        let delimitator = Global.admin_delimitator
-                        if messageText.range(of:delimitator) != nil {
+                        if messageText.range(of:Global.admin_delimitator) != nil {
                             
-                            message.isAdmin = true
+                            message.type = MessageType.isAdmin
                             
-                            if let range = messageText.range(of: delimitator) {
+                            if let range = messageText.range(of: Global.admin_delimitator) {
                                 messageText.removeSubrange(range)
                             }
                             
-                        } else {
-                            
-                            message.isAdmin = false
                         }
                         
                         if PFUser.current()?.objectId == userId {
@@ -705,8 +712,7 @@ class ChatView: UIView,
                         
                         if (messageText.contains(Global.audio_delimitator)) {
                             
-                            message.isAudio = true
-                            message.isPicture = false
+                            message.type = MessageType.isAudio
                             
                             self.getAudio(id: i, messageText: messageText, completionHandler: { (gamvesAudio, id) in
                                 
@@ -725,15 +731,13 @@ class ChatView: UIView,
                             
                         } else if (messageText.contains(Global.picture_delimitator)) {
                             
-                            message.isAudio = false
-                            message.isPicture = true
-                            message.isDownloadingPicture = true
+                            message.type = MessageType.isPictureDownloading
                             
                             self.getPicture(id: i, messageText: messageText, completionHandler: { (gamvesPicture, id) in
                                 
                                 message.picture = gamvesPicture
                                 
-                                message.isDownloadingPicture = false
+                                message.type = MessageType.isPicture
                                 
                                 messagesHandeled.append(message)
                                 
@@ -747,11 +751,6 @@ class ChatView: UIView,
                             })
                             
                         } else {
-                            
-                            print(i)
-                            
-                            message.isAudio = false
-                            message.isPicture = false
                             
                             messagesHandeled.append(message)
                             
@@ -959,6 +958,8 @@ class ChatView: UIView,
                 
                 self.getMessageByAudioName(audio:audioPF, completionHandler: { ( message, indexPath ) -> () in
                     
+                    print(indexPath)
+                    
                     let audio = message.audio
                     
                     self.downloadIfNotExistAudio(id: indexPath.row, url:url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
@@ -966,31 +967,15 @@ class ChatView: UIView,
                         audio.localUri = localUri
                         audio.url = url
                         
-                        self.messages[indexPath.row].isDownloadingAudio = false
+                        self.messages[indexPath.row].type = MessageType.isAudio
                         self.messages[indexPath.row].audio.localUri = localUri
                         self.messages[indexPath.row].audio.url = url
                         
-                        
                         DispatchQueue.main.async {
-                            
-                            let cell = self.collectionView.cellForItem(at: indexPath) as! ChatLogMessageCell
-                            cell.isDownloadingAudio = false
-                            
-                            cell.profileImageView.isHidden = false
-                            
-                            cell.gamvesAudio = audio
-                            
-                            //NOT WORKING
-                            if let indicator = cell.progressAudio {
-                                if indicator.isAnimating {
-                                    
-                                    cell.progressAudio.stopAnimating()
-                                    
-                                    cell.layoutSubviews()
-                                    
-                                }
-                            }
+                            self.collectionView.reloadItems(at: [indexPath])
                         }
+                        
+                        
                     })
                 })
             }
@@ -1005,7 +990,7 @@ class ChatView: UIView,
         
         for message in messages {
             
-            if message.isAudio {
+            if Global.isAudio(type: message.type) {
                 
                 print(audioName)
                 
@@ -1030,9 +1015,9 @@ class ChatView: UIView,
             
             self.recordingStatus = RecordStatus.isRecording
             
-            self.recSendButton.transform = CGAffineTransform(scaleX: 2, y: 2)
+            self.recSendButton.transform = CGAffineTransform(scaleX: 3, y: 3)
             
-            if audioRecorder == nil {
+            if self.audioRecorder == nil {
                 
                 let onImage = UIImage(contentsOfFile: "rec_on")
                 
@@ -1045,8 +1030,6 @@ class ChatView: UIView,
             }
             
         } else if self.recSendButton.tag == 2 {
-            
-            //self.isRecording = false
             
             self.recordingStatus = RecordStatus.isNotRecording
             
@@ -1116,10 +1099,14 @@ class ChatView: UIView,
         
         self.recSendButton.setImage(UIImage(named: "rec_off"), for: .normal)
         
+        self.recSendButton.tag = 1
+        
         if recordingStatus == RecordStatus.isRecording {
             
             self.finishRecording(success: true)
         }
+        
+        self.scrollToLast()
     }
     
     
@@ -1146,8 +1133,10 @@ class ChatView: UIView,
         
         if self.emoticonKeyboardState == EmoticonKeyboardState.isKeyboard {
             
-            emojiView.delegate = self
-            self.inputTextField.inputView = emojiView
+            self.emojiView.delegate = self
+            self.inputTextField.inputView = self.self.emojiView
+            
+            self.inputTextField.reloadInputViews()
             
             let keyboard_image = UIImage(named: "keyboard")
             keyboard_image?.maskWithColor(color: UIColor.lightGray)
@@ -1155,20 +1144,28 @@ class ChatView: UIView,
             
             self.emoticonKeyboardState = EmoticonKeyboardState.isEmoticon
             
+            
         } else if self.emoticonKeyboardState == EmoticonKeyboardState.isEmoticon {
             
-            self.inputTextField.inputView = nil
-            self.inputTextField.reloadInputViews()
-            
-            let emoticon_image = UIImage(named: "insert_emoticon")
-            emoticon_image?.maskWithColor(color: UIColor.lightGray)
-            self.emojisKeyboardButton.setImage(emoticon_image, for: UIControlState.normal)
-            
-            self.emoticonKeyboardState = EmoticonKeyboardState.isKeyboard
+            self.keyboardDownEmojiOn()
             
         }
         
         self.inputTextField.becomeFirstResponder()
+    }
+    
+    func keyboardDownEmojiOn() {
+        
+        DispatchQueue.main.async {
+            self.inputTextField.inputView = nil
+            self.inputTextField.reloadInputViews()
+        }
+        
+        let emoticon_image = UIImage(named: "insert_emoticon")
+        emoticon_image?.maskWithColor(color: UIColor.lightGray)
+        self.emojisKeyboardButton.setImage(emoticon_image, for: UIControlState.normal)
+        
+        self.emoticonKeyboardState = EmoticonKeyboardState.isKeyboard
     }
     
     
@@ -1283,22 +1280,34 @@ class ChatView: UIView,
         
         self.chatTextTimer.reset()
         
-        if success {
+        var asset = AVURLAsset(url: Global.audioRecorded.localUri)
+        var totalSeconds = Int(CMTimeGetSeconds(asset.duration))
+        
+        if totalSeconds > 1 {
             
-            print(success)
-            
-            let asset = AVURLAsset(url: Global.audioRecorded.localUri)
-            let totalSeconds = Int(CMTimeGetSeconds(asset.duration))
-            let minutes = totalSeconds / 60
-            let seconds = totalSeconds % 60
-            let mediaTime = String(format:"%02i:%02i",minutes, seconds)
-            
-            self.saveAudio(duration: mediaTime, name: Global.audioRecorded.name)
+            if success {
+                
+                print(success)
+                
+                self.audioRecorder = nil
+                
+                let minutes = totalSeconds / 60
+                let seconds = totalSeconds % 60
+                let duration = String(format:"%02i:%02i",minutes, seconds)
+                
+                self.saveAudio(duration: duration, name: Global.audioRecorded.name)
+                
+            } else {
+                
+                self.audioRecorder = nil
+                print("Somthing Wrong.")
+            }
             
         } else {
             
+            self.inputTextField.text = ""
             self.audioRecorder = nil
-            print("Somthing Wrong.")
+            
         }
         
     }
@@ -1619,6 +1628,9 @@ class ChatView: UIView,
     func updateMessageFromServer(chatMessage: PFObject) {
         
         let message = MessageChat()
+        
+        message.type = MessageType.isText
+        
         var textMessage = chatMessage["message"] as! String
         
         let userId = chatMessage["userId"] as! String
@@ -1637,76 +1649,62 @@ class ChatView: UIView,
         }
         
         if (textMessage.contains(Global.audio_delimitator)) {
-            message.isAudio = true
-            message.isPicture = false
-            
-            //if video does not exist download it.
             
             if !message.isSender {
                 
-                message.isDownloadingAudio = true
+                message.type = MessageType.isAudioDownloading
                 
                 self.getAudio(id: self.messages.count, messageText: textMessage, completionHandler: { (gamvesAudio, id) in
                     
                     self.messages[id].audio = gamvesAudio
+                    
                 })
                 
             } else {
+                
+                message.type = MessageType.isAudio
                 
                 message.audioLocalUri = Global.audioRecorded.localUri
             }
             
         } else if (textMessage.contains(Global.picture_delimitator)) {
             
-            message.isAudio = false
-            message.isPicture = true
-            
             if !message.isSender {
                 
-                message.isDownloadingPicture = true
+                message.type = MessageType.isPictureDownloading
                 
                 self.getPicture(id: self.messages.count, messageText: textMessage, completionHandler: { (gamvesPicture, id) in
                     
                     self.messages[id].picture = gamvesPicture
+                    self.messages[id].type = MessageType.isPicture
                     
-                    self.messages[id].isDownloadingPicture = false
-                    
-                    let indexPath = IndexPath(item: id, section: 0)
-                    
-                    self.collectionView.reloadItems(at: [indexPath])
+                    DispatchQueue.main.async {
+                        let indexPath = IndexPath(item: id, section: 0)
+                        self.collectionView.reloadItems(at: [indexPath])
+                    }
                     
                 })
                 
             } else  {
+                
+                message.type = MessageType.isPicture
                 
                 if Global.pictureRecorded != nil {
                     
                     message.picture = Global.pictureRecorded
                 }
             }
-            
-        } else {
-            
-            message.isAudio = false
-            message.isPicture = false
-            
         }
         
-        let delimitator = Global.admin_delimitator
-        
-        if textMessage.range(of:delimitator) != nil {
+        if textMessage.range(of:Global.admin_delimitator) != nil {
             
-            message.isAdmin = true
+            message.type = MessageType.isAdmin
             
-            if let range = textMessage.range(of: delimitator) {
+            if let range = textMessage.range(of: Global.admin_delimitator) {
                 
                 textMessage.removeSubrange(range)
-                
             }
             
-        } else {
-            
-            message.isAdmin = false
         }
         
         message.message = textMessage
@@ -1715,8 +1713,8 @@ class ChatView: UIView,
         
         message.isSender = gamvesUser.isSender
         
-        if ChatFeedMethods.chatFeeds[self.chatId] != nil
-        {
+        if ChatFeedMethods.chatFeeds[self.chatId] != nil {
+            
             ChatFeedMethods.chatFeeds[self.chatId]?.text = textMessage
         }
         
@@ -1828,12 +1826,10 @@ class ChatView: UIView,
             
             queryVideo.getFirstObjectInBackground(block: { (video, error) in
                 
-                if error != nil
-                {
+                if error != nil {
+                    
                     print(error)
-                    
                     completionHandler(false)
-                    
                 } else {
                     
                     let description = video?["description"] as! String
@@ -1843,39 +1839,33 @@ class ChatView: UIView,
                     self.saveChatFeed(file: groupImageFile, completionHandlerSave: { ( result:Bool ) -> () in
                         
                         completionHandler(result)
-                        
                     })
                 }
-                
             })
             
+        } else {
             
-        } else
-        {
-            if self.gamvesUsers.count > 1
-            {
+            if self.gamvesUsers.count > 1 {
                 
                 let imageGroup = UIImage(named: "community")
                 groupImageFile = PFFile(data: UIImageJPEGRepresentation(imageGroup!, 1.0)!)
                 
                 var array = [String]()
                 
-                for user in self.gamvesUsers
-                {
+                for user in self.gamvesUsers {
+                    
                     array.append(user.typeObj.objectId!)
                 }
                 let members = String(describing: array)
                 self.chatFeed["members"] = members
                 
-            } else
-            {
+            } else {
                 
                 groupImageFile = PFFile(data: UIImageJPEGRepresentation(self.gamvesUsers[0].avatar, 1.0)!)
                 
                 print(PFUser.current())
                 
-                if let myUser = PFUser.current()?.objectId
-                {
+                if let myUser = PFUser.current()?.objectId {
                     let member = String(describing: [self.gamvesUsers[0].userId,myUser])
                     self.chatFeed["members"] = member
                     self.chatFeed["room"] = "\(self.gamvesUsers[0].userId)____\(myUser)"
@@ -1883,27 +1873,22 @@ class ChatView: UIView,
             }
         }
         
-        if !self.isVideo
-        {
+        if !self.isVideo {
+            
             self.saveChatFeed(file: groupImageFile, completionHandlerSave: { ( result:Bool ) -> () in
                 
                 completionHandler(result)
-                
             })
-            
         }
-        
     }
     
-    func saveChatFeed(file:PFFile, completionHandlerSave : @escaping (_ resutl:Bool) -> ())
-    {
+    func saveChatFeed(file:PFFile, completionHandlerSave : @escaping (_ resutl:Bool) -> ()) {
         
-        if let objectId = PFUser.current()?.objectId
-        {
+        if let objectId = PFUser.current()?.objectId {
+            
             self.chatFeed["lastPoster"] = objectId
             
-            if self.isVideo
-            {
+            if self.isVideo {
                 self.chatFeed["members"] = objectId
                 self.chatFeed["lastMessage"] = self.inputTextField.text
             }
@@ -1917,8 +1902,7 @@ class ChatView: UIView,
         
         self.chatFeed.saveInBackground(block: { (saved, error) in
             
-            if error == nil
-            {
+            if error == nil {
                 
                 //CREATE CHANNELS
                 
@@ -1927,24 +1911,22 @@ class ChatView: UIView,
                 var userIdArray = [String]()
                 userIdArray.append(userId)
                 
-                if !self.isVideoChat
-                {
-                    for user in self.gamvesUsers
-                    {
+                if !self.isVideoChat {
+                    
+                    for user in self.gamvesUsers {
                         userIdArray.append(user.userId)
                     }
                 }
                 
                 Global.addChannels(userIds:userIdArray, channel: self.chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
                     
-                    if resutl && !self.isVideo
-                    {
+                    if resutl && !self.isVideo {
+                        
                         self.sendPushWithCoud(message: message!)
-                    } else
-                    {
+                    } else {
+                        
                         completionHandlerSave(resutl)
                     }
-                    
                     completionHandlerSave    (resutl)
                 })
             }
@@ -1954,60 +1936,51 @@ class ChatView: UIView,
     
     @objc func handleKeyboardNotification(notification: NSNotification) {
         
-        if let userInfo = notification.userInfo
-        {
+        if let userInfo = notification.userInfo {
             
             let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
             
-            if notification.name == NSNotification.Name.UIKeyboardWillShow
-            {
+            if notification.name == NSNotification.Name.UIKeyboardWillShow {
                 
                 let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
                 
-                if (self.delegate != nil)
-                {
-                    self.delegate.keyboardOpened(keybordHeight: (keyboardFrame?.height)!)
+                if (self.keyboardDelegate != nil) {
+                    
+                    self.keyboardDelegate.keyboardOpened(keybordHeight: (keyboardFrame?.height)!)
+                    
                 }
-                
-                UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    
-                    self.layoutIfNeeded()
-                    self.layoutSubviews()
-                    
-                }, completion: { (completed) in
-                    
-                    self.scrollToLast()
-                    
-                })
-                
                 
                 self.addGestureRecognizer(self.tabGesture)
                 
                 
-            } else if notification.name == NSNotification.Name.UIKeyboardWillHide
-            {
+            } else if notification.name == NSNotification.Name.UIKeyboardWillHide {
                 
-                if (self.delegate != nil)
-                {
-                    self.delegate.keyboardclosed()
+                if (self.keyboardDelegate != nil) {
+                    
+                    self.keyboardDownEmojiOn()
+                    
+                    self.keyboardDelegate.keyboardclosed()
+                    
                 }
                 
-                UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
-                    
-                    self.layoutIfNeeded()
-                    self.layoutSubviews()
-                    
-                }, completion: { (completed) in
-                    
-                    self.scrollToLast()
-                    
-                })
-                
                 self.removeGestureRecognizer(self.tabGesture)
-                
-                
             }
         }
+    }
+    
+    func animateKeyboard() {
+        
+        UIView.animate(withDuration: 0, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations: {
+            
+            self.layoutIfNeeded()
+            self.layoutSubviews()
+            
+        }, completion: { (completed) in
+            
+            self.scrollToLast()
+            
+        })
+        
     }
     
     @objc func dismissKeyboard() {
@@ -2073,21 +2046,6 @@ class ChatView: UIView,
         }
     }
     
-    /*override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-     
-     self.downloadImagesFromArray()
-     
-     self.collectionView.removeObserver(self, forKeyPath: "contentSize")
-     
-     }*/
-    
-    /*
-     let indexPath = IndexPath(item: i, section: 0)
-     let cell = self.collectionView.cellForItem(at: indexPath) as! ChatLogMessageCell
-     cell.isDownloadingPicture = false
-     cell.progressImage.stopAnimating()
-     cell.pictureImageButton.setBackgroundImage(pictrureSmallImage, for: .normal)
-     */
     
     func scrollToLast() {
         
@@ -2115,6 +2073,7 @@ class ChatView: UIView,
         if countText > 0 {
             
             self.setSendToText()
+            
         } else {
             
             self.setSendToRect()
@@ -2128,6 +2087,16 @@ class ChatView: UIView,
         self.setSendToRect()
         
         return true
+    }
+    
+    func emojiViewDidSelectEmoji(emojiView: ISEmojiView, emoji: String) {
+        self.inputTextField.insertText(emoji)
+        self.setSendToText()
+    }
+    
+    func emojiViewDidPressDeleteButton(emojiView: ISEmojiView) {
+        self.inputTextField.deleteBackward()
+        self.setSendToRect()
     }
     
     func setSendToText() {
@@ -2158,11 +2127,22 @@ class ChatView: UIView,
         
         self.inputTextField.resignFirstResponder()
         
-        self.handleSendRec()
+        if !(textField.text?.isEmpty)! {
+            
+            let sendImage = UIImage(named: "send")
+            
+            sendImage?.maskWithColor(color: UIColor.gamvesColor)
+            
+            self.recSendButton.setImage(sendImage, for: .normal)
+            
+            self.recSendButton.tag = 2
+            
+            self.handleSendRec()
+            
+        }
         
         return false
     }
-    
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         print("end")
@@ -2172,15 +2152,7 @@ class ChatView: UIView,
         inputTextField.endEditing(true)
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        for message in messages {
-            print(message.message)
-            print(message.date)
-            print("-----------------------------------------")
-        }
-        
         return messages.count
     }
     
@@ -2191,6 +2163,8 @@ class ChatView: UIView,
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogMessageCell
         
         var message = self.messages[indexPath.row]
+        
+        cell.type = message.type
         
         print(self.messages.count)
         
@@ -2204,37 +2178,12 @@ class ChatView: UIView,
         
         print(messageText)
         
-        if message.isAdmin
-        {
-            message.isAdmin = true
-            message.isSender = true
-            
-        } else
-        {
-            message.isAdmin = false
-        }
-        
-        if message.isAudio || message.isPicture {
+        if Global.isAudio(type: message.type) || Global.isPicture(type: message.type) {
             
             cell.messageTextView.isHidden = true
-            
-            if message.isPicture {
-                
-                cell.isPicture = true
-                cell.isAudio = false
-                
-            } else if message.isAudio {
-                
-                cell.isPicture = false
-                cell.isAudio = true
-                
-            }
-            
         } else {
             
             cell.messageTextView.text = messageText
-            cell.isAudio = false
-            cell.isPicture = false
         }
         
         let userID = message.userId
@@ -2251,7 +2200,7 @@ class ChatView: UIView,
         var xAdmin:CGFloat = 20
         var widthAdmin = self.frame.width - 40
         
-        if message.isAdmin {
+        if message.type == MessageType.isAdmin {
             
             let height = estimatedFrame.height + 20
             
@@ -2263,9 +2212,7 @@ class ChatView: UIView,
             cell.bubbleImageView.tintColor = UIColor.lightGray
             cell.messageTextView.textColor = UIColor.gray
             
-            
-        } else if message.isSender == nil || !message.isSender
-        {
+        } else if message.isSender == nil || !message.isSender {
             
             var x:CGFloat = 20
             var width = self.frame.width - 40
@@ -2283,7 +2230,7 @@ class ChatView: UIView,
             
             cell.bubbleView.frame = CGRect(x:bx, y: by, width:bwidth, height: bheight)
             
-            if message.isAudio {
+            if Global.isAudio(type: message.type) {
                 
                 print(message.audio.localUri)
                 cell.gamvesAudio = message.audio
@@ -2297,32 +2244,24 @@ class ChatView: UIView,
                 cell.isSender = false
                 cell.playPauseButton.tag = indexPath.row
                 
-                if message.isDownloadingAudio {
-                    cell.isDownloadingAudio = true
-                }
-                
-            } else if message.isPicture {
+            } else if Global.isPicture(type: message.type) {
                 
                 cell.gamvesPicture = message.picture
                 
                 cell.bHeight = self.pictureHeight
                 
                 cell.bubbleImageView.image = ChatLogMessageCell.grayPictureBubbleImage
-                cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
+                cell.bubbleImageView.tintColor = UIColor(white: 0.5, alpha: 1)
                 cell.pictureImageView.image = message.picture.imageSmall
                 
                 cell.isSender = false
-                
-                if message.isDownloadingPicture {
-                    cell.isDownloadingPicture = true
-                }
                 
             } else {
                 
                 cell.profileImageView.isHidden = false
                 cell.bubbleImageView.image = ChatLogMessageCell.grayBubbleImage
-                cell.bubbleImageView.tintColor = UIColor(white: 0.95, alpha: 1)
-                cell.messageTextView.textColor = UIColor.black
+                cell.bubbleImageView.tintColor = UIColor(white: 0.5, alpha: 1)
+                cell.messageTextView.textColor = UIColor.white
                 
             }
             
@@ -2341,7 +2280,7 @@ class ChatView: UIView,
             
             cell.bubbleView.frame = CGRect(x:bx, y:by, width: bwidth, height: bheight)
             
-            if message.isAudio {
+            if Global.isAudio(type: message.type){
                 
                 if message.audioLocalUri != nil {
                     message.audio.localUri = message.audioLocalUri
@@ -2357,11 +2296,7 @@ class ChatView: UIView,
                 cell.isSender = true
                 cell.playPauseButton.tag = indexPath.row
                 
-                if message.isDownloadingAudio {
-                    cell.isDownloadingAudio = true
-                }
-                
-            } else if message.isPicture {
+            } else if Global.isPicture(type: message.type) {
                 
                 cell.gamvesPicture = message.picture
                 
@@ -2374,10 +2309,6 @@ class ChatView: UIView,
                 
                 cell.isSender = true
                 
-                if message.isDownloadingPicture {
-                    cell.isDownloadingPicture = true
-                }
-                
             } else {
                 
                 cell.bubbleImageView.image = ChatLogMessageCell.blueBubbleImage
@@ -2387,6 +2318,9 @@ class ChatView: UIView,
                 
             }
         }
+        
+        //cell.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        
         return cell
     }
     
@@ -2400,13 +2334,16 @@ class ChatView: UIView,
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         let eFrame = NSString(string: messageText!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
         
-        if !message.isAudio && eFrame.width < 60 {
+        if  Global.isAudio(type: message.type) && eFrame.width < 60 {
             
             estimatedFrame = createFrame(eFrame: eFrame, width: 60, height: eFrame.height)
-        } else if message.isAudio {
+        } else if Global.isAudio(type: message.type) {
             
-            estimatedFrame = createFrame(eFrame: eFrame, width: 280, height: 30)
-        } else if message.isPicture {
+            let dWidth = self.frame.width
+            let minWidth = (dWidth / 4) * 3
+            
+            estimatedFrame = createFrame(eFrame: eFrame, width: minWidth, height: 30)
+        } else if Global.isPicture(type: message.type) {
             
             estimatedFrame = createFrame(eFrame: eFrame, width: self.pictureWidth, height: self.pictureHeight)
         } else {
@@ -2449,28 +2386,30 @@ class ChatLogMessageCell: BaseCell,
     TimerDelegate
 {
     
+    var type:MessageType!
+    
     var isSender = Bool()
     
     //--
     // AUDIO
     
     var gamvesAudio = GamvesAudio()
-    var isAudio = Bool()
+    //var isAudio = Bool()
     
     var updater : CADisplayLink! = nil
     var audioPlayer : AVAudioPlayer!
     
     var progressAudio: NVActivityIndicatorView!
-    var isDownloadingAudio = Bool()
+    //var isDownloadingAudio = Bool()
     
     //--
     // IMAGE
     
     var gamvesPicture = GamvesPicture()
-    var isPicture = Bool()
+    //var isPicture = Bool()
     
     var progressPicture: NVActivityIndicatorView!
-    var isDownloadingPicture = Bool()
+    //var isDownloadingPicture = Bool()
     
     //////
     
@@ -2668,7 +2607,7 @@ class ChatLogMessageCell: BaseCell,
         
         /////////////////
         
-        if self.isAudio {
+        if Global.isAudio(type: self.type) {
             
             self.playerStatus = PayerStatus.isIdle
             
@@ -2748,7 +2687,7 @@ class ChatLogMessageCell: BaseCell,
             self.profileContainerView.addConstraintsWithFormat("H:|-10-[v0(40)]-10-|", views: self.profileImageView)
             self.profileContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.profileImageView)
             
-            if self.isDownloadingAudio {
+            if self.type == MessageType.isAudioDownloading {
                 
                 self.progressAudio = Global.setActivityIndicator(container: self.profileContainerView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
                 
@@ -2758,7 +2697,7 @@ class ChatLogMessageCell: BaseCell,
                 
             }
             
-        } else if self.isPicture {
+        } else if Global.isPicture(type: self.type) {
             
             var left = Int()
             var  right = Int()
@@ -2790,7 +2729,7 @@ class ChatLogMessageCell: BaseCell,
             gradientLayer.locations = [0.2, 1.2]
             self.pictureImageView.layer.addSublayer(gradientLayer)
             
-            if self.isDownloadingPicture {
+            if self.type == MessageType.isAudioDownloading {
                 
                 self.progressPicture = Global.setActivityIndicator(container: self.bubbleView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 0, y: 0, width: 80.0, height: 80.0)
                 

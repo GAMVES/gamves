@@ -171,15 +171,69 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     }
     
-    func keyboardOpened(keybordHeight keybordEditHeight: CGFloat)
-    {
-        let chatHeight = self.view.frame.height - keybordEditHeight
-        self.chatView.frame.size.height = chatHeight
+    func keyboardOpened(keybordHeight keybordEditHeight: CGFloat) {
+        
+        if Global.device.lowercased().range(of:"ipad") != nil {
+        
+            let diffHeight = keybordEditHeight + self.chatView.messageContainerView.frame.height + (self.navigationController?.navigationBar.frame.height)!
+            
+            let collectionHeight = self.view.frame.height - diffHeight
+            
+            let chatHeight = self.view.frame.height - keybordEditHeight
+            
+            if self.chatView.collectionView.contentSize.height >= collectionHeight/2   {
+                
+                self.setChatMinY(keybordHeight: keybordEditHeight)
+            }
+           
+            self.chatView.frame.size.height = chatHeight
+            
+        
+        } else if Global.device.lowercased().range(of:"ipod") != nil {
+            
+        
+            self.setChatMinY(keybordHeight: keybordEditHeight)
+            
+        }
+        
+        self.chatView.animateKeyboard()
+        
     }
     
-    func keyboardclosed()
-    {
+    func setChatMinY(keybordHeight keybordEditHeight: CGFloat) {
+        
+        let chatY = self.chatView.bounds.minY - keybordEditHeight
+        
+        let chatViewRect = CGRect(x: 0, y: chatY, width:  self.chatView.frame.width, height: self.chatView.frame.height)
+        
+        self.chatView.frame = chatViewRect
+        
+    }
+    
+    func setChatYBack() {
+        
+        let chatY = self.view.bounds.minY
+        
+        let chatViewRect = CGRect(x: 0, y: chatY, width:  self.chatView.frame.width, height: self.chatView.frame.height)
+        
+        self.chatView.frame = chatViewRect
+        
+    }
+    
+    func keyboardclosed() {
+        
+        if Global.device.lowercased().range(of:"ipad") != nil {
+       
+            self.setChatYBack()
+            
+        } else if Global.device.lowercased().range(of:"ipod") != nil {
+            
+            self.setChatYBack()
+        }
+        
         self.chatView.frame.size.height = self.view.frame.height
+        
+        self.chatView.animateKeyboard()
     }
 
 }

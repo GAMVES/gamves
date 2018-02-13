@@ -143,8 +143,7 @@ class Global: NSObject
                 gamvesUser.email = user.email!
             }
             
-            if user["status"] != nil
-            {
+            if user["status"] != nil {
                 gamvesUser.status = user["status"] as! String
             }
             
@@ -1111,7 +1110,21 @@ class Global: NSObject
         return name
     }
     
+    static func isAudio(type: MessageType) -> Bool {
+        if type == MessageType.isAudio || type == MessageType.isAudioDownloading {
+            return true
+        } else {
+            return false
+        }
+    }
     
+    static func isPicture(type: MessageType) -> Bool {
+        if type == MessageType.isPicture || type == MessageType.isPictureDownloading {
+            return true
+        } else {
+            return false
+        }
+    }
 
 
 }
