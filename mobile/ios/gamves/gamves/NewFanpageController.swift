@@ -69,6 +69,9 @@ ChooseAvatarProtocol {
     var touchedButton : TouchedButton!
     
     var selectorView:SelectorView!
+
+    var isEdit = Bool()    
+    let fan = FanpageGamves()
     
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -503,7 +506,15 @@ ChooseAvatarProtocol {
         
         self.prepTextFields(inView: [self.namesView])
 
+        if self.isEdit {
+
+            self.getFanpageInfo()
+
+        }
+
     }
+
+
     
     override func viewDidLayoutSubviews() {
 
@@ -850,9 +861,9 @@ ChooseAvatarProtocol {
             
                 fanpagePF.setObject(coverImageFile, forKey: "pageCover")
                 
-                var fanpageId = Global.getRandomInt()
+                var fpId = Global.getRandomInt()
                 
-                fanpagePF["fanpageId"] = fanpageId
+                fanpagePF["fpId"] = fpId
                 
                 let categoryRelation = fanpagePF.relation(forKey: "category")
                 categoryRelation.add((self.category?.cateobj!)!)
@@ -871,7 +882,7 @@ ChooseAvatarProtocol {
                         
                         for albumObj  in albumsPF {
                             
-                            albumObj["referenceId"] = fanpageId
+                            albumObj["referenceId"] = fpId
                            
                             do {
                                 
@@ -884,7 +895,7 @@ ChooseAvatarProtocol {
                 
                         let approvals: PFObject = PFObject(className: "Approvals")
                         
-                        approvals["referenceId"] = fanpageId
+                        approvals["referenceId"] = fpId
                         approvals["posterId"] = PFUser.current()?.objectId
                         let familyId = Global.gamvesFamily.objectId
                         approvals["familyId"] = familyId
@@ -954,6 +965,7 @@ ChooseAvatarProtocol {
     
     
     func checErrors() -> Bool {
+        
         var errors = false
         let title = "Error"
         var message = ""
@@ -1040,6 +1052,127 @@ ChooseAvatarProtocol {
         
         let image:UIImage = self.imagesArray[indexPath.row]
         
+    }
+
+
+
+    func getFanpageInfo() {
+        
+        let queryFanpage = PFQuery(className:"Fanpages")
+        
+        //queryFanpage.whereKey("objectId", equalTo: self.fanpagapeId)
+        
+        if !Global.hasDateChanged() {
+            queryFanpage.cachePolicy = .cacheElseNetwork
+        }
+        
+        queryFanpage.findObjectsInBackground { (fanpagesArray, error) in
+            
+            if error != nil
+            {
+                print("error")
+            } else {
+                
+                if let fanpagesArray = fanpagesArray
+                {
+                    let fanpageAmount = fanpagesArray.count
+                    
+                    print(fanpageAmount)
+                    
+                    var total = Int()
+                    total = fanpageAmount - 1
+                    
+                    var count = 0
+                    
+                    if fanpageAmount > 0 {
+                    
+                        for fanpage in fanpagesArray {
+                            
+                            //Download Images
+                            Downloader.loadFanpageImages(fanpage: fanpage)
+                            
+                            
+                            
+                            let fpObj:PFObject = fanpage
+                            
+                            self.fan.fanpageObj = fpObj
+                            
+                            let relationCategory = fpObj.relation(forKey: "category")
+                            let categoryQuery = relationCategory.query()
+                            
+                            categoryQuery.findObjectsInBackground(block: { (category, errorCat) in
+                                
+                                if errorCat == nil {
+                                
+                                    self.fan.categoryObj = category?[0]
+                                    self.fan.categoryName = fpObj["categoryName"] as! String
+                                    
+                                    let fanpageId = fpObj["fanpageId"] as! Int
+                                    let cover = fpObj["pageCover"] as! PFFile
+                                    let name  = fpObj["pageName"] as! String
+                                    let icon  = fpObj["pageIcon"] as! PFFile
+                                    let about  = fpObj["pageAbout"] as! String
+                                    
+                                    let authorRelation = fpObj["author"] as! PFRelation
+                                    let queryAuthor = authorRelation.query()
+                                    queryAuthor.findObjectsInBackground(block: { (users, error) in
+                                        
+                                        if error == nil {
+                                            
+                                            for user in users! {
+                                                
+                                                var isFamily = Bool()
+                                                let author = user as! PFUser
+                                                
+                                                if author.objectId == PFUser.current()?.objectId {
+                                                    isFamily = true
+                                                }
+                                                
+                                                Global.addUserToDictionary(user: author, isFamily: isFamily, completionHandler: { (gamvedUser) in
+                                                    
+                                                    self.fan.author = author as! PFUser
+                                                    self.fan.author_image = gamvedUser.avatar
+                                                    
+                                                    icon.getDataInBackground(block: { (iconImageData, error) in
+                                                        
+                                                        if error == nil {
+                                                            
+                                                            let iconImage = UIImage(data: iconImageData!)
+                                                            
+                                                            self.fan.icon_image = iconImage!
+                                                            self.fan.name =  name
+                                                            self.fan.about = about
+                                                            
+                                                            cover.getDataInBackground(block: { (coverImageData, error) in
+                                                                
+                                                                if error == nil {
+                                                                    
+                                                                    let coverImage = UIImage(data:coverImageData!)
+                                                                    self.fan.cover_image = coverImage!
+                                                                    
+                                                                    
+                                                                    if  (fanpageAmount-1) == count {
+                                                                        
+                                                                        
+                                                                    
+                                                                    }
+                                                                    count = count + 1
+                                                                }
+                                                            })
+                                                        }
+                                                    })
+                                                })
+                                            }
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 }

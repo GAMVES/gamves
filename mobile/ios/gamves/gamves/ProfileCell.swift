@@ -308,7 +308,10 @@ class ProfileCell: BaseCell,
         
         let metricsFooterView = ["sf": splitFooter]
         
-        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.editProfileButton, self.editFanpageButton, metrics: metricsFooterView)
+        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: 
+            self.editProfileButton, 
+            self.editFanpageButton, 
+            metrics: metricsFooterView)
         
         self.footerView.addSubview(self.saveProfileButton)
         self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.saveProfileButton)
@@ -316,7 +319,7 @@ class ProfileCell: BaseCell,
         
         self.footerView.addSubview(self.cancelProfileButton)
         self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.cancelProfileButton)
-        self.saveProfileButton.isHidden = true
+        self.cancelProfileButton.isHidden = true
         
         self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.saveProfileButton, self.cancelProfileButton, metrics: metricsFooterView)
         
@@ -622,6 +625,8 @@ class ProfileCell: BaseCell,
     func handleEditFanpage() {
         
         //Call branch add code here
+        
+        self.homeController?.addNewFanpage(edit:true)
         
     }
     

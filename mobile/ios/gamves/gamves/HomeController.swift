@@ -300,7 +300,12 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.pushViewController(newVideoController, animated: true)
     }
     
-    func addNewFanpage() {
+    func addNewFanpage(edit:Bool) {
+        if edit {
+            newFanpageController.isEdit = true
+        } else {
+            newFanpageController.isEdit = false
+        }
         newFanpageController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]

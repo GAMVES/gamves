@@ -74,7 +74,7 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
             
             if self.homeController != nil
             {
-                self.homeController?.addNewFanpage()
+                self.homeController?.addNewFanpage(edit:false)
             }
             
         })

@@ -179,15 +179,18 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
             
             let collectionHeight = self.view.frame.height - diffHeight
             
-            let chatHeight = self.view.frame.height - keybordEditHeight
             
             if self.chatView.collectionView.contentSize.height >= collectionHeight/2   {
                 
                 self.setChatMinY(keybordHeight: keybordEditHeight)
+                
+            } else {
+            
+                let chatHeight = self.view.frame.height - keybordEditHeight
+                self.chatView.frame.size.height = chatHeight                
+                
             }
            
-            self.chatView.frame.size.height = chatHeight
-            
         
         } else if Global.device.lowercased().range(of:"ipod") != nil {
             
