@@ -373,7 +373,7 @@ SelectorProtocol {
         let selectorWidth = cwidth - 20
         let selRect = CGRect(x: 0, y: 0, width: cwidth, height: 150)
         
-        self.selectorCategoryView = SelectorView(frame: selRect)
+        self.selectorCategoryView = SelectorView(frame: selRect, isEdit: false)
         self.selectorCategoryView.setSelectorType(type: SelectorType.TypeCategory)
         self.selectorCategoryView.delegateSelector = self
         
@@ -382,7 +382,7 @@ SelectorProtocol {
         
         self.categoriesContainerView.addSubview(self.categoryTypeSeparatorView)
         
-        self.selectorFanpageView = SelectorView(frame: selRect)
+        self.selectorFanpageView = SelectorView(frame: selRect, isEdit: false)
         self.selectorFanpageView.delegateSelector = self
         self.selectorFanpageView.setSelectorType(type: SelectorType.TypeFanpage)
         self.categoriesContainerView.addSubview(self.selectorFanpageView)

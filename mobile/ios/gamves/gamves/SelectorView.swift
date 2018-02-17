@@ -30,6 +30,8 @@ class SelectorView: BaseCell,
     var gamvesFanpage = [FanpageGamves]()
     
     var delegateSelector:SelectorProtocol!
+
+    var isEditFanpage = Bool()
     
     let selectorContView: UIView = {
         let view = UIView()
@@ -56,8 +58,11 @@ class SelectorView: BaseCell,
     
     var selectorType:SelectorType!
 
-    override init(frame: CGRect) {
+    init(frame: CGRect, isEdit:Bool) {
         super.init(frame: frame)
+
+        print(isEdit)
+        self.isEditFanpage = isEdit
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -80,11 +85,33 @@ class SelectorView: BaseCell,
         self.collectionView.register(CatFanSelectorViewCell.self, forCellWithReuseIdentifier: self.catFanSelectorId)
         
         let ids = Array(Global.categories_gamves.keys)
-        for i in ids {
-            let cat = Global.categories_gamves[i]?.name as! String
-            if cat != "TRENDING" && cat != "PERSONAL" {
-                self.categoriesGamves.append(Global.categories_gamves[i]!)
+        
+        if !self.isEditFanpage {
+        
+            for i in ids {
+                
+                let cat = Global.categories_gamves[i]?.name as! String
+                
+                if cat != "TRENDING" && cat != "PERSONAL" {
+                    
+                
+                    self.categoriesGamves.append(Global.categories_gamves[i]!)
+                }
             }
+        
+        } else {
+           
+            for i in ids {
+                
+                let cat = Global.categories_gamves[i]?.name as! String
+                
+                if cat == "PERSONAL" {
+                    
+                    self.categoriesGamves.append(Global.categories_gamves[i]!)
+                }
+            }
+
+            self.collectionView.isUserInteractionEnabled = false
         }
         
     }

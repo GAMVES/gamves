@@ -72,6 +72,9 @@ ChooseAvatarProtocol {
 
     var isEdit = Bool()    
     let fan = FanpageGamves()
+
+    var fanpagePF:PFObject!
+    var categoryPF:PFObject!
     
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -391,8 +394,8 @@ ChooseAvatarProtocol {
             metricsNew)
         
         let selectorWidth = cwidth - 20
-        let selRect = CGRect(x: 0, y: 0, width: cwidth, height: 150)
-        self.selectorView = SelectorView(frame: selRect)
+        let selRect = CGRect(x: 0, y: 0, width: cwidth, height: 150)        
+        self.selectorView = SelectorView(frame: selRect, isEdit: self.isEdit)
         self.selectorView.setSelectorType(type: SelectorType.TypeCategory)
         self.selectorView.delegateSelector = self
         
@@ -508,9 +511,55 @@ ChooseAvatarProtocol {
 
         if self.isEdit {
 
-            self.getFanpageInfo()
+            self.loadFanpageInfo()
 
         }
+
+    }
+
+    func loadFanpageInfo() {
+        
+        
+        let ids = Array(Global.categories_gamves.keys)
+        var categories = [String]()
+        
+        for i in ids {
+            
+            let cat = Global.categories_gamves[i]
+            let catName = cat?.name as! String
+            
+            if catName == "PERSONAL" {
+                
+                self.categoryPF = cat?.cateobj
+                
+                let fanpages = cat?.fanpages
+                
+                for fanpage in fanpages! {
+                    
+                    if fanpage.author == PFUser.current() {
+                        
+                        self.fanpagePF = fanpage.categoryObj
+                        
+                        self.imagesArray.append(fanpage.icon_image)
+                        
+                        self.collectionView.isUserInteractionEnabled = false
+                        self.collectionView.reloadData()
+                        
+                        self.nameTextField.text = fanpage.name
+                        
+                        
+                        
+                        break
+                    }
+                }
+            }
+        }
+
+        
+        
+        
+        
+        
 
     }
 
@@ -1056,7 +1105,7 @@ ChooseAvatarProtocol {
 
 
 
-    func getFanpageInfo() {
+    /*func getFanpageInfo() {
         
         let queryFanpage = PFQuery(className:"Fanpages")
         
@@ -1173,7 +1222,7 @@ ChooseAvatarProtocol {
             }
         }
 
-    }
+    }*/
 
 }
 
