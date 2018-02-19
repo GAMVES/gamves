@@ -490,54 +490,71 @@ class ProfileViewController: UIViewController,
         
         if PFUser.current() != nil {
             self.son = PFUser.current()
+        }     
+        
+        /*NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)*/
+        
+        
+        if Global.familyLoaded {
+            self.familyLoaded()
         }
         
-        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
-    
-            if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
-                
-                self.tabBarController?.tabBar.isHidden = true
-                
-                if Global.isKeyPresentInUserDefaults(key: "son_userId") {
-                    
-                    self.loadSonSpouseDataIfFamilyDontExist()
-                    
-                    self.segmentedControl.setEnabled(true, forSegmentAt: 1)
-                
-                } else {
-                    
-                    self.segmentedControl.setEnabled(false, forSegmentAt: 1)
-                }
-            
-            } else {
-                
-                self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
-            
-                DispatchQueue.main.async() {
-                    self.makeRounded(imageView:self.yourPhotoImageView)
-                    self.makeRounded(imageView:self.sonPhotoImageView)
-                    self.makeRounded(imageView:self.spousePhotoImageView)
-                    self.makeRounded(imageView:self.familyPhotoImageView)
-                }
-                
-                self.segmentedControl.setEnabled(true, forSegmentAt: 1)
-                
-            }
+        if Global.levelsLoaded {
+            self.levelsLoaded()
+        }
         
-            NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
-            
-            NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
-        
-        })
+        if Global.familyDataGromGlobal {
+            self.loadFamilyDataGromGlobal()
+        }
+
+        //self.familyLoaded()
+
+        //self.levelsLoaded()
+
+        //self.loadFamilyDataGromGlobal()
         
     }
     
     
     func levelsLoaded() {
         
-        self.loadSchools(completionHandler: { ( user ) -> () in
+        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
+            
+            self.tabBarController?.tabBar.isHidden = true
+            
+            if Global.isKeyPresentInUserDefaults(key: "son_userId") {
+                
+                self.loadSonSpouseDataIfFamilyDontExist()
+                
+                self.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                
+            } else {
+                
+                self.segmentedControl.setEnabled(false, forSegmentAt: 1)
+            }
+            
+        } else {
+            
+            self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
+            
+            DispatchQueue.main.async() {
+                self.makeRounded(imageView:self.yourPhotoImageView)
+                self.makeRounded(imageView:self.sonPhotoImageView)
+                self.makeRounded(imageView:self.spousePhotoImageView)
+                self.makeRounded(imageView:self.familyPhotoImageView)
+            }
+            
+            self.segmentedControl.setEnabled(true, forSegmentAt: 1)
+            
+        }
+        
+        Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
+
+            self.schoolsArray = schoolsArray
             
             self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
@@ -659,46 +676,7 @@ class ProfileViewController: UIViewController,
 
     }
 
-    func loadSchools(completionHandler : @escaping (_ user:Bool) -> ()) {
-        
-        self.schoolsArray = []
-        
-        let querySchool = PFQuery(className:"Schools")
-        
-        querySchool.findObjectsInBackground(block: { (schools, error) in
-            
-            if error == nil
-            {
-                if let schools = schools
-                {
-                    var countSchools = schools.count
-                    var count = 0
-                    
-                    for school in schools
-                    {
-                        let schoolName = school["name"] as! String
-                        self.schoolsArray.add(schoolName)
-                        
-                        let gSchool = GamvesSchools()
-                        
-                        gSchool.objectId = school.objectId!
-                        gSchool.schoolName = schoolName
-                        gSchool.schoolOBj = school
-                        
-                        Global.schools.append(gSchool)
-                        
-                        Global.gamvesFamily.school = gSchool
-                        
-                        if count == (countSchools - 1)
-                        {
-                            completionHandler(true)
-                        }
-                        count = count + 1
-                    }
-                }
-            }
-        })
-    }
+    
 
     
     func textFieldDidBeginEditing(_ textField: UITextField) {

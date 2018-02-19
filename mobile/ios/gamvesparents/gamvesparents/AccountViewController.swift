@@ -14,6 +14,8 @@ class AccountViewController: UIViewController,
     UICollectionViewDelegate, 
     UICollectionViewDelegateFlowLayout {
     
+    var profileViewController:ProfileViewController!
+    
     var homeViewController:HomeViewController?
     
     var tabBarViewController:TabBarViewController?
@@ -105,8 +107,7 @@ class AccountViewController: UIViewController,
         cv.delegate = self
         return cv
     }()
-
-
+    
     var photoCornerRadius = Int()
 
     var cellId = String()
@@ -115,6 +116,18 @@ class AccountViewController: UIViewController,
     var _payment = AccountButton()
     var _school = AccountButton()
     var _admin = AccountButton()
+    
+   func initilizeObservers() {
+    
+        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(yourAccountInfoLoaded), name: NSNotification.Name(rawValue: Global.notificationYourAccountInfoLoaded), object: nil)
+    
+        NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
+    
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
+        
+    }
     
 
     override func viewDidLoad() {
@@ -167,7 +180,7 @@ class AccountViewController: UIViewController,
         metricsHeader["photoSize"] = photoSize
         metricsHeader["padding"] = padding
 
-         self.headerView.addConstraintsWithFormat(
+        self.headerView.addConstraintsWithFormat(
             "V:|-40-[v0(photoSize)][v1]|", views:
             self.photosContainerView,
             self.yourLabel,
@@ -225,19 +238,27 @@ class AccountViewController: UIViewController,
             self.collectionView, 
             self.buttonRightView)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(yourAccountInfoLoaded), name: NSNotification.Name(rawValue: Global.notificationYourAccountInfoLoaded), object: nil)
+        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
+            self.openProfile()
+        }
         
     }
     
     func familyLoaded() {
         self.sonPhotoImageView.image = Global.gamvesFamily.youUser.avatar
-        self.yourLabel.text = Global.gamvesFamily.youUser.name
+        self.yourLabel.text = Global.gamvesFamily.youUser.name        
     }
     
     func yourAccountInfoLoaded() {
-        self.backImageView.image = Global.yourAccountBackImage
+        
+    }
+    
+    func levelsLoaded() {
+        
+    }
+    
+    func loadFamilyDataGromGlobal() {
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {        
@@ -255,6 +276,43 @@ class AccountViewController: UIViewController,
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let index = indexPath.item
+
+        let button = self.accountButton[index]
+        
+        switch (button.id) {
+            
+            case 0:
+                
+               
+                
+                break
+            
+            case 1:
+                
+                break
+            
+            case 2:
+                
+                break
+            
+            case 3:
+                
+                break
+            
+            default: break
+            
+        }
+        
+    }
+    
+    func openProfile() {
+        
+        profileViewController = ProfileViewController()
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(profileViewController, animated: true)
         
     }
     

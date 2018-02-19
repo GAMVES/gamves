@@ -16,30 +16,25 @@ extension LoginViewController : UITextFieldDelegate {
     
     // set all of the UITextFields' delegate to the view controller (self)
     // if no view is passed in, start w/ the self.view
-    func prepTextFields(inView view : UIView? = nil) {
+    func prepTextFields(inView views : [UIView]? = nil) {
         
-        
-        // cycle thru all the subviews looking for text fields
-        for v in view?.subviews ?? self.view.subviews {
-            
-            if let tf = v as? UITextField {
+        for view in views!
+        {
+            // cycle thru all the subviews looking for text fields
+            for v in view.subviews ?? self.view.subviews {
                 
-                if tf.tag == -1
-                {
-                    continue
-                } 
-
-                // set the delegate and return key to 'Next'
-                tf.delegate = self
-                tf.returnKeyType = .next
-                // save the last text field for later
-                if tfLastLogin == nil || tfLastLogin!.tag < tf.tag {
-                    tfLastLogin = tf
+                if let tf = v as? UITextField {
+                    // set the delegate and return key to 'Next'
+                    tf.delegate = self
+                    tf.returnKeyType = .next
+                    // save the last text field for later
+                    if tfLastProfile == nil || tfLastProfile!.tag < tf.tag {
+                        tfLastProfile = tf
+                    }
                 }
-                
-            }
-            else if v.subviews.count > 0 { // recursive
-                prepTextFields(inView: v)
+                else if v.subviews.count > 0 { // recursive
+                    prepTextFields(inView: [v])
+                }
             }
         }
         
@@ -47,8 +42,8 @@ extension LoginViewController : UITextFieldDelegate {
         // * view == nil - only do this on the end of
         // the original call (not recursive calls)
         if view == nil {
-            tfLastLogin?.returnKeyType = .send
-            tfLastLogin = nil
+            tfLastProfile?.returnKeyType = .send
+            tfLastProfile = nil
         }
     }
     

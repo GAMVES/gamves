@@ -67,10 +67,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         window?.rootViewController = TabBarViewController()
         
-        if PFUser.current() != nil
-        {
-            Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
-            
+        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
+        
+            if PFUser.current() != nil
+            {
+                
                 Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
                 
                     ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
@@ -78,10 +79,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 })
 
                 self.loadChatChannels()
-                
-            })
-        
-        }
+            
+            }
+            
+        })
         
         if #available(iOS 10.0, *)
         {

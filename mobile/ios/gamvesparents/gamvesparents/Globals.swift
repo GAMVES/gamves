@@ -19,12 +19,19 @@ class Global: NSObject
     
     static var levels = Dictionary<String, LevelsGamves>()
     
+    static var levelsLoaded = Bool()
+    static var familyLoaded = Bool()
+    
+    static var familyDataGromGlobal = Bool()
+    
     static var schools = [GamvesSchools]()
     
-    static var serverUrl = "http://127.0.0.1:1337/1/"
+    static var serverUrl = "http://192.168.16.22:1337/1/"
+    //static var serverUrl = "http://127.0.0.1:1337/1/"
     //static var serverUrl = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
-    static var localWs = "wss://127.0.0.1:1337/1/"
+    static var localWs = "wss://192.168.16.22:1337/1/"
+    //static var localWs = "wss://127.0.0.1:1337/1/"
     static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var userTypes = Dictionary<Int, UserTypeGamves>()
@@ -711,6 +718,8 @@ class Global: NSObject
                                                         completionHandler(true)
                                                         
                                                         NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                        
+                                                        self.familyLoaded = true
                                                     }
                                                     count = count + 1
                                                 })
@@ -749,7 +758,7 @@ class Global: NSObject
         queryLevel.findObjectsInBackground { (levelObjects, error) in
             
             if error != nil {
-                print("error")
+                print("error: \(error)")
             } else {
                 
                 if let levelObjects = levelObjects {
@@ -776,6 +785,8 @@ class Global: NSObject
                         
                         if (countLevels-1)  == count {
                             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: self)
+                            
+                            self.levelsLoaded = true
                             
                             completionHandler(true)
                         }
@@ -1093,7 +1104,7 @@ class Global: NSObject
             if error != nil
             {
                 
-                print("error")
+                print("error: \(error)")
                 
             } else
             {
@@ -1160,6 +1171,49 @@ class Global: NSObject
     static let grayPictureBubbleImage = UIImage(named: "bubble_picture_gray")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     
     static let bluePictureBubbleImage = UIImage(named: "bubble_picture_blue")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
+
+
+    static func loadSchools(completionHandler : @escaping (_ user:Bool, _ schoolsArray: NSMutableArray) -> ()) {
+        
+        let schoolsArray:NSMutableArray = []
+        
+        let querySchool = PFQuery(className:"Schools")
+        
+        querySchool.findObjectsInBackground(block: { (schools, error) in
+            
+            if error == nil
+            {
+                if let schools = schools
+                {
+                    var countSchools = schools.count
+                    var count = 0
+                    
+                    for school in schools
+                    {
+                        let schoolName = school["name"] as! String
+                        schoolsArray.add(schoolName)
+                        
+                        let gSchool = GamvesSchools()
+                        
+                        gSchool.objectId = school.objectId!
+                        gSchool.schoolName = schoolName
+                        gSchool.schoolOBj = school
+                        
+                        Global.schools.append(gSchool)
+                        
+                        Global.gamvesFamily.school = gSchool
+                        
+                        if count == (countSchools - 1)
+                        {
+                            completionHandler(true, schoolsArray)
+                        }
+                        count = count + 1
+                    }
+                }
+            }
+        })
+    }
+
     
 }
 

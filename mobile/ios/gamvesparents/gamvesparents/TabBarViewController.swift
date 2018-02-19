@@ -38,6 +38,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
     lazy var accountViewController: AccountViewController = {
         let launcher = AccountViewController()
         launcher.tabBarViewController = self
+        launcher.initilizeObservers()
         return launcher
     }()
 
@@ -96,6 +97,10 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
         blurVisualEffectView?.frame = view.bounds
         self.view.addSubview(blurVisualEffectView!)
+        
+        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
+            self.selectedIndex = 2 //Account
+        }
         
     }
     
