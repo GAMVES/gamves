@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import NVActivityIndicatorView
 import PopupDialog
+import TaskQueue
 
 class Global: NSObject
 {
@@ -664,12 +665,11 @@ class Global: NSObject
             let familyQuery = PFQuery(className:"Family")
             familyQuery.whereKey("members", equalTo: PFUser.current())
             //familyQuery.cachePolicy = .cacheElseNetwork
-            familyQuery.findObjectsInBackground(block: { (families, error) in
+            familyQuery.getFirstObjectInBackground(block: { (familyPF, error) in
                 
-                if error == nil
-                {
-                    for family in families!
-                    {                       
+                if error == nil {
+                    
+                    if let family = familyPF {
                         
                         self.gamvesFamily.familyName = family["description"] as! String
                         self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
@@ -685,8 +685,7 @@ class Global: NSObject
                             if (error != nil)
                             {
                                 print(error)
-                            } else
-                            {
+                            } else {
                                 
                                 let imageFamily = UIImage(data: data!)
                                 
@@ -703,28 +702,36 @@ class Global: NSObject
                                         var memberCount = members?.count
                                         var count = 0
                                         
-                                        for member in members!
-                                        {
-                                            
-                                            DispatchQueue.main.async
-                                            {
+                                        DispatchQueue.main.async {
+                                        
+                                                let queue = TaskQueue()
+                                        
+                                                for member in members!
+                                                {
                                                     
-                                                self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
-                                                    
-                                                    print(gamvesUser.userName)
-                                                    
-                                                    if count == (memberCount!-1)
-                                                    {                                                           
-                                                        completionHandler(true)
+                                                    queue.tasks += {
                                                         
-                                                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
                                                         
-                                                        self.familyLoaded = true
+                                                        self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                                                            
+                                                            print(gamvesUser.userName)
+                                                            
+                                                        })
+                                                        
                                                     }
-                                                    count = count + 1
-                                                })
-                                            }
+                                                   
+                                                }
+                                        
+                                                queue.run {
+                                                    
+                                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                    
+                                                    self.familyLoaded = true
+                                                    
+                                                    completionHandler(true)
+                                                }
                                         }
+                                        
                                     }
                                 })
                                 

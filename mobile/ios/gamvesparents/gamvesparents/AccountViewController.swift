@@ -240,13 +240,15 @@ class AccountViewController: UIViewController,
         
         if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
             self.openProfile()
+            self.loadYourProfileInfo()
         }
-        
+
     }
     
     func familyLoaded() {
         self.sonPhotoImageView.image = Global.gamvesFamily.youUser.avatar
-        self.yourLabel.text = Global.gamvesFamily.youUser.name        
+        self.yourLabel.text = Global.gamvesFamily.youUser.name
+        self.loadYourProfileInfo()
     }
     
     func yourAccountInfoLoaded() {
@@ -259,6 +261,46 @@ class AccountViewController: UIViewController,
     
     func loadFamilyDataGromGlobal() {
         
+    }
+
+    func loadYourProfileInfo() {
+        
+        let queryUser = PFQuery(className:"Profile")
+
+        if let userId = PFUser.current()?.objectId {
+        
+            queryUser.whereKey("userId", equalTo: userId)
+            
+            queryUser.getFirstObjectInBackground { (profile, error) in
+                
+                if error == nil {
+                    
+                    if let prPF:PFObject = profile {
+                    
+                        if prPF["pictureBackground"] != nil {
+                            
+                            let backImage = prPF["pictureBackground"] as! PFFile
+                        
+                            backImage.getDataInBackground { (imageData, error) in
+                                
+                                if error == nil {
+                                    
+                                    if let imageData = imageData {
+                                        
+                                        let image = UIImage(data:imageData)
+                                        
+                                        self.backImageView.image = image
+
+                                        Global.yourAccountBackImage = image!
+                                    
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {        
@@ -285,7 +327,7 @@ class AccountViewController: UIViewController,
             
             case 0:
                 
-               
+                self.openProfile()
                 
                 break
             

@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
+class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITabBarControllerDelegate  {
     
     var tutorialController = TutorialController()
     
@@ -72,6 +72,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         }
         
         let homeNavController = UINavigationController(rootViewController: homeViewController)
+        homeViewController.initilizeObservers()
         homeNavController.tabBarItem.image = UIImage(named: "home")
         
         let layout = UICollectionViewFlowLayout()

@@ -1085,13 +1085,15 @@ class ProfileViewController: UIViewController,
                                                     self.hideShowTabBar(status:false)
                                                     self.tabBarViewController?.selectedIndex = 0
                                                     
-                                                    Global.defaults.set(true, forKey: "profile_completed")
-                                                    
-                                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                    Global.defaults.set(true, forKey: "profile_completed")                                                                                                       
                                                     
                                                     Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-                                                    
-                                                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                                                        
+                                                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in                                                 
+                                                            
+                                                            self.navigationController?.popViewController(animated: true)
+                                                            
+                                                        })
                                                         
                                                     })
                                                 }
