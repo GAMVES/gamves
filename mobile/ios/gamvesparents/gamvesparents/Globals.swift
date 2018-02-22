@@ -114,7 +114,13 @@ class Global: NSObject
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
     {
-        let userId = user.objectId!
+        var userId = user.objectId!
+        
+        print(user.username)
+        
+        if userId == PFUser.current()?.objectId {
+            print(PFUser.current()?.username)
+        }
         
         if self.userDictionary[userId] == nil
         {
@@ -159,24 +165,21 @@ class Global: NSObject
                 
                 let picture = user["pictureSmall"] as! PFFile
                 
-                picture.getDataInBackground(block: { (data, error) in
-                    
-                    if (error != nil) {
-                        print(error)
-                    } else {
+                     self.getImage(gamvesUser: gamvesUser, file:picture, completionHandler: { ( userGamves, image ) -> () in
+                
+                        print(userGamves.name)
                         
-                        let image = UIImage(data: data!)
-                        gamvesUser.avatar = image!
-                        gamvesUser.isAvatarDownloaded = true
-                        gamvesUser.isAvatarQuened = false
+                        userGamves.avatar = image
+                        userGamves.isAvatarDownloaded = true
+                        userGamves.isAvatarQuened = false
                         
                         var typeNumber = user["iDUserType"] as! Int
-                        print(gamvesUser.firstName)
+                        print(userGamves.firstName)
                         
-                        gamvesUser.typeNumber = typeNumber
-                        gamvesUser.typeObj = Global.userTypes[typeNumber]?.userTypeObj  //Global.getUserTypeObjById(id: typeNumber)
+                        userGamves.typeNumber = typeNumber
+                        userGamves.typeObj = Global.userTypes[typeNumber]?.userTypeObj  //Global.getUserTypeObjById(id: typeNumber)
                         
-                        print(gamvesUser.typeNumber)
+                        print(userGamves.typeNumber)
                         
                         if isFamily {
                             
@@ -192,9 +195,9 @@ class Global: NSObject
                                     gender.male = true
                                 }
                                 
-                                gamvesUser.gender = gender
+                                userGamves.gender = gender
                                 
-                                adduserToFamilyFromGlobal(gamvesUser: gamvesUser)
+                                adduserToFamilyFromGlobal(gamvesUser: userGamves)
                                 
                                 
                             } else if typeNumber == Global.SPOUSE_MOTHER || typeNumber == Global.REGISTER_FATHER
@@ -209,7 +212,7 @@ class Global: NSObject
                                 
                                 gamvesUser.gender = gender
                                 
-                                adduserToFamilyFromGlobal(gamvesUser: gamvesUser)
+                                adduserToFamilyFromGlobal(gamvesUser: userGamves)
                                 
                                 
                             } else if typeNumber == Global.SON || typeNumber == Global.DAUGHTER {
@@ -221,7 +224,7 @@ class Global: NSObject
                                     gender.male = false
                                 }
                                 
-                                gamvesUser.gender = gender
+                                userGamves.gender = gender
                                 
                                 if user["levelObjId"] != nil {
                                 
@@ -233,26 +236,27 @@ class Global: NSObject
                                     
                                     print(levelGamves)
                                     
-                                    gamvesUser.levelNumber = (levelGamves?.grade)!
-                                    gamvesUser.levelDescription = (levelGamves?.description)!
-                                    gamvesUser.levelId = levelId
+                                    userGamves.levelNumber = (levelGamves?.grade)!
+                                    userGamves.levelDescription = (levelGamves?.description)!
+                                    userGamves.levelId = levelId
                                 
                                 }
                                 
-                                adduserToFamilyFromGlobal(gamvesUser: gamvesUser)
+                                adduserToFamilyFromGlobal(gamvesUser: userGamves)
                                 
-                                completionHandler(gamvesUser)
-                                
-
+                                completionHandler(userGamves)
                             }
+                            
                         }
                         
-                        if typeNumber != Global.SON || typeNumber != Global.DAUGHTER {
+                        if typeNumber != Global.SON && typeNumber != Global.DAUGHTER {
                             
-                            completionHandler(gamvesUser)
+                            completionHandler(userGamves)
                         }
-                    }
-                })
+                    
+                    })
+                
+                
             }
         
         } else {
@@ -284,7 +288,31 @@ class Global: NSObject
         self.userDictionary[gamvesUser.userId] = gamvesUser
 
     }
-
+    
+    static func getImage(gamvesUser: GamvesParseUser, file:PFFile, completionHandler : @escaping (_ user:GamvesParseUser, _ image:UIImage) -> Void)
+    {
+        
+        print(gamvesUser.name)
+        
+        file.getDataInBackground(block: { (data, error) in
+            
+            if (error != nil) {
+                
+                print(error)
+                
+            } else {
+                
+                let image = UIImage(data: data!)
+                
+                print(gamvesUser.name)
+                
+                completionHandler(gamvesUser, image!)
+                
+            }
+            
+        })
+        
+    }
     
     static func getImageVideo(videothumburl: String, video:VideoGamves, completionHandler : (_ video:VideoGamves) -> Void)
     {
@@ -705,21 +733,15 @@ class Global: NSObject
                                         DispatchQueue.main.async {
                                         
                                                 let queue = TaskQueue()
-                                        
-                                                for member in members!
-                                                {
+                                            
+                                                queue.tasks += { result, next in
                                                     
-                                                    queue.tasks += {
+                                                    self.addMembersToDictionary(members: members as! [PFUser], completionHandler: { ( gamvesUser ) -> () in
                                                         
+                                                        next(nil)
                                                         
-                                                        self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
-                                                            
-                                                            print(gamvesUser.userName)
-                                                            
-                                                        })
-                                                        
-                                                    }
-                                                   
+                                                    })
+                                        
                                                 }
                                         
                                                 queue.run {
@@ -757,6 +779,30 @@ class Global: NSObject
         }
     }
     
+    static func addMembersToDictionary(members: [PFObject], completionHandler : @escaping (_ resutl:Bool) -> ()){
+      
+        var countMembers = members.count
+        
+        var count = 0
+        
+        for member in members
+        {
+            print(member)
+            
+            self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                
+                print(gamvesUser.userName)
+                
+                if count == ( countMembers - 1 ) {
+                    completionHandler(true)
+                }
+                
+                count = count + 1
+                
+            })
+        }
+        
+    }
     
     static func loaLevels(completionHandler : @escaping (_ resutl:Bool) -> ()){
         
