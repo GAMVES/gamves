@@ -118,8 +118,7 @@ class Global: NSObject
         
         print(user.username)
         
-        if self.userDictionary[userId] == nil
-        {
+        if self.userDictionary[userId] == nil {
             
             let gamvesUser = GamvesParseUser()
             
