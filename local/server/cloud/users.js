@@ -15,11 +15,21 @@
 		var albumsArray = [];
 		var profile;
 		var categorySaved;
+		var adminUser;
 		
 		var iDUserType = request.params.iDUserType;
 
-	    var typeQuery = new Parse.Query("UserType");
-	    return typeQuery.get(request.params.userTypeObj).then(function(typeObj) {
+		var userQuery = new Parse.Query(Parse.User);
+		userQuery.equalTo("username", "gamvesadmin");
+		
+	    return userQuery.first().then(function(admin) {
+
+	    	adminUser = admin;
+
+			var typeQuery = new Parse.Query("UserType");	
+	        return typeQuery.get(request.params.userTypeObj);
+
+	    }).then(function(typeObj) {   
 
 	        objects.push(typeObj);
 
@@ -91,9 +101,7 @@
 				
 				user.set("levelObjId", lobjectId);
 
-				//Register
-
-				
+				//Register			
 
 
 			} else {				
@@ -175,7 +183,7 @@
 					count++;
 				}
 
-				var category = categorySaved;					                				
+				//var category = categorySaved;					                				
 
 	        	var Fanpages = Parse.Object.extend("Fanpages");
 		    	var fanpage = new Fanpages();
@@ -192,17 +200,21 @@
 		    	var user_user_name = request.params.user_user_name;
 		    	fanpage.set("pageName", user_user_name);
 
-		    	var categoryName = category.get("name"); 
+		    	var categoryName = categorySaved.get("name"); 
 				
-		    	fanpage.set("categoryName", categoryName);
+		    	fanpage.set("categoryName", categoryName);	
 
 		    	fanpage.set("approved", true);
 
 		    	var about = request.params.user_user_name + "'s fanpage";
 
-				fanpage.set("pageAbout", about);	    	
-		    	
-		    	fanpage.set("category", category);
+				fanpage.set("pageAbout", about);	    			    	
+
+				let relationCategory = fanpage.relation("category");
+		    	relationCategory.add(categorySaved);
+
+		    	let relationAuthor = fanpage.relation("author");
+		    	relationAuthor.add(adminUser);
 
 		    	fanpage.set("order", count);
 
@@ -250,7 +262,7 @@
 		    		let album = new Albums();
 
 					album.set("cover", file);															    					    		
-		    		album.set("fanpageId",fanpageId);
+		    		album.set("referenceId",fanpageId);
 		    		album.set("name", name);
 
 		    		albumsArray.push(album);

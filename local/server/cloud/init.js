@@ -73,7 +73,7 @@
 		                       
 		                       	var user = new Parse.User();
 								user.set("username", _admuser);
-								user.set("name", "Gamves Official");
+								user.set("Name", "Gamves Official");
 								user.set("firstName", "Gamves");
 								user.set("lastName", "Official");
 								user.set("pictureSmall", iconFile);
