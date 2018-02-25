@@ -35,14 +35,14 @@ class ChatFeed {
     var userThumbnail:UIImage?
     var chatId:Int?
     var lasPoster: String?
-    var users: [GamvesParseUser]?
+    var users: [GamvesUser]?
     var usersLoaded:Bool?
     var imagesLoaded:Bool?
     var badgeIsActive:Bool?
     var badgeNumber:Int?    
 }
 
-class GamvesParseUser {
+class GamvesUser {
 
     var userObj:PFUser! = nil
     var name = String()
@@ -186,12 +186,12 @@ struct Page {
 
 class GamvesFamily {
 
-    var sonsUsers:[GamvesParseUser]!
+    var sonsUsers:[GamvesUser]!
     var levels:[LevelsGamves]!
     
-    var youUser:GamvesParseUser!
-    var registerUser:GamvesParseUser!
-    var spouseUser:GamvesParseUser!
+    var youUser:GamvesUser!
+    var registerUser:GamvesUser!
+    var spouseUser:GamvesUser!
     
     var familyName = String()
     var objectId = String()
@@ -205,11 +205,11 @@ class GamvesFamily {
     
     init()
     {
-        self.sonsUsers = [GamvesParseUser]()
+        self.sonsUsers = [GamvesUser]()
         self.levels = [LevelsGamves]()
     }
     
-    func getFamilyUserById(userId : String) -> GamvesParseUser?
+    func getFamilyUserById(userId : String) -> GamvesUser?
     {
         if registerUser.userId == userId
         {
@@ -220,7 +220,7 @@ class GamvesFamily {
             return spouseUser
         }
         
-        var sonwithId = GamvesParseUser()
+        var sonwithId = GamvesUser()
         
         for son in sonsUsers
         {

@@ -18,7 +18,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     var homeController: HomeController?
     
-    var gamvesUsers = [GamvesParseUser]()
+    var gamvesUsers = [GamvesUser]()
     
     var params = [String: Any]()
 

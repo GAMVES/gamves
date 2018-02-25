@@ -177,7 +177,7 @@ class ProfileViewController: UIViewController,
 
     var initialSetting = InitialSetting()
 
-    var gamvesUser = GamvesParseUser()
+    var gamvesUser = GamvesUser()
 
     override func viewDidLoad() {
         super.viewDidLoad()

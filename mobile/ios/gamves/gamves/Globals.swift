@@ -91,7 +91,7 @@ class Global: NSObject
     
     static var badgeNumber = Bool()
     
-    static var userDictionary = Dictionary<String, GamvesParseUser>()
+    static var userDictionary = Dictionary<String, GamvesUser>()
     
     static var gamvesFamily = GamvesFamily()
     
@@ -112,7 +112,7 @@ class Global: NSObject
     //Bool to foce download and skip chache. 
     static var forceFromNetworkCache = Bool()
     
-    static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
+    static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
         let userId = user.objectId!
         
@@ -120,7 +120,7 @@ class Global: NSObject
         
         if self.userDictionary[userId] == nil {
             
-            let gamvesUser = GamvesParseUser()
+            let gamvesUser = GamvesUser()
             
             gamvesUser.name = user["Name"] as! String
             gamvesUser.userId = user.objectId!
@@ -262,7 +262,7 @@ class Global: NSObject
         }
     }
     
-    static func adduserToFamilyFromGlobal(gamvesUser : GamvesParseUser){
+    static func adduserToFamilyFromGlobal(gamvesUser : GamvesUser){
         
         if let myId = PFUser.current()?.objectId {
             
@@ -672,7 +672,7 @@ class Global: NSObject
                 
                 let countUsers = users?.count
                 var count = 0
-                var usersArray = [GamvesParseUser]()
+                var usersArray = [GamvesUser]()
                 
                 for user in users!
                 {

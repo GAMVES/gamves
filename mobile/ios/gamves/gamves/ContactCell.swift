@@ -20,7 +20,7 @@ class ContactCell: BaseCell {
         }
     }
     
-    var contact: GamvesParseUser?
+    var contact: GamvesUser?
     {
         
         didSet

@@ -14,7 +14,7 @@ import PopupDialog
 
 class SelectContactViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    var gamvesUsers = [GamvesParseUser]()
+    var gamvesUsers = [GamvesUser]()
     
     var homeController: HomeController?
     
@@ -58,7 +58,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
     
     func moveNext()
     {
-        var selectedUsers:[GamvesParseUser] = self.countChecked()
+        var selectedUsers:[GamvesUser] = self.countChecked()
         if selectedUsers.count > 1
         {
             homeController?.selectGroupName(users: selectedUsers)
@@ -71,9 +71,9 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
     
     }
     
-    func countChecked() -> [GamvesParseUser]
+    func countChecked() -> [GamvesUser]
     {
-        var tempUsers = [GamvesParseUser]()
+        var tempUsers = [GamvesUser]()
         
         for user in gamvesUsers
         {
@@ -103,7 +103,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
                 
                 for user in users!
                 {
-                    let gamvesUser = GamvesParseUser()
+                    let gamvesUser = GamvesUser()
                     gamvesUser.name = user["Name"] as! String
                     
                     print(gamvesUser.name)
@@ -166,7 +166,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
         let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ContactCell
         
         let index = indexPath.item
-        let contact:GamvesParseUser = self.gamvesUsers[index]
+        let contact:GamvesUser = self.gamvesUsers[index]
         
         cell.contact = contact
         cell.contact?.name = contact.name
@@ -202,7 +202,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
         if !isGroup
         {
     
-            let contact = self.gamvesUsers[indexPath.item] as GamvesParseUser
+            let contact = self.gamvesUsers[indexPath.item] as GamvesUser
             
             var chatId = Int()
             

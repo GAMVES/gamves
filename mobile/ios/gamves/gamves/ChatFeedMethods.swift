@@ -255,7 +255,7 @@ class ChatFeedMethods: NSObject {
                 
                 let countUsers = users?.count
                 var count = 0
-                var usersArray = [GamvesParseUser]()
+                var usersArray = [GamvesUser]()
                 
                 for user in users!
                 {

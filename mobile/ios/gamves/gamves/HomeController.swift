@@ -254,7 +254,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return launcher
     }()
     
-    func openChat(room: String, chatId:Int, users:[GamvesParseUser]) {
+    func openChat(room: String, chatId:Int, users:[GamvesUser]) {
         
         self.chatLauncher.chatId = chatId
         self.chatLauncher.gamvesUsers = users
@@ -328,7 +328,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return groupName
     }()
     
-    func selectGroupName(users: [GamvesParseUser]) {
+    func selectGroupName(users: [GamvesUser]) {
         groupNameViewController.view.backgroundColor = UIColor.white
         groupNameViewController.gamvesUsers = users
         navigationController?.navigationBar.tintColor = UIColor.white

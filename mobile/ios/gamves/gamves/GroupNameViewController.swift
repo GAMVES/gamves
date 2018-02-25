@@ -23,7 +23,7 @@ class GroupNameViewController: UIViewController,
 
     var homeController: HomeController?
     
-    var gamvesUsers = [GamvesParseUser]()
+    var gamvesUsers = [GamvesUser]()
     
     let cellId = "cellGroupId"
     
