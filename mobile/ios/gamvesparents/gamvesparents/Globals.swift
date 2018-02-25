@@ -102,7 +102,7 @@ class Global: NSObject
     
     static var badgeNumber = Bool()
     
-    static var userDictionary = Dictionary<String, GamvesParseUser>()
+    static var userDictionary = Dictionary<String, GamvesUser>()
     
     static var gamvesFamily = GamvesFamily()
     
@@ -112,7 +112,7 @@ class Global: NSObject
     
     static var yourAccountBackImage = UIImage()
     
-    static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesParseUser) -> ())
+    static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
         var userId = user.objectId!
         
@@ -125,7 +125,7 @@ class Global: NSObject
         if self.userDictionary[userId] == nil
         {
             
-            let gamvesUser = GamvesParseUser()
+            let gamvesUser = GamvesUser()
             
             gamvesUser.name = user["Name"] as! String
             gamvesUser.userId = user.objectId!
@@ -265,7 +265,7 @@ class Global: NSObject
         }
     }
         
-    static func adduserToFamilyFromGlobal(gamvesUser : GamvesParseUser){
+    static func adduserToFamilyFromGlobal(gamvesUser : GamvesUser){
         
         if let myId = PFUser.current()?.objectId {
             
@@ -289,7 +289,7 @@ class Global: NSObject
 
     }
     
-    static func getImage(gamvesUser: GamvesParseUser, file:PFFile, completionHandler : @escaping (_ user:GamvesParseUser, _ image:UIImage) -> Void)
+    static func getImage(gamvesUser: GamvesUser, file:PFFile, completionHandler : @escaping (_ user:GamvesUser, _ image:UIImage) -> Void)
     {
         
         print(gamvesUser.name)

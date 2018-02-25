@@ -23,7 +23,7 @@ class GroupNameViewController: UIViewController,
     
     var chatFeedViewController:ChatFeedViewController?
 
-    var gamvesUsers = [GamvesParseUser]()
+    var gamvesUsers = [GamvesUser]()
     
     let cellId = "cellGroupId"
     

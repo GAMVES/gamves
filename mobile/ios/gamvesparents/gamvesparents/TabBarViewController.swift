@@ -177,7 +177,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         present(tutorialController, animated: true, completion: nil)
     }
     
-    func openChat(room: String, chatId:Int, users:[GamvesParseUser])
+    func openChat(room: String, chatId:Int, users:[GamvesUser])
     {
         
         self.chatLauncher.chatId = chatId

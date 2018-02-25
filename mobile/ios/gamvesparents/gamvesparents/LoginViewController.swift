@@ -779,7 +779,7 @@ class LoginViewController: UIViewController
                                     
                                     //SON
                                     
-                                    let sonUser:GamvesParseUser = Global.gamvesFamily.sonsUsers[0]
+                                    let sonUser:GamvesUser = Global.gamvesFamily.sonsUsers[0]
                                     
                                     let son_name = sonUser.name
                                     Global.defaults.set(son_name, forKey: "son_name")

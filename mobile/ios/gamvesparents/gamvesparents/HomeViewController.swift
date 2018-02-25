@@ -577,7 +577,7 @@ class HomeViewController: UIViewController,
         {
             let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[sonRegisterChatId]!
             
-            var users = [GamvesParseUser]()
+            var users = [GamvesUser]()
             users.append(Global.gamvesFamily.sonsUsers[0])
             users.append(Global.gamvesFamily.youUser)
 
@@ -601,7 +601,7 @@ class HomeViewController: UIViewController,
         {
             let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[spouseRegisterChatId]!
             
-            var users = [GamvesParseUser]()
+            var users = [GamvesUser]()
             users.append(Global.gamvesFamily.spouseUser)
             users.append(Global.gamvesFamily.youUser)
             
@@ -625,7 +625,7 @@ class HomeViewController: UIViewController,
         {
             let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[familyChatId]!
             
-            var users = [GamvesParseUser]()
+            var users = [GamvesUser]()
             users.append(Global.gamvesFamily.sonsUsers[0])
             users.append(Global.gamvesFamily.spouseUser)
             users.append(Global.gamvesFamily.youUser)

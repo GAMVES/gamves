@@ -33,9 +33,9 @@ class ProfileViewController: UIViewController,
     var you:PFUser!
     var spouse:PFUser!
     
-    var youGamves = GamvesParseUser()
-    var sonGamves = GamvesParseUser()
-    var spouseGamves = GamvesParseUser()
+    var youGamves = GamvesUser()
+    var sonGamves = GamvesUser()
+    var spouseGamves = GamvesUser()
     
     var sonType:PFObject!
     var sonTypeId = Int()
@@ -1664,7 +1664,7 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var youSon = [GamvesParseUser]()
+            var youSon = [GamvesUser]()
             
             youSon.append(self.youGamves)
             youSon.append(self.sonGamves)
@@ -1684,7 +1684,7 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var youSpouse = [GamvesParseUser]()
+            var youSpouse = [GamvesUser]()
             
             youSpouse.append(self.youGamves)
             youSpouse.append(self.spouseGamves)
@@ -1705,7 +1705,7 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var sonSpouse = [GamvesParseUser]()
+            var sonSpouse = [GamvesUser]()
             
             sonSpouse.append(self.sonGamves)
             sonSpouse.append(self.spouseGamves)
@@ -1730,7 +1730,7 @@ class ProfileViewController: UIViewController,
             
             print("BACK AGAIN LOGIN AS: \(PFUser.current()?.username)")
             
-            var youSpouseSon = [GamvesParseUser]()
+            var youSpouseSon = [GamvesUser]()
             
             youSpouseSon.append(self.youGamves)
             youSpouseSon.append(self.spouseGamves)

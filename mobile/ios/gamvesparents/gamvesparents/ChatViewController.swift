@@ -18,7 +18,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     let avatar:UIImageView! = nil
     
-    var gamvesUsers = [GamvesParseUser]()
+    var gamvesUsers = [GamvesUser]()
     
     var params = [String: Any]()
 

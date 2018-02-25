@@ -116,7 +116,7 @@ class ChatView: UIView,
     var isVideoChat = Bool()
     var thumbnailImage = UIImage()
     
-    var gamvesUsers = [GamvesParseUser]()
+    var gamvesUsers = [GamvesUser]()
     var gamvesUsersArray = [String]()
     var gamvesUsersPFuser = [PFUser]()
     
@@ -447,7 +447,7 @@ class ChatView: UIView,
             self.isVideoChat = parameters["isVideoChat"] as! Bool
         }
         if parameters["gamvesUsers"] != nil {
-            self.gamvesUsers = parameters["gamvesUsers"] as! [GamvesParseUser]
+            self.gamvesUsers = parameters["gamvesUsers"] as! [GamvesUser]
         }
         if parameters["thumbnailImage"] != nil {
             self.thumbnailImage = parameters["thumbnailImage"] as! UIImage
@@ -545,7 +545,7 @@ class ChatView: UIView,
                                             if Global.userDictionary[userId] == nil
                                             {
                                                 
-                                                let gamvesUser = GamvesParseUser()
+                                                let gamvesUser = GamvesUser()
                                                 let isQuened = gamvesUser.isAvatarQuened
                                                 gamvesUser.userName = user["Name"] as! String
                                                 
@@ -566,7 +566,7 @@ class ChatView: UIView,
                                                             gamvesUser.isSender = true
                                                         }
                                                         
-                                                        Global.userDictionary[userId] = gamvesUser as GamvesParseUser
+                                                        Global.userDictionary[userId] = gamvesUser as GamvesUser
                                                         
                                                     })
                                                 }

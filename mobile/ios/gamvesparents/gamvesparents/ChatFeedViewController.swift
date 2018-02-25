@@ -352,7 +352,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         tabBarController?.tabBar.isHidden = true
     }
     
-    func openChat(room: String, chatId:Int, users:[GamvesParseUser])
+    func openChat(room: String, chatId:Int, users:[GamvesUser])
     {
         self.chatLauncher.chatId = chatId
         self.chatLauncher.gamvesUsers = users
@@ -364,7 +364,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     }
 
     
-    func selectGroupName(users: [GamvesParseUser])
+    func selectGroupName(users: [GamvesUser])
     {
         groupNameViewController.view.backgroundColor = UIColor.white
         groupNameViewController.gamvesUsers = users
