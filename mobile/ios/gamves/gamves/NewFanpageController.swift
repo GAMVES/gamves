@@ -71,7 +71,7 @@ ChooseAvatarProtocol {
     var selectorView:SelectorView!
 
     var isEdit = Bool()    
-    let fan = FanpageGamves()
+    var fan:FanpageGamves!
 
     var fanpagePF:PFObject!
     var categoryPF:PFObject!
@@ -536,30 +536,42 @@ ChooseAvatarProtocol {
                 
                 for fanpage in fanpages! {
                     
-                    if fanpage.author == PFUser.current() {
-                        
-                        self.fanpagePF = fanpage.categoryObj
-                        
-                        self.imagesArray.append(fanpage.icon_image)
-                        
-                        self.collectionView.isUserInteractionEnabled = false
-                        self.collectionView.reloadData()
-                        
-                        self.nameTextField.text = fanpage.name
-                        
-                        
-                        
-                        break
+                    print(fanpage.posterId)
+                    print(PFUser.current()?.objectId)
+                    
+                    if let userId = PFUser.current()?.objectId {
+                    
+                        if fanpage.posterId == userId {
+                            
+                            self.fan = fanpage
+                            
+                            self.fanpagePF = fanpage.categoryObj
+                            
+                            let fpId:Int = fanpage.fanpageId
+                            
+                            if Downloader.fanpageImagesDictionary[fpId] != nil {
+                            
+                                let imagesArray = Downloader.fanpageImagesDictionary[fpId] as! [FanpageImageGamves]
+                                
+                                for image in imagesArray {
+                                    
+                                    self.imagesArray.append(image.cover_image)
+                                    
+                                }
+                            }
+                            
+                            self.collectionView.isUserInteractionEnabled = false
+                            
+                            self.nameTextField.text = fanpage.name
+                            
+                            self.viewWillLayoutSubviews()
+                            
+                            break
+                        }
                     }
                 }
             }
         }
-
-        
-        
-        
-        
-        
 
     }
 
@@ -572,7 +584,6 @@ ChooseAvatarProtocol {
             self.chooseAvatarView.iconButton.frame = self.chooseAvatarView.frame
             self.chooseAvatarView.backgroundIconImage.frame = self.chooseAvatarView.frame
             
-            
             var frc: CGRect = self.coverContView.frame
             self.coverButton.frame = frc
             self.backgroundCoverImage.frame = frc
@@ -580,6 +591,15 @@ ChooseAvatarProtocol {
             self.imagesLabel.frame = self.collectionView.bounds
 
             self.collRect = self.collectionView.frame
+            
+            if self.fan != nil {
+            
+                self.setIconImage(image: self.fan.icon_image)
+                self.setCoverImage(image: self.fan.cover_image)
+            
+            }
+            
+            self.collectionView.reloadData()
         }
         
     }
@@ -768,25 +788,11 @@ ChooseAvatarProtocol {
         
         if self.touchedButton == TouchedButton.iconImage {
         
-            self.selectedIconImage = image
-            
-            let size = CGSize(width: self.chooseAvatarView.backgroundIconImage.frame.width, height: self.chooseAvatarView.backgroundIconImage.frame.height)
-            
-            self.chooseAvatarView.backgroundIconImage.image = self.scaleUIImageToSize(image: image, size: size)
-            
-            self.chooseAvatarView.backgroundIconImage.layer.cornerRadius = 5
-            self.chooseAvatarView.backgroundIconImage.clipsToBounds = true
+            self.setIconImage(image:image)
             
         } else if self.touchedButton == TouchedButton.coverImage {
 
-            self.selectedCoverImage = image
-        
-            let size = CGSize(width: self.backgroundCoverImage.frame.width, height: self.backgroundCoverImage.frame.height)
-        
-            self.backgroundCoverImage.image = self.scaleUIImageToSize(image: image, size: size)
-        
-            self.backgroundCoverImage.layer.cornerRadius = 5
-            self.backgroundCoverImage.clipsToBounds = true
+            self.setCoverImage(image: image)
             
         } else if self.touchedButton == TouchedButton.addButton {
             
@@ -795,6 +801,30 @@ ChooseAvatarProtocol {
             
         }
         
+    }
+    
+    func setCoverImage(image:UIImage) {
+        
+        self.selectedCoverImage = image
+        
+        let size = CGSize(width: self.backgroundCoverImage.frame.width, height: self.backgroundCoverImage.frame.height)
+        
+        self.backgroundCoverImage.image = self.scaleUIImageToSize(image: image, size: size)
+        
+        self.backgroundCoverImage.layer.cornerRadius = 5
+        self.backgroundCoverImage.clipsToBounds = true
+    }
+    
+    func setIconImage(image:UIImage) {
+        
+        self.selectedIconImage = image
+        
+        let size = CGSize(width: self.chooseAvatarView.backgroundIconImage.frame.width, height: self.chooseAvatarView.backgroundIconImage.frame.height)
+        
+        self.chooseAvatarView.backgroundIconImage.image = self.scaleUIImageToSize(image: image, size: size)
+        
+        self.chooseAvatarView.backgroundIconImage.layer.cornerRadius = 5
+        self.chooseAvatarView.backgroundIconImage.clipsToBounds = true
     }
 
     func scaleUIImageToSize( image: UIImage, size: CGSize) -> UIImage {
@@ -921,6 +951,10 @@ ChooseAvatarProtocol {
                 
                 fanpagePF["approved"] = false
                 fanpagePF["notified"] = false
+                
+                if let userId = PFUser.current()?.objectId {
+                    fanpagePF["posterId"] = userId
+                }
                 
                 let authorRelation = fanpagePF.relation(forKey: "author")
                 authorRelation.add(PFUser.current()!)
@@ -1081,6 +1115,10 @@ ChooseAvatarProtocol {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
      
+        if self.collRect == nil {
+            return CGSize()
+        }
+        
         let height = self.collRect.height
         
         //let width = (height * 16 / 9) + 32
@@ -1102,127 +1140,6 @@ ChooseAvatarProtocol {
         let image:UIImage = self.imagesArray[indexPath.row]
         
     }
-
-
-
-    /*func getFanpageInfo() {
-        
-        let queryFanpage = PFQuery(className:"Fanpages")
-        
-        //queryFanpage.whereKey("objectId", equalTo: self.fanpagapeId)
-        
-        if !Global.hasDateChanged() {
-            queryFanpage.cachePolicy = .cacheElseNetwork
-        }
-        
-        queryFanpage.findObjectsInBackground { (fanpagesArray, error) in
-            
-            if error != nil
-            {
-                print("error")
-            } else {
-                
-                if let fanpagesArray = fanpagesArray
-                {
-                    let fanpageAmount = fanpagesArray.count
-                    
-                    print(fanpageAmount)
-                    
-                    var total = Int()
-                    total = fanpageAmount - 1
-                    
-                    var count = 0
-                    
-                    if fanpageAmount > 0 {
-                    
-                        for fanpage in fanpagesArray {
-                            
-                            //Download Images
-                            Downloader.loadFanpageImages(fanpage: fanpage)
-                            
-                            
-                            
-                            let fpObj:PFObject = fanpage
-                            
-                            self.fan.fanpageObj = fpObj
-                            
-                            let relationCategory = fpObj.relation(forKey: "category")
-                            let categoryQuery = relationCategory.query()
-                            
-                            categoryQuery.findObjectsInBackground(block: { (category, errorCat) in
-                                
-                                if errorCat == nil {
-                                
-                                    self.fan.categoryObj = category?[0]
-                                    self.fan.categoryName = fpObj["categoryName"] as! String
-                                    
-                                    let fanpageId = fpObj["fanpageId"] as! Int
-                                    let cover = fpObj["pageCover"] as! PFFile
-                                    let name  = fpObj["pageName"] as! String
-                                    let icon  = fpObj["pageIcon"] as! PFFile
-                                    let about  = fpObj["pageAbout"] as! String
-                                    
-                                    let authorRelation = fpObj["author"] as! PFRelation
-                                    let queryAuthor = authorRelation.query()
-                                    queryAuthor.findObjectsInBackground(block: { (users, error) in
-                                        
-                                        if error == nil {
-                                            
-                                            for user in users! {
-                                                
-                                                var isFamily = Bool()
-                                                let author = user as! PFUser
-                                                
-                                                if author.objectId == PFUser.current()?.objectId {
-                                                    isFamily = true
-                                                }
-                                                
-                                                Global.addUserToDictionary(user: author, isFamily: isFamily, completionHandler: { (gamvedUser) in
-                                                    
-                                                    self.fan.author = author as! PFUser
-                                                    self.fan.author_image = gamvedUser.avatar
-                                                    
-                                                    icon.getDataInBackground(block: { (iconImageData, error) in
-                                                        
-                                                        if error == nil {
-                                                            
-                                                            let iconImage = UIImage(data: iconImageData!)
-                                                            
-                                                            self.fan.icon_image = iconImage!
-                                                            self.fan.name =  name
-                                                            self.fan.about = about
-                                                            
-                                                            cover.getDataInBackground(block: { (coverImageData, error) in
-                                                                
-                                                                if error == nil {
-                                                                    
-                                                                    let coverImage = UIImage(data:coverImageData!)
-                                                                    self.fan.cover_image = coverImage!
-                                                                    
-                                                                    
-                                                                    if  (fanpageAmount-1) == count {
-                                                                        
-                                                                        
-                                                                    
-                                                                    }
-                                                                    count = count + 1
-                                                                }
-                                                            })
-                                                        }
-                                                    })
-                                                })
-                                            }
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                    }
-                }
-            }
-        }
-
-    }*/
-
+ 
 }
 

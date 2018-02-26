@@ -102,7 +102,10 @@ class Downloader: NSObject
                                         {
                                             let fanpageId = fanpageAlbum["referenceId"] as! Int
                                             
+                                            print(fanpageId)
+                                            
                                             self.fanpageImagesDictionary[fanpageId] = images
+                                            
                                         }
                                     }
                                     count = count + 1

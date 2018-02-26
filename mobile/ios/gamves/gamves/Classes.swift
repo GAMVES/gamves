@@ -153,6 +153,7 @@ class FanpageGamves {
     var link    = String()
     var about   = String()
     var author  = PFUser()
+    var posterId = String()
     
     var cover_image = UIImage()
     var icon_image  = UIImage()

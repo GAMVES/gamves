@@ -401,6 +401,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                 let icon  = fpObj["pageIcon"] as! PFFile
                                 let about  = fpObj["pageAbout"] as! String
                                 
+                                let posterId = fpObj["posterId"] as! String
+                                
                                 let authorRelation = fpObj["author"] as! PFRelation
                                 let queryAuthor = authorRelation.query()
                                 queryAuthor.findObjectsInBackground(block: { (users, error) in
@@ -420,6 +422,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                 
                                                 fan.author = author as! PFUser
                                                 fan.author_image = gamvedUser.avatar
+                                                fan.posterId = posterId
+                                                fan.fanpageId = fanpageId
                                                 
                                                 icon.getDataInBackground(block: { (iconImageData, error) in
                                                     
