@@ -516,6 +516,8 @@ class ProfileViewController: UIViewController,
         //self.levelsLoaded()
 
         //self.loadFamilyDataGromGlobal()
+
+        self.boyConstraints()     
         
     }
     
@@ -622,6 +624,8 @@ class ProfileViewController: UIViewController,
             
             self.spouseNameTextField.text = Global.gamvesFamily.spouseUser.name
             let spousemeail = Global.gamvesFamily.spouseUser.email
+            
+            print(spousemeail)
             
             self.spouseEmailTextField.text = spousemeail
             
@@ -765,84 +769,86 @@ class ProfileViewController: UIViewController,
             self.sonSchoolSeparatorView,          
             self.sonGradeTextField,          
             metrics: metricsProfile)
-    }
 
-    func familyConstraints() {
+
+        ///////
         
-        self.sonPhotoImageView.isHidden       = true
-        self.familyPhotoImageView.isHidden    = true
-
-        self.yourPhotoImageView.isHidden    = false
-        self.spousePhotoImageView.isHidden  = false
-
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.yourPhotoImageView)
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.spousePhotoImageView)
-
+        
         self.photosContainerView.addConstraintsWithFormat(
-            "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-|", views: 
-            self.yourPhotoImageView, 
-            self.spousePhotoImageView, 
+            "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-|", views:
+            self.yourPhotoImageView,
+            self.spousePhotoImageView,
             metrics: metricsProfile)
-
+        
         self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.yourNameContainerView)
-        self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.spouseContainerView) 
-
+        self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.spouseContainerView)
+        
         self.scrollView.addConstraintsWithFormat(
-            "V:|-topPadding-[v0(photoSize)]-topPadding-[v1(40)]-20-[v2(photoContainerHeight)]-20-[v3(schoolContainerHeight)]-20-[v4(saveButtonHeight)][v5(50)]|", views: 
-            self.photosContainerView, 
-            self.segmentedControl, 
-            self.yourNameContainerView, 
-            self.spouseContainerView, 
-            self.saveButton, 
+            "V:|-topPadding-[v0(photoSize)]-topPadding-[v1(40)]-20-[v2(photoContainerHeight)]-20-[v3(schoolContainerHeight)]-20-[v4(saveButtonHeight)][v5(50)]|", views:
+            self.photosContainerView,
+            self.segmentedControl,
+            self.yourNameContainerView,
+            self.spouseContainerView,
+            self.saveButton,
             self.bottomView,
-            metrics: metricsProfile)        
-
-        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourNameTextField)
-        self.yourNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.yourNameSeparatorView)        
-        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourUserTextField)
-        self.yourNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.yourUserSeparatorView)       
-        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourFamilyTextField)            
-
-        self.yourNameContainerView.addConstraintsWithFormat(
-            "V:|[v0(photoEditTextHeight)][v1(2)][v2(photoEditTextHeight)][v3(2)][v4(photoEditTextHeight)]|", 
-            views: 
-            self.yourNameTextField, 
-            self.yourNameSeparatorView, 
-            self.yourUserTextField,
-            self.yourUserSeparatorView,            
-            self.yourFamilyTextField,
-            metrics: metricsProfile)       
-
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseNameTextField)
-        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseNameSeparatorView)        
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseEmailTextField)
-        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseEmailSeparatorView)    
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spousePasswordTextField)    
-
-        self.spouseContainerView.addConstraintsWithFormat(
-            "V:|[v0(schoolEditTextHeight)][v1(2)][v2(schoolEditTextHeight)][v3(2)][v4(schoolEditTextHeight)]|", 
-            views: 
-            self.spouseNameTextField, 
-            self.spouseNameSeparatorView, 
-            self.spouseEmailTextField,          
-            self.spouseEmailSeparatorView,          
-            self.spousePasswordTextField,          
             metrics: metricsProfile)
+        
+        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourNameTextField)
+        self.yourNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.yourNameSeparatorView)
+        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourUserTextField)
+        self.yourNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.yourUserSeparatorView)
+        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourFamilyTextField)
+        
+        self.yourNameContainerView.addConstraintsWithFormat(
+            "V:|[v0(photoEditTextHeight)][v1(2)][v2(photoEditTextHeight)][v3(2)][v4(photoEditTextHeight)]|",
+            views:
+            self.yourNameTextField,
+            self.yourNameSeparatorView,
+            self.yourUserTextField,
+            self.yourUserSeparatorView,
+            self.yourFamilyTextField,
+            metrics: metricsProfile)
+        
+        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseNameTextField)
+        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseNameSeparatorView)
+        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseEmailTextField)
+        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseEmailSeparatorView)
+        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spousePasswordTextField)
+        
+        self.spouseContainerView.addConstraintsWithFormat(
+            "V:|[v0(schoolEditTextHeight)][v1(2)][v2(schoolEditTextHeight)][v3(2)][v4(schoolEditTextHeight)]|",
+            views:
+            self.spouseNameTextField,
+            self.spouseNameSeparatorView,
+            self.spouseEmailTextField,
+            self.spouseEmailSeparatorView,
+            self.spousePasswordTextField,
+            metrics: metricsProfile)
+
+        self.segmentedControl.selectedSegmentIndex = 0
+        self.handleSegmentedChange()
     }
 
+   
     @objc func handleSegmentedChange() {
         
         if self.segmentedControl.selectedSegmentIndex == 0
         {
             self.prepTextFields(inView: [self.sonNameContainerView])
-
+           
             self.sonNameContainerView.isHidden = false
             self.sonSchoolContainerView.isHidden = false
 
-            self.boyConstraints()     
-
             self.yourNameContainerView.isHidden = true
-            self.spouseContainerView.isHidden = true
+            self.spouseContainerView.isHidden = true    
+
+            self.sonPhotoImageView.isHidden       = false
+            self.familyPhotoImageView.isHidden    = false
+
+            self.yourPhotoImageView.isHidden    = true
+            self.spousePhotoImageView.isHidden  = true            
 
             self.saveButton.setTitle("Save son or doughter", for: UIControlState())
 
@@ -853,11 +859,15 @@ class ProfileViewController: UIViewController,
             self.sonNameContainerView.isHidden = true
             self.sonSchoolContainerView.isHidden = true
 
-            self.familyConstraints()
-
             self.yourNameContainerView.isHidden = false
-            self.spouseContainerView.isHidden = false
+            self.spouseContainerView.isHidden = false    
 
+            self.sonPhotoImageView.isHidden       = true
+            self.familyPhotoImageView.isHidden    = true
+
+            self.yourPhotoImageView.isHidden    = false
+            self.spousePhotoImageView.isHidden  = false                        
+            
             self.saveButton.setTitle("Save family", for: UIControlState())
             
         }    
@@ -1328,8 +1338,7 @@ class ProfileViewController: UIViewController,
         let schoolId = Global.gamvesFamily.school.objectId
         
         let sonParams = [
-            "user_name" : son_name,
-            "user_user_name" : son_user_name,
+            "user_name" : son_user_name?.lowercased(),
             "user_password" : son_password,
             "firstName" : firstName,
             "lastName" : lastName,
@@ -1417,9 +1426,9 @@ class ProfileViewController: UIViewController,
         let dataPhotoUniverse = imageUniverse?.highQualityJPEGNSData
         
         let momParams = [
-            "user_name" : spouse_username,
-            "user_user_name" : spouse_email,
+            "user_name" : spouse_email,
             "user_password" : spouse_password,
+            "user_email" : spouse_email,
             "firstName" : firstName,
             "lastName" : lastName,
             "iDUserType" : type,
