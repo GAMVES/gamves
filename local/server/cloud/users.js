@@ -68,8 +68,7 @@
 
 			profile = profileObj;
 
-	        var user_name = request.params.user_name;
-	        var user_user_name = request.params.user_user_name;
+	        var user_name = request.params.user_name;	        
 	        var user_email = request.params.user_email;
 	    	var user_password = request.params.user_password;
 	    	var firstName = request.params.firstName;
@@ -86,9 +85,9 @@
 	    
 			var user = new Parse.User();
 
-			user.set("username", user_user_name);
+			user.set("username", user_name);
 			user.set("password", user_password);
-			user.set("Name", user_user_name);
+			user.set("Name", firstName + " " + lastName);
 		  	user.set("firstName", firstName);
 		  	user.set("lastName", lastName);
 			user.set("iDUserType", iDUserType);
@@ -197,8 +196,8 @@
 
 		    	fanpage.set("pageCover", fileCover);
 
-		    	var user_user_name = request.params.user_user_name;
-		    	fanpage.set("pageName", user_user_name);
+		    	var first_name = request.params.firstName;
+		    	fanpage.set("pageName", first_name);
 
 		    	var categoryName = categorySaved.get("name"); 
 				
@@ -217,6 +216,8 @@
 		    	relationAuthor.add(adminUser);
 
 		    	fanpage.set("order", count);
+
+		    	fanpage.set("posterId", resutlUser.id);
 
 		    	fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
 
@@ -241,6 +242,7 @@
 				var configRelation = config.relation("images").query();
 			    configRelation.ascending("createdAt");	
 			    return configRelation.find({useMasterKey:true});
+
 			}
 
 		}).then(function(images) {	
@@ -250,8 +252,6 @@
 				let count = images.length;						
 
 		    	for (var j=0; j <images.length; j++) {
-		    		
-		    		var fanpageId = Math.floor( Math.random() * 100000);			    		
 			        					                
 			        var fileImage = images[j];
 
@@ -261,8 +261,11 @@
 			        var Albums = Parse.Object.extend("Albums");	 		
 		    		let album = new Albums();
 
-					album.set("cover", file);															    					    		
-		    		album.set("referenceId",fanpageId);
+					album.set("cover", file);		
+
+					var fanpageId = fanpageSaved.get("fanpageId");
+
+		    		album.set("referenceId", fanpageId);
 		    		album.set("name", name);
 
 		    		albumsArray.push(album);
@@ -282,7 +285,10 @@
 
 	    		for (var j=0; j <albumsArray.length; j++) {
 
+	    			if ( albumsArray[j].get("name").indexOf("image_") >= 0 )  {
+
 						albumRelation.add(albumsArray[j]);	
+					}
 	    		}
 
 	    		return fanpageSaved.save(null, {useMasterKey: true});
