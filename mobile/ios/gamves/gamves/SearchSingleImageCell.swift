@@ -8,6 +8,11 @@
 
 import UIKit
 
+public enum SearchActionType {
+    case isDelete
+    case isCheck
+}
+
 class SearchSingleImageCell: UITableViewCell {
     
     var checked = Bool()
@@ -39,7 +44,7 @@ class SearchSingleImageCell: UITableViewCell {
         return imageView
     }()
     
-    var checkLabel: UILabel = {
+    public var checkLabel: UILabel = {
         let label = UILabel()
         label.isHidden = true
         return label
@@ -55,18 +60,26 @@ class SearchSingleImageCell: UITableViewCell {
         
         self.setupViews()
     }
+    
+    var actionType:SearchActionType!
+    
+     var imageMetrics = [String:CGFloat]()
+    
+    var cw:CGFloat!
+    var ch:CGFloat!
+    
+    var name = String()
 
     func setupViews()
     {
         self.addSubview(self.conteinerView)
     
-        let cw = self.frame.width
-        let ch = cw * 9 / 16
+        self.cw = self.frame.width
+        self.ch = cw * 9 / 16
         
         let vp = 10 * ch / self.frame.width
-    
         
-        let imageMetrics = ["cw":cw,"ch":ch,"vp":vp]
+        imageMetrics = ["cw":cw,"ch":ch,"vp":vp]
         
         // "H:|-cp-[v0(cs)]-cp-|"
         
@@ -77,14 +90,13 @@ class SearchSingleImageCell: UITableViewCell {
         
         self.conteinerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: thumbnailImageView, metrics:imageMetrics )
         self.conteinerView.addConstraintsWithFormat("V:|-vp-[v0]-vp-|", views: thumbnailImageView, metrics:imageMetrics)
-        
-        
+                
         self.conteinerView.addSubview(thumbnailImageView)
         
         checkLabel =  Global.createCircularLabel(text: "✓", size: 60, fontSize: 50.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+        
         addSubview(checkLabel)
         
-    
         let pr = cw - 80
         let pt = ch - 80
         
@@ -93,6 +105,61 @@ class SearchSingleImageCell: UITableViewCell {
         
         addConstraintsWithFormat("H:|-pr-[v0(60)]", views: checkLabel, metrics : paddingMetrics)
         addConstraintsWithFormat("V:|-pt-[v0(60)]", views: checkLabel, metrics : paddingMetrics)
+
+        
     }
+    
+    func setChecked() {
+        
+        
+    }
+    
+    /*override func layoutSubviews() {
+        
+        if self.actionType == SearchActionType.isCheck {
+            
+            checkLabel =  Global.createCircularLabel(text: "✓", size: 60, fontSize: 50.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+            
+        } else if self.actionType == SearchActionType.isDelete {
+            
+            checkLabel =  Global.createCircularLabel(text: "x", size: 60, fontSize: 50.0, borderWidth: 3.0, color: UIColor.red)
+            
+        }
+        
+        if !checkLabel.isDescendant(of: self) {
+            addSubview(checkLabel)
+        }
+        
+        
+        
+        if self.actionType == SearchActionType.isDelete {
+            
+            print(checked)
+            print(name)
+        
+            if self.checked {
+                
+                self.checkLabel.isHidden =  false
+                
+            } else {
+                
+                self.checkLabel.isHidden =  true
+            }
+        }
+        
+        
+        if !self.checked {
+           
+            let pr = cw - 80
+            let pt = ch - 80
+            
+            
+            let paddingMetrics = ["pr":pr,"pt":pt]
+            
+            addConstraintsWithFormat("H:|-pr-[v0(60)]", views: checkLabel, metrics : paddingMetrics)
+            addConstraintsWithFormat("V:|-pt-[v0(60)]", views: checkLabel, metrics : paddingMetrics)
+            
+        }
+    }*/
     
 }

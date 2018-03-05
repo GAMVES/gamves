@@ -1,4 +1,4 @@
-//
+ //
 //  NewVideoController.swift
 //  gamves
 //
@@ -65,6 +65,8 @@ ChooseAvatarProtocol {
     var current : AnyObject?
     
     var imagesArray = [UIImage]()
+    var imagesRemoved = [UIImage]()
+    var imagesAdded = [UIImage]()
     
     var touchedButton : TouchedButton!
     
@@ -75,6 +77,9 @@ ChooseAvatarProtocol {
 
     var fanpagePF:PFObject!
     var categoryPF:PFObject!
+    var approvalPF:PFObject!
+
+    var removedIds = [Int]()
     
 	let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -188,9 +193,7 @@ ChooseAvatarProtocol {
         imageView.image = UIImage(named: "camera")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSonPhotoImageView)))
-        imageView.isUserInteractionEnabled = true        
-        //imageView.tag = 1
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
 
@@ -250,6 +253,7 @@ ChooseAvatarProtocol {
         cv.dataSource = self
         cv.delegate = self
         cv.cornerRadius = 5
+        cv.isUserInteractionEnabled = true
         return cv
     }()
     
@@ -259,6 +263,15 @@ ChooseAvatarProtocol {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+
+    let addRemoveView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.lightGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.cornerRadius = 5
+        return view
+    }()
+    
     
     lazy var addButton: UIButton = {
         let button = UIButton()
@@ -268,6 +281,21 @@ ChooseAvatarProtocol {
         button.contentMode = .scaleAspectFit
         button.isUserInteractionEnabled = true
         button.addTarget(self, action: #selector(handleAddImages), for: .touchUpInside)
+        button.cornerRadius = 20
+        //button.backgroundColor = UIColor.white
+        button.borderColor = UIColor.white
+        button.borderWidth = 2
+        return button
+    }()
+
+    lazy var deleteButton: UIButton = {
+        let button = UIButton()
+        let image = UIImage(named: "delete_white")
+        button.setImage(image, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.contentMode = .scaleAspectFit
+        button.isUserInteractionEnabled = true
+        button.addTarget(self, action: #selector(handleDeleteImage), for: .touchUpInside)
         button.cornerRadius = 20
         //button.backgroundColor = UIColor.white
         button.borderColor = UIColor.white
@@ -329,6 +357,8 @@ ChooseAvatarProtocol {
     
     var fanpageOrder = Int()
     
+    var loaded = Bool()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -344,8 +374,7 @@ ChooseAvatarProtocol {
         
         navigationItem.leftBarButtonItem = arrowButton
 
-        //-- categoriesContainerView
-        
+        //-- categoriesContainerView        
         //self.categoryTypeTextField.addTarget(self, action: #selector(self.categoryFieldDidChange(_:)), for: .editingChanged)
 
         self.view.addSubview(self.scrollView)
@@ -442,13 +471,10 @@ ChooseAvatarProtocol {
         
         self.imagesView.addSubview(self.chooseAvatarView)
         self.imagesView.addSubview(self.imageSeparatorView)
-        self.imagesView.addSubview(self.coverContView)
-        
-        //self.imagesView.addSubview(self.iconButton)
+        self.imagesView.addSubview(self.coverContView)       
         
         self.imagesView.addSubview(self.coverButton) 
-        self.imagesView.addSubview(self.backgroundCoverImage)
-        //self.imagesView.addSubview(self.backgroundIconImage)
+        self.imagesView.addSubview(self.backgroundCoverImage)        
         
         self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.chooseAvatarView)
         self.imagesView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.imageSeparatorView)
@@ -477,15 +503,25 @@ ChooseAvatarProtocol {
         self.imagesListView.addSubview(self.imagesSeparatorView)
         self.imagesListView.addConstraintsWithFormat("V:|-10-[v0(80)]-10-|", views: self.imagesSeparatorView)
         
-        self.imagesListView.addSubview(self.addButton)
-        self.imagesListView.addConstraintsWithFormat("V:|-20-[v0(40)]-20-|", views: self.addButton)
+        self.imagesListView.addSubview(self.addRemoveView)
+        self.imagesListView.addConstraintsWithFormat("V:|-5-[v0(90)]-5-|", views: self.addRemoveView)
         
         self.imagesListView.addConstraintsWithFormat(
             "H:|-10-[v0][v1(cp)][v2(40)]-20-|", views:
             self.collectionView,
             self.imagesSeparatorView,
-            self.addButton,
+            self.addRemoveView,
             metrics: metricsNew)
+        
+        self.addRemoveView.addSubview(self.addButton)
+        self.addRemoveView.addSubview(self.deleteButton)
+
+        self.addRemoveView.addConstraintsWithFormat("H:|[v0]|", views: self.addButton)
+        self.addRemoveView.addConstraintsWithFormat("H:|[v0]|", views: self.deleteButton)
+
+        self.addRemoveView.addConstraintsWithFormat("V:|[v0(40)]-10-[v1(40)]|", views: 
+            self.addButton, 
+            self.deleteButton)
 
         self.imagesListView.addSubview(self.imagesLabel)        
         
@@ -513,9 +549,48 @@ ChooseAvatarProtocol {
 
             self.loadFanpageInfo()
 
+            self.saveButton.setTitle("Save fanpage", for: .normal)
+
         }
 
+        self.collectionView.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.old, context: nil)
+
     }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if !self.loaded {
+            collectionView.removeObserver(self, forKeyPath: "contentSize")
+            self.loaded = true
+        }
+    }
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        if let observedObject = object as? UICollectionView, observedObject == collectionView {
+            
+            print("done loading collectionView")
+
+            if self.imagesArray.count >= 5 {
+                
+                self.addButton.alpha = 0.3
+                self.addButton.isEnabled = false
+                
+                self.deleteButton.alpha = 1
+                self.deleteButton.isEnabled = true
+
+            } else  {
+                
+                self.addButton.alpha = 1
+                self.addButton.isEnabled = true
+                
+                self.deleteButton.alpha = 0.3
+                self.deleteButton.isEnabled = false
+                
+            }
+        }
+    }
+
 
     func loadFanpageInfo() {
         
@@ -536,8 +611,8 @@ ChooseAvatarProtocol {
                 
                 for fanpage in fanpages! {
                     
-                    print(fanpage.posterId)
-                    print(PFUser.current()?.objectId)
+                    //print(fanpage.posterId)
+                    //print(PFUser.current()?.objectId)
                     
                     if let userId = PFUser.current()?.objectId {
                     
@@ -553,6 +628,8 @@ ChooseAvatarProtocol {
                             
                                 let imagesArray = Downloader.fanpageImagesDictionary[fpId] as! [FanpageImageGamves]
                                 
+                                print(imagesArray.count)
+                                
                                 for image in imagesArray {
                                     
                                     self.imagesArray.append(image.cover_image)
@@ -564,7 +641,11 @@ ChooseAvatarProtocol {
                             
                             self.nameTextField.text = fanpage.name
                             
+                            self.imagesLabel.isHidden = true
+                            
                             self.viewWillLayoutSubviews()
+                            
+                            self.queryApproval()
                             
                             break
                         }
@@ -572,10 +653,23 @@ ChooseAvatarProtocol {
                 }
             }
         }
-
     }
-
-
+    
+    func queryApproval() {
+        
+        let approvalQuery = PFQuery(className: "Approvals")
+        
+        approvalQuery.whereKey("referenceId", equalTo: self.fan.fanpageId)
+        
+        approvalQuery.getFirstObjectInBackground { (appPF, error) in
+            
+            if error == nil {
+                
+                self.approvalPF = appPF
+                
+            }
+        }
+    }
     
     override func viewDidLayoutSubviews() {
 
@@ -784,15 +878,53 @@ ChooseAvatarProtocol {
         navigationController?.pushViewController(media, animated: true)
     }
 
+    func handleDeleteImage() {
+
+        let searchController = SearchController()
+        searchController.type = SearchType.isSingleImageDelete
+
+        var searchImages = [SearchImage]()
+        
+        print(imagesArray.count)
+
+        var i = 0
+        
+        for image in imagesArray {
+
+            var sImage = SearchImage()
+            sImage.image = image
+            
+            let title = "title_\(i)"
+            sImage.title = title
+            
+            searchImages.append(sImage)
+            
+            i = i + 1
+
+        }
+        
+        searchController.searchImages = searchImages
+        searchController.multiselect = true
+        searchController.delegateMedia = self
+        
+        searchController.view.backgroundColor = UIColor.white
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(searchController, animated: true)
+    }
+
     func didPickImage(_ image: UIImage){
         
         if self.touchedButton == TouchedButton.iconImage {
         
+            self.fan.icon_image = image
             self.setIconImage(image:image)
             
         } else if self.touchedButton == TouchedButton.coverImage {
 
+            self.fan.cover_image = image
             self.setCoverImage(image: image)
+            
             
         } else if self.touchedButton == TouchedButton.addButton {
             
@@ -842,17 +974,37 @@ ChooseAvatarProtocol {
     
     func didPickImages(_ images: [UIImage]){
         
+        self.imagesArray = [UIImage]()
+
+        //var imagesArray = [UIImage]()
+        //var imagesRemoved = [UIImage]()
+        //var imagesAdded = [UIImage]()
+        
+        
         for image in images {
             self.imagesArray.append(image)
+            self.imagesAdded.append(image)
         }
+
         self.imagesLabel.isHidden = true
         self.collectionView.reloadData()
         
+        if images.count > 0 && images.count <= 5 {
+            self.addButton.alpha = 1
+            self.addButton.isEnabled = true
+        }        
     }
     
+    func didPickVideo(url: URL, data: Data, thumbnail: UIImage) {
+        
+    }
     
-    func didPickVideo(url: URL, data: Data, thumbnail: UIImage) {}
-    
+    func didPickRemovedImages(_ images: [UIImage]) {
+
+        for image in images {
+            self.imagesRemoved.append(image)
+        }
+    }
 
    	func handleVideo() {
         self.type = UploadType.local
@@ -878,147 +1030,331 @@ ChooseAvatarProtocol {
         
         if !checErrors()
         {
-            if sender.tag == 0 {
-            
-                sender.tag = 1
+
+
+            if !self.isEdit {
+
+
+                if sender.tag == 0 {
                 
-                sender.isEnabled = false
-                
-                var albumsPF = [PFObject]()
-                
-                self.activityIndicatorView?.startAnimating()
-                
-                var count = 1
-                
-                let fanpagePF: PFObject = PFObject(className: "Fanpages")
-                
-                let fanpageAlbumRelation = fanpagePF.relation(forKey: "albums")
-                
-                for image in self.imagesArray {
-                
-                    let albumPF: PFObject = PFObject(className: "Albums")
+                    sender.tag = 1
                     
-                    let filename = "\(Global.generateFileName()).png"
+                    sender.isEnabled = false
                     
-                    let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
+                    var albumsPF = [PFObject]()
                     
-                    albumPF["cover"] = imageFile
+                    self.activityIndicatorView?.startAnimating()
                     
-                    albumPF["name"] = "\(count)"
+                    var count = 1
                     
-                    do {
+                    let fanpagePF: PFObject = PFObject(className: "Fanpages")
                     
-                       try albumPF.saveInBackground()
+                    let fanpageAlbumRelation = fanpagePF.relation(forKey: "albums")
                     
-                    } catch let error {
-                        print(error.localizedDescription)
+                    for image in self.imagesArray {
+                    
+                        let albumPF: PFObject = PFObject(className: "Albums")
+                        
+                        let filename = "\(Global.generateFileName()).png"
+                        
+                        let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
+                        
+                        albumPF["cover"] = imageFile
+                        
+                        albumPF["name"] = "\(count)"
+                        
+                        do {
+                        
+                           try albumPF.saveInBackground()
+                        
+                        } catch let error {
+                            print(error.localizedDescription)
+                        }
+                        
+                        fanpageAlbumRelation.add(albumPF)
+                        
+                        albumsPF.append(albumPF)
+                        
+                        count = count + 1
+                        
                     }
                     
-                    fanpageAlbumRelation.add(albumPF)
+                    fanpagePF["pageName"] = self.nameTextField.text
                     
-                    albumsPF.append(albumPF)
+                    fanpagePF["pageAbout"] = self.aboutTextField.text
                     
-                    count = count + 1
+                    fanpagePF["order"] = self.fanpageOrder
                     
-                }
-                
-                fanpagePF["pageName"] = self.nameTextField.text
-                
-                fanpagePF["pageAbout"] = self.aboutTextField.text
-                
-                fanpagePF["order"] = self.fanpageOrder
-                
-                let filenameIcon = "icon.png"
-                
-                let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.selectedIconImage, 1.0)!)
-                
-                fanpagePF.setObject(iconImageFile, forKey: "pageIcon")
-                
-                let coverIcon = "cover.png"
-                
-                let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.selectedCoverImage, 1.0)!)
-            
-                fanpagePF.setObject(coverImageFile, forKey: "pageCover")
-                
-                var fpId = Global.getRandomInt()
-                
-                fanpagePF["fpId"] = fpId
-                
-                let categoryRelation = fanpagePF.relation(forKey: "category")
-                categoryRelation.add((self.category?.cateobj!)!)
-                
-                fanpagePF["categoryName"] = self.category?.name
-                
-                fanpagePF["approved"] = false
-                fanpagePF["notified"] = false
-                
-                if let userId = PFUser.current()?.objectId {
-                    fanpagePF["posterId"] = userId
-                }
-                
-                let authorRelation = fanpagePF.relation(forKey: "author")
-                authorRelation.add(PFUser.current()!)
-                
-                fanpagePF.saveInBackground(block: { (fanpge, error) in
+                    let filenameIcon = "icon.png"
                     
-                    if error == nil {
+                    let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.selectedIconImage, 1.0)!)
+                    
+                    fanpagePF.setObject(iconImageFile, forKey: "pageIcon")
+                    
+                    let coverIcon = "cover.png"
+                    
+                    let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.selectedCoverImage, 1.0)!)
+                
+                    fanpagePF.setObject(coverImageFile, forKey: "pageCover")
+                    
+                    var fpId = Global.getRandomInt()
+                    
+                    fanpagePF["fpId"] = fpId
+                    
+                    let categoryRelation = fanpagePF.relation(forKey: "category")
+                    categoryRelation.add((self.category?.cateobj!)!)
+                    
+                    fanpagePF["categoryName"] = self.category?.name
+                    
+                    fanpagePF["approved"] = false
+                    fanpagePF["notified"] = false
+                    
+                    if let userId = PFUser.current()?.objectId {
+                        fanpagePF["posterId"] = userId
+                    }
+                    
+                    let authorRelation = fanpagePF.relation(forKey: "author")
+                    authorRelation.add(PFUser.current()!)
+                    
+                    fanpagePF.saveInBackground(block: { (fanpge, error) in
                         
-                        for albumObj  in albumsPF {
+                        if error == nil {
                             
-                            albumObj["referenceId"] = fpId
-                           
-                            do {
+                            for albumObj  in albumsPF {
                                 
-                                try albumObj.saveInBackground()
-                                
-                            } catch let error {
-                                print(error.localizedDescription)
-                            }
-                        }
-                
-                        let approvals: PFObject = PFObject(className: "Approvals")
-                        
-                        approvals["referenceId"] = fpId
-                        approvals["posterId"] = PFUser.current()?.objectId
-                        let familyId = Global.gamvesFamily.objectId
-                        approvals["familyId"] = familyId
-                        approvals["approved"] = 0
-                        approvals["notified"] = false
-                        approvals["title"] = self.nameTextField.text
-                        approvals["type"] = 2
-                        
-                        approvals.saveInBackground { (resutl, error) in
-                            
-                            if error == nil {
-                                
-                                self.activityIndicatorView?.startAnimating()
-                                
-                                var message = String()
-                                
-                                if let fanpageName = self.nameTextField.text {
-                                    message = "The fanpage \(fanpageName) has been created and sent to your parents for appoval. Thanks for submitting!"
+                                albumObj["referenceId"] = fpId
+                               
+                                do {
+                                    
+                                    try albumObj.saveInBackground()
+                                    
+                                } catch let error {
+                                    print(error.localizedDescription)
                                 }
-                                
-                                let title = "Fanpage created!"
-                                
-                                let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
-                                
-                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
-                                    
-                                    self.activityIndicatorView?.stopAnimating()
-                                    self.homeController?.clearNewFanpage()
-                                    self.navigationController?.popToRootViewController(animated: true)
-                                    
-                                }))
-                                
-                                self.present(alert, animated: true)
-                                
                             }
+                    
+                            /*let approvals: PFObject = PFObject(className: "Approvals")
+                            
+                            approvals["referenceId"] = fpId
+                            approvals["posterId"] = PFUser.current()?.objectId
+                            let familyId = Global.gamvesFamily.objectId
+                            approvals["familyId"] = familyId
+                            approvals["approved"] = 0
+                            approvals["notified"] = false
+                            approvals["title"] = self.nameTextField.text
+                            approvals["type"] = 2
+                            
+                            approvals.saveInBackground { (resutl, error) in*/
+                            
+                            
+                            self.createApproval(fpId:fpId , completionHandler: { ( approvals:PFObject ) -> () in
+                                
+                                if error == nil {
+                                    
+                                    self.activityIndicatorView?.startAnimating()
+                                    
+                                    var message = String()
+                                    
+                                    if let fanpageName = self.nameTextField.text {
+                                        message = "The fanpage \(fanpageName) has been created and sent to your parents for appoval. Thanks for submitting!"
+                                    }
+                                    
+                                    let title = "Fanpage created!"
+                                    
+                                    let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                                    
+                                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                                        
+                                        self.activityIndicatorView?.stopAnimating()
+                                        self.homeController?.clearNewFanpage()
+                                        self.navigationController?.popToRootViewController(animated: true)
+                                        
+                                    }))
+                                    
+                                    self.present(alert, animated: true)
+                                    
+                                }
+                            })
                         }
-                    }
-                })
+                    })
+                }
+            
+            } else {
+
+                self.saveEditedFanpage()                
+
             }
         }
+    }
+
+    func createApproval(fpId:Int, completionHandler : @escaping (_ approvalPF:PFObject) -> ()) {
+
+        let approvals: PFObject = PFObject(className: "Approvals")
+                            
+        approvals["referenceId"] = fpId
+        approvals["posterId"] = PFUser.current()?.objectId
+        let familyId = Global.gamvesFamily.objectId
+        approvals["familyId"] = familyId
+        approvals["approved"] = 0
+        approvals["notified"] = false
+        approvals["title"] = self.nameTextField.text
+        approvals["type"] = 2
+        
+        approvals.saveInBackground { (approved, error) in
+
+            if approved {
+
+                completionHandler(approvals)
+            }
+
+        }
+
+    }
+
+
+    func saveEditedFanpage() {
+      
+        //remove 
+
+        //var imagesArray = [UIImage]()
+        //var imagesRemoved = [UIImage]()
+        //var imagesAdded = [UIImage]()
+
+        let fanPF = self.fan.fanpageObj
+
+        fanPF!["pageName"] = self.nameTextField.text
+                    
+        fanPF!["pageAbout"] = self.aboutTextField.text
+
+        let fpId:Int = self.fan.fanpageId       
+
+        let coverIcon = "cover.png"
+                    
+        let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.backgroundCoverImage.image!, 1.0)!)
+    
+        fanPF?.setObject(coverImageFile, forKey: "pageCover")
+
+        let filenameIcon = "icon.png"
+                    
+        let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.chooseAvatarView.backgroundIconImage.image!, 1.0)!)
+                    
+        fanPF?.setObject(iconImageFile, forKey: "pageIcon")
+      
+        if self.imagesRemoved.count > 0  {
+        
+            if Downloader.fanpageImagesDictionary[fpId] != nil {
+                
+                let imagesArrayDownloaded = Downloader.fanpageImagesDictionary[fpId] as! [FanpageImageGamves]               
+             
+                for dImage in imagesArrayDownloaded {           
+
+                    var hasImage = Bool()
+
+                    for rImage in self.imagesRemoved {
+
+                        if dImage.cover_image.isEqualToImage(image: rImage) {
+
+                            dImage.albumPF.deleteEventually()
+                        }
+
+                    }                   
+                }
+            }
+        }
+        
+        let fanpageAlbumRelation = fanPF?.relation(forKey: "albums")
+
+        if self.imagesAdded.count > 0  {
+
+            var albumsPF = [PFObject]()
+            
+            var count = 1
+            
+
+            for aImage in self.imagesAdded {
+
+                let albumPF: PFObject = PFObject(className: "Albums")
+                            
+                let filename = "\(Global.generateFileName()).png"
+                
+                let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(aImage, 1.0)!)
+                
+                albumPF["cover"] = imageFile
+                
+                albumPF["name"] = "\(count)"
+                
+                do {
+                
+                   try albumPF.saveInBackground()
+                
+                } catch let error {
+                    print(error.localizedDescription)
+                }
+                
+                fanpageAlbumRelation?.add(albumPF)
+                
+                albumsPF.append(albumPF)      
+             
+                count = count + 1
+
+            }
+
+
+            fanpagePF.saveInBackground(block: { (fanpge, error) in
+
+
+
+                if self.approvalPF == nil {
+
+                     self.createApproval(fpId:fpId , completionHandler: { ( approvals:PFObject ) -> () in
+                           
+
+                    })
+
+
+                } else {
+
+
+                    
+
+                }
+
+
+            })
+
+
+        }
+
+
+        /*for image in self.imagesArray {
+                    
+            let albumPF: PFObject = PFObject(className: "Albums")
+            
+            let filename = "\(Global.generateFileName()).png"
+            
+            let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
+            
+            albumPF["cover"] = imageFile
+            
+            albumPF["name"] = "\(count)"
+            
+            do {
+            
+               try albumPF.saveInBackground()
+            
+            } catch let error {
+                print(error.localizedDescription)
+            }
+            
+            fanpageAlbumRelation.add(albumPF)
+            
+            albumsPF.append(albumPF)
+            
+            count = count + 1
+            
+        }*/
+
+
     }
     
     func queryFanpageOrder() {
@@ -1133,6 +1469,10 @@ ChooseAvatarProtocol {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        print("")
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

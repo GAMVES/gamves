@@ -171,6 +171,7 @@ class FanpageGamves {
 
 class FanpageImageGamves {
 
+    var albumPF:PFObject!
     var objectId = String()
     var source = String()
     var name = String()

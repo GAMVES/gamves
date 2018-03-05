@@ -60,5 +60,18 @@ extension UIImage {
         return UIImage(cgImage: cgImage!)
     }
     
+    func alpha(_ value:CGFloat) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(at: CGPoint.zero, blendMode: .normal, alpha: value)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage!
+    }
+
+     func isEqualToImage(image: UIImage) -> Bool {
+        let data1: NSData = UIImagePNGRepresentation(self)! as NSData
+        let data2: NSData = UIImagePNGRepresentation(image)! as NSData
+        return data1.isEqual(data2)
+    }
     
 }

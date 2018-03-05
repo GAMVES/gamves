@@ -39,6 +39,7 @@ class SearchImage {
     var link = String()
     var checked = Bool()
     var title = String()
+    var type:SearchActionType!
 }
 
 
@@ -54,6 +55,7 @@ class YVideo {
 public enum SearchType {
     case isImageGallery
     case isSingleImage
+    case isSingleImageDelete
     case isVideo
 }
 
@@ -135,6 +137,10 @@ class SearchController: UIViewController,
     var countSelected = Int()
     
     var buttonView = UIView()
+
+    var buttonAddRemove:UIButton!
+    var buttonCancel:UIButton!
+    var buttonClear:UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -164,12 +170,21 @@ class SearchController: UIViewController,
 
             self.buttonView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: 50))
             self.buttonView.backgroundColor = UIColor.gamvesBlackColor
-            let button = UIButton(frame: CGRect(x: 0, y: 0, width: width-40, height: 50))
-            button.setTitle("Add Images", for: .normal)
+
+            let w:CGFloat!
+
+            if self.searchImages.count == 0 {
+                w = width-40 
+            } else {
+                w = width/3
+            }
+
+            self.buttonAddRemove = UIButton(frame: CGRect(x: 0, y: 0, width: w, height: 50))
+            self.buttonAddRemove.setTitle("Add Images", for: .normal)
             let image = UIImage(named: "add_white")
-            button.setImage(image, for: .normal)
-            button.addTarget(self, action: #selector(handleSaveImages), for: .touchUpInside)
-            self.buttonView.addSubview(button)
+            self.buttonAddRemove.setImage(image, for: .normal)
+            self.buttonAddRemove.addTarget(self, action: #selector(handleSaveImages), for: .touchUpInside)
+            self.buttonView.addSubview(self.buttonAddRemove)
             
             self.view.addSubview(buttonView)
             
@@ -219,7 +234,7 @@ class SearchController: UIViewController,
             
             self.searchController.searchBar.text = self.termToSearch
 
-            if self.type == SearchType.isImageGallery ||  self.type == SearchType.isSingleImage {
+            if self.type == SearchType.isImageGallery ||  self.type == SearchType.isSingleImage ||  self.type == SearchType.isSingleImageDelete {
             
                 var single = Bool()
                 if self.type == SearchType.isSingleImage {
@@ -228,7 +243,19 @@ class SearchController: UIViewController,
                 
                 self.lastTerm = self.termToSearch
 
-                self.findImagesFromSuggestion(suggestion: self.termToSearch, isSingle: single)
+                if self.searchImages.count == 0 {
+
+                    self.findImagesFromSuggestion(suggestion: self.termToSearch, isSingle: single)
+
+                } else {
+
+                    
+                    self.addDeletButtons()
+
+                    self.searchController.searchBar.isHidden = true
+                    self.activityIndicatorView?.stopAnimating()
+
+                }
                 
             } else if self.type == SearchType.isVideo {
                 
@@ -238,6 +265,86 @@ class SearchController: UIViewController,
             
         }
     }
+
+
+    func addDeletButtons() {
+
+        self.buttonAddRemove.setTitle("Remove Images", for: .normal)
+
+        let image = UIImage(named: "delete_white")
+        
+        self.buttonAddRemove.setImage(image, for: .normal)
+        self.buttonAddRemove.addTarget(self, action: #selector(handleRemove), for: .touchUpInside)
+        self.buttonView.isHidden = false
+
+
+        let w = self.view.frame.width / 3
+
+        self.buttonClear = UIButton(frame: CGRect(x: 0, y: 0, width: w, height: 50))
+        self.buttonClear.setTitle("Clear", for: .normal)
+        let imageClear = UIImage(named: "clear_all_white")
+        self.buttonClear.setImage(imageClear, for: .normal)
+        self.buttonClear.addTarget(self, action: #selector(handleClear), for: .touchUpInside)
+        self.buttonView.addSubview(self.buttonClear)
+
+
+        self.buttonCancel = UIButton(frame: CGRect(x: 0, y: 0, width: w, height: 50))
+        self.buttonCancel.setTitle("Cancel", for: .normal)
+        let imageCancel = UIImage(named: "cancel_rounded_white")
+        self.buttonCancel.setImage(imageCancel, for: .normal)
+        self.buttonCancel.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
+        self.buttonView.addSubview(self.buttonCancel)
+
+
+        self.buttonView.addConstraintsWithFormat("H:|-30-[v0]-30-[v1]-10-[v2]|", views: 
+            self.buttonAddRemove, self.buttonClear, self.buttonCancel)
+
+        self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonAddRemove)
+        self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonClear)
+        self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonCancel)
+
+    }
+
+    func handleRemove() {
+    
+        var finalImages = [UIImage]()
+        var removedImages = [UIImage]()      
+
+        for image in searchImages {
+
+            if !image.checked {
+                finalImages.append(image.image)
+            } else {
+                removedImages.append(image.image)
+            }            
+        }
+
+        print(removedImages.count)
+        
+        delegateMedia?.didPickImages!(finalImages)
+        
+        delegateMedia?.didPickRemovedImages!(removedImages)
+        
+        self.goBack()
+
+    }
+
+    func handleClear() {
+
+        for image in searchImages {
+
+            image.checked = false
+        }
+
+        self.tableView.reloadData()
+
+    }
+
+    func handleCancel() {
+
+        self.goBack()
+    }
+
     
     func goBack()
     {
@@ -291,7 +398,7 @@ class SearchController: UIViewController,
                     }
                 }
                 
-            } else if type == SearchType.isSingleImage {
+            } else if type == SearchType.isSingleImage ||  self.type == SearchType.isSingleImageDelete {
                 
                 c =  self.searchImages.count
                 
@@ -337,7 +444,7 @@ class SearchController: UIViewController,
                 
                 return cellv
                 
-            } else if type == SearchType.isSingleImage {
+            } else if type == SearchType.isSingleImage || type == SearchType.isSingleImageDelete {
                 
                 var cells = tableView.dequeueReusableCell(withIdentifier: self.cellImageSearch) as! SearchSingleImageCell
                 
@@ -349,6 +456,21 @@ class SearchController: UIViewController,
                         cells.thumbnailImageView.tag = index
                         
                         if multiselect {
+                            
+                            if type == SearchType.isSingleImageDelete {
+                                
+                                cells.actionType = SearchActionType.isDelete
+                                cells.checkLabel.isHidden = true
+                                cells.name = searchImage.title
+                                
+                                cells.checkLabel.text = "x"
+                                cells.checkLabel.layer.backgroundColor = UIColor.red.cgColor
+                                
+                                
+                            } else if type == SearchType.isSingleImage {
+                                
+                                cells.actionType = SearchActionType.isCheck
+                            }
                         
                             if searchImage.checked
                             {
@@ -359,6 +481,7 @@ class SearchController: UIViewController,
                                 cells.checkLabel.isHidden = true
                                 cells.isHighlighted = true
                             }
+                            
                             
                         } else {
                             
@@ -474,7 +597,7 @@ class SearchController: UIViewController,
                 
                 height = imageWidth
                 
-            } else if type == SearchType.isSingleImage {
+            } else if self.type == SearchType.isSingleImage ||  self.type == SearchType.isSingleImageDelete  {
                 
                 let iw = self.view.frame.width
              
@@ -536,11 +659,14 @@ class SearchController: UIViewController,
                 }
             
 
-            } else if type == SearchType.isSingleImage {
+            } else if type == SearchType.isSingleImage ||  self.type == SearchType.isSingleImageDelete {
 
                 if multiselect {
+                    
+                    var relaod = Bool()
                 
                     let title = self.searchImages[index].title as String
+                   
                     
                     if self.searchImages[index].checked {
                     
@@ -551,7 +677,7 @@ class SearchController: UIViewController,
                         
                     } else {
             
-                        if countSelected < 5 {
+                        if self.countSelected < 5 ||  self.type == SearchType.isSingleImageDelete {
                             
                             self.searchImages[index].checked = true
                             countSelected = countSelected + 1
@@ -564,7 +690,9 @@ class SearchController: UIViewController,
                         
                     }
                     
-                    self.tableView.reloadData()
+                    if !relaod {
+                        self.tableView.reloadData()
+                    }
                     
                 } else  {
                 
