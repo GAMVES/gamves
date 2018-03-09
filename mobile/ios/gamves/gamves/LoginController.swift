@@ -151,7 +151,7 @@ class LoginController: UIViewController {
         self.setuplogoImageView()        
         self.setupLoginRegisterSegmentedControl()
         
-        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.lineSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor,x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.lineSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//,x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.view.addSubview(activityView)
         
@@ -225,7 +225,7 @@ class LoginController: UIViewController {
             print(password)
             
             // Defining the user object
-            PFUser.logInWithUsername(inBackground: user, password: password, block: {(user, error) -> Void in
+            PFUser.logInWithUsername(inBackground: user.lowercased(), password: password, block: {(user, error) -> Void in
                 
                 if let error = error as NSError? {
                     

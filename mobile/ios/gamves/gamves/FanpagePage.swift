@@ -213,7 +213,7 @@ class FanpagePage: UIViewController,
         
         self.imageCollectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
         
-        self.activityVideoView = Global.setActivityIndicator(container: self.videosContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray,x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityVideoView = Global.setActivityIndicator(container: self.videosContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
         
         let widthImages = view.frame.width
         let heightImages = (view.frame.width - 16 - 16) * 9 / 16

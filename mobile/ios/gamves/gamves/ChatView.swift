@@ -354,7 +354,7 @@ class ChatView: UIView,
         
         self.tabGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         
-        self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray,x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityView = Global.setActivityIndicatorForChat(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray,x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.recordingSession = AVAudioSession.sharedInstance()
         
@@ -2694,7 +2694,7 @@ class ChatLogMessageCell: BaseCell,
             self.profileContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.profileImageView)
             
             if self.type == MessageType.isAudioDownloading {
-                self.progressAudio = Global.setActivityIndicator(container: self.profileContainerView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
+                self.progressAudio = Global.setActivityIndicatorForChat(container: self.profileContainerView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
                 self.profileImageView.isHidden = true
                 self.progressAudio.startAnimating()
             }
@@ -2731,7 +2731,7 @@ class ChatLogMessageCell: BaseCell,
             self.pictureImageView.layer.addSublayer(gradientLayer)
             
             if self.type == MessageType.isPictureDownloading {
-                self.progressPicture = Global.setActivityIndicator(container: self.bubbleView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 0, y: 0, width: 80.0, height: 80.0)
+                self.progressPicture = Global.setActivityIndicatorForChat(container: self.bubbleView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 0, y: 0, width: 80.0, height: 80.0)
                 self.progressPicture.startAnimating()
             }
             
