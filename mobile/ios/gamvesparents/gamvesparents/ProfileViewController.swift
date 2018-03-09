@@ -481,7 +481,7 @@ class ProfileViewController: UIViewController,
         
         self.prepTextFields(inView: [self.sonNameContainerView])
 
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor, x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
        
         self.familyChatId    = Global.getRandomInt()
         self.sonRegisterChatId       = Global.getRandomInt()
@@ -1276,6 +1276,10 @@ class ProfileViewController: UIViewController,
                 Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.spousePasswordTextField)
             }
             
+        }
+
+        if errors {
+            self.activityIndicatorView?.stopAnimating()
         }
 
         return errors

@@ -27,15 +27,16 @@ class Global: NSObject
     
     static var schools = [GamvesSchools]()
     
+    static var serverUrl = "http://25.55.180.51:1337/1/"
     //static var serverUrl = "http://192.168.0.211:1337/1/"
-    static var serverUrl = "http://192.168.16.22:1337/1/"
+    //static var serverUrl = "http://192.168.16.22:1337/1/"
     //static var serverUrl = "http://127.0.0.1:1337/1/"
     //static var serverUrl = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
-    //static var localWs = "wss://192.168.0.211:1337/1/"
-    static var localWs = "wss://192.168.16.22:1337/1/"
+    static var localWs = "wss://25.55.180.51:1337/1/"
+    //static var localWs = "wss://192.168.16.22:1337/1/"
     //static var localWs = "wss://127.0.0.1:1337/1/"
-    static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
+    //static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var userTypes = Dictionary<Int, UserTypeGamves>()
     
@@ -474,9 +475,30 @@ class Global: NSObject
             })
         }
     }
+
+    static func setActivityIndicator(container: UIView, type: Int, color:UIColor) -> NVActivityIndicatorView
+    {
+        
+        var aiView:NVActivityIndicatorView?
+        
+        if aiView == nil
+        {
+            aiView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 60.0, height: 60.0), type: NVActivityIndicatorType(rawValue: type), color: color, padding: 0.0)
+            
+            // add subview
+            container.addSubview(aiView!)
+            // autoresizing mask
+            aiView?.translatesAutoresizingMaskIntoConstraints = false
+            // constraints
+            container.addConstraint(NSLayoutConstraint(item: aiView, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: container, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0))
+            container.addConstraint(NSLayoutConstraint(item: aiView, attribute: NSLayoutAttribute.centerY, relatedBy: NSLayoutRelation.equal, toItem: container, attribute: NSLayoutAttribute.centerY, multiplier: 1, constant: 0))
+        }
+        
+        return aiView!
+    }
     
     
-    static func setActivityIndicator(container: UIView, type: Int, color:UIColor, x:CGFloat, y:CGFloat, width: CGFloat, height:CGFloat) -> NVActivityIndicatorView
+    static func setActivityIndicatorForChat(container: UIView, type: Int, color:UIColor, x:CGFloat, y:CGFloat, width: CGFloat, height:CGFloat) -> NVActivityIndicatorView
     {
         
         var aiView:NVActivityIndicatorView?

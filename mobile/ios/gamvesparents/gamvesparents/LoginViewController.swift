@@ -337,7 +337,7 @@ class LoginViewController: UIViewController
         
         self.prepTextFields(inView: [self.nameTextField, self.emailTextField, self.passwordTextField])
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor, x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
         
         //let deadlineTime = DispatchTime.now() + 2
         //DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
@@ -809,6 +809,7 @@ class LoginViewController: UIViewController
                                     
                                     //self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
                                     
+                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
                                     
                                     NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: self)
                                     
@@ -816,8 +817,7 @@ class LoginViewController: UIViewController
                                     
                                     self.activityIndicatorView?.stopAnimating()
                                     self.dismiss(animated: true, completion: nil)
-                                    self.tabBarViewController?.selectedIndex = 0 //Home                    
-                                    
+                                    self.tabBarViewController?.selectedIndex = 0 //Home
                                     
                                 })
                                 

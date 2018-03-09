@@ -282,7 +282,7 @@ class HomeViewController: UIViewController,
             self.collectionView, 
             self.dataRightView)
        
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor, x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
         
@@ -295,6 +295,8 @@ class HomeViewController: UIViewController,
     }
     
     func loadStatistics() {
+
+    	self.userStatistics = [UserStatistics]()
     
         _status.desc = "Offline"
         _status.icon = UIImage(named: "status_offline")!
@@ -505,6 +507,8 @@ class HomeViewController: UIViewController,
             
             print(count)
             
+			self.loadStatistics()
+
             self._approval.approval = count as Int
             self.collectionView.reloadData()
             
@@ -788,54 +792,57 @@ class HomeViewController: UIViewController,
     
     func initializeOnlineSubcritpion()
     {
-        let sonId = Global.defaults.object(forKey: "son_object_id") as! String
-        if Global.userDictionary[sonId] != nil
-        {
-            let userId = Global.userDictionary[sonId]?.userId
-            
-            let onlineQuery = PFQuery(className: "UserStatus").whereKey("userId", equalTo: userId)
-            
-            self.sonSubscription = liveQueryClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
+        if Global.isKeyPresentInUserDefaults(key: "son_object_id") {
+        
+            let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+            if Global.userDictionary[sonId] != nil
+            {
+                let userId = Global.userDictionary[sonId]?.userId
                 
-                self.changeSingleUserStatus(onlineMessage:onlineMessage)
+                let onlineQuery = PFQuery(className: "UserStatus").whereKey("userId", equalTo: userId)
                 
-            }
-            
-            let queryOnine = PFQuery(className:"UserOnline")
-            queryOnine.whereKey("userId", equalTo: userId)
-            queryOnine.findObjectsInBackground { (usersOnline, error) in
-                
-                if error != nil
-                {
-                    print("error")
+                self.sonSubscription = liveQueryClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
                     
-                } else {
+                    self.changeSingleUserStatus(onlineMessage:onlineMessage)
                     
-                    if (usersOnline?.count)!>0
+                }
+                
+                let queryOnine = PFQuery(className:"UserOnline")
+                queryOnine.whereKey("userId", equalTo: userId)
+                queryOnine.findObjectsInBackground { (usersOnline, error) in
+                    
+                    if error != nil
                     {
-                        for monline in usersOnline!
+                        print("error")
+                        
+                    } else {
+                        
+                        if (usersOnline?.count)!>0
                         {
-                            self.changeSingleUserStatus(onlineMessage:monline)
+                            for monline in usersOnline!
+                            {
+                                self.changeSingleUserStatus(onlineMessage:monline)
+                            }
                         }
                     }
                 }
             }
-        }
-        
-        if Global.gamvesFamily != nil
-        {
             
-            let familyId = Global.gamvesFamily.objectId
-            
-            var approvalQuery = PFQuery(className: "Approvals").whereKey("familyId", equalTo: familyId)
-            
-            self.approvalSubscription = liveQueryClientApproval.subscribe(approvalQuery).handle(Event.updated) { _, approvals in
+            if Global.gamvesFamily != nil
+            {
                 
-                Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
+                let familyId = Global.gamvesFamily.objectId
+                
+                var approvalQuery = PFQuery(className: "Approvals").whereKey("familyId", equalTo: familyId)
+                
+                self.approvalSubscription = liveQueryClientApproval.subscribe(approvalQuery).handle(Event.updated) { _, approvals in
                     
-                        self._approval.approval = count as Int
+                    Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
                         
-                })
+                            self._approval.approval = count as Int
+                        
+                    })
+                }
             }
         }
     }
