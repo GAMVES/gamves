@@ -60,6 +60,8 @@ class Downloader: NSObject
                                 
                                 let image = FanpageImageGamves()
                                 
+                                image.albumPF = fanpageAlbum
+                                
                                 let id = fanpageAlbum.objectId as! String
                                 image.objectId = id
                                 

@@ -16,6 +16,7 @@ import AWSCore
     @objc optional func didPickImage(_ image: UIImage)
     @objc optional func didPickImages(_ images: [UIImage])
     @objc optional func didPickVideo(url: URL, data: Data, thumbnail: UIImage)
+    @objc optional func didPickRemovedImages(_ images: [UIImage])
 }
 
 public enum MediaType {
