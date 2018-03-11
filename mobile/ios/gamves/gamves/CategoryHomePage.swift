@@ -48,8 +48,12 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         
         self.width = self.view.frame.width
         self.height = self.view.frame.height
+
+        DispatchQueue.main.async {
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray) //,x: 0, y: 0, width: 80.0, height: 80.0)
+            self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray) //,x: 0, y: 0, width: 80.0, height: 80.0)
+
+        }
         
         self.activityIndicatorView?.startAnimating()
                         

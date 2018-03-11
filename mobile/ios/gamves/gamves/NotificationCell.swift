@@ -17,7 +17,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
     
     var homeController: HomeController?    
     
-    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: Global.remoteWs) // .localWs)
+    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: Global.localWs) // .localWs)
   
     private var subscription: Subscription<PFObject>!
     

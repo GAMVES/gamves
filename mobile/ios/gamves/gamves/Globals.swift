@@ -29,11 +29,11 @@ class Global: NSObject
     //static var serverUrl = "http://127.0.0.1:1337/1/"
     //static var serverUrl = "http://192.168.16.22:1337/1/"
     
-    static var localWs = "wss://25.55.180.51:1337/1/"
+    static var localWs = "ws://25.55.180.51:1337/1/" //Change to wss once online and with ssl
     //static var localWs = "wss://127.0.0.1:1337/1/"
     //static var localWs = "wss://192.168.16.22:1337/1/"
     
-    static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
+    //static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard
     

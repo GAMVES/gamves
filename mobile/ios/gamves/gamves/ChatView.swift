@@ -354,7 +354,10 @@ class ChatView: UIView,
         
         self.tabGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         
-        self.activityView = Global.setActivityIndicatorForChat(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray,x: 0, y: 0, width: 80.0, height: 80.0)
+        DispatchQueue.main.async {
+
+        	self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray) //,x: 0, y: 0, width: 80.0, height: 80.0)
+        }
         
         self.recordingSession = AVAudioSession.sharedInstance()
         
@@ -480,7 +483,9 @@ class ChatView: UIView,
     
     func loadChatFeed() {
         
-        self.activityView.startAnimating()
+        if self.activityView != nil {
+            self.activityView.startAnimating()
+        }
         
         print(self.chatId)
         let queryChatFeed = PFQuery(className:"ChatFeed")

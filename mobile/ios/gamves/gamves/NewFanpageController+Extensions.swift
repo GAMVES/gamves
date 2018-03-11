@@ -75,6 +75,24 @@ extension NewFanpageController : UITextFieldDelegate, UITextViewDelegate {
         }
     }
     
+    func textViewDidChange(_ textView: UITextView) {
+        
+        if self.isEdit {
+            
+            if textView == self.aboutTextField {
+                
+                if self.initAbout != self.aboutTextField.text {
+                    
+                    self.isEdited = true
+                    
+                    self.enableSaveButton()
+                    
+                }
+                
+            }
+        }
+    }
+    
     public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool 
     {
         self.createMenu(textObj: textField)
@@ -138,6 +156,7 @@ extension NewFanpageController : UITextFieldDelegate, UITextViewDelegate {
             tbKeyboardNewvideo?.items = [bbiPrev, bbiNext!, bbiSpacer, bbiSubmit]
         }
     }
+   
     
     // search view's subviews
     // if no view is passed in, start w/ the self.view
