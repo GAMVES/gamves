@@ -565,8 +565,6 @@ ChooseAvatarProtocol
             self.saveButton.isEnabled = false
 
         }
-
-
         self.collectionView.addObserver(self, forKeyPath: "contentSize", options: NSKeyValueObservingOptions.old, context: nil)
 
     }

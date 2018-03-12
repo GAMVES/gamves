@@ -14,19 +14,26 @@ import NVActivityIndicatorView
 import IGColorPicker
 import PulsingHalo
 import KenBurns
+import RSKImageCropper
 
 public enum ProfileSaveType {
     case profile
     case color
 }
 
+
 class ProfileCell: BaseCell,
     UICollectionViewDataSource,
     UICollectionViewDelegate, 
     UICollectionViewDelegateFlowLayout, 
     UIScrollViewDelegate,
-    ColorPickerViewDelegate
-{
+    ColorPickerViewDelegate,
+    MediaDelegate,
+    RSKImageCropViewControllerDelegate   
+{   
+    
+
+    var imageCropVC = RSKImageCropViewController()
 
     var homeController: HomeController?
     
@@ -222,7 +229,14 @@ class ProfileCell: BaseCell,
     
     var initialSetting = InitialSetting()
     
-    var profilePF:PFObject!
+    var profilePF:PFObject!   
+
+    enum SelectedImage {
+        case avatar
+        case background
+    }
+
+    var selectedImage:SelectedImage!    
     
     override func setupViews() {
         super.setupViews()
@@ -428,6 +442,8 @@ class ProfileCell: BaseCell,
                 //-- Bottom single button
                 
                 self.saveProfileButton.isHidden = false
+                self.cancelProfileButton.isHidden = false
+
                 self.editProfileButton.isHidden = true
                 self.editFanpageButton.isHidden = true
                 
@@ -598,6 +614,8 @@ class ProfileCell: BaseCell,
             self.videosGamves = self.initialSetting.videos
             
             self.saveProfileButton.isHidden = true
+            self.cancelProfileButton.isHidden = true
+
             self.editProfileButton.isHidden = false
             self.editFanpageButton.isHidden = false
             
@@ -605,6 +623,9 @@ class ProfileCell: BaseCell,
             self.editAvatarImageView.isHidden = true
             self.editColorView.isHidden = true
             self.editBioView.isHidden = true
+
+            self.editCreated = false
+
             
         } else if self.profileSaveType == ProfileSaveType.color {
          
@@ -633,13 +654,111 @@ class ProfileCell: BaseCell,
     func handleChangeBackgoundImage(sender : UIButton) {
         
         //Media Controller Here
+
+        self.selectedImage = SelectedImage.background
         
-    }
+        let media = MediaController()
+        media.isImageMultiSelection = false
+        media.delegate = self
+        //media.termToSearch = self.nameTextField.text!
+        media.setType(type: MediaType.selectImage)
+        media.searchType = SearchType.isSingleImage
+        media.searchSize = SearchSize.imageSmall
+        self.homeController?.navigationController?.pushViewController(media, animated: true)
+        
+    }    
+   
     
     func handleChangeAvatarImage(sender : UIButton) {
         
         //Media Controller Here
+
+        self.selectedImage = SelectedImage.avatar
+
+       let media = MediaController()
+        media.isImageMultiSelection = false
+        media.delegate = self
+        //media.termToSearch = self.nameTextField.text!
+        media.setType(type: MediaType.selectImage)
+        media.searchType = SearchType.isSingleImage
+        media.searchSize = SearchSize.imageSmall
+        self.homeController?.navigationController?.pushViewController(media, animated: true)
+
     }
+
+    func didPickImage(_ image: UIImage) {
+
+        if self.selectedImage == SelectedImage.avatar {
+        
+            imageCropVC = RSKImageCropViewController(image: image)
+            imageCropVC.delegate = self
+            self.homeController?.navigationController?.pushViewController(imageCropVC, animated: true)            
+
+        } else if self.selectedImage == SelectedImage.avatar {
+
+
+            self.backImageView.setImage(image)
+        }
+
+    }
+
+    
+    func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {
+        self.homeController?.navigationController?.popViewController(animated: true)
+    }
+
+    func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
+    
+    //func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect) {
+        
+         let imageLow = croppedImage.lowestQualityJPEGNSData as Data
+         var smallImage = UIImage(data: imageLow)
+        
+        self.sonProfileImageView.image = croppedImage
+        self.makeRounded(imageView:self.sonProfileImageView)
+
+
+        /*if self.selectedImageView.tag == 0 
+        {             
+            self.yourPhotoImageView.image   = croppedImage
+            self.yourPhotoImage             = croppedImage
+            self.yourPhotoImageSmall        = smallImage
+            self.makeRounded(imageView:self.yourPhotoImageView)
+
+        } else if selectedImageView.tag == 1
+        {
+            self.sonPhotoImageView.image    = croppedImage
+            self.sonPhotoImage              = croppedImage
+            self.sonPhotoImageSmall         = smallImage
+            self.makeRounded(imageView:self.sonPhotoImageView)                
+
+        } else if selectedImageView.tag == 2
+        {
+            self.spousePhotoImageView.image    = croppedImage
+            self.spousePhotoImage              = croppedImage
+            self.spousePhotoImageSmall         = smallImage
+            self.makeRounded(imageView:self.spousePhotoImageView)                
+        
+        } else if selectedImageView.tag == 3
+        {
+            self.familyPhotoImageView.image    = croppedImage
+            self.familyPhotoImage              = croppedImage
+            self.familyPhotoImageSmall         = smallImage
+            self.makeRounded(imageView:self.familyPhotoImageView)                
+        }*/
+        
+        self.homeController?.navigationController?.popViewController(animated: true)
+    }
+
+    func makeRounded(imageView:UIImageView)
+    {
+        imageView.contentMode = UIViewContentMode.scaleToFill
+        imageView.layer.cornerRadius = imageView.frame.size.width / 2            
+        imageView.clipsToBounds = true         
+        imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
+        imageView.layer.borderWidth = 3
+    }  
+
 
     
     func handleChangeColor(sender : UIButton) {

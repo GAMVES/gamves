@@ -39,4 +39,6 @@ target 'gamves' do
   
   pod 'ISEmojiView'
   
+  pod 'RSKImageCropper'
+  
 end

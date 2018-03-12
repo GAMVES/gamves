@@ -28,6 +28,7 @@ PODS:
     - Starscream (= 2.1.1)
   - PopupDialog (0.5.4)
   - PulsingHalo (0.2.8)
+  - RSKImageCropper (2.0.0)
   - SDWebImage (3.8.2):
     - SDWebImage/Core (= 3.8.2)
   - SDWebImage/Core (3.8.2)
@@ -50,6 +51,7 @@ DEPENDENCIES:
   - ParseLiveQuery
   - PopupDialog
   - PulsingHalo
+  - RSKImageCropper
   - SwiftyJSON
   - UITextView+Placeholder (~> 1.2)
   - YouTubePlayer
@@ -84,12 +86,13 @@ SPEC CHECKSUMS:
   ParseLiveQuery: bc2321032ddae9d6ecfd4842d1b10210d453b08b
   PopupDialog: 75cf955693590b0cb2fdde00223fb65d99c57247
   PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
+  RSKImageCropper: d9a1acbc0600bf8decc8f0d21895872c99a9e4cf
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   UITextView+Placeholder: 77680995fcdd07c3f52ec92fe1150874a2ac89ff
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: b987ffaca0e16307d6727b4543585372c34968b8
+PODFILE CHECKSUM: 8d81a81c2d9fc019a7413691838879ed24ed5f03
 
 COCOAPODS: 1.4.0
