@@ -21,6 +21,11 @@ public enum ProfileSaveType {
     case color
 }
 
+public enum SelectedImage {
+        case avatar
+    case background
+}
+
 
 class ProfileCell: BaseCell,
     UICollectionViewDataSource,
@@ -229,14 +234,11 @@ class ProfileCell: BaseCell,
     
     var initialSetting = InitialSetting()
     
-    var profilePF:PFObject!   
-
-    enum SelectedImage {
-        case avatar
-        case background
-    }
+    var profilePF:PFObject!       
 
     var selectedImage:SelectedImage!    
+
+    var selectedBackImage = UIImage()
     
     override func setupViews() {
         super.setupViews()
@@ -411,7 +413,9 @@ class ProfileCell: BaseCell,
                                     self.newKenBurnsImageView(image: image!)
                                     
                                     self.initialSetting.backImage = image
-                                    
+
+                                    self.selectedBackImage = image!
+
                                     self.initialSetting.bio = self.bioLabel.text!
                                     
                                 }
@@ -558,35 +562,54 @@ class ProfileCell: BaseCell,
         //NOT WORKING
 
         if self.profileSaveType == ProfileSaveType.profile {
+
+            self.activityIndicatorView?.startAnimating()
             
-            let backImage:UIImage = UIImage() // = self.backImageView
+            let backImage:UIImage = self.selectedBackImage
 
             let backImagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage, 1.0)!)
+            
             self.profilePF["pictureBackground"] = backImagePF
+            
             self.profilePF["bio"] = self.bioLabel.text
+
+            let backColor:UIColor = self.profileView.backgroundColor!
+
+            if let rgb:[CGFloat] = backColor.rgb() {
+    
+                print(rgb)
+
+                self.profilePF["backgroundColor"] = rgb             
+            } 
             
-            self.profilePF.saveInBackground(block: { (profile, error) in
+            self.profilePF.saveInBackground(block: { (profile, error) in                
                 
-                let userId = PFUser.current()?.objectId
-                
-                let firstName = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
-                
-                let sonImagePF = PFFile(name: "\(firstName)picture.png", data: UIImageJPEGRepresentation(self.sonProfileImageView.image!, 1.0)!)
-            
-                let imageLow = self.sonProfileImageView.image?.lowestQualityJPEGNSData as! Data
-                var smallImage = UIImage(data: imageLow)
-                
-                let sonUser:PFUser = PFUser.current()!
-                
-                sonUser["picture"] = backImagePF
-                
-                sonUser["pictureSmall"] = smallImage
-                
-                sonUser.saveInBackground(block: { (user, error) in
+                if error == nil {
+
+                    let sonUser:PFUser = PFUser.current()!
+
+                    let userId = PFUser.current()?.objectId
                     
+                    let firstName = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
                     
+                    let sonImagePF = PFFile(name: "\(firstName)picture.png", data: UIImageJPEGRepresentation(self.sonProfileImageView.image!, 1.0)!)
+                    sonUser.setObject(sonImagePF!, forKey: "picture")
+
+                    let sonImageLow = self.sonProfileImageView.image?.lowestQualityJPEGNSData as! Data
+                    var sonSmallImage = UIImage(data: sonImageLow)
+
+                    let sonImageSmallPF = PFFile(name: "\(firstName)pictureSmall.png", data: UIImageJPEGRepresentation(sonSmallImage!, 1.0)!)
+
+                    sonUser.setObject(sonImageSmallPF!, forKey: "pictureSmall")               
                     
-                })
+                    sonUser.saveInBackground(block: { (user, error) in
+                        
+                        self.showApprovalMessage()
+                        
+                    })
+
+                }
+
             })
             
         } else if self.profileSaveType == ProfileSaveType.color {
@@ -598,6 +621,25 @@ class ProfileCell: BaseCell,
         }
     }
     
+    func showApprovalMessage() {        
+                                    
+        var message = String()               
+        
+        let title = "Profile update!"
+        
+        let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+            
+            self.activityIndicatorView?.stopAnimating() 
+
+            self.enableDisableButtonToNormal()           
+            
+        }))
+        
+        self.homeController?.present(alert, animated: true)
+    }
+
     func handleCancelProfile() {
         
         self.profileView.backgroundColor = self.initialSetting.backColor
@@ -613,18 +655,7 @@ class ProfileCell: BaseCell,
             self.videosGamves = [VideoGamves]()
             self.videosGamves = self.initialSetting.videos
             
-            self.saveProfileButton.isHidden = true
-            self.cancelProfileButton.isHidden = true
-
-            self.editProfileButton.isHidden = false
-            self.editFanpageButton.isHidden = false
-            
-            self.editBackImageView.isHidden = true
-            self.editAvatarImageView.isHidden = true
-            self.editColorView.isHidden = true
-            self.editBioView.isHidden = true
-
-            self.editCreated = false
+            self.enableDisableButtonToNormal()
 
             
         } else if self.profileSaveType == ProfileSaveType.color {
@@ -634,6 +665,24 @@ class ProfileCell: BaseCell,
         }
     
     }
+
+    func enableDisableButtonToNormal() {
+
+        self.saveProfileButton.isHidden = true
+        self.cancelProfileButton.isHidden = true
+
+        self.editProfileButton.isHidden = false
+        self.editFanpageButton.isHidden = false
+        
+        self.editBackImageView.isHidden = true
+        self.editAvatarImageView.isHidden = true
+        self.editColorView.isHidden = true
+        self.editBioView.isHidden = true
+
+        self.editCreated = false
+
+    }
+
     
     func clearColorButton() {
         
@@ -715,37 +764,7 @@ class ProfileCell: BaseCell,
          var smallImage = UIImage(data: imageLow)
         
         self.sonProfileImageView.image = croppedImage
-        self.makeRounded(imageView:self.sonProfileImageView)
-
-
-        /*if self.selectedImageView.tag == 0 
-        {             
-            self.yourPhotoImageView.image   = croppedImage
-            self.yourPhotoImage             = croppedImage
-            self.yourPhotoImageSmall        = smallImage
-            self.makeRounded(imageView:self.yourPhotoImageView)
-
-        } else if selectedImageView.tag == 1
-        {
-            self.sonPhotoImageView.image    = croppedImage
-            self.sonPhotoImage              = croppedImage
-            self.sonPhotoImageSmall         = smallImage
-            self.makeRounded(imageView:self.sonPhotoImageView)                
-
-        } else if selectedImageView.tag == 2
-        {
-            self.spousePhotoImageView.image    = croppedImage
-            self.spousePhotoImage              = croppedImage
-            self.spousePhotoImageSmall         = smallImage
-            self.makeRounded(imageView:self.spousePhotoImageView)                
-        
-        } else if selectedImageView.tag == 3
-        {
-            self.familyPhotoImageView.image    = croppedImage
-            self.familyPhotoImage              = croppedImage
-            self.familyPhotoImageSmall         = smallImage
-            self.makeRounded(imageView:self.familyPhotoImageView)                
-        }*/
+        self.makeRounded(imageView:self.sonProfileImageView)     
         
         self.homeController?.navigationController?.popViewController(animated: true)
     }
