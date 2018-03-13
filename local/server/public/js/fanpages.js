@@ -309,14 +309,18 @@ document.addEventListener("LoadFanpage", function(event){
 
               fanpage.set("approved", true);  
 
+              fanpage.set("posterId" , user.id);
+
               fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
                                          
               fanpage.save(null, {
                   success: function (pet) {
+
                       console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
                       $('#edit_modal_fanpage').modal('hide');
                       loadFanpages(categoryPF);
                       clearField();
+
                   },
                   error: function (response, error) {
                       console.log('Error: ' + error.message);
@@ -343,7 +347,7 @@ document.addEventListener("LoadFanpage", function(event){
             var album = new Albums();
             album.set("cover", albumImages[i]);
             var fanId = fanpageIdArray[_fId];
-            album.set("fanpageId", fanId);            
+            album.set("referenceId", fanId);            
 
             var name = $('#edit_album_name').val();          
             album.set("name", name);      

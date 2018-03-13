@@ -205,7 +205,7 @@
 
 		    	fanpage.set("approved", true);
 
-		    	var about = request.params.user_user_name + "'s fanpage";
+		    	var about =  request.params.firstName + "'s fanpage";
 
 				fanpage.set("pageAbout", about);	    			    	
 
