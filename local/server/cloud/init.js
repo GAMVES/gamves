@@ -88,7 +88,7 @@
 									  	
 										var app_id 			= "0123456789";
 										var master_key		= "9876543210";
-										var server_url 		= "http://192.168.16.22:1337/1/";	
+										var server_url 		= "http://25.55.180.51:1337/1/";											
 										
 										var hasIcon 		= false;
 
