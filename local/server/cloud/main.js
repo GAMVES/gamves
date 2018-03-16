@@ -337,7 +337,7 @@ function downloadVideo(params, callback ) {
             var fs = require('fs');
             var youtubedl = require('youtube-dl');
             var video = youtubedl('http://www.youtube.com/watch?v='+ytb_videoId, ['--format=18'], { cwd: __dirname });             
-            var videoName = ytb_videoId + '.mp4';
+            var videoName = "download/" + ytb_videoId + '.mp4';
 
             video.pipe(fs.createWriteStream(videoName));
 
@@ -578,4 +578,245 @@ Parse.Cloud.afterSave("Approvals", function(request) {
 	}
 
 });
+
+/*
+Parse.Cloud.afterSave("Favorites", function(request) {
+	
+	fanpageTrending();
+	//categoryOrder();
+
+});
+
+
+Parse.Cloud.afterDelete("Favorites", function(request) {
+	
+	fanpageTrending();
+	//categoryOrder();
+
+});
+*/
+
+
+
+
+
+
+
+
+
+/*
+
+
+	var queryCategory = new Parse.Query("Categories");
+	
+    queryCategory.equalTo("name", "TRENDING");	   
+    
+    queryCategory.first({
+        useMasterKey: true,
+        success: function(categoryTrending) {
+
+
+        	if categoryTrending.length > 0 {
+
+				var queryFavorite = new Parse.Query("Favorites");
+				
+			    queryFavorite.equalTo("type", 1);	       
+			    
+			    queryFavorite.find({
+			        useMasterKey: true,
+			        success: function(favorites) {
+			        	
+						console.log("count: " + favorites.length);
+
+			        	if( favorites.length > 0) {					
+
+							var totals = {}
+
+							var current = null;
+						    var cnt = 0;
+
+						    var unsortedFavorites = [];
+
+						    for (var i = 0; i < favorites.length; i++) {
+
+						    	var id = favorites[i].get("referenceId");
+						        
+						        if ( id	!= current ) {
+						        
+						            if (cnt > 0) {
+
+						            	 unsortedFavorites.push({ 
+									        "count" : cnt,
+									        "objectId"  : current				        
+									     });
+						            }
+						            
+						            current = id;
+
+						            cnt = 1;
+
+						        } else {
+
+						            cnt++;
+						        }
+						    }
+
+						    if (cnt > 0) {				        
+
+						        unsortedFavorites.push({ 
+							        "count" : cnt,
+							        "objectId"  : current				        
+							    });
+
+						    }
+
+						    var sortedFavorites = unsortedFavorites.sort(function(a, b) {return a.count - b.count});
+
+
+							console.log("----------------------------");
+
+							console.log(sortedFavorites);
+
+							console.log("----------------------------");
+
+					    } 
+						
+
+			        },
+			        error: function(error) {	            
+			            console.log(error);
+			        }
+			    });
+
+			}
+
+	});
+
+//}
+
+
+function categoryOrder() {
+
+
+	/*var queryCategory = new Parse.Query("Categories");
+	
+    queryCategory.equalTo("name", "PERSONAL");	   
+    
+    queryCategory.first({
+        useMasterKey: true,
+        success: function(category) {
+
+        	if category.length > 0 {
+
+	        	var queryFavorite = new Parse.Query("Favorites");
+		
+			    queryFavorite.equalTo("type", 0);
+
+			    queryFavorite.distinct("referenceId", category.id);	   
+			    
+			    queryFavorite.find({
+			        useMasterKey: true,
+			        success: function(favorites) {
+	        	
+						console.log("count: " + favorites.length);
+
+			        	if( favorites.length > 0) {					
+
+							var totals = {}
+
+							var current = null;
+						    var cnt = 0;
+
+						    var unsortedFavorites = [];
+
+						    for (var i = 0; i < favorites.length; i++) {
+
+						    	var id = favorites[i].get("referenceId");
+						        
+						        if ( id	!= current ) {
+						        
+						            if (cnt > 0) {
+
+						            	 unsortedFavorites.push({ 
+									        "count" : cnt,
+									        "objectId"  : current				        
+									     });
+						            }
+						            
+						            current = id;
+
+						            cnt = 1;
+
+						        } else {
+
+						            cnt++;
+						        }
+						    }
+
+						    if (cnt > 0) {				        
+
+						        unsortedFavorites.push({ 
+							        "count" : cnt,
+							        "objectId"  : current				        
+							    });
+
+						    }
+
+						    var sortedFavorites = unsortedFavorites.sort(function(a, b) {return a.count - b.count});
+
+						    
+						    console.log("----------------------------");
+
+							console.log(sortedFavorites);
+
+							console.log("----------------------------");
+
+
+						    if sortedFavorites.length > 4 {
+
+						    	var trending = sortedFavorites.slice(0,4);
+
+						    	for (var i = 0; i < trending.length; i++) {
+
+    								var json = sortedFavorites[i];
+
+    								json.count;
+
+
+
+
+
+
+    							}
+
+
+						    }
+
+							
+
+							
+
+					    } 
+						
+
+			        },
+			        error: function(error) {	            
+			            console.log(error);
+			        }
+
+
+
+			    });
+
+			}
+
+        }
+
+	});*/
+
+
+	
+//}
+
+
 
