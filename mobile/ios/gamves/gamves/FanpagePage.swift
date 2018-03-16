@@ -64,7 +64,7 @@ class FanpagePage: UIViewController,
         button.setImage(image, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white   
-        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleFavoriteButton), for: .touchUpInside)
         //button.backgroundColor = UIColor.cyan
         return button
     }()
@@ -133,20 +133,10 @@ class FanpagePage: UIViewController,
         let iconView = AACarousel()
         return iconView
     }()
-    
-    func handleBackButton() 
-    {
-        print("hola") 
-        if ( delegate != nil )
-        {
-            if self.timer != nil
-            {
-                self.timer?.invalidate()
-            }
-            
-            delegate?.setCurrentPage(current: 0, direction: UIPageViewControllerNavigationDirection.reverse, data: nil)
-        }  
-    }
+
+     var isFavorite = Bool()
+
+    var favorite:PFObject!
     
     override func viewWillAppear(_ animated: Bool) {
         self.view.isHidden = true
@@ -234,6 +224,103 @@ class FanpagePage: UIViewController,
         self.activityVideoView.startAnimating()        
         
     }
+
+    func checkFavorite() {
+
+
+        let queryFavorite = PFQuery(className:"Favorites")
+
+        if let userId = PFUser.current()?.objectId {
+        
+            queryFavorite.whereKey("userId", equalTo: userId)
+
+        }
+
+        if let fanpageId = self.fanpageGamves.fanpageObj?.objectId {
+
+            queryFavorite.whereKey("referenceId", equalTo: fanpageId)
+
+        }
+        
+        queryFavorite.getFirstObjectInBackground { (favoritePF, error) in
+            
+            if error == nil {
+
+                self.isFavorite = true               
+                    
+                self.favoriteButton.tintColor = UIColor.red
+
+                self.favorite = favoritePF
+
+            } else {
+
+                self.isFavorite = false
+
+                self.favoriteButton.tintColor = UIColor.white
+
+            }
+        }
+
+    }
+
+    func handleFavoriteButton() {
+
+        if !self.isFavorite {
+
+            let favoritesPF: PFObject = PFObject(className: "Favorites")
+
+            if let fanpageId = self.fanpageGamves.fanpageObj?.objectId {
+
+                favoritesPF["referenceId"] = fanpageId
+
+            }
+            
+            if let userId = PFUser.current()?.objectId {
+            
+                favoritesPF["userId"] = userId
+                
+            }
+            
+            favoritesPF["type"] = 1
+            
+            favoritesPF.saveInBackground(block: { (resutl, error) in
+                
+                if error == nil {
+                
+                    self.favoriteButton.tintColor = UIColor.red
+
+                    self.isFavorite = true
+
+                    self.favorite = favoritesPF
+                }
+
+            })            
+            
+        } else {
+
+            self.favorite.deleteEventually()
+
+            self.favoriteButton.tintColor = UIColor.white
+
+            self.isFavorite = false
+        }
+        
+    }
+
+
+    func handleBackButton() 
+    {
+        print("hola") 
+        if ( delegate != nil )
+        {
+            if self.timer != nil
+            {
+                self.timer?.invalidate()
+            }
+            
+            delegate?.setCurrentPage(current: 0, direction: UIPageViewControllerNavigationDirection.reverse, data: nil)
+        }  
+    }
     
     func newKenBurnsImageView(image: UIImage) {
         self.coverImageView.setImage(image)
@@ -257,6 +344,9 @@ class FanpagePage: UIViewController,
     
     func setFanpageGamvesData(data: FanpageGamves)
     {
+
+        self.checkFavorite()
+
         self.fanpageGamves = data as FanpageGamves
         
         print(data.categoryName)

@@ -8,6 +8,7 @@
 
 import UIKit
 import KenBurns
+import Parse
 
 class CategoryPage: UIViewController, 
 UICollectionViewDataSource, 
@@ -53,7 +54,7 @@ UICollectionViewDelegateFlowLayout {
         button.setImage(image, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white   
-        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)        
+        button.addTarget(self, action: #selector(handleFavoriteButton), for: .touchUpInside)        
         return button
     }()
 
@@ -84,16 +85,11 @@ UICollectionViewDelegateFlowLayout {
         cv.dataSource = self
         cv.delegate = self
         return cv
-    }()
-   
-    func handleBackButton() 
-    {
-        print("hola") 
-        if ( delegate != nil )
-        {
-            delegate?.setCurrentPage(current: 0, direction: UIPageViewControllerNavigationDirection.reverse, data: nil)
-        }  
-    }
+    }()       
+
+    var isFavorite = Bool()
+
+    var favorite:PFObject!
     
     override func viewDidLoad() {
 
@@ -145,6 +141,97 @@ UICollectionViewDelegateFlowLayout {
         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
         
     }
+
+    func checkFavorite() {
+
+
+        let queryFavorite = PFQuery(className:"Favorites")
+
+        if let userId = PFUser.current()?.objectId {
+        
+            queryFavorite.whereKey("userId", equalTo: userId)
+
+        }
+
+        if let categotyId = categoryGamves.cateobj?.objectId {
+
+            queryFavorite.whereKey("referenceId", equalTo: categotyId)
+
+        }
+        
+        queryFavorite.getFirstObjectInBackground { (favoritePF, error) in
+            
+            if error == nil {
+
+                self.isFavorite = true               
+                    
+                self.favoriteButton.tintColor = UIColor.red
+
+                self.favorite = favoritePF
+
+            } else {
+
+                self.isFavorite = false
+
+                self.favoriteButton.tintColor = UIColor.white
+
+            }
+        }
+
+    }
+
+    func handleBackButton() 
+    {
+        print("hola") 
+        if ( delegate != nil )
+        {
+            delegate?.setCurrentPage(current: 0, direction: UIPageViewControllerNavigationDirection.reverse, data: nil)
+        }  
+    }
+
+    func handleFavoriteButton() {
+
+        if !self.isFavorite {
+
+            let favoritesPF: PFObject = PFObject(className: "Favorites")
+
+            if let categotyId = categoryGamves.cateobj?.objectId {
+
+                favoritesPF["referenceId"] = categotyId
+
+            }
+            
+            if let userId = PFUser.current()?.objectId {
+            
+                favoritesPF["userId"] = userId
+                
+            }
+            
+            favoritesPF["type"] = 0
+            
+            favoritesPF.saveInBackground(block: { (resutl, error) in
+                
+                if error == nil {
+                
+                    self.favoriteButton.tintColor = UIColor.red
+
+                    self.isFavorite = true
+
+                    self.favorite = favoritesPF
+                }
+
+            })            
+            
+        } else {
+
+            self.favorite.deleteEventually()
+
+            self.favoriteButton.tintColor = UIColor.white
+
+            self.isFavorite = false
+        }
+        
+    }
     
     func newKenBurnsImageView(image: UIImage) {
         self.coverImageView.setImage(image)
@@ -171,10 +258,25 @@ UICollectionViewDelegateFlowLayout {
 
     func setCategoryData()
     {
+
+        self.checkFavorite()
+
         self.fanpagesGamves.removeAll()        
         self.fanpagesGamves = categoryGamves.fanpages
         self.categoryName.text = categoryGamves.name
         //self.coverImageView.image = categoryGamves.cover_image
+
+
+        if categoryGamves.name == "TRENDING" {
+
+            self.favoriteButton.isHidden = true
+        
+        }  else {
+
+            self.favoriteButton.isHidden = false
+
+        }    
+
         
         self.newKenBurnsImageView(image: categoryGamves.cover_image)
         
