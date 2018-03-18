@@ -233,9 +233,7 @@ function removeAllTrendings(categoryTrending) {
 
         console.log(error);
 
-    });	
-
-	
+    });		
 
 };
 

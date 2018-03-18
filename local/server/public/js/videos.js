@@ -281,8 +281,7 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("videoId", vrnd);              
 
                     video.set("fanpageObjId", fanpageObj.id); 
-
-                    video.set("posterId", "gamves_official");           
+                    
                     video.set("poster_name", "Gamves Official");       
 
                     video.set("source_type", 2);  //YOUTUBE     
