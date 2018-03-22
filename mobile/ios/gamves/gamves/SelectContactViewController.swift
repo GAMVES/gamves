@@ -68,7 +68,6 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
             popUp = Global.buildPopup(viewController: self, params: params)
             
         }
-    
     }
     
     func countChecked() -> [GamvesUser]
@@ -185,7 +184,6 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
         {
             cell.checkLabel.isHidden = true
         }
-
         
         return cell
     }

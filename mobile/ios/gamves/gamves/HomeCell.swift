@@ -25,9 +25,9 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
     
     override func setupViews() 
     {
-        super.setupViews()
+        super.setupViews()        
 
-        self.pageController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        self.pageController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil) 
         self.pageController!.dataSource = self       
         self.pageController!.delegate = self
         

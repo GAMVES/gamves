@@ -39,7 +39,7 @@ class Global: NSObject
     
     static var timeOnlinePF:PFObject!
 
-    static var gamves_official = "gamves_official"
+    static var gamves_official_id = String()
     
     static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
 
@@ -69,12 +69,14 @@ class Global: NSObject
     static var key_you_spouse_son_chat_id = "you_spouse_son_chat_id"
     
     //Notifications
-    static var notificationKeyFamilyLoaded  = "com.gamves.gamvesparent.familyLoaded"
-    static var notificationKeyChatFeed      = "com.gamves.gamvesparent.chatfeed"
-    static var notificationKeyLoggedin      = "com.gamves.gamvesparent.loggedin"
+    static var notificationKeyFamilyLoaded  = "com.gamves.familyLoaded"
+    static var notificationKeyChatFeed      = "com.gamves.chatfeed"
+    static var notificationKeyLoggedin      = "com.gamves.loggedin"
     static var notificationKeyCloseVideo    = "com.gamves.gamves.closeVideo"
-    static var notificationKeyLevelsLoaded  = "com.gamves.gamvesparent.levelsLoaded"
-    static var notificationKeyMediaDelegate  = "com.gamves.gamvesparent.notificationKeyMediaDelegate"
+    static var notificationKeyLevelsLoaded  = "com.gamves.levelsLoaded"
+    static var notificationKeyMediaDelegate = "com.gamves.notificationKeyMediaDelegate"
+    static var notificationKeyShowProfile   = "com.gamvess.notificationKeyShowProfile"
+    static var notificationOpenChatFromUser   = "com.gamvess.notificationOpenChatFromUser"    
         
     static var REGISTER_MOTHER  = 0
     static var SPOUSE_MOTHER    = 1
@@ -105,6 +107,8 @@ class Global: NSObject
     static var hasNewFeed = Bool()
     
     static var categories_gamves = Dictionary<Int, CategoryGamves>()
+
+    static var fanpageData:AnyObject!
     
     static func sortCategoryByOrder()
     {
@@ -248,11 +252,18 @@ class Global: NSObject
                                 completionHandler(gamvesUser)
                                 
                             }
-                        }
-                        
-                        if typeNumber != Global.SON || typeNumber != Global.DAUGHTER {
                             
+                            if typeNumber != Global.SON || typeNumber != Global.DAUGHTER {
+                                
+                                completionHandler(gamvesUser)
+                            }
+
+                        } else {
+
+                            adduserToFamilyFromGlobal(gamvesUser: gamvesUser)
+                                
                             completionHandler(gamvesUser)
+                            
                         }
                     }
                 })
@@ -333,6 +344,36 @@ class Global: NSObject
         }
     }
    
+
+    static func loadAdminUser()
+    {
+
+        let adminQuery = PFQuery(className:"_User")
+        adminQuery.whereKey("username", equalTo: "gamvesadmin")
+        adminQuery.getFirstObjectInBackground(block: { (user, error) in
+        
+            if error == nil
+            {               
+                
+                Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
+                    
+                    if let objectId = user?.objectId {
+                        
+                        print(objectId)
+                        
+                        self.gamves_official_id = objectId
+                        
+                    }
+                    
+                    
+                    
+                })             
+            }
+        })
+        
+    }
+   
+
 
     static func setTitle(title:String, subtitle:String) -> UIView
     {
@@ -829,6 +870,8 @@ class Global: NSObject
             })
             
             self.loadChatChannels()
+
+            self.loadAdminUser()
             
             NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
         }

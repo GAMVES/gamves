@@ -548,7 +548,7 @@ class FanpagePage: UIViewController,
                             
                             print(video.posterId)
                             
-                            if Global.userDictionary[video.posterId] == nil && video.posterId != Global.gamves_official {
+                            if Global.userDictionary[video.posterId] == nil && video.posterId != Global.gamves_official_id {
                             
                                 let userQuery = PFQuery(className:"_User")
                                 userQuery.whereKey("objectId", notEqualTo: video.posterId)
@@ -646,7 +646,7 @@ class FanpagePage: UIViewController,
             
             let posterId = self.videosGamves[indexPath.row].posterId
             
-            if posterId == Global.gamves_official {
+            if posterId == Global.gamves_official_id {
                 
                 cellVideo.userProfileImageView.image = UIImage(named:"gamves_icons_white")
                 
@@ -661,16 +661,48 @@ class FanpagePage: UIViewController,
             
             let shortDate = published.components(separatedBy: " at ")
             
-            cellVideo.videoDatePublish.text = shortDate[0]
+            cellVideo.videoDatePublish.text = shortDate[0]                   
+
+            let recognizer = UITapGestureRecognizer(target: self, action:#selector(handleViewProfile(recognizer:)))
             
-            //cellVideo.descriptionTextView.text = videosGamves[indexPath.row].description
-            
+            cellVideo.rowView.tag = indexPath.row
+
+            cellVideo.rowView.addGestureRecognizer(recognizer)
+
+
             return cellVideo
         }
         
         return cell
     }
     
+
+     func handleViewProfile(recognizer:UITapGestureRecognizer) {
+        
+        
+        let v = recognizer.view!
+        let index = v.tag
+
+               
+        let indexPath = IndexPath(item: index, section: 1)
+        
+        let posterId = self.videosGamves[indexPath.item].posterId
+        
+        print(posterId)
+        
+        let gamvesUserPoster = Global.userDictionary[posterId]
+
+        let profileLauncher = ProfileLauncher() 
+            
+        profileLauncher.showProfileView(gamvesUser: gamvesUserPoster!)
+        
+        //let userDataDict:[String: GamvesUser] = ["gamvesUserPoster": gamvesUserPoster!]      
+        //NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil, userInfo: userDataDict)      
+
+        //let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        //appDelegate.homeController.showUserProfile(user:gamvesUserPoster!)
+    }
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout:
         UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         

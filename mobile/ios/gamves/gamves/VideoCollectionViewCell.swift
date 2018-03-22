@@ -31,8 +31,17 @@ class VideoCollectionViewCell: BaseCell {
         imageView.layer.cornerRadius = 25
         imageView.layer.masksToBounds = true
         imageView.contentMode = .scaleAspectFill
+        //imageView.addTarget(self, action: #selector(handleViewProfile), for: .touchUpInside)
         return imageView
-    }() 
+    }()
+
+    /*lazy var profileButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false     
+        button.backgroundColor = UIColor.red
+        //button.addTarget(self, action: #selector(handleViewProfile), for: .touchUpInside)          
+        return button
+    }()*/ 
 
      let labelsView: UIView = {
         let view = UIView()       
@@ -71,16 +80,16 @@ class VideoCollectionViewCell: BaseCell {
         view.isHidden = true
         return view
     }()
-
+    
     
     var titleLabelHeightConstraint: NSLayoutConstraint?
     
     override func setupViews() 
     {      
-
-        addSubview(thumbnailImageView) 
-        addSubview(rowView) 
+ 
+        addSubview(thumbnailImageView)         
         addSubview(separatorView)
+        addSubview(rowView) 
         
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: thumbnailImageView)    
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: rowView)    
@@ -105,12 +114,13 @@ class VideoCollectionViewCell: BaseCell {
         labelsView.addConstraintsWithFormat("V:|[v0(25)]|", views: videoName)
 
         labelsView.addConstraintsWithFormat("H:|-10-[v0]|", views: videoDatePublish)
-        labelsView.addConstraintsWithFormat("V:|-25-[v0(25)]|", views: videoDatePublish)        
+        labelsView.addConstraintsWithFormat("V:|-25-[v0(25)]|", views: videoDatePublish)
+        
+        //self.profileButton.addTarget(self, action:#selector(handleViewProfile(button:)), for: .touchUpInside)
 
         self.separatorView.backgroundColor = UIColor.lightGray
         
-        self.checkView = UIView()
-        
+        self.checkView = UIView()        
         
         var checkLabel = UILabel()
         
@@ -145,4 +155,19 @@ class VideoCollectionViewCell: BaseCell {
         
 
     }
+    
+    /*override func layoutSubviews() {     
+
+        self.profileButton.frame.origin.x = self.thumbnailImageView.frame.origin.x
+        self.profileButton.frame.origin.y = self.thumbnailImageView.frame.origin.y
+
+        self.profileButton.frame = self.thumbnailImageView.frame
+    }*/
+
+
+    //func handleViewProfile(button: UIButton) {
+
+        //let userDataDict:[String: GamvesUser] = ["gamvesUserPoster": gamvesUserPoster]      
+        //NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil, userInfo: userDataDict)      
+    //}
 }

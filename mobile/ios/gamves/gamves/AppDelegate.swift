@@ -82,7 +82,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 
             }
             
-            print(PFUser.current()?.username)
+            //print(PFUser.current()?.username)
             
             let statusBarBackgroundView = UIView()
             statusBarBackgroundView.backgroundColor = UIColor.gamvesBlackColor

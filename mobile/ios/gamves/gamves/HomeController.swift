@@ -10,9 +10,6 @@ import UIKit
 import Parse
 import PopupDialog
 
-protocol HomeDelegate {
-    func openMediaController()
-}
 
 class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CLLocationManagerDelegate {
     
@@ -34,7 +31,51 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var locationManager : CLLocationManager = CLLocationManager()
     
     var didFindLocation = Bool()
+
+
+    lazy var chatLauncher: ChatViewController = {
+        let launcher = ChatViewController()
+        launcher.homeController = self
+        return launcher
+    }()
+
+    lazy var settingsLauncher: SettingsLauncher = {
+        let launcher = SettingsLauncher()
+        launcher.homeController = self
+        return launcher
+    }()
+
+
+    lazy var groupNameViewController: GroupNameViewController = {
+        let groupName = GroupNameViewController()
+        groupName.homeController = self
+        return groupName
+    }()
+
+    lazy var selectContactViewController: SelectContactViewController = {
+        let selector = SelectContactViewController()
+        selector.homeController = self
+        return selector
+    }()
+
+     lazy var menuBar: MenuBar = {
+        let mb = MenuBar()
+        mb.homeController = self
+        return mb
+    }()
+
+    lazy var newVideoController: NewVideoController = {
+        let newvideo = NewVideoController()
+        newvideo.homeController = self
+        return newvideo
+    }()
     
+    lazy var newFanpageController: NewFanpageController = {
+        let newFanpage = NewFanpageController()
+        newFanpage.homeController = self
+        return newFanpage
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -66,10 +107,29 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         setupMenuBar()
         setupNavBarButtons()
         
-        //Global.buildPopup(viewController:self, title: "Hola", message: "Este es un mensaje")   
+        //Global.buildPopup(viewController:self, title: "Hola", message: "Este es un mensaje")
+
+        //NotificationCenter.default.addObserver(self, selector: #selector(openChatFromUser), name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil)
+        
         
     }
-    
+
+    /*func openChatFromUser(_ notification: NSNotification) {
+
+        //let userDataDict:[String: GamvesUser] = ["gamvesUser": self.gamvesUser, "chatId": chatId] 
+
+        if let user = notification.userInfo?["gamvesUser"] as? GamvesUser {    
+
+            if let chatId = notification.userInfo?["chatId"] as? Int {
+            
+                self.openChat(room: user.name, chatId: chatId, users: [user])
+
+            }
+        }
+        
+    }*/
+
+
     override func viewDidLayoutSubviews() {
         //print("did")
     }
@@ -104,11 +164,6 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationItem.rightBarButtonItems = [moreButton, searchBarButtonItem]
     }
     
-    lazy var settingsLauncher: SettingsLauncher = {
-        let launcher = SettingsLauncher()
-        launcher.homeController = self
-        return launcher
-    }()
     
     func handleMore() {
         //show menu
@@ -133,6 +188,19 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         media.searchType = params["searchType"] as! SearchType
         media.searchSize = params["searchSize"] as! SearchSize
         navigationController?.pushViewController(media, animated: true)
+    }  
+
+    func controllHomeCell() {
+
+        let identifier: String       
+        identifier = homeCellId
+        
+        let indexPath = IndexPath(item: 0, section: 0)
+        
+        let cell = collectionView?.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
+        
+        cellHome = cell as! HomeCell    
+        
     }
     
     func handleSearch() {
@@ -151,13 +219,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             titleLabel.text = "  \(titles[index])"
         }
 
-    }
-    
-    lazy var menuBar: MenuBar = {
-        let mb = MenuBar()
-        mb.homeController = self
-        return mb
-    }()
+    }  
+   
     
     fileprivate func setupMenuBar() {
         
@@ -248,11 +311,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return CGSize(width: view.frame.width, height: view.frame.height - 50)
     }
     
-    lazy var chatLauncher: ChatViewController = {
-        let launcher = ChatViewController()
-        launcher.homeController = self
-        return launcher
-    }()
+    
     
     func openChat(room: String, chatId:Int, users:[GamvesUser]) {
         
@@ -264,13 +323,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(self.chatLauncher, animated: true)
-    }
+    } 
     
-    lazy var selectContactViewController: SelectContactViewController = {
-        let selector = SelectContactViewController()
-        selector.homeController = self
-        return selector
-    }()
     
     func selectContact(group: Bool) {
         selectContactViewController.isGroup = group
@@ -278,19 +332,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(selectContactViewController, animated: true)
-    }
+    }  
     
-    lazy var newVideoController: NewVideoController = {
-        let newvideo = NewVideoController()
-        newvideo.homeController = self
-        return newvideo
-    }()
-    
-    lazy var newFanpageController: NewFanpageController = {
-        let newFanpage = NewFanpageController()
-        newFanpage.homeController = self
-        return newFanpage
-    }()
     
     func addNewVideo() {
         newVideoController.isYoutubeHidden = true
@@ -320,20 +363,15 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func clearNewVideo() {
         self.newVideoController = NewVideoController()
         newVideoController.homeController = self
-    }
+    }   
     
-    lazy var groupNameViewController: GroupNameViewController = {
-        let groupName = GroupNameViewController()
-        groupName.homeController = self
-        return groupName
-    }()
     
     func selectGroupName(users: [GamvesUser]) {
-        groupNameViewController.view.backgroundColor = UIColor.white
-        groupNameViewController.gamvesUsers = users
-        navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        navigationController?.pushViewController(groupNameViewController, animated: true)
+        self.groupNameViewController.view.backgroundColor = UIColor.white
+        self.groupNameViewController.gamvesUsers = users
+        self.navigationController?.navigationBar.tintColor = UIColor.white
+        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        self.navigationController?.pushViewController(groupNameViewController, animated: true)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

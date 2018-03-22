@@ -73,7 +73,13 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(loadCategories), for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl) // not required when using UITableViewController
-    }   
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        print("aparece")
+        
+    }
       
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -553,6 +559,8 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
             
         
         print(fanpage.fanpageObj?.objectId)
+        
+        Global.fanpageData = fanpage
         
         if ( delegate != nil )
         {

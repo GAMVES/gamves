@@ -19,6 +19,7 @@ import RSKImageCropper
 public enum ProfileSaveType {
     case profile
     case color
+    case chat
 }
 
 public enum SelectedImage {
@@ -35,8 +36,8 @@ class ProfileCell: BaseCell,
     ColorPickerViewDelegate,
     MediaDelegate,
     RSKImageCropViewControllerDelegate   
-{   
-    
+{
+    var gamvesUser:GamvesUser!
 
     var imageCropVC = RSKImageCropViewController()
 
@@ -186,6 +187,8 @@ class ProfileCell: BaseCell,
     
     var saveDesc:String  = "Save Profile"
     var colorDesc:String = "Choose Color"
+    var chatDesc:String = "Chat"
+    var closeDesc:String = "Close"
     
     lazy var saveProfileButton: UIButton = {
         let button = UIButton(type: .system)
@@ -337,9 +340,7 @@ class ProfileCell: BaseCell,
         self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.cancelProfileButton)
         self.cancelProfileButton.isHidden = true
         
-        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.saveProfileButton, self.cancelProfileButton, metrics: metricsFooterView)
-        
-        self.setSonProfileImageView()
+        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.saveProfileButton, self.cancelProfileButton, metrics: metricsFooterView)    
 
         self.dataView.addSubview(self.collectionView)
         self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView) 
@@ -347,37 +348,48 @@ class ProfileCell: BaseCell,
        
         //self.bioLabel.text = "I like doing this and that with my information"
 
+        self.dataView.backgroundColor = UIColor.red
+
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
 
         self.collectionView.backgroundColor = UIColor.white
         
-        self.profileSaveType = ProfileSaveType.profile
-        
-        self.loadProfileInfo()
+        self.profileSaveType = ProfileSaveType.profile               
        
-    }
-    
-    func setSonProfileImageView() {
-        
-        let userId = PFUser.current()?.objectId
-        
-        if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.avatar {
-            self.sonProfileImageView.image = sonImage
-            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
-            
-            self.sonProfileImageView.layer.shadowColor = UIColor.black.cgColor
-            self.sonProfileImageView.layer.shadowOpacity = 1
-            self.sonProfileImageView.layer.shadowOffset = CGSize.zero
-            self.sonProfileImageView.layer.shadowRadius = 10
+    }    
+       
+
+    func setProfileType(type: ProfileSaveType) {
+
+        self.profileSaveType = type
+
+        if type == ProfileSaveType.chat {
+
+            self.editProfileButton.setTitle(chatDesc, for: .normal)
+            self.editFanpageButton.setTitle(closeDesc, for: .normal)
+
+
         }
-        
+
     }
+        
     
     func loadProfileInfo() {
         
         let queryUser = PFQuery(className:"Profile")
+
+        var userId = String()
+
+        if self.gamvesUser == nil {
+
+            userId = (PFUser.current()?.objectId)!
+
+        } else {
+
+            userId = self.gamvesUser.userId
+        }
         
-        queryUser.whereKey("userId", equalTo: PFUser.current()?.objectId)
+        queryUser.whereKey("userId", equalTo: userId)
         
         queryUser.getFirstObjectInBackground { (profile, error) in
             
@@ -417,6 +429,8 @@ class ProfileCell: BaseCell,
                                     self.selectedBackImage = image!
 
                                     self.initialSetting.bio = self.bioLabel.text!
+
+                                    self.setSonProfileImageView()
                                     
                                 }
                             }
@@ -426,6 +440,36 @@ class ProfileCell: BaseCell,
             }
         }
     }
+
+    func setSonProfileImageView() {
+        
+        var userId = String()
+
+        if self.gamvesUser == nil {
+
+            userId = (PFUser.current()?.objectId)!
+
+        } else {
+
+            userId = self.gamvesUser.userId
+        }
+        
+
+        //if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId)?.avatar {
+
+        if let sonImage:UIImage = Global.userDictionary[userId]?.avatar {        
+
+            self.sonProfileImageView.image = sonImage
+            
+            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
+            
+            self.sonProfileImageView.layer.shadowColor = UIColor.black.cgColor
+            self.sonProfileImageView.layer.shadowOpacity = 1
+            self.sonProfileImageView.layer.shadowOffset = CGSize.zero
+            self.sonProfileImageView.layer.shadowRadius = 10
+        }
+        
+    }
     
     func newKenBurnsImageView(image: UIImage) {
         self.backImageView.setImage(image)
@@ -433,10 +477,30 @@ class ProfileCell: BaseCell,
         self.backImageView.setDuration(min: 5, max: 13)
         self.backImageView.startAnimating()
     }
-    
+
     func handleEditProfile() {
+
+
+        if self.profileSaveType == ProfileSaveType.chat {
+
+            var chatId = Int()
+            
+            if self.gamvesUser.chatId > 0
+            {
+                chatId = self.gamvesUser.chatId
+            } else
+            {
+                chatId = Global.getRandomInt()
+            }         
+
+            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)           
+
+            let userDataDict:[String: AnyObject] = ["gamvesUser": self.gamvesUser, "chatId": chatId as AnyObject] 
+
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil, userInfo: userDataDict)      
+
         
-        if !self.editCreated {
+        } else if !self.editCreated {
         
             DispatchQueue.main.async {
                 
@@ -556,6 +620,23 @@ class ProfileCell: BaseCell,
             }
         }
     }
+
+
+     func handleEditFanpage() {
+        
+        //Call branch add code here
+
+        if self.profileSaveType == ProfileSaveType.chat {            
+
+            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)           
+
+        } else {
+
+            self.homeController?.addNewFanpage(edit:true)
+
+        }          
+        
+    }
     
     func handleSaveProfile() {
         
@@ -607,9 +688,7 @@ class ProfileCell: BaseCell,
                         self.showApprovalMessage()
                         
                     })
-
                 }
-
             })
             
         } else if self.profileSaveType == ProfileSaveType.color {
@@ -618,6 +697,10 @@ class ProfileCell: BaseCell,
             
             self.clearColorButton()
             
+        } else if self.profileSaveType == ProfileSaveType.chat {
+
+                //Open Chant
+
         }
     }
     
@@ -690,22 +773,39 @@ class ProfileCell: BaseCell,
         self.saveProfileButton.setTitle(self.saveDesc, for: .normal)
         self.profileSaveType = ProfileSaveType.profile
         
-    }
-    
-    func handleEditFanpage() {
-        
-        //Call branch add code here
-        
-        self.homeController?.addNewFanpage(edit:true)
-        
-    }
-    
-    func handleChangeBackgoundImage(sender : UIButton) {
-        
-        //Media Controller Here
+    }   
+   
 
-        self.selectedImage = SelectedImage.background
+    func handleChangeColor(sender : UIButton) {
         
+        if !self.colorCreated {
+    
+            let colorFrame = self.dataView.frame
+            
+            self.colorPickerViewController = ColorPickerViewController(frame: colorFrame)
+            colorPickerViewController.cornerRadius = 20
+            
+            colorPickerViewController.colorPickerView.delegate = self
+            
+            self.addSubview(colorPickerViewController)
+            
+            self.colorCreated = true
+            
+        }  else {
+            
+            self.colorPickerViewController.isHidden = false
+        
+        }
+        
+        self.saveProfileButton.setTitle(self.colorDesc, for: .normal)
+        
+        self.profileSaveType = ProfileSaveType.color
+        
+    }
+    
+    func handleChangeBackgoundImage(sender : UIButton) {        
+        //Media Controller Here
+        self.selectedImage = SelectedImage.background        
         let media = MediaController()
         media.isImageMultiSelection = false
         media.delegate = self
@@ -713,8 +813,7 @@ class ProfileCell: BaseCell,
         media.setType(type: MediaType.selectImage)
         media.searchType = SearchType.isSingleImage
         media.searchSize = SearchSize.imageSmall
-        self.homeController?.navigationController?.pushViewController(media, animated: true)
-        
+        self.homeController?.navigationController?.pushViewController(media, animated: true)        
     }    
    
     
@@ -776,36 +875,7 @@ class ProfileCell: BaseCell,
         imageView.clipsToBounds = true         
         imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
         imageView.layer.borderWidth = 3
-    }  
-
-
-    
-    func handleChangeColor(sender : UIButton) {
-        
-        if !self.colorCreated {
-    
-            let colorFrame = self.dataView.frame
-            
-            self.colorPickerViewController = ColorPickerViewController(frame: colorFrame)
-            colorPickerViewController.cornerRadius = 20
-            
-            colorPickerViewController.colorPickerView.delegate = self
-            
-            self.addSubview(colorPickerViewController)
-            
-            self.colorCreated = true
-            
-        }  else {
-            
-            self.colorPickerViewController.isHidden = false
-        
-        }
-        
-        self.saveProfileButton.setTitle(self.colorDesc, for: .normal)
-        
-        self.profileSaveType = ProfileSaveType.color
-        
-    }
+    }     
 
     
     func handleChangeBio(sender : UIButton) {
@@ -995,7 +1065,7 @@ class ProfileCell: BaseCell,
         
         let posterId = videosGamves[indexPath.row].posterId
         
-        if posterId == Global.gamves_official {
+        if posterId == Global.gamves_official_id {
             
             cellVideo.userProfileImageView.image = UIImage(named:"gamves_icons_white")
             
@@ -1056,7 +1126,7 @@ class ProfileCell: BaseCell,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         
-        if !self.editProfile {
+        if !self.editProfile || self.profileSaveType == ProfileSaveType.chat {
             
             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
 
