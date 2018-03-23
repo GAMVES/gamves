@@ -112,7 +112,22 @@
 
 				    						adminRole.save(null, {useMasterKey: true});
 
-				    						loadImagesArray(config);
+				    						loadImagesArray(config, function(resutl){
+
+				    							var Profile = Parse.Object.extend("Profile");         
+
+									            profile = new Profile();    								            
+
+												profile.set("pictureBackground", universeImage);
+
+												profile.set("bio", "Gamves Administrator");		
+
+												profile.set("backgroundColor", [228, 239, 245]);
+
+												profile.save(null, {useMasterKey: true});
+
+
+				    						});
 
 										});	
 
@@ -127,12 +142,6 @@
 		                  }, function(error) {                    
 		                      status.error("Error downloading thumbnail"); 
 		                  });
-
-
-
-
-
-						    
 
 						},
 						error: function (response, error) {
@@ -149,7 +158,7 @@
 	    });
 	}
 
-	function loadImagesArray(configPF) {	
+	function loadImagesArray(configPF, callback) {	
 
 		var files = [
 			"https://s3.amazonaws.com/gamves/images/personal.jpg",
@@ -166,6 +175,8 @@
 
     	var count = files.length;
 
+    	var universeImage;
+
     	for (var i=0; i<count; i++) {
 
     		var imagesArray = [];
@@ -175,6 +186,8 @@
     		var cd=0, id=0;
 
     		var configRel = configPF.relation("images");
+
+    		var hasUniverse;
 
     		Parse.Cloud.httpRequest({url: _url}).then(function(httpResponse) {   			
 
@@ -240,6 +253,8 @@
 				} else if (etag.indexOf(universe) >= 0) {
 
 					name = 'universe';  
+
+					hasUniverse = true;
 				}
 
 
@@ -256,6 +271,10 @@
                 image.set("image", file);
                 image.set("name", name); 
 
+                if (hasUniverse) {
+					universeImage = image;
+                }
+
                 image.save(null, {											
 					success: function (savedImage) {	 
 
@@ -266,7 +285,10 @@
 
 		            	if ( id == (count-1) ){	            				            	
 
-		            		configPF.save();	            		
+		            		configPF.save();	     
+
+		            		callback(universeImage);
+
 		            	}
 		            	id++;
         			},

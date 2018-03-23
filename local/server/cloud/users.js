@@ -62,7 +62,7 @@
 
 			profile.set("backgroundColor", [228, 239, 245]);
 
-			return profile.save(null, {useMasterKey: true})
+			return profile.save(null, {useMasterKey: true});
 
 		}).then(function(profileObj) {	        
 
