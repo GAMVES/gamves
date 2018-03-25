@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "GamvesDev": {
+      "applicationId": "fyJV5DhvVXJz2Vlk53K3eeqNKzwdBQhftfBwCyQ7"
+    },
+    "_default": {
+      "link": "GamvesDev"
+    }
+  }
+}

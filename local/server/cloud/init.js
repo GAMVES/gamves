@@ -63,7 +63,7 @@
 					admin.save(null, {											
 						success: function (adm) {		
 
-							var app_icon_url 	= "https://s3.amazonaws.com/gamves/config/gamves.png";					
+							var app_icon_url = "https://s3.amazonaws.com/gamves/config/gamves.png";					
 
 							Parse.Cloud.httpRequest({url: app_icon_url}).then(function(httpResponse) {
                       
@@ -86,9 +86,14 @@
 								user.signUp(null, {
 									success: function(userLogged) {								  	
 									  	
-										var app_id 			= "0123456789";
-										var master_key		= "9876543210";
-										var server_url 		= "http://25.55.180.51:1337/1/";											
+										//var app_id 			= "0123456789";
+										//var master_key		= "9876543210";
+										//var server_url 		= "http://25.55.180.51:1337/1/";											
+
+										//GamvesDev
+										var app_id 			= "PJwimi4PtpAKCpt8UAnDA0QBh5FHLhENew6YQLyI";
+										var master_key		= "G8tmbgWc7u2YOZjN1ZhzYPaMHEnoKAAVFHUwn1ot";
+										var server_url 		= "https://parseapi.back4app.com";											
 										
 										var hasIcon 		= false;
 
@@ -112,7 +117,7 @@
 
 				    						adminRole.save(null, {useMasterKey: true});
 
-				    						loadImagesArray(config, function(resutl){
+				    						loadImagesArray(config, function(universeImage){
 
 				    							var Profile = Parse.Object.extend("Profile");         
 

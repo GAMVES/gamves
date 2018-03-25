@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="Back4App Inc" name="author">
+
+  <title>Gamves Backend</title>
+
+  <script src="../dist/jquery-1.11.1.min.js"></script>
+  
+  <script src="https://npmcdn.com/parse@1.10.0/dist/parse.min.js"></script>
+
+  <link rel="stylesheet" href="../dist/bootstrap.min.css" type="text/css" media="all">
+  <link href="../dist/jquery.bootgrid.css" rel="stylesheet" />
+  <script src="../dist/jquery-1.11.1.min.js"></script>
+  <script src="../dist/bootstrap.min.js"></script>
+  <script src="../dist/jquery.bootgrid.min.js"></script>
+
+</head>
+
+<body>   
+
+    <input type="button" name="categories" id="categories" value="Categories">
+    <input type="button" name="fanpages" id="fanpages" value="Fanpages">
+    <input type="button" name="videos" id="videos" value="Videos"></input>
+
+</body>
+
+</html>
+
+
+<script type="text/javascript">
+
+  $( document ).ready(function() {
+
+    Parse.initialize("lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"); 
+    Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
+    Parse.serverURL = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/";
+
+    var currentUser = Parse.User.current();
+    if (!currentUser) {
+        window.location = "../index.html";
+    }
+
+    var categories = document.getElementById("categories");
+    var fanpages = document.getElementById("fanpages");
+    var videos = document.getElementById("videos");
+
+    categories.onclick = function(){
+      window.location = "categories.html";
+    };
+
+    fanpages.onclick = function(){
+      window.location = "fanpages.html";
+    };
+
+    videos.onclick = function(){
+      window.location = "videos.html";
+    };
+
+  });
+
+
+
+</script>
