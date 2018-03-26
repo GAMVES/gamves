@@ -165,18 +165,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Parse.enableLocalDatastore()
         
         //Local
-        let configuration = ParseClientConfiguration {
+        /*let configuration = ParseClientConfiguration {
             $0.applicationId = "0123456789"
             $0.server = Global.serverUrl
         }
-        Parse.initialize(with: configuration)
+        Parse.initialize(with: configuration)*/
 
         //Back4app
-        /*let configuration = ParseClientConfiguration {
-         $0.applicationId = "qmTbd36dChKyopgav1JVUMGx2vnZSVdclkNpK6YU"
-         $0.clientKey = "r1FBMzUkEemRnGllhvZdkFtKknu1CMUXUUwzP6ew"
-         $0.server = "https://parseapi.back4app.com"
-         }*/
+        let configuration = ParseClientConfiguration {
+            $0.applicationId = "fyJV5DhvVXJz2Vlk53K3eeqNKzwdBQhftfBwCyQ7"
+            $0.clientKey = "IPoWpsp5ub2qqCmAGgZmjlBuvzQKEaHoeBm8SFuX"
+            $0.server = "https://parseapi.back4app.com"
+        }
+        Parse.initialize(with: configuration)
         
         //Sashido
         /*let configuration = ParseClientConfiguration {
