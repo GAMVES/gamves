@@ -1,19 +1,20 @@
 
   $( document ).ready(function() {
 
+    //Parse.serverURL = "http://25.55.180.51:1337/1/";
+    //Parse.serverURL = "http://192.168.1.43:1337/1/";
+    //Parse.serverURL = "http://127.0.0.1:1337/1/";
+    //Parse.initialize("0123456789"); //local
+
+    //Sashido
     //Parse.initialize("lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"); 
     //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
     //Parse.serverURL = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/";
 
-    Parse.initialize("0123456789"); 
-    
-    //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
-
-    //Parse.serverURL = "http://25.55.180.51:1337/1/";
-    //Parse.serverURL = "http://192.168.1.43:1337/1/";
-    //Parse.serverURL = "http://127.0.0.1:1337/1/";
-    
+    //Back4app
     Parse.serverURL = "https://parseapi.back4app.com";
+    Parse.initialize("fyJV5DhvVXJz2Vlk53K3eeqNKzwdBQhftfBwCyQ7");     
+    Parse.javaScriptKey = "rgIGEFmrye1pjlozjvJ1b80vU8IusPyURojuNo9K";    
 
     var currentUser = Parse.User.current();
     if (!currentUser) {

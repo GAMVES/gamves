@@ -537,7 +537,8 @@
 			if (!removed && downloaded) {
 
 				var ytb_videoId = request.object.get("ytb_videoId");
-				var videoFile = "download/" + ytb_videoId + ".mp4";
+				//var videoFile = "download/" + ytb_videoId + ".mp4";
+				var videoFile = ytb_videoId + ".mp4";
 				var fs = require('fs'); 
 			    fs.unlinkSync(videoFile);
 			    if ( !fs.existsSync(videoFile) ) {	      	
@@ -644,21 +645,37 @@
 
 	    queryVideos.find().then(function(results) {
 
+	    	console.log("llega: " + results);
+
 	    	if( results.length > 0) 
 	        {
 	            var videoObject = results[0];
 	            var fs = require('fs');
 	            var youtubedl = require('youtube-dl');
-	            var video = youtubedl('http://www.youtube.com/watch?v='+ytb_videoId, ['--format=18'], { cwd: __dirname });             
-	            var videoName = "download/" + ytb_videoId + '.mp4';
+	            var video = youtubedl('http://www.youtube.com/watch?v='+ytb_videoId, ['--format=18'], { cwd: __dirname }); 
 
-	            video.pipe(fs.createWriteStream(videoName));
+	            var fs = require('fs');
+
+	            //checkDirectory("download/", fs, function(error) {  
+					
+				//var videoName = "download/" + ytb_videoId + '.mp4';
+
+				var videoName = ytb_videoId + '.mp4';
+
+				console.log("videoName: " + videoName);
+
+				video.pipe(fs.createWriteStream(videoName, { flags: 'a' }));
+
+	            //video.pipe(fs.createWriteStream(videoName));
 
 	            video.on('end', function() { 
 	            	 
 	            	callback({"videoName":videoName, "videoObject":videoObject, });
 
-		        });   
+		        });    
+
+
+				//});	            
 	       }	  
 
 	    }, function(error) {	    
@@ -667,8 +684,17 @@
 
 	    });	
 
-
 	};
+	
+	/*function checkDirectory(directory, fs, callback) {  	  	  
+	  fs.stat(directory, function(err, stats) {	    
+	    if (err && err.errno === 34) {	      
+	      fs.mkdir(directory, callback);
+	    } else {	      
+	      callback(err)
+	    }
+	  });
+	}*/
 
 	function uploadVideo(params, callback) {
 
