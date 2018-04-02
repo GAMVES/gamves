@@ -5,14 +5,14 @@
 //var express = require('express');
 //var app = express();
 
-app.get('/hello-advanced', function (req, res)
+/*app.get('/hello-advanced', function (req, res)
 {
   res.send("Hello from Gamves's Advanced Cloud Code");
-});
+});*/
 
 /*
 * Exporting of module.exports.app is required.
 * we mount it automaticaly to the Parse Server Deployment.
 */
 
-module.exports = app
+//module.exports = app
