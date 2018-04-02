@@ -3,4 +3,17 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+
+    <!--Register & Login-->
+    <color name="login_button_background">#6BA642</color>
+    <color name="bg_login">#FAF9F7</color>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="half_black">#808080</color>
+
+    <color name="black_semi_transparent">#B2000000</color>
+
 </resources>

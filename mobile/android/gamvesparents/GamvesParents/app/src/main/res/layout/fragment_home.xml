@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="gamves.com.gamvesparents.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:weightSum="10">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"/>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="9">
+
+                <TextView
+                    android:id="@+id/proyecto_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:textSize="18dp"
+                    android:gravity="center"
+                    android:paddingTop="20dp"
+                    android:text="@string/title_proyecto"/>
+
+                <ImageView
+                    android:id="@+id/logo_muni"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/logo_municipio"
+                    android:paddingTop="30dp"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@+id/proyecto_desc"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/logo"
+                    android:paddingTop="30dp"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@+id/logo_muni"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="0dp"
+            android:layout_width="fill_parent"
+            android:layout_weight="5"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp" >
+
+            <Button android:id="@+id/btn_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_login"
+                android:background="@color/login_button_background"
+                android:layout_marginTop="40dp"
+                android:textColor="@android:color/white"/>
+
+            <Button android:id="@+id/btn_link_signup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_link_signup"
+                android:background="@null"
+                android:layout_marginTop="3dp"
+                android:textColor="@android:color/darker_gray"/>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
