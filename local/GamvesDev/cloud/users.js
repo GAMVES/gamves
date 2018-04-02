@@ -295,7 +295,27 @@
 
 	    	}
 
-    	}).then(function() {	
+    	}).then(function(fanpageReSaved) {	
+
+    		var Notification = Parse.Object.extend("Notifications");         
+	        var notification = new Notification();		        						
+
+		    notification.set("posterName", resutlUser.get("Name"));
+		    notification.set("posterAvatar", resutlUser.get("picture"));		    	
+
+			var ftitle = "Welcome " + resutlUser.get("Name") + " !!";
+
+		    notification.set("title", ftitle);
+    		notification.set("description", fanpageReSaved.get("pageAbout"));
+    		notification.set("cover", fanpageReSaved.get("pageCover"));	    		
+    		notification.set("referenceId", fanpageReSaved.get("fanpageId"));
+    		notification.set("date", fanpageReSaved.get("createdAt"));
+    		notification.set("fanpage", fanpageReSaved); 
+    		notification.set("type", 2);
+
+    		return notification.save(null, {useMasterKey: true});
+
+		}).then(function(object) {
 
     		if ( iDUserType==2 || iDUserType==3 ) {	
 

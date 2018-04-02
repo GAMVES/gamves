@@ -124,25 +124,27 @@
 
 				    						adminRole.save(null, {useMasterKey: true});
 
-				    						loadImagesArray(config, function(universeImage){
+				    						loadImagesArray(config, function(universeFile){
 
 				    							var Profile = Parse.Object.extend("Profile");         
 
 									            profile = new Profile();    								            
 
-												profile.set("pictureBackground", universeImage);
+												profile.set("pictureBackground", universeFile);
 
 												profile.set("bio", "Gamves Administrator");		
 
 												profile.set("backgroundColor", [228, 239, 245]);
 
 												profile.save(null, {useMasterKey: true}, {
+
 								                    success: function(result) {
 								                        response.success(resutl);
 								                    },
 								                    error: function(error) {
 								                        response.error(error);
 								                    }
+								                    
 								                });
 
 
@@ -196,7 +198,7 @@
 
 		var count = files.length;
 
-		var universeImage;
+		var universeFile;
 
 		for (var i=0; i<count; i++) {
 
@@ -293,7 +295,7 @@
 	            image.set("name", name); 
 
 	            if (hasUniverse) {
-					universeImage = image;
+					universeFile = file;
 	            }
 
 	            image.save(null, {											
@@ -308,7 +310,7 @@
 
 		            		configPF.save();	     
 
-		            		callback(universeImage);
+		            		callback(universeFile);
 
 		            	}
 		            	id++;
@@ -729,7 +731,7 @@
 		var uploader = clientDownload.uploadFile(paramsUploader);
 
 		uploader.on('error', function(err) { console.error("unable to upload:", err.stack); });                
-		uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
+		//uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
 		  
 		uploader.on('end', function() {
 
