@@ -352,13 +352,10 @@ class ChatView: UIView,
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        self.tabGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        
-        DispatchQueue.main.async {
+        self.tabGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))       
 
-        	self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray) //,x: 0, y: 0, width: 80.0, height: 80.0)
-        }
-        
+        self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray) //,x: 0, y: 0, width: 80.0, height: 80.0)
+                   
         self.recordingSession = AVAudioSession.sharedInstance()
         
         do {
@@ -399,6 +396,7 @@ class ChatView: UIView,
         
         self.bringSubview(toFront: self.collectionView)
         self.bringSubview(toFront: self.messageContainerView)
+        self.bringSubview(toFront: self.activityView)
         
     }
     
@@ -480,11 +478,13 @@ class ChatView: UIView,
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+   
     
     func loadChatFeed() {
         
-        if self.activityView != nil {
-            self.activityView.startAnimating()
+        if self.activityView != nil {           
+                
+            self.activityView.startAnimating()     
         }
         
         print(self.chatId)

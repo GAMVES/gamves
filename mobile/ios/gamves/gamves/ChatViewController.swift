@@ -152,9 +152,19 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         
         chatView.setParams(parameters: params)
         
-        chatView.loadChatFeed()
+        UIView.transition(with: self.view, duration: 0.5, options: UIViewAnimationOptions.showHideTransitionViews, animations: {
         
-        view.addSubview(chatView)
+            self.view.addSubview(self.chatView)
+
+        }, completion: { (finished: Bool) -> () in
+            
+            if finished {
+                self.chatView.loadChatFeed()
+            }
+            
+        })
+
+       
     }
 
     override func didReceiveMemoryWarning() {
