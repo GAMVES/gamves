@@ -348,7 +348,7 @@ class ProfileCell: BaseCell,
        
         //self.bioLabel.text = "I like doing this and that with my information"
 
-        self.dataView.backgroundColor = UIColor.red
+        //self.dataView.backgroundColor = UIColor.red
 
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
 
@@ -368,9 +368,9 @@ class ProfileCell: BaseCell,
             self.editProfileButton.setTitle(chatDesc, for: .normal)
             self.editFanpageButton.setTitle(closeDesc, for: .normal)
 
-
         }
 
+        self.loadProfileInfo()
     }
         
     

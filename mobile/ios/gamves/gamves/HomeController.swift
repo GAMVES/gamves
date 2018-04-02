@@ -302,6 +302,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             
             profileHome = cell as! ProfileCell
             profileHome.homeController = self
+            profileHome.setProfileType(type: ProfileSaveType.profile)
         }
         
         return cell
