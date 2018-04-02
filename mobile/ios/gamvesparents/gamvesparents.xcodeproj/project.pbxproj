@@ -79,6 +79,7 @@
 		C7B402061D78C167001D8ED4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7B402051D78C167001D8ED4 /* Assets.xcassets */; };
 		C7B402091D78C167001D8ED4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7B402071D78C167001D8ED4 /* LaunchScreen.storyboard */; };
 		C7B402111D78C404001D8ED4 /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B402101D78C404001D8ED4 /* PageCell.swift */; };
+		C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9389278206AC83900DE72AA /* UserNotifications.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -159,6 +160,7 @@
 		C7B402081D78C167001D8ED4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C7B4020A1D78C167001D8ED4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7B402101D78C404001D8ED4 /* PageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
+		C9389278206AC83900DE72AA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		FE567B47EE25D846CFB77DFB /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -167,6 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */,
 				8212D6E61F735FB900F2A121 /* CFNetwork.framework in Frameworks */,
 				8212D6E71F735FB900F2A121 /* CoreGraphics.framework in Frameworks */,
 				8212D6E81F735FB900F2A121 /* CoreLocation.framework in Frameworks */,
@@ -207,6 +210,7 @@
 		8212D6DA1F735F8F00F2A121 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C9389278206AC83900DE72AA /* UserNotifications.framework */,
 				8212D6DD1F735FB900F2A121 /* CFNetwork.framework */,
 				8212D6DE1F735FB900F2A121 /* CoreGraphics.framework */,
 				8212D6DF1F735FB900F2A121 /* CoreLocation.framework */,
@@ -768,6 +772,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FE567B47EE25D846CFB77DFB /* Pods-gamvesparents.debug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = gamvesparents/gamvesparents.entitlements;
 				DEVELOPMENT_TEAM = YDE3D3X5DH;
@@ -777,7 +783,7 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/gamvesparents/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.gamves.gamvesparents;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gamves.parents;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/gamvesparents/gamvesparents-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -789,6 +795,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 015EDE11283D7AC40E526DA6 /* Pods-gamvesparents.release.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = gamvesparents/gamvesparents.entitlements;
 				DEVELOPMENT_TEAM = YDE3D3X5DH;
@@ -798,7 +806,7 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/gamvesparents/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.gamves.gamvesparents;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gamves.parents;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/gamvesparents/gamvesparents-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;

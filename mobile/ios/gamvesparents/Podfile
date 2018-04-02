@@ -39,6 +39,8 @@ target 'gamvesparents' do
   
   # pod 'MercadoPagoSDK', '3.7.1'
   
-  pod 'ISEmojiView'
+  pod 'ISEmojiView' 
+  
+
     
 end

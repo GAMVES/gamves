@@ -490,14 +490,17 @@ class ProfileViewController: UIViewController,
         
         if PFUser.current() != nil {
             self.son = PFUser.current()
-        }     
+        }   
+
+        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {  
         
-        /*NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)*/
-        
+            NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
+            
+            //NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
+            
+        }
         
         if Global.familyLoaded {
             self.familyLoaded()
@@ -1772,31 +1775,40 @@ class ProfileViewController: UIViewController,
         
         self.selectedImageView = (sender.view as? UIImageView)!
      
-        let ac = UIAlertController(title: "Select Input", message: nil, preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Select Input", message: nil, preferredStyle: .actionSheet)
         
         let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
             self.present(self.imagePicker, animated: true, completion: nil)
         }
-        ac.addAction(cancelAction)
+        actionSheet.addAction(cancelAction)
          
-        ac.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (UIAlertAction) -> Void in
+        actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (UIAlertAction) -> Void in
             self.imagePicker.allowsEditing = false
             self.imagePicker.sourceType = .camera
             self.present(self.imagePicker, animated: true, completion: nil)
              
         }))
          
-        ac.addAction(UIAlertAction(title: "Gallery", style: .default, handler: { (UIAlertAction) -> Void in
+        actionSheet.addAction(UIAlertAction(title: "Gallery", style: .default, handler: { (UIAlertAction) -> Void in
             self.imagePicker.allowsEditing = false
             self.imagePicker.sourceType = .photoLibrary
             self.present(self.imagePicker, animated: true, completion: nil)
              
         }))        
          
-        let popover = ac.popoverPresentationController        
+        let popover = actionSheet.popoverPresentationController        
         popover?.permittedArrowDirections = UIPopoverArrowDirection.any
+
+
+        // iPad spport
+        if Global.device.lowercased().range(of:"ipad") != nil {
+            
+            actionSheet.popoverPresentationController?.sourceView = self.view
+            actionSheet.popoverPresentationController?.sourceRect = self.view.frame
+
+        }
          
-        present(ac, animated: true, completion: nil)
+        present(actionSheet, animated: true, completion: nil)
 
     }
 

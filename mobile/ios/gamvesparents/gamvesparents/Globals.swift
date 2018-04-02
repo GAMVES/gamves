@@ -17,6 +17,8 @@ class Global: NSObject
     
     static var pictureRecorded = GamvesPicture()
     static var audioRecorded = GamvesAudio()
+
+    static var device = String()
     
     static var levels = Dictionary<String, LevelsGamves>()
     
@@ -26,14 +28,18 @@ class Global: NSObject
     static var familyDataGromGlobal = Bool()
     
     static var schools = [GamvesSchools]()
+
+    static var serverUrl = "https://parseapi.back4app.com/"
     
-    static var serverUrl = "http://25.55.180.51:1337/1/"
+    static var localWs = "wss://devgamves.back4app.io"
+    
+    //static var serverUrl = "http://25.55.180.51:1337/1/"
     //static var serverUrl = "http://192.168.0.211:1337/1/"
     //static var serverUrl = "http://192.168.16.22:1337/1/"
     //static var serverUrl = "http://127.0.0.1:1337/1/"
     //static var serverUrl = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
-    static var localWs = "wss://25.55.180.51:1337/1/"
+    //static var localWs = "wss://25.55.180.51:1337/1/"
     //static var localWs = "wss://192.168.16.22:1337/1/"
     //static var localWs = "wss://127.0.0.1:1337/1/"
     //static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
