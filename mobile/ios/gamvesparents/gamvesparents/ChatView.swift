@@ -1758,21 +1758,19 @@ class ChatView: UIView,
         
         let queryOnine = PFQuery(className:"UserStatus")
         queryOnine.whereKey("userId", equalTo: userId)
-        queryOnine.findObjectsInBackground { (usersOnline, error) in
+        queryOnline.getFirstObjectInBackground { (usersOnline, error) in 
             
             if error != nil
             {
                 print("error")
+
+                self.delegateNavBar.updateSubTitle(latelText: "Idle")
                 
             } else {
+
                 
-                if (usersOnline?.count)!>0
-                {
-                    for monline in usersOnline!
-                    {
-                        self.changeSingleUserStatus(onlineMessage:monline)
-                    }
-                }
+                self.changeSingleUserStatus(onlineMessage:usersOnline!)
+                
             }
         }
     }
