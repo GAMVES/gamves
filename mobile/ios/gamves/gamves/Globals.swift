@@ -1099,16 +1099,19 @@ class Global: NSObject
         
         queryOnine.getFirstObjectInBackground { (userStatus, error) in
             
-            if userStatus != nil {
-                
-                userStatus!["status"] = status
-                userStatus?.saveEventually()
-            } else {
+            if error != nil || userStatus == nil {
                 
                 let newUserStatus = PFObject(className: "UserStatus")
                 newUserStatus["userId"] = PFUser.current()?.objectId
                 newUserStatus["status"] = status
-                newUserStatus.saveEventually()
+                newUserStatus.saveEventually()               
+                
+
+            } else {
+
+                userStatus!["status"] = status
+                userStatus?.saveEventually()               
+                
             }
         }
     }
