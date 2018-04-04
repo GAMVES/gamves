@@ -1756,8 +1756,8 @@ class ChatView: UIView,
             self.changeSingleUserStatus(onlineMessage:onlineMessage)
         }
         
-        let queryOnine = PFQuery(className:"UserStatus")
-        queryOnine.whereKey("userId", equalTo: userId)
+        let queryOnline = PFQuery(className:"UserStatus")
+        queryOnline.whereKey("userId", equalTo: userId)
         queryOnline.getFirstObjectInBackground { (usersOnline, error) in 
             
             if error != nil

@@ -80,6 +80,7 @@
 		C7B402091D78C167001D8ED4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7B402071D78C167001D8ED4 /* LaunchScreen.storyboard */; };
 		C7B402111D78C404001D8ED4 /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B402101D78C404001D8ED4 /* PageCell.swift */; };
 		C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9389278206AC83900DE72AA /* UserNotifications.framework */; };
+		C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -161,6 +162,7 @@
 		C7B4020A1D78C167001D8ED4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7B402101D78C404001D8ED4 /* PageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
 		C9389278206AC83900DE72AA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PFGeoPoint+Extension.swift"; sourceTree = "<group>"; };
 		FE567B47EE25D846CFB77DFB /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -254,6 +256,7 @@
 				C70156201D8DC3B0003E25AF /* UIView+Extensions.swift */,
 				8212D70E1F7A71CF00F2A121 /* Label+Extension.swift */,
 				82557C6020175CB300752301 /* Date+Extension.swift */,
+				C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -649,6 +652,7 @@
 				8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */,
 				8212D7061F78439400F2A121 /* Color+Extensions.swift in Sources */,
 				82355FF320202CBF004C2014 /* ImagesCollectionViewCell.swift in Sources */,
+				C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */,
 				828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */,
 				8212D7081F7843B600F2A121 /* ImageView+Extensions.swift in Sources */,
 				82E372351FB16520000AD7EB /* ChatViewController.swift in Sources */,

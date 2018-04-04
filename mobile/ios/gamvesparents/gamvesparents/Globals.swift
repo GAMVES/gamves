@@ -32,6 +32,8 @@ class Global: NSObject
     static var serverUrl = "https://parseapi.back4app.com/"
     
     static var localWs = "wss://devgamves.back4app.io"
+
+    static var locationPF = PFGeoPoint()    
     
     //static var serverUrl = "http://25.55.180.51:1337/1/"
     //static var serverUrl = "http://192.168.0.211:1337/1/"

@@ -291,6 +291,8 @@ class HomeViewController: UIViewController,
         self.checkLabelSon.isHidden = true
         
         self.renderSon()
+
+        self.loadStatistics()
         
     }
     
@@ -303,7 +305,7 @@ class HomeViewController: UIViewController,
         _status.id = 0
         self.userStatistics.append(_status)
     
-        _location.desc = "Current location"
+        _location.desc = "Last location"
         _location.data = "5 Km"
         _location.id = 1
         _location.icon = UIImage(named: "map")!
@@ -440,9 +442,7 @@ class HomeViewController: UIViewController,
                 
                 let stringInterval = self.stringFromTimeInterval(interval: self.countWeekTime)
                 
-                let timecounted = "\(stringInterval) hs"
-                
-                self.loadStatistics()
+                let timecounted = "\(stringInterval) hs"                
                 
                 self.userStatistics[2].data = timecounted
             
@@ -450,9 +450,51 @@ class HomeViewController: UIViewController,
                 
                     self.collectionView.reloadData()
                     
-                }
-               
+                }               
                 
+            }
+        }
+    }
+
+
+    func getLocation(){
+
+        let queryLocation = PFQuery(className:"Location")
+        
+        let sonId = Global.gamvesFamily.sonsUsers[0].userId 
+        
+        queryLocation.whereKey("userId", equalTo: sonId)
+        queryLocation.order(byDescending: "createdAt")
+        queryLocation.limit = 1
+
+        queryLocation.findObjectsInBackground {
+            (locationPF, error) -> Void in
+
+            if error == nil {
+
+                if let locations = locationPF {
+                    
+                    for location in locations {
+                        
+                        let sonPFLocation = location["geolocation"] as! PFGeoPoint
+
+                        let sonLocation = sonPFLocation.location()
+
+                        let myLocation = Global.locationPF.location()
+
+                        let distanceInMeters = myLocation.distance(from: myLocation)
+                    
+                        self.userStatistics[1].data = "\(distanceInMeters) meters"
+
+                         DispatchQueue.main.async {
+                    
+                            self.collectionView.reloadData()
+
+                            self.loadUserStatus()
+                        
+                        } 
+                    }
+                }                
             }
         }
     }
@@ -519,6 +561,10 @@ class HomeViewController: UIViewController,
         self.initializeOnlineSubcritpion()
         
         self.getTimeCount()
+
+        self.getLocation()
+
+        self.loadUserStatus()
         
         self.loadSonProfileInfo()
         
@@ -661,7 +707,7 @@ class HomeViewController: UIViewController,
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HomeCollectionViewCell
         
 
-        let id = indexPath.row
+        let id = indexPath.item
         
         var stats = self.userStatistics[id]
         
@@ -678,13 +724,19 @@ class HomeViewController: UIViewController,
             {
                 stats.icon = UIImage(named: "status_online")!
                 cell.descLabel.text = "Online"
+
+                cell.dataLabel.isHidden = true
+
             } else
             {
                 stats.icon = UIImage(named: "status_offline")!
                 cell.descLabel.text = "Offline"
+
+                 cell.dataLabel.text = stats.data
+
             }
             
-            cell.dataLabel.isHidden = true
+            
             
         }
         
@@ -795,6 +847,7 @@ class HomeViewController: UIViewController,
         if Global.isKeyPresentInUserDefaults(key: "son_object_id") {
         
             let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+
             if Global.userDictionary[sonId] != nil
             {
                 let userId = Global.userDictionary[sonId]?.userId
@@ -807,25 +860,8 @@ class HomeViewController: UIViewController,
                     
                 }
                 
-                let queryOnine = PFQuery(className:"UserOnline")
-                queryOnine.whereKey("userId", equalTo: userId)
-                queryOnine.findObjectsInBackground { (usersOnline, error) in
-                    
-                    if error != nil
-                    {
-                        print("error")
-                        
-                    } else {
-                        
-                        if (usersOnline?.count)!>0
-                        {
-                            for monline in usersOnline!
-                            {
-                                self.changeSingleUserStatus(onlineMessage:monline)
-                            }
-                        }
-                    }
-                }
+                self.loadUserStatus()                        
+               
             }
             
             if Global.gamvesFamily != nil
@@ -845,23 +881,70 @@ class HomeViewController: UIViewController,
                 }
             }
         }
-    }
+    }  
+
+
+    func loadUserStatus() {
+
+        let queryOnline = PFQuery(className:"UserStatus")
+
+        let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+
+        let userId = Global.userDictionary[sonId]?.userId
+
+        queryOnline.whereKey("userId", equalTo: userId)
+        queryOnline.getFirstObjectInBackground { (usersOnline, error) in
     
+            if error != nil
+            {
+                print("error")
+
+                self.sonOnline = false
+                
+            } else {
+
+                
+                self.changeSingleUserStatus(onlineMessage:usersOnline!)
+                
+            }
+        }    
+
+    }  
+  
     func changeSingleUserStatus(onlineMessage:PFObject)
     {
-        let isOnline = onlineMessage["isOnline"] as! Bool
+        let status = onlineMessage["status"] as! Int
         
-        if isOnline
-        {
+        if status == 2 {
+            
             self.sonOnline = true
-        } else
-        {
-            self.sonOnline = false
-        }
-        
-        //self.collectionView.reloadData()
-        
-    }
 
+             DispatchQueue.main.async {
+                        
+                self.collectionView.reloadData()
+                
+            }
+
+            
+        } else if status == 1 {
+            
+            self.sonOnline = false
+            
+            if self.userStatistics.count > 0  {
+
+                if let lastSeen = onlineMessage.updatedAt {
+
+                    self.userStatistics[0].data = "\(lastSeen)"
+
+                     DispatchQueue.main.async {
+                        
+                        self.collectionView.reloadData()
+                        
+                    }
+                }
+            }              
+            
+        }         
+    }
     
 }

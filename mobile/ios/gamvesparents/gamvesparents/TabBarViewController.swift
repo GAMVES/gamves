@@ -236,6 +236,8 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
                         
                         let geoPoint = PFGeoPoint(latitude: lat, longitude: lng)
                         userLocation["geolocation"] = geoPoint
+
+                        Global.locationPF = geoPoint
                         
                         userLocation.saveInBackground(block: { (resutl, error) in
                             
