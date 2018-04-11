@@ -11,17 +11,20 @@ import Parse
 import NVActivityIndicatorView
 import KenBurns
 import AACarousel
+import SwiftPhotoGallery
 
 class FanpagePage: UIViewController,
     UICollectionViewDataSource, 
     UICollectionViewDelegate, 
     UICollectionViewDelegateFlowLayout,
-    AACarouselDelegate
-{
+    //AACarouselDelegate,
+    SwiftPhotoGalleryDataSource, 
+    SwiftPhotoGalleryDelegate
+{    
     
     var activityVideoView: NVActivityIndicatorView!
     
-    weak var delegate:CellDelegate?    
+    weak var delegate:CellDelegate?       
     
     var fanpageGamves  = FanpageGamves()
     var videosGamves  = [VideoGamves]()
@@ -129,10 +132,12 @@ class FanpagePage: UIViewController,
         return cv
     }()
 
-    var carouselView: AACarousel = {
+    var gallery:SwiftPhotoGallery?
+
+    /*var carouselView: AACarousel = {
         let iconView = AACarousel()
         return iconView
-    }()
+    }()*/
 
      var isFavorite = Bool()
 
@@ -216,16 +221,23 @@ class FanpagePage: UIViewController,
             "padding" : padding
         ]
         
-        self.view.addSubview(self.carouselView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.carouselView)
-        self.view.addConstraintsWithFormat("V:|-padding-[v0(heightImages)]-padding-|", views: self.carouselView, metrics: metricsImages)
-        self.carouselView.isHidden = true
+        //self.view.addSubview(self.carouselView)
+        //self.view.addConstraintsWithFormat("H:|[v0]|", views: self.carouselView)
+        //self.view.addConstraintsWithFormat("V:|-padding-[v0(heightImages)]-padding-|", views: self.carouselView, metrics: metricsImages)
+        //self.carouselView.isHidden = true
+
+        self.gallery = SwiftPhotoGallery(delegate: self, dataSource: self)
+
+        self.gallery?.backgroundColor = UIColor.black
+        self.gallery?.pageIndicatorTintColor = UIColor.gray.withAlphaComponent(0.5)
+        self.gallery?.currentPageIndicatorTintColor = UIColor.white
+        self.gallery?.hidePageControl = false
         
         self.activityVideoView.startAnimating()        
         
     }
 
-    func checkFavorite() {
+    /*func checkFavorite() {
 
 
         let queryFavorite = PFQuery(className:"Favorites")
@@ -261,7 +273,7 @@ class FanpagePage: UIViewController,
             }
         }
 
-    }
+    }*/
 
     func handleFavoriteButton() {
 
@@ -343,14 +355,28 @@ class FanpagePage: UIViewController,
     }
     
     func setFanpageGamvesData(data: FanpageGamves)
-    {
-
-        self.checkFavorite()
+    {        
 
         self.fanpageGamves = data as FanpageGamves
         
         print(data.categoryName)
 
+        self.isFavorite = self.fanpageGamves.isFavorite
+
+        if self.isFavorite {            
+                
+            self.favoriteButton.tintColor = UIColor.red
+
+            self.favorite = self.fanpageGamves.favoritePF
+
+        } else {
+
+            self.isFavorite = false
+
+            self.favoriteButton.tintColor = UIColor.white
+
+        }        
+        
         self.fanpageName.text = self.fanpageGamves.name
         
         let fanpageId = data.fanpageObj?["fanpageId"] as! Int
@@ -378,14 +404,11 @@ class FanpagePage: UIViewController,
                 sourceArray.append(gamvesImage.source)
             }
             
-            self.carouselView.delegate = self
-            
-            self.carouselView.setCarouselData(paths: sourceArray,  describedTitle: titleImageArray, isAutoScroll: true, timer: 5.0, defaultImage: "defaultImage")
-            
+            //self.carouselView.delegate = self            
+            //self.carouselView.setCarouselData(paths: sourceArray,  describedTitle: titleImageArray, isAutoScroll: true, timer: 5.0, defaultImage: "defaultImage")            
             //optional methods
-            self.carouselView.setCarouselOpaque(layer: false, describedTitle: false, pageIndicator: false)
-            
-            self.carouselView.setCarouselLayout(displayStyle: 0, pageIndicatorPositon: 5, pageIndicatorColor: nil, describedTitleColor: nil, layerColor: nil)
+            //self.carouselView.setCarouselOpaque(layer: false, describedTitle: false, pageIndicator: false)            
+            //self.carouselView.setCarouselLayout(displayStyle: 0, pageIndicatorPositon: 5, pageIndicatorColor: nil, describedTitleColor: nil, layerColor: nil)
             
             self.imageCollectionView.reloadData()
 
@@ -692,10 +715,11 @@ class FanpagePage: UIViewController,
         
         let gamvesUserPoster = Global.userDictionary[posterId]
 
-        let profileLauncher = ProfileLauncher() 
-            
-        profileLauncher.showProfileView(gamvesUser: gamvesUserPoster!)
-        
+        let profileLauncher = ProfileLauncher()             
+        profileLauncher.showProfileView(gamvesUser: gamvesUserPoster!)        
+
+        //NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: self)
+
         //let userDataDict:[String: GamvesUser] = ["gamvesUserPoster": gamvesUserPoster!]      
         //NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil, userInfo: userDataDict)      
 
@@ -746,8 +770,11 @@ class FanpagePage: UIViewController,
     
         if collectionView == self.imageCollectionView
         {
-            self.carouselView.isHidden = false
-            carouselView.startScrollImageView()
+            //self.carouselView.isHidden = false
+            //carouselView.startScrollImageView()
+
+            gallery?.modalPresentationStyle = .overCurrentContext
+            present(self.gallery!, animated: true, completion: nil)
             
         } else if collectionView == self.collectionView
         {
@@ -767,7 +794,7 @@ class FanpagePage: UIViewController,
     
     func downloadImages(_ url:String, _ index:Int) {
         
-        self.carouselView.images[index] = self.fanpageImages[index].cover_image
+        //self.carouselView.images[index] = self.fanpageImages[index].cover_image
         
     }
     
@@ -779,5 +806,29 @@ class FanpagePage: UIViewController,
         
     }
 
+
+    ///gallery
+
+    /*func numberOfImagesInGallery(gallery: SwiftPhotoGallery) -> Int {
+        return self.carouselView.images.count
+    }
+
+    func imageInGallery(gallery: SwiftPhotoGallery, forIndex: Int) -> UIImage? {
+        return UIImage(named: self.carouselView.images[forIndex])
+    }*/
+    
+    func numberOfImagesInGallery(gallery: SwiftPhotoGallery) -> Int {
+        return self.fanpageImages.count
+    }
+    
+    func imageInGallery(gallery: SwiftPhotoGallery, forIndex: Int) -> UIImage? {
+        return self.fanpageImages[forIndex].cover_image
+    }
+
+
+    func galleryDidTapToClose(gallery: SwiftPhotoGallery) {
+        // do something cool like:
+        dismiss(animated: true, completion: nil)
+    }
 
 }

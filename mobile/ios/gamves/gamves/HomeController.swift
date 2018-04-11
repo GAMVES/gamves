@@ -45,7 +45,6 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return launcher
     }()
 
-
     lazy var groupNameViewController: GroupNameViewController = {
         let groupName = GroupNameViewController()
         groupName.homeController = self
@@ -74,6 +73,13 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let newFanpage = NewFanpageController()
         newFanpage.homeController = self
         return newFanpage
+    }()
+
+
+    lazy var profileController: ProfileController = {
+        let profile = ProfileController()
+        profile.homeController = self
+        return profile
     }()
 
     override func viewDidLoad() {
@@ -109,12 +115,23 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         //Global.buildPopup(viewController:self, title: "Hola", message: "Este es un mensaje")
 
-        //NotificationCenter.default.addObserver(self, selector: #selector(openChatFromUser), name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(openChatFromUser), name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(showProfileController), name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil)        
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        print("")
+        
+        //self.view.setNeedsLayout()
+        
+        //self.collectionView?.reloadData()
         
     }
 
-    /*func openChatFromUser(_ notification: NSNotification) {
+    func openChatFromUser(_ notification: NSNotification) {
 
         //let userDataDict:[String: GamvesUser] = ["gamvesUser": self.gamvesUser, "chatId": chatId] 
 
@@ -127,7 +144,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
             }
         }
         
-    }*/
+    }
 
 
     override func viewDidLayoutSubviews() {
@@ -188,7 +205,14 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         media.searchType = params["searchType"] as! SearchType
         media.searchSize = params["searchSize"] as! SearchSize
         navigationController?.pushViewController(media, animated: true)
-    }  
+    } 
+
+    func showProfileController(_ notification: NSNotification) {
+        profileController.modalPresentationStyle = .overCurrentContext
+        navigationController?.navigationBar.tintColor = UIColor.white        
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]        
+        navigationController?.pushViewController(profileController, animated: true)
+    }
 
     func controllHomeCell() {
 
@@ -316,6 +340,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func openChat(room: String, chatId:Int, users:[GamvesUser]) {
         
+        self.chatLauncher.modalPresentationStyle = .overCurrentContext
         self.chatLauncher.chatId = chatId
         self.chatLauncher.gamvesUsers = users
         self.chatLauncher.delegateFeed = cellFree

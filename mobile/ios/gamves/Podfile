@@ -40,5 +40,7 @@ target 'gamves' do
   pod 'ISEmojiView'
   
   pod 'RSKImageCropper'
+
+  pod 'SwiftPhotoGallery'
   
 end

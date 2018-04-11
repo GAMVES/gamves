@@ -327,8 +327,10 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                             self.tableView.isHidden = false
                                                             self.activityIndicatorView?.stopAnimating()
                                                             self.tableView.reloadData()
-                                                            self.refreshControl.endRefreshing()
+                                                            self.refreshControl.endRefreshing()                                                            
                                                         }
+
+                                                        Global.loadFanpagesFavorites()
                                                     })
                                                 }
                                                 count  = count + 1

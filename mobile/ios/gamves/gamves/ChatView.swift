@@ -2814,10 +2814,6 @@
             }
         }
 
-
-
-
-
         
         func showImage(button: UIButton) {
             

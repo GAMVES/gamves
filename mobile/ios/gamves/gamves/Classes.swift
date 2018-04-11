@@ -167,6 +167,9 @@ class FanpageGamves {
     var categoryName = String()
     
     var fanpage_images  = [FanpageImageGamves]()
+    
+    var isFavorite = Bool()
+    var favoritePF:PFObject?
 }
 
 class FanpageImageGamves {

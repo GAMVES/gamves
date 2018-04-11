@@ -21,7 +21,11 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
     var categoryPage:CategoryPage!
     var fanpagePage:FanpagePage!
     
-    var index = Int()    
+    var index = Int()  
+
+    var current = Int()
+
+    var data:AnyObject? = nil
     
     override func setupViews() 
     {
@@ -38,14 +42,14 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
         self.categoryPage.delegate = self
         
         self.fanpagePage = FanpagePage()
-        self.fanpagePage.delegate = self
+        self.fanpagePage.delegate = self      
         
         let initialPage = 0
         
         // add the individual viewControllers to the pageController
         self.pages.append(self.categoryHomePage)
-        self.pages.append(categoryPage)
-        self.pages.append(fanpagePage)
+        self.pages.append(self.categoryPage)
+        self.pages.append(self.fanpagePage)
         //self.pages.append(videoPage)
         
         //self.pageControl.numberOfPages = 4
@@ -89,6 +93,10 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
         })
         
         self.addSubview(floaty)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(setLastFanpage), name: NSNotification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: nil)
+        
+        Global.pagesPageView = self.pages
         
     }
     
@@ -157,9 +165,7 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
                     {
                             print("category")
                         
-                            let category = viewController as! CategoryPage
-                        
-                        
+                            let category = viewController as! CategoryPage                        
                         
                             category.categoryGamves = data as! CategoryGamves
                         
@@ -188,9 +194,20 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
     }
     
     
+
+    func setLastFanpage() {       
+        
+        self.pageController?.setViewControllers([self.pages[0]], direction: .forward, animated: true, completion: nil)
+    }
+
+    
     func setCurrentPage(current: Int, direction: UIPageViewControllerNavigationDirection, data: AnyObject?)
     {           
         print(current)
+
+        self.current = current
+
+        self.data = data
         
         scrollToViewController(viewController: pages[current], direction: direction, data: data)
     }

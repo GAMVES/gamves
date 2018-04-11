@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 protocol SelectorProtocol {
     func categorySelected(category : CategoryGamves)
@@ -92,7 +93,7 @@ class SelectorView: BaseCell,
                 
                 let cat = Global.categories_gamves[i]?.name as! String
                 
-                if cat != "TRENDING" && cat != "PERSONAL" {
+                if cat != "TRENDING" { //&& cat != "PERSONAL" {
                     
                 
                     self.categoriesGamves.append(Global.categories_gamves[i]!)
@@ -121,7 +122,33 @@ class SelectorView: BaseCell,
     }
     
     func loadFanpage(category:CategoryGamves) {
-        self.gamvesFanpage = category.fanpages
+
+        if category.name == "PERSONAL" {
+
+            self.gamvesFanpage = [FanpageGamves]()
+
+            if let userId = PFUser.current()?.objectId {
+
+                for fanpage in category.fanpages {
+
+                    print(fanpage.name)
+                    print(fanpage.posterId)
+                    print(userId)
+
+                    if userId == fanpage.posterId {
+                        
+                        self.gamvesFanpage.append(fanpage)
+                    }
+                }
+
+            }
+
+        } else { 
+
+            self.gamvesFanpage = category.fanpages
+
+        }
+
         self.collectionView.reloadData()
         self.delegateSelector.reoadFanpageCollection()
     }

@@ -14,6 +14,8 @@ import PopupDialog
 class Global: NSObject
 {
     
+    static var pagesPageView = [UIViewController]()
+
     static var pictureRecorded = GamvesPicture()
     static var audioRecorded = GamvesAudio()
     
@@ -80,7 +82,8 @@ class Global: NSObject
     static var notificationKeyLevelsLoaded  = "com.gamves.levelsLoaded"
     static var notificationKeyMediaDelegate = "com.gamves.notificationKeyMediaDelegate"
     static var notificationKeyShowProfile   = "com.gamvess.notificationKeyShowProfile"
-    static var notificationOpenChatFromUser   = "com.gamvess.notificationOpenChatFromUser"    
+    static var notificationOpenChatFromUser   = "com.gamvess.notificationOpenChatFromUser"
+    static var notificationKeyReloadPageFanpage   = "com.gamvess.notificationKeyReloadPageFanpage"        
         
     static var REGISTER_MOTHER  = 0
     static var SPOUSE_MOTHER    = 1
@@ -347,7 +350,51 @@ class Global: NSObject
             }
         }
     }
-   
+
+    static func loadFanpagesFavorites() {
+
+        DispatchQueue.main.async {
+
+            let ids = Array(Global.categories_gamves.keys)
+        
+            for i in ids {
+
+                var cat = Global.categories_gamves[i] as! CategoryGamves
+
+                for fanpage in cat.fanpages {
+
+                    let queryFavorite = PFQuery(className:"Favorites")
+
+                    if let userId = PFUser.current()?.objectId {
+                    
+                        queryFavorite.whereKey("userId", equalTo: userId)
+
+                    }
+
+                    if let fanpageId = fanpage.fanpageObj?.objectId {
+
+                        queryFavorite.whereKey("referenceId", equalTo: fanpageId)
+
+                    }
+                    
+                    queryFavorite.getFirstObjectInBackground { (favoritePF, error) in
+                        
+                        if error == nil {
+
+                            fanpage.isFavorite = false
+                            
+                        } else {
+
+                            fanpage.isFavorite = true
+
+                            fanpage.favoritePF = favoritePF
+
+                        }
+                    }
+                }
+            }
+        }
+    }   
 
     static func loadAdminUser()
     {
@@ -369,14 +416,11 @@ class Global: NSObject
                         
                     }
                     
-                    
-                    
                 })             
             }
         })
         
-    }
-   
+    }   
 
 
     static func setTitle(title:String, subtitle:String) -> UIView

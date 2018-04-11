@@ -499,6 +499,7 @@ class ProfileCell: BaseCell,
 
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil, userInfo: userDataDict)      
 
+            //NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: self)
         
         } else if !self.editCreated {
         

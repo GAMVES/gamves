@@ -20,7 +20,7 @@ class ProfileView: UIView,
     var profileHome:ProfileCell!
     var gamvesUser:GamvesUser!
 
-     lazy var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = UIColor.white
@@ -49,10 +49,8 @@ class ProfileView: UIView,
         collectionView.backgroundColor = UIColor.white*/        
         
         collectionView.contentInset = UIEdgeInsetsMake(50, 0, 0, 0)
-        collectionView.scrollIndicatorInsets = UIEdgeInsetsMake(50, 0, 0, 0)
-        
+        collectionView.scrollIndicatorInsets = UIEdgeInsetsMake(50, 0, 0, 0)        
         collectionView.isPagingEnabled = false
-
         collectionView.reloadData()
 
         //self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(self.backAction(sender:)))
