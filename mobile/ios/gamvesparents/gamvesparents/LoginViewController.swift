@@ -23,7 +23,8 @@ class LoginViewController: UIViewController
     var activityIndicatorView:NVActivityIndicatorView?
 
    var schoolsArray: NSMutableArray = []
-  
+
+   let parents: NSMutableArray = ["Father", "Mother"]  
     
     let explainLabel: PaddingLabel = {
         let label = PaddingLabel()
@@ -79,7 +80,7 @@ class LoginViewController: UIViewController
     let nameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Full name"
-        tf.text = "Jose Vigil"
+        //tf.text = "Jose Vigil"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.tag = 0
         return tf
@@ -95,7 +96,7 @@ class LoginViewController: UIViewController
     let emailTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Email"
-        tf.text = "josemanuelvigil@gmail.com"
+        //tf.text = "josemanuelvigil@gmail.com"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.tag = 1
@@ -114,7 +115,7 @@ class LoginViewController: UIViewController
         tf.placeholder = "Password"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.isSecureTextEntry = true
-        tf.text = "JoseVigil2016"
+        //tf.text = "JoseVigil2016"
         tf.tag = 2
         return tf
     }()
@@ -143,14 +144,13 @@ class LoginViewController: UIViewController
         view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
-
-    
+    }()    
     
     var userTypeDownPicker: DownPicker!
     let userTypeTextField: UITextField = {
         let tf = UITextField()        
-        tf.translatesAutoresizingMaskIntoConstraints = false        
+        tf.translatesAutoresizingMaskIntoConstraints = false                
+        //tf.backgroundColor = UIColor.red
         tf.tag = -1
         return tf
     }()
@@ -313,12 +313,11 @@ class LoginViewController: UIViewController
         sonSchoolTextField.topAnchor.constraint(equalTo: schoolTypeSeparatorView.bottomAnchor).isActive = true                    
         sonSchoolTextFieldHeightAnchor = sonSchoolTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
         sonSchoolTextFieldHeightAnchor?.isActive = true  
-        sonSchoolTextField.isHidden = true        
-  
-        let parents: NSMutableArray = ["Father", "Mother"]
-        self.userTypeDownPicker = DownPicker(textField: userTypeTextField, withData:parents as! [Any])
+        sonSchoolTextField.isHidden = true          
         
-        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/4)
+        self.userTypeDownPicker = DownPicker(textField: self.userTypeTextField, withData: self.parents as! [Any])
+        
+        self.userTypeTextFieldHeightAnchor = self.userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/4)
         
         userTypeDownPicker.setPlaceholder("Tap to choose relationship...")                 
         
@@ -390,27 +389,7 @@ class LoginViewController: UIViewController
                     
                 } else if (loginRegisterSegmentedControl.selectedSegmentIndex == 1) {                    
                     
-                    nameTextFieldHeightAnchor?.isActive = false
-                    nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    nameTextFieldHeightAnchor?.isActive = true
-                    nameTextField.isHidden = false
-                    
-                    emailTextFieldHeightAnchor?.isActive = false
-                    emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    emailTextFieldHeightAnchor?.isActive = true
-                    emailTextField.isHidden = false
-                    
-                    passwordTextFieldHeightAnchor?.isActive = false
-                    passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    passwordTextFieldHeightAnchor?.isActive = true
-                    passwordTextField.isHidden = false
-
-                    sonSchoolTextFieldHeightAnchor?.isActive = false  
-                    sonSchoolTextFieldHeightAnchor = sonSchoolTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    sonSchoolTextFieldHeightAnchor?.isActive = true
-                    sonSchoolTextField.isHidden = true          
-                    
-                    self.isRegistered = false
+                    self.switchToIndex()           
                     
                 }
                 
@@ -418,6 +397,9 @@ class LoginViewController: UIViewController
                 registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
                 registerLabelHeightAnchor?.isActive = true
                 registerLabel.isHidden = true
+
+
+                print(self.userTypeTextField.isHidden)
                 
             } else {
                 
@@ -434,9 +416,37 @@ class LoginViewController: UIViewController
             
             print("Internet connection FAILED")
         }
+
+    }
+
+    func switchToIndex() {
+
+        nameTextFieldHeightAnchor?.isActive = false
+        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        nameTextFieldHeightAnchor?.isActive = true
+        nameTextField.isHidden = false
+        
+        emailTextFieldHeightAnchor?.isActive = false
+        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        emailTextFieldHeightAnchor?.isActive = true
+        emailTextField.isHidden = false
+        
+        passwordTextFieldHeightAnchor?.isActive = false
+        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        passwordTextFieldHeightAnchor?.isActive = true
+        passwordTextField.isHidden = false        
+
+        sonSchoolTextFieldHeightAnchor?.isActive = false  
+        sonSchoolTextFieldHeightAnchor = sonSchoolTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        sonSchoolTextFieldHeightAnchor?.isActive = true
+        sonSchoolTextField.isHidden = true  
+
+        self.isRegistered = false        
+                    
     }
     
-    func showLoginFields() {
+    func showLoginFields() 
+    {
         
         nameTextFieldHeightAnchor?.isActive = false
         nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
@@ -468,7 +478,29 @@ class LoginViewController: UIViewController
             
             if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
 
-                self.handleLogin()
+                if self.loginRegisterButton.titleLabel?.text == "Try again" {
+
+                    // THIS BLOCK IS A MESS
+
+                    self.loginRegisterSegmentedControl.selectedSegmentIndex = 1
+
+                    self.isMessage = false
+
+                    self.handleLoginRegisterChange()
+
+                    self.clearLoginFields()
+
+                    self.userTypeTextField.isHidden = false
+
+                    self.loginRegisterSegmentedControl.selectedSegmentIndex = 0
+                    
+                    self.handleLoginRegisterChange()
+                  
+                } else  {
+
+                    self.handleLogin()        
+                }
+                
 
             } else {
                 
@@ -498,6 +530,29 @@ class LoginViewController: UIViewController
             self.okLogin = false
             
         }
+    }
+
+    func clearLoginFields() {
+
+        //nameTextField.text = ""
+        //nameTextField.placeholder = "Full name"
+
+        emailTextField.text = ""
+        emailTextField.placeholder = "Email"
+
+        passwordTextField.text = ""
+        passwordTextField.placeholder = "Password"
+
+        self.userTypeTextField.text = ""        
+        //self.userTypeDownPicker = nil
+        //self.userTypeDownPicker = DownPicker(textField: self.userTypeTextField, withData: self.parents as! [Any])        
+        self.userTypeTextField.placeholder = "Tap to choose relationship..."  
+
+        self.sonSchoolTextField.text = ""   
+        //self.sonSchoolDownPicker = nil     
+        //self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData: self.schoolsArray as! [Any])
+        self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")                
+       
     }
 
     /*func checkVerified(completionHandler : @escaping (_ verified:Bool) -> ()) {
@@ -704,11 +759,20 @@ class LoginViewController: UIViewController
             if let error = error as NSError?
             {
                 
-                let errorString = error.userInfo["error"] as? NSString
-                // Something went wrong
-                self.message="Error \(errorString), please try again."
-                self.isMessage=true
-                self.handleLoginRegisterChange()
+                if let errorString = error.userInfo["error"] as? NSString {
+
+                    // Something went wrong
+                    self.message="Error \(errorString) Please try again."
+                    self.isMessage=true
+
+                    self.loginRegisterButton.setTitle("Try again", for: UIControlState())
+
+                    self.handleLoginRegisterChange()    
+
+                    self.activityIndicatorView?.stopAnimating()
+                    
+                }
+                
                 
             } else {
                 
