@@ -354,7 +354,6 @@ class ProfileViewController: UIViewController,
         return tf
     }()
 
-
     //////////////    
     //// SAVE ////
     //////////////
@@ -384,7 +383,7 @@ class ProfileViewController: UIViewController,
     
     var sonSaving = Bool()
     
-    override func viewDidLoad() {
+    override func viewDidLoad() {        
         super.viewDidLoad()        
         
         self.loadAdminRole()
