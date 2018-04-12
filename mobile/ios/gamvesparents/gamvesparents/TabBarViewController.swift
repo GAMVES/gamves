@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
+class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITabBarControllerDelegate  {
     
     var tutorialController = TutorialController()
     
@@ -22,13 +22,23 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
     var didFindLocation = Bool()
     
     //var profileViewController : ProfileViewController!
-    
-    var accountViewController: AccountViewController!
-    
     //var isRegistered = Bool()
+    
+    lazy var homeViewController: HomeViewController = {
+        let launcher = HomeViewController()
+        launcher.tabBarViewController = self
+        return launcher
+    }()
     
     lazy var chatLauncher: ChatViewController = {
         let launcher = ChatViewController()
+        return launcher
+    }()
+    
+    lazy var accountViewController: AccountViewController = {
+        let launcher = AccountViewController()
+        launcher.tabBarViewController = self
+        launcher.initilizeObservers()
         return launcher
     }()
 
@@ -54,22 +64,15 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         }
         
         if let user = PFUser.current() {
-            
             if !isLoggedIn() {
-                
                 perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
             }
-                
         } else {
-            
             perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
         }
-
-        
-        let homeViewController = HomeViewController()
-        homeViewController.tabBarViewController = self
         
         let homeNavController = UINavigationController(rootViewController: homeViewController)
+        homeViewController.initilizeObservers()
         homeNavController.tabBarItem.image = UIImage(named: "home")
         
         let layout = UICollectionViewFlowLayout()
@@ -77,35 +80,28 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         self.chatFeedViewController.tabBarViewController = self
         
         let homeTitle = "Home"
-        homeViewController.title = homeTitle
+        self.homeViewController.title = homeTitle
         
         let chatFeedNavController = UINavigationController(rootViewController: chatFeedViewController)
         self.chatFeedViewController.tabBarItem.image = UIImage(named: "community")
         let activiyTitle = "Activity"
         self.chatFeedViewController.title = activiyTitle
         
-        accountViewController = AccountViewController()
-        accountViewController.tabBarViewController = self
         let accountNavController = UINavigationController(rootViewController: accountViewController)
-        accountViewController.tabBarItem.image = UIImage(named: "profile")
+        self.accountViewController.tabBarItem.image = UIImage(named: "profile")
         let accountTitle = "Account"
-        accountViewController.title = accountTitle
+        self.accountViewController.title = accountTitle
         
-        /*profileViewController = ProfileViewController()
-        profileViewController.tabBarViewController = self
-        let profileNavController = UINavigationController(rootViewController: profileViewController)
-        profileNavController.tabBarItem.image = UIImage(named: "profile")
-        let profileTitle = "Profile"
-        profileViewController.title = profileTitle*/
-        
-        viewControllers = [homeNavController, chatFeedNavController, accountViewController]
+        viewControllers = [homeNavController, chatFeedNavController, accountNavController]
 
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
         blurVisualEffectView?.frame = view.bounds
         self.view.addSubview(blurVisualEffectView!)
         
-        
+        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
+            self.selectedIndex = 2 //Account
+        }
         
     }
     
@@ -181,7 +177,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
         present(tutorialController, animated: true, completion: nil)
     }
     
-    func openChat(room: String, chatId:Int, users:[GamvesParseUser])
+    func openChat(room: String, chatId:Int, users:[GamvesUser])
     {
         
         self.chatLauncher.chatId = chatId
@@ -240,6 +236,8 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate {
                         
                         let geoPoint = PFGeoPoint(latitude: lat, longitude: lng)
                         userLocation["geolocation"] = geoPoint
+
+                        Global.locationPF = geoPoint
                         
                         userLocation.saveInBackground(block: { (resutl, error) in
                             

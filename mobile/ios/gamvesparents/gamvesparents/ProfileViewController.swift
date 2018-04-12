@@ -33,9 +33,9 @@ class ProfileViewController: UIViewController,
     var you:PFUser!
     var spouse:PFUser!
     
-    var youGamves = GamvesParseUser()
-    var sonGamves = GamvesParseUser()
-    var spouseGamves = GamvesParseUser()
+    var youGamves = GamvesUser()
+    var sonGamves = GamvesUser()
+    var spouseGamves = GamvesUser()
     
     var sonType:PFObject!
     var sonTypeId = Int()
@@ -155,7 +155,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Clemente Vigil"
+        //tf.text = "Clemente Vigil"
         tf.tag = 0
         return tf
     }()
@@ -171,7 +171,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "User name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Clemente"
+        //tf.text = "Clemente"
         tf.tag = 1
         return tf
     }()
@@ -190,7 +190,7 @@ class ProfileViewController: UIViewController,
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.isSecureTextEntry = true
-        tf.text = "clemente"
+        //tf.text = "clemente"
         tf.tag = 2
         return tf
     }()
@@ -260,7 +260,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Your name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Jose Vigil"
+        //tf.text = "Jose Vigil"
         tf.tag = 0
         return tf
     }()
@@ -276,7 +276,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Your user name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Jose"
+        //tf.text = "Jose"
         tf.tag = 1
         return tf
     }()  
@@ -292,7 +292,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Family name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Familia Vigil"
+        //tf.text = "Familia Vigil"
         tf.tag = 2
         return tf
     }()
@@ -314,7 +314,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Spouse name"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "Leda Olano"
+        //tf.text = "Leda Olano"
         tf.tag = 3
         return tf
     }()
@@ -331,7 +331,7 @@ class ProfileViewController: UIViewController,
         tf.placeholder = "Spouse email"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "ledaolano@gmail.com"
+        //tf.text = "ledaolano@gmail.com"
         tf.tag = 4
         return tf
     }()  
@@ -348,12 +348,11 @@ class ProfileViewController: UIViewController,
         tf.placeholder = "Spouse password"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.text = "LedaOlano"
+        //tf.text = "LedaOlano"
         tf.isSecureTextEntry = true
         tf.tag = 5
         return tf
     }()
-
 
     //////////////    
     //// SAVE ////
@@ -384,7 +383,7 @@ class ProfileViewController: UIViewController,
     
     var sonSaving = Bool()
     
-    override func viewDidLoad() {
+    override func viewDidLoad() {        
         super.viewDidLoad()        
         
         self.loadAdminRole()
@@ -481,7 +480,7 @@ class ProfileViewController: UIViewController,
         
         self.prepTextFields(inView: [self.sonNameContainerView])
 
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
        
         self.familyChatId    = Global.getRandomInt()
         self.sonRegisterChatId       = Global.getRandomInt()
@@ -490,29 +489,62 @@ class ProfileViewController: UIViewController,
         
         if PFUser.current() != nil {
             self.son = PFUser.current()
+        }   
+
+        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {  
+        
+            NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
+            
+            //NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
+            
         }
         
-        Global.loaLevels()
+        if Global.familyLoaded {
+            self.familyLoaded()
+        }
+        
+        if Global.levelsLoaded {
+            self.levelsLoaded()
+        }
+        
+        if Global.familyDataGromGlobal {
+            self.loadFamilyDataGromGlobal()
+        }
+
+        //self.familyLoaded()
+
+        //self.levelsLoaded()
+
+        //self.loadFamilyDataGromGlobal()
+
+        self.boyConstraints()     
+        
+    }
     
+    
+    func levelsLoaded() {
+        
         if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
             
-            tabBarController?.tabBar.isHidden = true
+            self.tabBarController?.tabBar.isHidden = true
             
             if Global.isKeyPresentInUserDefaults(key: "son_userId") {
                 
                 self.loadSonSpouseDataIfFamilyDontExist()
                 
                 self.segmentedControl.setEnabled(true, forSegmentAt: 1)
-            
+                
             } else {
                 
                 self.segmentedControl.setEnabled(false, forSegmentAt: 1)
             }
-        
+            
         } else {
             
             self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
-        
+            
             DispatchQueue.main.async() {
                 self.makeRounded(imageView:self.yourPhotoImageView)
                 self.makeRounded(imageView:self.sonPhotoImageView)
@@ -522,21 +554,11 @@ class ProfileViewController: UIViewController,
             
             self.segmentedControl.setEnabled(true, forSegmentAt: 1)
             
-        }       
-    
-        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
-        
-        
-    }
-    
-    
-    func levelsLoaded() {
-        
-        self.loadSchools(completionHandler: { ( user ) -> () in
+        Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
+
+            self.schoolsArray = schoolsArray
             
             self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
@@ -605,6 +627,8 @@ class ProfileViewController: UIViewController,
             self.spouseNameTextField.text = Global.gamvesFamily.spouseUser.name
             let spousemeail = Global.gamvesFamily.spouseUser.email
             
+            print(spousemeail)
+            
             self.spouseEmailTextField.text = spousemeail
             
             let type = Global.gamvesFamily.sonsUsers[0].typeNumber
@@ -658,46 +682,7 @@ class ProfileViewController: UIViewController,
 
     }
 
-    func loadSchools(completionHandler : @escaping (_ user:Bool) -> ()) {
-        
-        self.schoolsArray = []
-        
-        let querySchool = PFQuery(className:"Schools")
-        
-        querySchool.findObjectsInBackground(block: { (schools, error) in
-            
-            if error == nil
-            {
-                if let schools = schools
-                {
-                    var countSchools = schools.count
-                    var count = 0
-                    
-                    for school in schools
-                    {
-                        let schoolName = school["name"] as! String
-                        self.schoolsArray.add(schoolName)
-                        
-                        let gSchool = GamvesSchools()
-                        
-                        gSchool.objectId = school.objectId!
-                        gSchool.schoolName = schoolName
-                        gSchool.schoolOBj = school
-                        
-                        Global.schools.append(gSchool)
-                        
-                        Global.gamvesFamily.school = gSchool
-                        
-                        if count == (countSchools - 1)
-                        {
-                            completionHandler(true)
-                        }
-                        count = count + 1
-                    }
-                }
-            }
-        })
-    }
+    
 
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -728,12 +713,8 @@ class ProfileViewController: UIViewController,
             self.familyPhotoImageView, 
             metrics: metricsProfile)
 
-        //self.photosContainerView.addConstraintsWithFormat(
-        //    "H:|-photoSize-[v0(photoSize)]-photoSize-|", views: 
-        //    self.sonPhotoImageView, metrics: metricsProfile)
-
         self.sonPhotoImageView.isHidden    = false
-        self.familyPhotoImageView.isHidden    = false
+        self.familyPhotoImageView.isHidden = false
 
         self.yourPhotoImageView.isHidden    = true
         self.spousePhotoImageView.isHidden  = true
@@ -790,84 +771,86 @@ class ProfileViewController: UIViewController,
             self.sonSchoolSeparatorView,          
             self.sonGradeTextField,          
             metrics: metricsProfile)
-    }
 
-    func familyConstraints() {
+
+        ///////
         
-        self.sonPhotoImageView.isHidden       = true
-        self.familyPhotoImageView.isHidden    = true
-
-        self.yourPhotoImageView.isHidden    = false
-        self.spousePhotoImageView.isHidden  = false
-
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.yourPhotoImageView)
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.spousePhotoImageView)
-
+        
         self.photosContainerView.addConstraintsWithFormat(
-            "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-|", views: 
-            self.yourPhotoImageView, 
-            self.spousePhotoImageView, 
+            "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-|", views:
+            self.yourPhotoImageView,
+            self.spousePhotoImageView,
             metrics: metricsProfile)
-
+        
         self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.yourNameContainerView)
-        self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.spouseContainerView) 
-
+        self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.spouseContainerView)
+        
         self.scrollView.addConstraintsWithFormat(
-            "V:|-topPadding-[v0(photoSize)]-topPadding-[v1(40)]-20-[v2(photoContainerHeight)]-20-[v3(schoolContainerHeight)]-20-[v4(saveButtonHeight)][v5(50)]|", views: 
-            self.photosContainerView, 
-            self.segmentedControl, 
-            self.yourNameContainerView, 
-            self.spouseContainerView, 
-            self.saveButton, 
+            "V:|-topPadding-[v0(photoSize)]-topPadding-[v1(40)]-20-[v2(photoContainerHeight)]-20-[v3(schoolContainerHeight)]-20-[v4(saveButtonHeight)][v5(50)]|", views:
+            self.photosContainerView,
+            self.segmentedControl,
+            self.yourNameContainerView,
+            self.spouseContainerView,
+            self.saveButton,
             self.bottomView,
-            metrics: metricsProfile)        
-
-        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourNameTextField)
-        self.yourNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.yourNameSeparatorView)        
-        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourUserTextField)
-        self.yourNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.yourUserSeparatorView)       
-        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourFamilyTextField)            
-
-        self.yourNameContainerView.addConstraintsWithFormat(
-            "V:|[v0(photoEditTextHeight)][v1(2)][v2(photoEditTextHeight)][v3(2)][v4(photoEditTextHeight)]|", 
-            views: 
-            self.yourNameTextField, 
-            self.yourNameSeparatorView, 
-            self.yourUserTextField,
-            self.yourUserSeparatorView,            
-            self.yourFamilyTextField,
-            metrics: metricsProfile)       
-
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseNameTextField)
-        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseNameSeparatorView)        
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseEmailTextField)
-        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseEmailSeparatorView)    
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spousePasswordTextField)    
-
-        self.spouseContainerView.addConstraintsWithFormat(
-            "V:|[v0(schoolEditTextHeight)][v1(2)][v2(schoolEditTextHeight)][v3(2)][v4(schoolEditTextHeight)]|", 
-            views: 
-            self.spouseNameTextField, 
-            self.spouseNameSeparatorView, 
-            self.spouseEmailTextField,          
-            self.spouseEmailSeparatorView,          
-            self.spousePasswordTextField,          
             metrics: metricsProfile)
+        
+        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourNameTextField)
+        self.yourNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.yourNameSeparatorView)
+        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourUserTextField)
+        self.yourNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.yourUserSeparatorView)
+        self.yourNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.yourFamilyTextField)
+        
+        self.yourNameContainerView.addConstraintsWithFormat(
+            "V:|[v0(photoEditTextHeight)][v1(2)][v2(photoEditTextHeight)][v3(2)][v4(photoEditTextHeight)]|",
+            views:
+            self.yourNameTextField,
+            self.yourNameSeparatorView,
+            self.yourUserTextField,
+            self.yourUserSeparatorView,
+            self.yourFamilyTextField,
+            metrics: metricsProfile)
+        
+        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseNameTextField)
+        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseNameSeparatorView)
+        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseEmailTextField)
+        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseEmailSeparatorView)
+        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spousePasswordTextField)
+        
+        self.spouseContainerView.addConstraintsWithFormat(
+            "V:|[v0(schoolEditTextHeight)][v1(2)][v2(schoolEditTextHeight)][v3(2)][v4(schoolEditTextHeight)]|",
+            views:
+            self.spouseNameTextField,
+            self.spouseNameSeparatorView,
+            self.spouseEmailTextField,
+            self.spouseEmailSeparatorView,
+            self.spousePasswordTextField,
+            metrics: metricsProfile)
+
+        self.segmentedControl.selectedSegmentIndex = 0
+        self.handleSegmentedChange()
     }
 
+   
     @objc func handleSegmentedChange() {
         
         if self.segmentedControl.selectedSegmentIndex == 0
         {
             self.prepTextFields(inView: [self.sonNameContainerView])
-
+           
             self.sonNameContainerView.isHidden = false
             self.sonSchoolContainerView.isHidden = false
 
-            self.boyConstraints()     
-
             self.yourNameContainerView.isHidden = true
-            self.spouseContainerView.isHidden = true
+            self.spouseContainerView.isHidden = true    
+
+            self.sonPhotoImageView.isHidden       = false
+            self.familyPhotoImageView.isHidden    = false
+
+            self.yourPhotoImageView.isHidden    = true
+            self.spousePhotoImageView.isHidden  = true            
 
             self.saveButton.setTitle("Save son or doughter", for: UIControlState())
 
@@ -878,11 +861,15 @@ class ProfileViewController: UIViewController,
             self.sonNameContainerView.isHidden = true
             self.sonSchoolContainerView.isHidden = true
 
-            self.familyConstraints()
-
             self.yourNameContainerView.isHidden = false
-            self.spouseContainerView.isHidden = false
+            self.spouseContainerView.isHidden = false    
 
+            self.sonPhotoImageView.isHidden       = true
+            self.familyPhotoImageView.isHidden    = true
+
+            self.yourPhotoImageView.isHidden    = false
+            self.spousePhotoImageView.isHidden  = false                        
+            
             self.saveButton.setTitle("Save family", for: UIControlState())
             
         }    
@@ -1110,13 +1097,15 @@ class ProfileViewController: UIViewController,
                                                     self.hideShowTabBar(status:false)
                                                     self.tabBarViewController?.selectedIndex = 0
                                                     
-                                                    Global.defaults.set(true, forKey: "profile_completed")
-                                                    
-                                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                    Global.defaults.set(true, forKey: "profile_completed")                                                                                                       
                                                     
                                                     Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-                                                    
-                                                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                                                        
+                                                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in                                                 
+                                                            
+                                                            self.navigationController?.popViewController(animated: true)
+                                                            
+                                                        })
                                                         
                                                     })
                                                 }
@@ -1291,6 +1280,10 @@ class ProfileViewController: UIViewController,
             
         }
 
+        if errors {
+            self.activityIndicatorView?.stopAnimating()
+        }
+
         return errors
         
     }
@@ -1351,8 +1344,7 @@ class ProfileViewController: UIViewController,
         let schoolId = Global.gamvesFamily.school.objectId
         
         let sonParams = [
-            "user_name" : son_name,
-            "user_user_name" : son_user_name,
+            "user_name" : son_user_name?.lowercased(),
             "user_password" : son_password,
             "firstName" : firstName,
             "lastName" : lastName,
@@ -1440,9 +1432,9 @@ class ProfileViewController: UIViewController,
         let dataPhotoUniverse = imageUniverse?.highQualityJPEGNSData
         
         let momParams = [
-            "user_name" : spouse_username,
-            "user_user_name" : spouse_email,
+            "user_name" : spouse_email,
             "user_password" : spouse_password,
+            "user_email" : spouse_email,
             "firstName" : firstName,
             "lastName" : lastName,
             "iDUserType" : type,
@@ -1687,7 +1679,7 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var youSon = [GamvesParseUser]()
+            var youSon = [GamvesUser]()
             
             youSon.append(self.youGamves)
             youSon.append(self.sonGamves)
@@ -1707,7 +1699,7 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var youSpouse = [GamvesParseUser]()
+            var youSpouse = [GamvesUser]()
             
             youSpouse.append(self.youGamves)
             youSpouse.append(self.spouseGamves)
@@ -1728,7 +1720,7 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var sonSpouse = [GamvesParseUser]()
+            var sonSpouse = [GamvesUser]()
             
             sonSpouse.append(self.sonGamves)
             sonSpouse.append(self.spouseGamves)
@@ -1753,7 +1745,7 @@ class ProfileViewController: UIViewController,
             
             print("BACK AGAIN LOGIN AS: \(PFUser.current()?.username)")
             
-            var youSpouseSon = [GamvesParseUser]()
+            var youSpouseSon = [GamvesUser]()
             
             youSpouseSon.append(self.youGamves)
             youSpouseSon.append(self.spouseGamves)
@@ -1782,31 +1774,40 @@ class ProfileViewController: UIViewController,
         
         self.selectedImageView = (sender.view as? UIImageView)!
      
-        let ac = UIAlertController(title: "Select Input", message: nil, preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Select Input", message: nil, preferredStyle: .actionSheet)
         
         let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
             self.present(self.imagePicker, animated: true, completion: nil)
         }
-        ac.addAction(cancelAction)
+        actionSheet.addAction(cancelAction)
          
-        ac.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (UIAlertAction) -> Void in
+        actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (UIAlertAction) -> Void in
             self.imagePicker.allowsEditing = false
             self.imagePicker.sourceType = .camera
             self.present(self.imagePicker, animated: true, completion: nil)
              
         }))
          
-        ac.addAction(UIAlertAction(title: "Gallery", style: .default, handler: { (UIAlertAction) -> Void in
+        actionSheet.addAction(UIAlertAction(title: "Gallery", style: .default, handler: { (UIAlertAction) -> Void in
             self.imagePicker.allowsEditing = false
             self.imagePicker.sourceType = .photoLibrary
             self.present(self.imagePicker, animated: true, completion: nil)
              
         }))        
          
-        let popover = ac.popoverPresentationController        
+        let popover = actionSheet.popoverPresentationController        
         popover?.permittedArrowDirections = UIPopoverArrowDirection.any
+
+
+        // iPad spport
+        if Global.device.lowercased().range(of:"ipad") != nil {
+            
+            actionSheet.popoverPresentationController?.sourceView = self.view
+            actionSheet.popoverPresentationController?.sourceRect = self.view.frame
+
+        }
          
-        present(ac, animated: true, completion: nil)
+        present(actionSheet, animated: true, completion: nil)
 
     }
 

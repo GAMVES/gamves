@@ -53,6 +53,11 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
         
         self.familyId = Global.gamvesFamily.objectId
     }
+    
+
+    override func viewDidAppear(_ animated: Bool) {
+        self.collectionView.reloadData()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -60,7 +65,7 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func closedRefresh() {
         
-        Global.approvals = [Approvals]()
+        //Global.approvals = [Approvals]()
         
         Global.getApprovasByFamilyId(familyId: self.familyId) { ( count ) in
             
@@ -78,8 +83,13 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
         
         let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: approvlCellId, for: indexPath) as! ApprovalCell
         
-        let index = indexPath.item
-        let approval:Approvals = Global.approvals[index]
+        let index:Int = indexPath.item
+        
+        let keysArray = Array(Global.approvals.keys)
+        let keyIndex = keysArray[index]
+        let approval:Approvals = Global.approvals[keyIndex]!
+        
+        //let approval:Approvals = Global.approvals[index]
         
         print(approval.title)
         
@@ -97,9 +107,12 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
         }
         
         if approval.type == 1 { //Video
+         
+            cell.typeLabel.text = "VIDEO"
             
         } else if approval.type == 2 { //Fanpage
             
+            cell.typeLabel.text = "FANPAGE"
         }
         
         cell.profileImageView.image = approval.thumbnail!
@@ -114,7 +127,13 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let approval:Approvals = Global.approvals[indexPath.item]
+        let index:Int = indexPath.item
+        
+        let keysArray = Array(Global.approvals.keys)
+        let keyIndex = keysArray[index]
+        let approval:Approvals = Global.approvals[keyIndex]!
+        
+        //let approval:Approvals = Global.approvals[indexPath.item]
    
         if self.homeViewController != nil {
             
@@ -130,13 +149,14 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
                 
             } else if approval.type == 2 { //Fanpage
                 
+                var fanpage = FanpageGamves()
+                fanpage = approval.fanpage
                 
+                let fanpageApprovalLauncher = FanpageApprovalLauncher()
+                fanpageApprovalLauncher.delegate = self
+                fanpageApprovalLauncher.showFanpageList(fanpageGamves: fanpage)
                 
             }
-            
-            
         }
     }
-    
-   
 }

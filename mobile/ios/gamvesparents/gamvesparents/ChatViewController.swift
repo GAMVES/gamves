@@ -18,7 +18,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     
     let avatar:UIImageView! = nil
     
-    var gamvesUsers = [GamvesParseUser]()
+    var gamvesUsers = [GamvesUser]()
     
     var params = [String: Any]()
 
@@ -137,25 +137,24 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         buttonAvatar.setImage(image, for: UIControlState.normal)
         buttonAvatar.addTarget(self, action: #selector(backButtonPressed(sender:)), for: .touchUpInside)
         
-        buttonAvatar.frame = CGRect(x:0, y:0, width:30, height:30)
-        buttonAvatar.layer.cornerRadius = 15
+        buttonAvatar.frame = CGRect(x:0, y:0, width:40, height:40)
+        buttonAvatar.layer.cornerRadius = 20
         buttonAvatar.clipsToBounds = true
+        
+        if #available(iOS 9.0, *) {
+            buttonAvatar.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            buttonAvatar.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        }
         
         let avatarButton = UIBarButtonItem(customView: buttonAvatar)
         let arrowButton = UIBarButtonItem(customView: buttonArrowBack)
         
         let negativeSpacer = UIBarButtonItem.init(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        negativeSpacer.width = -15
+        negativeSpacer.width = -20
         
         navigationItem.leftBarButtonItems = [negativeSpacer, arrowButton, avatarButton]
         
-        //var widthLeft = CGFloat()
-        //widthLeft = self.view.frame.width - (arrowButton.width + avatarButton.width)
-        
-        //navbar.items = [navItem]
-        
-        
-        //self.view.addSubview(navbar)
+       
     }
     
     func loadChatView()

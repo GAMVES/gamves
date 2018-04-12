@@ -21,6 +21,10 @@ class LoginViewController: UIViewController
     var isRegistered = Bool()
 
     var activityIndicatorView:NVActivityIndicatorView?
+
+   var schoolsArray: NSMutableArray = []
+
+   let parents: NSMutableArray = ["Father", "Mother"]  
     
     let explainLabel: PaddingLabel = {
         let label = PaddingLabel()
@@ -76,7 +80,7 @@ class LoginViewController: UIViewController
     let nameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Full name"
-        tf.text = "Jose Vigil"
+        //tf.text = "Jose Vigil"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.tag = 0
         return tf
@@ -92,7 +96,7 @@ class LoginViewController: UIViewController
     let emailTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Email"
-        tf.text = "josemanuelvigil@gmail.com"
+        //tf.text = "josemanuelvigil@gmail.com"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.tag = 1
@@ -111,11 +115,11 @@ class LoginViewController: UIViewController
         tf.placeholder = "Password"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.isSecureTextEntry = true
-        tf.text = "JoseVigil2016"
+        //tf.text = "JoseVigil2016"
         tf.tag = 2
         return tf
     }()
-    
+
     //var checkBoxView: CheckBoxView!
 
     let userTypeSeparatorView: UIView = {
@@ -125,10 +129,28 @@ class LoginViewController: UIViewController
         return view
     }()
 
+
+    var sonSchoolDownPicker: DownPicker!
+    let sonSchoolTextField: UITextField = {
+        let tf = UITextField()        
+        tf.translatesAutoresizingMaskIntoConstraints = false        
+        return tf
+    }()
+
+    //var checkBoxView: CheckBoxView!
+
+    let schoolTypeSeparatorView: UIView = {
+        let view = UIView()        
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()    
+    
     var userTypeDownPicker: DownPicker!
     let userTypeTextField: UITextField = {
         let tf = UITextField()        
-        tf.translatesAutoresizingMaskIntoConstraints = false        
+        tf.translatesAutoresizingMaskIntoConstraints = false                
+        //tf.backgroundColor = UIColor.red
         tf.tag = -1
         return tf
     }()
@@ -153,6 +175,7 @@ class LoginViewController: UIViewController
     var nameTextFieldHeightAnchor: NSLayoutConstraint?
     var emailTextFieldHeightAnchor: NSLayoutConstraint?
     var passwordTextFieldHeightAnchor: NSLayoutConstraint?
+    var sonSchoolTextFieldHeightAnchor: NSLayoutConstraint?
     var userTypeTextFieldHeightAnchor: NSLayoutConstraint?
     var registerLabelHeightAnchor: NSLayoutConstraint?
     
@@ -224,10 +247,13 @@ class LoginViewController: UIViewController
         containerView.addSubview(nameTextField)
         containerView.addSubview(nameSeparatorView)
         containerView.addSubview(emailTextField)
-        containerView.addSubview(emailSeparatorView)
-        containerView.addSubview(passwordTextField)
+        containerView.addSubview(emailSeparatorView)        
+        containerView.addSubview(passwordTextField)        
         containerView.addSubview(userTypeSeparatorView)
         containerView.addSubview(userTypeTextField)
+
+        containerView.addSubview(schoolTypeSeparatorView)
+        containerView.addSubview(sonSchoolTextField)
         
         //Name
         nameTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 12).isActive = true
@@ -274,13 +300,26 @@ class LoginViewController: UIViewController
         userTypeTextField.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
         userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
         userTypeTextFieldHeightAnchor?.isActive = true
-  
-        let parents: NSMutableArray = ["Father", "Mother"]
-        self.userTypeDownPicker = DownPicker(textField: userTypeTextField, withData:parents as! [Any])
+
+         //need x, y, width, height constraints
+        schoolTypeSeparatorView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+        schoolTypeSeparatorView.topAnchor.constraint(equalTo: userTypeTextField.bottomAnchor).isActive = true
+        schoolTypeSeparatorView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        schoolTypeSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        schoolTypeSeparatorView.isHidden = true      
+
+        //School
+        sonSchoolTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 12).isActive = true
+        sonSchoolTextField.topAnchor.constraint(equalTo: schoolTypeSeparatorView.bottomAnchor).isActive = true                    
+        sonSchoolTextFieldHeightAnchor = sonSchoolTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        sonSchoolTextFieldHeightAnchor?.isActive = true  
+        sonSchoolTextField.isHidden = true          
         
-        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/4)
+        self.userTypeDownPicker = DownPicker(textField: self.userTypeTextField, withData: self.parents as! [Any])
         
-        userTypeDownPicker.setPlaceholder("Tap to choose relationship...")          
+        self.userTypeTextFieldHeightAnchor = self.userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: loginRegisterSegmentedControl.selectedSegmentIndex == 0 ? 1/2 : 1/4)
+        
+        userTypeDownPicker.setPlaceholder("Tap to choose relationship...")                 
         
         //Register Message
         registerLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 0).isActive = true
@@ -295,9 +334,9 @@ class LoginViewController: UIViewController
         NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyBoardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
         
-        self.prepTextFields(inView: self.view)
+        self.prepTextFields(inView: [self.nameTextField, self.emailTextField, self.passwordTextField])
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
         
         //let deadlineTime = DispatchTime.now() + 2
         //DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
@@ -308,6 +347,14 @@ class LoginViewController: UIViewController
             self.loginRegisterSegmentedControl.selectedSegmentIndex = 0
             self.handleLoginRegisterChange()
         }
+        
+        Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
+            
+            self.schoolsArray = schoolsArray
+            
+            self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
+            self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
+        })
         
     }
     
@@ -336,61 +383,13 @@ class LoginViewController: UIViewController
                 let title = loginRegisterSegmentedControl.titleForSegment(at: loginRegisterSegmentedControl.selectedSegmentIndex)
                 loginRegisterButton.setTitle(title, for: UIControlState())
                 
-                if (loginRegisterSegmentedControl.selectedSegmentIndex == 0)
-                {
+                if (loginRegisterSegmentedControl.selectedSegmentIndex == 0) {
                     
-                   
-                    self.hideNameAndRelationship()
+                    self.showLoginFields()
                     
-                    emailTextFieldHeightAnchor?.isActive = false
-                    emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    emailTextFieldHeightAnchor?.isActive = true
-                    emailTextField.isHidden = false
+                } else if (loginRegisterSegmentedControl.selectedSegmentIndex == 1) {                    
                     
-                    passwordTextFieldHeightAnchor?.isActive = false
-                    passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    passwordTextFieldHeightAnchor?.isActive = true
-                    passwordTextField.isHidden = false
-                    
-                    // Fucking self.containerView is not changing height
-                    
-                    //userTypeTextField.isHidden = true
-                    
-                    /*containerViewHeight = (containerViewHeightAnchor?.constant)!
-                    print(containerViewHeight)
-                    
-                    containerViewHeightAnchor?.isActive = false
-                    containerViewHeightAnchor?.constant = containerViewHeight / 2
-                    containerViewHeightAnchor?.isActive = true
-                    
-                    self.containerView.layoutIfNeeded()
-                    self.containerView.layoutSubviews()
-                    
-                    containerViewHeight = (containerViewHeightAnchor?.constant)!
-                    print(containerViewHeight)*/
-                    
-                    let rect = CGRect(x: self.containerView.frame.minX, y: self.containerView.frame.minY, width: self.containerView.frame.width, height: 80)
-                    
-                    self.containerView.frame = rect
-                    
-                } else if (loginRegisterSegmentedControl.selectedSegmentIndex == 1)
-                {
-                    containerViewHeightAnchor?.constant = containerViewHeight
-                    
-                    nameTextFieldHeightAnchor?.isActive = false
-                    nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    nameTextFieldHeightAnchor?.isActive = true
-                    nameTextField.isHidden = false
-                    
-                    emailTextFieldHeightAnchor?.isActive = false
-                    emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    emailTextFieldHeightAnchor?.isActive = true
-                    emailTextField.isHidden = false
-                    
-                    passwordTextFieldHeightAnchor?.isActive = false
-                    passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
-                    passwordTextFieldHeightAnchor?.isActive = true
-                    passwordTextField.isHidden = false
+                    self.switchToIndex()           
                     
                 }
                 
@@ -398,14 +397,15 @@ class LoginViewController: UIViewController
                 registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
                 registerLabelHeightAnchor?.isActive = true
                 registerLabel.isHidden = true
+
+
+                print(self.userTypeTextField.isHidden)
                 
-            } else
-            {
+            } else {
                 
-                self.hideNameAndRelationship()
+                //self.showLoginFields()
                 self.hideShowMessage(bol:true)
                 self.isMessage = false
-                
             }
             
         } else {
@@ -416,6 +416,59 @@ class LoginViewController: UIViewController
             
             print("Internet connection FAILED")
         }
+
+    }
+
+    func switchToIndex() {
+
+        nameTextFieldHeightAnchor?.isActive = false
+        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        nameTextFieldHeightAnchor?.isActive = true
+        nameTextField.isHidden = false
+        
+        emailTextFieldHeightAnchor?.isActive = false
+        emailTextFieldHeightAnchor = emailTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        emailTextFieldHeightAnchor?.isActive = true
+        emailTextField.isHidden = false
+        
+        passwordTextFieldHeightAnchor?.isActive = false
+        passwordTextFieldHeightAnchor = passwordTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        passwordTextFieldHeightAnchor?.isActive = true
+        passwordTextField.isHidden = false        
+
+        sonSchoolTextFieldHeightAnchor?.isActive = false  
+        sonSchoolTextFieldHeightAnchor = sonSchoolTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        sonSchoolTextFieldHeightAnchor?.isActive = true
+        sonSchoolTextField.isHidden = true  
+
+        self.isRegistered = false        
+                    
+    }
+    
+    func showLoginFields() 
+    {
+        
+        nameTextFieldHeightAnchor?.isActive = false
+        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
+        nameTextFieldHeightAnchor?.isActive = true
+        nameTextField.isHidden = true
+        
+        //need x, y, width, height constraints
+        schoolTypeSeparatorView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+        schoolTypeSeparatorView.topAnchor.constraint(equalTo: userTypeTextField.bottomAnchor).isActive = true
+        schoolTypeSeparatorView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        schoolTypeSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        schoolTypeSeparatorView.isHidden = false
+        
+        //School
+        sonSchoolTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 12).isActive = true
+        sonSchoolTextField.topAnchor.constraint(equalTo: schoolTypeSeparatorView.bottomAnchor).isActive = true
+        sonSchoolTextFieldHeightAnchor = sonSchoolTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 1/4)
+        sonSchoolTextFieldHeightAnchor?.isActive = true
+        sonSchoolTextField.isHidden = false
+        
+        self.isRegistered = true
+        
     }
     
     @objc func handleLoginRegister()
@@ -424,21 +477,122 @@ class LoginViewController: UIViewController
         {
             
             if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
-                handleLogin()
+
+                if self.loginRegisterButton.titleLabel?.text == "Try again" {
+
+                    // THIS BLOCK IS A MESS
+
+                    self.loginRegisterSegmentedControl.selectedSegmentIndex = 1
+
+                    self.isMessage = false
+
+                    self.handleLoginRegisterChange()
+
+                    self.clearLoginFields()
+
+                    self.userTypeTextField.isHidden = false
+
+                    self.loginRegisterSegmentedControl.selectedSegmentIndex = 0
+                    
+                    self.handleLoginRegisterChange()
+                  
+                } else  {
+
+                    self.handleLogin()        
+                }
+                
+
             } else {
-                handleRegister()
+                
+                self.handleRegister()
             }
             
-        } else
-        {
+        } else {
             
-            self.loginRegisterSegmentedControl.selectedSegmentIndex = 0
-            self.handleLoginRegisterChange()
+            /*self.checkVerified(completionHandler: { ( verified ) -> () in
+
+                if verified {
+                    
+                    self.handleLogin()
+                    
+                    self.okLogin = false
+
+                } else {
+
+                    self.message="Please verify your email and then Continue."
+
+                    self.registerLabel.text = self.message
+                }
+            })*/
+            
+            self.handleLogin()
             
             self.okLogin = false
             
         }
     }
+
+    func clearLoginFields() {
+
+        //nameTextField.text = ""
+        //nameTextField.placeholder = "Full name"
+
+        emailTextField.text = ""
+        emailTextField.placeholder = "Email"
+
+        passwordTextField.text = ""
+        passwordTextField.placeholder = "Password"
+
+        self.userTypeTextField.text = ""        
+        //self.userTypeDownPicker = nil
+        //self.userTypeDownPicker = DownPicker(textField: self.userTypeTextField, withData: self.parents as! [Any])        
+        self.userTypeTextField.placeholder = "Tap to choose relationship..."  
+
+        self.sonSchoolTextField.text = ""   
+        //self.sonSchoolDownPicker = nil     
+        //self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData: self.schoolsArray as! [Any])
+        self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")                
+       
+    }
+
+    /*func checkVerified(completionHandler : @escaping (_ verified:Bool) -> ()) {
+        
+        let queryUser = PFQuery(className: "_User")
+        
+        print(PFUser.current()?.username)
+        
+        if let username = PFUser.current()?.username {
+        
+            print(username)
+            queryUser.whereKey("username", equalTo: username)
+            queryUser.getFirstObjectInBackground(block: { (user, error) in
+                
+                if error == nil {
+                    
+                    if user?["emailVerified"] != nil {
+                    
+                        if user?["emailVerified"] as! Bool  == true {
+                            
+                            completionHandler(true)
+                            
+                        } else {
+                            
+                            completionHandler(false)
+                        }
+                        
+                    } else {
+                        
+                        completionHandler(false)
+                    }
+
+                } else {
+                    print(error)
+                }
+            })
+            
+        }
+    }*/
+
     
     func handleRegister()
     {
@@ -497,10 +651,12 @@ class LoginViewController: UIViewController
                     
                     self.activityIndicatorView?.stopAnimating()
                     
-                    self.message="An email has been sent to your inbox. Please confirm, once then press the Login."
+                    self.message="An email has been sent to your inbox. Please confirm, once then press the Continue."
                     
                     self.okLogin = true
-                    self.loginRegisterButton.setTitle("Ok", for: UIControlState())
+                    self.isRegistered = false
+                    
+                    self.loginRegisterButton.setTitle("Continue", for: UIControlState())
                     
                     Global.defaults.set(email, forKey: "your_email")
                     Global.defaults.set(password, forKey: "your_password")
@@ -514,7 +670,12 @@ class LoginViewController: UIViewController
                              self.saveNewProfile(completionHandler: { (profile) in
                                 
                                 let relation:PFRelation = user.relation(forKey: "userType")
-                                relation.add((Global.userTypes[type]?.userTypeObj)!)
+                                
+                                print(type)
+                                
+                                let userType = (Global.userTypes[type]?.userTypeObj)!
+                                
+                                relation.add(userType)
                                 
                                 let profileRel:PFRelation = user.relation(forKey: "profile")
                                 profileRel.add(profile)
@@ -526,8 +687,7 @@ class LoginViewController: UIViewController
                                         
                                         PFUser.logOut()
                                         
-                                    } else
-                                    {
+                                    } else {
                                         print(error)
                                     }
                                     
@@ -599,123 +759,153 @@ class LoginViewController: UIViewController
             if let error = error as NSError?
             {
                 
-                let errorString = error.userInfo["error"] as? NSString
-                // Something went wrong
-                self.message="Error \(errorString), please try again."
-                self.isMessage=true
-                self.handleLoginRegisterChange()
+                if let errorString = error.userInfo["error"] as? NSString {
+
+                    // Something went wrong
+                    self.message="Error \(errorString) Please try again."
+                    self.isMessage=true
+
+                    self.loginRegisterButton.setTitle("Try again", for: UIControlState())
+
+                    self.handleLoginRegisterChange()    
+
+                    self.activityIndicatorView?.stopAnimating()
+                    
+                }
+                
                 
             } else {
                 
-                let emailVerified = user?["emailVerified"]
+                if user?["emailVerified"] != nil {
                 
-                if emailVerified as! Bool == true {
+                    let emailVerified = user?["emailVerified"]
                     
-                    UserDefaults.standard.setIsLoggedIn(value: true)
-                    
-                    if self.isRegistered {                    
-                    
-                        Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                    if emailVerified as! Bool == true {
+                        
+                        UserDefaults.standard.setIsLoggedIn(value: true)
+                        
+                        if self.isRegistered {
                             
-                            UserDefaults.standard.setIsLoggedIn(value: true)                            
-                            UserDefaults.standard.setIsRegistered(value: true)
-                            
-                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-                            
-                            //FAMILY
-                            
-                            Global.defaults.set(true, forKey: "profile_completed")
-                            Global.defaults.set(true, forKey: "family_exist")
-                            Global.defaults.set(true, forKey: "son_exist")
-                            
-                            let your_family_name = Global.gamvesFamily.familyName
-                            Global.defaults.set(your_family_name, forKey: "your_family_name")
-                            
-                            //YOU
+                            Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
+                        
+                                Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                                    
+                                    UserDefaults.standard.setIsLoggedIn(value: true)
+                                    UserDefaults.standard.setIsRegistered(value: true)
+                                    
+                                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                                    
+                                    //FAMILY
+                                    
+                                    Global.defaults.set(true, forKey: "profile_completed")
+                                    Global.defaults.set(true, forKey: "family_exist")
+                                    Global.defaults.set(true, forKey: "son_exist")
+                                    
+                                    let your_family_name = Global.gamvesFamily.familyName
+                                    Global.defaults.set(your_family_name, forKey: "your_family_name")
+                                    
+                                    //YOU
 
-                            let email = Global.gamvesFamily.youUser.email
-                            Global.defaults.set(email, forKey: "your_email")
+                                    let email = Global.gamvesFamily.youUser.email
+                                    Global.defaults.set(email, forKey: "your_email")
+                                    
+                                    let password = Global.gamvesFamily.youUser.email
+                                    Global.defaults.set(password, forKey: "your_password")
+                                    
+                                    let your_username = Global.gamvesFamily.youUser.userName
+                                    Global.defaults.set(your_username, forKey: "your_username")
+                                    
+                                    let youImage:UIImage = Global.gamvesFamily.youUser.avatar
+                                    
+                                    Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore:                  youImage)
+                                    
+                                    let youImageLow = youImage.lowestQualityJPEGNSData as Data
+                                    var youSmallImage = UIImage(data: youImageLow)
+                                    
+                                    Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youSmallImage!)
+                                    
+                                    //SPOUSE
+                                    
+                                    let spouse_username = Global.gamvesFamily.spouseUser.userName
+                                    Global.defaults.set(spouse_username, forKey: "spouse_username")
+                                    
+                                    let spouse_email = Global.gamvesFamily.spouseUser.email
+                                    Global.defaults.set(spouse_email, forKey: "spouse_email")
+                                  
+                                    let spouseImage:UIImage = Global.gamvesFamily.spouseUser.avatar
+                                    
+                                    Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: spouseImage)
+                                    
+                                    let spouseImageLow = spouseImage.lowestQualityJPEGNSData as Data
+                                    var spouseSmallImage = UIImage(data: spouseImageLow)
+                                    
+                                    Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: spouseSmallImage!)
+                                    
+                                    //SON
+                                    
+                                    let sonUser:GamvesUser = Global.gamvesFamily.sonsUsers[0]
+                                    
+                                    let son_name = sonUser.name
+                                    Global.defaults.set(son_name, forKey: "son_name")
+                                    
+                                    let son_username = sonUser.userName
+                                    Global.defaults.set(son_username, forKey: "son_username")
+                                    
+                                    let son_type = sonUser.typeNumber
+                                    Global.defaults.set(son_type, forKey: "son_type")
+                                    
+                                    let son_school = Global.gamvesFamily.school.schoolName
+                                    Global.defaults.set(son_school, forKey: "son_school")
+                                    
+                                    if let son_userId = sonUser.userObj.objectId {
+                                        Global.defaults.set(son_userId, forKey: "son_userId")
+                                        Global.defaults.set(son_userId, forKey: "son_object_id")
+                                    }
+                                    
+                                    let sonImage:UIImage = Global.gamvesFamily.sonsUsers[0].avatar
+                                    
+                                    Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: sonImage)
+                                    
+                                    let sonImageLow = sonImage.lowestQualityJPEGNSData as Data
+                                    var sonSmallImage = UIImage(data: sonImageLow)
+                                    
+                                    Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)
+                                    
+                                    //self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
+                                    
+                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                    
+                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: self)
+                                    
+                                    Global.familyDataGromGlobal = true
+                                    
+                                    self.activityIndicatorView?.stopAnimating()
+                                    self.dismiss(animated: true, completion: nil)
+                                    self.tabBarViewController?.selectedIndex = 0 //Home
+                                    
+                                })
+                                
+                            })
                             
-                            let password = Global.gamvesFamily.youUser.email
-                            Global.defaults.set(password, forKey: "your_password")
+                        } else {
                             
-                            let your_username = Global.gamvesFamily.youUser.userName
-                            Global.defaults.set(your_username, forKey: "your_username")
-                            
-                            let youImage:UIImage = Global.gamvesFamily.youUser.avatar
-                            
-                            Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore:                  youImage)
-                            
-                            let youImageLow = youImage.lowestQualityJPEGNSData as Data
-                            var youSmallImage = UIImage(data: youImageLow)
-                            
-                            Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youSmallImage!)
-                            
-                            //SPOUSE
-                            
-                            let spouse_username = Global.gamvesFamily.spouseUser.userName
-                            Global.defaults.set(spouse_username, forKey: "spouse_username")
-                            
-                            let spouse_email = Global.gamvesFamily.spouseUser.email
-                            Global.defaults.set(spouse_email, forKey: "spouse_email")
-                          
-                            let spouseImage:UIImage = Global.gamvesFamily.spouseUser.avatar
-                            
-                            Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: spouseImage)
-                            
-                            let spouseImageLow = spouseImage.lowestQualityJPEGNSData as Data
-                            var spouseSmallImage = UIImage(data: spouseImageLow)
-                            
-                            Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: spouseSmallImage!)
-                            
-                            //SON
-                            
-                            let sonUser:GamvesParseUser = Global.gamvesFamily.sonsUsers[0]
-                            
-                            let son_name = sonUser.name
-                            Global.defaults.set(son_name, forKey: "son_name")
-                            
-                            let son_username = sonUser.userName
-                            Global.defaults.set(son_username, forKey: "son_username")
-                            
-                            let son_type = sonUser.typeNumber
-                            Global.defaults.set(son_type, forKey: "son_type")
-                            
-                            let son_school = Global.gamvesFamily.school.schoolName
-                            Global.defaults.set(son_school, forKey: "son_school")
-                            
-                            if let son_userId = sonUser.userObj.objectId {
-                                Global.defaults.set(son_userId, forKey: "son_userId")
-                                Global.defaults.set(son_userId, forKey: "son_object_id")
-                            }
-                            
-                            let sonImage:UIImage = Global.gamvesFamily.sonsUsers[0].avatar
-                            
-                            Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: sonImage)
-                            
-                            let sonImageLow = sonImage.lowestQualityJPEGNSData as Data
-                            var sonSmallImage = UIImage(data: sonImageLow)
-                            
-                            Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)             
-                            
-                            //self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
-                            
-                            
-                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: self)
-                            
-                            self.tabBarViewController?.selectedIndex = 0 //Home
-                            
-                            self.activityIndicatorView?.stopAnimating()   
+                            self.activityIndicatorView?.stopAnimating()
                             self.dismiss(animated: true, completion: nil)
                             
-                        })
-                        
+                            /*self.navigationController?.navigationBar.tintColor = UIColor.white
+                            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+                            self.navigationController?.pushViewController(self.profileViewController, animated: true)*/
+                            
+                        }
+                    
                     } else {
+                     
+                        self.message="Please verify your email and then Continue."
                         
-                        self.activityIndicatorView?.stopAnimating()
-                        self.dismiss(animated: true, completion: nil)
+                        self.registerLabel.text = self.message
                         
                     }
+                    
                 }
                 else
                 {
@@ -802,21 +992,6 @@ class LoginViewController: UIViewController
         }
         
         return errors
-    }
-    
-
-    func hideNameAndRelationship()
-    {
-        nameTextFieldHeightAnchor?.isActive = false
-        nameTextFieldHeightAnchor = nameTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
-        nameTextFieldHeightAnchor?.isActive = true
-        nameTextField.isHidden = true
-        
-        userTypeTextFieldHeightAnchor?.isActive = false
-        userTypeTextFieldHeightAnchor = userTypeTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0)
-        userTypeTextFieldHeightAnchor?.isActive = true
-        userTypeTextField.isHidden = true
-            
     }
     
     func handleSelectProfileImageView()

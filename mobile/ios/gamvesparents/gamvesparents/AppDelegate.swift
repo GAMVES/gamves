@@ -31,12 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //application.statusBarStyle = .lightContent
       
         var reached = false
+
+        let deviceobj = Device()
+        let device:String = "\(deviceobj)"
+        Global.device = device
         
-        //if Reachability.isConnectedToNetwork() == true
+        //connect = true
+        //if connect {
             
-        connect = true
-        
-        if connect {
+        if Reachability.isConnectedToNetwork() == true {
     
             loadParse(application: application, launchOptions: launchOptions)
             print("Internet connection OK")
@@ -68,19 +71,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         window?.rootViewController = TabBarViewController()
         
-        if PFUser.current() != nil
-        {
-            Global.loaLevels()
-            
-            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-            
-                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-            
-            })
-
-            self.loadChatChannels()
+        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
         
-        }
+            if PFUser.current() != nil
+            {
+                
+                Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                
+                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                
+                })
+
+                self.loadChatChannels()
+            
+            }
+            
+        })
         
         if #available(iOS 10.0, *)
         {
@@ -112,7 +118,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         
-        Global.loadUserTypes()        
+        Global.loadUserTypes()
+
+        var paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0]
+        let fileName = "\(Date()).log"
+        let logFilePath = (documentsDirectory as NSString).appendingPathComponent(fileName)
+        freopen(logFilePath.cString(using: String.Encoding.ascii)!, "a+", stderr)       
         
         return true
     }
@@ -121,18 +133,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func loadParse(application: UIApplication, launchOptions: [AnyHashable: Any]?)
     {
         //Local
-        let configuration = ParseClientConfiguration {
+        /*let configuration = ParseClientConfiguration {
             $0.applicationId = "0123456789"
             $0.server = Global.serverUrl
         }
-        Parse.initialize(with: configuration)
+        Parse.initialize(with: configuration)*/
         
         //Back4app
-        /*let configuration = ParseClientConfiguration {
-         $0.applicationId = "qmTbd36dChKyopgav1JVUMGx2vnZSVdclkNpK6YU"
-         $0.clientKey = "r1FBMzUkEemRnGllhvZdkFtKknu1CMUXUUwzP6ew"
-         $0.server = "https://parseapi.back4app.com"
-         }*/
+        let configuration = ParseClientConfiguration {
+            $0.applicationId = "fyJV5DhvVXJz2Vlk53K3eeqNKzwdBQhftfBwCyQ7"
+            $0.clientKey = "IPoWpsp5ub2qqCmAGgZmjlBuvzQKEaHoeBm8SFuX"
+            $0.server = "https://parseapi.back4app.com"
+        }
+        Parse.initialize(with: configuration)
         
         //Sashido
         /*let configuration = ParseClientConfiguration {
@@ -215,6 +228,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
     }
     
+    //func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    
+    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
+        print("")
+    }
+    
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
         let installation = PFInstallation.current()
@@ -231,6 +250,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
         })
         
+    }
+
+    // Called when APNs failed to register the device for push notifications
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {  
+        // Print the error to console (you should alert the user that registration failed)
+        print("APNs registration failed: \(error)")
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -330,6 +355,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 }
             }
         })
+    }
+    
+    func openSearch(params:[String : Any]) {
+        //self.homeController.openSearch(params:params)
     }
 
 }

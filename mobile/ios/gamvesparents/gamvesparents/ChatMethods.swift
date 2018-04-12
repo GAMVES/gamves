@@ -14,7 +14,7 @@ class ChatMethods: NSObject
 {
     
     
-    static func addNewFeedAppendgroup(gamvesUsers:[GamvesParseUser], chatId:Int, completionHandlerGroup : @escaping (_ resutl:Bool) -> ())
+    static func addNewFeedAppendgroup(gamvesUsers:[GamvesUser], chatId:Int, completionHandlerGroup : @escaping (_ resutl:Bool) -> ())
     {
         
         let random = Int()

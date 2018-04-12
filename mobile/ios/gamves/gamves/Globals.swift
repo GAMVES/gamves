@@ -27,6 +27,7 @@ class Global: NSObject
     
     static var levels = Dictionary<String, LevelsGamves>()
     
+<<<<<<< HEAD
     //static var serverUrl = "http://25.55.180.51:1337/1/"
     //static var serverUrl = "http://127.0.0.1:1337/1/"
     //static var serverUrl = "http://192.168.16.22:1337/1/"
@@ -39,6 +40,9 @@ class Global: NSObject
     
     static var localWs = "wss://devgamves.back4app.io"
 
+=======
+    static var localWs = "wss://127.0.0.1:1337/1/"
+>>>>>>> origin/iosparents
     //static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
     
     static var defaults = UserDefaults.standard

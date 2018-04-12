@@ -31,6 +31,16 @@ target 'gamvesparents' do
   
   pod 'AWSS3'
   
+  pod 'Stripe'
+  
+  #pod 'SwiftPhotoGallery'
+  
+  pod 'ImageSlideshow', '~> 1.4'
+  
   # pod 'MercadoPagoSDK', '3.7.1'
+  
+  pod 'ISEmojiView' 
+  
+
     
 end

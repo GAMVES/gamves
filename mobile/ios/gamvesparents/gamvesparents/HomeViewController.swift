@@ -17,7 +17,8 @@ import ParseLiveQuery
 class HomeViewController: UIViewController,
     UICollectionViewDataSource,
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout {
+    UICollectionViewDelegateFlowLayout
+{
 
     var userStatistics = [UserStatistics]()
 
@@ -116,6 +117,13 @@ class HomeViewController: UIViewController,
         label.font = UIFont.boldSystemFont(ofSize: 20)
         return label
     }()   
+
+    let dataLeftView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()
     
     let dataView: UIView = {
         let view = UIView()
@@ -124,8 +132,14 @@ class HomeViewController: UIViewController,
         return view
     }()
 
+    let dataRightView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()
 
-     lazy var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
@@ -157,6 +171,14 @@ class HomeViewController: UIViewController,
     var photoCornerRadius = Int()
     
     var countWeekTime = TimeInterval()
+    
+    func initilizeObservers(){
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(chatFeedLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -208,12 +230,12 @@ class HomeViewController: UIViewController,
         self.headerView.addSubview(self.sonLabel)
         
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
+        self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
+        self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
         
         self.headerView.addConstraintsWithFormat("V:|[v0(100)]|", views: self.backImageView)
         
-        self.scrollView.addConstraintsWithFormat(
+        self.headerView.addConstraintsWithFormat(
             "V:|-40-[v0(photoSize)][v1]|", views:
             self.photosContainerView,
             self.sonLabel,
@@ -246,16 +268,21 @@ class HomeViewController: UIViewController,
         metricsHorBudge["groupPadding"]    = (paddingBudge * 3) + 50
         
         self.photosContainerView.addConstraintsWithFormat("H:|-sonPadding-[v0(25)]", views: self.checkLabelSon, metrics: metricsHorBudge)
-        
-        self.dataView.addSubview(self.collectionView)
-        self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView)
-        self.dataView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(chatFeedLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
-        
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
+     
+        self.dataView.addSubview(self.dataLeftView)
+        self.dataView.addSubview(self.collectionView)        
+        self.dataView.addSubview(self.dataRightView)
+
+        self.dataView.addConstraintsWithFormat("V:|-7-[v0]|", views: self.collectionView)
+        self.dataView.addConstraintsWithFormat("V:|-7-[v0]|", views: self.dataLeftView)
+        self.dataView.addConstraintsWithFormat("V:|-7-[v0]|", views: self.dataRightView)
+
+        self.dataView.addConstraintsWithFormat("H:|[v0(20)][v1][v2(20)]|", views: 
+            self.dataLeftView, 
+            self.collectionView, 
+            self.dataRightView)
+       
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
         
@@ -263,48 +290,53 @@ class HomeViewController: UIViewController,
         
         self.checkLabelSon.isHidden = true
         
+        self.renderSon()
+
+        self.loadStatistics()
+        
+    }
+    
+    func loadStatistics() {
+
+    	self.userStatistics = [UserStatistics]()
+    
         _status.desc = "Offline"
         _status.icon = UIImage(named: "status_offline")!
         _status.id = 0
         self.userStatistics.append(_status)
-        
-        _location.desc = "Current location"
+    
+        _location.desc = "Last location"
         _location.data = "5 Km"
         _location.id = 1
         _location.icon = UIImage(named: "map")!
         self.userStatistics.append(_location)
-
+    
         _time.desc = "Week count"
         _time.data = "04:50 hs"
         _time.id = 2
         _time.icon = UIImage(named: "time")!
         self.userStatistics.append(_time)
-
+    
         _approval.desc = "Approvals"
         _approval.id = 3
         _approval.icon = UIImage(named: "check_circle")!
-        self.userStatistics.append(_approval)        
-
+        self.userStatistics.append(_approval)
+    
         _activity.desc = "Activity"
         _activity.id = 4
         _activity.icon = UIImage(named: "view_activity")!
-        self.userStatistics.append(_activity)  
-
+        self.userStatistics.append(_activity)
+    
         _history.desc = "History"
         _history.id = 5
         _history.icon = UIImage(named: "history")!
         self.userStatistics.append(_history)
     
-        NotificationCenter.default.addObserver(self, selector: #selector(onFamilyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
-    
     }
     
-    func onFamilyLoaded() {
-        self.getTimeCount()
-        self.loadProfileInfo()
-    }
+    
  
-    func loadProfileInfo() {
+    func loadSonProfileInfo() {
         
         let queryUser = PFQuery(className:"Profile")
         
@@ -338,7 +370,6 @@ class HomeViewController: UIViewController,
             }
         }
     }
-
      func openMapForPlace() {
 
         let latitude: CLLocationDegrees = 37.2
@@ -394,27 +425,76 @@ class HomeViewController: UIViewController,
                 for time in times! {
                     
                     let timeStarted = time["timeStarted"] as! Date
-                    let timeEnded = time["timeEnded"] as! Date
                     
-                    print(timeStarted)
-                    print(timeEnded)
-                    
-                    let interval = timeEnded.timeIntervalSince(timeStarted)
-                    
-                    self.countWeekTime = self.countWeekTime + interval
+                    if time["timeEnded"] != nil {
+                        
+                        let timeEnded = time["timeEnded"] as! Date
+                        
+                        print(timeStarted)
+                        print(timeEnded)
+                        
+                        let interval = timeEnded.timeIntervalSince(timeStarted)
+                        
+                        self.countWeekTime = self.countWeekTime + interval
+                    }
                     
                 }
                 
                 let stringInterval = self.stringFromTimeInterval(interval: self.countWeekTime)
                 
-                let timecounted = "\(stringInterval) hs"
-                
-                print(self.userStatistics[2].data)
+                let timecounted = "\(stringInterval) hs"                
                 
                 self.userStatistics[2].data = timecounted
+            
+                DispatchQueue.main.async {
                 
-                self.collectionView.reloadData()
+                    self.collectionView.reloadData()
+                    
+                }               
                 
+            }
+        }
+    }
+
+
+    func getLocation(){
+
+        let queryLocation = PFQuery(className:"Location")
+        
+        let sonId = Global.gamvesFamily.sonsUsers[0].userId 
+        
+        queryLocation.whereKey("userId", equalTo: sonId)
+        queryLocation.order(byDescending: "createdAt")
+        queryLocation.limit = 1
+
+        queryLocation.findObjectsInBackground {
+            (locationPF, error) -> Void in
+
+            if error == nil {
+
+                if let locations = locationPF {
+                    
+                    for location in locations {
+                        
+                        let sonPFLocation = location["geolocation"] as! PFGeoPoint
+
+                        let sonLocation = sonPFLocation.location()
+
+                        let myLocation = Global.locationPF.location()
+
+                        let distanceInMeters = myLocation.distance(from: myLocation)
+                    
+                        self.userStatistics[1].data = "\(distanceInMeters) meters"
+
+                         DispatchQueue.main.async {
+                    
+                            self.collectionView.reloadData()
+
+                            self.loadUserStatus()
+                        
+                        } 
+                    }
+                }                
             }
         }
     }
@@ -460,8 +540,8 @@ class HomeViewController: UIViewController,
 
     }
     
-    @objc func familyLoaded()
-    {
+    
+    @objc func familyLoaded() {
         
         let familyId = Global.gamvesFamily.objectId
         
@@ -469,41 +549,47 @@ class HomeViewController: UIViewController,
             
             print(count)
             
+			self.loadStatistics()
+
             self._approval.approval = count as Int
             self.collectionView.reloadData()
             
         })
         
-
-        if self.isKeyPresentInUserDefaults(key:"son_object_id")
-        {
-            let sonId = Global.defaults.object(forKey: "son_object_id") as! String
-            if Global.userDictionary[sonId] != nil
-            {
-                self.sonLabel.text = Global.userDictionary[sonId]?.firstName
-                self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
-                Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
-            }
-        }
-        
-        /*if self.isKeyPresentInUserDefaults(key:"spouse_object_id")
-        {
-            
-            let spouseId = Global.defaults.object(forKey: "spouse_object_id") as! String
-            if Global.userDictionary[spouseId] != nil
-            {
-                self.spousePhotoImageView.image = Global.userDictionary[spouseId]?.avatar
-                Global.setRoundedImage(image: self.spousePhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)
-            }
-        }*/
-        
-        /*self.groupPhotoImageView.image = Global.gamvesFamily.familyImage //self.generateGroupImage()
-        Global.setRoundedImage(image: self.groupPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 2, boderColor: UIColor.gamvesColor)*/
-        
-        self.activityIndicatorView?.stopAnimating()
+        self.renderSon()
         
         self.initializeOnlineSubcritpion()
         
+        self.getTimeCount()
+
+        self.getLocation()
+
+        self.loadUserStatus()
+        
+        self.loadSonProfileInfo()
+        
+    }
+    
+    func renderSon() {
+        
+        if self.isKeyPresentInUserDefaults(key:"son_object_id")
+        {
+            
+            DispatchQueue.main.async {
+                
+                let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+                if Global.userDictionary[sonId] != nil
+                {
+                    self.sonLabel.text = Global.userDictionary[sonId]?.firstName
+                    
+                    self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
+                    
+                    Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
+                }
+                
+                self.activityIndicatorView?.stopAnimating()
+            }
+        }
     }
     
    
@@ -541,7 +627,7 @@ class HomeViewController: UIViewController,
         {
             let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[sonRegisterChatId]!
             
-            var users = [GamvesParseUser]()
+            var users = [GamvesUser]()
             users.append(Global.gamvesFamily.sonsUsers[0])
             users.append(Global.gamvesFamily.youUser)
 
@@ -565,7 +651,7 @@ class HomeViewController: UIViewController,
         {
             let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[spouseRegisterChatId]!
             
-            var users = [GamvesParseUser]()
+            var users = [GamvesUser]()
             users.append(Global.gamvesFamily.spouseUser)
             users.append(Global.gamvesFamily.youUser)
             
@@ -589,7 +675,7 @@ class HomeViewController: UIViewController,
         {
             let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[familyChatId]!
             
-            var users = [GamvesParseUser]()
+            var users = [GamvesUser]()
             users.append(Global.gamvesFamily.sonsUsers[0])
             users.append(Global.gamvesFamily.spouseUser)
             users.append(Global.gamvesFamily.youUser)
@@ -613,7 +699,7 @@ class HomeViewController: UIViewController,
     ////collectionView
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return userStatistics.count
+        return self.userStatistics.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -621,7 +707,7 @@ class HomeViewController: UIViewController,
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HomeCollectionViewCell
         
 
-        let id = indexPath.row
+        let id = indexPath.item
         
         var stats = self.userStatistics[id]
         
@@ -638,13 +724,19 @@ class HomeViewController: UIViewController,
             {
                 stats.icon = UIImage(named: "status_online")!
                 cell.descLabel.text = "Online"
+
+                cell.dataLabel.isHidden = true
+
             } else
             {
                 stats.icon = UIImage(named: "status_offline")!
                 cell.descLabel.text = "Offline"
+
+                 cell.dataLabel.text = stats.data
+
             }
             
-            cell.dataLabel.isHidden = true
+            
             
         }
         
@@ -657,7 +749,9 @@ class HomeViewController: UIViewController,
             
             cell.dataLabel.text = String(stats.approval)
         
-            cell.backgroundColor = UIColor.gamvesColor
+            cell.backView.backgroundColor = UIColor.gamvesColor
+            
+            
             cell.layer.cornerRadius = 10
             
         }
@@ -740,7 +834,7 @@ class HomeViewController: UIViewController,
             return CGSize(width:self.frame.width, height:estimatedFrame.height + 20)
         }*/
         
-        return CGSize(width:self.collectionView.frame.width, height:50)
+        return CGSize(width:self.collectionView.frame.width, height: 65)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -750,73 +844,107 @@ class HomeViewController: UIViewController,
     
     func initializeOnlineSubcritpion()
     {
-        let sonId = Global.defaults.object(forKey: "son_object_id") as! String
-        if Global.userDictionary[sonId] != nil
-        {
-            let userId = Global.userDictionary[sonId]?.userId
-            
-            let onlineQuery = PFQuery(className: "UserOnline").whereKey("userId", equalTo: userId)
-            
-            self.sonSubscription = liveQueryClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
+        if Global.isKeyPresentInUserDefaults(key: "son_object_id") {
+        
+            let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+
+            if Global.userDictionary[sonId] != nil
+            {
+                let userId = Global.userDictionary[sonId]?.userId
                 
-                self.changeSingleUserStatus(onlineMessage:onlineMessage)
+                let onlineQuery = PFQuery(className: "UserStatus").whereKey("userId", equalTo: userId)
                 
+                self.sonSubscription = liveQueryClient.subscribe(onlineQuery).handle(Event.updated) { _, onlineMessage in
+                    
+                    self.changeSingleUserStatus(onlineMessage:onlineMessage)
+                    
+                }
+                
+                self.loadUserStatus()                        
+               
             }
             
-            let queryOnine = PFQuery(className:"UserOnline")
-            queryOnine.whereKey("userId", equalTo: userId)
-            queryOnine.findObjectsInBackground { (usersOnline, error) in
+            if Global.gamvesFamily != nil
+            {
                 
-                if error != nil
-                {
-                    print("error")
+                let familyId = Global.gamvesFamily.objectId
+                
+                var approvalQuery = PFQuery(className: "Approvals").whereKey("familyId", equalTo: familyId)
+                
+                self.approvalSubscription = liveQueryClientApproval.subscribe(approvalQuery).handle(Event.updated) { _, approvals in
                     
-                } else {
-                    
-                    if (usersOnline?.count)!>0
-                    {
-                        for monline in usersOnline!
-                        {
-                            self.changeSingleUserStatus(onlineMessage:monline)
-                        }
-                    }
+                    Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
+                        
+                            self._approval.approval = count as Int
+                        
+                    })
                 }
             }
         }
-        
-        if Global.gamvesFamily != nil
-        {
-            
-            let familyId = Global.gamvesFamily.objectId
-            
-            var approvalQuery = PFQuery(className: "Approvals").whereKey("familyId", equalTo: familyId)
-            
-            self.approvalSubscription = liveQueryClientApproval.subscribe(approvalQuery).handle(Event.updated) { _, approvals in
-                
-                Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
-                    
-                        self._approval.approval = count as Int
-                        
-                })
-            }
-        }
-    }
+    }  
+
+
+    func loadUserStatus() {
+
+        let queryOnline = PFQuery(className:"UserStatus")
+
+        let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+
+        let userId = Global.userDictionary[sonId]?.userId
+
+        queryOnline.whereKey("userId", equalTo: userId)
+        queryOnline.getFirstObjectInBackground { (usersOnline, error) in
     
+            if error != nil
+            {
+                print("error")
+
+                self.sonOnline = false
+                
+            } else {
+
+                
+                self.changeSingleUserStatus(onlineMessage:usersOnline!)
+                
+            }
+        }    
+
+    }  
+  
     func changeSingleUserStatus(onlineMessage:PFObject)
     {
-        let isOnline = onlineMessage["isOnline"] as! Bool
+        let status = onlineMessage["status"] as! Int
         
-        if isOnline
-        {
+        if status == 2 {
+            
             self.sonOnline = true
-        } else
-        {
-            self.sonOnline = false
-        }
-        
-        //self.collectionView.reloadData()
-        
-    }
 
+             DispatchQueue.main.async {
+                        
+                self.collectionView.reloadData()
+                
+            }
+
+            
+        } else if status == 1 {
+            
+            self.sonOnline = false
+            
+            if self.userStatistics.count > 0  {
+
+                if let lastSeen = onlineMessage.updatedAt {
+
+                    self.userStatistics[0].data = "\(lastSeen)"
+
+                     DispatchQueue.main.async {
+                        
+                        self.collectionView.reloadData()
+                        
+                    }
+                }
+            }              
+            
+        }         
+    }
     
 }

@@ -8,6 +8,10 @@ PODS:
   - DeviceKit (1.2.3)
   - DownPicker (0.1.34)
   - Floaty (4.0.0)
+  - ImageSlideshow (1.4.1):
+    - ImageSlideshow/Core (= 1.4.1)
+  - ImageSlideshow/Core (1.4.1)
+  - ISEmojiView (0.0.6)
   - NVActivityIndicatorView (3.7.0):
     - NVActivityIndicatorView/Presenter (= 3.7.0)
   - NVActivityIndicatorView/Presenter (3.7.0)
@@ -20,6 +24,7 @@ PODS:
   - PopupDialog (0.5.4)
   - RSKImageCropper (1.6.3)
   - Starscream (2.1.1)
+  - Stripe (12.0.0)
   - SwiftValidator (4.0.0)
   - TaskQueue (1.0.3)
   - youtube-ios-player-helper (0.1.6)
@@ -30,10 +35,13 @@ DEPENDENCIES:
   - DeviceKit
   - DownPicker
   - Floaty (from `https://github.com/kciter/Floaty.git`, tag `4.0.0`)
+  - ImageSlideshow (~> 1.4)
+  - ISEmojiView
   - NVActivityIndicatorView
   - ParseLiveQuery (from `https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git`, branch `master`)
   - PopupDialog
   - RSKImageCropper
+  - Stripe
   - SwiftValidator (from `https://github.com/jpotts18/SwiftValidator.git`, branch `master`)
   - TaskQueue
   - youtube-ios-player-helper (~> 0.1.4)
@@ -69,16 +77,19 @@ SPEC CHECKSUMS:
   DeviceKit: f33cbc6e67d9bb416e42dedc647557c7c2f6d3d7
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   Floaty: df27b72d9ed1e58d48aa3717327ffdb857268c63
+  ImageSlideshow: 1bb0e610e28a71e8936d57265d882f61714a470b
+  ISEmojiView: 2ab7c5ad9c58a318cefcf407af374464ccc56f1d
   NVActivityIndicatorView: d3738df7e2e476aca0ba6bf32a8c9fbcfc33d64b
   Parse: 7daa8804b876d250a65420534c97d2d786c3b0b4
   ParseLiveQuery: 9743983026fb94d0b43c460b2d98107e2f435abb
   PopupDialog: 75cf955693590b0cb2fdde00223fb65d99c57247
   RSKImageCropper: 356e36fc58c57c371b5d8b23d603936d6a73df6c
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
+  Stripe: c1c4828adf3e078fb08ff56cd93f410c54011c54
   SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
   TaskQueue: c1c02deebf2665b8e625fc46dd37a29b1de8056e
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
 
-PODFILE CHECKSUM: 5c99e0f072d706351b79b26a042c2e07942dd076
+PODFILE CHECKSUM: f227b6c0195023ba8fe26124af9d939a1b1fbe2d
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.4.0

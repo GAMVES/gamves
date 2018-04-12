@@ -147,7 +147,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     func closedRefresh() {
         
-        Global.approvals = [Approvals]()
+        //Global.approvals = [Approvals]()
         
         Global.getApprovasByFamilyId(familyId: self.familyId) { ( count ) in
             
@@ -194,9 +194,6 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
             videoApprovalLauncher.delegate = self
             videoApprovalLauncher.showVideoPlayer(videoGamves: video)
         
-        
         }
     }
-    
-   
 }

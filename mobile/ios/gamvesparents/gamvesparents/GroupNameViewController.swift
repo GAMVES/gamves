@@ -23,7 +23,7 @@ class GroupNameViewController: UIViewController,
     
     var chatFeedViewController:ChatFeedViewController?
 
-    var gamvesUsers = [GamvesParseUser]()
+    var gamvesUsers = [GamvesUser]()
     
     let cellId = "cellGroupId"
     
@@ -155,8 +155,7 @@ class GroupNameViewController: UIViewController,
         self.checkLabel.addGestureRecognizer(tapGesture)
         
         
-        self.activityView = Global.setActivityIndicator(container: self.usersContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
-        
+        self.activityView = Global.setActivityIndicator(container: self.usersContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//, x: 0, y: 0, width: 80.0, height: 80.0)
         
         /*let floaty = Floaty()
         floaty.buttonImage =  UIImage(named: "checked")!
