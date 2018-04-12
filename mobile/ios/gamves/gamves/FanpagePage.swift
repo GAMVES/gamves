@@ -142,6 +142,17 @@ class FanpagePage: UIViewController,
      var isFavorite = Bool()
 
     var favorite:PFObject!
+
+    var labelEmptyMessage: UILabel = {
+        let label = UILabel()
+        label.text = "There are no videos yet loaded for this fanpage"
+        //label.sizeToFit()
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.textColor = UIColor.gray
+        label.numberOfLines = 3
+        label.textAlignment = .center
+        return label
+    }()
     
     override func viewWillAppear(_ animated: Bool) {
         self.view.isHidden = true
@@ -233,7 +244,13 @@ class FanpagePage: UIViewController,
         self.gallery?.currentPageIndicatorTintColor = UIColor.white
         self.gallery?.hidePageControl = false
         
-        self.activityVideoView.startAnimating()        
+        self.activityVideoView.startAnimating()          
+
+        self.view.addSubview(self.labelEmptyMessage)
+        self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
+        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
+
+        self.labelEmptyMessage.isHidden = true
         
     }
 
@@ -625,7 +642,14 @@ class FanpagePage: UIViewController,
                             })
                         }
                     }
+            
+                } else {
+
+                    self.activityVideoView.stopAnimating()
+                    self.labelEmptyMessage.isHidden = false
+
                 }
+
             }
         })
     } 
