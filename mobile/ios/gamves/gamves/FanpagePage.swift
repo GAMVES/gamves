@@ -702,10 +702,8 @@ class FanpagePage: UIViewController,
 
      func handleViewProfile(recognizer:UITapGestureRecognizer) {
         
-        
         let v = recognizer.view!
         let index = v.tag
-
                
         let indexPath = IndexPath(item: index, section: 1)
         
@@ -715,8 +713,15 @@ class FanpagePage: UIViewController,
         
         let gamvesUserPoster = Global.userDictionary[posterId]
 
-        let profileLauncher = ProfileLauncher()             
-        profileLauncher.showProfileView(gamvesUser: gamvesUserPoster!)        
+        if let userId = PFUser.current()?.objectId {
+
+            if gamvesUserPoster?.userId != userId {
+
+                let profileLauncher = ProfileLauncher()             
+                profileLauncher.showProfileView(gamvesUser: gamvesUserPoster!)        
+
+            }
+        }
 
         //NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: self)
 
