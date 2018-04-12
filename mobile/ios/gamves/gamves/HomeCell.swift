@@ -14,18 +14,14 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
     var homeController: HomeController?
     
     var pages = [UIViewController]()
-    //let pageControl = UIPageControl()
+    
     var pageController : UIPageViewController?
     
     var categoryHomePage:CategoryHomePage!
     var categoryPage:CategoryPage!
     var fanpagePage:FanpagePage!
     
-    var index = Int()  
-
-    var current = Int()
-
-    var data:AnyObject? = nil
+    var index = Int()      
     
     override func setupViews() 
     {
@@ -44,33 +40,19 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
         self.fanpagePage = FanpagePage()
         self.fanpagePage.delegate = self      
         
-        let initialPage = 0
-        
-        // add the individual viewControllers to the pageController
+        let initialPage = 0     
+
         self.pages.append(self.categoryHomePage)
         self.pages.append(self.categoryPage)
-        self.pages.append(self.fanpagePage)
-        //self.pages.append(videoPage)
-        
-        //self.pageControl.numberOfPages = 4
+        self.pages.append(self.fanpagePage)      
         
         self.pageController?.setViewControllers([self.pages[initialPage]], direction: .forward, animated: true, completion: nil)
         
-        self.pageController!.view.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height);
-
-        // pageControl
-        //self.pageControl.frame = CGRect()
-        //self.pageControl.currentPageIndicatorTintColor = UIColor.black
-        //self.pageControl.pageIndicatorTintColor = UIColor.lightGray
-        //self.pageControl.numberOfPages = self.pages.count
-        //self.pageControl.currentPage = initialPage
-        //self.pageControl.pageIndicatorTintColor = UIColor.black
+        self.pageController!.view.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height);    
 
         self.addSubview((self.pageController?.view)!)
 
         removeSwipeGesture()
-
-        //Floaty.global.rtlMode = true
         
         let floaty = Floaty()
         
@@ -153,13 +135,8 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
             direction: direction,
             animated: true,
             completion: { (finished) -> Void in
-                
-                // Setting the view controller programmatically does not fire
-                // any delegate methods, so we have to manually notify the
-                // 'tutorialDelegate' of the new index.
-                //self.notifyTutorialDelegateOfNewIndex()
-                
-                if data != nil //.isKind(of: String() as! AnyClass)
+                             
+                if data != nil 
                 {
                     if (data?.isKind(of: CategoryGamves.self))!
                     {
@@ -169,7 +146,7 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
                         
                             category.categoryGamves = data as! CategoryGamves
                         
-                            category.setCategoryData()
+                            category.setCategoryData()                            
                         
                     } else if (data?.isKind(of: FanpageGamves.self))!
                     {
@@ -179,16 +156,15 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
                         
                         var fanpage = data as! FanpageGamves
                         
-                        //var name = fanpage.categoryName
-                        //fanpagePage.categoryName = name
-                        
                         print(fanpage.fanpageObj?.objectId)
                         
                         fanpagePage.setFanpageGamvesData(data: fanpage)
                         
-                        fanpagePage.setFanpageData()
+                        fanpagePage.setFanpageData()                        
+
                     }
                 }
+
         })
         
     }
@@ -202,14 +178,11 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
 
     
     func setCurrentPage(current: Int, direction: UIPageViewControllerNavigationDirection, data: AnyObject?)
-    {           
-        print(current)
-
-        self.current = current
-
-        self.data = data
+    {    
         
         scrollToViewController(viewController: pages[current], direction: direction, data: data)
+        
+        self.pageController?.setViewControllers([self.pages[current]], direction: .forward, animated: true, completion: nil)
     }
 
 

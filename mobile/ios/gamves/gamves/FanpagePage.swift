@@ -349,6 +349,8 @@ class FanpagePage: UIViewController,
             
             delegate?.setCurrentPage(current: 0, direction: UIPageViewControllerNavigationDirection.reverse, data: nil)
         }  
+
+        self.labelEmptyMessage.isHidden = true
     }
     
     func newKenBurnsImageView(image: UIImage) {
@@ -502,18 +504,17 @@ class FanpagePage: UIViewController,
     func moveCollectionToFrame(contentOffset : CGFloat) {
         let frame: CGRect = CGRect(x : contentOffset ,y : self.imageCollectionView.contentOffset.y ,width : self.imageCollectionView.frame.width,height : self.imageCollectionView.frame.height)
         self.imageCollectionView.scrollRectToVisible(frame, animated: true)
-    }
+    }   
     
-    
-    var loaded = Bool()
 
     func setFanpageData()
-    {
-        self.videosGamves.removeAll()
-        if !self.loaded {
-            self.getFanpageVideos(fan: fanpageGamves)
-            self.loaded = true
-        }
+    {        
+        self.videosGamves = [VideoGamves]()
+        
+        self.collectionView.reloadData()        
+        
+        self.getFanpageVideos(fan: fanpageGamves)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -523,6 +524,9 @@ class FanpagePage: UIViewController,
 
     func getFanpageVideos(fan:FanpageGamves)
     {
+
+        self.activityVideoView.startAnimating()
+
         let countVideosLoaded = 0
         
         let videoRel:PFRelation = fan.fanpageObj!.relation(forKey: "videos")
@@ -625,7 +629,7 @@ class FanpagePage: UIViewController,
                                     
                                     video.image = UIImage(data: data!)!
                                     
-                                    fan.videos.append(video)
+                                    self.videosGamves.append(video)
                                     
                                     print("***********")
                                     print("countVideos: \(countVideos!)")
@@ -633,7 +637,7 @@ class FanpagePage: UIViewController,
                                     
                                     if ( (countVideos!-1) == count)
                                     {
-                                        self.videosGamves = fan.videos
+                                        //self.videosGamves = fan.videos
                                         self.activityVideoView.stopAnimating()
                                         self.collectionView.reloadData()
                                     }
@@ -789,8 +793,7 @@ class FanpagePage: UIViewController,
             spacing = 0
         }
         
-        return spacing
-        
+        return spacing        
     }
     
    
