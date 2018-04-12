@@ -1,0 +1,16 @@
+{
+   "apps": [
+    {
+      "serverURL": "http://25.55.180.51:1337/1",
+      "appId": "0123456789",
+      "masterKey": "9876543210",
+      "appName": "GamvesLocal"
+    }
+  ],
+  "users": [
+    {
+    "user": "jose",
+    "pass": "joselon"
+    }
+  ]
+}       

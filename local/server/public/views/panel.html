@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="Back4App Inc" name="author">
+  <title>Gamves Backend</title>
+  
+  <link href="../dist/bootstrap.min.css" rel="stylesheet"  type="text/css" media="all">  
+  <link href="../dist/font-awesome.min.css" rel="stylesheet">  
+  <link href="../dist/jquery.bootgrid.css" rel="stylesheet">
+  <link href="../dist/spinner.css" rel="stylesheet" >
+
+  <script src="../dist/jquery-1.11.1.min.js"></script>
+  <script src="../dist/bootstrap.min.js"></script>
+  <script src="../dist/parse.min.js"></script>    
+  <script src="../dist/jquery.bootgrid.min.js"></script>       
+  
+  <script type="text/javascript" src="../js/videos.js"></script>
+  <script type="text/javascript" src="../js/fanpages.js"></script>
+  <script type="text/javascript" src="../js/categories.js"></script> 
+  <script type="text/javascript" src="../js/schools.js"></script>              
+  
+  <style>
+    .container {
+        position: relative;
+    }
+
+    .logo {        
+        display:block;
+        margin:auto;
+        left: 0;        
+        width: 20%; 
+        height: auto; 
+        margin:0 auto;        
+    }
+
+    .center {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+    }  
+
+    h1, h2, h3, h4, h5, h6 {
+
+    font-weight:100;
+
+    }
+
+  </style>
+
+</head>
+
+<body style="background-color:#e6e6e6;">
+
+    <header>      
+    </header>   
+    <br>
+    <img src="../img/gamves_logo.png" class="logo"/>
+    <br>   
+    <div id="schools" style="width:90%; margin:0 auto;"></div>
+    <br>   
+    <div id="categories" style="width:90%; margin:0 auto;"></div>   
+    <br>  
+    <div id="fanpages" style="width:90%; margin:0 auto;"></div>   
+    <br>
+    <div id="videos" style="width:90%; margin:0 auto;"></div>   
+   
+</body>
+</html>
+
+
+
+<script type="text/javascript">
+
+  $( document ).ready(function() {
+
+      $("#schools").load("schools.html");
+      $("#categories").load("categories.html");
+      $("#fanpages").load("fanpages.html");
+      $("#videos").load("videos.html");    
+
+  });
+
+</script>
