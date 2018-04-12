@@ -886,28 +886,33 @@ class HomeViewController: UIViewController,
 
     func loadUserStatus() {
 
-        let queryOnline = PFQuery(className:"UserStatus")
+       
+        if Global.isKeyPresentInUserDefaults(key: "son_object_id") {
 
-        let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+            let queryOnline = PFQuery(className:"UserStatus")
 
-        let userId = Global.userDictionary[sonId]?.userId
+            let sonId = Global.defaults.object(forKey: "son_object_id") as! String
 
-        queryOnline.whereKey("userId", equalTo: userId)
-        queryOnline.getFirstObjectInBackground { (usersOnline, error) in
-    
-            if error != nil
-            {
-                print("error")
+            let userId = Global.userDictionary[sonId]?.userId
 
-                self.sonOnline = false
-                
-            } else {
+            queryOnline.whereKey("userId", equalTo: userId)
+            queryOnline.getFirstObjectInBackground { (usersOnline, error) in
+        
+                if error != nil
+                {
+                    print("error")
 
-                
-                self.changeSingleUserStatus(onlineMessage:usersOnline!)
-                
-            }
-        }    
+                    self.sonOnline = false
+                    
+                } else {
+
+                    
+                    self.changeSingleUserStatus(onlineMessage:usersOnline!)
+                    
+                }
+            }    
+
+        }
 
     }  
   

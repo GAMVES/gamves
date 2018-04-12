@@ -164,7 +164,6 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
 
                     }
                 }
-
         })
         
     }

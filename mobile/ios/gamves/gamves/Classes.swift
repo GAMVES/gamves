@@ -101,6 +101,7 @@ class GamvesGender {
 
 class VideoGamves {
 
+    var authorized = Bool()
     var title = String()
     var description = String()
     var videoId = Int()
