@@ -330,7 +330,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                             self.refreshControl.endRefreshing()                                                            
                                                         }
 
-                                                        Global.loadFanpagesFavorites()
+                                                        //Global.loadFanpagesFavorites()
                                                     })
                                                 }
                                                 count  = count + 1
@@ -562,6 +562,8 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         if ( delegate != nil )
         {
+            
+            print(fanpage.fanpageObj?.objectId)
             delegate?.setCurrentPage(current: 2, direction: UIPageViewControllerNavigationDirection.forward, data: fanpage)
         }
         

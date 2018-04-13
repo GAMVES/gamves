@@ -253,8 +253,12 @@ class FanpagePage: UIViewController,
         self.labelEmptyMessage.isHidden = true
         
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.favoriteButton.tintColor = UIColor.white
+    }
 
-    /*func checkFavorite() {
+    func checkFavorite() {
 
 
         let queryFavorite = PFQuery(className:"Favorites")
@@ -271,26 +275,41 @@ class FanpagePage: UIViewController,
 
         }
         
-        queryFavorite.getFirstObjectInBackground { (favoritePF, error) in
-            
-            if error == nil {
+        queryFavorite.findObjectsInBackground { (favoritePF, error) in
+         
+             if error == nil {
+                
+                var count = Int()
+                
+                count = (favoritePF?.count)!
 
-                self.isFavorite = true               
+                if count > 0 {
+
+                    self.isFavorite = true               
                     
-                self.favoriteButton.tintColor = UIColor.red
+                    self.favoriteButton.tintColor = UIColor.red
 
-                self.favorite = favoritePF
+                    self.favorite = favoritePF![0]
+
+                } else {
+
+                    self.unMarkFavorite()
+                }
 
             } else {
 
-                self.isFavorite = false
-
-                self.favoriteButton.tintColor = UIColor.white
-
-            }
+                self.unMarkFavorite()
+            }          
         }
+    }
 
-    }*/
+    func unMarkFavorite() {
+
+        self.isFavorite = false
+
+        self.favoriteButton.tintColor = UIColor.white
+
+    }
 
     func handleFavoriteButton() {
 
@@ -374,14 +393,20 @@ class FanpagePage: UIViewController,
     }
     
     func setFanpageGamvesData(data: FanpageGamves)
-    {        
-
+    {              
+        
         self.fanpageGamves = data as FanpageGamves
         
-        print(data.categoryName)
+        print(fanpageGamves.fanpageObj?.objectId)
+        
+        self.checkFavorite()
+        
+        /*self.isFavorite = self.fanpageGamves.isFavorite
 
-        self.isFavorite = self.fanpageGamves.isFavorite
-
+        print(self.isFavorite)
+        
+        print(self.fanpageGamves.author.username)
+        
         if self.isFavorite {            
                 
             self.favoriteButton.tintColor = UIColor.red
@@ -394,7 +419,7 @@ class FanpagePage: UIViewController,
 
             self.favoriteButton.tintColor = UIColor.white
 
-        }        
+        }*/
         
         self.fanpageName.text = self.fanpageGamves.name
         

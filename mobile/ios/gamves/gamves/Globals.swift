@@ -351,7 +351,7 @@ class Global: NSObject
         }
     }
 
-    static func loadFanpagesFavorites() {
+    /*static func loadFanpagesFavorites() {
 
         DispatchQueue.main.async {
 
@@ -394,7 +394,7 @@ class Global: NSObject
                 }
             }
         }
-    }   
+    }*/
 
     static func loadAdminUser()
     {

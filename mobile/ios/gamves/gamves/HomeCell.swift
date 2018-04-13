@@ -156,7 +156,7 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
                         
                         var fanpage = data as! FanpageGamves
                         
-                        print(fanpage.fanpageObj?.objectId)
+                        //print(fanpage.fanpageObj?.objectId)
                         
                         fanpagePage.setFanpageGamvesData(data: fanpage)
                         
@@ -177,7 +177,10 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
 
     
     func setCurrentPage(current: Int, direction: UIPageViewControllerNavigationDirection, data: AnyObject?)
-    {    
+    {
+        //let fanpage = data as! FanpageGamves
+        
+        //print(fanpage.fanpageObj?.objectId)
         
         scrollToViewController(viewController: pages[current], direction: direction, data: data)
         
