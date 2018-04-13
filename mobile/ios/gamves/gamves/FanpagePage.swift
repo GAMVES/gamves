@@ -753,7 +753,9 @@ class FanpagePage: UIViewController,
             
             let shortDate = published.components(separatedBy: " at ")
             
-            cellVideo.videoDatePublish.text = shortDate[0]                   
+            cellVideo.videoDatePublish.text = shortDate[0]       
+
+            cellVideo.checkView.isHidden = true            
 
             let recognizer = UITapGestureRecognizer(target: self, action:#selector(handleViewProfile(recognizer:)))
             
