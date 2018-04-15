@@ -102,6 +102,7 @@
 		C92C3ECA207A88150029E206 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92C3EC9207A88150029E206 /* ProfileController.swift */; };
 		C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */; };
 		C92ED61B2060C74B004AC9A2 /* ProfileLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */; };
+		C9773E7C2083AD1700401C6A /* SuggestionListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9773E7B2083AD1700401C6A /* SuggestionListController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -203,6 +204,7 @@
 		C92C3EC9207A88150029E206 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
 		C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileLauncher.swift; sourceTree = "<group>"; };
+		C9773E7B2083AD1700401C6A /* SuggestionListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionListController.swift; sourceTree = "<group>"; };
 		E24F455AB391FC717A52882D /* Pods-gamves.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.release.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.release.xcconfig"; sourceTree = "<group>"; };
 		E3B0DD69767FAC16A4611662 /* Pods-gamves.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -390,6 +392,7 @@
 			children = (
 				822D620B1FD62F830025481E /* cells */,
 				822D62091FD5FCCE0025481E /* SearchController.swift */,
+				C9773E7B2083AD1700401C6A /* SuggestionListController.swift */,
 			);
 			name = search;
 			sourceTree = "<group>";
@@ -702,6 +705,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				826D58341F8D98C50014A2C8 /* ProfileCell.swift in Sources */,
+				C9773E7C2083AD1700401C6A /* SuggestionListController.swift in Sources */,
 				82418F3D1EF86FBC00D7E6BC /* FanpagePage.swift in Sources */,
 				8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */,
 				825E24041F984C14009462CD /* Protocols.swift in Sources */,
