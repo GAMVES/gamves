@@ -1254,4 +1254,20 @@ class Global: NSObject
     static let bluePictureBubbleImage = UIImage(named: "bubble_picture_blue")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
 
 
+    static var pasterColorArray = [        
+        UIColor.init(netHex: 0xf6bbf8),         
+        UIColor.init(netHex: 0xbbbef8),         
+        UIColor.init(netHex: 0xc3f8bb), 
+        UIColor.init(netHex: 0xf8f7bb)        
+    ]
+
+    static var notificationColorArray = [        
+        UIColor.gamvesTurquezeColor,         
+        UIColor.gamvesCyanColor,         
+        UIColor.gamvesYellowColor, 
+        UIColor.gamvesGreenColor       
+    ]
+
+
+
 }

@@ -43,6 +43,8 @@ class CategoryCollectionViewCell: BaseCell
 
     override func setupViews() {
         super.setupViews()
+
+        //self.backgroundView?.isHidden = true
         
         contentView.addSubview(fanpageImageView)        
         contentView.addSubview(separatorView)

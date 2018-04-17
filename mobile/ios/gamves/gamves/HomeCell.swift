@@ -25,7 +25,9 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
     
     override func setupViews() 
     {
-        super.setupViews()        
+        super.setupViews()   
+
+        //self.backgroundColor = UIColor.green
 
         self.pageController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil) 
         self.pageController!.dataSource = self       

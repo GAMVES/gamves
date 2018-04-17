@@ -114,5 +114,28 @@ import UIKit
             gl.locations = [ 0.0, 1.1]
             return gl
         }
-         
+
+        let pastelsGradients = 
+        [ 
+            Global.pasterColorArray[0],
+            Global.pasterColorArray[1],
+            Global.pasterColorArray[2],
+            Global.pasterColorArray[3]           
+        ]
+
+        func getPastelGradient() -> CAGradientLayer
+        {
+            let gl:CAGradientLayer
+            gl = CAGradientLayer()
+
+            let clear = UIColor(white: 1, alpha: 0).cgColor
+            let gamvesBackgoundColor = UIColor.gamvesBackgoundColor.cgColor
+
+            gl.colors = [ clear, gamvesBackgoundColor ]
+
+            gl.locations = [ 0.0 , 0.6 ]
+
+            return gl
+        }
+
     }

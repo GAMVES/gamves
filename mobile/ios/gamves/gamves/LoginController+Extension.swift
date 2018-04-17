@@ -15,8 +15,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
         guard let user = userTextField.text, let password = passwordTextField.text else {
             print("Form is not valid")
             return
-        }        
-        
+        }      
     }
     
     fileprivate func registerUserIntoDatabaseWithUID(_ uid: String, values: [String: AnyObject]) {

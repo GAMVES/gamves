@@ -22,6 +22,7 @@ class GamvesNotification {
     var video = VideoGamves()
     var fanpage = FanpageGamves()
     var type = Int()
+    var posterId = String()
 }
 
 class ChatFeed {

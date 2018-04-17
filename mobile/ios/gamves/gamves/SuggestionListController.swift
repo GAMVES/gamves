@@ -24,4 +24,6 @@ class SuggestionListController: UIViewController {
 
     
 
+    
+
 }

@@ -85,6 +85,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.backgroundColor = UIColor.green
+
         navigationController?.navigationBar.isTranslucent = false
         
         locationManager.delegate = self

@@ -35,16 +35,14 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     lazy var tableView: UITableView = {
         let rect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         let tv = UITableView(frame: rect)
-        tv.backgroundColor = UIColor.white
+        //tv.backgroundColor = UIColor.white
         tv.dataSource = self
         tv.delegate = self
         return tv
     }()
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.view.backgroundColor = .white
+        super.viewDidLoad()        
         
         self.width = self.view.frame.width
         self.height = self.view.frame.height
@@ -61,7 +59,12 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         self.tableView.register(CategoryTableViewSectionCell.self, forCellReuseIdentifier: categorySectionCellId)
         self.tableView.register(CategoryTableCollCell.self, forCellReuseIdentifier: categoryCollectionCellId)
         
-        self.tableView.backgroundColor = UIColor.gamvesBackgoundColor
+        //self.tableView.backgroundColor = UIColor.gamvesBackgoundColor
+
+        let homeImage = "background_list_1"
+        let image = UIImage(named: homeImage)        
+
+        self.tableView.backgroundView = UIImageView(image: image!)
         
         self.loadCategories()
         
@@ -95,7 +98,9 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         print(indexPath.row)
-        let cell = tableView.dequeueReusableCell(withIdentifier: categoryCollectionCellId, for: indexPath) as! CategoryTableCollCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: categoryCollectionCellId, for: indexPath) as! CategoryTableCollCell        
+        
+        cell.layer.backgroundColor = UIColor.clear.cgColor
         
         return cell
     }

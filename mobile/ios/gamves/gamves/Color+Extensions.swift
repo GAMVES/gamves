@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 extension UIColor {
 
     static func rgb(_ red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor {
@@ -40,6 +41,14 @@ extension UIColor {
         
         return rgb
     }
+
+    static func random() -> UIColor {
+        return UIColor(red:   .random(),
+                       green: .random(),
+                       blue:  .random(),
+                       alpha: 1.0)
+    }
+
 }
 
 

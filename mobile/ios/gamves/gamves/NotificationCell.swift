@@ -33,6 +33,8 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
     }()
     
     let cellId = "cellId"
+
+    let fanpageHeight = CGFloat(90)
     
     override func setupViews() {
         super.setupViews()
@@ -46,9 +48,16 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.collectionView.register(NotificationFeedCell.self, forCellWithReuseIdentifier: cellId)
+
+        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
         
         self.registerLiveQuery()
-        self.fetchNotification()        
+        self.fetchNotification()
+        
+        let homeImage = "background_vertical"
+        let image = UIImage(named: homeImage)
+        
+        self.collectionView.backgroundView = UIImageView(image: image!)
     }
     
     func registerLiveQuery()
@@ -90,6 +99,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
                         notification.referenceId = (notificationPF["referenceId"] as? Int)!
                         notification.description = (notificationPF["description"] as? String)!
                         notification.date = (notificationPF.createdAt as? Date)!
+                        notification.posterId = (notificationPF["posterId"] as? String)!
 
                         let type =  notificationPF["type"] as? Int 
 
@@ -141,6 +151,13 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
                                                     self.collectionView.reloadData()
 
                                                     self.activityView.stopAnimating()
+
+                                                    var sortedNotifications = Global.notifications.sorted(by: {
+                                                            $0.date.compare($1.date) == .orderedAscending
+                                                    })
+                                                        
+                                                    Global.notifications = sortedNotifications
+
                                                 }
                                                 
                                                 count = count + 1
@@ -210,8 +227,17 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         cell.descriptionTextView.text = message
         
         cell.userProfileImageView.image = notification.avatar
-        
-        cell.thumbnailImageView.image = notification.cover
+
+        if notification.type == 1 { //video
+
+            cell.thumbnailImageView.image = notification.cover
+
+        } else if notification.type == 2 { //fanpage
+
+            cell.thumbnailImageView.isHidden = true   
+            cell.checkLabel.isHidden = true            
+
+        }                
         
         var image = String()
         
@@ -229,6 +255,35 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         }
         
         cell.notficationDatePublish.text = dateFormatter.string(from: notification.date)
+
+        cell.notficationTimeElapsed.text = notification.date.elapsedTime
+
+        let gr = Gradients()
+        
+        var gradient : CAGradientLayer = CAGradientLayer()
+        
+        /*if  notification.type == 1 {
+            gradient = gr.getPastelGradient(UIColor.init(netHex: 0xd5f7d1))      
+        } else if notification.type == 2 {
+            cell.setupFanpage()
+             gradient = gr.getPastelGradient(UIColor.init(netHex: 0xf7d1f7))      
+        } */
+
+        if notification.type == 2 {
+            cell.setupFanpage()
+        }
+
+        Global.notificationColorArray.shuffle()
+
+        //let randomIndex = Int(arc4random_uniform(UInt32(Global.notificationColorArray.count)))        
+
+        //let randomIndex = Int(arc4random_uniform(UInt32(Global.pasterColorArray.count)))        
+
+        gradient = gr.getPastelGradient()        
+        gradient.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
+        cell.layer.insertSublayer(gradient, at: 0)
+
+        //cell.backgroundColor = Global.notificationColorArray[randomIndex]
     
         return cell
     }
@@ -236,10 +291,24 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
         var size = CGSize()
+        var height = CGFloat()
 
-        let height = (self.frame.width - 16 - 16) * 9 / 16
+        let index = indexPath.item
+        let notification:GamvesNotification = Global.notifications[index]
+
+        if notification.type == 1 { //video
+
+            height = (self.frame.width - 16 - 16) * 9 / 16
             
-        size = CGSize(width: self.frame.width, height: height + 16 + 88)
+            size = CGSize(width: self.frame.width, height: height + 16 + 88)        
+
+        } else if notification.type == 2 { //fanpage
+
+            height = fanpageHeight
+            
+            size = CGSize(width: self.frame.width, height: height)
+
+        }        
         
         return size //CGSize(width: self.frame.width, height: 100)
     }
@@ -247,36 +316,43 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let layout = UICollectionViewFlowLayout()
-        
+
         let index = indexPath.item
-        let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
-        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
-    
-        print(chatfeed.chatId)
+        let notification:GamvesNotification = Global.notifications[index]
+
+        if notification.posterId != PFUser.current()?.objectId {
         
-        let isVideoChat:Bool = chatfeed.isVideoChat! as Bool
+            let index = indexPath.item
+            let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
+            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
         
-        if isVideoChat
-        {
+            print(chatfeed.chatId)
             
-            let chatId = chatfeed.chatId! as Int
-            print(chatId)
-            var video = VideoGamves()
-                
-            video = Global.chatVideos[chatId]!
+            let isVideoChat:Bool = chatfeed.isVideoChat! as Bool
             
-            print(video.ytb_videoId)
-            
-            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
-            
-            let videoLauncher = VideoLauncher()
-            videoLauncher.showVideoPlayer(videoGamves: video)
-            
-        } else
-        {
-            if self.homeController != nil
+            if isVideoChat
             {
-                self.homeController?.openChat(room: chatfeed.room!, chatId: chatfeed.chatId!, users: chatfeed.users!)
+                
+                let chatId = chatfeed.chatId! as Int
+                print(chatId)
+                var video = VideoGamves()
+                    
+                video = Global.chatVideos[chatId]!
+                
+                print(video.ytb_videoId)
+                
+                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
+                
+                let videoLauncher = VideoLauncher()
+                videoLauncher.showVideoPlayer(videoGamves: video)
+                
+            } else
+            {
+                if self.homeController != nil
+                {
+                    self.homeController?.openChat(room: chatfeed.room!, chatId: chatfeed.chatId!, users: chatfeed.users!)
+                }
+                
             }
             
         }

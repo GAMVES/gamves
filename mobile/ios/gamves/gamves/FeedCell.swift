@@ -73,6 +73,18 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         })
         
         self.addSubview(floaty)
+
+        /*let homeImage = "background"
+        let image = UIImage(named: homeImage)        
+
+        self.collectionView.backgroundView = UIImageView(image: image!)*/
+        
+        let homeImage = "background_horizontal"
+        let image = UIImage(named: homeImage)
+        
+        self.collectionView.backgroundView = UIImageView(image: image!)
+        
+        
     }
     
     
@@ -271,7 +283,37 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             
         } else {
             cell.badgeLabel.isHidden = true
-        }
+        } 
+
+
+        //let gr = Gradients()        
+        //var gradient : CAGradientLayer = CAGradientLayer()
+        
+        /*let gr = Gradients()        
+        let randomIndex = Int(arc4random_uniform(UInt32(gr.colors.count)))
+        let descgradient = Array(gr.colors)[randomIndex].key
+        if gr.colors[descgradient] != nil
+        {
+            let gradient: CAGradientLayer  = gr.getGradientByDescription(descgradient)
+            gradient.frame = CGRect(x: 0, y: 0,width: cell.frame.width, height: cell.frame.height) //cellC.image.bounds
+            cell.layer.insertSublayer(gradient, at: 0)            
+        }*/
+
+        //cell.backgroundColor = Global.notificationColorArray[randomIndex]  
+
+        //gradient = gr.getPastelGradient(randomIndex) 
+        //gradient.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
+        //cell.layer.insertSublayer(gradient, at: 0)       
+
+        let gr = Gradients()
+        
+        var gradient : CAGradientLayer = CAGradientLayer()
+
+        //let randomIndex = Int(arc4random_uniform(UInt32(Global.pasterColorArray.count)))        
+
+        gradient = gr.getPastelGradient()        
+        gradient.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
+        cell.layer.insertSublayer(gradient, at: 0)
         
         return cell
     }

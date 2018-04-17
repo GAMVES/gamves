@@ -19,14 +19,14 @@ class CategoryTableCollCell: UITableViewCell, UIScrollViewDelegate {
 	lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.white
+        //cv.backgroundColor = UIColor.white
         //cv.delegate = self
         return cv
     }()
     
     let cellBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        //view.backgroundColor = UIColor.white
         return view
     }()
 
@@ -58,6 +58,11 @@ class CategoryTableCollCell: UITableViewCell, UIScrollViewDelegate {
             self.cellBackgroundView.layer.insertSublayer(gradient, at: 0)
             self.cellBackgroundView.alpha = 0.8
         }
+        
+        collectionView.layer.backgroundColor = UIColor.clear.cgColor
+
+        //self.collectionView.backgroundView?.alpha = 0        
+        //self.collectionView.backgroundColor = UIColor.white
         
     }
     
@@ -101,7 +106,11 @@ extension CategoryTableCollCell {
         
         //collectionView.delegate = delegate
         
-        collectionView.backgroundColor = UIColor.gamvesBackgoundColor
+        //collectionView.backgroundView?.alpha = 0
+        
+        //collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundView?.isHidden = true
+        
         
         collectionView.reloadData()
     }

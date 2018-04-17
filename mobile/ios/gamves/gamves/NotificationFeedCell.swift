@@ -12,7 +12,7 @@ import PulsingHalo
 
 class NotificationFeedCell: BaseCell {
     
-    var checked = Bool()
+    var checked = Bool()     
     
     let thumbnailImageView: CustomImageView = {
         let imageView = CustomImageView()
@@ -23,7 +23,7 @@ class NotificationFeedCell: BaseCell {
     
     let rowView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        //view.backgroundColor = UIColor.white
         return view
     }()
     
@@ -36,18 +36,28 @@ class NotificationFeedCell: BaseCell {
     }()
     
     let labelsView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.white
+        let view = UIView()        
         return view
     }()
     
     let notificationName: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18)
+        let label = UILabel()        
+        label.font = UIFont.boldSystemFont(ofSize: 22)
         return label
+    }()
+
+    let labelsTimeView: UIView = {
+        let view = UIView()        
+        return view
     }()
     
     let notficationDatePublish: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 10)
+        return label
+    }()
+
+    let notficationTimeElapsed: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 10)
         return label
@@ -63,7 +73,7 @@ class NotificationFeedCell: BaseCell {
     
     let separatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.lightGray        
         return view
     }()
     
@@ -72,11 +82,15 @@ class NotificationFeedCell: BaseCell {
         view.isHidden = true
         return view
     }()
+
+    var checkLabel = UILabel()
     
     var titleLabelHeightConstraint: NSLayoutConstraint?
     
     override func setupViews()
-    {
+    {             
+
+        //self.backgroundColor = randomPastelColor
         
         addSubview(thumbnailImageView)
         addSubview(rowView)
@@ -84,9 +98,9 @@ class NotificationFeedCell: BaseCell {
         
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: thumbnailImageView)
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: rowView)
-        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: separatorView)
+        addConstraintsWithFormat("H:|[v0]|", views: separatorView)
         
-        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(50)]-10-[v2(1)]|",
+        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(50)]-8-[v2(1)]|",
                                  views: thumbnailImageView, rowView, separatorView)
         
         rowView.addSubview(userProfileImageView)
@@ -99,25 +113,31 @@ class NotificationFeedCell: BaseCell {
         rowView.addConstraintsWithFormat("V:|[v0(50)]|", views: labelsView)
         
         labelsView.addSubview(notificationName)
-        labelsView.addSubview(notficationDatePublish)
+        labelsView.addSubview(labelsTimeView)             
         
         labelsView.addConstraintsWithFormat("H:|-10-[v0]|", views: notificationName)
         labelsView.addConstraintsWithFormat("V:|[v0(25)]|", views: notificationName)
+
+        labelsView.addConstraintsWithFormat("H:|[v0]|", views: labelsTimeView)
+        labelsView.addConstraintsWithFormat("V:|-25-[v0(25)]|", views: labelsTimeView)
+
+        labelsTimeView.addSubview(notficationDatePublish)
+        labelsTimeView.addSubview(notficationTimeElapsed)  
         
-        labelsView.addConstraintsWithFormat("H:|-10-[v0]|", views: notficationDatePublish)
-        labelsView.addConstraintsWithFormat("V:|-25-[v0(25)]|", views: notficationDatePublish)
+        labelsView.addConstraintsWithFormat("V:|[v0(25)]|", views: notficationDatePublish)
+        labelsView.addConstraintsWithFormat("V:|[v0(25)]|", views: notficationTimeElapsed)
+
+        labelsView.addConstraintsWithFormat("H:|-10-[v0]-10-[v1]-10-|", views: notficationDatePublish, notficationTimeElapsed)
         
         self.separatorView.backgroundColor = UIColor.lightGray
         
-        self.checkView = UIView()
+        self.checkView = UIView()        
         
-        var checkLabel = UILabel()
-        
-        checkLabel =  Global.createCircularLabel(text: "New", size: 60, fontSize: 20.0, borderWidth: 3.0, color: UIColor.red)
+        self.checkLabel =  Global.createCircularLabel(text: "New", size: 60, fontSize: 20.0, borderWidth: 3.0, color: UIColor.red)
         
         let haloCheck = PulsingHaloLayer()
-        haloCheck.position.x = checkLabel.center.x
-        haloCheck.position.y = checkLabel.center.y
+        haloCheck.position.x = self.checkLabel.center.x
+        haloCheck.position.y = self.checkLabel.center.y
         haloCheck.haloLayerNumber = 5
         haloCheck.backgroundColor = UIColor.white.cgColor
         haloCheck.radius = 100
@@ -139,9 +159,15 @@ class NotificationFeedCell: BaseCell {
         
         self.checkView.addSubview(checkLabel)
         self.checkView.addConstraintsWithFormat("H:|[v0(60)]|", views: checkLabel)
-        self.checkView.addConstraintsWithFormat("V:|[v0(60)]|", views: checkLabel)
-        
+        self.checkView.addConstraintsWithFormat("V:|[v0(60)]|", views: checkLabel)        
         
     }
-    
+
+    func setupFanpage() {
+
+        addConstraintsWithFormat("V:|-20-[v0(80)]-8-[v1(1)]|",
+                                 views: rowView, separatorView)
+        
+    }    
+        
 }

@@ -11,14 +11,14 @@ import UIKit
 
 class MessageCell: BaseCell {
     
-    override var isHighlighted: Bool {
+    /*override var isHighlighted: Bool {
         didSet {
             backgroundColor = isHighlighted ? UIColor(red: 0, green: 134/255, blue: 249/255, alpha: 1) : UIColor.white
             nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
             timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
             messageLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
         }
-    }
+    }*/
 
     var profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -98,8 +98,20 @@ class MessageCell: BaseCell {
         return imageView
     }()
     
+     /*var gradientView: UIView = {
+        let view = UIView()        
+        return view
+    }()*/
+
+    //var gl:CAGradientLayer!
+
     override func setupViews() {
         
+        //addSubview(gradientView)
+        //addConstraintsWithFormat("H:|[v0]|", views: gradientView)
+        //addConstraintsWithFormat("V:|[v0]|", views: gradientView)
+
+
         addSubview(profileImageView)
         addSubview(dividerLineView)
         
@@ -110,12 +122,26 @@ class MessageCell: BaseCell {
         
         addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        addConstraintsWithFormat("H:|-82-[v0]-82-|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
+        addConstraintsWithFormat("H:|[v0]|", views: dividerLineView)
+        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)   
+
+        let clear = UIColor(white: 1, alpha: 0).cgColor
+        let gamvesBackgoundColor = UIColor.gamvesBackgoundColor.cgColor
+
+        /*self.gl = CAGradientLayer()
+        self.gl.colors = [clear, gamvesBackgoundColor]
+        self.gl.locations = [0.0, 1.0] 
+
+        self.gl.frame = self.frame
+
+        self.layer.insertSublayer(gl, at: 0)  */                    
+            
+        //.insertSublayer(gradient, at: 0)
         
     }
     
     fileprivate func setupContainerView() {
+        
         let containerView = UIView()
         addSubview(containerView)
         
@@ -154,6 +180,10 @@ class MessageCell: BaseCell {
         
         containerView.addConstraintsWithFormat("H:|[v0(20)]|", views: self.pictureIconView)
         containerView.addConstraintsWithFormat("V:|-28-[v0(20)]|", views: self.pictureIconView)
+
+
+       
+
         
 
     }

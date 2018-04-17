@@ -138,7 +138,12 @@ UICollectionViewDelegateFlowLayout {
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)           
         self.view.addConstraintsWithFormat("V:|-coverHeight-[v0]|", views: self.collectionView,metrics: metricsCoverView)
         
-        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
+        //self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
+
+        let homeImage = "background_vertical"
+        let image = UIImage(named: homeImage)        
+
+        self.collectionView.backgroundView = UIImageView(image: image!)
         
     }
 
@@ -314,6 +319,16 @@ UICollectionViewDelegateFlowLayout {
         cell.userProfileImageView.image = fanpagesGamves[indexPath.row].icon_image
         
         //cell.subtitleTextView.text = fanpagesGamves[indexPath.row].about
+
+        let gr = Gradients()
+        
+        var gradient : CAGradientLayer = CAGradientLayer()
+
+        //let randomIndex = Int(arc4random_uniform(UInt32(Global.pasterColorArray.count)))        
+
+        gradient = gr.getPastelGradient()        
+        gradient.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
+        cell.layer.insertSublayer(gradient, at: 0)
 
         return cell
     }
