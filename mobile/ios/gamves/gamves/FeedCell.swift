@@ -4,8 +4,7 @@
 //  FeedCell.swift
 //  youtube
 //
-//  Created by Brian Voong on 7/3/16.
-//  Copyright © 2016 letsbuildthatapp. All rights reserved.
+//  Created by Jose Vigil on 12/12/17.
 //
 
 import UIKit

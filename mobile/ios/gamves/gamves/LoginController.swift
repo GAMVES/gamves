@@ -2,8 +2,7 @@
 //  LoginController.swift
 //  gameofchats
 //
-//  Created by Brian Voong on 6/24/16.
-//  Copyright © 2016 letsbuildthatapp. All rights reserved.
+//  Created by Jose Vigil on 12/12/17.
 //
 
 import UIKit
