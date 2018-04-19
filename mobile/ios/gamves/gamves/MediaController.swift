@@ -943,28 +943,29 @@ private extension MediaController {
                 }
                 chooseExistingAction.setValue(UIImage(named: "sdcard"), forKey: "image")
                 
-                let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
-                    
-                    self.delegateSearch?.setVideoSearchType(type: UploadType.youtube)
-                    self.searchController.type = SearchType.isVideo
-                    self.searchController.searchSize = self.searchSize
-                    self.searchController.termToSearch = self.termToSearch
-                    self.searchController.delegateMedia = self.delegate
-                    self.searchController.delegateSearch = self.delegateSearch
-                    self.searchController.view.backgroundColor = UIColor.white
-                    self.navigationController?.navigationBar.tintColor = UIColor.white
-                    self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-                    self.navigationController?.pushViewController(self.searchController, animated: true)
-                    
-                }
-                searchExistingAction.setValue(UIImage(named: "download"), forKey: "image")
-                
                 actionSheet.addAction(takeVideoAction)
                 actionSheet.addAction(chooseExistingAction)
-                actionSheet.addAction(searchExistingAction)
                 
             }
         }
+        
+        let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
+            
+            self.delegateSearch?.setVideoSearchType(type: UploadType.youtube)
+            self.searchController.type = SearchType.isVideo
+            self.searchController.searchSize = self.searchSize
+            self.searchController.termToSearch = self.termToSearch
+            self.searchController.delegateMedia = self.delegate
+            self.searchController.delegateSearch = self.delegateSearch
+            self.searchController.view.backgroundColor = UIColor.white
+            self.navigationController?.navigationBar.tintColor = UIColor.white
+            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            self.navigationController?.pushViewController(self.searchController, animated: true)
+            
+        }
+        searchExistingAction.setValue(UIImage(named: "download"), forKey: "image")
+        
+        actionSheet.addAction(searchExistingAction)
         
         self.addCancelActionToSheet(actionSheet)
         

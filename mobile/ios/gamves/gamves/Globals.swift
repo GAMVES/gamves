@@ -13,6 +13,15 @@ import PopupDialog
 
 class Global: NSObject
 {
+  
+    static var listOfSwearWords = [String]()
+
+    static func setBadWordsArray(words: String)
+    {
+        self.listOfSwearWords = words.split(separator: "|").map(String.init)
+        
+        print(listOfSwearWords)
+    }
     
     static var pagesPageView = [UIViewController]()
 
@@ -421,6 +430,27 @@ class Global: NSObject
         })
         
     }   
+
+    static func loadConfigData() {
+
+        let configQuery = PFQuery(className:"Config")        
+        configQuery.getFirstObjectInBackground(block: { (config, error) in
+        
+            if error == nil
+            {   
+
+                let badWords = config!["badWords"] as! String
+                
+                self.setBadWordsArray(words: badWords)    
+            }
+        })
+
+    }
+
+    static func containsSwearWord(text: String, swearWords: [String]) -> Bool {
+        return swearWords
+            .reduce(false) { $0 || text.contains($1.lowercased()) }
+    }
 
 
     static func setTitle(title:String, subtitle:String) -> UIView
@@ -920,6 +950,8 @@ class Global: NSObject
             self.loadChatChannels()
 
             self.loadAdminUser()
+
+            self.loadConfigData()
             
             NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
         }

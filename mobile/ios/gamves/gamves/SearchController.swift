@@ -12,9 +12,9 @@ import AVFoundation
 import SwiftyJSON
 import NVActivityIndicatorView
 
-protocol VidewVideoProtocol {
+/*protocol VidewVideoProtocol {
     func openVideoById(id: Int)
-}
+}*/
 
 protocol TableViewCellDelegate : class {
     func button_1_tapped(_ sender: SearchGridImageCell)
@@ -80,7 +80,7 @@ class SearchController: UIViewController,
     UITableViewDelegate, UITableViewDataSource,
     UISearchResultsUpdating, UISearchBarDelegate,
     XMLParserDelegate,
-    VidewVideoProtocol,
+    //VidewVideoProtocol,
     UIBarPositioningDelegate,
     TableViewCellDelegate
 {   
@@ -141,6 +141,8 @@ class SearchController: UIViewController,
     var buttonAddRemove:UIButton!
     var buttonCancel:UIButton!
     var buttonClear:UIButton!
+
+    let cellHeight = 150
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -222,6 +224,12 @@ class SearchController: UIViewController,
         self.tableView.register(SearchGridImageCell.self, forCellReuseIdentifier: self.cellGallerySearch)
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//,x: 0, y: 0, width: 80.0, height: 80.0)
+
+        let homeImage = "background_vertical"
+        let image = UIImage(named: homeImage)        
+
+        self.tableView.backgroundView = UIImageView(image: image!)
+
         
     }
     
@@ -428,11 +436,24 @@ class SearchController: UIViewController,
             
                 var cellv = tableView.dequeueReusableCell(withIdentifier: self.cellVideoSearch) as! SearchVideoCell
                 
-                if let yVideo = self.videoDetailsDict[index] as! YVideo? {               
+                if let yVideo = self.videoDetailsDict[index] as! YVideo? {     
+
                     cellv.descLabel.text = yVideo.description
                     cellv.titleLabel.text = yVideo.title
+                    print(yVideo.duration)
                     cellv.timeLabel.text = yVideo.duration
-                    cellv.delegate = self
+                    cellv.cellHeight = self.cellHeight
+                    cellv.playImageButton.tag = index
+                    
+                    cellv.playImageButton.addTarget(self, action:#selector(playPause(button:)), for: .touchUpInside)
+
+                    var yv:YVideo = self.videoDetailsDict[index]!
+            
+                    let videoId = yv.videoId
+
+                    cellv.videoId = videoId
+                    
+                    //cellv.delegate = self
                     
                     if  yVideo.image != nil {
                         
@@ -518,6 +539,32 @@ class SearchController: UIViewController,
         }
         return cell
     }
+
+
+     func playPause(button: UIButton) {  
+    
+        let index = button.tag
+
+        let indexPath = IndexPath(item: index, section: 0)        
+
+        let cellv = tableView.cellForRow(at: indexPath) as! SearchVideoCell
+
+        //let rowid:Int = Int((sender.view?.tag)!) 
+
+        cellv.videoPlayer.isHidden = true
+
+        cellv.thumbnailImageView.isHidden = true
+
+        cellv.loadVideo()
+                
+
+        //if delegate != nil {
+            
+            //delegate?.openVideoById(id: rowid)
+
+        //}        
+
+    }
     
     func button_1_tapped(_ sender: SearchGridImageCell){
         guard let tappedIndexPath = tableView.indexPath(for: sender) else { return }
@@ -584,12 +631,11 @@ class SearchController: UIViewController,
         
             height = 40
         
-        } else {
-            
+        } else {            
             
             if type == SearchType.isVideo {
                 
-                height = 90
+                height = CGFloat(self.cellHeight)
                 
             } else if type == SearchType.isImageGallery {
                 
@@ -754,7 +800,7 @@ class SearchController: UIViewController,
         
         let googleURL = "http://suggestqueries.google.com/complete/search?output=toolbar&hl=tr&ie=utf8&oe=utf8&q="
         let searchURL = URL(string: googleURL + stringToSearch.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!)
-        parser = XMLParser(contentsOf: searchURL!)!
+        self.parser = XMLParser(contentsOf: searchURL!)!
         
         self.parser.delegate = self as! XMLParserDelegate
         let success:Bool = self.parser.parse()
@@ -925,17 +971,17 @@ class SearchController: UIViewController,
     }
 
 
-    func openVideoById(id: Int)
-    {
+    func openVideoById(id: Int) {
         
         if let yVideo = videoDetailsDict[id] as! YVideo? {
 
             let videoId = yVideo.videoId
-            var youTubePlayerController = YouTubePlayerController()
+
+            /*var youTubePlayerController = YouTubePlayerController()
             youTubePlayerController.videoId = videoId
             navigationController?.navigationBar.tintColor = UIColor.white
             navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-            navigationController?.pushViewController(youTubePlayerController, animated: true)         
+            navigationController?.pushViewController(youTubePlayerController, animated: true)*/
         }
         
     }

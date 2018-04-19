@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import YouTubePlayer
 
 class SearchVideoCell: UITableViewCell {
     
@@ -35,31 +36,57 @@ class SearchVideoCell: UITableViewCell {
     }()
     
     var titleLabel: UILabel = {
-        let label = UILabel()
-        //label.text = "Mark Zuckerberg"
-        label.font = UIFont.systemFont(ofSize: 16)
-        //label.backgroundColor = UIColor.cyan
-        return label
-    }()
-    
-    let descLabel: UILabel = {
-        let label = UILabel()
-        //label.text = "Your friend's message and something else..."
-        label.textColor = UIColor.darkGray
-        label.font = UIFont.systemFont(ofSize: 13)
+        let label = UILabel()                
+        label.font = UIFont.boldSystemFont(ofSize: 16)        
+        label.textAlignment = .center
+        label.numberOfLines = 3
         //label.backgroundColor = UIColor.green
         return label
     }()    
+    
+    let descLabel: UILabel = {
+        let label = UILabel()        
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.numberOfLines = 3
+        //label.backgroundColor = UIColor.cyan  
+        return label
+    }()    
+
+    let timeView: UIView = {
+        let view = UIView()        
+        view.backgroundColor = UIColor.gray.withAlphaComponent(0.9)
+        view.layer.cornerRadius = 5
+        return view
+    }()
 
     let timeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.darkGray
-        label.font = UIFont.systemFont(ofSize: 13)
-        //label.backgroundColor = UIColor.gray
+        label.textColor = UIColor.red        
+        label.font = UIFont.boldSystemFont(ofSize: 15)         
+        label.textAlignment = .center
         return label
     }()
+
+    var cellHeight = Int()
+
+    var videoId = String()
     
-    var delegate:VidewVideoProtocol?
+    //var delegate:VidewVideoProtocol?
+
+    var videoPlayer:YouTubePlayerView!
+
+    let playImageButton: UIButton = {
+        let playButton = UIButton()
+        let image = UIImage(named: "play")
+        playButton.setImage(image, for: .normal)
+        //playButton.addTarget(self, action:#selector(playPause(button:)), for: .touchUpInside)
+        playButton.contentMode = .scaleAspectFill
+        playButton.isUserInteractionEnabled = true
+        playButton.layer.masksToBounds = true
+        return playButton
+    }()
+    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)      
@@ -72,59 +99,92 @@ class SearchVideoCell: UITableViewCell {
         self.setupViews()
     }
     
-    func setupViews()
-    {
+    func setupViews() {
+
+        let containerView = UIView()
 
         addSubview(thumbnailImageView)
-        addSubview(dividerLineView)               
+        addSubview(timeView)       
+        addSubview(playImageButton)
+        addSubview(containerView)
+        addSubview(dividerLineView)                     
         
-        setupContainerView()
-        
-        addConstraintsWithFormat("H:|-12-[v0(68)]", views: thumbnailImageView)
-        addConstraintsWithFormat("V:[v0(68)]", views: thumbnailImageView)
 
-        thumbnailImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(clickThumbnail)))       
+        let thumbnailWidth  = (120 * 16) / 9 
+
+        let metricsVideo = ["thumbnailWidth": thumbnailWidth, "cellHeight": 120 ]
+        
+        addConstraintsWithFormat("H:|-12-[v0(thumbnailWidth)][v1]|", views: thumbnailImageView, containerView, metrics: metricsVideo)
+        
+        addConstraintsWithFormat("V:[v0(cellHeight)]", views: thumbnailImageView, metrics: metricsVideo)
+        addConstraintsWithFormat("V:|-5-[v0]-5-|", views: containerView)
+
+        //thumbnailImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(clickThumbnail)))       
         
         addConstraint(NSLayoutConstraint(item: thumbnailImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)          
-    }
-    
-    func clickThumbnail(sender: UIPanGestureRecognizer)
-    {        
-        let rowid:Int = Int((sender.view?.tag)!)
-        if delegate != nil {
-            delegate?.openVideoById(id: rowid)
-        }        
-    }
-    
+        addConstraintsWithFormat("H:|[v0]|", views: dividerLineView)
+        addConstraintsWithFormat("V:|[v0(1)]|", views: dividerLineView)          
 
-    fileprivate func setupContainerView() {
-         let containerView = UIView()
+        let playerFrame = thumbnailImageView.frame
+        self.videoPlayer = YouTubePlayerView(frame: playerFrame)
+        addSubview(self.videoPlayer)
+        self.videoPlayer.isHidden = true    
+
+        let playX = (thumbnailWidth  / 2) - 25
+        let playY = (120  / 2) - 25
+
+        let metricsPlay = ["playX": playX, "playY": playY]    
+
+        addConstraintsWithFormat("H:|-playX-[v0(60)]|", views: playImageButton, metrics: metricsPlay)
+        addConstraintsWithFormat("V:|-playY-[v0(60)]|", views: playImageButton, metrics: metricsPlay)
+
+        let paddingtime = thumbnailWidth - 60
+
+        let metricsTime = ["paddingtime": paddingtime]
+
+        addConstraintsWithFormat("H:|-paddingtime-[v0(60)]|", views: timeView, metrics: metricsTime)
+        addConstraintsWithFormat("V:|-100-[v0(30)]|", views: timeView)
+
+        timeView.addSubview(timeLabel)
         
-        addSubview(containerView)
-        
-        addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
-        addConstraintsWithFormat("V:[v0(50)]", views: containerView)
-        
-        addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        timeView.addConstraintsWithFormat("H:|[v0]|", views: timeLabel)        
+        timeView.addConstraintsWithFormat("V:|-10-[v0]-20-|", views: timeLabel)        
+
+        //containerView.backgroundColor = UIColor.cyan                  
         
         containerView.addSubview(titleLabel)
-        containerView.addSubview(descLabel)
-        containerView.addSubview(timeLabel)       
+        containerView.addSubview(descLabel)        
         
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: titleLabel)
-        
-        containerView.addConstraintsWithFormat("V:|[v0][v1][v2]|", views: titleLabel, descLabel, timeLabel)
-        
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: descLabel)
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: timeLabel)
+        containerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: titleLabel)        
+        containerView.addConstraintsWithFormat("V:|[v0(80)][v1(40)]-30-|", views: titleLabel, descLabel)        
+        containerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: descLabel)
 
-        
+   }
+    
+    func loadVideo() {
+        print(self.videoId)
+        self.videoPlayer.loadVideoID(self.videoId)
     }
 
+   /*func playPause(button: UIButton) {
     
+        
+        //let rowid:Int = Int((sender.view?.tag)!)   
+
+        self.thumbnailImageView.isHidden = true   
+
+        self.videoPlayer.loadVideoID(self.videoId)
+                
+
+        //if delegate != nil {
+            
+            //delegate?.openVideoById(id: rowid)
+
+        //}        
+
+    }   */
+
     
 }
 

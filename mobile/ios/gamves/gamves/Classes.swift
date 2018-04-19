@@ -249,3 +249,11 @@ class UserStatistics {
     var data = String()
     var icon = UIImage()
 }
+
+
+class SuggestionSearch
+{
+    var id = Int()
+    var desc = String()
+    var icon = UIImage()
+}
