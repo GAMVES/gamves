@@ -20,7 +20,7 @@ class GamvesNotification {
     var description = String()
     var date = Date()
     var video = VideoGamves()
-    var fanpage = FanpageGamves()
+    var fanpage = GamvesFanpage()
     var type = Int()
     var posterId = String()
 }
@@ -139,14 +139,14 @@ class CategoryGamves {
     
     var cateobj:PFObject?
     
-    var fanpages = [FanpageGamves]()
+    var fanpages = [GamvesFanpage]()
     
     var selected = Bool()
     
     var order = Int()
 }
 
-class FanpageGamves {
+class GamvesFanpage {
 
     var fanpageId = Int()
     var cover   = String()

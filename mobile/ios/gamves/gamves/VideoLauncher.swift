@@ -312,7 +312,9 @@ class VideoLauncher: UIView, KeyboardDelegate {
         self.keyWindoHeight = (UIApplication.shared.keyWindow?.frame.size.height)!
 
         let videoUrl = videoGamves.s3_source
-        let videoObj = videoGamves.videoObj
+        let videoObj = videoGamves.videoObj        
+        
+        
         let videoId = videoObj?["videoId"] as! Int
         
         self.videoId = videoId

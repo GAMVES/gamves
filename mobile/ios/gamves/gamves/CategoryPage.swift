@@ -18,7 +18,7 @@ UICollectionViewDelegateFlowLayout {
     weak var delegate:CellDelegate?
 
     var categoryGamves = CategoryGamves()
-    var fanpagesGamves  = [FanpageGamves]()
+    var fanpagesGamves  = [GamvesFanpage]()
 
     let coverContainerView: UIView = {
         let view = UIView()
@@ -190,7 +190,7 @@ UICollectionViewDelegateFlowLayout {
         print("hola") 
         if ( delegate != nil )
         {
-            delegate?.setCurrentPage(current: 0, direction: UIPageViewControllerNavigationDirection.reverse, data: nil)
+            delegate?.setCurrentPage(current: 0, direction: -1, data: nil)
         }  
     }
 
@@ -344,11 +344,11 @@ UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let fanpage:FanpageGamves = fanpagesGamves[indexPath.row]
+        let fanpage:GamvesFanpage = fanpagesGamves[indexPath.row]
         
         if ( delegate != nil )
         {
-            delegate?.setCurrentPage(current: 2, direction: UIPageViewControllerNavigationDirection.forward, data: fanpage)
+            delegate?.setCurrentPage(current: 2, direction: 1, data: fanpage)
         }
     }
     

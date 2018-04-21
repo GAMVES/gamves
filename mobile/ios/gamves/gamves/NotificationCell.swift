@@ -34,7 +34,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
     
     let cellId = "cellId"
 
-    let fanpageHeight = CGFloat(90)
+    let fanpageHeight = CGFloat(90)    
     
     override func setupViews() {
         super.setupViews()
@@ -54,7 +54,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         self.registerLiveQuery()
         self.fetchNotification()
         
-        let homeImage = "background_vertical"
+        let homeImage = "background_horizontal"
         let image = UIImage(named: homeImage)
         
         self.collectionView.backgroundView = UIImageView(image: image!)
@@ -106,14 +106,29 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
                         if type == 1 { //video
 
                             let videoGamves = VideoGamves()
-                            let videoObj = notificationPF["video"] as? PFObject
+                            let videoObj:PFObject = (notificationPF["video"] as? PFObject)!
+
+                            do {
+                                try videoObj.fetchIfNeeded()
+                            } catch _ {
+                               print("There was an error fetching video poiner")         
+                            }
+
                             videoGamves.videoObj = videoObj
                             notification.video = videoGamves
+                            print(videoObj["title"] as! String)
                             
                         } else if type == 2 { //Fanpage
                             
-                            let fanpageGamves = FanpageGamves()
+                            let fanpageGamves = GamvesFanpage()
                             let fanpageObj = notificationPF["fanpage"] as? PFObject
+
+                            do {
+                                try fanpageObj?.fetchIfNeeded()
+                            } catch _ {
+                               print("There was an error fetching fanpage poiner")         
+                            }
+
                             fanpageGamves.fanpageObj = fanpageObj
                             notification.fanpage = fanpageGamves
                         }
@@ -320,44 +335,45 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         let index = indexPath.item
         let notification:GamvesNotification = Global.notifications[index]
 
+        //Everything here is wrong 
+
         if notification.posterId != PFUser.current()?.objectId {
-        
-            let index = indexPath.item
-            let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
-            let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
-        
-            print(chatfeed.chatId)
-            
-            let isVideoChat:Bool = chatfeed.isVideoChat! as Bool
-            
-            if isVideoChat
-            {
+
+            if notification.type == 1 {
+
+                let videoPF:PFObject = notification.video.videoObj as! PFObject
                 
-                let chatId = chatfeed.chatId! as Int
-                print(chatId)
-                var video = VideoGamves()
-                    
-                video = Global.chatVideos[chatId]!
-                
-                print(video.ytb_videoId)
-                
+                print(videoPF.objectId)
+                print(videoPF["title"] as! String)
+
                 NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
-                
-                let videoLauncher = VideoLauncher()
-                videoLauncher.showVideoPlayer(videoGamves: video)
-                
-            } else
-            {
-                if self.homeController != nil
-                {
-                    self.homeController?.openChat(room: chatfeed.room!, chatId: chatfeed.chatId!, users: chatfeed.users!)
-                }
-                
-            }
-            
-        }
+
+                Global.getGamvesVideoFromObject(videoPF: videoPF, completionHandler: { (videoGamves) in          
+                    
+                    let videoId = videoPF["videoId"] as! Int
+
+                    print(videoId)
+
+                    let videoLauncher = VideoLauncher()
+                    videoLauncher.showVideoPlayer(videoGamves: videoGamves)
+
+                })          
+
+            } else if notification.type == 2 {
+
+                let fanpage = notification.fanpage
+
+                self.homeController?.switchToMenuIndex(index: 0)        
         
+                //Moving to selected GamveFampage is not woking, commenting.
+
+                /*print(fanpage.fanpageObj?.objectId)                
+                Global.fanpageData = fanpage                          
+                print(fanpage.fanpageObj?.objectId)
+                self.homeController?.setCurrentPage(current: 2, direction: 1, data: fanpage)*/
+
+            }           
+        }        
     }
-
-
 }
+

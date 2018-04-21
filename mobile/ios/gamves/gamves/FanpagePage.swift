@@ -26,7 +26,7 @@ class FanpagePage: UIViewController,
     
     weak var delegate:CellDelegate?       
     
-    var fanpageGamves  = FanpageGamves()
+    var fanpageGamves  = GamvesFanpage()
     var videosGamves  = [VideoGamves]()
     var fanpageImages = [FanpageImageGamves]()
     
@@ -366,7 +366,7 @@ class FanpagePage: UIViewController,
                 self.timer?.invalidate()
             }
             
-            delegate?.setCurrentPage(current: 0, direction: UIPageViewControllerNavigationDirection.reverse, data: nil)
+            delegate?.setCurrentPage(current: 0, direction: -1, data: nil)
         }  
 
         self.labelEmptyMessage.isHidden = true
@@ -392,10 +392,10 @@ class FanpagePage: UIViewController,
         self.coverContainerView.bringSubview(toFront: self.favoriteButton)
     }
     
-    func setFanpageGamvesData(data: FanpageGamves)
+    func setFanpageGamvesData(data: GamvesFanpage)
     {              
         
-        self.fanpageGamves = data as FanpageGamves
+        self.fanpageGamves = data as GamvesFanpage
         
         print(fanpageGamves.fanpageObj?.objectId)
         
@@ -547,7 +547,7 @@ class FanpagePage: UIViewController,
         
     }
 
-    func getFanpageVideos(fan:FanpageGamves)
+    func getFanpageVideos(fan:GamvesFanpage)
     {
 
         self.activityVideoView.startAnimating()

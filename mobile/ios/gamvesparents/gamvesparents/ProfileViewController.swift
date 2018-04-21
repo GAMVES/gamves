@@ -1403,13 +1403,21 @@ class ProfileViewController: UIViewController,
         
         var type = Int()
         print(self.yourTypeId)
+
+
         if self.yourTypeId == Global.REGISTER_FATHER { //"Father" {
+        
             type = Global.SPOUSE_MOTHER
             print(type)
-        } else if self.yourTypeId == Global.SPOUSE_MOTHER { //"Mother" {
-            type = Global.REGISTER_FATHER
-            print(type)
-        }
+
+        } else if self.yourTypeId == Global.REGISTER_MOTHER { //"Mother" {
+
+            type = Global.SPOUSE_FATHER
+            print(type)            
+                
+        } 
+
+
         let userTypeObj:PFObject = (Global.userTypes[type]?.userTypeObj)!
         
         //I add the level of all sons

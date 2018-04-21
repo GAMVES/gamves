@@ -182,7 +182,7 @@ class ChatFeedMethods: NSObject {
                             {
                                 for qvideoinfo in videos
                                 {
-                                    let videoGamves = VideoGamves()
+                                    /*let videoGamves = VideoGamves()
                                     
                                     let video = VideoGamves()
                                     
@@ -230,7 +230,13 @@ class ChatFeedMethods: NSObject {
                                             Global.chatVideos[chatId] = videoGamves
                                         }
 
-                                    })                                    
+                                    })*/
+                                    
+                                    Global.getGamvesVideoFromObject(videoPF: qvideoinfo, completionHandler: { (videoGamves) in
+                                        
+                                        Global.chatVideos[chatId] = videoGamves
+                                    })
+                                
                                 }
                             }
                         }

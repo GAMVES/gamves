@@ -28,7 +28,7 @@ SelectorProtocol {
     var homeController: HomeController?
     
     var category = CategoryGamves()
-    var fanpage = FanpageGamves()
+    var fanpage = GamvesFanpage()
     var current : AnyObject?
     
 	let scrollView: UIScrollView = {
@@ -475,7 +475,7 @@ SelectorProtocol {
         
     }
     
-    func fanpageSelected(fanpage: FanpageGamves) {
+    func fanpageSelected(fanpage: GamvesFanpage) {
         
         self.fanpage = fanpage
         

@@ -11,7 +11,7 @@ import Parse
 
 protocol SelectorProtocol {
     func categorySelected(category : CategoryGamves)
-    func fanpageSelected(fanpage : FanpageGamves)
+    func fanpageSelected(fanpage : GamvesFanpage)
     func reoadFanpageCollection()
 }
 
@@ -28,7 +28,7 @@ class SelectorView: BaseCell,
     
     var categoriesGamves = [CategoryGamves]()
     
-    var gamvesFanpage = [FanpageGamves]()
+    var gamvesFanpage = [GamvesFanpage]()
     
     var delegateSelector:SelectorProtocol!
 
@@ -125,7 +125,7 @@ class SelectorView: BaseCell,
 
         if category.name == "PERSONAL" {
 
-            self.gamvesFanpage = [FanpageGamves]()
+            self.gamvesFanpage = [GamvesFanpage]()
 
             if let userId = PFUser.current()?.objectId {
 

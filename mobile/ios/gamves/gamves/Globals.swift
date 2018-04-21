@@ -1226,6 +1226,58 @@ class Global: NSObject
         }
     }
     
+    static func getGamvesVideoFromObject(videoPF:PFObject, completionHandler : @escaping (_ video:VideoGamves) -> ()) {
+        
+        let video = VideoGamves()      
+        
+        video.title                     = videoPF["title"] as! String
+        video.description               = videoPF["description"] as! String
+
+        var videothum = videoPF["thumbnail"] as! PFFile
+
+        video.thumbnail                 = videothum
+        video.categoryName              = videoPF["categoryName"] as! String
+        video.videoId                   = videoPF["videoId"] as! Int
+        video.s3_source                 = videoPF["s3_source"] as! String
+        video.ytb_thumbnail_source      = videoPF["ytb_thumbnail_source"] as! String
+        video.ytb_videoId               = videoPF["ytb_videoId"] as! String
+        
+        let dateStr = videoPF["ytb_upload_date"] as! String
+        let dateDouble = Double(dateStr)
+        let date = NSDate(timeIntervalSince1970: dateDouble!)
+        
+        video.ytb_upload_date           = date as Date
+        video.ytb_view_count            = videoPF["ytb_view_count"] as! Int
+        video.ytb_tags                  = videoPF["ytb_tags"] as! [String]
+        
+        let durStr = videoPF["ytb_upload_date"] as! String
+        let durDouble = Double(durStr)
+        video.ytb_duration              = durDouble!
+        
+        video.ytb_categories            = videoPF["ytb_categories"] as! [String]
+        //video.ytb_like_count            = videoPF["ytb_like_count"] as! Int
+        video.order                     = videoPF["order"] as! Int
+        video.fanpageId                 = videoPF["fanpageId"] as! Int
+        
+        video.posterId                  = videoPF["posterId"] as! String
+        video.posterName                = videoPF["poster_name"] as! String
+        
+        video.published                 = videoPF.createdAt as! Date
+        
+        video.videoObj = videoPF
+                                           
+        videothum.getDataInBackground(block: { (data, error) in
+            
+            if error == nil {
+                
+                video.image = UIImage(data: data!)!
+                
+                completionHandler(video)                    
+            }
+
+        }) 
+    }
+
     
     static func generateFileName() -> String
     {
