@@ -75,11 +75,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
         print("aparece")
-        
     }
-      
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
@@ -217,7 +214,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
             
             print(category?.name)
             
-            delegate?.setCurrentPage(current: 1, direction: UIPageViewControllerNavigationDirection.forward, data: category)
+            delegate?.setCurrentPage(current: 1, direction: 1, data: category)
         }
     }
 
@@ -400,7 +397,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                 //Download Images
                                 Downloader.loadFanpageImages(fanpage: fanpage)
                                 
-                                let fan = FanpageGamves()
+                                let fan = GamvesFanpage()
                                 
                                 let fpObj:PFObject = fanpage
                                 
@@ -487,7 +484,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
 
 protocol CellDelegate : class
 {
-    func setCurrentPage(current: Int, direction: UIPageViewControllerNavigationDirection, data:AnyObject?)
+    func setCurrentPage(current: Int, direction: Int, data:AnyObject?)
 }
 
 extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -558,18 +555,17 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         print(category.name)
         
-        let fanpage:FanpageGamves = category.fanpages[indexPath.row]
+        let fanpage:GamvesFanpage = category.fanpages[indexPath.row]
             
         
         print(fanpage.fanpageObj?.objectId)
         
         Global.fanpageData = fanpage
         
-        if ( delegate != nil )
-        {
+        if ( delegate != nil ) {
             
             print(fanpage.fanpageObj?.objectId)
-            delegate?.setCurrentPage(current: 2, direction: UIPageViewControllerNavigationDirection.forward, data: fanpage)
+            delegate?.setCurrentPage(current: 2, direction: 1, data: fanpage)
         }
         
     }

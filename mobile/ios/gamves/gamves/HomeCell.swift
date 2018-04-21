@@ -9,7 +9,7 @@
 import UIKit
 import Floaty
 
-class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDelegate, CellDelegate {
+    class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDelegate, CellDelegate {     
     
     var homeController: HomeController?
     
@@ -150,13 +150,13 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
                         
                             category.setCategoryData()                            
                         
-                    } else if (data?.isKind(of: FanpageGamves.self))!
+                    } else if (data?.isKind(of: GamvesFanpage.self))!
                     {
                         print("fanpage")
                         
-                        var fanpagePage = viewController as! FanpagePage
+                        let fanpagePage = viewController as! FanpagePage
                         
-                        var fanpage = data as! FanpageGamves
+                        let fanpage = data as! GamvesFanpage
                         
                         //print(fanpage.fanpageObj?.objectId)
                         
@@ -178,15 +178,23 @@ class HomeCell: BaseCell, UIPageViewControllerDataSource, UIPageViewControllerDe
     }
 
     
-    func setCurrentPage(current: Int, direction: UIPageViewControllerNavigationDirection, data: AnyObject?)
-    {
-        //let fanpage = data as! FanpageGamves
+    func setCurrentPage(current: Int, direction: Int, data: AnyObject?)
+    {        
+
+        var navDirection = UIPageViewControllerNavigationDirection(rawValue: 0)
         
-        //print(fanpage.fanpageObj?.objectId)
+        if direction == 1 {
+
+            navDirection = .forward
+
+        } else if direction == -1 {
+
+            navDirection = .reverse
+        }
         
-        scrollToViewController(viewController: pages[current], direction: direction, data: data)
+        scrollToViewController(viewController: pages[current], direction: navDirection!, data: data)
         
-        self.pageController?.setViewControllers([self.pages[current]], direction: .forward, animated: true, completion: nil)
+        self.pageController?.setViewControllers([self.pages[current]], direction: navDirection!, animated: true, completion: nil)
     }
 
 

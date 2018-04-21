@@ -79,7 +79,7 @@ ChooseAvatarProtocol
     var initAbout = String()
 
     var isEdited = Bool()    
-    var fan:FanpageGamves!
+    var fan:GamvesFanpage!
 
     var fanpagePF:PFObject!
     var categoryPF:PFObject!
@@ -727,7 +727,7 @@ ChooseAvatarProtocol
         self.nameTextField.becomeFirstResponder()
     }
     
-    func fanpageSelected(fanpage : FanpageGamves){} //NA
+    func fanpageSelected(fanpage : GamvesFanpage){} //NA
     
     func reoadFanpageCollection() {}
     

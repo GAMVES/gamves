@@ -174,7 +174,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func setupNavBarButtons() {
+ 
         let searchImage = UIImage(named: "search_icon")?.withRenderingMode(.alwaysOriginal)
+
         let searchBarButtonItem = UIBarButtonItem(image: searchImage, style: .plain, target: self, action: #selector(handleSearch))
         
         let moreButton = UIBarButtonItem(image: UIImage(named: "nav_more_icon")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleMore))
@@ -215,8 +217,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.pushViewController(profileController, animated: true)
     }
 
-    func controllHomeCell() {
-
+    func getHomeCell() -> HomeCell 
+    {
         let identifier: String       
         identifier = homeCellId
         
@@ -224,8 +226,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         let cell = collectionView?.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
         
-        cellHome = cell as! HomeCell    
+        cellHome = cell as! HomeCell
         
+        return cellHome
     }
     
     func handleSearch() {
@@ -239,6 +242,17 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         self.reloadFeed(index: menuIndex)
     }
     
+    func switchToMenuIndex(index: Int) {
+
+        self.scrollToMenuIndex(index)
+
+        let indexPath = IndexPath(item: Int(index), section: 0)
+        menuBar.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionViewScrollPosition())
+        
+        self.setTitleForIndex(Int(index))
+       self.reloadFeed(index: Int(index))
+    }
+
     fileprivate func setTitleForIndex(_ index: Int) {
         if let titleLabel = navigationItem.titleView as? UILabel {
             titleLabel.text = "  \(titles[index])"
@@ -523,9 +537,19 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 }
             }
         }
+
         alertController.addAction(openAction)
         
         self.present(alertController, animated: true, completion: nil)
+    }
+
+
+    func setCurrentPage(current: Int, direction: Int, data: GamvesFanpage) {
+
+        let homeCell = getHomeCell()
+        
+        homeCell.setCurrentPage(current: current, direction: direction, data: data)
+        
     }
     
 }
