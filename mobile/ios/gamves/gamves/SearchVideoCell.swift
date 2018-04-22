@@ -56,15 +56,18 @@ class SearchVideoCell: UITableViewCell {
     let timeView: UIView = {
         let view = UIView()        
         view.backgroundColor = UIColor.gray.withAlphaComponent(0.9)
+        //view.backgroundColor = UIColor.green
         view.layer.cornerRadius = 5
         return view
     }()
 
     let timeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = UIColor.red        
+        label.textColor = UIColor.white
         label.font = UIFont.boldSystemFont(ofSize: 15)         
-        label.textAlignment = .center
+        //label.font = UIFont.systemFont(ofSize: 15)
+        //label.textAlignment = .center
+        label.textAlignment = NSTextAlignment.center
         return label
     }()
 
@@ -131,8 +134,8 @@ class SearchVideoCell: UITableViewCell {
         addSubview(self.videoPlayer)
         self.videoPlayer.isHidden = true    
 
-        let playX = (thumbnailWidth  / 2) - 25
-        let playY = (120  / 2) - 25
+        let playX = (thumbnailWidth  / 2) - 20
+        let playY = (120  / 2) - 20
 
         let metricsPlay = ["playX": playX, "playY": playY]    
 
@@ -149,9 +152,7 @@ class SearchVideoCell: UITableViewCell {
         timeView.addSubview(timeLabel)
         
         timeView.addConstraintsWithFormat("H:|[v0]|", views: timeLabel)        
-        timeView.addConstraintsWithFormat("V:|-10-[v0]-20-|", views: timeLabel)        
-
-        //containerView.backgroundColor = UIColor.cyan                  
+        timeView.addConstraintsWithFormat("V:|[v0]|", views: timeLabel)                      
         
         containerView.addSubview(titleLabel)
         containerView.addSubview(descLabel)        
