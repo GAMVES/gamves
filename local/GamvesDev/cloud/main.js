@@ -825,6 +825,8 @@
 
 		    	notification.set("posterName", user.get("Name"));
 		    	notification.set("posterAvatar", user.get("picture"));
+		    	notification.set("posterId", posterId);
+
 
 		    	if (type == 1) {
 
