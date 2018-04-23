@@ -214,6 +214,17 @@ class ProfileCell: BaseCell,
         return button
     }()
 
+    var labelEmptyMessage: UILabel = {
+        let label = UILabel()
+        label.text = "There are no videos yet loaded for your profile"
+        //label.sizeToFit()
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.textColor = UIColor.gray
+        label.numberOfLines = 3
+        label.textAlignment = .center
+        return label
+    }()
+
     lazy var chatViewController: ChatViewController = {
         let launcher = ChatViewController()
         return launcher
@@ -354,7 +365,13 @@ class ProfileCell: BaseCell,
 
         self.collectionView.backgroundColor = UIColor.white
         
-        self.profileSaveType = ProfileSaveType.profile               
+        self.profileSaveType = ProfileSaveType.profile    
+
+        self.addSubview(self.labelEmptyMessage)
+        self.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
+
+        self.labelEmptyMessage.isHidden = true           
        
     }    
        
@@ -439,6 +456,13 @@ class ProfileCell: BaseCell,
                 }
             }
         }
+    }
+
+    func showEmptyMessage() {
+
+        self.activityIndicatorView?.stopAnimating()
+        self.labelEmptyMessage.isHidden = false
+
     }
 
     func setSonProfileImageView() {
@@ -1041,7 +1065,12 @@ class ProfileCell: BaseCell,
                             })
                         }
                     }
+
+                } else {
+
+                    self.showEmptyMessage()
                 }
+                
             }
         })
     } 
