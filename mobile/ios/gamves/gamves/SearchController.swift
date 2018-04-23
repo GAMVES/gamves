@@ -363,8 +363,7 @@ class SearchController: UIViewController,
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
 
         
-        if !self.searchController.searchBar.text!.isEmpty {
-            
+        if !self.searchController.searchBar.text!.isEmpty {            
             isSuggestion = true
             resultArr = [String]()        
             self.findSuggestion(stringToSearch: searchController.searchBar.text!)
@@ -376,11 +375,22 @@ class SearchController: UIViewController,
     }
     
     @available(iOS 8.0, *)
-    func updateSearchResults(for searchController: UISearchController) {              
+    func updateSearchResults(for searchController: UISearchController) {       
+
         if !searchController.searchBar.text!.isEmpty {
-            isSuggestion = true
-            resultArr = [String]()        
-            self.findSuggestion(stringToSearch: searchController.searchBar.text!)
+
+            if !Global.containsSwearWord(text: self.searchController.searchBar.text! , swearWords: Global.listOfSwearWords ) {
+
+                isSuggestion = true
+                resultArr = [String]()        
+                self.findSuggestion(stringToSearch: searchController.searchBar.text!)
+
+            } else {
+
+                self.searchController.searchBar.text = ""
+
+            }
+
         } else {
             resultArr.removeAll()
             self.tableView.reloadData()
@@ -460,7 +470,14 @@ class SearchController: UIViewController,
                         cellv.thumbnailImageView.image = yVideo.image
                         cellv.thumbnailImageView.tag = index
                         
-                    }                
+                    }
+
+                    if index % 2 == 0 {
+                        cellv.contentView.backgroundColor = UIColor.white
+                    } else {
+                        cellv.contentView.backgroundColor = UIColor.gamvesBackgoundColor
+                    
+                    }
                 }
                 
                 return cellv
@@ -552,8 +569,6 @@ class SearchController: UIViewController,
         //let rowid:Int = Int((sender.view?.tag)!) 
 
         cellv.videoPlayer.isHidden = true
-
-        cellv.thumbnailImageView.isHidden = true
 
         cellv.loadVideo()
                 
@@ -884,15 +899,32 @@ class SearchController: UIViewController,
                                     
                                     if error == nil {
                                         
-                                        yv.image = UIImage(data:data)!
-                                        self.videoDetailsDict[i] = yv
-                                        self.searchDuration(id: i)
+                                        yv.image = UIImage(data:data)!     
+
+                                        let videoId = yv.videoId                                  
                                         
-                                        if i == (countItems-1) {
-                                            self.searchController.searchBar.isLoading = false
-                                        }
+                                        self.searchDuration(videoId: videoId, completionHandler: { ( videoTime ) -> () in
+
+                                            yv.duration = videoTime
+
+                                            self.videoDetailsDict[i] = yv
+
+                                            if i == (countItems-1) {
+                                                
+                                                self.searchController.searchBar.isLoading = false
+
+                                                DispatchQueue.main.async {
+                                                    self.tableView.reloadData()
+                                                    self.activityIndicatorView?.stopAnimating()
+                                                }
+
+                                            }
+                                            
+                                            i = i + 1      
+
+                                        })
                                         
-                                        i = i + 1                                        
+                                                                          
                                     }
                                     
                                 }
@@ -907,47 +939,42 @@ class SearchController: UIViewController,
         }
     }
     
-    func searchDuration(id:Int) {
+    func searchDuration(videoId:String, completionHandler : @escaping (_ videoTime:String) -> ()) {              
         
-        DispatchQueue.main.async {
-            
-            var yv:YVideo = self.videoDetailsDict[id]!
-            
-            let videoId = yv.videoId
-            
-            var urlString:String = "https://www.googleapis.com/youtube/v3/videos?id=\(videoId)&part=contentDetails&key=\(Global.api_key)"
-            
-            let urlwithPercentEscapes = urlString.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
-            
-            Alamofire.request(urlwithPercentEscapes!, method: .get)
-                .responseJSON { response in
-                    
-                print("Success: \(response.result.isSuccess)")
+        var urlString:String = "https://www.googleapis.com/youtube/v3/videos?id=\(videoId)&part=contentDetails&key=\(Global.api_key)"
+        
+        let urlwithPercentEscapes = urlString.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
+        
+        Alamofire.request(urlwithPercentEscapes!, method: .get)
+            .responseJSON { response in
                 
-                if response.result.isSuccess {
+            print("Success: \(response.result.isSuccess)")
+            
+            if response.result.isSuccess {
+                
+                let json = JSON(response.result.value!)
+                if let items = json["items"].array {
                     
-                    let json = JSON(response.result.value!)
-                    if let items = json["items"].array {
+                    if let contentDetails = items[0]["contentDetails"].dictionary {
                         
-                        if let contentDetails = items[0]["contentDetails"].dictionary {
-                            
-                            let duration = contentDetails["duration"] as! JSON
-                            
-                            let dateString = String(describing: duration)
-                            
-                            let durFormat = self.getYoutubeFormattedDuration(duration: dateString)
-                            
-                            self.videoDetailsDict[id]!.duration = durFormat
-                            
-                            DispatchQueue.main.async {
-                                self.tableView.reloadData()
-                                self.activityIndicatorView?.stopAnimating()
-                            }
-                        }
+                        let duration = contentDetails["duration"] as! JSON
+                        
+                        let dateString = String(describing: duration)
+                        
+                        let durFormat = self.getYoutubeFormattedDuration(duration: dateString)
+
+                        completionHandler(durFormat)
+                        
+                        //self.videoDetailsDict[id]!.duration = durFormat
+                        
+                        //DispatchQueue.main.async {
+                        //    self.tableView.reloadData()
+                        //    self.activityIndicatorView?.stopAnimating()
+                        //}
                     }
                 }
             }
-        }
+        }       
     }
     
     

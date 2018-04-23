@@ -448,13 +448,14 @@ class Global: NSObject
     }
 
     static func containsSwearWord(text: String, swearWords: [String]) -> Bool {
-        return swearWords
-            .reduce(false) { $0 || text.contains($1.lowercased()) }
+        //print(swearWords)
+        let searchText = text.lowercased()
+        return swearWords.reduce(false) { $0 || searchText.contains($1.lowercased()) }
     }
 
 
     static func setTitle(title:String, subtitle:String) -> UIView
-    {
+    {	
         let titleLabel = UILabel(frame: CGRect(x:0, y:-2, width:0, height:0))
         
         titleLabel.backgroundColor = UIColor.clear
