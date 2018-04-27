@@ -117,10 +117,10 @@ import UIKit
 
         let pastelsGradients = 
         [ 
-            Global.pasterColorArray[0],
-            Global.pasterColorArray[1],
-            Global.pasterColorArray[2],
-            Global.pasterColorArray[3]           
+            Global.pastelColorArray[0],
+            Global.pastelColorArray[1],
+            Global.pastelColorArray[2],
+            Global.pastelColorArray[3]           
         ]
 
         func getPastelGradient() -> CAGradientLayer

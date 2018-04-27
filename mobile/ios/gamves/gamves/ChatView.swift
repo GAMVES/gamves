@@ -119,6 +119,7 @@
         var gamvesUsers = [GamvesUser]()
         var gamvesUsersArray = [String]()
         var gamvesUsersPFuser = [PFUser]()
+        var usersColors = Dictionary<String, UIColor>()
         
         var chatFeed:PFObject!
         var keyboardDelegate:KeyboardDelegate!
@@ -172,6 +173,7 @@
             cv.backgroundColor = UIColor.white
             cv.dataSource = self
             cv.delegate = self
+            //cv.automaticallyAdjustsScrollViewInsets = true
             return cv
         }()
         
@@ -592,7 +594,8 @@
                                                         DispatchQueue.main.async {
                                                             
                                                             //self.collectionView.addObserver(self, forKeyPath: "contentSize", options:   NSKeyValueObservingOptions.old.union(NSKeyValueObservingOptions.new), context: nil)
-                                                            
+
+                                                            self.loadUserColors()                                                     
                                                             self.collectionView.reloadData()
                                                             self.activityView.stopAnimating()
                                                             self.scrollToLast()
@@ -638,6 +641,17 @@
             self.initializeChatSubscription()
             
         }
+
+        func loadUserColors() {
+
+            var id = 0
+
+            for userPF in self.gamvesUsersPFuser {
+                usersColors[userPF.objectId!] = Global.userChatColorArray[id]               
+                id = id + 1                    
+            }           
+        }
+
         
         func loadChatsVideos(chatFeed:PFObject, userCount:Int, completionHandler : @escaping (_ resutl:[MessageChat]) -> ()) {
             
@@ -980,8 +994,7 @@
                                 print("-------------------------------------")
                                 
                                 self.collectionView.reloadItems(at: [indexPath])
-                            }
-                            
+                            }                            
                             
                         })
                     })
@@ -2067,14 +2080,19 @@
         func scrollToLast() {
             
             let lastItem = self.messages.count - 1
+
             let indexPath = NSIndexPath(item: lastItem, section: 0)
             
             if (self.collectionView != nil && self.messages.count > 0) {
                 
-                self.collectionView.scrollToItem(at: indexPath as IndexPath, at: .top, animated: true)
+                self.collectionView.scrollToItem(at: indexPath as IndexPath, at: .bottom, animated: true)
                 
             }
+
+            //self.collectionView.setContentOffset(CGPoint(x: 0, y: 200), animated: false)
+
         }
+       
         
         //func textFieldDidBeginEditing(_ textField: UITextField) {}
         
@@ -2234,8 +2252,7 @@
                 
                 cell.bubbleView.frame = CGRect(x: xAdmin, y: -4, width: widthAdmin, height: height + 6)
                 cell.messageTextView.frame = CGRect(x: xAdmin + 20, y: 0, width: widthAdmin-20, height: height)
-                cell.profileImageView.isHidden = true
-                
+                cell.profileImageView.isHidden = true                
                 
             } else if message.isSender == nil || !message.isSender {
                 
@@ -2250,7 +2267,7 @@
                 
                 let bx = x - 10
                 let by:CGFloat = -4
-                var bwidth = estimatedFrame.width + 16 + 8 + 16
+                var bwidth = estimatedFrame.width + 16 + 8 + 16 + 50
                 let bheight = estimatedFrame.height + 20 + 6 + 15 //spare space for text
                 
                 cell.bubbleView.frame = CGRect(x:bx, y: by, width:bwidth, height: bheight)
@@ -2276,9 +2293,11 @@
                 } else {
                     
                     cell.profileImageView.isHidden = false
-                    cell.messageTextView.textColor = UIColor.white
-                    
+                    let userColor = self.usersColors[message.userId]
+                    cell.messageTextView.textColor = UIColor.gray 
+                    cell.userLabel.textColor = userColor                    
                 }
+
                 
             } else {
                 
@@ -2288,9 +2307,9 @@
                 
                 cell.messageTextView.frame = CGRect(x:mx, y:0, width:mwidth, height:mheight)
                 
-                let bx = self.frame.width - estimatedFrame.width - 16 - 8 - 16 - 10
+                let bx = self.frame.width - estimatedFrame.width - 16 - 8 - 16 - 10 - 40
                 let by:CGFloat = -4
-                let bwidth = estimatedFrame.width + 16 + 8 + 10
+                let bwidth = estimatedFrame.width + 16 + 8 + 10 + 50
                 let bheight = estimatedFrame.height + 20 + 6 + 15 //spare space for text
                 
                 cell.bubbleView.frame = CGRect(x:bx, y:by, width: bwidth, height: bheight)
@@ -2313,14 +2332,13 @@
                     
                     cell.gamvesPicture = message.picture
                     cell.bHeight = self.pictureHeight
-                    cell.pictureImageView.image = message.picture.imageSmall
-                    
+                    cell.pictureImageView.image = message.picture.imageSmall                    
                     
                 } else {
                     
                     cell.profileImageView.isHidden = true
                     cell.messageTextView.textColor = UIColor.white
-                    
+
                 }
             }
             
@@ -2345,13 +2363,15 @@
             
             if  Global.isAudio(type: message.type) && eFrame.width < 60 {
                 
-                estimatedFrame = createFrame(eFrame: eFrame, width: 60, height: eFrame.height)
+                estimatedFrame = createFrame(eFrame: eFrame, width: 200, height: eFrame.height)
+
             } else if Global.isAudio(type: message.type) {
                 
                 let dWidth = self.frame.width
                 let minWidth = (dWidth / 4) * 3
                 
                 estimatedFrame = createFrame(eFrame: eFrame, width: minWidth, height: 30)
+
             } else if Global.isPicture(type: message.type) {
                 
                 estimatedFrame = createFrame(eFrame: eFrame, width: self.pictureWidth, height: self.pictureHeight)
@@ -2370,7 +2390,7 @@
         func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
             let message = messages[indexPath.row]
             let estimatedFrame = getEstimatedFrame(message: message)
-            return CGSize(width:self.frame.width, height:estimatedFrame.height + 20 + 10)
+            return CGSize(width:self.frame.width, height:estimatedFrame.height + 20 + 20)
         }
         
         func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -2489,7 +2509,7 @@
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
             label.text = "00:00"
-            label.textColor = UIColor.white
+            //label.textColor = UIColor.white
             label.font = UIFont.boldSystemFont(ofSize: 10)
             return label
         }()
@@ -2497,8 +2517,8 @@
         let userLabel: UILabel = {
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false            
-            label.textColor = UIColor.white
-            label.font = UIFont.boldSystemFont(ofSize: 12)
+            //label.textColor = UIColor.white
+            label.font = UIFont.boldSystemFont(ofSize: 13)
             return label
         }()
 
@@ -2599,10 +2619,10 @@
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.blueBubbleImage
-                        self.bubbleImageView.tintColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
+                        self.bubbleImageView.tintColor = UIColor.gamvesChatBubbleBlueColor //UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
                     } else {
                         self.bubbleImageView.image = Global.grayBubbleImage
-                        self.bubbleImageView.tintColor = UIColor(white: 0.5, alpha: 1)
+                        self.bubbleImageView.tintColor = UIColor.white //UIColor(white: 0.5, alpha: 1)
                     }
                     break
                     
@@ -2610,15 +2630,15 @@
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.bluePictureBubbleImage
-                        self.bubbleImageView.tintColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
+                        self.bubbleImageView.tintColor = UIColor.gamvesChatBubbleBlueColor  //UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
                     } else {
                         self.bubbleImageView.image = Global.grayPictureBubbleImage
-                        self.bubbleImageView.tintColor = UIColor(white: 0.5, alpha: 1)
+                        self.bubbleImageView.tintColor = UIColor.white //UIColor(white: 0.5, alpha: 1)
                     }
                     break
                     
                 case .isAudio, .isAudioDownloading:
-                    self.bubbleImageView.image = Global.audioBubbleImage
+                    //self.bubbleImageView.image = Global.audioBubbleImage
                     break
                     
                 case .isAdmin:
@@ -2632,7 +2652,7 @@
                 
             }
             
-            let bHeight = self.frame.height - 10
+            let bHeight = self.frame.height - 20
             
             let bubbleMetrics = ["bHeight" : bHeight]
 
@@ -2645,7 +2665,7 @@
                 if self.isSender {
 
                     self.bubbleView.addSubview(self.timeLabel)
-                    self.bubbleView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: self.timeLabel)
+                    self.bubbleView.addConstraintsWithFormat("H:|-20-[v0]|", views: self.timeLabel)
                     self.bubbleView.addConstraintsWithFormat("V:|-bHeight-[v0(15)]|", views: self.timeLabel, metrics: bubbleMetrics)
                     
                     if self.isSender {
@@ -2654,35 +2674,42 @@
                         self.timeLabel.textAlignment = .right
                     }
 
+                    self.timeLabel.textColor = UIColor.lightGray
+
+                    //self.bubbleView.dropShadow(color: UIColor.black)
+
                 } else {
 
                     self.bubbleView.addSubview(self.labelTextContainerView)
                     self.bubbleView.addConstraintsWithFormat("H:|[v0]|", views: self.labelTextContainerView)
-                    self.bubbleView.addConstraintsWithFormat("V:|-bHeight-[v0(15)]|", views: self.labelTextContainerView, metrics: bubbleMetrics)
-
-                    //self.labelTextContainerView.backgroundColor = UIColor.white
+                    self.bubbleView.addConstraintsWithFormat("V:|-bHeight-[v0(15)]|", views: self.labelTextContainerView, metrics: bubbleMetrics)                    
 
                     self.labelTextContainerView.addSubview(self.timeLabel)                
-                    self.labelTextContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.timeLabel)
-
-                    //self.timeLabel.backgroundColor = UIColor.green
+                    self.labelTextContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.timeLabel)                   
 
                     self.labelTextContainerView.addSubview(self.userLabel)                
                     self.labelTextContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.userLabel)
 
                     //self.userLabel.backgroundColor = UIColor.cyan
 
-                    let labelSize = self.bubbleWidth / 2
+                    let labelSize = ( self.bubbleWidth / 2 ) - 20
 
                     let bubbleWidthMetrics = ["labelSize" : labelSize]
 
-                    self.labelTextContainerView.addConstraintsWithFormat("H:|[v0(labelSize)][v1(labelSize)]|", views: self.userLabel, self.timeLabel, metrics: bubbleWidthMetrics)               
+                    self.labelTextContainerView.addConstraintsWithFormat("H:|-10-[v0(labelSize)][v1(labelSize)]-10-|", views: self.userLabel, self.timeLabel, metrics: bubbleWidthMetrics)               
 
                     self.timeLabel.textAlignment = .center
                     self.userLabel.textAlignment = .center
 
+                    self.timeLabel.textColor = UIColor.lightGray
+                   
+                    //self.userLabel.textColor = UIColor.gray
+                    //self.bubbleView.dropShadow(color: UIColor.gambesDarkColor)
+                    //self.bubbleView.dropShadow(color: UIColor.gambesDarkColor)
 
                 }
+
+                self.bubbleView.dropShadow(color: UIColor.gambesDarkColor)                
             
             }
             
@@ -2722,13 +2749,33 @@
                                                                     self.playButtonView,
                                                                     self.centralContainerView)
                 }
+
+                if self.isSender {
                 
-                self.playButtonView.backgroundColor = UIColor.green
-                self.centralContainerView.backgroundColor = UIColor.gamvesColor
-                self.profileContainerView.backgroundColor = UIColor.red
+                    self.playButtonView.backgroundColor = UIColor.gamvesChatBubbleBlueColor
+                    self.centralContainerView.backgroundColor = UIColor.gamvesChatBubbleBlueColor
+                    self.profileContainerView.backgroundColor = UIColor.gamvesChatBubbleBlueColor
+
+                } else {
+
+                    self.playButtonView.backgroundColor = UIColor.white
+                    self.centralContainerView.backgroundColor = UIColor.white
+                    self.profileContainerView.backgroundColor = UIColor.white
+
+                }
                 
                 let playImage = UIImage(named: "play")
-                playImage?.maskWithColor(color: UIColor.gamvesColor)
+
+                if self.isSender {
+
+                    playImage?.maskWithColor(color: UIColor.gamvesColor)
+
+                } else {
+
+                    playImage?.maskWithColor(color: UIColor.gamvesColorLittleDarker)
+                
+                }
+                
                 self.playPauseButton.setImage(playImage, for: UIControlState.normal)
                 self.playPauseButton.addTarget(self, action:#selector(self.playPause(button:)), for: .touchUpInside)
                 
@@ -2747,6 +2794,16 @@
                 self.centralContainerView.addConstraintsWithFormat("V:|[v0][v1]|", views:
                     self.playerSlider,
                                                                    self.labelContainerView)
+
+                if self.isSender {
+
+                    self.playerSlider.thumbTintColor = UIColor.gamvesBackgoundColor
+
+                } else {
+
+                    self.playerSlider.thumbTintColor = UIColor.gamvesLightBlueColor
+
+                }
                 
                 self.labelContainerView.addSubview(self.audioCountabel)
                 self.labelContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.audioCountabel)
@@ -2771,6 +2828,9 @@
                     self.profileImageView.isHidden = true
                     self.progressAudio.startAnimating()
                 }
+
+                self.playContainerView.dropShadow(color: UIColor.gambesDarkColor)     
+
                 
             } else if Global.isPicture(type: self.type) {
                 
@@ -2812,6 +2872,11 @@
                 
                 self.messageTextView.isHidden = false
             }
+
+            self.bubbleView.dropShadow(color: UIColor.gambesDarkColor) 
+
+
+
         }
 
         
@@ -2904,16 +2969,26 @@
         func showPlayIcon(){
             DispatchQueue.main.async {
                 let playImage = UIImage(named: "play")
-                playImage?.maskWithColor(color: UIColor.gamvesColor)
+
+                if self.isSender {
+
+                    playImage?.maskWithColor(color: UIColor.gamvesColor)
+
+                } else {
+
+                    playImage?.maskWithColor(color: UIColor.gambesDarkColor)
+                
+                }
+                
                 self.playPauseButton.setImage(playImage, for: UIControlState.normal)
             }
         }
         
-        func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?){
+        func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
             print(error.debugDescription)
         }
         
-        internal func audioPlayerBeginInterruption(_ player: AVAudioPlayer){
+        internal func audioPlayerBeginInterruption(_ player: AVAudioPlayer) {
             print(player.debugDescription)
         }
         

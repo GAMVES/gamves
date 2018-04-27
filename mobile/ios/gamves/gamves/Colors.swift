@@ -17,14 +17,20 @@ extension UIColor
     static let gamvesBlackColor = UIColor.rgb(55, green: 52, blue: 53)
     static let gamvesBackgoundColor = UIColor.rgb(228, green: 239, blue: 245)
 
+    static let gamvesColorLittleDarker = UIColor.rgb(105, green: 205, blue: 239)
+
     static let gamvesTurquezeColor = UIColor.rgb(26, green: 188, blue: 156)
     static let gamvesCyanColor = UIColor.rgb(0, green: 175, blue: 239)    
     static let gamvesYellowColor = UIColor.rgb(255, green: 204, blue: 41)
     static let gamvesGreenColor = UIColor.rgb(168, green: 207, blue: 69)
+
+    static let gamvesLightBlueColor = UIColor.rgb(93, green: 182, blue: 255)
+    static let gamvesChatBubbleBlueColor = UIColor.rgb(90, green: 87, blue: 88)
 }
 
 
 extension UIColor {
+
     convenience init(red: Int, green: Int, blue: Int) {
         assert(red >= 0 && red <= 255, "Invalid red component")
         assert(green >= 0 && green <= 255, "Invalid green component")

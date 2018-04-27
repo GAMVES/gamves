@@ -1339,7 +1339,7 @@ class Global: NSObject
     static let bluePictureBubbleImage = UIImage(named: "bubble_picture_blue")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
 
 
-    static var pasterColorArray = [        
+    static var pastelColorArray = [        
         UIColor.init(netHex: 0xf6bbf8),         
         UIColor.init(netHex: 0xbbbef8),         
         UIColor.init(netHex: 0xc3f8bb), 
@@ -1353,6 +1353,13 @@ class Global: NSObject
         UIColor.gamvesGreenColor       
     ]
 
-
+    static var userChatColorArray = [        
+        UIColor.init(netHex: 0xf750da),         
+        UIColor.init(netHex: 0xf75050),         
+        UIColor.init(netHex: 0x5c50f7), 
+        UIColor.init(netHex: 0x2eb33e),
+        UIColor.init(netHex: 0x189ea6),
+        UIColor.init(netHex: 0x97a618)        
+    ]
 
 }
