@@ -25,7 +25,7 @@ extension UIColor
     static let gamvesGreenColor = UIColor.rgb(168, green: 207, blue: 69)
 
     static let gamvesLightBlueColor = UIColor.rgb(93, green: 182, blue: 255)
-    static let gamvesChatBubbleBlueColor = UIColor.rgb(90, green: 87, blue: 88)
+    static let gamvesChatBubbleBlueColor = gamvesTurquezeColor //UIColor.rgb(90, green: 87, blue: 88)
 }
 
 
@@ -41,4 +41,24 @@ extension UIColor {
     convenience init(netHex:Int) {
         self.init(red:(netHex >> 16) & 0xff, green:(netHex >> 8) & 0xff, blue:netHex & 0xff)
     }
+
+    convenience init(hex: String) {
+        let scanner = Scanner(string: hex)
+        scanner.scanLocation = 0
+        
+        var rgbValue: UInt64 = 0
+        
+        scanner.scanHexInt64(&rgbValue)
+        
+        let r = (rgbValue & 0xff0000) >> 16
+        let g = (rgbValue & 0xff00) >> 8
+        let b = rgbValue & 0xff
+        
+        self.init(
+            red: CGFloat(r) / 0xff,
+            green: CGFloat(g) / 0xff,
+            blue: CGFloat(b) / 0xff, alpha: 1
+        )
+    }
+
 }

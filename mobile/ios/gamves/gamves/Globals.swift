@@ -22,6 +22,16 @@ class Global: NSObject
         
         print(listOfSwearWords)
     }
+
+    static var listOfChatColors = [String]()
+
+    static func setChatColorsArray(colors: String)
+    {
+        self.listOfChatColors = colors.split(separator: "|").map(String.init)
+        
+        print(listOfChatColors)
+    }
+    
     
     static var pagesPageView = [UIViewController]()
 
@@ -441,11 +451,16 @@ class Global: NSObject
 
                 let badWords = config!["badWords"] as! String
                 
-                self.setBadWordsArray(words: badWords)    
+                self.setBadWordsArray(words: badWords)   
+
+                let colorsChat = config!["colorsChat"] as! String
+                
+                self.setChatColorsArray(colors: colorsChat)    
             }
         })
 
     }
+
 
     static func containsSwearWord(text: String, swearWords: [String]) -> Bool {
         //print(swearWords)
@@ -1346,7 +1361,7 @@ class Global: NSObject
         UIColor.init(netHex: 0xf8f7bb)        
     ]
 
-    static var notificationColorArray = [        
+    static var auxiliarColorArray = [        
         UIColor.gamvesTurquezeColor,         
         UIColor.gamvesCyanColor,         
         UIColor.gamvesYellowColor, 

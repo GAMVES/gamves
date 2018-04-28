@@ -271,6 +271,8 @@
         var pictureHeight = CGFloat()
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
+
+        var senderColor = UIColor()
         
         init(frame: CGRect, isVideo:Bool) {
             super.init(frame: frame)
@@ -492,6 +494,8 @@
             print(self.chatId)
             let queryChatFeed = PFQuery(className:"ChatFeed")
             
+            print(self.chatId)
+            
             queryChatFeed.whereKey("chatId", equalTo: self.chatId)
             
             queryChatFeed.findObjectsInBackground { (chatFeeds, error) in
@@ -521,6 +525,12 @@
                                 var members = chatFeed["members"] as! String
                                 
                                 let participantQuery = PFQuery(className:"_User")
+
+                                var senderColor = chatFeed["senderColor"] as! String
+
+                                print(senderColor)
+                                
+                                self.senderColor = UIColor.init(hex: "0x\(senderColor)")
                                 
                                 self.gamvesUsersArray = Global.parseUsersStringToArray(separated: members)
                                 
@@ -617,8 +627,8 @@
                                     }
                                 })
                             }
-                        } else
-                        {
+
+                        } else {
                             
                             self.activityView.stopAnimating()
                             
@@ -1051,64 +1061,79 @@
                 
             } else if self.recSendButton.tag == 2 {
                 
-                self.recordingStatus = RecordStatus.isNotRecording
                 
-                if self.isVideo && ChatFeedMethods.chatFeeds[self.chatId] == nil
-                {
-                    
-                    if self.chatFeed == nil
-                    {
-                        self.activityView.startAnimating()
+                if !Global.containsSwearWord(text: self.inputTextField.text!, swearWords: Global.listOfSwearWords ) {
+
+                    self.recordingStatus = RecordStatus.isNotRecording
                         
-                        self.addNewFeedAppendUser(completionHandler: { ( result:Bool ) -> () in
-                            
-                            if result
-                            {
-                                self.sendMessage(sendPush: false)
-                                
-                                self.activityView.stopAnimating()
-                            }
-                            
-                        })
-                        
-                    } else
+                    if self.isVideo && ChatFeedMethods.chatFeeds[self.chatId] == nil
                     {
                         
-                        if let userId:String = PFUser.current()?.objectId
+                        if self.chatFeed == nil
                         {
-                            
                             self.activityView.startAnimating()
                             
-                            self.chatIdStr = String(self.chatId) as String
-                            
-                            Global.addChannels(userIds:[userId], channel: self.chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
+                            self.addNewFeedAppendUser(completionHandler: { ( result:Bool ) -> () in
                                 
-                                let members = self.chatFeed["members"] as! String
-                                
-                                self.gamvesUsersArray = Global.parseUsersStringToArray(separated: members)
-                                
-                                self.gamvesUsersArray.append(userId)
-                                
-                                let membersAppend = String(describing: self.gamvesUsersArray)
-                                
-                                self.chatFeed["members"] = membersAppend
-                                
-                                self.chatFeed.saveInBackground(block: { (resutl, error) in
-                                    
-                                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-                                    
+                                if result
+                                {
                                     self.sendMessage(sendPush: false)
                                     
                                     self.activityView.stopAnimating()
-                                    
-                                })
+                                }
+                                
                             })
+                            
+                        } else
+                        {
+                            
+                            if let userId:String = PFUser.current()?.objectId
+                            {
+                                
+                                self.activityView.startAnimating()
+                                
+                                self.chatIdStr = String(self.chatId) as String
+                                
+                                Global.addChannels(userIds:[userId], channel: self.chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
+                                    
+                                    let members = self.chatFeed["members"] as! String
+                                    
+                                    self.gamvesUsersArray = Global.parseUsersStringToArray(separated: members)
+                                    
+                                    self.gamvesUsersArray.append(userId)
+                                    
+                                    let membersAppend = String(describing: self.gamvesUsersArray)
+                                    
+                                    self.chatFeed["members"] = membersAppend
+                                    
+                                    self.chatFeed.saveInBackground(block: { (resutl, error) in
+                                        
+                                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                                        
+                                        self.sendMessage(sendPush: false)
+                                        
+                                        self.activityView.stopAnimating()
+                                        
+                                    })
+                                })
+                            }
                         }
+                        
+                    } else {
+
+                        self.sendMessage(sendPush: true)
+
                     }
-                    
+
+
                 } else {
-                    self.sendMessage(sendPush: true)
-                }
+
+                    // Show the user a message that a bad word has been detected and the chat deleted. 
+
+                    self.inputTextField.text = ""
+
+                }    
+                        
             }
             
         }
@@ -1839,6 +1864,12 @@
             self.chatFeed["chatId"] = self.chatId
             
             self.chatFeed["isVideoChat"] = self.isVideoChat
+
+            let randomColorIndex = Int(arc4random_uniform(UInt32(Global.listOfChatColors.count))) 
+
+            let colorString = Global.listOfChatColors[randomColorIndex]
+
+            chatFeed["senderColor"] = colorString
             
             let groupImageFile:PFFile!
             
@@ -2202,6 +2233,8 @@
             cell.type = message.type
             cell.isSender = message.isSender
 
+            cell.senderColor = self.senderColor
+
             cell.usersAmount = self.gamvesUsers.count
             
             print(self.messages.count)
@@ -2526,7 +2559,7 @@
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
             label.text = "00:00"
-            label.textColor = UIColor.gray
+            label.textColor = UIColor.white.withAlphaComponent(0.5) //UIColor.gray
             label.font = UIFont.boldSystemFont(ofSize: 13)
             label.textAlignment = .center
             return label
@@ -2543,7 +2576,7 @@
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
             label.text = "00:00"
-            label.textColor = UIColor.gray
+            label.textColor = UIColor.white.withAlphaComponent(0.5) //UIColor.gray
             label.font = UIFont.boldSystemFont(ofSize: 13)
             label.textAlignment = .center
             return label
@@ -2583,6 +2616,8 @@
         
         var bHeight = CGFloat()
         var bubbleWidth = CGFloat()
+
+        var senderColor = UIColor()
         
         override func prepareForReuse() {
             
@@ -2619,7 +2654,7 @@
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.blueBubbleImage
-                        self.bubbleImageView.tintColor = UIColor.gamvesChatBubbleBlueColor //UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
+                        self.bubbleImageView.tintColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor //UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
                     } else {
                         self.bubbleImageView.image = Global.grayBubbleImage
                         self.bubbleImageView.tintColor = UIColor.white //UIColor(white: 0.5, alpha: 1)
@@ -2674,7 +2709,7 @@
                         self.timeLabel.textAlignment = .right
                     }
 
-                    self.timeLabel.textColor = UIColor.lightGray
+                    self.timeLabel.textColor = UIColor.white.withAlphaComponent(0.5)
 
                     //self.bubbleView.dropShadow(color: UIColor.black)
 
@@ -2752,9 +2787,9 @@
 
                 if self.isSender {
                 
-                    self.playButtonView.backgroundColor = UIColor.gamvesChatBubbleBlueColor
-                    self.centralContainerView.backgroundColor = UIColor.gamvesChatBubbleBlueColor
-                    self.profileContainerView.backgroundColor = UIColor.gamvesChatBubbleBlueColor
+                    self.playButtonView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
+                    self.centralContainerView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
+                    self.profileContainerView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
 
                 } else {
 

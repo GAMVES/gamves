@@ -14,6 +14,24 @@ import TaskQueue
 
 class Global: NSObject
 {
+
+    static var listOfSwearWords = [String]()
+
+    static func setBadWordsArray(words: String)
+    {
+        self.listOfSwearWords = words.split(separator: "|").map(String.init)
+        
+        print(listOfSwearWords)
+    }
+
+    static var listOfChatColors = [String]()
+
+    static func setChatColorsArray(colors: String)
+    {
+        self.listOfChatColors = colors.split(separator: "|").map(String.init)
+        
+        print(listOfChatColors)
+    }
     
     static var pictureRecorded = GamvesPicture()
     static var audioRecorded = GamvesAudio()
@@ -339,7 +357,37 @@ class Global: NSObject
             }
         }
     }
+
+    static func loadAditionalData() {
+        
+        if PFUser.current() != nil {                       
+            
+            self.loadConfigData()           
+            
+        }
+    }
     
+    static func loadConfigData() {
+
+        let configQuery = PFQuery(className:"Config")        
+        configQuery.getFirstObjectInBackground(block: { (config, error) in
+        
+            if error == nil
+            {   
+
+                let badWords = config!["badWords"] as! String
+                
+                self.setBadWordsArray(words: badWords)   
+
+                let colorsChat = config!["colorsChat"] as! String
+                
+                self.setChatColorsArray(colors: colorsChat)    
+            }
+        })
+
+    }
+
+
     static func setTitle(title:String, subtitle:String) -> UIView
     {
         let titleLabel = UILabel(frame: CGRect(x:0, y:-2, width:0, height:0))

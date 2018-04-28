@@ -288,17 +288,14 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
             cell.setupFanpage()
         }
 
-        Global.notificationColorArray.shuffle()
+        Global.auxiliarColorArray.shuffle()
 
-        //let randomIndex = Int(arc4random_uniform(UInt32(Global.notificationColorArray.count)))        
-
+        //let randomIndex = Int(arc4random_uniform(UInt32(Global.notificationColorArray.count)))
         //let randomIndex = Int(arc4random_uniform(UInt32(Global.pasterColorArray.count)))        
 
         gradient = gr.getPastelGradient()        
         gradient.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
         cell.layer.insertSublayer(gradient, at: 0)
-
-        //cell.backgroundColor = Global.notificationColorArray[randomIndex]
     
         return cell
     }

@@ -124,7 +124,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let documentsDirectory = paths[0]
         let fileName = "\(Date()).log"
         let logFilePath = (documentsDirectory as NSString).appendingPathComponent(fileName)
-        freopen(logFilePath.cString(using: String.Encoding.ascii)!, "a+", stderr)       
+        freopen(logFilePath.cString(using: String.Encoding.ascii)!, "a+", stderr)  
+
+        Global.loadAditionalData()     
         
         return true
     }

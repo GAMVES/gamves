@@ -88,6 +88,13 @@ class ChatMethods: NSObject
         var message = "---is_admin_chat---New chat with \(chatMembers)"      
         
         chatFeed["lastMessage"] = message
+
+
+        let randomColorIndex = Int(arc4random_uniform(UInt32(Global.listOfChatColors.count))) 
+
+        let colorString = Global.listOfChatColors[randomColorIndex]
+
+        chatFeed["senderColor"] = colorString
         
         chatFeed.saveInBackground(block: { (saved, error) in
             
