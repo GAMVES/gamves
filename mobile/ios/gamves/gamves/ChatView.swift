@@ -375,8 +375,7 @@
                         } else {
                             print("Dont Allow")
                         }
-                    }
-                    
+                    }                    
                 }
                 
             } catch {
@@ -483,8 +482,7 @@
         
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
-        }
-       
+        }       
         
         func loadChatFeed() {
             
@@ -505,6 +503,7 @@
                 if error != nil {
                     
                     print("error")
+
                 } else {
                     
                     if let chatFeeds = chatFeeds
@@ -974,15 +973,21 @@
             self.audioQuery = PFQuery(className: "Audios").whereKey("chatId", equalTo: self.chatId)
             
             self.audioSubscription = audioClient.subscribe(self.audioQuery).handle(Event.updated) { _, audioPF in
+
+                // This block is causing a major bug. 
+
+                //https://gitlab.com/JoseVigil/gamves/issues/102
                 
-                var sender = Bool()
+                /*var sender = Bool()
                 
                 let userId = audioPF["senderId"] as! String
-                
-                if userId == PFUser.current()?.objectId {
+
+                if PFUser.current()?.objectId == userId {
                     sender = true
+                } else {
+                    sender = false
                 }
-                
+                             
                 if audioPF["url"] != nil && !sender {
                     
                     print(audioPF["url"])
@@ -998,11 +1003,7 @@
                         self.downloadIfNotExistAudio(id: indexPath.row, url:url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
                             
                             audio.localUri = localUri
-                            audio.url = url
-                            
-                            self.messages[indexPath.row].type = MessageType.isAudio
-                            self.messages[indexPath.row].audio.localUri = localUri
-                            self.messages[indexPath.row].audio.url = url
+                            audio.url = url                            
                             
                             DispatchQueue.main.async {
                                 
@@ -1010,13 +1011,18 @@
                                 print("-------------------------------------")
                                 print("SOCKET")
                                 print("-------------------------------------")
+
+                                self.messages[indexPath.row].type = MessageType.isAudio
+                                self.messages[indexPath.row].audio.localUri = localUri
+                                self.messages[indexPath.row].audio.url = url
+                            
                                 
                                 self.collectionView.reloadItems(at: [indexPath])
                             }                            
                             
                         })
                     })
-                }
+                }*/
             }
         }
         
@@ -1697,7 +1703,13 @@
             
             message.time = chatMessage["time"] as! String
 
-            if Global.userDictionary[userId] != nil {
+            if PFUser.current()?.objectId == userId {
+                message.isSender = true
+            } else {
+                message.isSender = false
+            }
+
+            /*if Global.userDictionary[userId] != nil {
             
                 if let gamvesUser = Global.userDictionary[userId]
                 {
@@ -1712,7 +1724,7 @@
 
                 print("User does not exis")
 
-            }
+            }*/
             
             if (textMessage.contains(Global.audio_delimitator)) {
                 
@@ -2821,9 +2833,10 @@
                     self.audioDurationLabel.textColor = UIColor.white.withAlphaComponent(0.5)
                     self.audioCountabel.textColor = UIColor.white.withAlphaComponent(0.5)
 
-                    playImage?.maskWithColor(color: UIColor.gamvesColor)
+                    //playImage?.maskWithColor(color: UIColor.gamvesColor)
                     
                 } else {
+
                     
                     self.playContainerView.addConstraintsWithFormat("H:|[v0(60)][v1(60)][v2]|", views:
                         self.profileContainerView,
@@ -2837,7 +2850,7 @@
                     self.audioDurationLabel.textColor = UIColor.lightGray
                     self.audioCountabel.textColor = UIColor.lightGray
 
-                    playImage?.maskWithColor(color: UIColor.gamvesColorLittleDarker)
+                    //playImage?.maskWithColor(color: UIColor.gamvesColorLittleDarker)
 
                 }
                 
@@ -3032,7 +3045,9 @@
         }
         
         func showPlayIcon(){
+
             DispatchQueue.main.async {
+
                 let playImage = UIImage(named: "play")
 
                 if self.isSender {
