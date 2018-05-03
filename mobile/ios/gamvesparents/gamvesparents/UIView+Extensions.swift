@@ -2,8 +2,7 @@
 //  Extensions.swift
 //  audible
 //
-//  Created by Brian Voong on 9/17/16.
-//  Copyright © 2016 Lets Build That App. All rights reserved.
+//  Created by Jose Vigil 08/12/2017.
 //
 
 import UIKit
@@ -95,6 +94,19 @@ extension UIView {
         // no first responder
         return nil
     }
+
+    func dropShadow(color: UIColor) {
+        //layer.masksToBounds = false
+        layer.shadowColor = color.cgColor
+        layer.shadowOpacity = 0.5
+        layer.shadowOffset = CGSize(width: -1, height: 1)
+        //layer.shadowRadius = 1
+
+        //layer.shadowPath = UIBezierPath(rect: bounds).cgPath
+        layer.shouldRasterize = false
+        //layer.rasterizationScale = scale ? UIScreen.main.scale : 1
+    } 
+
 }
 
 

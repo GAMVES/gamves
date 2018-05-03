@@ -2,8 +2,7 @@
 //  UserDefaults+helpers.swift
 //  audible
 //
-//  Created by Brian Voong on 10/3/16.
-//  Copyright © 2016 Lets Build That App. All rights reserved.
+//  Created by Jose Vigil 08/12/2017.
 //
 
 import Foundation

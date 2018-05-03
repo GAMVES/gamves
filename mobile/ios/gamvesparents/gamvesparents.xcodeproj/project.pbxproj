@@ -80,6 +80,8 @@
 		C7B402091D78C167001D8ED4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7B402071D78C167001D8ED4 /* LaunchScreen.storyboard */; };
 		C7B402111D78C404001D8ED4 /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B402101D78C404001D8ED4 /* PageCell.swift */; };
 		C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9389278206AC83900DE72AA /* UserNotifications.framework */; };
+		C93BF39B20954A66006A0551 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93BF39A20954A66006A0551 /* Int+Extension.swift */; };
+		C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93BF39C20954DF6006A0551 /* CGFloat+Extension.swift */; };
 		C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */; };
 /* End PBXBuildFile section */
 
@@ -162,6 +164,8 @@
 		C7B4020A1D78C167001D8ED4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7B402101D78C404001D8ED4 /* PageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
 		C9389278206AC83900DE72AA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		C93BF39A20954A66006A0551 /* Int+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
+		C93BF39C20954DF6006A0551 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
 		C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PFGeoPoint+Extension.swift"; sourceTree = "<group>"; };
 		FE567B47EE25D846CFB77DFB /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -245,6 +249,8 @@
 		8212D7041F78437600F2A121 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C93BF39A20954A66006A0551 /* Int+Extension.swift */,
+				C93BF39C20954DF6006A0551 /* CGFloat+Extension.swift */,
 				82E372421FB169D0000AD7EB /* UIImage+Extension.swift */,
 				82E372211FAF4C21000AD7EB /* ProfileViewController+Extensions.swift */,
 				8296F1DC202CA46F00750C8D /* Formatter+Extensions.swift */,
@@ -633,6 +639,7 @@
 				C7B401FF1D78C167001D8ED4 /* AppDelegate.swift in Sources */,
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
+				C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */,
 				C73A31971DA3064A00C86C96 /* TabBarViewController.swift in Sources */,
 				82557C4D2016CE2B00752301 /* HistoryViewController.swift in Sources */,
 				C7B402111D78C404001D8ED4 /* PageCell.swift in Sources */,
@@ -649,6 +656,7 @@
 				82E372391FB1665A000AD7EB /* Protocols.swift in Sources */,
 				82E372431FB169D0000AD7EB /* UIImage+Extension.swift in Sources */,
 				82557C5F20173C0100752301 /* LocationViewController.swift in Sources */,
+				C93BF39B20954A66006A0551 /* Int+Extension.swift in Sources */,
 				8271ECCC1FE94BA1004160B9 /* ApprovalCell.swift in Sources */,
 				8212D7061F78439400F2A121 /* Color+Extensions.swift in Sources */,
 				82355FF320202CBF004C2014 /* ImagesCollectionViewCell.swift in Sources */,

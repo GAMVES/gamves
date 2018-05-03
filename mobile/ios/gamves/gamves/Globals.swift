@@ -1340,6 +1340,15 @@ class Global: NSObject
             return false
         }
     }
+
+    static func isText(type: MessageType) -> Bool {
+        if type == MessageType.isText  {
+            return true
+        } else {
+            return false
+        }
+    }
+
     
     static let grayBubbleImage = UIImage(named: "bubble_gray")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     

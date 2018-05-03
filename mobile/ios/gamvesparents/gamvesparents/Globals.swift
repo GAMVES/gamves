@@ -424,6 +424,12 @@ class Global: NSObject
         
         return titleView
     }
+
+    static func containsSwearWord(text: String, swearWords: [String]) -> Bool {
+        //print(swearWords)
+        let searchText = text.lowercased()
+        return swearWords.reduce(false) { $0 || searchText.contains($1.lowercased()) }
+    }
     
     static func parseUsersStringToArray(separated: String) -> [String]
     {
@@ -1292,6 +1298,14 @@ class Global: NSObject
             return false
         }
     }
+
+    static func isText(type: MessageType) -> Bool {
+        if type == MessageType.isText  {
+            return true
+        } else {
+            return false
+        }
+    }
     
     static let grayBubbleImage = UIImage(named: "bubble_gray")!.resizableImage(withCapInsets: UIEdgeInsetsMake(22, 26, 22, 26)).withRenderingMode(.alwaysTemplate)
     
@@ -1346,6 +1360,15 @@ class Global: NSObject
             }
         })
     }
+
+    static var userChatColorArray = [        
+        UIColor.init(netHex: 0xf750da),         
+        UIColor.init(netHex: 0xf75050),         
+        UIColor.init(netHex: 0x5c50f7), 
+        UIColor.init(netHex: 0x2eb33e),
+        UIColor.init(netHex: 0x189ea6),
+        UIColor.init(netHex: 0x97a618)        
+    ]
 
     
 }

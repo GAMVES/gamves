@@ -404,6 +404,8 @@
             
         }
         
+        
+        
         func timeCount(time: String) {
             self.inputTextField.text = time
         }
@@ -599,18 +601,22 @@
                                                             $0.date.compare($1.date) == .orderedAscending
                                                         })
                                                         
-                                                        self.messages = sortedMessages
-                                                        
-                                                        DispatchQueue.main.async {
-                                                            
-                                                            //self.collectionView.addObserver(self, forKeyPath: "contentSize", options:   NSKeyValueObservingOptions.old.union(NSKeyValueObservingOptions.new), context: nil)
+                                                        self.messages = sortedMessages                                                        
 
-                                                            self.loadUserColors()                                                     
-                                                            self.collectionView.reloadData()
-                                                            self.activityView.stopAnimating()
-                                                            self.scrollToLast()
+                                                        DispatchQueue.global(qos: .background).async {                           
+
+                                                            self.loadUserColors()                                                            
+
+                                                            DispatchQueue.main.async {                                                                
+
+                                                                self.activityView.stopAnimating()
+                                                         
+                                                                self.collectionView.reloadData()
                                                             
-                                                        }
+                                                                self.scrollToLast()      
+
+                                                            }
+                                                        }            
                                                         
                                                     })
                                                     
@@ -725,6 +731,8 @@
                             }
                             
                             print(messageText)
+
+
                             
                             if PFUser.current()?.objectId == userId {
                                 message.isSender = true
@@ -1448,6 +1456,7 @@
                 
                 let accessKey = "AKIAJP4GPKX77DMBF5AQ"
                 let secretKey = "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"
+
                 let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
                 let configuration = AWSServiceConfiguration(region: AWSRegionType.USEast1, credentialsProvider: credentialsProvider)
                 AWSServiceManager.default().defaultServiceConfiguration = configuration
@@ -1687,13 +1696,22 @@
             message.date = chatMessage.updatedAt
             
             message.time = chatMessage["time"] as! String
+
+            if Global.userDictionary[userId] != nil {
             
-            if let gamvesUser = Global.userDictionary[userId]
-            {
-                message.isSender = gamvesUser.isSender
-            } else if userId == PFUser.current()?.objectId
-            {
-                message.isSender = true
+                if let gamvesUser = Global.userDictionary[userId]
+                {
+                    print(gamvesUser.isSender)
+                    message.isSender = gamvesUser.isSender
+                } else if userId == PFUser.current()?.objectId
+                {
+                    message.isSender = true
+                }
+            
+            } else {
+
+                print("User does not exis")
+
             }
             
             if (textMessage.contains(Global.audio_delimitator)) {
@@ -1745,9 +1763,10 @@
                         message.picture = Global.pictureRecorded
                     }
                 }
-            }
+
+            } else if (textMessage.contains(Global.admin_delimitator)) {
             
-            if textMessage.range(of:Global.admin_delimitator) != nil {
+                //if textMessage.range(of:Global.admin_delimitator) != nil {
                 
                 message.type = MessageType.isAdmin
                 
@@ -1777,15 +1796,21 @@
             
             print(indexPath)
             
-            print("-----------------------------------------------------------------------------")
-            
-            DispatchQueue.main.async {
+            print("-----------------------------------------------------------------------------")      
+
+            DispatchQueue.global(qos: .background).async {
                 
                 self.inputTextField.text = ""
+
+                DispatchQueue.main.async {
+             
+                    self.collectionView.insertItems(at: [indexPath])
                 
-                self.collectionView.insertItems(at: [indexPath])
-                
-                self.scrollToLast()
+                    self.scrollToLast()
+                    
+                    self.collectionView.collectionViewLayout.invalidateLayout()
+
+                }
             }
             
         }
@@ -1845,8 +1870,8 @@
             
         }
         
-        func isSingleUser() -> Bool
-        {
+        func isSingleUser() -> Bool {
+
             if self.gamvesUsers.count > 1
             {
                 return false
@@ -2204,6 +2229,8 @@
                 self.recSendButton.tag = 2
                 
                 self.handleSendRec()
+
+                self.handleSendRecUp()
                 
             }
             
@@ -2233,7 +2260,18 @@
             cell.type = message.type
             cell.isSender = message.isSender
 
-            cell.senderColor = self.senderColor
+            let applicationName = Bundle.main.infoDictionary![kCFBundleNameKey as String] as! String
+            
+            print(applicationName)
+
+            if applicationName == "gamves" {
+
+                cell.senderColor = self.senderColor                    
+            
+            } else {
+
+                cell.senderColor = UIColor.gamvesChatBubbleBlueColor
+            }            
 
             cell.usersAmount = self.gamvesUsers.count
             
@@ -2256,6 +2294,7 @@
             if Global.isAudio(type: message.type) || Global.isPicture(type: message.type) {
                 
                 cell.messageTextView.isHidden = true
+
             } else {
                 
                 cell.messageTextView.text = messageText
@@ -2323,7 +2362,7 @@
                     
                     cell.isSender = false
                     
-                } else {
+                } else if Global.isText(type: message.type) {
                     
                     cell.profileImageView.isHidden = false
                     let userColor = self.usersColors[message.userId]
@@ -2347,7 +2386,7 @@
                 
                 cell.bubbleView.frame = CGRect(x:bx, y:by, width: bwidth, height: bheight)
                 
-                if Global.isAudio(type: message.type){
+                if Global.isAudio(type: message.type) {
                     
                     if message.audioLocalUri != nil {
                         message.audio.localUri = message.audioLocalUri
@@ -2358,7 +2397,6 @@
                     cell.bHeight = bheight
                     cell.audioDurationLabel.text = message.audio.duration
                     
-                    
                     cell.playPauseButton.tag = indexPath.row
                     
                 } else if Global.isPicture(type: message.type) {
@@ -2367,7 +2405,7 @@
                     cell.bHeight = self.pictureHeight
                     cell.pictureImageView.image = message.picture.imageSmall                    
                     
-                } else {
+                } else if Global.isText(type: message.type) {
                     
                     cell.profileImageView.isHidden = true
                     cell.messageTextView.textColor = UIColor.white
@@ -2412,6 +2450,7 @@
                 
                 estimatedFrame = eFrame
             }
+
             return estimatedFrame
             
         }
@@ -2559,7 +2598,7 @@
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
             label.text = "00:00"
-            label.textColor = UIColor.white.withAlphaComponent(0.5) //UIColor.gray
+            //label.textColor = UIColor.white.withAlphaComponent(0.5) //UIColor.gray
             label.font = UIFont.boldSystemFont(ofSize: 13)
             label.textAlignment = .center
             return label
@@ -2576,7 +2615,7 @@
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
             label.text = "00:00"
-            label.textColor = UIColor.white.withAlphaComponent(0.5) //UIColor.gray
+            //label.textColor = UIColor.white.withAlphaComponent(0.5) //UIColor.gray
             label.font = UIFont.boldSystemFont(ofSize: 13)
             label.textAlignment = .center
             return label
@@ -2672,8 +2711,8 @@
                     }
                     break
                     
-                case .isAudio, .isAudioDownloading:
-                    //self.bubbleImageView.image = Global.audioBubbleImage
+                case .isAudio, .isAudioDownloading:                    
+                    self.bubbleImageView.isHidden = true //.image = Global.audioBubbleImage
                     break
                     
                 case .isAdmin:
@@ -2704,14 +2743,16 @@
                     self.bubbleView.addConstraintsWithFormat("V:|-bHeight-[v0(15)]|", views: self.timeLabel, metrics: bubbleMetrics)
                     
                     if self.isSender {
+
                         self.timeLabel.textAlignment = .left
+
                     } else  {
+
                         self.timeLabel.textAlignment = .right
+
                     }
 
                     self.timeLabel.textColor = UIColor.white.withAlphaComponent(0.5)
-
-                    //self.bubbleView.dropShadow(color: UIColor.black)
 
                 } else {
 
@@ -2725,8 +2766,6 @@
                     self.labelTextContainerView.addSubview(self.userLabel)                
                     self.labelTextContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.userLabel)
 
-                    //self.userLabel.backgroundColor = UIColor.cyan
-
                     let labelSize = ( self.bubbleWidth / 2 ) - 20
 
                     let bubbleWidthMetrics = ["labelSize" : labelSize]
@@ -2736,11 +2775,7 @@
                     self.timeLabel.textAlignment = .center
                     self.userLabel.textAlignment = .center
 
-                    self.timeLabel.textColor = UIColor.lightGray
-                   
-                    //self.userLabel.textColor = UIColor.gray
-                    //self.bubbleView.dropShadow(color: UIColor.gambesDarkColor)
-                    //self.bubbleView.dropShadow(color: UIColor.gambesDarkColor)
+                    self.timeLabel.textColor = UIColor.lightGray                    
 
                 }
 
@@ -2769,46 +2804,41 @@
                 
                 self.playContainerView.addSubview(self.profileContainerView)
                 self.playContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.profileContainerView)
+
+                let playImage = UIImage(named: "play")
                 
                 if self.isSender {
                     
                     self.playContainerView.addConstraintsWithFormat("H:|[v0(60)][v1][v2(60)]|", views:
                         self.playButtonView,
-                                                                    self.centralContainerView,
-                                                                    self.profileContainerView)
+                        self.centralContainerView,
+                        self.profileContainerView)
+
+                    self.playButtonView.backgroundColor = UIColor.red //self.senderColor //UIColor.gamvesChatBubbleBlueColor
+                    self.centralContainerView.backgroundColor = UIColor.green //self.senderColor //UIColor.gamvesChatBubbleBlueColor
+                    self.profileContainerView.backgroundColor = UIColor.cyan //self.senderColor //UIColor.gamvesChatBubbleBlueColor
+
+                    self.audioDurationLabel.textColor = UIColor.white.withAlphaComponent(0.5)
+                    self.audioCountabel.textColor = UIColor.white.withAlphaComponent(0.5)
+
+                    playImage?.maskWithColor(color: UIColor.gamvesColor)
                     
                 } else {
                     
                     self.playContainerView.addConstraintsWithFormat("H:|[v0(60)][v1(60)][v2]|", views:
                         self.profileContainerView,
-                                                                    self.playButtonView,
-                                                                    self.centralContainerView)
-                }
-
-                if self.isSender {
-                
-                    self.playButtonView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
-                    self.centralContainerView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
-                    self.profileContainerView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
-
-                } else {
+                        self.playButtonView,
+                        self.centralContainerView)
 
                     self.playButtonView.backgroundColor = UIColor.white
                     self.centralContainerView.backgroundColor = UIColor.white
                     self.profileContainerView.backgroundColor = UIColor.white
 
-                }
-                
-                let playImage = UIImage(named: "play")
-
-                if self.isSender {
-
-                    playImage?.maskWithColor(color: UIColor.gamvesColor)
-
-                } else {
+                    self.audioDurationLabel.textColor = UIColor.lightGray
+                    self.audioCountabel.textColor = UIColor.lightGray
 
                     playImage?.maskWithColor(color: UIColor.gamvesColorLittleDarker)
-                
+
                 }
                 
                 self.playPauseButton.setImage(playImage, for: UIControlState.normal)
@@ -2828,7 +2858,7 @@
                 
                 self.centralContainerView.addConstraintsWithFormat("V:|[v0][v1]|", views:
                     self.playerSlider,
-                                                                   self.labelContainerView)
+                    self.labelContainerView)
 
                 if self.isSender {
 
@@ -2859,9 +2889,11 @@
                 self.profileContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.profileImageView)
                 
                 if self.type == MessageType.isAudioDownloading {
+
                     self.progressAudio = Global.setActivityIndicatorForChat(container: self.profileContainerView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
                     self.profileImageView.isHidden = true
                     self.progressAudio.startAnimating()
+
                 }
 
                 self.playContainerView.dropShadow(color: UIColor.gambesDarkColor)     
@@ -2909,8 +2941,6 @@
             }
 
             self.bubbleView.dropShadow(color: UIColor.gambesDarkColor) 
-
-
 
         }
 
