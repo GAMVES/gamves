@@ -63,6 +63,8 @@
         var picture = GamvesPicture()
         var time = String()
         var type:MessageType!
+        
+        var objectPF:PFObject!
     }
 
     class ChatTextField: UITextField {
@@ -125,6 +127,8 @@
         var keyboardDelegate:KeyboardDelegate!
         var delegateNavBar:NavBarDelegate!
         var isVideo = Bool()
+
+        var audioControlDelegate:AudioControlDelegate?
         
         private let cellId = "cellId"
         
@@ -693,6 +697,8 @@
                             let message = MessageChat()
                             
                             message.type = MessageType.isText
+
+                            message.objectPF = chatVideo as PFObject
                             
                             let userId = chatVideo["userId"] as! String
                             
@@ -832,7 +838,7 @@
                             
                             audio.url = audioPF["url"] as! String
                             
-                            self.downloadIfNotExistAudio(id: id, url:audio.url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
+                            self.downloadIfNotExistAudio(url:audio.url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
                                 
                                 audio.localUri = localUri
                                 completionHandler(audio, id)
@@ -900,7 +906,7 @@
             })
         }
         
-        func downloadIfNotExistAudio(id: Int, url:String, name:String, completionHandler : @escaping (_ localUri:URL, _ exist:Bool) -> ()) {
+        func downloadIfNotExistAudio(url:String, name:String, completionHandler : @escaping (_ localUri:URL, _ exist:Bool) -> ()) {
             
             let chatIdDirectory = self.createIfNotExistChatFolder()
             
@@ -978,7 +984,7 @@
 
                 //https://gitlab.com/JoseVigil/gamves/issues/102
                 
-                /*var sender = Bool()
+                var sender = Bool()
                 
                 let userId = audioPF["senderId"] as! String
 
@@ -994,39 +1000,45 @@
                     
                     let url = audioPF["url"] as! String
                     
-                    self.getMessageByAudioName(audio:audioPF, completionHandler: { ( message, indexPath ) -> () in
+                    self.getMessageByAudioName(audio:audioPF, completionHandler: { ( message ) -> () in
                         
-                        print(indexPath)
+                        //print(indexPath)
                         
                         let audio = message.audio
                         
-                        self.downloadIfNotExistAudio(id: indexPath.row, url:url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
+                        self.downloadIfNotExistAudio(url:url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
                             
-                            audio.localUri = localUri
-                            audio.url = url                            
-                            
-                            DispatchQueue.main.async {
-                                
-                                print()
-                                print("-------------------------------------")
-                                print("SOCKET")
-                                print("-------------------------------------")
 
-                                self.messages[indexPath.row].type = MessageType.isAudio
-                                self.messages[indexPath.row].audio.localUri = localUri
-                                self.messages[indexPath.row].audio.url = url
+                            if self.audioControlDelegate != nil {
+
+                                self.audioControlDelegate?.finishedLoading(messageId: message.objectPF.objectId!, localUri: localUri, url: url)
+                            }
+                            
+                            //audio.localUri = localUri
+                            //audio.url = url                            
+                            
+                            //DispatchQueue.main.async {
+                                
+                                //print()
+                                //print("-------------------------------------")
+                                //print("SOCKET")
+                                //print("-------------------------------------")
+
+                                //self.messages[indexPath.row].type = MessageType.isAudio
+                                //self.messages[indexPath.row].audio.localUri = localUri
+                                //self.messages[indexPath.row].audio.url = url
                             
                                 
-                                self.collectionView.reloadItems(at: [indexPath])
-                            }                            
+                                //self.collectionView.reloadItems(at: [indexPath])
+                            //}                            
                             
                         })
                     })
-                }*/
+                }
             }
         }
         
-        func getMessageByAudioName(audio: PFObject, completionHandler : @escaping (_ message:MessageChat,_ indexPath:IndexPath ) -> ()) {
+        func getMessageByAudioName(audio: PFObject, completionHandler : @escaping (_ message:MessageChat ) -> ()) {
             
             let audioName = audio["name"] as! String
             
@@ -1044,12 +1056,12 @@
                     
                     if audioName == audioStoredName {
                         
-                        let indexPath = IndexPath(item: count, section: 0)
+                        //let indexPath = IndexPath(item: count, section: 0)
                         
-                        completionHandler(message , indexPath)
+                        completionHandler(message)
                     }
                 }
-                count = count + 1
+                //count = count + 1
             }
         }
         
@@ -1700,6 +1712,8 @@
             message.userId = userId
             message.chatId = chatMessage["chatId"] as! Int
             message.date = chatMessage.updatedAt
+
+            message.objectPF = chatMessage as PFObject
             
             message.time = chatMessage["time"] as! String
 
@@ -2297,6 +2311,8 @@
             
             var time:String = message.time
 
+            cell.objectId = message.objectPF.objectId!
+
             print(time)            
             
             cell.timeLabel.text = time            
@@ -2428,6 +2444,8 @@
             //cell.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
 
             cell.bubbleWidth = cell.bubbleView.frame.width
+
+            cell.chatView = self
             
             cell.setupSubviews()
             
@@ -2488,16 +2506,20 @@
 
 
 
+
     class ChatLogMessageCell: BaseCell,
         AVAudioPlayerDelegate,
-        TimerDelegate
+        TimerDelegate,
+        AudioControlDelegate
     {
         
+        var chatView:ChatView!
+
         var usersAmount = Int()       
 
         var type:MessageType!
         var isSender = Bool()
-        
+        var objectId = String()
         //--
         // AUDIO
         
@@ -2725,6 +2747,7 @@
                     
                 case .isAudio, .isAudioDownloading:                    
                     self.bubbleImageView.isHidden = true //.image = Global.audioBubbleImage
+                    self.chatView.audioControlDelegate = self
                     break
                     
                 case .isAdmin:
@@ -2826,9 +2849,9 @@
                         self.centralContainerView,
                         self.profileContainerView)
 
-                    self.playButtonView.backgroundColor = UIColor.red //self.senderColor //UIColor.gamvesChatBubbleBlueColor
-                    self.centralContainerView.backgroundColor = UIColor.green //self.senderColor //UIColor.gamvesChatBubbleBlueColor
-                    self.profileContainerView.backgroundColor = UIColor.cyan //self.senderColor //UIColor.gamvesChatBubbleBlueColor
+                    self.playButtonView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
+                    self.centralContainerView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
+                    self.profileContainerView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
 
                     self.audioDurationLabel.textColor = UIColor.white.withAlphaComponent(0.5)
                     self.audioCountabel.textColor = UIColor.white.withAlphaComponent(0.5)
@@ -2957,6 +2980,15 @@
 
         }
 
+        func finishedLoading(messageId: String, localUri: URL, url: String) {
+
+            if messageId == self.objectId {
+
+                self.profileImageView.isHidden = false
+                self.progressAudio.stopAnimating()
+            }
+
+        }
         
         func showImage(button: UIButton) {
             
@@ -3085,6 +3117,10 @@
     protocol TimerDelegate {
         func timeCount(time: String)
         func timeReset(time: String)
+    }
+
+    protocol AudioControlDelegate {
+        func finishedLoading(messageId: String, localUri: URL, url: String)        
     }
 
     class ChatTimer: NSObject {
