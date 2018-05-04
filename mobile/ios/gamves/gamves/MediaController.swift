@@ -458,6 +458,10 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     func setType(type: MediaType) {
         self.type = type
     }
+
+    func setSearchType(type: SearchType) {
+        self.searchType = type
+    }
     
     func presentCamera()
     {
@@ -951,18 +955,26 @@ private extension MediaController {
         
         let searchExistingAction = UIAlertAction(title: self.searchExistingText, style: UIAlertActionStyle.default) { (_) -> Void in
             
-            self.delegateSearch?.setVideoSearchType(type: UploadType.youtube)
-            self.searchController.type = SearchType.isVideo
+
+            self.delegateSearch?.setVideoSearchType(type: UploadType.youtube)  
+                      
+            //self.searchController.type = SearchType.isVideo
+            //self.searchController.type = SearchType.isImageGallery
+
+            self.searchController.type = self.searchType
+
             self.searchController.searchSize = self.searchSize
             self.searchController.termToSearch = self.termToSearch
             self.searchController.delegateMedia = self.delegate
             self.searchController.delegateSearch = self.delegateSearch
+
             self.searchController.view.backgroundColor = UIColor.white
             self.navigationController?.navigationBar.tintColor = UIColor.white
             self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
             self.navigationController?.pushViewController(self.searchController, animated: true)
             
         }
+
         searchExistingAction.setValue(UIImage(named: "download"), forKey: "image")
         
         actionSheet.addAction(searchExistingAction)

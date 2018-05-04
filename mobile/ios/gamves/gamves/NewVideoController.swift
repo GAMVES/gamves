@@ -649,6 +649,7 @@ SelectorProtocol {
         //media.termToSearch = fanpageTextField.text!
         media.termToSearch = self.fanpage.name
         media.setType(type: MediaType.selectVideo)
+        media.setSearchType(type: SearchType.isVideo)
         navigationController?.pushViewController(media, animated: true)
     }
 

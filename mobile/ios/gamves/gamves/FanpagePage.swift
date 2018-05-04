@@ -557,6 +557,8 @@ class FanpagePage: UIViewController,
         let videoRel:PFRelation = fan.fanpageObj!.relation(forKey: "videos")
         let queryvideos:PFQuery = videoRel.query()
         
+        //queryvideos.whereKey("approved", equalTo: true)
+        
         if !Global.hasDateChanged()
         {
             queryvideos.cachePolicy = .cacheThenNetwork
@@ -678,7 +680,19 @@ class FanpagePage: UIViewController,
 
                             } else {
 
-                                self.showEmptyMessage()
+                                if countVideos! > 1 {
+                                    
+                                    if ( (countVideos!-1) == count)
+                                    {
+                                        //self.videosGamves = fan.videos
+                                        self.activityVideoView.stopAnimating()
+                                        self.collectionView.reloadData()
+                                    }
+                                    count = count + 1
+                                    
+                                } else {
+                                    self.showEmptyMessage()
+                                }
                             }
                         }
                     }

@@ -685,6 +685,9 @@
                     
                 } else {
                     
+                    print(chatVideos?.count)
+                    print(self.chatId)
+                    
                     if (chatVideos?.count)! > 0 {
                         
                         let getChatData = chatVideos?.count
@@ -1243,13 +1246,12 @@
             
             let params = ["targer":self,
                           "isImageMultiSelection":false,
-                          "type":MediaType.selectImage,
+                          "type":MediaType.selectImage,                          
                           "termToSearch":self.inputTextField.text!,
                           "searchType":SearchType.isSingleImage,
                           "searchSize":SearchSize.imageSmall] as [String : Any]
             
-            self.appDelegate.openSearch(params:params)
-            
+            self.appDelegate.openSearch(params:params)            
         }
         
         func unsubcribeClients() {
@@ -1377,9 +1379,7 @@
                 self.audioRecorder = nil
                 
             }
-            
         }
-        
         
         func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
             
@@ -1774,8 +1774,10 @@
                         self.messages[id].type = MessageType.isPicture
                         
                         DispatchQueue.main.async {
+
                             let indexPath = IndexPath(item: id, section: 0)
                             self.collectionView.reloadItems(at: [indexPath])
+                            
                         }
                         
                     })
@@ -2174,9 +2176,7 @@
             //self.collectionView.setContentOffset(CGPoint(x: 0, y: 200), animated: false)
 
         }
-       
-        
-        //func textFieldDidBeginEditing(_ textField: UITextField) {}
+  
         
         func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
             
@@ -2505,8 +2505,6 @@
     }
 
 
-
-
     class ChatLogMessageCell: BaseCell,
         AVAudioPlayerDelegate,
         TimerDelegate,
@@ -2738,7 +2736,7 @@
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.bluePictureBubbleImage
-                        self.bubbleImageView.tintColor = UIColor.gamvesChatBubbleBlueColor  //UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
+                        self.bubbleImageView.tintColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor  //UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
                     } else {
                         self.bubbleImageView.image = Global.grayPictureBubbleImage
                         self.bubbleImageView.tintColor = UIColor.white //UIColor(white: 0.5, alpha: 1)
@@ -2943,11 +2941,15 @@
                 var  right = Int()
                 
                 if self.isSender {
+                    
                     left = 10
                     right = 15
+
                 } else {
+
                     left = 15
                     right = 10
+
                 }
                 
                 let metricsPicture = ["left":left,"right": right]
@@ -2964,11 +2966,14 @@
                 gradientLayer.frame = self.pictureImageView.frame
                 gradientLayer.colors = [UIColor.clear.cgColor, UIColor.gamvesBlackColor.cgColor]
                 gradientLayer.locations = [0.2, 1.2]
+
                 self.pictureImageView.layer.addSublayer(gradientLayer)
                 
                 if self.type == MessageType.isPictureDownloading {
+
                     self.progressPicture = Global.setActivityIndicatorForChat(container: self.bubbleView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 0, y: 0, width: 80.0, height: 80.0)
                     self.progressPicture.startAnimating()
+                    
                 }
                 
             } else {

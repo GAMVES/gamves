@@ -63,6 +63,8 @@
         var picture = GamvesPicture()
         var time = String()
         var type:MessageType!
+        
+        var objectPF:PFObject!
     }
 
     class ChatTextField: UITextField {
@@ -125,6 +127,8 @@
         var keyboardDelegate:KeyboardDelegate!
         var delegateNavBar:NavBarDelegate!
         var isVideo = Bool()
+
+        var audioControlDelegate:AudioControlDelegate?
         
         private let cellId = "cellId"
         
@@ -375,8 +379,7 @@
                         } else {
                             print("Dont Allow")
                         }
-                    }
-                    
+                    }                    
                 }
                 
             } catch {
@@ -403,6 +406,8 @@
             self.bringSubview(toFront: self.activityView)
             
         }
+        
+        
         
         func timeCount(time: String) {
             self.inputTextField.text = time
@@ -481,8 +486,7 @@
         
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
-        }
-       
+        }       
         
         func loadChatFeed() {
             
@@ -503,6 +507,7 @@
                 if error != nil {
                     
                     print("error")
+
                 } else {
                     
                     if let chatFeeds = chatFeeds
@@ -599,18 +604,22 @@
                                                             $0.date.compare($1.date) == .orderedAscending
                                                         })
                                                         
-                                                        self.messages = sortedMessages
-                                                        
-                                                        DispatchQueue.main.async {
-                                                            
-                                                            //self.collectionView.addObserver(self, forKeyPath: "contentSize", options:   NSKeyValueObservingOptions.old.union(NSKeyValueObservingOptions.new), context: nil)
+                                                        self.messages = sortedMessages                                                        
 
-                                                            self.loadUserColors()                                                     
-                                                            self.collectionView.reloadData()
-                                                            self.activityView.stopAnimating()
-                                                            self.scrollToLast()
+                                                        DispatchQueue.global(qos: .background).async {                           
+
+                                                            self.loadUserColors()                                                            
+
+                                                            DispatchQueue.main.async {                                                                
+
+                                                                self.activityView.stopAnimating()
+                                                         
+                                                                self.collectionView.reloadData()
                                                             
-                                                        }
+                                                                self.scrollToLast()      
+
+                                                            }
+                                                        }            
                                                         
                                                     })
                                                     
@@ -676,6 +685,9 @@
                     
                 } else {
                     
+                    print(chatVideos?.count)
+                    print(self.chatId)
+                    
                     if (chatVideos?.count)! > 0 {
                         
                         let getChatData = chatVideos?.count
@@ -688,6 +700,8 @@
                             let message = MessageChat()
                             
                             message.type = MessageType.isText
+
+                            message.objectPF = chatVideo as PFObject
                             
                             let userId = chatVideo["userId"] as! String
                             
@@ -827,7 +841,7 @@
                             
                             audio.url = audioPF["url"] as! String
                             
-                            self.downloadIfNotExistAudio(id: id, url:audio.url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
+                            self.downloadIfNotExistAudio(url:audio.url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
                                 
                                 audio.localUri = localUri
                                 completionHandler(audio, id)
@@ -895,7 +909,7 @@
             })
         }
         
-        func downloadIfNotExistAudio(id: Int, url:String, name:String, completionHandler : @escaping (_ localUri:URL, _ exist:Bool) -> ()) {
+        func downloadIfNotExistAudio(url:String, name:String, completionHandler : @escaping (_ localUri:URL, _ exist:Bool) -> ()) {
             
             let chatIdDirectory = self.createIfNotExistChatFolder()
             
@@ -968,45 +982,58 @@
             self.audioQuery = PFQuery(className: "Audios").whereKey("chatId", equalTo: self.chatId)
             
             self.audioSubscription = audioClient.subscribe(self.audioQuery).handle(Event.updated) { _, audioPF in
+
+                // This block is causing a major bug. 
+
+                //https://gitlab.com/JoseVigil/gamves/issues/102
                 
                 var sender = Bool()
                 
                 let userId = audioPF["senderId"] as! String
-                
-                if userId == PFUser.current()?.objectId {
+
+                if PFUser.current()?.objectId == userId {
                     sender = true
+                } else {
+                    sender = false
                 }
-                
+                             
                 if audioPF["url"] != nil && !sender {
                     
                     print(audioPF["url"])
                     
                     let url = audioPF["url"] as! String
                     
-                    self.getMessageByAudioName(audio:audioPF, completionHandler: { ( message, indexPath ) -> () in
+                    self.getMessageByAudioName(audio:audioPF, completionHandler: { ( message ) -> () in
                         
-                        print(indexPath)
+                        //print(indexPath)
                         
                         let audio = message.audio
                         
-                        self.downloadIfNotExistAudio(id: indexPath.row, url:url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
+                        self.downloadIfNotExistAudio(url:url, name:audio.name, completionHandler: { ( localUri, exist ) -> () in
                             
-                            audio.localUri = localUri
-                            audio.url = url
+
+                            if self.audioControlDelegate != nil {
+
+                                self.audioControlDelegate?.finishedLoading(messageId: message.objectPF.objectId!, localUri: localUri, url: url)
+                            }
                             
-                            self.messages[indexPath.row].type = MessageType.isAudio
-                            self.messages[indexPath.row].audio.localUri = localUri
-                            self.messages[indexPath.row].audio.url = url
+                            //audio.localUri = localUri
+                            //audio.url = url                            
                             
-                            DispatchQueue.main.async {
+                            //DispatchQueue.main.async {
                                 
-                                print()
-                                print("-------------------------------------")
-                                print("SOCKET")
-                                print("-------------------------------------")
+                                //print()
+                                //print("-------------------------------------")
+                                //print("SOCKET")
+                                //print("-------------------------------------")
+
+                                //self.messages[indexPath.row].type = MessageType.isAudio
+                                //self.messages[indexPath.row].audio.localUri = localUri
+                                //self.messages[indexPath.row].audio.url = url
+                            
                                 
-                                self.collectionView.reloadItems(at: [indexPath])
-                            }                            
+                                //self.collectionView.reloadItems(at: [indexPath])
+                            //}                            
                             
                         })
                     })
@@ -1014,7 +1041,7 @@
             }
         }
         
-        func getMessageByAudioName(audio: PFObject, completionHandler : @escaping (_ message:MessageChat,_ indexPath:IndexPath ) -> ()) {
+        func getMessageByAudioName(audio: PFObject, completionHandler : @escaping (_ message:MessageChat ) -> ()) {
             
             let audioName = audio["name"] as! String
             
@@ -1032,12 +1059,12 @@
                     
                     if audioName == audioStoredName {
                         
-                        let indexPath = IndexPath(item: count, section: 0)
+                        //let indexPath = IndexPath(item: count, section: 0)
                         
-                        completionHandler(message , indexPath)
+                        completionHandler(message)
                     }
                 }
-                count = count + 1
+                //count = count + 1
             }
         }
         
@@ -1219,13 +1246,12 @@
             
             let params = ["targer":self,
                           "isImageMultiSelection":false,
-                          "type":MediaType.selectImage,
+                          "type":MediaType.selectImage,                          
                           "termToSearch":self.inputTextField.text!,
                           "searchType":SearchType.isSingleImage,
                           "searchSize":SearchSize.imageSmall] as [String : Any]
             
-            self.appDelegate.openSearch(params:params)
-            
+            self.appDelegate.openSearch(params:params)            
         }
         
         func unsubcribeClients() {
@@ -1353,9 +1379,7 @@
                 self.audioRecorder = nil
                 
             }
-            
         }
-        
         
         func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
             
@@ -1688,10 +1712,18 @@
             message.userId = userId
             message.chatId = chatMessage["chatId"] as! Int
             message.date = chatMessage.updatedAt
+
+            message.objectPF = chatMessage as PFObject
             
             message.time = chatMessage["time"] as! String
 
-            if Global.userDictionary[userId] != nil {
+            if PFUser.current()?.objectId == userId {
+                message.isSender = true
+            } else {
+                message.isSender = false
+            }
+
+            /*if Global.userDictionary[userId] != nil {
             
                 if let gamvesUser = Global.userDictionary[userId]
                 {
@@ -1706,7 +1738,7 @@
 
                 print("User does not exis")
 
-            }
+            }*/
             
             if (textMessage.contains(Global.audio_delimitator)) {
                 
@@ -1790,15 +1822,21 @@
             
             print(indexPath)
             
-            print("-----------------------------------------------------------------------------")
-            
-            DispatchQueue.main.async {
+            print("-----------------------------------------------------------------------------")      
+
+            DispatchQueue.global(qos: .background).async {
                 
                 self.inputTextField.text = ""
+
+                DispatchQueue.main.async {
+             
+                    self.collectionView.insertItems(at: [indexPath])
                 
-                self.collectionView.insertItems(at: [indexPath])
-                
-                self.scrollToLast()
+                    self.scrollToLast()
+                    
+                    self.collectionView.collectionViewLayout.invalidateLayout()
+
+                }
             }
             
         }
@@ -2136,9 +2174,7 @@
             //self.collectionView.setContentOffset(CGPoint(x: 0, y: 200), animated: false)
 
         }
-       
-        
-        //func textFieldDidBeginEditing(_ textField: UITextField) {}
+  
         
         func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
             
@@ -2273,6 +2309,8 @@
             
             var time:String = message.time
 
+            cell.objectId = message.objectPF.objectId!
+
             print(time)            
             
             cell.timeLabel.text = time            
@@ -2282,6 +2320,7 @@
             if Global.isAudio(type: message.type) || Global.isPicture(type: message.type) {
                 
                 cell.messageTextView.isHidden = true
+
             } else {
                 
                 cell.messageTextView.text = messageText
@@ -2373,7 +2412,7 @@
                 
                 cell.bubbleView.frame = CGRect(x:bx, y:by, width: bwidth, height: bheight)
                 
-                if Global.isAudio(type: message.type){
+                if Global.isAudio(type: message.type) {
                     
                     if message.audioLocalUri != nil {
                         message.audio.localUri = message.audioLocalUri
@@ -2383,7 +2422,6 @@
                     
                     cell.bHeight = bheight
                     cell.audioDurationLabel.text = message.audio.duration
-                    
                     
                     cell.playPauseButton.tag = indexPath.row
                     
@@ -2404,6 +2442,8 @@
             //cell.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
 
             cell.bubbleWidth = cell.bubbleView.frame.width
+
+            cell.chatView = self
             
             cell.setupSubviews()
             
@@ -2438,6 +2478,7 @@
                 
                 estimatedFrame = eFrame
             }
+
             return estimatedFrame
             
         }
@@ -2462,17 +2503,19 @@
     }
 
 
-
     class ChatLogMessageCell: BaseCell,
         AVAudioPlayerDelegate,
-        TimerDelegate
+        TimerDelegate,
+        AudioControlDelegate
     {
         
+        var chatView:ChatView!
+
         var usersAmount = Int()       
 
         var type:MessageType!
         var isSender = Bool()
-        
+        var objectId = String()
         //--
         // AUDIO
         
@@ -2691,15 +2734,16 @@
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.bluePictureBubbleImage
-                        self.bubbleImageView.tintColor = UIColor.gamvesChatBubbleBlueColor  //UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
+                        self.bubbleImageView.tintColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor  //UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
                     } else {
                         self.bubbleImageView.image = Global.grayPictureBubbleImage
                         self.bubbleImageView.tintColor = UIColor.white //UIColor(white: 0.5, alpha: 1)
                     }
                     break
                     
-                case .isAudio, .isAudioDownloading:
-                    //self.bubbleImageView.image = Global.audioBubbleImage
+                case .isAudio, .isAudioDownloading:                    
+                    self.bubbleImageView.isHidden = true //.image = Global.audioBubbleImage
+                    self.chatView.audioControlDelegate = self
                     break
                     
                 case .isAdmin:
@@ -2730,14 +2774,16 @@
                     self.bubbleView.addConstraintsWithFormat("V:|-bHeight-[v0(15)]|", views: self.timeLabel, metrics: bubbleMetrics)
                     
                     if self.isSender {
+
                         self.timeLabel.textAlignment = .left
+
                     } else  {
+
                         self.timeLabel.textAlignment = .right
+
                     }
 
                     self.timeLabel.textColor = UIColor.white.withAlphaComponent(0.5)
-
-                    //self.bubbleView.dropShadow(color: UIColor.black)
 
                 } else {
 
@@ -2751,8 +2797,6 @@
                     self.labelTextContainerView.addSubview(self.userLabel)                
                     self.labelTextContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.userLabel)
 
-                    //self.userLabel.backgroundColor = UIColor.cyan
-
                     let labelSize = ( self.bubbleWidth / 2 ) - 20
 
                     let bubbleWidthMetrics = ["labelSize" : labelSize]
@@ -2762,11 +2806,7 @@
                     self.timeLabel.textAlignment = .center
                     self.userLabel.textAlignment = .center
 
-                    self.timeLabel.textColor = UIColor.lightGray
-                   
-                    //self.userLabel.textColor = UIColor.gray
-                    //self.bubbleView.dropShadow(color: UIColor.gambesDarkColor)
-                    //self.bubbleView.dropShadow(color: UIColor.gambesDarkColor)
+                    self.timeLabel.textColor = UIColor.lightGray                    
 
                 }
 
@@ -2795,24 +2835,16 @@
                 
                 self.playContainerView.addSubview(self.profileContainerView)
                 self.playContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.profileContainerView)
+
+                let playImage = UIImage(named: "play")
                 
                 if self.isSender {
                     
                     self.playContainerView.addConstraintsWithFormat("H:|[v0(60)][v1][v2(60)]|", views:
                         self.playButtonView,
-                                                                    self.centralContainerView,
-                                                                    self.profileContainerView)
-                    
-                } else {
-                    
-                    self.playContainerView.addConstraintsWithFormat("H:|[v0(60)][v1(60)][v2]|", views:
-                        self.profileContainerView,
-                                                                    self.playButtonView,
-                                                                    self.centralContainerView)
-                }
+                        self.centralContainerView,
+                        self.profileContainerView)
 
-                if self.isSender {
-                
                     self.playButtonView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
                     self.centralContainerView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
                     self.profileContainerView.backgroundColor = self.senderColor //UIColor.gamvesChatBubbleBlueColor
@@ -2820,7 +2852,15 @@
                     self.audioDurationLabel.textColor = UIColor.white.withAlphaComponent(0.5)
                     self.audioCountabel.textColor = UIColor.white.withAlphaComponent(0.5)
 
+                    //playImage?.maskWithColor(color: UIColor.gamvesColor)
+                    
                 } else {
+
+                    
+                    self.playContainerView.addConstraintsWithFormat("H:|[v0(60)][v1(60)][v2]|", views:
+                        self.profileContainerView,
+                        self.playButtonView,
+                        self.centralContainerView)
 
                     self.playButtonView.backgroundColor = UIColor.white
                     self.centralContainerView.backgroundColor = UIColor.white
@@ -2829,18 +2869,8 @@
                     self.audioDurationLabel.textColor = UIColor.lightGray
                     self.audioCountabel.textColor = UIColor.lightGray
 
-                }
-                
-                let playImage = UIImage(named: "play")
+                    //playImage?.maskWithColor(color: UIColor.gamvesColorLittleDarker)
 
-                if self.isSender {
-
-                    playImage?.maskWithColor(color: UIColor.gamvesColor)
-
-                } else {
-
-                    playImage?.maskWithColor(color: UIColor.gamvesColorLittleDarker)
-                
                 }
                 
                 self.playPauseButton.setImage(playImage, for: UIControlState.normal)
@@ -2860,7 +2890,7 @@
                 
                 self.centralContainerView.addConstraintsWithFormat("V:|[v0][v1]|", views:
                     self.playerSlider,
-                                                                   self.labelContainerView)
+                    self.labelContainerView)
 
                 if self.isSender {
 
@@ -2891,9 +2921,11 @@
                 self.profileContainerView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: self.profileImageView)
                 
                 if self.type == MessageType.isAudioDownloading {
+
                     self.progressAudio = Global.setActivityIndicatorForChat(container: self.profileContainerView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
                     self.profileImageView.isHidden = true
                     self.progressAudio.startAnimating()
+
                 }
 
                 self.playContainerView.dropShadow(color: UIColor.gambesDarkColor)     
@@ -2907,11 +2939,15 @@
                 var  right = Int()
                 
                 if self.isSender {
+                    
                     left = 10
                     right = 15
+
                 } else {
+
                     left = 15
                     right = 10
+
                 }
                 
                 let metricsPicture = ["left":left,"right": right]
@@ -2928,11 +2964,14 @@
                 gradientLayer.frame = self.pictureImageView.frame
                 gradientLayer.colors = [UIColor.clear.cgColor, UIColor.gamvesBlackColor.cgColor]
                 gradientLayer.locations = [0.2, 1.2]
+
                 self.pictureImageView.layer.addSublayer(gradientLayer)
                 
                 if self.type == MessageType.isPictureDownloading {
+
                     self.progressPicture = Global.setActivityIndicatorForChat(container: self.bubbleView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 0, y: 0, width: 80.0, height: 80.0)
                     self.progressPicture.startAnimating()
+                    
                 }
                 
             } else {
@@ -2942,10 +2981,17 @@
 
             self.bubbleView.dropShadow(color: UIColor.gambesDarkColor) 
 
-
-
         }
 
+        func finishedLoading(messageId: String, localUri: URL, url: String) {
+
+            if messageId == self.objectId {
+
+                self.profileImageView.isHidden = false
+                self.progressAudio.stopAnimating()
+            }
+
+        }
         
         func showImage(button: UIButton) {
             
@@ -3034,7 +3080,9 @@
         }
         
         func showPlayIcon(){
+
             DispatchQueue.main.async {
+
                 let playImage = UIImage(named: "play")
 
                 if self.isSender {
@@ -3072,6 +3120,10 @@
     protocol TimerDelegate {
         func timeCount(time: String)
         func timeReset(time: String)
+    }
+
+    protocol AudioControlDelegate {
+        func finishedLoading(messageId: String, localUri: URL, url: String)        
     }
 
     class ChatTimer: NSObject {
