@@ -148,7 +148,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         
         let chatFrame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         
-        chatView = ChatView(frame: chatFrame, isVideo: false)  
+        chatView = ChatView(parent: ChatViewType.ChatViewController, frame: chatFrame, isVideo: false)  
         
         params = ["chatId": chatId, "isVideoChat": false, "gamvesUsers": gamvesUsers, "navBarProtocol": self, "delegate": self] as [String : Any]
         

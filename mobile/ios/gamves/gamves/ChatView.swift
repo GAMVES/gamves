@@ -1,4 +1,4 @@
-  ////
+    ////
     //  ChatView.swift
     //  gamves
     //
@@ -44,6 +44,11 @@
         case isPictureDownloading
         case isText
         case isVideo
+    }
+
+    enum ChatViewType {
+        case VideoLauncher
+        case ChatViewController        
     }
 
     class MessageChat
@@ -277,10 +282,14 @@
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
         var senderColor = UIColor()
+
+        var chatType:ChatViewType!
         
-        init(frame: CGRect, isVideo:Bool) {
+        init(parent: ChatViewType, frame: CGRect, isVideo:Bool) {
             super.init(frame: frame)
             
+            self.chatType = parent
+
             self.frame = frame
             
             let vWidth = self.frame.width
@@ -1777,7 +1786,7 @@
 
                             let indexPath = IndexPath(item: id, section: 0)
                             self.collectionView.reloadItems(at: [indexPath])
-                            
+
                         }
                         
                     })
@@ -2051,6 +2060,12 @@
         @objc func handleKeyboardNotification(notification: NSNotification) {
             
             if let userInfo = notification.userInfo {
+
+                //print(self.superview)
+                print(type(of: self.superview))
+
+                let className : String = String(describing: self.superview)
+                print(className)
                 
                 let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
                 
@@ -2064,16 +2079,21 @@
                         
                     }
                     
-                    self.addGestureRecognizer(self.tabGesture)
-                    
+                    self.addGestureRecognizer(self.tabGesture)                    
                     
                 } else if notification.name == NSNotification.Name.UIKeyboardWillHide {
+
+
+                    if self.chatType == ChatViewType.ChatViewController {
+
                     
-                    if (self.keyboardDelegate != nil) {
-                        
-                        self.keyboardDownEmojiOn()
-                        
-                        self.keyboardDelegate.keyboardclosed()
+                        if (self.keyboardDelegate != nil) {
+                            
+                            self.keyboardDownEmojiOn()
+                            
+                            self.keyboardDelegate.keyboardclosed()
+                            
+                        }
                         
                     }
                     

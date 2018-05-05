@@ -282,6 +282,10 @@ class VideoPlayerView: UIView {
 }
 
 class VideoLauncher: UIView, KeyboardDelegate {
+
+    class func className() -> String {
+        return "VideoLauncher"
+    }
         
     var infoView:InfoView!
     var chatView:ChatView!
@@ -379,7 +383,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
             
             let chatFrame = CGRect(x: 0, y: chatY, width: Int(keyWindow.frame.width), height: chatHeight)
             
-            chatView = ChatView(frame: chatFrame, isVideo: true)
+            chatView = ChatView(parent: ChatViewType.VideoLauncher, frame: chatFrame, isVideo: true)
             
             let params = ["chatId": videoId, "isVideoChat": true, "thumbnailImage": videoGamves.image, "delegate":self] as [String : Any]
             
