@@ -1932,6 +1932,8 @@
             let colorString = Global.listOfChatColors[randomColorIndex]
 
             chatFeed["senderColor"] = colorString
+
+            self.senderColor = UIColor.init(hex: "0x\(colorString)")
             
             let groupImageFile:PFFile!
             
@@ -2046,10 +2048,11 @@
                         if resutl && !self.isVideo {
                             
                             self.sendPushWithCoud(message: message!)
-                        } else {
+                        } //else {
                             
-                            completionHandlerSave(resutl)
-                        }
+                            //completionHandlerSave(resutl)
+                        //}
+                        
                         completionHandlerSave    (resutl)
                     })
                 }
