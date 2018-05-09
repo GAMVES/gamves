@@ -11,9 +11,17 @@ import Parse
 import DownPicker
 import BEMCheckBox
 import NVActivityIndicatorView
+import ParseLiveQuery
 
 class LoginViewController: UIViewController
 {
+
+    let userClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
+
+    private var userSubscription: Subscription<PFObject>!
+
+    var userQuery:PFQuery<PFObject>!
+
     var tabBarViewController:TabBarViewController?
     
     var okLogin = Bool()
@@ -356,7 +364,38 @@ class LoginViewController: UIViewController
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
         })
         
+        self.initializeChatSubscription()
+
     }
+
+    func initializeChatSubscription() {
+
+        if let userId = PFUser.current()?.objectId {
+        
+            self.userQuery = PFQuery(className: "_User").whereKey("objectId", equalTo: userId)
+
+            self.userSubscription = userClient.subscribe(self.userQuery).handle(Event.created) { _, userPF in
+                
+                print(userPF.objectId)
+
+                if userId == userPF.objectId {
+                    
+                    if userPF["emailVerified"] != nil {
+
+
+                        let verified = userPF["emailVerified"] as! Bool
+
+                        if verified {
+                                
+                            self.loginRegisterButton.isEnabled = true
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -657,6 +696,8 @@ class LoginViewController: UIViewController
                     self.isRegistered = false
                     
                     self.loginRegisterButton.setTitle("Continue", for: UIControlState())
+
+                    self.loginRegisterButton.isEnabled = false
                     
                     Global.defaults.set(email, forKey: "your_email")
                     Global.defaults.set(password, forKey: "your_password")

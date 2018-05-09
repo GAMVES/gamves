@@ -514,9 +514,7 @@ class ProfileViewController: UIViewController,
         }
 
         //self.familyLoaded()
-
         //self.levelsLoaded()
-
         //self.loadFamilyDataGromGlobal()
 
         self.boyConstraints()     
@@ -553,6 +551,17 @@ class ProfileViewController: UIViewController,
             }
             
             self.segmentedControl.setEnabled(true, forSegmentAt: 1)
+
+            print(self.yourTypeId)
+
+
+            if self.yourTypeId == Global.REGISTER_FATHER || self.yourTypeId == Global.REGISTER_MOTHER {
+
+                self.spousePasswordTextField.isEnabled = false
+                self.spouseNameTextField.isEnabled = false
+                self.spouseEmailTextField.isEnabled = false
+
+            } 
             
         }
         
@@ -1196,7 +1205,10 @@ class ProfileViewController: UIViewController,
         }
         
         if errors {
-            self.activityIndicatorView?.stopAnimating()
+
+            DispatchQueue.main.async() {
+                self.activityIndicatorView?.stopAnimating()
+            }
         }
         
         return errors
@@ -1281,7 +1293,9 @@ class ProfileViewController: UIViewController,
         }
 
         if errors {
-            self.activityIndicatorView?.stopAnimating()
+            DispatchQueue.main.async() {
+                self.activityIndicatorView?.stopAnimating()
+            }
         }
 
         return errors

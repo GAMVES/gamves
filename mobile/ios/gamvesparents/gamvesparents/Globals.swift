@@ -168,14 +168,27 @@ class Global: NSObject
                 registered = user["isRegister"] as! Bool
             }
             
-            gamvesUser.isRegister = registered
-            
+            gamvesUser.isRegister = registered            
             
             gamvesUser.userName = user["username"] as! String
             
+            print(user.email)
+            
             if user.email != nil {
+                
                 gamvesUser.email = user.email!
+
+            } else {
+                
+                gamvesUser.email = user["username"] as! String
             }
+
+            //if user.password != nil {
+
+            //    gamvesUser.password = user.password as! String   
+
+            //} 
+
             
             if user["status"] != nil
             {

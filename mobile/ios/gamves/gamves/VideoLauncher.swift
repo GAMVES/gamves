@@ -96,6 +96,9 @@ class VideoPlayerView: UIView {
     }   
 
     func handleDownButton() {
+
+        self.hideShowControllers(status: true)
+
         self.videoLauncher.shrinkVideoDown()
     }
 

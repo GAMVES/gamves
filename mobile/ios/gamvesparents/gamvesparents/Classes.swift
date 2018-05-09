@@ -71,6 +71,7 @@ class GamvesUser
     var userName = String()
     var userId = String()
     var email = String()
+    var password = String()
     
     var avatar = UIImage()
     var isAvatarDownloaded = Bool()
