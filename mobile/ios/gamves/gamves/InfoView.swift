@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 class InfoView: UIView {
     
@@ -52,10 +53,6 @@ class InfoView: UIView {
         return label
     }()
 
-
-    ///////////////////////////////////////////////////
-
-
     let likesHolderView: UIView = {
         let view = UIView()        
         view.backgroundColor = UIColor.blue
@@ -69,12 +66,17 @@ class InfoView: UIView {
         view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
+    }()   
 
-    let likeImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "like_gray")
-        return imageView
+    lazy var likeButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(named: "like_gray")
+        button.setImage(image, for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .gray   
+        button.addTarget(self, action: #selector(handleLikeButton(sender:)), for: .touchUpInside)
+        button.tag = 1        
+        return button
     }()
 
     let likeLabel: UILabel = {
@@ -95,11 +97,15 @@ class InfoView: UIView {
         return view
     }()
 
-
-    let likeNotImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "likenot_gray")
-        return imageView
+    lazy var notLikeButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(named: "likenot_gray")
+        button.setImage(image, for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .gray   
+        button.addTarget(self, action: #selector(handleLikeButton(sender:)), for: .touchUpInside)
+        button.tag = 2       
+        return button
     }()
 
     let likeNotLabel: UILabel = {
@@ -113,12 +119,17 @@ class InfoView: UIView {
         return label
     }()
 
+    var likeType = Int()
+    var videoId = Int()
+    var existLike = Bool()
+    var likesPF:PFObject!
 
     init(frame: CGRect, video: VideoGamves)
     {
         super.init(frame: frame)    
 
         self.videoGamves = video
+        self.videoId = video.videoId
         
         self.infoContainerView.frame = frame  
 
@@ -158,27 +169,155 @@ class InfoView: UIView {
 
         self.likesHolderView.addConstraintsWithFormat("H:|[v0][v1]|", views: self.likeContainerView, self.likeNotContainerView)
 
-        self.likeContainerView.addSubview(self.likeImageView)
+        self.likeContainerView.addSubview(self.likeButton)
         self.likeContainerView.addSubview(self.likeLabel)
 
-        self.likeContainerView.addConstraintsWithFormat("H:|-5-[v0(50)]-5-|", views: self.likeImageView)
+        self.likeContainerView.addConstraintsWithFormat("H:|-5-[v0(50)]-5-|", views: self.likeButton)
         self.likeContainerView.addConstraintsWithFormat("H:|-5-[v0(50)]-5-|", views: self.likeLabel)
 
-        self.likeContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-5-[v1]|", views: self.likeImageView, self.likeLabel)
+        self.likeContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-5-[v1]|", views: self.likeButton, self.likeLabel)
 
-        self.likeNotContainerView.addSubview(self.likeNotImageView)
+        self.likeNotContainerView.addSubview(self.notLikeButton)
         self.likeNotContainerView.addSubview(self.likeNotLabel)
 
-        self.likeNotContainerView.addConstraintsWithFormat("H:|-5-[v0(50)]-5-|", views: self.likeNotImageView)
+        self.likeNotContainerView.addConstraintsWithFormat("H:|-5-[v0(50)]-5-|", views: self.notLikeButton)
         self.likeNotContainerView.addConstraintsWithFormat("H:|-5-[v0(50)]-5-|", views: self.likeNotLabel)
 
-        self.likeNotContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-5-[v1]|", views: self.likeNotImageView, self.likeNotLabel)
+        self.likeNotContainerView.addConstraintsWithFormat("V:|-5-[v0(50)]-5-[v1]|", views: self.notLikeButton, self.likeNotLabel)
+
+        self.likeButton.imageView?.tintColor = UIColor.gray
+        self.notLikeButton.imageView?.tintColor = UIColor.gray                   
+
+        self.checkLike()
     
     } 
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }   
+
+
+    func checkLike() {
+
+        let queryLikes = PFQuery(className:"Likes")
+
+        if let userId = PFUser.current()?.objectId {
+        
+            queryLikes.whereKey("userId", equalTo: userId)
+
+        }        
+
+        queryLikes.whereKey("referenceId", equalTo: self.videoId)                        
+
+        queryLikes.getFirstObjectInBackground(block: { (likePF, error) in
+         
+             if error == nil {
+                
+                self.likesPF = likePF
+
+                self.existLike = true
+
+                self.likeType = likePF!["likeType"] as! Int
+
+                if self.likeType == 1 {
+
+                    self.likeButton.imageView?.tintColor = UIColor.red
+                    self.notLikeButton.imageView?.tintColor = UIColor.gray
+
+                } else if self.likeType == 2 {
+
+                    self.likeButton.imageView?.tintColor = UIColor.gray
+                    self.notLikeButton.imageView?.tintColor = UIColor.red
+
+                }
+
+            }
+        })
     }
 
+ 
+
+    func handleLikeButton(sender: UIButton) {      
+
+        if !self.existLike {
+
+            self.likesPF = PFObject(className: "Likes")
+
+            self.likesPF["referenceId"] = self.videoId
+        
+        
+            if let userId = PFUser.current()?.objectId {
+            
+                self.likesPF["userId"] = userId
+                
+            }
+
+        } 
+
+        var status = Int()
+
+        if sender.tag == 1 {
+
+            status = 1
+
+            if self.likeType == 1 {
+
+                 self.likesPF.deleteEventually()
+
+                 self.likeButton.imageView?.tintColor = UIColor.gray          
+
+                 self.existLike = false  
+
+                 self.likeType = 0      
+
+                 return        
+
+            }
+
+        } else if sender.tag == 2 {
+
+            status = 2
+
+            if self.likeType == 2 {
+
+                self.likesPF.deleteEventually()
+
+                self.notLikeButton.imageView?.tintColor = UIColor.gray  
+
+                self.existLike = false
+
+                self.likeType = 0  
+
+                return
+
+            }
+
+        }        
+        
+        self.likesPF["likeType"] = status
+        
+        self.likesPF.saveInBackground(block: { (resutl, error) in
+            
+            if error == nil {
+
+                self.existLike = true
+
+                if sender.tag == 1 {                   
+                        
+                    self.likeButton.imageView?.tintColor = UIColor.red                       
+                    self.notLikeButton.imageView?.tintColor = UIColor.gray     
+
+                    self.likeType = 1  
+
+                } else if sender.tag == 2 {
+
+                    self.notLikeButton.imageView?.tintColor = UIColor.red
+                    self.likeButton.imageView?.tintColor = UIColor.gray
+
+                    self.likeType = 2
+                }
+            }
+        })
+    }
   
 }

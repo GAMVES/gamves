@@ -83,7 +83,7 @@ class VideoPlayerView: UIView {
     var gradientLayer = CAGradientLayer()
     var videoUrl = String()
     var isVideoDown = Bool()       
-    var videoFrame = CGRect()
+    var videoFrame = CGRect()    
 
     override init(frame: CGRect) {
         self.videoFrame = frame
@@ -413,7 +413,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
                     UIApplication.shared.setStatusBarHidden(true, with: .fade)
             })
         }
-    }
+    }    
 
     func swipedDownVideo(sender: UISwipeGestureRecognizer) {
         
