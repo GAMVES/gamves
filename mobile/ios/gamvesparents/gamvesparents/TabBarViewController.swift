@@ -41,10 +41,18 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         return launcher
     }()
 
+    var puserId = String()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
     
-        self.tabBarController?.tabBar.tintColor = UIColor.gamvesColor
+        self.tabBarController?.tabBar.tintColor = UIColor.gamvesColor       
+        
     
         locationManager.delegate = self
         
@@ -98,12 +106,13 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         blurVisualEffectView?.frame = view.bounds
         self.view.addSubview(blurVisualEffectView!)
         
-        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
+        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
             self.selectedIndex = 2 //Account
         }
+
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)
         
-    }
-    
+    }   
    
     
     override func viewDidAppear(_ animated: Bool) {
@@ -122,6 +131,11 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             self.blurVisualEffectView?.removeFromSuperview()
         }        
     }
+
+    @objc private func loggedOut() {
+
+        self.showLoginController(registered: true)
+    }
     
     private func createDummyNavControllerWithTitle(title: String, imageName: String) -> UINavigationController {
         let viewController = UIViewController()
@@ -129,6 +143,16 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         navController.tabBarItem.title = title
         navController.tabBarItem.image = UIImage(named: imageName)
         return navController
+    }
+
+
+    func showControllerForSetting(_ setting: Setting) {
+        let dummySettingsViewController = UIViewController()
+        dummySettingsViewController.view.backgroundColor = UIColor.white
+        dummySettingsViewController.navigationItem.title = setting.name.rawValue
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(dummySettingsViewController, animated: true)
     }
     
     fileprivate func isLoggedIn() -> Bool {

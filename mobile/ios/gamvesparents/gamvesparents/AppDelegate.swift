@@ -20,6 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     var connect = Bool()
 
+    var puserId = String()
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {       
         
         let layout = UICollectionViewFlowLayout()
@@ -86,7 +88,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
             
         })
+
         
+        if PFUser.current() != nil
+        {
+            if let userId = PFUser.current()?.objectId
+            {
+                self.puserId = userId
+            }
+        }
+
+            
         if #available(iOS 10.0, *)
         {
             let center = UNUserNotificationCenter.current()
@@ -199,7 +211,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             } else 
             {
 
-                let installed_user = Global.defaults.bool(forKey: "installed_user")
+                let installed_user = Global.defaults.bool(forKey: "\(self.puserId)_last_message")
                 if !installed_user
                 {
                     
@@ -209,7 +221,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                         currentInstall.saveEventually({ (success, error) in                    
                             if success
                             {
-                                UserDefaults.standard.set(true, forKey: "installed_user")
+                                UserDefaults.standard.set(true, forKey: "\(self.puserId)_last_message")
                                 UserDefaults.standard.synchronize()
                             }
                         })  

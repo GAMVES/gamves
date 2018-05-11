@@ -82,6 +82,8 @@
 		C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9389278206AC83900DE72AA /* UserNotifications.framework */; };
 		C93BF39B20954A66006A0551 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93BF39A20954A66006A0551 /* Int+Extension.swift */; };
 		C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93BF39C20954DF6006A0551 /* CGFloat+Extension.swift */; };
+		C93D611C20A3DA8300245CC7 /* SettingsLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93D611B20A3DA8300245CC7 /* SettingsLauncher.swift */; };
+		C93D611E20A3E58A00245CC7 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93D611D20A3E58900245CC7 /* SettingCell.swift */; };
 		C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */; };
 /* End PBXBuildFile section */
 
@@ -166,6 +168,8 @@
 		C9389278206AC83900DE72AA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		C93BF39A20954A66006A0551 /* Int+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		C93BF39C20954DF6006A0551 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
+		C93D611B20A3DA8300245CC7 /* SettingsLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsLauncher.swift; sourceTree = "<group>"; };
+		C93D611D20A3E58900245CC7 /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PFGeoPoint+Extension.swift"; sourceTree = "<group>"; };
 		FE567B47EE25D846CFB77DFB /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -307,6 +311,7 @@
 			children = (
 				82557C4C2016CE2B00752301 /* HistoryViewController.swift */,
 				82557C502016CFDB00752301 /* ActivityViewController.swift */,
+				C93D611B20A3DA8300245CC7 /* SettingsLauncher.swift */,
 				82E3722C1FB16109000AD7EB /* SelectContactViewController.swift */,
 				8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */,
 				82557C5E20173C0100752301 /* LocationViewController.swift */,
@@ -325,6 +330,7 @@
 		829F01191FC325EB00B8F2BD /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C93D611D20A3E58900245CC7 /* SettingCell.swift */,
 				829F011A1FC3261500B8F2BD /* HomeCollectionViewCell.swift */,
 				826B8CC8201CCBD5008C19A3 /* AccountCollectionViewCell.swift */,
 			);
@@ -613,6 +619,7 @@
 				8296F1DD202CA47000750C8D /* Formatter+Extensions.swift in Sources */,
 				829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */,
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
+				C93D611E20A3E58A00245CC7 /* SettingCell.swift in Sources */,
 				82557C4F2016CED100752301 /* HistroyCell.swift in Sources */,
 				822010BA1FFAD960008C9027 /* ButtonsApprovalView.swift in Sources */,
 				826B8CC720191F21008C19A3 /* AccountViewController.swift in Sources */,
@@ -662,6 +669,7 @@
 				82355FF320202CBF004C2014 /* ImagesCollectionViewCell.swift in Sources */,
 				C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */,
 				828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */,
+				C93D611C20A3DA8300245CC7 /* SettingsLauncher.swift in Sources */,
 				8212D7081F7843B600F2A121 /* ImageView+Extensions.swift in Sources */,
 				82E372351FB16520000AD7EB /* ChatViewController.swift in Sources */,
 				C73A31991DA3078D00C86C96 /* UserDefaults+helpers.swift in Sources */,

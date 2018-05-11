@@ -179,9 +179,16 @@ class HomeViewController: UIViewController,
         NotificationCenter.default.addObserver(self, selector: #selector(chatFeedLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
         
     }
-    
+
+    var puserId = String()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
 
          tabBarController?.tabBar.isHidden = false
         
@@ -333,7 +340,6 @@ class HomeViewController: UIViewController,
         self.userStatistics.append(_history)
     
     }
-    
     
  
     func loadSonProfileInfo() {
@@ -572,12 +578,12 @@ class HomeViewController: UIViewController,
     
     func renderSon() {
         
-        if self.isKeyPresentInUserDefaults(key:"son_object_id")
+        if self.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_object_id")
         {
             
             DispatchQueue.main.async {
                 
-                let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+                let sonId = Global.defaults.object(forKey: "\(self.puserId)_son_object_id") as! String
                 if Global.userDictionary[sonId] != nil
                 {
                     self.sonLabel.text = Global.userDictionary[sonId]?.firstName
@@ -844,9 +850,9 @@ class HomeViewController: UIViewController,
     
     func initializeOnlineSubcritpion()
     {
-        if Global.isKeyPresentInUserDefaults(key: "son_object_id") {
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_object_id") {
         
-            let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+            let sonId = Global.defaults.object(forKey: "\(self.puserId)_son_object_id") as! String
 
             if Global.userDictionary[sonId] != nil
             {
@@ -887,11 +893,11 @@ class HomeViewController: UIViewController,
     func loadUserStatus() {
 
        
-        if Global.isKeyPresentInUserDefaults(key: "son_object_id") {
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_object_id") {
 
             let queryOnline = PFQuery(className:"UserStatus")
 
-            let sonId = Global.defaults.object(forKey: "son_object_id") as! String
+            let sonId = Global.defaults.object(forKey: "\(self.puserId)_son_object_id") as! String
 
             let userId = Global.userDictionary[sonId]?.userId
 

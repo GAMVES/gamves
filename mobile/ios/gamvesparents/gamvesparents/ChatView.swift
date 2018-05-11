@@ -284,9 +284,16 @@
         var senderColor = UIColor()
 
         var chatType:ChatViewType!
+
+        var puserId = String()
         
         init(parent: ChatViewType, frame: CGRect, isVideo:Bool) {
             super.init(frame: frame)
+
+            if let userId = PFUser.current()?.objectId
+            {
+                self.puserId = userId
+            }
             
             self.chatType = parent
 
@@ -1452,7 +1459,7 @@
                     
                     messagePF["time"] = "\(strMinutes):\(strSeconds)"
                     
-                    UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
+                    UserDefaults.standard.set(self.inputTextField.text!, forKey: "\(self.puserId)_last_message")
                     
                     self.inputTextField.text = ""
                     
@@ -1585,7 +1592,7 @@
                     
                     messagePF["time"] = "\(strMinutes):\(strSeconds)"
                     
-                    UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
+                    UserDefaults.standard.set(self.inputTextField.text!, forKey: "\(self.puserId)_last_message")
                     
                     self.inputTextField.text = ""
                     
@@ -1634,7 +1641,7 @@
             
             messagePF["time"] = "\(strMinutes):\(strSeconds)"
             
-            UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
+            UserDefaults.standard.set(self.inputTextField.text!, forKey: "\(self.puserId)_last_message")
             
             var message = self.inputTextField.text!
             

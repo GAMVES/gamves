@@ -108,6 +108,12 @@ class AccountViewController: UIViewController,
         return cv
     }()
     
+    lazy var settingsLauncher: SettingsLauncher = {
+        let launcher = SettingsLauncher()
+        launcher.accountViewController = self
+        return launcher
+    }()
+    
     var photoCornerRadius = Int()
 
     var cellId = String()
@@ -128,10 +134,16 @@ class AccountViewController: UIViewController,
         NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
         
     }
-    
+
+    var puserId = String()   
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
 
         self.cellId = "accountCellId"
 
@@ -238,11 +250,46 @@ class AccountViewController: UIViewController,
             self.collectionView, 
             self.buttonRightView)
         
-        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
+        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
             self.openProfile()
             self.loadYourProfileInfo()
         }
 
+    }
+
+     func showControllerForSetting(_ setting: Setting) {
+        let dummySettingsViewController = UIViewController()
+        dummySettingsViewController.view.backgroundColor = UIColor.white
+        dummySettingsViewController.navigationItem.title = setting.name.rawValue
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(dummySettingsViewController, animated: true)
+    }
+    
+    
+
+    override func viewWillAppear(_ animated: Bool) {
+        self.setupNavBarButtons()
+    }
+
+    func setupNavBarButtons() {
+ 
+        //let searchImage = UIImage(named: "search_icon")?.withRenderingMode(.alwaysOriginal)
+
+        //let searchBarButtonItem = UIBarButtonItem(image: searchImage, style: .plain, target: self, action: #selector(handleSearch))
+        
+        let moreButton = UIBarButtonItem(image: UIImage(named: "nav_more_icon")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleMore))
+        
+        navigationItem.rightBarButtonItems = [moreButton] //, searchBarButtonItem]
+    }
+
+    func handleMore() {
+        //show menu
+        settingsLauncher.showSettings()
+    }
+    
+    func handleSearch() {
+        
     }
     
     func familyLoaded() {

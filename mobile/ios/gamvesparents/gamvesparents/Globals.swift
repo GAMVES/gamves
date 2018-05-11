@@ -123,11 +123,12 @@ class Global: NSObject
     static var keySonSmall      = String() //"\(Global.keySon)Small"
     
     //Notifications
-    static var notificationKeyFamilyLoaded  = "com.gamves.gamvesparent.familyLoaded"
-    static var notificationKeyLevelsLoaded  = "com.gamves.gamvesparent.levelsLoaded"
-    static var notificationKeyChatFeed      = "com.gamves.gamvesparent.chatfeed"
-    static var notificationYourAccountInfoLoaded  = "com.gamves.gamvesparent.notificationYourAccountInfoLoaded"
+    static var notificationKeyFamilyLoaded              = "com.gamves.gamvesparent.familyLoaded"
+    static var notificationKeyLevelsLoaded              = "com.gamves.gamvesparent.levelsLoaded"
+    static var notificationKeyChatFeed                  = "com.gamves.gamvesparent.chatfeed"
+    static var notificationYourAccountInfoLoaded        = "com.gamves.gamvesparent.notificationYourAccountInfoLoaded"
     static var notificationKeyLoadFamilyDataGromGlobal  = "com.gamves.gamvesparent.loadfamilydatagromglobal"
+    static var notificationKeyLogOut                    = "com.gamves.gamvesparent.notificationLogOut"
     
     static var badgeNumber = Bool()
     

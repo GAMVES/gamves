@@ -12,8 +12,7 @@ import Parse
 
 class ChatMethods: NSObject
 {
-    
-    
+ 
     static func addNewFeedAppendgroup(gamvesUsers:[GamvesUser], chatId:Int, completionHandlerGroup : @escaping (_ resutl:Bool) -> ())
     {
         
@@ -194,8 +193,11 @@ class ChatMethods: NSObject
         messagePF["chatId"] = chatId
         
         messagePF["message"] = text
-        
-        UserDefaults.standard.set(text, forKey: "last_message")
+
+        if let puserId = PFUser.current()?.objectId
+        {        
+            UserDefaults.standard.set(text, forKey: "\(puserId)_last_message")
+        }
         
         var message = text
         
@@ -229,26 +231,31 @@ class ChatMethods: NSObject
         
         if var username = Global.userDictionary[(PFUser.current()?.objectId)!]?.name
         {
-            
-            if let name = UserDefaults.standard.object(forKey: "last_message")
+
+            if let puserId = PFUser.current()?.objectId
             {
                 
-                let jsonObject: [String: Any] = [ "message": "\(message)", "chatId": "\(chatId)" ]
-                
-                let valid = JSONSerialization.isValidJSONObject(jsonObject)
-                
-                if valid
+                if let name = UserDefaults.standard.object(forKey: "\(puserId)_last_message")
                 {
-            
-                    let params = ["channels": String(chatId), "title": "\(username)", "alert": "\(name)", "data":jsonObject] as [String : Any]
                     
-                    print(params)
+                    let jsonObject: [String: Any] = [ "message": "\(message)", "chatId": "\(chatId)" ]
                     
-                    PFCloud.callFunction(inBackground: "push", withParameters: params) { (resutls, error) in
-                     
-                        print(resutls)
+                    let valid = JSONSerialization.isValidJSONObject(jsonObject)
+                    
+                    if valid
+                    {
+                
+                        let params = ["channels": String(chatId), "title": "\(username)", "alert": "\(name)", "data":jsonObject] as [String : Any]
+                        
+                        print(params)
+                        
+                        PFCloud.callFunction(inBackground: "push", withParameters: params) { (resutls, error) in
+                         
+                            print(resutls)
+                        }
                     }
                 }
+                
             }
         }
     }    

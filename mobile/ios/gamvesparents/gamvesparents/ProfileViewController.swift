@@ -1,4 +1,4 @@
-     //
+//
 //  ProfileViewController.swift
 //  gamvesparents
 //
@@ -382,6 +382,8 @@ class ProfileViewController: UIViewController,
     var sonNameContainerViewHeightAnchor: NSLayoutConstraint?
     
     var sonSaving = Bool()
+
+    var puserId = String()
     
     override func viewDidLoad() {        
         super.viewDidLoad()        
@@ -491,7 +493,12 @@ class ProfileViewController: UIViewController,
             self.son = PFUser.current()
         }   
 
-        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {  
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
+
+        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {  
         
             NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
             
@@ -524,11 +531,11 @@ class ProfileViewController: UIViewController,
     
     func levelsLoaded() {
         
-        if !Global.isKeyPresentInUserDefaults(key: "profile_completed") {
+        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
             
             self.tabBarController?.tabBar.isHidden = true
             
-            if Global.isKeyPresentInUserDefaults(key: "son_userId") {
+            if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {
                 
                 self.loadSonSpouseDataIfFamilyDontExist()
                 
@@ -592,9 +599,9 @@ class ProfileViewController: UIViewController,
     
     func familyLoaded() {
         
-        if Global.isKeyPresentInUserDefaults(key: "profile_completed")
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed")
         {
-            let profile_completed = Global.defaults.bool(forKey: "profile_completed")
+            let profile_completed = Global.defaults.bool(forKey: "\(self.puserId)_profile_completed")
             
             if profile_completed
             {
@@ -887,7 +894,7 @@ class ProfileViewController: UIViewController,
 
     func loadSonSpouseDataIfFamilyDontExist() {
         
-        let son_userId = Global.defaults.string(forKey: "son_userId")
+        let son_userId = Global.defaults.string(forKey: "\(self.puserId)_son_userId")
         
         let querySon = PFQuery(className:"_User")
         querySon.whereKey("objectId", equalTo: son_userId)
@@ -905,8 +912,8 @@ class ProfileViewController: UIViewController,
         })
 
         
-        let family_exist = Global.defaults.bool(forKey: "family_exist")
-        let son_exist = Global.defaults.bool(forKey: "son_exist")
+        let family_exist = Global.defaults.bool(forKey: "\(self.puserId)_family_exist")
+        let son_exist = Global.defaults.bool(forKey: "\(self.puserId)_son_exist")
         
         Global.defaults.synchronize()
 
@@ -917,7 +924,7 @@ class ProfileViewController: UIViewController,
 
             let queryUser = PFUser.query()
             
-            let son_object_id = Global.defaults.string(forKey: "son_object_id")
+            let son_object_id = Global.defaults.string(forKey: "\(self.puserId)_son_object_id")
 
             queryUser?.whereKey("objectId", equalTo: son_object_id)          
             
@@ -964,15 +971,15 @@ class ProfileViewController: UIViewController,
                             
                             self.sonUserTypeTextField.text = sType
                             
-                            if Global.isKeyPresentInUserDefaults(key: "son_school") {
+                            if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_school") {
                             
-                                let son_school = Global.defaults.string(forKey: "son_school")
+                                let son_school = Global.defaults.string(forKey: "\(self.puserId)_son_school")
                                 self.sonSchoolTextField.text = son_school
                             }
                             
                             // level Id
                             
-                            let levelRel:PFRelation = user.relation(forKey: "level")
+                            let levelRel:PFRelation = user.relation(forKey: "\(self.puserId)_level")
                             
                             let queryLevel:PFQuery = levelRel.query()
                             queryLevel.findObjectsInBackground(block: { (levelObjects, error) in
@@ -1031,13 +1038,13 @@ class ProfileViewController: UIViewController,
 
             if !checkForSonErrors() {
                 
-                Global.defaults.set(self.sonNameTextField.text!, forKey: "son_name")
-                Global.defaults.set(self.sonUserTextField.text!, forKey: "son_username")
-                Global.defaults.set(self.sonPasswordTextField.text!, forKey: "son_password")
+                Global.defaults.set(self.sonNameTextField.text!, forKey: "\(self.puserId)_son_name")
+                Global.defaults.set(self.sonUserTextField.text!, forKey: "\(self.puserId)_son_username")
+                Global.defaults.set(self.sonPasswordTextField.text!, forKey: "\(self.puserId)_son_password")
 
-                Global.defaults.set(self.sonUserTypeTextField.text!, forKey: "son_type")
-                Global.defaults.set(self.sonSchoolTextField.text!, forKey: "son_school")
-                Global.defaults.set(self.sonGradeTextField.text!, forKey: "son_grade")
+                Global.defaults.set(self.sonUserTypeTextField.text!, forKey: "\(self.puserId)_son_type")
+                Global.defaults.set(self.sonSchoolTextField.text!, forKey: "\(self.puserId)_son_school")
+                Global.defaults.set(self.sonGradeTextField.text!, forKey: "\(self.puserId)_son_grade")
 
                 Global.defaults.synchronize()
                 
@@ -1068,12 +1075,12 @@ class ProfileViewController: UIViewController,
        
             if !checkForFamilyErrors() {
                 
-                Global.defaults.set(self.yourUserTextField.text!, forKey: "your_username")
-                Global.defaults.set(self.yourFamilyTextField.text!, forKey: "your_family_name")
+                Global.defaults.set(self.yourUserTextField.text!, forKey: "\(self.puserId)_your_username")
+                Global.defaults.set(self.yourFamilyTextField.text!, forKey: "\(self.puserId)_your_family_name")
 
-                Global.defaults.set(self.spouseNameTextField.text!, forKey: "spouse_username")
-                Global.defaults.set(self.spouseEmailTextField.text!, forKey: "spouse_email")
-                Global.defaults.set(self.spousePasswordTextField.text!, forKey: "spouse_password")
+                Global.defaults.set(self.spouseNameTextField.text!, forKey: "\(self.puserId)_spouse_username")
+                Global.defaults.set(self.spouseEmailTextField.text!, forKey: "\(self.puserId)_spouse_email")
+                Global.defaults.set(self.spousePasswordTextField.text!, forKey: "\(self.puserId)_spouse_password")
                 
                 Global.defaults.synchronize()
 
@@ -1106,7 +1113,7 @@ class ProfileViewController: UIViewController,
                                                     self.hideShowTabBar(status:false)
                                                     self.tabBarViewController?.selectedIndex = 0
                                                     
-                                                    Global.defaults.set(true, forKey: "profile_completed")                                                                                                       
+                                                    Global.defaults.set(true, forKey: "\(self.puserId)_profile_completed")                                                                                                       
                                                     
                                                     Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
                                                         
@@ -1304,10 +1311,10 @@ class ProfileViewController: UIViewController,
     
     func saveSon(completionHandler : @escaping (_ resutl:Bool) -> ()) {
         
-        let son_name = Global.defaults.string(forKey: "son_name")
-        let son_user_name = Global.defaults.string(forKey: "son_username")
-        let son_password = Global.defaults.string(forKey: "son_password")
-        let son_type = Global.defaults.string(forKey: "son_type")
+        let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
+        let son_user_name = Global.defaults.string(forKey: "\(self.puserId)_son_username")
+        let son_password = Global.defaults.string(forKey: "\(self.puserId)_son_password")
+        let son_type = Global.defaults.string(forKey: "\(self.puserId)_son_type")
         
         var type = Int()
         if son_type == "Son" {
@@ -1317,7 +1324,7 @@ class ProfileViewController: UIViewController,
         }
         let userTypeObj:PFObject = (Global.userTypes[type]?.userTypeObj)!
     
-        var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
+        var son_grade:String = Global.defaults.string(forKey: "\(self.puserId)_son_grade") as! String
         
         var levelObj:PFObject!
         let lkeys = Array(Global.levels.keys)
@@ -1379,18 +1386,18 @@ class ProfileViewController: UIViewController,
                 
                 self.son = result as! PFUser
                 
-                Global.defaults.set(self.son.objectId, forKey: "son_userId")
+                Global.defaults.set(self.son.objectId, forKey: "\(self.puserId)_son_userId")
                 
                 Global.addUserToDictionary(user: self.son as! PFUser, isFamily: true, completionHandler: { (gamvesUser) in
                     
                     self.sonGamves = gamvesUser
                   
-                    Global.defaults.set(true, forKey: "son_exist")
+                    Global.defaults.set(true, forKey: "\(self.puserId)_son_exist")
                     
                     if let sonObjectId = self.son.objectId {
                         
                         print(sonObjectId)
-                        Global.defaults.set(sonObjectId, forKey: "son_object_id")
+                        Global.defaults.set(sonObjectId, forKey: "\(self.puserId)_son_object_id")
                         Global.defaults.synchronize()
                     }
                     
@@ -1407,9 +1414,9 @@ class ProfileViewController: UIViewController,
     
     func saveSpouse(completionHandler : @escaping (_ resutl:Bool) -> ()) {
         
-        let spouse_username = Global.defaults.string(forKey: "spouse_username")
-        let spouse_password = Global.defaults.string(forKey: "spouse_password")
-        let spouse_email = Global.defaults.string(forKey: "spouse_email")
+        let spouse_username = Global.defaults.string(forKey: "\(self.puserId)_spouse_username")
+        let spouse_password = Global.defaults.string(forKey: "\(self.puserId)_spouse_password")
+        let spouse_email = Global.defaults.string(forKey: "\(self.puserId)_spouse_email")
         
         let full_name = spouse_username?.components(separatedBy: " ")
         let firstName = full_name?[0]
@@ -1552,7 +1559,7 @@ class ProfileViewController: UIViewController,
                     relation = "mother"
                 }
                 
-                let son_name = Global.defaults.string(forKey: "son_name")
+                let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
                 
                 profilePF?["bio"] = "\(son_name) \(relation)"
                 
@@ -1562,7 +1569,7 @@ class ProfileViewController: UIViewController,
         }
         
     
-        let levelRel:PFRelation = self.you.relation(forKey: "level")
+        let levelRel:PFRelation = self.you.relation(forKey: "\(self.puserId)_level")
         
         //I add the level of all sons
         let levleId = Global.gamvesFamily.sonsUsers[0].levelId as String
@@ -1596,7 +1603,7 @@ class ProfileViewController: UIViewController,
 
     func saveFamily(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
-        var your_family_name = Global.defaults.string(forKey: "your_family_name")
+        var your_family_name = Global.defaults.string(forKey: "\(self.puserId)_your_family_name")
         
         var family = PFObject(className: "Family")
         family.setObject(your_family_name, forKey: "description")
@@ -1635,11 +1642,11 @@ class ProfileViewController: UIViewController,
             }
         }
         
-        var son_grade:String = Global.defaults.string(forKey: "son_grade") as! String
+        var son_grade:String = Global.defaults.string(forKey: "\(self.puserId)_son_grade") as! String
         
         print(son_grade)
         
-        let levelRel:PFRelation = family.relation(forKey: "level")
+        let levelRel:PFRelation = family.relation(forKey: "\(self.puserId)_level")
         
         let lkeys = Array(Global.levels.keys)
         
@@ -1676,7 +1683,7 @@ class ProfileViewController: UIViewController,
 
                 Global.gamvesFamily.familyImage = self.familyPhotoImageSmall
                 
-                Global.defaults.set(true, forKey: "family_exist")
+                Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")
                 completionHandler(true)             
                
             }
