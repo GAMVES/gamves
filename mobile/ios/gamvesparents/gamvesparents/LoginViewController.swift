@@ -865,7 +865,7 @@ class LoginViewController: UIViewController
                                     
                                     let youImage:UIImage = Global.gamvesFamily.youUser.avatar
                                     
-                                    Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore:                  youImage)
+                                    Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore: youImage)
                                     
                                     let youImageLow = youImage.lowestQualityJPEGNSData as Data
                                     var youSmallImage = UIImage(data: youImageLow)
@@ -954,11 +954,23 @@ class LoginViewController: UIViewController
                         
                     }
                     
-                }
-                else
-                {
+                } else {
+
+                    self.message="Your account has been created but you have not verified your email. Please check your email, verify and try again."
+                        
+                    self.registerLabel.text = self.message
+
+                    self.isMessage=true
+
+                    self.loginRegisterButton.setTitle("Try again", for: UIControlState())
+
+                    self.handleLoginRegisterChange()    
+
+                    self.activityIndicatorView?.stopAnimating()
+
                     PFUser.logOut()
                 }
+
             }
         })
     }
