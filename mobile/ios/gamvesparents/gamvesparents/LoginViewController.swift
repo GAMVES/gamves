@@ -385,11 +385,11 @@ class LoginViewController: UIViewController
                 
                 print(userPF.objectId)
 
-                if suserId == userPF.objectId {
+                if userId == userPF.objectId {
 
                     if let muserId = PFUser.current()?.objectId {
 
-                        if suserId == muserId {
+                        if muserId == muserId {
 
                             let verified = userPF["emailVerified"] as! Bool
 
@@ -398,11 +398,8 @@ class LoginViewController: UIViewController
                                 self.loginRegisterButton.isEnabled = true
 
                             }
-
-                        }
-                        
-                    }                   
-                  
+                        }                        
+                    }                
                 }
             }
         }

@@ -337,7 +337,7 @@
 	// --
 	// User email verification into UserVerified class
 
-	Parse.Cloud.afterSave("_User", function(request) {		
+	Parse.Cloud.afterSave("_User", function(request, response) {
 
 		var userId = request.object.get("userId");
 
@@ -355,9 +355,14 @@
 
                 userVerified.set("emailVerified", true);                    
 
-                userVerified.save();     
+                userVerified.save();  
 
-			}
+                response.success(true);   
+
+			} else {
+
+				response.success(false);   
+			} 
 
 		});
 
