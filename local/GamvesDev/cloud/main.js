@@ -339,11 +339,15 @@
 
 	Parse.Cloud.afterSave("_User", function(request, response) {
 
+		console.log("_User"); 
+
 		var userId = request.object.get("userId");
 
 		var userVerifiedQuery = new Parse.Query("UserVerified");
 		userVerifiedQuery.equalTo("userId", userId);
 		userVerifiedQuery.first().then(function(result) {
+
+			console.log("result.length: " + result.length); 
 
 			if( result.length == 0) {
 
