@@ -353,6 +353,8 @@
 
                 userVerified.set("userId", userId);    
 
+                userVerified.set("emailVerified", true);                    
+
                 userVerified.save();     
 
 			}

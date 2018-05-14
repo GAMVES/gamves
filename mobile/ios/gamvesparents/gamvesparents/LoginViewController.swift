@@ -379,25 +379,30 @@ class LoginViewController: UIViewController
 
         if let userId = PFUser.current()?.objectId {
         
-            self.userQuery = PFQuery(className: "_User").whereKey("objectId", equalTo: userId)
+            self.userQuery = PFQuery(className: "UserVerified").whereKey("objectId", equalTo: userId)
 
             self.userSubscription = userClient.subscribe(self.userQuery).handle(Event.created) { _, userPF in
                 
                 print(userPF.objectId)
 
-                if userId == userPF.objectId {
-                    
-                    if userPF["emailVerified"] != nil {
+                if suserId == userPF.objectId {
 
+                    if let muserId = PFUser.current()?.objectId {
 
-                        let verified = userPF["emailVerified"] as! Bool
+                        if suserId == muserId {
 
-                        if verified {
-                                
-                            self.loginRegisterButton.isEnabled = true
+                            let verified = userPF["emailVerified"] as! Bool
+
+                            if verified {
+                                    
+                                self.loginRegisterButton.isEnabled = true
+
+                            }
 
                         }
-                    }
+                        
+                    }                   
+                  
                 }
             }
         }
@@ -732,6 +737,9 @@ class LoginViewController: UIViewController
                                     
                                     if error == nil
                                     {
+
+                                        
+                                        
                                         
                                         PFUser.logOut()
                                         
@@ -964,7 +972,7 @@ class LoginViewController: UIViewController
 
                     self.loginRegisterButton.setTitle("Try again", for: UIControlState())
 
-                    self.handleLoginRegisterChange()    
+                    //self.handleLoginRegisterChange()    
 
                     self.activityIndicatorView?.stopAnimating()
 
