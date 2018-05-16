@@ -20,7 +20,7 @@ class LoginViewController: UIViewController
 
     private var userSubscription: Subscription<PFObject>!
 
-    var userQuery:PFQuery<PFObject>!
+    var verifiedQuery:PFQuery<PFObject>!
 
     var tabBarViewController:TabBarViewController?
     
@@ -369,38 +369,38 @@ class LoginViewController: UIViewController
             
             self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
-        })
-        
-        self.initializeChatSubscription()
+        })      
 
     }
 
     func initializeChatSubscription() {
 
         if let userId = PFUser.current()?.objectId {
+            
+            print(userId)
         
-            self.userQuery = PFQuery(className: "UserVerified").whereKey("objectId", equalTo: userId)
+            self.verifiedQuery = PFQuery(className: "UserVerified").whereKey("userId", equalTo: userId)
 
-            self.userSubscription = userClient.subscribe(self.userQuery).handle(Event.created) { _, userPF in
+            self.userSubscription = userClient.subscribe(self.verifiedQuery).handle(Event.updated) { _, verifiedPF in
                 
-                print(userPF.objectId)
+                print(verifiedPF.objectId)
 
-                if userId == userPF.objectId {
+                let vuserId = verifiedPF["userId"] as! String
+                    
+                if vuserId == userId {
 
-                    if let muserId = PFUser.current()?.objectId {
+                    let verified = verifiedPF["emailVerified"] as! Bool
 
-                        if muserId == muserId {
+                    if verified {
 
-                            let verified = userPF["emailVerified"] as! Bool
-
-                            if verified {
-                                    
-                                self.loginRegisterButton.isEnabled = true
-
-                            }
-                        }                        
-                    }                
-                }
+                        DispatchQueue.main.async {
+                        
+                            self.loginRegisterButton.setTitle("Mail verified! Continue", for: UIControlState())
+                            self.loginRegisterButton.isEnabled = true
+                            //self.loginRegisterButton.alpha = 1
+                        }
+                    }
+                }               
             }
         }
     }
@@ -704,12 +704,14 @@ class LoginViewController: UIViewController
                     self.okLogin = true
                     self.isRegistered = false
                     
-                    self.loginRegisterButton.setTitle("Continue", for: UIControlState())
-
+                    self.loginRegisterButton.setTitle("Verify mail befor continuing", for: UIControlState())
                     self.loginRegisterButton.isEnabled = false
+                    //self.loginRegisterButton.alpha = 0.30
                     
                     Global.defaults.set(email, forKey: "\(self.puserId)_your_email")
                     Global.defaults.set(password, forKey: "\(self.puserId)_your_password")
+
+                    self.initializeChatSubscription()
                     
                     Global.defaults.synchronize()
                     
