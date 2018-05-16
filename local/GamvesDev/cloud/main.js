@@ -335,42 +335,79 @@
 	}
 
 	// --
-	// User email verification into UserVerified class
+	// _User afterSave for email verification into UserVerified class
 
 	Parse.Cloud.afterSave("_User", function(request, response) {
 
-		console.log("_User"); 
+		var userId = request.object.id;
 
-		var userId = request.object.get("userId");
+		var emailVerified = request.object.get("emailVerified");
+
+		console.log("_User : " + userId); 		
 
 		var userVerifiedQuery = new Parse.Query("UserVerified");
-		userVerifiedQuery.equalTo("userId", userId);
-		userVerifiedQuery.first().then(function(result) {
+		userVerifiedQuery.equalTo("userId", userId);		
 
-			console.log("result.length: " + result.length); 
+		userVerifiedQuery.find({
+	        useMasterKey: true,
+	        success: function(results) {
 
-			if( result.length == 0) {
+	        	console.log("success"); 
 
-				var UserVerified = Parse.Object.extend("UserVerified"); 
+	        	console.log("results.length: " + results.length); 	
+	        	       	
+	        	if( results.length == 0) {
 
-                var userVerified = new UserVerified();  
+					setUserVerified(userId, false);					
 
-                userVerified.set("userId", userId);    
+			    } else { 
 
-                userVerified.set("emailVerified", true);                    
+					console.log("****************************************************"); 			    	
+					//console.log("llega"); 			    	
 
-                userVerified.save();  
+			    	var verifiedObject = results[0]; 					
 
-                response.success(true);   
+					//console.log("emailVerified: " + emailVerified);
+					//console.log("userId: " + emailVerified.get("userId"));					
 
-			} else {
+					verifiedObject.set("emailVerified", emailVerified);		
 
-				response.success(false);   
-			} 
+					verifiedObject.save(null, { useMasterKey: true } );
+					
+				} 
+
+				response.success(true);  
+
+	        },
+	        error: function(error) {
+
+	        	console.log("error: " +error); 	
+	         
+	         	setUserVerified(userId, false);
+
+		        response.success(true);   
+
+	            //error.message("UserVerified lookup failed");
+	            //response.error(error);
+	        }      
 
 		});
 
 	});
+
+	function setUserVerified(id, status) {
+
+		var UserVerified = Parse.Object.extend("UserVerified"); 
+
+        var userVerified = new UserVerified();  
+
+        userVerified.set("userId", id);    
+
+        userVerified.set("emailVerified", status);                    
+
+        userVerified.save();  
+
+	}
 
 	// --
 	// Update or create Budges
