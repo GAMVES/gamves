@@ -584,6 +584,8 @@ class HomeViewController: UIViewController,
     
     func renderSon() {
         
+        print(self.puserId)
+        
         if self.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_object_id")
         {
             

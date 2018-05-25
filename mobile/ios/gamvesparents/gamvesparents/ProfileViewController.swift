@@ -563,6 +563,11 @@ class ProfileViewController: UIViewController,
     
     func levelsLoaded() {
         
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
+
         if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
             
             self.tabBarController?.tabBar.isHidden = true
@@ -632,6 +637,11 @@ class ProfileViewController: UIViewController,
     }
     
     func familyLoaded() {
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
         
         if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed")
         {
@@ -934,6 +944,11 @@ class ProfileViewController: UIViewController,
 
 
     func loadSonSpouseDataIfFamilyDontExist() {
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
         
         let son_userId = Global.defaults.string(forKey: "\(self.puserId)_son_userId")
         
@@ -1074,6 +1089,11 @@ class ProfileViewController: UIViewController,
         }
         
         sender.isUserInteractionEnabled = false
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
 
         if self.segmentedControl.selectedSegmentIndex == 0 {
             
@@ -1375,6 +1395,11 @@ class ProfileViewController: UIViewController,
     
     func saveSon(completionHandler : @escaping (_ resutl:Bool) -> ()) {
         
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
+        
         let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
         let son_user_name = Global.defaults.string(forKey: "\(self.puserId)_son_username")
         let son_password = Global.defaults.string(forKey: "\(self.puserId)_son_password")
@@ -1457,7 +1482,7 @@ class ProfileViewController: UIViewController,
                 Global.addUserToDictionary(user: self.son as! PFUser, isFamily: true, completionHandler: { (gamvesUser) in
                     
                     self.sonGamves = gamvesUser
-                  
+                    
                     Global.defaults.set(true, forKey: "\(self.puserId)_son_exist")
                     
                     if let sonObjectId = self.son.objectId {
