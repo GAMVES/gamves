@@ -18,8 +18,11 @@ import TaskQueue
 class ProfileViewController: UIViewController,
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate,
-    RSKImageCropViewControllerDelegate  
+    RSKImageCropViewControllerDelegate,
+    ProfileImagesPickerProtocol  
 {
+
+    var accountViewController:AccountViewController!
   
     var imageCropVC = RSKImageCropViewController()
 
@@ -367,7 +370,7 @@ class ProfileViewController: UIViewController,
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)        
-        button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)       
+        button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)
         button.layer.cornerRadius = 5 
         return button
     }()
@@ -431,9 +434,7 @@ class ProfileViewController: UIViewController,
         self.sonSchoolContainerView.addSubview(self.sonUserTypeSeparatorView)   
         self.sonSchoolContainerView.addSubview(self.sonSchoolTextField)
         self.sonSchoolContainerView.addSubview(self.sonSchoolSeparatorView)        
-        self.sonSchoolContainerView.addSubview(self.sonGradeTextField)
-
-        //let schools: NSMutableArray = ["St Paul's", "St Hilda's"]
+        self.sonSchoolContainerView.addSubview(self.sonGradeTextField)        
         
         self.scrollView.addSubview(self.yourNameContainerView)
         self.scrollView.addSubview(self.spouseContainerView) 
@@ -524,10 +525,41 @@ class ProfileViewController: UIViewController,
         //self.levelsLoaded()
         //self.loadFamilyDataGromGlobal()
 
-        self.boyConstraints()     
-        
+        self.boyConstraints()
+
+
+
     }
     
+    func didpickImage(type:ProfileImagesTypes, smallImage:UIImage, croppedImage:UIImage)  {
+     
+        var id = Int()
+
+        switch type {
+            
+            case .Son: 
+                    id = 1
+                break
+            
+            case .Family:
+                    id = 3                
+                break
+
+            case .You:
+                    id = 0               
+                break
+
+             case .Spouse:               
+                    id = 2
+                break    
+            
+            default: break
+            
+        }
+
+        self.applyImageById(id:id, croppedImage: croppedImage, smallImage: smallImage)
+
+    }
     
     func levelsLoaded() {
         
@@ -569,6 +601,8 @@ class ProfileViewController: UIViewController,
                 self.spouseEmailTextField.isEnabled = false
 
             } 
+
+            self.boyConstraints()               
             
         }
         
@@ -612,7 +646,9 @@ class ProfileViewController: UIViewController,
             
         } else
         {
+
             self.hideShowTabBar(status:true)
+            
         }
     }
     
@@ -695,11 +731,7 @@ class ProfileViewController: UIViewController,
             
             }
         })
-
     }
-
-    
-
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
@@ -713,6 +745,15 @@ class ProfileViewController: UIViewController,
     func textFieldDidEndEditing(_ textField: UITextField) {
         
         self.scrollView.setContentOffset(CGPoint(x:0, y:0), animated: true)
+
+        if textField == self.sonNameTextField {
+
+            let son_name = self.sonNameTextField.text
+
+            let trimmedName = son_name?.replacingOccurrences(of: "\\s", with: "", options: .regularExpression)
+            
+            self.sonUserTextField.text = trimmedName?.lowercased()
+        }
     }
 
 
@@ -1026,15 +1067,25 @@ class ProfileViewController: UIViewController,
         return imageLoaded
     }
 
-    @objc func handleSave()
+    @objc func handleSave(sender: UIButton)
     {
         DispatchQueue.main.async() {
             self.activityIndicatorView?.startAnimating()
         }
+        
+        sender.isUserInteractionEnabled = false
 
         if self.segmentedControl.selectedSegmentIndex == 0 {
             
             self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
+
+            let name = PFUser.current()?["Name"] as! String
+        
+            self.yourNameTextField.text = name        
+
+            let trimmedName = name.replacingOccurrences(of: "\\s", with: "", options: .regularExpression)
+            
+            self.yourUserTextField.text = trimmedName.lowercased()
 
             if !checkForSonErrors() {
                 
@@ -1061,6 +1112,17 @@ class ProfileViewController: UIViewController,
                             self.scrollViewGoTop()
                             
                             self.sonSaving = false
+
+                            sender.isUserInteractionEnabled = true
+
+                            //aca
+
+                            DispatchQueue.main.async() {
+
+                                self.accountViewController.showImagePicker(type: ProfileImagesTypes.You)
+
+                            }
+
                         }
                     })
                 }
@@ -1378,6 +1440,8 @@ class ProfileViewController: UIViewController,
             "dataPhotoBackground": dataPhotoUniverse
             ] as [String : Any]
         
+        print(sonParams)
+        
         PFCloud.callFunction(inBackground: "createGamvesUser", withParameters: sonParams) { (result, error) in
          
             if error == nil {
@@ -1474,6 +1538,7 @@ class ProfileViewController: UIViewController,
             "dataPhotoBackground": dataPhotoUniverse
             ] as [String : Any]
 
+            print(momParams)
         
         PFCloud.callFunction(inBackground: "createGamvesUser", withParameters: momParams) { (result, error) in
             
@@ -1525,13 +1590,14 @@ class ProfileViewController: UIViewController,
     func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
     {	
         
-        let your_email = Global.defaults.string(forKey: "your_email")
-        let your_password = Global.defaults.string(forKey: "your_password")
+        let your_email = Global.defaults.string(forKey: "\(self.puserId)_your_email")
+        let your_password = Global.defaults.string(forKey: "\(self.puserId)_your_password")
         
         var reusername = self.you["firstName"] as! String
         reusername = reusername.lowercased()
         
-        self.you["email"] = your_email
+        //self.you["email"] = your_email        
+        //self.you.email = your_email
         
         let yourimage = PFFile(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
         self.you.setObject(yourimage!, forKey: "picture")
@@ -1865,36 +1931,42 @@ class ProfileViewController: UIViewController,
         
         self.selectedImageView.image = croppedImage
 
-        if self.selectedImageView.tag == 0 
+        self.applyImageById(id:self.selectedImageView.tag, croppedImage: croppedImage, smallImage: smallImage!)
+        
+        navigationController?.popViewController(animated: true)
+    }
+
+    func applyImageById(id:Int, croppedImage:UIImage, smallImage:UIImage) {
+
+        if id == 0 
         {             
             self.yourPhotoImageView.image   = croppedImage
             self.yourPhotoImage             = croppedImage
             self.yourPhotoImageSmall        = smallImage
             self.makeRounded(imageView:self.yourPhotoImageView)
 
-        } else if selectedImageView.tag == 1
+        } else if id == 1
         {
             self.sonPhotoImageView.image    = croppedImage
             self.sonPhotoImage              = croppedImage
             self.sonPhotoImageSmall         = smallImage
             self.makeRounded(imageView:self.sonPhotoImageView)                
 
-        } else if selectedImageView.tag == 2
+        } else if id == 2
         {
             self.spousePhotoImageView.image    = croppedImage
             self.spousePhotoImage              = croppedImage
             self.spousePhotoImageSmall         = smallImage
             self.makeRounded(imageView:self.spousePhotoImageView)                
         
-        } else if selectedImageView.tag == 3
+        } else if id == 3
         {
             self.familyPhotoImageView.image    = croppedImage
             self.familyPhotoImage              = croppedImage
             self.familyPhotoImageSmall         = smallImage
             self.makeRounded(imageView:self.familyPhotoImageView)                
         }
-        
-        navigationController?.popViewController(animated: true)
+
     }
 
     

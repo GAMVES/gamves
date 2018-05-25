@@ -13,6 +13,8 @@ class AccountViewController: UIViewController,
     UICollectionViewDataSource,
     UICollectionViewDelegate, 
     UICollectionViewDelegateFlowLayout {
+
+    var imagePickerViewController = ImagePickerViewController()
     
     var profileViewController:ProfileViewController!
     
@@ -139,7 +141,7 @@ class AccountViewController: UIViewController,
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+    
         if let userId = PFUser.current()?.objectId
         {
             self.puserId = userId
@@ -254,8 +256,8 @@ class AccountViewController: UIViewController,
             self.openProfile()
             self.loadYourProfileInfo()
         }
-
     }
+    
 
      func showControllerForSetting(_ setting: Setting) {
         let dummySettingsViewController = UIViewController()
@@ -270,6 +272,20 @@ class AccountViewController: UIViewController,
 
     override func viewWillAppear(_ animated: Bool) {
         self.setupNavBarButtons()
+        
+        
+    }
+
+    func showImagePicker(type:ProfileImagesTypes) {
+        
+        imagePickerViewController.setType(type: type)
+
+        imagePickerViewController.profileImagesPickerProtocol = profileViewController
+        
+        print(self.navigationController)
+        
+        self.navigationController?.pushViewController(imagePickerViewController, animated: true)        
+      
     }
 
     func setupNavBarButtons() {
@@ -399,6 +415,7 @@ class AccountViewController: UIViewController,
     func openProfile() {
         
         profileViewController = ProfileViewController()
+        profileViewController.accountViewController = self
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(profileViewController, animated: true)

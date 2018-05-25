@@ -76,7 +76,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             }
         } else {
             perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
-        }
+        }           
         
         let homeNavController = UINavigationController(rootViewController: homeViewController)
         homeViewController.initilizeObservers()
@@ -98,6 +98,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         self.accountViewController.tabBarItem.image = UIImage(named: "profile")
         let accountTitle = "Account"
         self.accountViewController.title = accountTitle
+
         
         viewControllers = [homeNavController, chatFeedNavController, accountNavController]
 
@@ -110,16 +111,48 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             self.selectedIndex = 2 //Account
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)                     
+                
         
-    }   
-   
+    }      
     
     override func viewDidAppear(_ animated: Bool) {
         
         if !isHasProfileInfo() && !isHasRegistered()
         {
-            self.selectedIndex = 2
+            self.selectedIndex = 2           
+
+            if let userId = PFUser.current()?.objectId
+            {
+                self.puserId = userId
+            }
+            
+            let pid = "\(self.puserId)_registrant_completed"
+            
+            print(pid)
+            
+            if Global.isKeyPresentInUserDefaults(key: pid)
+            {
+                let registrant_completed = Global.defaults.bool(forKey: "\(self.puserId)_registrant_completed")
+
+                let picker_shown = Global.defaults.bool(forKey: "\(self.puserId)_picker_shown")
+
+                if registrant_completed && !picker_shown
+                {
+
+                    //sleep(1)
+
+                    DispatchQueue.main.async
+                    {
+                        self.accountViewController.showImagePicker(type: ProfileImagesTypes.Son)
+
+                        Global.defaults.set(true, forKey: "\(self.puserId)_picker_shown")
+                    }
+
+                }
+            }
+
+
         } else
         {
             self.selectedIndex = 0
@@ -144,8 +177,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         navController.tabBarItem.image = UIImage(named: imageName)
         return navController
     }
-
-
+    
     func showControllerForSetting(_ setting: Setting) {
         let dummySettingsViewController = UIViewController()
         dummySettingsViewController.view.backgroundColor = UIColor.white
@@ -174,7 +206,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             //perhaps we'll do something here later
         })
         
-    }
+    }    
     
     func showLoginController(registered: Bool) {
         

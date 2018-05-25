@@ -71,6 +71,12 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
         return view
     }()
 
+    let topView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        return view
+    }()
+
 
     let termsView: UIView = {
         let view = UIView()
@@ -122,6 +128,13 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
         button.isEnabled = false
         return button
     }()
+
+    let bottomView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        return view
+    }()
+
   
     
     override init(frame: CGRect) {
@@ -158,6 +171,9 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
 
             self.labelsView.addConstraintsWithFormat("V:|-40-[v0][v1]-40-|", views: self.accountLabel, self.accountDescriptionLabel)
 
+            self.contentContainerView.addSubview(self.topView)
+            self.contentContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.topView)                       
+
             self.contentContainerView.addSubview(self.termsView)
             self.contentContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.termsView)           
 
@@ -165,10 +181,13 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
             self.contentContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.licenceView)           
 
             self.contentContainerView.addSubview(self.nextButton)
-            self.contentContainerView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: self.nextButton)           
+            self.contentContainerView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: self.nextButton)          
 
-            self.contentContainerView.addConstraintsWithFormat("V:|-60-[v0(60)]-60-[v1(60)]-60-[v2]-20-|", 
-                views: self.termsView, self.licenceView, self.nextButton)           
+            self.contentContainerView.addSubview(self.bottomView)
+            self.contentContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)                    
+
+            self.contentContainerView.addConstraintsWithFormat("V:|[v0(100)][v1(60)]-60-[v2(60)]-60-[v3(100)][v4]|", 
+                views: self.topView, self.termsView, self.licenceView, self.nextButton, self.bottomView)           
 
             self.checkboxTerms.tag = 0
             self.checkboxTerms.delegate = self

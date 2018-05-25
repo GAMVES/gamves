@@ -22,7 +22,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = .white
+        cv.backgroundColor = UIColor.gamvesColor
         cv.dataSource = self
         cv.delegate = self
         cv.isPagingEnabled = true
@@ -33,11 +33,11 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
     let agreementCellId = "agreementCellId"
     
     let pages: [Page] = {
-        let firstPage = Page(title: "Share a great listen", message: "It's free to send your books to the people in your life. Every recipient's first book is on us.", imageName: "page1")
+        let firstPage = Page(title: "Family connected, kids protected", message: "Its internet time and technology has come to our homes to stay. Gamves makes sure your kids are safe and your kids are not expossed to it.", imageName: "page1")       
         
-        let secondPage = Page(title: "Send from your library", message: "Tap the More menu next to any book. Choose \"Send this Book\"", imageName: "page2")
+        let secondPage = Page(title: "Two apps, one for kids, one for parents", message: "Tap the More menu next to any book. Choose \"Send this Book\"", imageName: "page2")
         
-        let thirdPage = Page(title: "Send from the player", message: "Tap the More menu in the upper corner. Choose \"Send this Book\"", imageName: "page3")
+        let thirdPage = Page(title: "Closed educational community", message: "Gamves is a closed network compound of families from the same school, the same grade and community. The safest environment ever.", imageName: "page3")
         
         return [firstPage, secondPage, thirdPage]
     }()
@@ -47,6 +47,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         pc.pageIndicatorTintColor = .lightGray
         pc.currentPageIndicatorTintColor = UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1)
         pc.numberOfPages = self.pages.count + 1
+        pc.backgroundColor = UIColor.gamvesColor
         return pc
     }()
     
@@ -99,6 +100,8 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         let indexPath = IndexPath(item: pageControl.currentPage + 1, section: 0)
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         pageControl.currentPage += 1
+
+        self.view.backgroundColor = UIColor.gamvesColor
     }
     
     @objc func loginPage() {
@@ -110,7 +113,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
     var nextButtonTopAnchor: NSLayoutConstraint?
 
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()        
         
         observeKeyboardNotifications()
         
@@ -215,7 +218,13 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         }
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! PageCell
+
+        cell.backgroundColor = UIColor.gamvesColor
+
         let page = pages[(indexPath as NSIndexPath).item]
+        
+        //cell.textView.textColor = UIColor.white
+        
         cell.page = page
         
         return cell

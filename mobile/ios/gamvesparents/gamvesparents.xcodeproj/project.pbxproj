@@ -85,6 +85,8 @@
 		C93D611C20A3DA8300245CC7 /* SettingsLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93D611B20A3DA8300245CC7 /* SettingsLauncher.swift */; };
 		C93D611E20A3E58A00245CC7 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93D611D20A3E58900245CC7 /* SettingCell.swift */; };
 		C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */; };
+		C98F266420B25EB700755733 /* UIAlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98F266320B25EB700755733 /* UIAlertController+Extension.swift */; };
+		C98F266620B26AE300755733 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98F266520B26AE300755733 /* ImagePickerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -171,6 +173,8 @@
 		C93D611B20A3DA8300245CC7 /* SettingsLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsLauncher.swift; sourceTree = "<group>"; };
 		C93D611D20A3E58900245CC7 /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PFGeoPoint+Extension.swift"; sourceTree = "<group>"; };
+		C98F266320B25EB700755733 /* UIAlertController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Extension.swift"; sourceTree = "<group>"; };
+		C98F266520B26AE300755733 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
 		FE567B47EE25D846CFB77DFB /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -267,6 +271,7 @@
 				8212D70E1F7A71CF00F2A121 /* Label+Extension.swift */,
 				82557C6020175CB300752301 /* Date+Extension.swift */,
 				C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */,
+				C98F266320B25EB700755733 /* UIAlertController+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -315,6 +320,7 @@
 				82E3722C1FB16109000AD7EB /* SelectContactViewController.swift */,
 				8262CDFB1FE1FE1D003F9C9D /* ApprovalViewController.swift */,
 				82557C5E20173C0100752301 /* LocationViewController.swift */,
+				C98F266520B26AE300755733 /* ImagePickerViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -648,6 +654,7 @@
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
 				C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */,
 				C73A31971DA3064A00C86C96 /* TabBarViewController.swift in Sources */,
+				C98F266420B25EB700755733 /* UIAlertController+Extension.swift in Sources */,
 				82557C4D2016CE2B00752301 /* HistoryViewController.swift in Sources */,
 				C7B402111D78C404001D8ED4 /* PageCell.swift in Sources */,
 				8296F1D9202CA1B200750C8D /* enums.swift in Sources */,
@@ -668,6 +675,7 @@
 				8212D7061F78439400F2A121 /* Color+Extensions.swift in Sources */,
 				82355FF320202CBF004C2014 /* ImagesCollectionViewCell.swift in Sources */,
 				C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */,
+				C98F266620B26AE300755733 /* ImagePickerViewController.swift in Sources */,
 				828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */,
 				C93D611C20A3DA8300245CC7 /* SettingsLauncher.swift in Sources */,
 				8212D7081F7843B600F2A121 /* ImageView+Extensions.swift in Sources */,

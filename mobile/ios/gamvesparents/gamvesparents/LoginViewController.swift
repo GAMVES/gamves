@@ -3,7 +3,6 @@
 //  gamvesparents
 //
 //  Created by Jose Vigil on 11/2/17.
-//  Copyright © 2017 Lets Build That App. All rights reserved.
 //
 
 import UIKit
@@ -371,6 +370,8 @@ class LoginViewController: UIViewController
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
         })      
 
+        self.checkVerified()
+
     }
 
     func initializeChatSubscription() {
@@ -402,6 +403,44 @@ class LoginViewController: UIViewController
                     }
                 }               
             }
+        }
+    }
+
+
+    func checkVerified() {
+
+        if let userId = PFUser.current()?.objectId {
+        
+            let queryUserVerified = PFQuery(className: "UserVerified")                               
+
+                queryUserVerified.whereKey("userId", equalTo: userId)
+
+                queryUserVerified.getFirstObjectInBackground(block: { (userVerified, error) in
+                    
+                    if error == nil {
+                        
+                        if userVerified?["emailVerified"] != nil {
+                        
+                            if userVerified?["emailVerified"] as! Bool  == true {
+                                
+                                self.loginRegisterButton.setTitle("Mail verified! Continue", for: UIControlState())
+                                self.loginRegisterButton.isEnabled = true
+                                
+                            } else {
+                                
+                                
+                            }
+                            
+                        } else {
+                            
+                            
+                        }
+
+                    } else {
+                        print(error)
+                    }
+                })               
+            
         }
     }
 
@@ -603,43 +642,7 @@ class LoginViewController: UIViewController
        
     }
 
-    /*func checkVerified(completionHandler : @escaping (_ verified:Bool) -> ()) {
-        
-        let queryUser = PFQuery(className: "_User")
-        
-        print(PFUser.current()?.username)
-        
-        if let username = PFUser.current()?.username {
-        
-            print(username)
-            queryUser.whereKey("username", equalTo: username)
-            queryUser.getFirstObjectInBackground(block: { (user, error) in
-                
-                if error == nil {
-                    
-                    if user?["emailVerified"] != nil {
-                    
-                        if user?["emailVerified"] as! Bool  == true {
-                            
-                            completionHandler(true)
-                            
-                        } else {
-                            
-                            completionHandler(false)
-                        }
-                        
-                    } else {
-                        
-                        completionHandler(false)
-                    }
-
-                } else {
-                    print(error)
-                }
-            })
-            
-        }
-    }*/
+    
 
     
     func handleRegister()
@@ -707,6 +710,11 @@ class LoginViewController: UIViewController
                     self.loginRegisterButton.setTitle("Verify mail befor continuing", for: UIControlState())
                     self.loginRegisterButton.isEnabled = false
                     //self.loginRegisterButton.alpha = 0.30
+
+                    if let userId = PFUser.current()?.objectId
+                    {
+                        self.puserId = userId
+                    }                  
                     
                     Global.defaults.set(email, forKey: "\(self.puserId)_your_email")
                     Global.defaults.set(password, forKey: "\(self.puserId)_your_password")
@@ -734,11 +742,7 @@ class LoginViewController: UIViewController
                                 
                                 user.saveInBackground(block: { (resutl, error) in
                                     
-                                    if error == nil
-                                    {
-
-                                        
-                                        
+                                    if error == nil {                                         
                                         
                                         PFUser.logOut()
                                         
@@ -829,7 +833,7 @@ class LoginViewController: UIViewController
                 }
                 
                 
-            } else {
+            } else {                
                 
                 if user?["emailVerified"] != nil {
                 
@@ -849,10 +853,19 @@ class LoginViewController: UIViewController
                                     UserDefaults.standard.setIsRegistered(value: true)
                                     
                                     ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+
+                                    if let userId = PFUser.current()?.objectId
+                                    {
+                                        self.puserId = userId
+                                    }
+
+                                    let pid = "\(self.puserId)_profile_completed"
+
+                                    print(pid)
                                     
                                     //FAMILY
                                     
-                                    Global.defaults.set(true, forKey: "\(self.puserId)_profile_completed")
+                                    Global.defaults.set(true, forKey: pid)
                                     Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")
                                     Global.defaults.set(true, forKey: "\(self.puserId)_son_exist")
                                     
@@ -943,7 +956,14 @@ class LoginViewController: UIViewController
                             })
                             
                         } else {
-                            
+
+                            if let userId = PFUser.current()?.objectId
+                            {
+                                self.puserId = userId
+                            }
+
+                            Global.defaults.set(true, forKey: "\(self.puserId)_registrant_completed")
+                                                  
                             self.activityIndicatorView?.stopAnimating()
                             self.dismiss(animated: true, completion: nil)
                             

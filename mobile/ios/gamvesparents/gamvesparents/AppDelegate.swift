@@ -138,8 +138,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         freopen(logFilePath.cString(using: String.Encoding.ascii)!, "a+", stderr)  
 
         Global.loadAditionalData()     
-        
+
         return true
+    }
+
+    func didpickImage(image:UIImage, type:ProfileImagesTypes) {
+
+        
     }
 
     
