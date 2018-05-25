@@ -1020,7 +1020,7 @@ class ProfileViewController: UIViewController,
                             
                             // level Id
                             
-                            let levelRel:PFRelation = user.relation(forKey: "\(self.puserId)_level")
+                            let levelRel:PFRelation = user.relation(forKey: "level")
                             
                             let queryLevel:PFQuery = levelRel.query()
                             queryLevel.findObjectsInBackground(block: { (levelObjects, error) in
@@ -1118,6 +1118,8 @@ class ProfileViewController: UIViewController,
                             //aca
 
                             DispatchQueue.main.async() {
+
+                                Global.loadConfigData()
 
                                 self.accountViewController.showImagePicker(type: ProfileImagesTypes.You)
 
@@ -1596,7 +1598,7 @@ class ProfileViewController: UIViewController,
         var reusername = self.you["firstName"] as! String
         reusername = reusername.lowercased()
         
-        //self.you["email"] = your_email        
+        //self.you["email"] = your_email
         //self.you.email = your_email
         
         let yourimage = PFFile(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
@@ -1635,7 +1637,7 @@ class ProfileViewController: UIViewController,
         }
         
     
-        let levelRel:PFRelation = self.you.relation(forKey: "\(self.puserId)_level")
+        let levelRel:PFRelation = self.you.relation(forKey: "level")
         
         //I add the level of all sons
         let levleId = Global.gamvesFamily.sonsUsers[0].levelId as String
@@ -1712,7 +1714,7 @@ class ProfileViewController: UIViewController,
         
         print(son_grade)
         
-        let levelRel:PFRelation = family.relation(forKey: "\(self.puserId)_level")
+        let levelRel:PFRelation = family.relation(forKey: "level")
         
         let lkeys = Array(Global.levels.keys)
         

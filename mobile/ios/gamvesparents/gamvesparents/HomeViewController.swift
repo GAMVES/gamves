@@ -448,7 +448,13 @@ class HomeViewController: UIViewController,
                 
                 let stringInterval = self.stringFromTimeInterval(interval: self.countWeekTime)
                 
-                let timecounted = "\(stringInterval) hs"                
+                let timecounted = "\(stringInterval) hs" 
+
+                if self.userStatistics.count == 0 {
+
+                    self.loadStatistics()
+                    
+                }                               
                 
                 self.userStatistics[2].data = timecounted
             
