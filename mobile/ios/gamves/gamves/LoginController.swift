@@ -291,9 +291,7 @@ class LoginController: UIViewController {
                     self.activityView.stopAnimating()
                     
                     let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                    appDelegate.window!.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))
-                    
-                    
+                    appDelegate.window!.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))                                      
                     
                     
                 }
