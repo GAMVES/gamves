@@ -203,6 +203,7 @@ class GamvesFamily {
     var familyName = String()
     var objectId = String()
     var school = String()
+    var schoolShort = String()
     
     var sonRegisterChatId = Int()
     var sonSpouseChatId = Int()

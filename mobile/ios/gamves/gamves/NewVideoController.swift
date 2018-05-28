@@ -818,7 +818,9 @@ SelectorProtocol {
         
         videoPF["poster_name"] = name
         
-        videoPF["folder"] = "stpauls"
+        let short = Global.gamvesFamily.schoolShort
+        
+        videoPF["folder"] = short
         
         print(videoPF)
         

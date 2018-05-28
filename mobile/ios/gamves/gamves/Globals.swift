@@ -1131,20 +1131,20 @@ class Global: NSObject
                                     {
                                         
                                         DispatchQueue.main.async
-                                            {
+                                        {
                                                 
-                                                self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                                            self.addUserToDictionary(user: member as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
+                                                
+                                                print(gamvesUser.userName)
+                                                
+                                                if count == (memberCount!-1)
+                                                {
+                                                    completionHandler(true)
                                                     
-                                                    print(gamvesUser.userName)
-                                                    
-                                                    if count == (memberCount!-1)
-                                                    {
-                                                        completionHandler(true)
-                                                        
-                                                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
-                                                    }
-                                                    count = count + 1
-                                                })
+                                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
+                                                }
+                                                count = count + 1
+                                            })
                                         }
                                     }
                                 }
@@ -1161,11 +1161,13 @@ class Global: NSObject
                                     for school in schools!
                                     {
                                         self.gamvesFamily.school = school["name"] as! String
+
+                                        self.gamvesFamily.schoolShort = school["short"] as! String                                       
+
+                                        print(self.gamvesFamily.schoolShort)
                                     }
                                 }
                             })
-                            
-                            
                             
                         }
                     })

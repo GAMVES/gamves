@@ -1488,7 +1488,9 @@
                 let configuration = AWSServiceConfiguration(region: AWSRegionType.USEast1, credentialsProvider: credentialsProvider)
                 AWSServiceManager.default().defaultServiceConfiguration = configuration
                 
-                let S3BucketName = "gamves/stpauls/audios"
+                let short = Global.gamvesFamily.schoolShort
+                
+                let S3BucketName = "gamves/\(short)/audios"
                 let uploadRequest = AWSS3TransferManagerUploadRequest()!
                 uploadRequest.body = audioStored.localUri
                 uploadRequest.key = audioStored.name

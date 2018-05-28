@@ -734,6 +734,7 @@
 	    	if( results.length > 0) 
 	        {
 	            var videoObject = results[0];
+	            
 	            var fs = require('fs');
 	            var youtubedl = require('youtube-dl');
 	            var video = youtubedl('http://www.youtube.com/watch?v='+ytb_videoId, ['--format=18'], { cwd: __dirname }); 
