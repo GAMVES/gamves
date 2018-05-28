@@ -250,7 +250,7 @@
 		var folder = request.params.folder;
 		
 		var now = new Date().getTime();
-		var dummyfile = "download/" + folder + ".txt";
+		var dummyfile = "download/school.txt";
 
 	  	var fs = require('fs');
 		fs.writeFile(dummyfile, "File created: " + now + " for school folder " + folder, function(err) {
