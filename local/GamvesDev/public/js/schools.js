@@ -247,8 +247,9 @@
           var Schools = Parse.Object.extend("Schools");         
           var school = new Schools();    
           school.set("thumbnail", parseFileThumbanil);
-          school.set("name", $("#edit_name").val());              
-          school.set("short", $("#edit_short").val());  
+          school.set("name", $("#edit_name").val());   
+          var short =  $("#edit_short").val();          
+          school.set("short", short);  
           school.save(null, {
               success: function (schoolNew) {
                   console.log('school created successful with name: ' + schoolNew.get("pageName"));
@@ -256,6 +257,7 @@
                   createCategories(schoolNew);
                   loadschools();
                   clearField();
+                  createSchoolS3Folder(short);
                   return schoolNew;
               },
               error: function (response, error) {
@@ -409,6 +411,26 @@
         $("#img_back").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
       }
 
+
+      function createSchoolS3Folder(folder) {
+
+
+          Parse.Cloud.run("createS3Folder", { folder: folder }).then(function(result) {    
+
+            console.log("__________________________");                         
+            console.log(JSON.stringify(result));       
+           
+         }, function(error) {
+
+            console.log("error :" +errort);
+            // error
+
+            $('#error_message').html("<p>" + errort + "</p>");
+
+        });  
+
+
+      }
 
 
   });

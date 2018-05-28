@@ -738,11 +738,7 @@
 	            var youtubedl = require('youtube-dl');
 	            var video = youtubedl('http://www.youtube.com/watch?v='+ytb_videoId, ['--format=18'], { cwd: __dirname }); 
 
-	            var fs = require('fs');
-
-	            //checkDirectory("download/", fs, function(error) {  
-					
-				//var videoName = "download/" + ytb_videoId + '.mp4';
+	            var fs = require('fs');	            
 
 				var videoName = ytb_videoId + '.mp4';
 
