@@ -1,1 +1,0 @@
-This folder should contain all the videos downloaded from youtube and should be removed.

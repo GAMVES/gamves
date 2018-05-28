@@ -247,12 +247,39 @@
 
 	Parse.Cloud.define("createS3Folder", function( request, response ) {
 
-		var folder = request.params.folder;
-		
-		var now = new Date().getTime();
-		var dummyfile = "download/school.txt";		    	
+		var s3folder = request.params.folder;
 
-    	var path = require('path');
+		console.log("folder: " + s3folder);	
+
+		response.success("folder: " + s3folder);
+		
+		var now = new Date().getTime(); 		
+
+		var filepath = s3folder + ".txt";		    	
+
+		var fs = require('fs');
+
+		var fileContent = "School folder for " + s3folder + ". ";		
+		
+		fs.writeFile(filepath, fileContent, { flag: 'w' }, function(err) {	
+
+		    if (err) {
+		    	
+		    	response.error('Error! ' +  err);
+
+		    } else {
+
+		    	console.log("The file was succesfully saved!");	
+		    	createS3FolderWithFile(s3folder, filepath, response);
+		    }
+		    
+		});
+	
+	});
+
+	function createS3FolderWithFile(folder, filepath, response) {
+
+		var path = require('path');
 	    var s3 = require('s3');
 	    
 	    var s3key = "AKIAJP4GPKX77DMBF5AQ";
@@ -272,10 +299,10 @@
 	      },
 	    });   
 
-		var s3bucket = "gamves/"+folder;
+		var s3bucket = "gamves/" + folder;
 	    var s3endpoint = s3bucket  + ".s3.amazonaws.com";      
 
-		var paramsUploader = { localFile: dummyfile, s3Params: { Bucket: s3bucket, Key: dummyfile, ACL: 'public-read'},};
+		var paramsUploader = { localFile: filepath, s3Params: { Bucket: s3bucket, Key: filepath, ACL: 'public-read'}, };
 
 		var uploader = clientDownload.uploadFile(paramsUploader);
 
@@ -285,7 +312,7 @@
 			response.error('Error! ' + "unable to upload: "  +  err.stack);
 		});                
 		
-		uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
+		//uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
 		  
 		uploader.on('end', function() {
 
@@ -293,9 +320,9 @@
 
 			response.success({"s3bucket":s3bucket, "s3endpoint":s3endpoint});
 
-		});  
-	
-	});
+		}); 
+
+	}
 
 
 	

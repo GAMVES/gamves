@@ -412,10 +412,10 @@
       }
 
 
-      function createSchoolS3Folder(folder) {
+      function createSchoolS3Folder(s3folder) {
 
 
-         Parse.Cloud.run("createS3Folder", { folder: folder }).then(function(result) {    
+         Parse.Cloud.run("createS3Folder", { folder: s3folder }).then(function(result) {    
 
             console.log("__________________________");                         
             console.log(JSON.stringify(result));       
