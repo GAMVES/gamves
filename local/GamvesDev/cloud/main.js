@@ -809,7 +809,8 @@
 		var uploader = clientDownload.uploadFile(paramsUploader);
 
 		uploader.on('error', function(err) { console.error("unable to upload:", err.stack); });                
-		//uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
+		
+		uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
 		  
 		uploader.on('end', function() {
 
