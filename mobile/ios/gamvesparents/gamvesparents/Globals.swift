@@ -868,6 +868,10 @@ class Global: NSObject
                                         for school in schools!
                                         {
                                             self.gamvesFamily.schoolName = school["name"] as! String
+
+                                            self.gamvesFamily.schoolShort = school["short"] as! String                                       
+
+                                            print(self.gamvesFamily.schoolShort)
                                         }
                                     }
                                 })
@@ -1358,7 +1362,7 @@ class Global: NSObject
                         
                         gSchool.objectId = school.objectId!
                         gSchool.schoolName = schoolName
-                        gSchool.schoolOBj = school
+                        gSchool.schoolOBj = school as PFObject
                         
                         Global.schools.append(gSchool)
                         

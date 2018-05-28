@@ -58,7 +58,7 @@ class GamvesSchools
 {
     var objectId = String()
     var thumbnail:UIImage?
-    var schoolName = String()
+    var schoolName = String()    
     var schoolOBj:PFObject!
 }
 
@@ -197,6 +197,7 @@ class GamvesFamily
     var familyName = String()
     var objectId = String()
     var schoolName = String()
+    var schoolShort = String()
     
     var sonRegisterChatId = Int()
     var spouseRegisterChatId = Int()
