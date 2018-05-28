@@ -94,7 +94,10 @@ document.addEventListener("LoadCategories", function(event){
                       selected = rowIds.join(",");
                       selectedItem.push(selected);   
 
-                      var event = new CustomEvent("LoadFanpage", { detail: categoryId });
+                      var event = new CustomEvent("LoadFanpage", {detail: {
+                          categoryId: categoryId,
+                          schoolId: schoolId
+                      }}); //{ detail: categoryId });
                       document.dispatchEvent(event);                                                              
 
                      //alert("Select: " + rowIds.join(","));

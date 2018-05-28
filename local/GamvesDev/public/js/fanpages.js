@@ -1,6 +1,7 @@
 document.addEventListener("LoadFanpage", function(event){
 
-      var catId = event.detail;
+      var catId = event.detail.categoryId;
+      var schoolId = event.detail.schoolId;
       
       var selectedItem = [];   
       var selected = -1;
@@ -115,7 +116,8 @@ document.addEventListener("LoadFanpage", function(event){
 
                           var event = new CustomEvent("LoadVideo", { detail: {
                                     fanpageId: fanpageId,
-                                    categoryName: categoryName }} );                                    
+                                    categoryName: categoryName,
+                                    schoolId: schoolId }} );                                    
                           document.dispatchEvent(event);
 
                       }).on("deselected.rs.jquery.bootgrid", function(e, rows)

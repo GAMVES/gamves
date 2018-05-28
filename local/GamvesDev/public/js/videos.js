@@ -3,8 +3,11 @@ document.addEventListener("LoadVideo", function(event){
 
       var fanpageId = event.detail.fanpageId;
       var categoryName = event.detail.categoryName;
+      var schoolId = event.detail.schoolId;      
+
       var fanpageObj;
       var appIconFile;
+      var schoolShort;
 
       var queryFanpage = new Parse.Query("Fanpages");             
       queryFanpage.equalTo("objectId", fanpageId);
@@ -14,7 +17,8 @@ document.addEventListener("LoadVideo", function(event){
               if (fanpage) { 
                     fanpageObj = fanpage;                  
                     searchVideo(fanpage); 
-                    getAppIcon();           
+                    getAppIcon();   
+                    getSchoolShort();        
               }
           }
       });   
@@ -230,7 +234,8 @@ document.addEventListener("LoadVideo", function(event){
 
         });  
 
-      });     
+      }); 
+        
 
       function saveVideo() { 
 
@@ -272,6 +277,17 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("order", parseInt(order)); 
 
                     video.set("public", true); 
+
+
+
+
+
+
+
+
+
+
+
 
                     video.set("folder", "stpauls"); //Here TODO query School short and put as folder.  
 
@@ -352,5 +368,23 @@ document.addEventListener("LoadVideo", function(event){
               }
           });
       }
+
+      function getSchoolShort()
+      {
+
+          console.log(schoolId);
+
+          var querySchool = new Parse.Query("Schools");             
+          querySchool.equalTo("objectId", schoolId);
+          querySchool.first({
+              success: function (school) {
+                  
+                  if (school) { 
+                        schoolShort = school.get("short");   
+                  }
+              }
+          });           
+          
+      } 
 });
 
