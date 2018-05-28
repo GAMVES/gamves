@@ -278,18 +278,7 @@ document.addEventListener("LoadVideo", function(event){
 
                     video.set("public", true); 
 
-
-
-
-
-
-
-
-
-
-
-
-                    video.set("folder", "stpauls"); //Here TODO query School short and put as folder.  
+                    video.set("folder", schoolShort); //Here TODO query School short and put as folder.  
 
                     video.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
 
