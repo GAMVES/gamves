@@ -250,67 +250,51 @@
 		var folder = request.params.folder;
 		
 		var now = new Date().getTime();
-		var dummyfile = "download/school.txt";
+		var dummyfile = "download/school.txt";		    	
 
-	  	var fs = require('fs');
-		fs.writeFile(dummyfile, "File created: " + now + " for school folder " + folder, function(err) {
-		   
-		    if(err) {
-		        
-		        //return console.log(err);
+    	var path = require('path');
+	    var s3 = require('s3');
+	    
+	    var s3key = "AKIAJP4GPKX77DMBF5AQ";
+	    var s3secret = "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";
+	    var s3region = "us-east-1";  
 
-		        response.error('Error writting file! '  +  err); 
+	    var clientDownload = s3.createClient({
+	      maxAsyncS3: 20,     // this is the default
+	      s3RetryCount: 3,    // this is the default
+	      s3RetryDelay: 1000, // this is the default
+	      multipartUploadThreshold: 20971520, // this is the default (20 MB)
+	      multipartUploadSize: 15728640, // this is the default (15 MB)
+	      s3Options: {
+	        accessKeyId: s3key,
+	        secretAccessKey: s3secret,
+	        region: s3region,
+	      },
+	    });   
 
-		    } else {
+		var s3bucket = "gamves/"+folder;
+	    var s3endpoint = s3bucket  + ".s3.amazonaws.com";      
 
-		    	console.log("The file was saved!");
+		var paramsUploader = { localFile: dummyfile, s3Params: { Bucket: s3bucket, Key: dummyfile, ACL: 'public-read'},};
 
-		    	var path = require('path');
-			    var s3 = require('s3');
-			    
-			    var s3key = "AKIAJP4GPKX77DMBF5AQ";
-			    var s3secret = "H8awJQNdcMS64k4QDZqVQ4zCvkNmAqz9/DylZY9d";
-			    var s3region = "us-east-1";  
+		var uploader = clientDownload.uploadFile(paramsUploader);
 
-			    var clientDownload = s3.createClient({
-			      maxAsyncS3: 20,     // this is the default
-			      s3RetryCount: 3,    // this is the default
-			      s3RetryDelay: 1000, // this is the default
-			      multipartUploadThreshold: 20971520, // this is the default (20 MB)
-			      multipartUploadSize: 15728640, // this is the default (15 MB)
-			      s3Options: {
-			        accessKeyId: s3key,
-			        secretAccessKey: s3secret,
-			        region: s3region,
-			      },
-			    });   
+		uploader.on('error', function(err) { 
+			//console.error("unable to upload:", err.stack); 
 
-				var s3bucket = "gamves/"+folder;
-			    var s3endpoint = s3bucket  + ".s3.amazonaws.com";      
+			response.error('Error! ' + "unable to upload: "  +  err.stack);
+		});                
+		
+		uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
+		  
+		uploader.on('end', function() {
 
-				var paramsUploader = { localFile: dummyfile, s3Params: { Bucket: s3bucket, Key: dummyfile, ACL: 'public-read'},};
+			//callback({"s3bucket":s3bucket, "s3endpoint":s3endpoint});
 
-				var uploader = clientDownload.uploadFile(paramsUploader);
+			response.success({"s3bucket":s3bucket, "s3endpoint":s3endpoint});
 
-				uploader.on('error', function(err) { 
-					//console.error("unable to upload:", err.stack); 
-
-					response.error('Error! ' + "unable to upload: "  +  err.stack);
-				});                
-				
-				uploader.on('progress', function() { console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal); });
-				  
-				uploader.on('end', function() {
-
-					//callback({"s3bucket":s3bucket, "s3endpoint":s3endpoint});
-
-					response.success({"s3bucket":s3bucket, "s3endpoint":s3endpoint});
-
-				});  
-
-		    }
-		    
-		}); 
+		});  
+	
 	});
 
 
