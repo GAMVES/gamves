@@ -86,6 +86,10 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
     }
     
+    override func layoutSubviews() {
+        self.reloadCollectionView()
+    }
+    
     
     func registerLiveQuery() {
     
@@ -155,6 +159,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         ChatFeedMethods.sortFeedByDate()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+
             self.collectionView.reloadData()
         }
     }

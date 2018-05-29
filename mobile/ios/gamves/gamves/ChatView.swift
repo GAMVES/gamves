@@ -717,7 +717,7 @@
                             message.userId = userId
                             var messageText = chatVideo["message"] as! String
                             
-                            message.date = chatVideo.createdAt
+                            message.date = chatVideo.updatedAt
                             message.createdAt = chatVideo.createdAt
                             
                             message.chatId = chatVideo["chatId"] as! Int
@@ -748,8 +748,6 @@
                             }
                             
                             print(messageText)
-
-
                             
                             if PFUser.current()?.objectId == userId {
                                 message.isSender = true
@@ -1265,11 +1263,18 @@
         
         func unsubcribeClients() {
             
-            self.chatClient.unsubscribe(self.videoQuery)
-            self.feedClient.unsubscribe(self.feedQuery)
-            self.audioClient.unsubscribe(self.audioQuery)
-            self.onlineClient.unsubscribe(self.onlineQuery)
-            
+            if self.videoQuery != nil {
+                self.chatClient.unsubscribe(self.videoQuery)
+            }
+            if self.feedQuery != nil {
+                self.feedClient.unsubscribe(self.feedQuery)
+            }
+            if self.audioQuery != nil {
+                self.audioClient.unsubscribe(self.audioQuery)
+            }
+            if self.onlineQuery != nil {
+                self.onlineClient.unsubscribe(self.onlineQuery)
+            }            
         }
         
         func didPickImage(_ image: UIImage) {
@@ -1589,7 +1594,10 @@
                     
                     UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
                     
-                    self.inputTextField.text = ""
+                    DispatchQueue.global(qos: .background).async {                
+                
+                        self.inputTextField.text = ""
+                    }
                     
                     messagePF.saveInBackground { (resutl, error) in
                         
@@ -1825,6 +1833,7 @@
             if ChatFeedMethods.chatFeeds[self.chatId] != nil {
                 
                 ChatFeedMethods.chatFeeds[self.chatId]?.text = textMessage
+                ChatFeedMethods.chatFeeds[self.chatId]?.date = chatMessage.createdAt
             }
             
             self.messages.append(message)

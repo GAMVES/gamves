@@ -16,14 +16,21 @@ class ChatFeedMethods: NSObject {
 
     static func sortFeedByDate() {
         
-        var sortedFeeds = self.chatFeeds.sorted(by: {
-            $0.value.date?.compare($1.value.date!) == .orderedDescending
-        })
+        var feeds = [ChatFeed]()
+        
+        for feed in self.chatFeeds {
+            feeds.append(feed.value)
+        }
+        
+        var sortedFeeds = feeds.sorted(by: {
+            $0.date?.compare($1.date!) == .orderedAscending
+        })       
         
         self.chatFeeds = Dictionary<Int, ChatFeed>()
         
         for sorted in sortedFeeds {
-            self.chatFeeds[sorted.key] = sorted.value
+            print(sorted.date)
+            self.chatFeeds[sorted.key!] = sorted
         }
     }
     
@@ -88,7 +95,7 @@ class ChatFeedMethods: NSObject {
             
             chatfeed.room = room
             
-            chatfeed.date = chatFeedObj.updatedAt
+            chatfeed.date = chatFeedObj.updatedAt as! Date
             
             chatfeed.lasPoster = chatFeedObj["lastPoster"] as? String
             let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
@@ -137,6 +144,7 @@ class ChatFeedMethods: NSObject {
                             Global.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
                                 
                                 chatfeed.badgeNumber = counter
+                                chatfeed.key = chatId
                                 
                                 self.chatFeeds[chatId] = chatfeed
                         

@@ -29,6 +29,7 @@ enum SettingName: String
     case Feedback           = "Send Feedback"
     case Settings           = "Settings"
     case SwitchAccount      = "Log out"
+    case Likes              = "Likes"
 }
 
 class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -52,13 +53,16 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
         //let laterSetting = Setting(name: .WatchLater, imageName: "watch_later")
         //let likeSetting = Setting(name: .Likes, imageName: "like")
         
+        let likesSetting = Setting(name: .Likes, imageName: "like_gray")
         let historySetting = Setting(name: .History, imageName: "history")
         let feedbackSetting = Setting(name: .Feedback, imageName: "feedback")
         let settingsSetting = Setting(name: .Settings, imageName: "settings")
         let logoutSetting = Setting(name: .SwitchAccount, imageName: "switch_account")
         let cancelSetting = Setting(name: .Cancel, imageName: "cancel")
         
-        return [ historySetting,
+        return [ 
+                 likesSetting,
+                 historySetting,
                  feedbackSetting,
                  settingsSetting,
                  logoutSetting,

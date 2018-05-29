@@ -13,7 +13,7 @@ import ParseLiveQuery
 
 class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
-	 var activityView: NVActivityIndicatorView!
+	var activityView: NVActivityIndicatorView!
     
     var homeController: HomeController?    
     

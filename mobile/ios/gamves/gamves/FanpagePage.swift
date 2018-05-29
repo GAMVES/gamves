@@ -251,11 +251,32 @@ class FanpagePage: UIViewController,
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
 
         self.labelEmptyMessage.isHidden = true
+
+        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: nil, repeats: true)
         
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         self.favoriteButton.tintColor = UIColor.white
+    } 
+
+    func scrollAutomatically(_ timer1: Timer) {        
+        
+        for cell in self.imageCollectionView.visibleCells {
+            let indexPath: IndexPath? = self.imageCollectionView.indexPath(for: cell)
+            if ((indexPath?.row)!  < self.fanpageImages.count - 1){
+                let indexPath1: IndexPath?
+                indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)
+                
+                self.imageCollectionView.scrollToItem(at: indexPath1!, at: .right, animated: true)
+            }
+            else{
+                let indexPath1: IndexPath?
+                indexPath1 = IndexPath.init(row: 0, section: (indexPath?.section)!)
+                self.imageCollectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
+            }            
+        }  
+    
     }
 
     func checkFavorite() {

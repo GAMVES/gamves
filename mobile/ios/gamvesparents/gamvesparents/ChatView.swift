@@ -1272,10 +1272,18 @@
         
         func unsubcribeClients() {
             
-            self.chatClient.unsubscribe(self.videoQuery)
-            self.feedClient.unsubscribe(self.feedQuery)
-            self.audioClient.unsubscribe(self.audioQuery)
-            self.onlineClient.unsubscribe(self.onlineQuery)
+            if self.videoQuery != nil {
+                self.chatClient.unsubscribe(self.videoQuery)
+            }
+            if self.feedQuery != nil {
+                self.feedClient.unsubscribe(self.feedQuery)
+            }
+            if self.audioQuery != nil {
+                self.audioClient.unsubscribe(self.audioQuery)
+            }
+            if self.onlineQuery != nil {
+                self.onlineClient.unsubscribe(self.onlineQuery)
+            }
             
         }
         
