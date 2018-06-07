@@ -129,7 +129,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
             
             let videoApprovalLauncher = VideoApprovalLauncher()
             videoApprovalLauncher.delegate = self
-            videoApprovalLauncher.showVideoPlayer(videoGamves: video)
+            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: false)
             
         }
     }

@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>3006</string>
+	<string>3007</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -41,7 +41,6 @@
 	<array>
 		<string>audio</string>
 		<string>bluetooth-central</string>
-		<string>external-accessory</string>
 		<string>fetch</string>
 		<string>location</string>
 		<string>newsstand-content</string>

@@ -79,6 +79,7 @@
 		C7B402061D78C167001D8ED4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7B402051D78C167001D8ED4 /* Assets.xcassets */; };
 		C7B402091D78C167001D8ED4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7B402071D78C167001D8ED4 /* LaunchScreen.storyboard */; };
 		C7B402111D78C404001D8ED4 /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B402101D78C404001D8ED4 /* PageCell.swift */; };
+		C9300F7320C9050F0027845F /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9300F7220C9050F0027845F /* Util.swift */; };
 		C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9389278206AC83900DE72AA /* UserNotifications.framework */; };
 		C93BF39B20954A66006A0551 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93BF39A20954A66006A0551 /* Int+Extension.swift */; };
 		C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93BF39C20954DF6006A0551 /* CGFloat+Extension.swift */; };
@@ -167,6 +168,7 @@
 		C7B402081D78C167001D8ED4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C7B4020A1D78C167001D8ED4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7B402101D78C404001D8ED4 /* PageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
+		C9300F7220C9050F0027845F /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		C9389278206AC83900DE72AA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		C93BF39A20954A66006A0551 /* Int+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		C93BF39C20954DF6006A0551 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 				827FE2F61FAE599100A32994 /* CheckBoxView.swift */,
 				828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */,
 				828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */,
+				C9300F7220C9050F0027845F /* Util.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -621,6 +624,7 @@
 				82E372251FAFD530000AD7EB /* Globals.swift in Sources */,
 				82E3722D1FB16109000AD7EB /* SelectContactViewController.swift in Sources */,
 				82E372221FAF4C21000AD7EB /* ProfileViewController+Extensions.swift in Sources */,
+				C9300F7320C9050F0027845F /* Util.swift in Sources */,
 				82557C512016CFDC00752301 /* ActivityViewController.swift in Sources */,
 				8296F1DD202CA47000750C8D /* Formatter+Extensions.swift in Sources */,
 				829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */,

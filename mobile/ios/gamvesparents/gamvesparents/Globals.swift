@@ -1388,6 +1388,19 @@ class Global: NSObject
         UIColor.init(netHex: 0x97a618)        
     ]
 
+
+    static func getCurrentViewController() -> UIViewController? {
+
+        if let rootController = UIApplication.shared.keyWindow?.rootViewController {
+            var currentController: UIViewController! = rootController
+            while( currentController.presentedViewController != nil ) {
+                currentController = currentController.presentedViewController
+            }
+            return currentController
+        }
+        return nil
+
+    }
     
 }
 

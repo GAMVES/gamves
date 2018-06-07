@@ -357,7 +357,7 @@ class VideoApprovalLauncher: UIView {
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
 
-    func showVideoPlayer(videoGamves: VideoGamves){
+    func showVideoPlayer(videoGamves: VideoGamves, approved :Bool){
                 
         let videoUrl = videoGamves.s3_source
         let videoObj = videoGamves.videoObj!
@@ -394,7 +394,7 @@ class VideoApprovalLauncher: UIView {
             let apprY = Int(videoApprovalPlayerView.frame.height) + Int(infoApprovalView.frame.height)
             let apprFrame = CGRect(x: 0, y: apprY, width: Int(keyWindow.frame.width), height: chatHeight)
             
-            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame, obj: videoApprovalPlayerView, referenceId: videoId, delegate: self.delegate)
+            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame, obj: videoApprovalPlayerView, referenceId: videoId, delegate: self.delegate, approved: approved)
             buttonsApprovalView.backgroundColor = UIColor.gamvesBackgoundColor
             view.addSubview(buttonsApprovalView)
             buttonsApprovalView.addSubViews()

@@ -15,8 +15,7 @@ enum ApprovalType {
 }
 
 class ButtonsApprovalView: UIView {
-    
-    
+
     lazy var approveButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gamvesSemaphorGreenColor
@@ -67,11 +66,15 @@ class ButtonsApprovalView: UIView {
     var delegate:ApprovalProtocol!
     
     var approvalType:ApprovalType!
+
+    var approved = Bool()
     
-    init(frame: CGRect, obj: AnyObject, referenceId:Int?, delegate:ApprovalProtocol) {
+    init(frame: CGRect, obj: AnyObject, referenceId:Int?, delegate:ApprovalProtocol, approved:Bool) {
         super.init(frame: frame)
         
         //let type = type(of: obj)
+
+        self.approved = approved
         
         self.delegate = delegate
         
@@ -84,12 +87,25 @@ class ButtonsApprovalView: UIView {
             let videoApprovalPlayerView = obj as! VideoApprovalPlayerView
             
             if videoApprovalPlayerView != nil {
-                
-                self.approveButton.setTitle("APPROVE VIDEO", for: UIControlState())
-                self.rejectButton.setTitle("REJECT VIDEO", for: UIControlState())
-               
+
                 self.playerView = videoApprovalPlayerView
-                //self.referenceId = videoApprovalPlayerView.videoId
+                
+                if !self.approved {
+                
+                    self.approveButton.setTitle("APPROVE VIDEO", for: UIControlState())
+                    self.rejectButton.setTitle("REJECT VIDEO", for: UIControlState())
+                    
+                    //self.referenceId = videoApprovalPlayerView.videoId
+                
+                } else {
+                    
+                    self.approveButton.setTitle("APPROVE VIDEO", for: UIControlState())
+                    self.approveButton.isEnabled = false
+                    self.approveButton.alpha = 0.4
+
+                    self.rejectButton.setTitle("REJECT VIDEO", for: UIControlState())                    
+                    self.laterButton.setTitle("CLOSE VIDEO", for: UIControlState())
+                }
             }
             
         } else if (obj is FanpageApprovalView) {
@@ -99,12 +115,26 @@ class ButtonsApprovalView: UIView {
             let fanpageApprovalView = obj as! FanpageApprovalView
             
             if fanpageApprovalView != nil {
-                
-                self.approveButton.setTitle("APPROVE FANPAGE", for: UIControlState())
-                self.rejectButton.setTitle("REJECT FANPAGE", for: UIControlState())
-                
+
                 self.fanpageView = fanpageApprovalView
-                //self.referenceId = fanpageApprovalView.fanpageId
+
+                if !self.approved {
+                
+                    self.approveButton.setTitle("APPROVE FANPAGE", for: UIControlState())
+
+                    self.rejectButton.setTitle("REJECT FANPAGE", for: UIControlState())
+
+                } else {
+
+                    self.approveButton.setTitle("APPROVE FANPAGE", for: UIControlState())
+                    self.approveButton.isEnabled = false
+                    self.approveButton.alpha = 0.4
+
+                    self.rejectButton.setTitle("REJECT FANPAGE", for: UIControlState())
+                    self.laterButton.setTitle("CLOSE FANPAGE", for: UIControlState())
+                
+                
+                }
             }
             
         }
@@ -140,8 +170,75 @@ class ButtonsApprovalView: UIView {
     
     @objc func touchUpReject() {
         
-        updateApprovalStatus(referenceId: self.referenceId, status: -1);
+
+       /* let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertControllerStyle.alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+              
+            switch action.style {
+
+              case .default:
+                    print("default")
+                    self.updateApprovalStatus(referenceId: self.referenceId, status: -1);
+
+              case .cancel:
+                    print("cancel")
+
+              case .destructive:
+                    print("destructive")
+
+            }
+
+        }))
+
+        //let currentController = Global.getCurrentViewController()
+        //currentController?.present(alert, animated: true, completion: nil)
+        //self.present(alert, animated: true, completion: nil)
+
+        //let win = UIWindow(frame: UIScreen.main.bounds)
+
+        let currentController = Global.getCurrentViewController()
+        
+        currentController?.view.backgroundColor = .clear
+        
+        //win.rootViewController = currentController
+        //win.windowLevel = UIWindowLevelAlert + 1
+        //win.makeKeyAndVisible()
+       
+
+        currentController?.present(alert, animated: true, completion: nil)      
+
+        
+
+        //currentController?.view.bringSubview(toFront: alert.view)*/
+
+        // show alert.
+
+
+        let alertTitle = "Title"
+        let alertMessage = "message1\nmessage2"
+        let positiveButtonText = "OK"
+        let negativeButtonText = "Cancel"
+        
+        Util.sharedInstance.showAlertView(title: alertTitle , message: alertMessage, actionTitles: [negativeButtonText, positiveButtonText], actions: [
+        {()->() in
+
+            print(negativeButtonText)
+
+        },{()->() in
+
+            print(positiveButtonText)
+        
+        }])
+        
+
+        
     }
+
+
+ 
+
+
     
     @objc func touchUpLater() {
         
@@ -195,6 +292,7 @@ class ButtonsApprovalView: UIView {
                             } else {
                                 
                                 video!["approved"] = true
+                                video!["authorized"] = true
                                 
                                 video?.saveEventually()
                                 

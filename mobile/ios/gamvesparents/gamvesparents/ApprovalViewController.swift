@@ -65,7 +65,7 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func closedRefresh() {
         
-        //Global.approvals = [Approvals]()
+        Global.approvals = Dictionary<Int, Approvals>()
         
         Global.getApprovasByFamilyId(familyId: self.familyId) { ( count ) in
             
@@ -144,8 +144,18 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
                 video = Global.chatVideos[approval.referenceId]!
                 
                 let videoApprovalLauncher = VideoApprovalLauncher()
-                videoApprovalLauncher.delegate = self
-                videoApprovalLauncher.showVideoPlayer(videoGamves: video)
+                videoApprovalLauncher.delegate = self  
+                
+                var approved = Bool()
+
+                if approval.approved == 0 {
+                    approved = false
+                } else if approval.approved == 1 {
+                    approved = true
+                }
+
+
+                videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: approved )
                 
             } else if approval.type == 2 { //Fanpage
                 

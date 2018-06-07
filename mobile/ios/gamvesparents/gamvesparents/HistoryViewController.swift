@@ -192,7 +192,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
             
             let videoApprovalLauncher = VideoApprovalLauncher()
             videoApprovalLauncher.delegate = self
-            videoApprovalLauncher.showVideoPlayer(videoGamves: video)
+            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: false)
         
         }
     }
