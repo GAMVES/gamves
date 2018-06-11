@@ -134,13 +134,20 @@ class ButtonsApprovalView: UIView {
 
                 self.fanpageView = fanpageApprovalView
 
-                if !self.approved {
-                
+                if approved == -1 {
+
                     self.approveButton.setTitle("APPROVE FANPAGE", for: UIControlState())
-
                     self.rejectButton.setTitle("REJECT FANPAGE", for: UIControlState())
+                    self.rejectButton.isEnabled = false
+                    self.rejectButton.alpha = 0.4
 
-                } else {
+                } else if approved == 0 {
+
+                    self.approveButton.setTitle("APPROVE FANPAGE", for: UIControlState())
+                    self.rejectButton.setTitle("REJECT FANPAGE", for: UIControlState())
+                
+
+                } else if approved == 1 {
 
                     self.approveButton.setTitle("APPROVE FANPAGE", for: UIControlState())
                     self.approveButton.isEnabled = false
@@ -148,9 +155,7 @@ class ButtonsApprovalView: UIView {
 
                     self.rejectButton.setTitle("REJECT FANPAGE", for: UIControlState())
                     self.laterButton.setTitle("CLOSE FANPAGE", for: UIControlState())
-                
-                
-                }
+               }
             }
             
         }
