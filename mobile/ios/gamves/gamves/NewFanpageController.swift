@@ -336,7 +336,7 @@ ChooseAvatarProtocol
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleSave(sender:)), for: .touchUpInside)
         button.layer.cornerRadius = 5
         //button.isExclusiveTouch = true
         button.tag = 0
@@ -367,6 +367,8 @@ ChooseAvatarProtocol
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.saveButton.isEnabled = true
         
         let navItem = UINavigationItem()
         navItem.title = "Share your video"
@@ -1060,6 +1062,8 @@ ChooseAvatarProtocol
     }
     
     func handleSave(sender : UIButton) {
+
+        sender.isEnabled = false
         
         if !checErrors()
         {

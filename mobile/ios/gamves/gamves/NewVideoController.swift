@@ -251,7 +251,7 @@ SelectorProtocol {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)       
+        button.addTarget(self, action: #selector(handleSave(sender:)), for: .touchUpInside)       
         button.layer.cornerRadius = 5
         button.isEnabled = false
         return button
@@ -283,6 +283,8 @@ SelectorProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.saveButton.isEnabled = true
         
         let navItem = UINavigationItem()
         navItem.title = "Share your video"
@@ -716,7 +718,9 @@ SelectorProtocol {
         self.type = type
     }
     
-    func handleSave() {
+    func handleSave(sender : UIButton) {
+
+        sender.isEnabled = false
         
         if !checErrors()
         {
