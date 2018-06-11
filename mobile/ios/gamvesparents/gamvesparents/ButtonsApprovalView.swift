@@ -69,12 +69,20 @@ class ButtonsApprovalView: UIView {
 
     var approved = Bool()
     
-    init(frame: CGRect, obj: AnyObject, referenceId:Int?, delegate:ApprovalProtocol, approved:Bool) {
+    init(frame: CGRect, obj: AnyObject, referenceId:Int?, delegate:ApprovalProtocol, approved:Int) {
         super.init(frame: frame)
         
         //let type = type(of: obj)
+        
+        /*var approved = Bool()
+        
+        if approval.approved == 0 {
+            approved = false
+        } else if approval.approved == 1 {
+            approved = true
+        }*/
 
-        self.approved = approved
+        
         
         self.delegate = delegate
         
@@ -89,23 +97,31 @@ class ButtonsApprovalView: UIView {
             if videoApprovalPlayerView != nil {
 
                 self.playerView = videoApprovalPlayerView
-                
-                if !self.approved {
-                
+
+                if approved == -1 {
+
                     self.approveButton.setTitle("APPROVE VIDEO", for: UIControlState())
                     self.rejectButton.setTitle("REJECT VIDEO", for: UIControlState())
-                    
-                    //self.referenceId = videoApprovalPlayerView.videoId
-                
-                } else {
-                    
+                    self.rejectButton.isEnabled = false
+                    self.rejectButton.alpha = 0.4
+
+                } else if approved == 0 {
+
+                    self.approveButton.setTitle("APPROVE VIDEO", for: UIControlState())
+                    self.rejectButton.setTitle("REJECT VIDEO", for: UIControlState())
+
+                } else if approved == 1 {
+
                     self.approveButton.setTitle("APPROVE VIDEO", for: UIControlState())
                     self.approveButton.isEnabled = false
                     self.approveButton.alpha = 0.4
 
                     self.rejectButton.setTitle("REJECT VIDEO", for: UIControlState())                    
                     self.laterButton.setTitle("CLOSE VIDEO", for: UIControlState())
-                }
+
+
+                }                     
+                              
             }
             
         } else if (obj is FanpageApprovalView) {
@@ -169,74 +185,51 @@ class ButtonsApprovalView: UIView {
     }
     
     @objc func touchUpReject() {
-        
 
-       /* let alert = UIAlertController(title: "Alert", message: "Message", preferredStyle: UIAlertControllerStyle.alert)
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-              
-            switch action.style {
-
-              case .default:
-                    print("default")
-                    self.updateApprovalStatus(referenceId: self.referenceId, status: -1);
-
-              case .cancel:
-                    print("cancel")
-
-              case .destructive:
-                    print("destructive")
-
-            }
-
-        }))
-
-        //let currentController = Global.getCurrentViewController()
-        //currentController?.present(alert, animated: true, completion: nil)
-        //self.present(alert, animated: true, completion: nil)
-
-        //let win = UIWindow(frame: UIScreen.main.bounds)
-
-        let currentController = Global.getCurrentViewController()
-        
-        currentController?.view.backgroundColor = .clear
-        
-        //win.rootViewController = currentController
-        //win.windowLevel = UIWindowLevelAlert + 1
-        //win.makeKeyAndVisible()
-       
-
-        currentController?.present(alert, animated: true, completion: nil)      
-
-        
-
-        //currentController?.view.bringSubview(toFront: alert.view)*/
+        delegate.pauseVideo()
 
         // show alert.
 
+        var alertTitle = String() //"Title"
+        var alertMessage = String() //"message1\nmessage2"
+        var positiveButtonText = String() //"OK"
+        var negativeButtonText = String() //"Cancel"
 
-        let alertTitle = "Title"
-        let alertMessage = "message1\nmessage2"
-        let positiveButtonText = "OK"
-        let negativeButtonText = "Cancel"
+        var typeName = String()
+
+        if self.approvalType == ApprovalType.TypeVideo { 
+
+            typeName = "video"
+            alertTitle = "Reject \(typeName)"            
+
+        } else if self.approvalType == ApprovalType.TypeFanpage {
+
+            typeName = "fanpage"
+            alertTitle = "Reject \(typeName)"             
+
+        }       
+
+        alertMessage = "Are you sure you want to reject your \(typeName)? If yes will no appear any longer to your son and friends."
+        positiveButtonText = "YES"
+        negativeButtonText = "NO"     
         
         Util.sharedInstance.showAlertView(title: alertTitle , message: alertMessage, actionTitles: [negativeButtonText, positiveButtonText], actions: [
         {()->() in
 
             print(negativeButtonText)
 
+            self.delegate.closedRefresh()
+            self.closeApprovalWindow()
+
         },{()->() in
 
             print(positiveButtonText)
+
+            self.updateApprovalStatus(referenceId: self.referenceId, status: -1);           
         
         }])
         
-
-        
     }
-
-
- 
 
 
     

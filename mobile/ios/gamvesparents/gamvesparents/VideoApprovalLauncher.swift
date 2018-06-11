@@ -25,7 +25,7 @@ class VideoApprovalPlayerView: UIView {
         return view
     }()
 
-     lazy var arrowDownButton: UIButton = {
+    /*lazy var arrowDownButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(named: "arrow_down")
         button.setImage(image, for: UIControlState())
@@ -33,7 +33,7 @@ class VideoApprovalPlayerView: UIView {
         button.tintColor = .white   
         button.addTarget(self, action: #selector(handleDownButton), for: .touchUpInside)        
         return button
-    }()
+    }()*/
 
     @objc func handleDownButton() 
     {
@@ -54,7 +54,7 @@ class VideoApprovalPlayerView: UIView {
             self.lastX = x
             
             self.activityIndicatorView.isHidden = true
-            self.arrowDownButton.isHidden = true
+            //self.arrowDownButton.isHidden = true
             self.pausePlayButton.isHidden = true
             self.videoLengthLabel.isHidden = true
             self.currentTimeLabel.isHidden = true
@@ -225,9 +225,9 @@ class VideoApprovalPlayerView: UIView {
         controlsContainerView.frame = frame
         addSubview(self.controlsContainerView)        
      
-        controlsContainerView.addSubview(arrowDownButton)        
+        /*controlsContainerView.addSubview(arrowDownButton)        
         arrowDownButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 30).isActive = true
-        arrowDownButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 30).isActive = true
+        arrowDownButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 30).isActive = true*/
         
         controlsContainerView.addSubview(activityIndicatorView)
         activityIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
@@ -336,7 +336,9 @@ class VideoApprovalPlayerView: UIView {
     required init?(coder aDecoder: NSCoder) 
     {
         fatalError("init(coder:) has not been implemented")
-    }   
+    }  
+
+    
 
 }
 
@@ -357,7 +359,7 @@ class VideoApprovalLauncher: UIView {
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
 
-    func showVideoPlayer(videoGamves: VideoGamves, approved :Bool){
+    func showVideoPlayer(videoGamves: VideoGamves, approved :Int){
                 
         let videoUrl = videoGamves.s3_source
         let videoObj = videoGamves.videoObj!
@@ -414,6 +416,10 @@ class VideoApprovalLauncher: UIView {
                     
             })
         }
+    }
+
+    func pauseVideo() {
+        videoApprovalPlayerView.handlePause()
     }
     
 }

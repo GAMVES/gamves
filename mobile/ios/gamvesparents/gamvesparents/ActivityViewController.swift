@@ -24,6 +24,8 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
     
     var popUp:PopupDialog?
     
+    var videoApprovalLauncher = VideoApprovalLauncher()
+    
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -127,11 +129,16 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
             
             video = Global.chatVideos[chatfeed.chatId!]!
             
-            let videoApprovalLauncher = VideoApprovalLauncher()
+            videoApprovalLauncher = VideoApprovalLauncher()
             videoApprovalLauncher.delegate = self
-            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: false)
+            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: 0)
             
         }
     }
+    
+    func pauseVideo() {
+        videoApprovalLauncher.pauseVideo()
+    }
+    
     
 }

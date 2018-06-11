@@ -14,15 +14,18 @@ import PopupDialog
 
 protocol ApprovalProtocol {
     func closedRefresh()
+    func pauseVideo()
 }
 
-class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ApprovalProtocol {
+class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ApprovalProtocol {  
     
     var homeViewController:HomeViewController?
     
     var isGroup = Bool()
     
     var popUp:PopupDialog?
+
+    var videoApprovalLauncher = VideoApprovalLauncher()
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -95,15 +98,29 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
         
         cell.nameLabel.text = approval.title
         
-        if approval.approved == 0 || approval.approved == 2 { // NOT
+        if approval.approved == 0 || approval.approved == 2 || approval.approved == -1 { // NOT
             
-            cell.statusLabel.text = "NOT APPROVED"
+            if approval.approved == -1 {
+                
+                cell.statusLabel.text = "REJECTED"
+
+                cell.setCheckLabel(color: UIColor.red, symbol: "-")
+                
+                //(color: UIColor.red, symbol: "-" )
+                
+            } else  {
+                
+               cell.statusLabel.text = "NOT APPROVED"
+            }
+            
             cell.checkLabel.isHidden = false
             
         } else if approval.approved == 1 { //APPROVED
         
             cell.statusLabel.text = "APPROVED"
             cell.checkLabel.isHidden = true
+
+            cell.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: "✓" )
         }
         
         if approval.type == 1 { //Video
@@ -143,19 +160,9 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
                 
                 video = Global.chatVideos[approval.referenceId]!
                 
-                let videoApprovalLauncher = VideoApprovalLauncher()
-                videoApprovalLauncher.delegate = self  
-                
-                var approved = Bool()
-
-                if approval.approved == 0 {
-                    approved = false
-                } else if approval.approved == 1 {
-                    approved = true
-                }
-
-
-                videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: approved )
+                self.videoApprovalLauncher = VideoApprovalLauncher()
+                videoApprovalLauncher.delegate = self
+                videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: approval.approved )
                 
             } else if approval.type == 2 { //Fanpage
                 
@@ -169,4 +176,10 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
             }
         }
     }
+
+
+    func pauseVideo() {
+        self.videoApprovalLauncher.pauseVideo()    
+    }
+
 }

@@ -18,6 +18,8 @@ protocol HistroyProtocol {
 
 class HistoryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ApprovalProtocol {
     
+    
+    
     var homeViewController:HomeViewController? 
     
     var isGroup = Bool()
@@ -39,6 +41,8 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     var countHistory = Int()
     var countHistories = Int()
+    
+    var videoApprovalLauncher = VideoApprovalLauncher()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -140,6 +144,10 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
         
         self.countHistory = self.countHistory + 1
     }
+    
+    func pauseVideo() {
+        videoApprovalLauncher.pauseVideo()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -190,9 +198,9 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
             
             video = Global.chatVideos[history.referenceId]!
             
-            let videoApprovalLauncher = VideoApprovalLauncher()
+            videoApprovalLauncher = VideoApprovalLauncher()
             videoApprovalLauncher.delegate = self
-            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: false)
+            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: 0)
         
         }
     }

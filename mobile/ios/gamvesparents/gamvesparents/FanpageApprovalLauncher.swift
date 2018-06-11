@@ -238,7 +238,7 @@ class FanpageApprovalLauncher: UIView {
             let apprY = Int(fanpageApprovalView.frame.height) + Int(infoApprovalView.frame.height)
             let apprFrame = CGRect(x: 0, y: apprY, width: Int(keyWindow.frame.width), height: chatHeight)
             
-            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame, obj: fanpageApprovalView, referenceId: fanpageId, delegate: self.delegate, approved: false)
+            buttonsApprovalView = ButtonsApprovalView(frame: apprFrame, obj: fanpageApprovalView, referenceId: fanpageId, delegate: self.delegate, approved: 0)
             
             buttonsApprovalView.backgroundColor = UIColor.gamvesBackgoundColor
             view.addSubview(buttonsApprovalView)

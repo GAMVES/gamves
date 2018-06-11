@@ -40,8 +40,8 @@ class Util: NSObject {
                 DispatchQueue.main.async(execute: { () -> Void in
                     alert.dismiss(animated: true, completion: nil)
                     window.isHidden = true
-                    window.removeFromSuperview()
-                    Util.sharedInstance.rootWindow.makeKeyAndVisible()
+                    //window.removeFromSuperview()
+                    //Util.sharedInstance.rootWindow.makeKeyAndVisible()
                 })
             })
             alert.addAction(action)

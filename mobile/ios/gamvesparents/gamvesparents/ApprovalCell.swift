@@ -66,10 +66,7 @@ class ApprovalCell: BaseCell {
     override func setupViews() {
         
         addSubview(profileImageView)
-        addSubview(dividerLineView)
-        
-        checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 24.0, borderWidth: 3.0, color: UIColor.gamvesColor)
-        addSubview(checkLabel)
+        addSubview(dividerLineView)    
         
         setupContainerView()
         
@@ -79,11 +76,18 @@ class ApprovalCell: BaseCell {
         addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
         addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
-        
+        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)      
+    
+    }
+
+    func setCheckLabel(color:UIColor, symbol:String) {
+
+        checkLabel =  Global.createCircularLabel(text: symbol, size: 30, fontSize: 24.0, borderWidth: 3.0, color:color ) //UIColor.gamvesColor)
+        addSubview(checkLabel)
+
         addConstraintsWithFormat("H:|-50-[v0(30)]", views: checkLabel)
         addConstraintsWithFormat("V:|-60-[v0(30)]", views: checkLabel)
-    
+
     }
     
     fileprivate func setupContainerView() {
