@@ -974,6 +974,8 @@ class Global: NSObject
                     var countAapprovals = approvalObjects.count
                     var count = 0
                     
+                    print(countAapprovals)
+                    
                     var countNotApproved = 0
                     
                     for approvalObj in approvalObjects

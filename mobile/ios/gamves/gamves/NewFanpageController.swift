@@ -940,14 +940,24 @@ ChooseAvatarProtocol
 
     func didPickImage(_ image: UIImage){
         
+        print("---------------")
+        print(image)
+        //print(self.fan)
+        //print(self.fan.icon_image)
+        
         if self.touchedButton == TouchedButton.iconImage {
         
-            self.fan.icon_image = image
+            if self.fan != nil {
+                self.fan.icon_image = image
+            }           
+            
             self.setIconImage(image:image)
             
         } else if self.touchedButton == TouchedButton.coverImage {
 
-            self.fan.cover_image = image
+            if self.fan != nil {
+                self.fan.cover_image = image
+            }
             self.setCoverImage(image: image)
             
             
@@ -1068,7 +1078,6 @@ ChooseAvatarProtocol
         if !checErrors()
         {
 
-
             if !self.isEdit {
 
 
@@ -1136,7 +1145,7 @@ ChooseAvatarProtocol
                     
                     var fpId = Global.getRandomInt()
                     
-                    fanpagePF["fpId"] = fpId
+                    fanpagePF["fanpageId"] = fpId
                     
                     let categoryRelation = fanpagePF.relation(forKey: "category")
                     categoryRelation.add((self.category?.cateobj!)!)

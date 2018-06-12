@@ -162,6 +162,10 @@ class GamvesFanpage {
     var icon_image  = UIImage()
     var author_image  = UIImage()
     
+    func seCoverImage(image:UIImage) {
+        self.cover_image = image
+    }
+    
     var videos = [VideoGamves]()
     
     var fanpageObj:PFObject?

@@ -430,7 +430,9 @@ class SearchController: UIViewController,
     }
     
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {        
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        print(self.type)
         
         let index = indexPath.row as Int
         var cell = UITableViewCell()
@@ -769,6 +771,8 @@ class SearchController: UIViewController,
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
+        print(type)
+        
         if type == SearchType.isVideo {
             
             let lastElement = self.videoDetailsDict.count - 1
@@ -1015,8 +1019,6 @@ class SearchController: UIViewController,
     
     func findImagesFromSuggestion(suggestion: String, isSingle: Bool) {
         
-        isSuggestion = false
-        
         searchController.searchBar.isLoading = true
         self.activityIndicatorView?.startAnimating()
         
@@ -1119,6 +1121,8 @@ class SearchController: UIViewController,
                                                 
                                             }
                                             
+                                        } else  {
+                                            self.isSuggestion = false
                                         }
                                         
                                         self.searchImages.append(image)
