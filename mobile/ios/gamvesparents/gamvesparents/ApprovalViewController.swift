@@ -111,6 +111,8 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
             } else  {
                 
                cell.statusLabel.text = "NOT APPROVED"
+
+               cell.setCheckLabel(color: UIColor.gamvesYellowColor, symbol: "+" )
             }
             
             cell.checkLabel.isHidden = false

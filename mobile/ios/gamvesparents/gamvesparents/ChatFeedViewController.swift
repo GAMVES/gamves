@@ -65,7 +65,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
             
         })
         
-        floaty.paddingY = 70
+        floaty.paddingY = 110
         
         self.view.addSubview(floaty)
         
