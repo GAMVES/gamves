@@ -29,6 +29,8 @@ extension UIColor {
 
     static let gamvesSemaphorGreenColor = UIColor.rgb(96, green: 187, blue: 81)
     static let gamvesSemaphorRedColor = UIColor.rgb(237, green: 50, blue: 55)
+
+    static let gamvesLightGrayColor = UIColor.rgb(250, green: 250, blue: 250)
 }
 
 

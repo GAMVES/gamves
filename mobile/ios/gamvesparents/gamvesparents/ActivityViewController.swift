@@ -111,12 +111,12 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
                             
                             let membersStr = chatfeed["members"] as! String
 
-                            let membersArray = Global.parseUsersStringToArray(separated: membersStr)
+                            //let membersArray = Global.parseUsersStringToArray(separated: membersStr)
                             
-                            if !membersArray.contains(spouseId) || !membersArray.contains(userId) {
+                            //if !membersArray.contains(spouseId) || !membersArray.contains(userId) {
                                 
                                 chatsFiltered.append(chatfeed)
-                            }
+                            //}
                         }
 
                         if chatsFiltered.count < 0 {

@@ -11,6 +11,7 @@ import Parse
 import GameKit
 import Floaty
 import PopupDialog
+import NVActivityIndicatorView
 
 protocol HistroyProtocol {
     func closedRefresh()
@@ -18,7 +19,7 @@ protocol HistroyProtocol {
 
 class HistoryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ApprovalProtocol {
     
-    
+    var activityIndicatorView:NVActivityIndicatorView?
     
     var homeViewController:HomeViewController? 
     
@@ -28,6 +29,8 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
 
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 5
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = UIColor.white
         cv.dataSource = self
@@ -35,6 +38,17 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
         return cv
     }()
     
+    let messageLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "No video history found"
+        label.textColor = UIColor.gray
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.numberOfLines = 4
+        label.textAlignment = .center
+        return label
+    }()
+
     let historyCellId = "historyCellId"
     
     var familyId = String()
@@ -55,8 +69,19 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
     
         self.collectionView.register(HistoryCell.self, forCellWithReuseIdentifier: historyCellId)
+
+        self.view.addSubview(self.messageLabel)
+        
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.messageLabel)
+        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.messageLabel)
+
+        self.messageLabel.isHidden = true
         
         self.familyId = Global.gamvesFamily.objectId
+
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray) 
+
+        self.activityIndicatorView?.startAnimating()
         
         self.getHistrory()
     }
@@ -70,52 +95,62 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
             if error == nil {
                 
                 self.countHistories = (histories?.count)!
+
+                if self.countHistories > 0 {
                 
-                for history in histories! {
-                    
-                    var historyGamves = HistoryGamves()
-                    
-                    let videoId = history["videoId"] as! Int
-                    
-                    historyGamves.videoId = videoId
-                    
-                    if Global.chatVideos[videoId] != nil {
+                    for history in histories! {
                         
-                        historyGamves.videoGamves = Global.chatVideos[videoId]!
+                        var historyGamves = HistoryGamves()
                         
-                        self.appendVideoToHistoryAndCount(history: historyGamves)
+                        let videoId = history["videoId"] as! Int
                         
-                    } else {
+                        historyGamves.videoId = videoId
                         
-                        let videoQuery = PFQuery(className: "Videos")
-                        videoQuery.whereKey("videoId", equalTo: videoId)
-                        
-                        videoQuery.findObjectsInBackground(block: { (videoObjs, error) in
+                        if Global.chatVideos[videoId] != nil {
                             
-                            if error == nil {
+                            historyGamves.videoGamves = Global.chatVideos[videoId]!
+                            
+                            self.appendVideoToHistoryAndCount(history: historyGamves)
+                            
+                        } else {
+                            
+                            let videoQuery = PFQuery(className: "Videos")
+                            videoQuery.whereKey("videoId", equalTo: videoId)
+                            
+                            videoQuery.findObjectsInBackground(block: { (videoObjs, error) in
                                 
-                                for video in videoObjs! {
+                                if error == nil {
                                     
-                                    let thumbnail = video["thumbnail"] as! PFFile
-                                    
-                                    thumbnail.getDataInBackground(block: { (data, error) in
+                                    for video in videoObjs! {
                                         
-                                        if error == nil {
+                                        let thumbnail = video["thumbnail"] as! PFFile
+                                        
+                                        thumbnail.getDataInBackground(block: { (data, error) in
                                             
-                                            let thumbImage = UIImage(data:data!)
-                                            
-                                            let  videoGamves = Global.parseVideo(video: video, chatId : videoId, videoImage: thumbImage! )
-                                            
-                                            historyGamves.videoGamves = videoGamves
-                                            
-                                            self.appendVideoToHistoryAndCount(history: historyGamves)
-                                            
-                                        }
-                                    })
+                                            if error == nil {
+                                                
+                                                let thumbImage = UIImage(data:data!)
+                                                
+                                                let  videoGamves = Global.parseVideo(video: video, chatId : videoId, videoImage: thumbImage! )
+                                                
+                                                historyGamves.videoGamves = videoGamves
+                                                
+                                                self.appendVideoToHistoryAndCount(history: historyGamves)
+                                                
+                                            }
+                                        })
+                                    }
                                 }
-                            }
-                        })
+                            })
+                        }
                     }
+
+                } else {
+
+                    self.messageLabel.isHidden = false
+
+                    self.activityIndicatorView?.stopAnimating()
+
                 }
             }
         }
@@ -136,6 +171,9 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
                 if ( self.countHistories - 1 ) == self.countHistory {
                     
                     DispatchQueue.main.async {
+
+                        self.activityIndicatorView?.stopAnimating()
+
                         self.collectionView.reloadData()
                     }
                 }
@@ -178,14 +216,45 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
     
         cell.nameLabel.text = history.videoGamves.title
 
+        let time = history.videoGamves.videoObj?.createdAt as! Date
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mm a"
+        
+        let elapsedTimeInSeconds = Date().timeIntervalSince(time)
+        
+        let secondInDays: TimeInterval = 60 * 60 * 24
+        
+        if elapsedTimeInSeconds > 7 * secondInDays {
+            dateFormatter.dateFormat = "MM/dd/yy"
+        } else if elapsedTimeInSeconds > secondInDays {
+            dateFormatter.dateFormat = "EEE"
+        }
+        
+        cell.timeLabel.text = dateFormatter.string(from: time)        
+        
+        let formatterLong = DateFormatter()
+        
+        formatterLong.dateFormat = "HH:mm:ss"
+
+        let timeLong = formatterLong.string(from: time)
+
+        cell.elapsedLabel.text = timeLong  
+
         cell.profileImageView.image = history.videoGamves.image
+
+        if indexPath.row % 2 == 0 {
+            cell.backgroundColor = UIColor.gamvesLightGrayColor
+        } else {
+            cell.backgroundColor = UIColor.white
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return CGSize(width: self.view.frame.width, height: 100)
+        return CGSize(width: self.view.frame.width, height: 80)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
