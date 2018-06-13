@@ -10,6 +10,24 @@ import Foundation
 import UIKit
 import Parse
 
+class ActivityGamves
+{
+    // Insert code here to add functionality to your managed object subclass
+    var date: Date?
+    var room: String?
+    var text: String?
+    var isVideoChat: Bool?
+    var chatThumbnail:UIImage?
+    var userThumbnail:UIImage?
+    var chatId:Int?
+    var lasPoster: String?
+    var users: [GamvesUser]?
+    var usersLoaded:Bool?
+    var imagesLoaded:Bool?
+    var badgeIsActive:Bool?
+    var badgeNumber:Int?
+}
+
 class HistoryGamves
 {
     var objectId = String()

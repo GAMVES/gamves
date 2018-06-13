@@ -70,19 +70,7 @@ class ButtonsApprovalView: UIView {
     var approved = Bool()
     
     init(frame: CGRect, obj: AnyObject, referenceId:Int?, delegate:ApprovalProtocol, approved:Int) {
-        super.init(frame: frame)
-        
-        //let type = type(of: obj)
-        
-        /*var approved = Bool()
-        
-        if approval.approved == 0 {
-            approved = false
-        } else if approval.approved == 1 {
-            approved = true
-        }*/
-
-        
+        super.init(frame: frame)       
         
         self.delegate = delegate
         
@@ -191,9 +179,7 @@ class ButtonsApprovalView: UIView {
     
     @objc func touchUpReject() {
 
-        delegate.pauseVideo()
-
-        // show alert.
+        delegate.pauseVideo()       
 
         var alertTitle = String() //"Title"
         var alertMessage = String() //"message1\nmessage2"
