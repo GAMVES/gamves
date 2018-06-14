@@ -22,7 +22,7 @@ class VideoCollectionViewCell: BaseCell {
 
     let rowView: UIView = {
         let view = UIView()       
-        view.backgroundColor = UIColor.white
+        //view.backgroundColor = UIColor.white
         return view
     }()
     
@@ -45,7 +45,7 @@ class VideoCollectionViewCell: BaseCell {
 
      let labelsView: UIView = {
         let view = UIView()       
-        view.backgroundColor = UIColor.white
+        //view.backgroundColor = UIColor.white
         return view
     }()   
 
@@ -71,7 +71,7 @@ class VideoCollectionViewCell: BaseCell {
 
     let separatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.white
+        //view.backgroundColor = UIColor.white
         return view
     }()
     
