@@ -31,6 +31,8 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 5
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = UIColor.white
         cv.dataSource = self
@@ -119,7 +121,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
                             //}
                         }
 
-                        if chatsFiltered.count < 0 {
+                        if chatsFiltered.count > 0 {
                         
                             self.parseActivity(chatFeedObjs: chatsFiltered, completionHandler: { ( chatId:Int ) -> () in
                                 
@@ -295,13 +297,44 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
         cell.nameLabel.text = activity.room
         
         cell.profileImageView.image = activity.chatThumbnail!
+
+         let time = activity.date as! Date
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mm a"
+        
+        let elapsedTimeInSeconds = Date().timeIntervalSince(time)
+        
+        let secondInDays: TimeInterval = 60 * 60 * 24
+        
+        if elapsedTimeInSeconds > 7 * secondInDays {
+            dateFormatter.dateFormat = "MM/dd/yy"
+        } else if elapsedTimeInSeconds > secondInDays {
+            dateFormatter.dateFormat = "EEE"
+        }
+        
+        cell.timeLabel.text = dateFormatter.string(from: time)        
+        
+        let formatterLong = DateFormatter()
+        
+        formatterLong.dateFormat = "HH:mm:ss"
+
+        let timeLong = formatterLong.string(from: time)
+
+        cell.elapsedLabel.text = timeLong          
+
+        if indexPath.row % 2 == 0 {
+            cell.backgroundColor = UIColor.gamvesLightGrayColor
+        } else {
+            cell.backgroundColor = UIColor.white
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return CGSize(width: self.view.frame.width, height: 100)
+        return CGSize(width: self.view.frame.width, height: 80)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

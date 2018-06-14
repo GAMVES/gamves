@@ -16,7 +16,7 @@ class ActivityCell: BaseCell {
         didSet {
             backgroundColor = isHighlighted ? UIColor(red: 0, green: 134/255, blue: 249/255, alpha: 1) : UIColor.white
             nameLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
-            statusLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
+            timeLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
         }
     }
     
@@ -41,28 +41,42 @@ class ActivityCell: BaseCell {
         return label
     }()
     
-    let statusLabel: UILabel = {
+    /*let statusLabel: UILabel = {
         let label = UILabel()
         //label.text = "Your friend's message and something else..."
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 14)
         return label
+    }()*/
+
+    let timeView: UIView = {
+        let view = UIView()
+        //view.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
+        return view
     }()
 
-    var checkLabel: UILabel = {
+    let elapsedLabel: UILabel = {
         let label = UILabel()
+        //label.text = "Your friend's message and something else..."
+        label.textColor = UIColor.gray
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
-
+    
+    let timeLabel: UILabel = {
+        let label = UILabel()
+        //label.text = "Your friend's message and something else..."
+        label.textColor = UIColor.gray
+        label.font = UIFont.systemFont(ofSize: 14)
+        return label
+    }()  
+        
     
     override func setupViews() {
         
         addSubview(profileImageView)
         addSubview(dividerLineView)
-        
-        checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 24.0, borderWidth: 3.0, color: UIColor.gamvesColor)
-        addSubview(checkLabel)
-        
+
         setupContainerView()
         
         addConstraintsWithFormat("H:|-12-[v0(68)]", views: profileImageView)
@@ -71,10 +85,8 @@ class ActivityCell: BaseCell {
         addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
         addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
-        
-        addConstraintsWithFormat("H:|-60-[v0(30)]", views: checkLabel)
-        addConstraintsWithFormat("V:|-60-[v0(30)]", views: checkLabel)
+        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)        
+    
     
     }
     
@@ -84,19 +96,31 @@ class ActivityCell: BaseCell {
         addSubview(containerView)
         
         addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
-        addConstraintsWithFormat("V:[v0(50)]", views: containerView)
+        addConstraintsWithFormat("V:|-5-[v0(70)]-5-|", views: containerView)
+
+        //containerView.backgroundColor = UIColor.green
         
         addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
         containerView.addSubview(nameLabel)
-        containerView.addSubview(statusLabel)
-        
+        containerView.addSubview(timeView)       
+
+        //nameLabel.backgroundColor = UIColor.blue
+        //timeLabel.backgroundColor = UIColor.red
+
         containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: nameLabel)
         
-        containerView.addConstraintsWithFormat("V:|[v0]-10-[v1(24)]|", views: nameLabel, statusLabel)
+        containerView.addConstraintsWithFormat("V:|[v0(50)][v1(20)]|", views: nameLabel, timeView)
         
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: statusLabel)
-        
+        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: timeView)
+
+        timeView.addSubview(timeLabel)
+        timeView.addSubview(elapsedLabel)        
+
+        timeView.addConstraintsWithFormat("H:|-5-[v0][v1]-5-|", views: timeLabel, elapsedLabel)        
+        timeView.addConstraintsWithFormat("V:|[v0]|", views: timeLabel)
+        timeView.addConstraintsWithFormat("V:|[v0]|", views: elapsedLabel)
+
     }
    
     
