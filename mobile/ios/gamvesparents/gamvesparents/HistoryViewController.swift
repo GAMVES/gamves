@@ -262,14 +262,29 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
         let history:HistoryGamves = Global.histories[indexPath.item]
    
         if self.homeViewController != nil {
-            
+
+            var chatId = history.videoId
+
             var video = VideoGamves()
+                
+            video = Global.chatVideos[chatId]!
+            
+            print(video.ytb_videoId)
+            
+            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
+            
+            let videoLauncher = VideoLauncher()
+            videoLauncher.showVideoPlayer(videoGamves: video)
+
+
+            
+            /*var video = VideoGamves()
             
             video = Global.chatVideos[history.referenceId]!
             
             videoApprovalLauncher = VideoApprovalLauncher()
             videoApprovalLauncher.delegate = self
-            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: 0)
+            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: 0)*/
         
         }
     }

@@ -129,6 +129,7 @@ class Global: NSObject
     static var notificationYourAccountInfoLoaded        = "com.gamves.gamvesparent.notificationYourAccountInfoLoaded"
     static var notificationKeyLoadFamilyDataGromGlobal  = "com.gamves.gamvesparent.loadfamilydatagromglobal"
     static var notificationKeyLogOut                    = "com.gamves.gamvesparent.notificationLogOut"
+    static var notificationKeyCloseVideo    = "com.gamves.gamves.closeVideo"
     
     static var badgeNumber = Bool()
     

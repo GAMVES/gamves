@@ -240,6 +240,18 @@
             button.tag = 1
             return button
         }()
+
+
+        let messageLabel: UILabel = {
+            let label = UILabel()
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.text = "There are no chats available for this room yet."
+            label.textColor = UIColor.gamvesColor
+            label.font = UIFont.boldSystemFont(ofSize: 20)
+            label.numberOfLines = 4
+            label.textAlignment = .center
+            return label
+        }()
         
         
         var tabGesture = UITapGestureRecognizer()
@@ -287,12 +299,17 @@
 
         var puserId = String()
         
-        init(parent: ChatViewType, frame: CGRect, isVideo:Bool) {
+        init(parent: ChatViewType, frame: CGRect, isVideo:Bool, showInput:Bool) {
             super.init(frame: frame)
 
             if let userId = PFUser.current()?.objectId
             {
                 self.puserId = userId
+            }
+
+            if !showInput {
+
+                self.messageContainerView.isHidden = true
             }
             
             self.chatType = parent
@@ -420,6 +437,13 @@
             self.bringSubview(toFront: self.collectionView)
             self.bringSubview(toFront: self.messageContainerView)
             self.bringSubview(toFront: self.activityView)
+            
+            self.addSubview(self.messageLabel)
+            
+            self.messageLabel.isHidden = true
+            
+            self.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.messageLabel)
+            self.addConstraintsWithFormat("V:|[v0]|", views: self.messageLabel)
             
         }
         
@@ -656,6 +680,8 @@
                         } else {
                             
                             self.activityView.stopAnimating()
+
+                            self.messageLabel.isHidden = false
                             
                             if !self.isVideo
                             {

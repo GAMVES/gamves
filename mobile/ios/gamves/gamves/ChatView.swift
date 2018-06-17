@@ -284,9 +284,16 @@
         var senderColor = UIColor()
 
         var chatType:ChatViewType!
+
+        var puserId = String()
         
         init(parent: ChatViewType, frame: CGRect, isVideo:Bool) {
             super.init(frame: frame)
+
+            if let userId = PFUser.current()?.objectId
+            {
+                self.puserId = userId
+            }
             
             self.chatType = parent
 
@@ -717,7 +724,7 @@
                             message.userId = userId
                             var messageText = chatVideo["message"] as! String
                             
-                            message.date = chatVideo.updatedAt
+                            message.date = chatVideo.createdAt
                             message.createdAt = chatVideo.createdAt
                             
                             message.chatId = chatVideo["chatId"] as! Int
@@ -748,6 +755,8 @@
                             }
                             
                             print(messageText)
+
+
                             
                             if PFUser.current()?.objectId == userId {
                                 message.isSender = true
@@ -1274,7 +1283,8 @@
             }
             if self.onlineQuery != nil {
                 self.onlineClient.unsubscribe(self.onlineQuery)
-            }            
+            }
+            
         }
         
         func didPickImage(_ image: UIImage) {
@@ -1457,7 +1467,7 @@
                     
                     messagePF["time"] = "\(strMinutes):\(strSeconds)"
                     
-                    UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
+                    UserDefaults.standard.set(self.inputTextField.text!, forKey: "\(self.puserId)_last_message")
                     
                     self.inputTextField.text = ""
                     
@@ -1491,8 +1501,8 @@
 
                 let credentialsProvider = AWSStaticCredentialsProvider(accessKey: accessKey, secretKey: secretKey)
                 let configuration = AWSServiceConfiguration(region: AWSRegionType.USEast1, credentialsProvider: credentialsProvider)
-                AWSServiceManager.default().defaultServiceConfiguration = configuration
-                
+                AWSServiceManager.default().defaultServiceConfiguration = configuration             
+
                 let short = Global.gamvesFamily.schoolShort
                 
                 let S3BucketName = "gamves/\(short)/audios"
@@ -1592,12 +1602,9 @@
                     
                     messagePF["time"] = "\(strMinutes):\(strSeconds)"
                     
-                    UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
+                    UserDefaults.standard.set(self.inputTextField.text!, forKey: "\(self.puserId)_last_message")
                     
-                    DispatchQueue.global(qos: .background).async {                
-                
-                        self.inputTextField.text = ""
-                    }
+                    self.inputTextField.text = ""
                     
                     messagePF.saveInBackground { (resutl, error) in
                         
@@ -1644,7 +1651,7 @@
             
             messagePF["time"] = "\(strMinutes):\(strSeconds)"
             
-            UserDefaults.standard.set(self.inputTextField.text!, forKey: "last_message")
+            UserDefaults.standard.set(self.inputTextField.text!, forKey: "\(self.puserId)_last_message")
             
             var message = self.inputTextField.text!
             
@@ -1833,7 +1840,6 @@
             if ChatFeedMethods.chatFeeds[self.chatId] != nil {
                 
                 ChatFeedMethods.chatFeeds[self.chatId]?.text = textMessage
-                ChatFeedMethods.chatFeeds[self.chatId]?.date = chatMessage.createdAt
             }
             
             self.messages.append(message)

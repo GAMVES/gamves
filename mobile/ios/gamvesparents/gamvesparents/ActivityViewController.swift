@@ -57,6 +57,11 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
 
     var activities = [ActivityGamves]()
 
+    lazy var chatLauncher: ChatViewController = {
+        let launcher = ChatViewController()
+        return launcher
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -339,9 +344,34 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[indexPath.item]!
+        let index = indexPath.item
+        let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
+        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
+
+        let isVideoChat:Bool = chatfeed.isVideoChat! as Bool
+        
+        if isVideoChat {
+            
+            let chatId = chatfeed.chatId! as Int
+            print(chatId)
+            var video = VideoGamves()
+            
+            video = Global.chatVideos[chatId]!
+            
+            print(video.videoId)
+            
+            let videoApprovalLauncher = VideoApprovalLauncher()
+            videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: 1)
+            
+        } else {
+            
+            self.openChat(room: chatfeed.room!, chatId: chatfeed.chatId!, users: chatfeed.users!)
+        
+        }
+
+        //let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[indexPath.item]!
    
-        if self.homeViewController != nil {
+        /*if self.homeViewController != nil {
         
             var video = VideoGamves()
             
@@ -351,8 +381,20 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
             videoApprovalLauncher.delegate = self
             videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: 0)
             
-        }
+        }*/
     }
+
+    func openChat(room: String, chatId:Int, users:[GamvesUser])
+    {
+        self.chatLauncher.chatId = chatId
+        self.chatLauncher.gamvesUsers = users
+        self.chatLauncher.room = room
+        chatLauncher.view.backgroundColor = UIColor.white
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(self.chatLauncher, animated: true)
+    }
+
     
     func pauseVideo() {
         videoApprovalLauncher.pauseVideo()
