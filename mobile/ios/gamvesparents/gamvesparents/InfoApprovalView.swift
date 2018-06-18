@@ -104,6 +104,9 @@ class InfoApprovalView: UIView {
             let fanpage = obj as! FanpageGamves
             
             self.fanpageGamves = fanpage
+
+            print(fanpage.name)
+            print(fanpage.about)
             
             self.infoTitleLabel.text = fanpage.name
             self.infoDescLabel.text = fanpage.about

@@ -24,6 +24,23 @@ class FanpageApprovalView: UIView,
     var xLocation = CGFloat()
     var lastX = CGFloat()
 
+    let titleContView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.black
+        return view
+    }() 
+
+    let titleLabel: UILabel = {
+            let label = UILabel()
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.text = "FANPAGE APPROVAL"
+            label.textColor = UIColor.white
+            label.font = UIFont.boldSystemFont(ofSize: 18)
+            label.textAlignment = .center
+            return label
+        }()
+
     let imagesContView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -57,13 +74,21 @@ class FanpageApprovalView: UIView,
         imageView.layer.cornerRadius = 5
         return imageView
     }()
+
+    let collectionContView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 5
+        view.backgroundColor = UIColor.gamvesBackgoundColor
+        return view
+    }()  
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.backgroundColor = UIColor.gamvesBackgoundColor
-        cv.layer.cornerRadius = 5
+        //cv.backgroundColor = UIColor.gamvesBackgoundColor
+        cv.layer.cornerRadius = 2
         cv.dataSource = self
         cv.delegate = self
         return cv
@@ -76,20 +101,29 @@ class FanpageApprovalView: UIView,
     var fanpageId = Int()
     
     override init(frame: CGRect) {
-        super.init(frame: frame)
+        super.init(frame: frame)            
+
+        self.addSubview(self.titleContView)
         
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.titleContView)
+
         self.addSubview(self.imagesContView)
         
-        self.addConstraintsWithFormat("H:|[v0]|", views: self.imagesContView)
-        self.addConstraintsWithFormat("V:|[v0]|", views: self.imagesContView)
-        
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.imagesContView)        
+
+        self.addConstraintsWithFormat("V:|[v0(100)][v1]|", views: self.titleContView, self.imagesContView)
+                    
+        self.titleContView.addSubview(self.titleLabel)
+        self.titleContView.addConstraintsWithFormat("H:|[v0]|", views: self.titleLabel)
+        self.titleContView.addConstraintsWithFormat("V:|-40-[v0]|", views: self.titleLabel)   
+
         self.imagesContView.backgroundColor = UIColor.gamvesColor
         
         self.imagesContView.addSubview(self.avataCoverContView)
-        self.imagesContView.addSubview(self.collectionView)
+        self.imagesContView.addSubview(self.collectionContView)
 
         self.imagesContView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.avataCoverContView)
-        self.imagesContView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: self.collectionView)
+        self.imagesContView.addConstraintsWithFormat("H:|-15-[v0]-15-|", views: self.collectionContView)
 
         let widthSplit = self.frame.width / 10
         let coverWidth = (widthSplit * 7)
@@ -100,7 +134,13 @@ class FanpageApprovalView: UIView,
         let metricsFan = ["coverWidth" : coverWidth, "height" : height, "collHeight":collHeight]
         
         self.imagesContView.addConstraintsWithFormat("V:|-20-[v0(height)]-30-[v1(collHeight)]-20-|", views:
-            self.avataCoverContView, self.collectionView, metrics: metricsFan)
+            self.avataCoverContView, self.collectionContView, metrics: metricsFan)
+
+         self.collectionContView.addSubview(self.collectionView)
+
+        self.collectionContView.addConstraintsWithFormat("H:|-5-[v0]-5-|", views: self.collectionView)
+        self.collectionContView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.collectionView)
+
 
         self.avataCoverContView.addSubview(self.avatarImage)
         self.avataCoverContView.addSubview(self.coverImage)
@@ -110,7 +150,8 @@ class FanpageApprovalView: UIView,
         self.avataCoverContView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.coverImage)
         
         self.avataCoverContView.addConstraintsWithFormat("H:|-5-[v0]-15-[v1(coverWidth)]-5-|", views: self.avatarImage, self.coverImage, metrics:metricsFan)
-        
+
+       
         self.collectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellFanId)
     }
     
@@ -204,7 +245,7 @@ class FanpageApprovalLauncher: UIView {
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
 
-    func showFanpageList(fanpageGamves: FanpageGamves){
+    func showFanpageList(fanpageGamves: FanpageGamves, approval: Approvals){
         
         let fanpageId = fanpageGamves.fanpageId
         
@@ -216,7 +257,7 @@ class FanpageApprovalLauncher: UIView {
             view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)
             
             //16 x 9 is the aspect ratio of all HD videos
-            let videoHeight = 300//keyWindow.frame.width * 9 / 16
+            let videoHeight = 400//keyWindow.frame.width * 9 / 16
             let fanpagePlayerFrame = CGRect(x: 0, y: 0, width: Int(keyWindow.frame.width), height: videoHeight)
             
             fanpageApprovalView = FanpageApprovalView(frame: fanpagePlayerFrame)
