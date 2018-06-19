@@ -45,7 +45,7 @@ class InfoApprovalView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
         label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.numberOfLines = 3
+        label.numberOfLines = 2
         label.textAlignment = .left
         label.lineBreakMode = .byWordWrapping
         return label
@@ -93,11 +93,11 @@ class InfoApprovalView: UIView {
             
             self.videoGamves = video
             
-            let paddTitle = "            \(video.title)"
-            self.infoTitleLabel.text =  paddTitle
+            let paddTitleVideo = "            \(video.title)"
+            self.infoTitleLabel.text =  paddTitleVideo
 
-            let paddDesc =  "                       \(video.description)"
-            self.infoDescLabel.text = paddDesc
+            let paddDescVideo =  "                       \(video.description)"
+            self.infoDescLabel.text = paddDescVideo
         
         } else if (obj is FanpageGamves) {
             
@@ -106,10 +106,13 @@ class InfoApprovalView: UIView {
             self.fanpageGamves = fanpage
 
             print(fanpage.name)
-            print(fanpage.about)
-            
-            self.infoTitleLabel.text = fanpage.name
-            self.infoDescLabel.text = fanpage.about
+            print(fanpage.about)            
+
+            let paddTitleFanpage = "            \(fanpage.name)"
+            self.infoTitleLabel.text =  paddTitleFanpage
+
+            let paddDescFanpage =  "                       \(fanpage.about)"
+            self.infoDescLabel.text = paddDescFanpage        
             
         }
 
@@ -128,7 +131,7 @@ class InfoApprovalView: UIView {
         self.infoContView.addConstraintsWithFormat("H:|[v0]|", views: self.titleContView)
         self.infoContView.addConstraintsWithFormat("H:|[v0]|", views: self.descContView)
         
-        self.infoContView.addConstraintsWithFormat("V:|[v0(80)][v1]|", views:
+        self.infoContView.addConstraintsWithFormat("V:|[v0(50)][v1]|", views:
             self.titleContView,
             self.descContView)        
         

@@ -164,7 +164,7 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
                 
                 self.videoApprovalLauncher = VideoApprovalLauncher()
                 videoApprovalLauncher.delegate = self
-                videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: approval.approved , approval:approval)
+                videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: approval.approved)
                 
             } else if approval.type == 2 { //Fanpage
                 
@@ -173,7 +173,7 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
                 
                 let fanpageApprovalLauncher = FanpageApprovalLauncher()
                 fanpageApprovalLauncher.delegate = self
-                fanpageApprovalLauncher.showFanpageList(fanpageGamves: fanpage, approval:approval)
+                fanpageApprovalLauncher.showFanpageList(fanpageGamves: fanpage)
                 
             }
         }

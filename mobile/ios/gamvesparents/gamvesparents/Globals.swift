@@ -1086,7 +1086,12 @@ class Global: NSObject
                                                         print(fanpageGamves.fanpage_images.count)
                                                         
                                                         approval.title = fanpagePF["pageName"] as! String
-                                                        approval.description = fanpagePF["pageAbout"] as! String
+                                                        
+                                                        let pageAbout = fanpagePF["pageAbout"] as! String
+                                                        
+                                                        approval.description = pageAbout
+                                                        
+                                                        approval.fanpage.about = pageAbout
                                                         
                                                         self.approvals[approval.referenceId] = approval
                                                         

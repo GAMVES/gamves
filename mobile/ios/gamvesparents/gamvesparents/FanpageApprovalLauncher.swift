@@ -32,14 +32,14 @@ class FanpageApprovalView: UIView,
     }() 
 
     let titleLabel: UILabel = {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.text = "FANPAGE APPROVAL"
-            label.textColor = UIColor.white
-            label.font = UIFont.boldSystemFont(ofSize: 18)
-            label.textAlignment = .center
-            return label
-        }()
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "FANPAGE APPROVAL"
+        label.textColor = UIColor.white
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.textAlignment = .center
+        return label
+    }()
 
     let imagesContView: UIView = {
         let view = UIView()
@@ -245,7 +245,7 @@ class FanpageApprovalLauncher: UIView {
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
 
-    func showFanpageList(fanpageGamves: FanpageGamves, approval: Approvals){
+    func showFanpageList(fanpageGamves: FanpageGamves){
         
         let fanpageId = fanpageGamves.fanpageId
         
@@ -267,7 +267,7 @@ class FanpageApprovalLauncher: UIView {
             fanpageApprovalView.setFanpageGamves(fanpageGamves: fanpageGamves)
             view.addSubview(fanpageApprovalView)
 
-            let infoHeight = 150
+            let infoHeight = 120
             let infoFrame = CGRect(x: 0, y: Int(fanpageApprovalView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
             
             infoApprovalView = InfoApprovalView(frame: infoFrame, obj: fanpageGamves)

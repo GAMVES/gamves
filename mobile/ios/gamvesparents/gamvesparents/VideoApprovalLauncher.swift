@@ -19,104 +19,28 @@ class VideoApprovalPlayerView: UIView {
     var xLocation = CGFloat()
     var lastX = CGFloat()
 
+    let titleContView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.black
+        return view
+    }() 
+
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "VIDEO APPROVAL"
+        label.textColor = UIColor.white
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.textAlignment = .center
+        return label
+    }()
+
     let controlsContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(white: 0, alpha: 1)
         return view
-    }()
-
-    /*lazy var arrowDownButton: UIButton = {
-        let button = UIButton(type: .system)
-        let image = UIImage(named: "arrow_down")
-        button.setImage(image, for: UIControlState())
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.tintColor = .white   
-        button.addTarget(self, action: #selector(handleDownButton), for: .touchUpInside)        
-        return button
-    }()*/
-
-    @objc func handleDownButton() 
-    {
-        
-        UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-            
-            let totalHeight = self.keyWindow.frame.size.height
-            let totalWidth = self.keyWindow.frame.size.width
-            
-            let thumbWidth = totalWidth / 2
-            let thumbHeight = thumbWidth * 9 / 16
-            
-            let x = (totalWidth / 2) - (thumbWidth / 2)
-            let y = totalHeight - (thumbHeight + 30)
-            
-            self.yLocation = y
-            self.xLocation = x
-            self.lastX = x
-            
-            self.activityIndicatorView.isHidden = true
-            //self.arrowDownButton.isHidden = true
-            self.pausePlayButton.isHidden = true
-            self.videoLengthLabel.isHidden = true
-            self.currentTimeLabel.isHidden = true
-            self.videoSlider.isHidden = true
-            
-            self.controlsContainerView.isHidden = true
-            
-            let smallFrame = CGRect(x: x, y: y, width: thumbWidth, height: thumbHeight)
-            
-            self.videoLauncher.view.frame = smallFrame
-            
-            self.playerLayer.frame = smallFrame
-            
-            let gesture = UIPanGestureRecognizer(target: self, action:  #selector(self.wasDragged))
-            self.videoLauncher.view.addGestureRecognizer(gesture)
-            self.videoLauncher.view.isUserInteractionEnabled = true
-        
-        
-        }, completion: { (completedAnimation) in
-            
-            //maybe we'll do something here later...
-            UIApplication.shared.setStatusBarHidden(true, with: .fade)
-            
-        })
-    }
-    
-    @objc func wasDragged(gestureRecognizer: UIPanGestureRecognizer) {
-        
-        if gestureRecognizer.state == UIGestureRecognizerState.began || gestureRecognizer.state ==
-        UIGestureRecognizerState.changed
-        {
-            
-            let translation = gestureRecognizer.translation(in: self)
-           
-            print("///////////////")
-            
-            print(gestureRecognizer.view!.center.x)
-            print(self.xLocation)
-            
-            if(gestureRecognizer.view!.center.x > self.xLocation)
-            {
-                gestureRecognizer.view!.center = CGPoint(x:self.xLocation + translation.x, y:self.yLocation )
-                
-            } else  if(gestureRecognizer.view!.center.x < self.xLocation)
-            {
-                let xVariable = gestureRecognizer.view!.center.x
-                
-                let disX = self.lastX - xVariable
-                
-                self.videoLauncher.view.backgroundColor = UIColor.black.withAlphaComponent(disX*0.1)
-                self.videoLauncher.view.isOpaque = false
-                
-                gestureRecognizer.view!.center = CGPoint(x:xVariable, y:self.yLocation)
-                
-                self.lastX = xVariable
-                
-            }
-            
-            gestureRecognizer.setTranslation(CGPoint(x:0,y:0), in: self)
-        }
-        
-    }
+    }() 
 
     let activityIndicatorView: UIActivityIndicatorView = {
         let aiv = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
@@ -138,18 +62,7 @@ class VideoApprovalPlayerView: UIView {
         return button
     }()
     
-    var isPlaying = false
-    
-    @objc func handlePause() {
-        if isPlaying {
-            player?.pause()
-            pausePlayButton.setImage(UIImage(named: "play"), for: UIControlState())
-        } else {
-            player?.play()
-            pausePlayButton.setImage(UIImage(named: "pause"), for: UIControlState())
-        }
-        isPlaying = !isPlaying
-    }    
+    var isPlaying = false   
     
     let videoLengthLabel: UILabel = {
         let label = UILabel()
@@ -179,6 +92,78 @@ class VideoApprovalPlayerView: UIView {
         slider.addTarget(self, action: #selector(handleSliderChange), for: .valueChanged)        
         return slider
     }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        self.addSubview(self.titleContView)
+        
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.titleContView)
+
+        self.addSubview(self.controlsContainerView)
+        
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.controlsContainerView)        
+
+        self.addConstraintsWithFormat("V:|[v0(100)][v1]|", views: self.titleContView, self.controlsContainerView)          
+
+        self.titleContView.addSubview(self.titleLabel)
+
+        self.titleContView.addConstraintsWithFormat("H:|[v0]|", views: self.titleLabel)
+        self.titleContView.addConstraintsWithFormat("V:|-40-[v0]|", views: self.titleLabel)   
+
+    }
+    
+    override func layoutSubviews() {
+        
+        self.addSubview(activityIndicatorView)
+        activityIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        activityIndicatorView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        
+        self.controlsContainerView.addSubview(pausePlayButton)
+        pausePlayButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true        
+        pausePlayButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 20).isActive = true        
+        pausePlayButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        pausePlayButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        //pausePlayButton.backgroundColor = UIColor.gray
+        
+        self.controlsContainerView.addSubview(videoLengthLabel)
+        videoLengthLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
+        videoLengthLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 80).isActive = true
+        videoLengthLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        videoLengthLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        
+        self.controlsContainerView.addSubview(currentTimeLabel)
+        currentTimeLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true        
+        currentTimeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 80).isActive = true        
+        currentTimeLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        currentTimeLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true        
+         
+        self.controlsContainerView.addSubview(videoSlider)
+        videoSlider.rightAnchor.constraint(equalTo: videoLengthLabel.leftAnchor).isActive = true        
+        videoSlider.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 80).isActive = true
+        videoSlider.leftAnchor.constraint(equalTo: currentTimeLabel.rightAnchor).isActive = true
+        videoSlider.heightAnchor.constraint(equalToConstant: 30).isActive = true
+
+    }
+
+    func setPlayerUrl(urlString : String)
+    {        
+        setupPlayerView(urlString: urlString)
+
+        setupGradientLayer() 
+    }  
+    
+    @objc func handlePause() {
+        if isPlaying {
+            player?.pause()
+            pausePlayButton.setImage(UIImage(named: "play"), for: UIControlState())
+        } else {
+            player?.play()
+            pausePlayButton.setImage(UIImage(named: "pause"), for: UIControlState())
+        }
+        isPlaying = !isPlaying
+    }    
+    
     
     @objc func handleSliderChange() 
     {
@@ -197,10 +182,6 @@ class VideoApprovalPlayerView: UIView {
             })
         }
     } 
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
     
     func setViews(view:UIView, videoLauncherVidew:VideoApprovalLauncher)
     {
@@ -216,67 +197,18 @@ class VideoApprovalPlayerView: UIView {
 
     var videoUrl = String()
 
-    func setPlayerUrl(urlString : String)
-    {        
-        setupPlayerView(urlString: urlString)
-
-        setupGradientLayer()              
-        
-        controlsContainerView.frame = frame
-        addSubview(self.controlsContainerView)        
-     
-        /*controlsContainerView.addSubview(arrowDownButton)        
-        arrowDownButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 30).isActive = true
-        arrowDownButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 30).isActive = true*/
-        
-        controlsContainerView.addSubview(activityIndicatorView)
-        activityIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        activityIndicatorView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        
-        controlsContainerView.addSubview(pausePlayButton)
-        pausePlayButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        pausePlayButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        pausePlayButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        pausePlayButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        controlsContainerView.addSubview(videoLengthLabel)
-        videoLengthLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
-        videoLengthLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
-        videoLengthLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        videoLengthLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        
-        controlsContainerView.addSubview(currentTimeLabel)
-        currentTimeLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
-        currentTimeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
-        currentTimeLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        currentTimeLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        
-        controlsContainerView.addSubview(videoSlider)
-        videoSlider.rightAnchor.constraint(equalTo: videoLengthLabel.leftAnchor).isActive = true
-        videoSlider.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        videoSlider.leftAnchor.constraint(equalTo: currentTimeLabel.rightAnchor).isActive = true
-        videoSlider.heightAnchor.constraint(equalToConstant: 30).isActive = true
-
-    }
-
     // VIDEO   
 
     var player: AVPlayer?
     
-    func setupPlayerView(urlString : String) {
-        
-        //warning: use your own video url here, the bandwidth for google firebase storage will run out as more and more people use this file
-        
-        //let urlString = "https://firebasestorage.googleapis.com/v0/b/gameofchats-762ca.appspot.com/o/message_movies%2F12323439-9729-4941-BA07-2BAE970967C7.mov?alt=media&token=3e37a093-3bc8-410f-84d3-38332af9c726"
-        
-        print(urlString)
+    func setupPlayerView(urlString : String) {                    
         
         if let url = URL(string: urlString) {
             player = AVPlayer(url: url)
             
             playerLayer = AVPlayerLayer(player: player)
             playerLayer.videoGravity = AVLayerVideoGravityResizeAspect
-            self.layer.addSublayer(playerLayer)
+            self.controlsContainerView.layer.addSublayer(playerLayer)
             playerLayer.frame = self.frame
             
             player?.play()
@@ -359,8 +291,8 @@ class VideoApprovalLauncher: UIView {
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
 
-    func showVideoPlayer(videoGamves: VideoGamves, approved :Int, approval: Approvals){
-                    
+    func showVideoPlayer(videoGamves: VideoGamves, approved :Int){
+                
         let videoUrl = videoGamves.s3_source
         let videoObj = videoGamves.videoObj!
         let videoId  = videoObj["videoId"] as! Int
@@ -384,8 +316,9 @@ class VideoApprovalLauncher: UIView {
             videoApprovalPlayerView.setPlayerUrl(urlString: videoUrl)
             view.addSubview(videoApprovalPlayerView)
 
-            let infoHeight = 200
-            let infoFrame = CGRect(x: 0, y: Int(videoApprovalPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
+            let infoHeight = 150
+            let infoY = Int(videoApprovalPlayerView.frame.height) + 100
+            let infoFrame = CGRect(x: 0, y: infoY, width: Int(keyWindow.frame.width), height: infoHeight)
             
             infoApprovalView = InfoApprovalView(frame: infoFrame, obj: videoGamves)
             view.addSubview(infoApprovalView)
@@ -393,7 +326,7 @@ class VideoApprovalLauncher: UIView {
             let diff = Int(videoHeight) + Int(infoHeight)
             let chatHeight = Int(keyWindow.frame.height) - diff
             
-            let apprY = Int(videoApprovalPlayerView.frame.height) + Int(infoApprovalView.frame.height)
+            let apprY = infoY + Int(infoApprovalView.frame.height)
             let apprFrame = CGRect(x: 0, y: apprY, width: Int(keyWindow.frame.width), height: chatHeight)
             
             buttonsApprovalView = ButtonsApprovalView(frame: apprFrame, obj: videoApprovalPlayerView, referenceId: videoId, delegate: self.delegate, approved: approved)

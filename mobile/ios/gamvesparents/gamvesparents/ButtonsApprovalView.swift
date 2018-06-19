@@ -236,8 +236,7 @@ class ButtonsApprovalView: UIView {
             
             if (subview.tag == 1)
             {
-                if self.approvalType == ApprovalType.TypeVideo {
-                    self.playerView.handleDownButton()
+                if self.approvalType == ApprovalType.TypeVideo {                    
                     self.playerView.handlePause()
                 }
                 subview.removeFromSuperview()
