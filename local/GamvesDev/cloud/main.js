@@ -892,7 +892,7 @@
 		var familyId = request.object.get("familyId");	
 		
 
-		if (approved==1 && !notified) { 
+		if ( (approved==0 || approved==1) && !notified) { 
 
 			var Notification = Parse.Object.extend("Notifications");         
 	        var notification = new Notification();	
