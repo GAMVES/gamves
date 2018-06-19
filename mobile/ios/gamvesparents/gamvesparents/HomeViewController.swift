@@ -155,6 +155,11 @@ class HomeViewController: UIViewController,
         return launcher
     }()
 
+    lazy var locationViewController: LocationViewController = {
+        let location = LocationViewController()
+        return location
+    }()
+
     var activityIndicatorView:NVActivityIndicatorView?
     
     var cellId = String()
@@ -179,6 +184,8 @@ class HomeViewController: UIViewController,
         NotificationCenter.default.addObserver(self, selector: #selector(chatFeedLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
         
     }
+
+    var locations = [PFGeoPoint]()
 
     var puserId = String()
 
@@ -375,24 +382,7 @@ class HomeViewController: UIViewController,
                 }
             }
         }
-    }
-     func openMapForPlace() {
-
-        let latitude: CLLocationDegrees = 37.2
-        let longitude: CLLocationDegrees = 22.9
-
-        let regionDistance:CLLocationDistance = 10000
-        let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
-        let regionSpan = MKCoordinateRegionMakeWithDistance(coordinates, regionDistance, regionDistance)
-        let options = [
-            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
-            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
-        ]
-        let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
-        let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = "Place Name"
-        mapItem.openInMaps(launchOptions: options)
-    }
+    }   
     
     override func viewWillAppear(_ animated: Bool) {
         
@@ -477,7 +467,7 @@ class HomeViewController: UIViewController,
         
         queryLocation.whereKey("userId", equalTo: sonId)
         queryLocation.order(byDescending: "createdAt")
-        queryLocation.limit = 1
+        queryLocation.limit = 10
 
         queryLocation.findObjectsInBackground {
             (locationPF, error) -> Void in
@@ -485,26 +475,36 @@ class HomeViewController: UIViewController,
             if error == nil {
 
                 if let locations = locationPF {
+
+                    var count = 0
                     
                     for location in locations {
                         
                         let sonPFLocation = location["geolocation"] as! PFGeoPoint
 
-                        let sonLocation = sonPFLocation.location()
+                        self.locations.append(sonPFLocation)
 
-                        let myLocation = Global.locationPF.location()
+                        if count == 0 {
 
-                        let distanceInMeters = myLocation.distance(from: myLocation)
-                    
-                        self.userStatistics[1].data = "\(distanceInMeters) meters"
+                            let sonLocation = sonPFLocation.location()
 
-                         DispatchQueue.main.async {
-                    
-                            self.collectionView.reloadData()
+                            let myLocation = Global.locationPF.location()                        
 
-                            self.loadUserStatus()
+                            let distanceInMeters = myLocation.distance(from: myLocation)
                         
-                        } 
+                            self.userStatistics[1].data = "\(distanceInMeters) meters"
+
+                             DispatchQueue.main.async {
+                        
+                                self.collectionView.reloadData()
+
+                                self.loadUserStatus()
+                            
+                            } 
+
+                        }
+
+                        count = count + 1
                     }
                 }                
             }
@@ -797,7 +797,10 @@ class HomeViewController: UIViewController,
         if indexPath.row == 0 { //Online
             
         } else if indexPath.row == 1 { //Location
-            
+
+            self.locationViewController.locations = self.locations
+            navigationController?.pushViewController(self.locationViewController, animated: true) 
+            tabBarController?.tabBar.isHidden = true         
         
         } else if indexPath.row == 2 { //Week Count
             

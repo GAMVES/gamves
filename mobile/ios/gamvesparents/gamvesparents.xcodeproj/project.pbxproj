@@ -79,6 +79,7 @@
 		C7B402061D78C167001D8ED4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7B402051D78C167001D8ED4 /* Assets.xcassets */; };
 		C7B402091D78C167001D8ED4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7B402071D78C167001D8ED4 /* LaunchScreen.storyboard */; };
 		C7B402111D78C404001D8ED4 /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B402101D78C404001D8ED4 /* PageCell.swift */; };
+		C9263DFE20D8B9BE0029DBAE /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9263DFD20D8B9BE0029DBAE /* Artwork.swift */; };
 		C927D0C120D2B4E7006E217F /* VideoLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C927D0C020D2B4E6006E217F /* VideoLauncher.swift */; };
 		C9300F7320C9050F0027845F /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9300F7220C9050F0027845F /* Util.swift */; };
 		C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9389278206AC83900DE72AA /* UserNotifications.framework */; };
@@ -169,6 +170,7 @@
 		C7B402081D78C167001D8ED4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C7B4020A1D78C167001D8ED4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7B402101D78C404001D8ED4 /* PageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
+		C9263DFD20D8B9BE0029DBAE /* Artwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artwork.swift; sourceTree = "<group>"; };
 		C927D0C020D2B4E6006E217F /* VideoLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoLauncher.swift; sourceTree = "<group>"; };
 		C9300F7220C9050F0027845F /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		C9389278206AC83900DE72AA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -255,6 +257,7 @@
 				828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */,
 				828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */,
 				C9300F7220C9050F0027845F /* Util.swift */,
+				C9263DFD20D8B9BE0029DBAE /* Artwork.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -658,6 +661,7 @@
 				82557C6120175CB300752301 /* Date+Extension.swift in Sources */,
 				82E372461FB16AD9000AD7EB /* VideoApprovalLauncher.swift in Sources */,
 				C7B401FF1D78C167001D8ED4 /* AppDelegate.swift in Sources */,
+				C9263DFE20D8B9BE0029DBAE /* Artwork.swift in Sources */,
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
 				C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */,

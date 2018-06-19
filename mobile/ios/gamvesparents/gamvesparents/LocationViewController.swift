@@ -7,13 +7,55 @@
 //
 
 import UIKit
+import MapKit
+import Parse
 
 class LocationViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    var locations = [PFGeoPoint]()
+   
+    let regionRadius: CLLocationDistance = 1000
+    var mapView: MKMapView?
 
-        // Do any additional setup after loading the view.
+    override func viewDidLoad() {
+        super.viewDidLoad()        
+        
+        self.view.backgroundColor = UIColor.white
+
+        self.mapView = MKMapView(frame: CGRect(x:0, y:20, width:(self.view.frame.width), height:self.view.frame.height))
+        self.view.addSubview(self.mapView!)
+
+        let initialLocation = CLLocation(latitude: locations[0].latitude, longitude: locations[0].longitude)
+
+        centerMapOnLocation(location: initialLocation)
+        
+        for location in locations {
+            
+            let lat = location.latitude
+            let long = location.longitude
+            
+            /*let artwork = Artwork(title: "King David Kalakaua",
+            locationName: "Waikiki Gateway Park",
+            discipline: "Sculpture",
+            coordinate: CLLocationCoordinate2D(latitude: 21.283921, longitude: -157.831661))*/
+
+            let artwork = Artwork(title: "King David Kalakaua",
+            locationName: "Waikiki Gateway Park",
+            discipline: "Sculpture",
+            coordinate: CLLocationCoordinate2D(latitude: lat, longitude: long))
+            
+            self.mapView?.addAnnotation(artwork)
+            
+        }
+
+        
+
+    }
+
+    func centerMapOnLocation(location: CLLocation) {
+      let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, 
+        regionRadius, regionRadius)
+        mapView?.setRegion(coordinateRegion, animated: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -22,14 +64,5 @@ class LocationViewController: UIViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
