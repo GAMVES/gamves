@@ -10,47 +10,90 @@ import UIKit
 import MapKit
 import Parse
 
-class LocationViewController: UIViewController {
+class MyPointAnnotation : MKPointAnnotation {
+    var pinTintColor: UIColor?
+}
 
-    var locations = [PFGeoPoint]()
+class LocationViewController: UIViewController, MKMapViewDelegate {
+
+    var locations = [LocationGamves]()
    
     let regionRadius: CLLocationDistance = 1000
     var mapView: MKMapView?
 
+    var countLocations = 0
+
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad() 
         
         self.view.backgroundColor = UIColor.white
 
         self.mapView = MKMapView(frame: CGRect(x:0, y:20, width:(self.view.frame.width), height:self.view.frame.height))
         self.view.addSubview(self.mapView!)
 
-        let initialLocation = CLLocation(latitude: locations[0].latitude, longitude: locations[0].longitude)
+        self.mapView?.delegate = self
+        
+        print(locations.count)
+        
+        var loc_0 =  locations[0] as LocationGamves
+        var geo_0 = loc_0.geopoint
+
+        let initialLocation = CLLocation(latitude: (geo_0?.latitude)!, longitude: (geo_0?.longitude)!)
 
         centerMapOnLocation(location: initialLocation)
-        
+
         for location in locations {
             
-            let lat = location.latitude
-            let long = location.longitude
-            
-            /*let artwork = Artwork(title: "King David Kalakaua",
-            locationName: "Waikiki Gateway Park",
-            discipline: "Sculpture",
-            coordinate: CLLocationCoordinate2D(latitude: 21.283921, longitude: -157.831661))*/
+            let lat = location.geopoint.latitude
+            let long = location.geopoint.longitude
 
-            let artwork = Artwork(title: "King David Kalakaua",
-            locationName: "Waikiki Gateway Park",
-            discipline: "Sculpture",
-            coordinate: CLLocationCoordinate2D(latitude: lat, longitude: long))
+            let address = location.address
+            let city = location.city
+            let state = location.state
+            //let coord = CLLocationCoordinate2D(latitude: lat, longitude: long)
             
-            self.mapView?.addAnnotation(artwork)
+            let hello = MyPointAnnotation()
+            hello.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            
+            hello.title = address
+            hello.subtitle = state            
+            
+            if countLocations == 0 {
+                hello.pinTintColor = .red
+            } else {
+                hello.pinTintColor = .blue
+            }
+            
+            self.mapView?.addAnnotation(hello as! MKAnnotation)
+
+            countLocations = countLocations + 1
             
         }
 
-        
+        self.mapView?.showAnnotations((mapView?.annotations)!, animated: true)
 
     }
+    
+    //https://stackoverflow.com/questions/41819940/how-to-change-pin-color-in-mapkit-under-the-same-annotationview-swift3
+
+    /*func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "myAnnotation") as? MKPinAnnotationView
+
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myAnnotation")
+            annotationView?.canShowCallout = true
+           } else {
+            annotationView?.annotation = annotation
+        }
+        if annotation is MKUserLocation {
+            return nil
+        }
+        if let annotation = annotation as? MyPointAnnotation {
+            annotationView?.pinTintColor = annotation.pinTintColor
+        }
+                return annotationView
+    }*/
+
 
     func centerMapOnLocation(location: CLLocation) {
       let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, 
@@ -62,6 +105,8 @@ class LocationViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+
+
     
 
 

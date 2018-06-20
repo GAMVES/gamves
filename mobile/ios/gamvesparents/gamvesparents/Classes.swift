@@ -10,6 +10,17 @@ import Foundation
 import UIKit
 import Parse
 
+class LocationGamves {
+    var objectPF:PFObject!
+    var objectId = String()
+    var geopoint:PFGeoPoint!
+    var date = Date()
+    var address = String()
+    var city = String()
+    var state = String()
+    var country = String()
+}
+
 class ActivityGamves
 {
     // Insert code here to add functionality to your managed object subclass

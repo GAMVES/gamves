@@ -185,7 +185,7 @@ class HomeViewController: UIViewController,
         
     }
 
-    var locations = [PFGeoPoint]()
+    var locations = [LocationGamves]()
 
     var puserId = String()
 
@@ -415,8 +415,7 @@ class HomeViewController: UIViewController,
     
         queryTimeCount.findObjectsInBackground { (times, error) in
             
-            if error == nil
-            {
+            if error == nil {
                 
                 for time in times! {
                     
@@ -480,13 +479,21 @@ class HomeViewController: UIViewController,
                     
                     for location in locations {
                         
-                        let sonPFLocation = location["geolocation"] as! PFGeoPoint
+                        var locGamves = LocationGamves()
+                        
+                        locGamves.geopoint = location["geolocation"] as! PFGeoPoint
+                        
+                        locGamves.address = location["address"] as! String
+                        
+                        locGamves.city = location["city"] as! String
+                        
+                        locGamves.state = location["state"] as! String
+                        
+                        locGamves.country = location["country"] as! String
+                        
+                        self.locations.append(locGamves)
 
-                        self.locations.append(sonPFLocation)
-
-                        if count == 0 {
-
-                            let sonLocation = sonPFLocation.location()
+                        if count == 0 {                           
 
                             let myLocation = Global.locationPF.location()                        
 
@@ -964,8 +971,7 @@ class HomeViewController: UIViewController,
                         
                     }
                 }
-            }              
-            
+            }
         }         
     }
     
