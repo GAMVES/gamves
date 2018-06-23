@@ -786,6 +786,8 @@ SelectorProtocol {
     
     func saveVideo( json : [String:Any] ) {
         
+        print(json)
+        
         self.videoTitle       = json["fulltitle"] as! String
         //self.videoDescription = (json["description"] as? String)!
         
@@ -828,17 +830,21 @@ SelectorProtocol {
         
         print(videoPF)
         
-        videoPF["s3_source"]    = String()
+        //videoPF["s3_source"]    = String()
+
+        if self.videoSelThumbnail != nil {
         
-        if json["s3_source"] != nil {
-            
-            videoPF["s3_source"] = json["s3_source"]
-            
             let filename = "\(Global.generateFileName()).png"
             
             let thumbnail = PFFile(name: filename, data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
             
             videoPF.setObject(thumbnail!, forKey: "thumbnail")
+            
+        }
+            
+        if json["s3_source"] != nil {
+            
+            videoPF["s3_source"] = json["s3_source"]
             
             videoPF["source_type"] = 1
         
