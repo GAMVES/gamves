@@ -700,6 +700,7 @@ SelectorProtocol {
     	self.videoTitle = title
     	self.videoDescription = description
     	self.thumbnailImage = image
+        self.videoSelThumbnail = image
 
         if !isYoutubeHidden {
             self.video_url = "https://www.youtube.com/watch?v=" + self.videoId
@@ -835,9 +836,9 @@ SelectorProtocol {
         if self.videoSelThumbnail != nil {
         
             let filename = "\(Global.generateFileName()).png"
-            
+        
             let thumbnail = PFFile(name: filename, data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
-            
+    
             videoPF.setObject(thumbnail!, forKey: "thumbnail")
             
         }
