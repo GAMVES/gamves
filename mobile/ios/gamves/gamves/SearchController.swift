@@ -231,6 +231,33 @@ class SearchController: UIViewController,
         self.tableView.backgroundView = UIImageView(image: image!)
 
         
+        /////////////////////////////
+        
+        
+        guard let headerView = self.tableView.tableHeaderView else { return }
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let headerWidth = headerView.bounds.size.width;
+        let temporaryWidthConstraints = NSLayoutConstraint.constraints(withVisualFormat: "[headerView(width)]", options: NSLayoutFormatOptions(rawValue: UInt(0)), metrics: ["width": headerWidth], views: ["headerView": headerView])
+        
+        headerView.addConstraints(temporaryWidthConstraints)
+        
+        headerView.setNeedsLayout()
+        headerView.layoutIfNeeded()
+        
+        let headerSize = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
+        let height = headerSize.height
+        var frame = headerView.frame
+        
+        frame.size.height = height
+        headerView.frame = frame
+        
+        self.tableView.tableHeaderView = headerView
+        
+        headerView.removeConstraints(temporaryWidthConstraints)
+        headerView.translatesAutoresizingMaskIntoConstraints = true
+
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -310,8 +337,12 @@ class SearchController: UIViewController,
         self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonAddRemove)
         self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonClear)
         self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonCancel)
+        
+        self.tableView.estimatedSectionHeaderHeight = 100
+        self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension
 
     }
+
 
     func handleRemove() {
     
@@ -395,7 +426,41 @@ class SearchController: UIViewController,
             resultArr.removeAll()
             self.tableView.reloadData()
         }
-    } 
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if(section == 0) {
+            var view = UIView() // The width will be the same as the cell, and the height should be set in tableView:heightForRowAtIndexPath:
+            var label = UILabel()
+            label.text="My Details"
+            let button   = UIButton(type: UIButtonType.system) as UIButton
+            button.addTarget(self, action: "visibleRow:", for:.touchUpInside)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.setTitle("Test Title", for: .normal)
+            let views = ["label": label,"button":button,"view": view]
+            view.addSubview(label)
+            view.addSubview(button)
+            var horizontallayoutContraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-10-[label]-60-[button]-10-|", options: .alignAllCenterY, metrics: nil, views: views)
+            view.addConstraints(horizontallayoutContraints)
+            
+            var verticalLayoutContraint = NSLayoutConstraint(item: label, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1, constant: 0)
+            view.addConstraint(verticalLayoutContraint)
+            return view
+        }
+        return nil
+        
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 100
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
