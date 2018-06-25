@@ -257,6 +257,8 @@ class SearchController: UIViewController,
         headerView.removeConstraints(temporaryWidthConstraints)
         headerView.translatesAutoresizingMaskIntoConstraints = true
 
+        self.tableView.register(UINib(nibName: "CustomHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "CustomHeader")
+
         
     }
     
@@ -437,7 +439,7 @@ class SearchController: UIViewController,
         
         if(section == 0) {
             
-            var containerView = UIView()
+            /*var containerView = UIView()
 
             var upperView = UIView()
             upperView.backgroundColor = UIColor.gamvesColor
@@ -472,8 +474,8 @@ class SearchController: UIViewController,
 
             upperView.addSubview(tipLabel)
 
-            upperView.addConstraintsWithFormat("V:|[v0]|", views: arrowUpImageView)
-            upperView.addConstraintsWithFormat("V:|[v0]|", views: tipLabel)
+            upperView.addConstraintsWithFormat("V:|[v0(50)]|", views: arrowUpImageView)
+            upperView.addConstraintsWithFormat("V:|[v0(50)]|", views: tipLabel)
 
             upperView.addConstraintsWithFormat("H:|[v0(50)][v1]|", views:
                 arrowUpImageView,
@@ -508,9 +510,16 @@ class SearchController: UIViewController,
 
 
 
-            return containerView
+            return containerView*/
         }
-        return nil
+
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "CustomHeader") as! CustomHeader
+
+        headerView.customLabel.text = content[section].name  // set this however is appropriate for your app's model
+        headerView.sectionNumber = section
+        headerView.delegate = self
+
+        return headerView
         
     }
     
@@ -1291,4 +1300,120 @@ class SearchController: UIViewController,
     }
 }
 
+
+protocol CustomHeaderDelegate: class {
+    func didTapButton(in section: Int)
+}
+
+// define CustomHeader class with necessary `delegate`, `@IBOutlet` and `@IBAction`:
+
+class CustomHeader: UITableViewHeaderFooterView {
+    
+    weak var delegate: CustomHeaderDelegate?
+
+    let upperView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesColor
+        return view
+    }()
+
+    let bottomView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesColor
+        return view
+    }()
+
+    var arrowUpImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
+        imageView.image = UIImage(named: "arrow_up_text_white")
+        return imageView
+    }()
+
+    let tipLabel: UILabel = {
+        let label = UILabel()
+        label.text="Type the keyword of the video you want to find"      
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textAlignment = .left
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 2
+        label.textAlignment = .left
+        label.textColor = UIColor.white
+        return label
+    }()
+
+    ////////
+
+
+    let helpLabel: UILabel = {
+        let label = UILabel()
+        label.text="Touch a suggestion listed below"  
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textAlignment = .left
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 2
+        label.textAlignment = .left
+        label.textColor = UIColor.white
+        return label
+    }()
+
+    var helpImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
+        imageView.image = UIImage(named: "help")
+        return imageView
+    }()
+
+    var sectionNumber: Int!  // you don't have to do this, but it can be useful to have reference back to the section number so that when you tap on a button, you know which section you came from
+
+    func didTapButton(_ sender: AnyObject) {
+        delegate?.didTapButton(in: sectionNumber)
+    }
+
+    override init(reuseIdentifier: String?) {    
+
+        self.delegate = self
+
+        self.addSubview(upperView)
+        self.addSubview(bottomView)
+
+        self.addConstraintsWithFormat("H:|[v0]|", views: upperView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: bottomView)
+
+        self.addConstraintsWithFormat("V:|[v0(50)][v1(50)]|", views:
+            upperView,
+            bottomView)
+
+        upperView.addSubview(arrowUpImageView)
+        upperView.addSubview(tipLabel)
+
+        upperView.addConstraintsWithFormat("V:|[v0(50)]|", views: arrowUpImageView)
+        upperView.addConstraintsWithFormat("V:|[v0(50)]|", views: tipLabel)
+
+        upperView.addConstraintsWithFormat("H:|[v0(50)][v1]|", views:
+            arrowUpImageView,
+            tipLabel)         
+        
+        /////////////      
+
+        bottomView.addSubview(helpLabel)      
+        bottomView.addSubview(helpImageView)
+
+        bottomView.addConstraintsWithFormat("V:|[v0]|", views: arrowUpImageView)
+        bottomView.addConstraintsWithFormat("V:|[v0]|", views: tipLabel)
+
+        bottomView.addConstraintsWithFormat("H:|[v0][v1(50)]|", views:
+            helpLabel,
+            helpImageView) 
+
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+
+}
 
