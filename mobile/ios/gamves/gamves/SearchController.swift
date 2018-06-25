@@ -436,23 +436,79 @@ class SearchController: UIViewController,
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         if(section == 0) {
-            var view = UIView() // The width will be the same as the cell, and the height should be set in tableView:heightForRowAtIndexPath:
-            var label = UILabel()
-            label.text="My Details"
-            let button   = UIButton(type: UIButtonType.system) as UIButton
-            button.addTarget(self, action: "visibleRow:", for:.touchUpInside)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.setTitle("Test Title", for: .normal)
-            let views = ["label": label,"button":button,"view": view]
-            view.addSubview(label)
-            view.addSubview(button)
-            var horizontallayoutContraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-10-[label]-60-[button]-10-|", options: .alignAllCenterY, metrics: nil, views: views)
-            view.addConstraints(horizontallayoutContraints)
             
-            var verticalLayoutContraint = NSLayoutConstraint(item: label, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1, constant: 0)
-            view.addConstraint(verticalLayoutContraint)
-            return view
+            var containerView = UIView()
+
+            var upperView = UIView()
+            upperView.backgroundColor = UIColor.gamvesColor
+
+            var bottomView = UIView()
+            bottomView.backgroundColor = UIColor.gamvesColor
+
+            containerView.addSubview(upperView)
+            containerView.addSubview(bottomView)
+
+            containerView.addConstraintsWithFormat("H:|[v0]|", views: upperView)
+            containerView.addConstraintsWithFormat("H:|[v0]|", views: bottomView)
+
+            containerView.addConstraintsWithFormat("V:|[v0(50)][v1(50)]|", views:
+                upperView,
+                bottomView)
+
+            let arrowUpImageView = UIImageView()
+            arrowUpImageView.contentMode = .scaleAspectFill
+            arrowUpImageView.layer.masksToBounds = true
+            arrowUpImageView.image = UIImage(named: "arrow_up_text_white")
+            
+            upperView.addSubview(arrowUpImageView)
+
+            var tipLabel = UILabel()
+            tipLabel.text="Type the keyword of the video you want to find"      
+            tipLabel.font = UIFont.systemFont(ofSize: 16)
+            tipLabel.textAlignment = .left
+            tipLabel.lineBreakMode = .byWordWrapping
+            tipLabel.numberOfLines = 2
+            tipLabel.textColor = UIColor.white
+
+            upperView.addSubview(tipLabel)
+
+            upperView.addConstraintsWithFormat("V:|[v0]|", views: arrowUpImageView)
+            upperView.addConstraintsWithFormat("V:|[v0]|", views: tipLabel)
+
+            upperView.addConstraintsWithFormat("H:|[v0(50)][v1]|", views:
+                arrowUpImageView,
+                tipLabel)         
+
+            
+            /////////////
+
+            var helpLabel = UILabel()
+            helpLabel.text="Touch a suggestion listed below"      
+            helpLabel.font = UIFont.systemFont(ofSize: 16)
+            helpLabel.textAlignment = .left
+            helpLabel.lineBreakMode = .byWordWrapping
+            helpLabel.numberOfLines = 2
+            helpLabel.textColor = UIColor.white
+
+            bottomView.addSubview(helpLabel)
+
+            let helpImageView = UIImageView()
+            helpImageView.contentMode = .scaleAspectFill
+            helpImageView.layer.masksToBounds = true
+            helpImageView.image = UIImage(named: "help")
+            
+            bottomView.addSubview(helpImageView)
+
+            bottomView.addConstraintsWithFormat("V:|[v0]|", views: arrowUpImageView)
+            bottomView.addConstraintsWithFormat("V:|[v0]|", views: tipLabel)
+
+            bottomView.addConstraintsWithFormat("H:|[v0][v1(50)]|", views:
+                helpLabel,
+                helpImageView)    
+
+
+
+            return containerView
         }
         return nil
         
