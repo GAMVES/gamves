@@ -256,9 +256,10 @@ class SearchController: UIViewController,
         
         headerView.removeConstraints(temporaryWidthConstraints)
         headerView.translatesAutoresizingMaskIntoConstraints = true
+        
+        //self.tableView.register(CustomHeader.self, forCellReuseIdentifier: "CustomHeader")
 
-        self.tableView.register(UINib(nibName: "CustomHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "CustomHeader")
-
+        self.tableView.register(CustomHeader.self, forHeaderFooterViewReuseIdentifier: "CustomHeader")
         
     }
     
@@ -515,9 +516,9 @@ class SearchController: UIViewController,
 
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "CustomHeader") as! CustomHeader
 
-        headerView.customLabel.text = content[section].name  // set this however is appropriate for your app's model
+        //headerView.customLabel.text = content[section].name  // set this however is appropriate for your app's model
         headerView.sectionNumber = section
-        headerView.delegate = self
+        //headerView.delegate = self as! CustomHeaderDelegate
 
         return headerView
         
@@ -1309,7 +1310,7 @@ protocol CustomHeaderDelegate: class {
 
 class CustomHeader: UITableViewHeaderFooterView {
     
-    weak var delegate: CustomHeaderDelegate?
+     var delegate: CustomHeaderDelegate?
 
     let upperView: UIView = {
         let view = UIView()
@@ -1368,13 +1369,14 @@ class CustomHeader: UITableViewHeaderFooterView {
 
     var sectionNumber: Int!  // you don't have to do this, but it can be useful to have reference back to the section number so that when you tap on a button, you know which section you came from
 
-    func didTapButton(_ sender: AnyObject) {
+    /*func didTapButton(_ sender: AnyObject) {
         delegate?.didTapButton(in: sectionNumber)
-    }
-
-    override init(reuseIdentifier: String?) {    
-
-        self.delegate = self
+    }*/
+    
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        
+        //self.delegate = self as! CustomHeaderDelegate
 
         self.addSubview(upperView)
         self.addSubview(bottomView)
@@ -1401,8 +1403,8 @@ class CustomHeader: UITableViewHeaderFooterView {
         bottomView.addSubview(helpLabel)      
         bottomView.addSubview(helpImageView)
 
-        bottomView.addConstraintsWithFormat("V:|[v0]|", views: arrowUpImageView)
-        bottomView.addConstraintsWithFormat("V:|[v0]|", views: tipLabel)
+        bottomView.addConstraintsWithFormat("V:|[v0]|", views: helpLabel)
+        bottomView.addConstraintsWithFormat("V:|[v0]|", views: helpImageView)
 
         bottomView.addConstraintsWithFormat("H:|[v0][v1(50)]|", views:
             helpLabel,
