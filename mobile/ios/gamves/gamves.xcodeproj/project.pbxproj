@@ -99,11 +99,13 @@
 		C77B55751D05632E00FF375C /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B55741D05632E00FF375C /* MenuBar.swift */; };
 		C7E095C91D14C6690081F88C /* SettingsLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E095C81D14C6690081F88C /* SettingsLauncher.swift */; };
 		C7E095CF1D15C0020081F88C /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E095CE1D15C0020081F88C /* SettingCell.swift */; };
+		C925F9AF20E1EAE000E9B1E9 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */; };
 		C92BC7C82085AFB200EDEBCD /* GradientMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */; };
 		C92C3ECA207A88150029E206 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92C3EC9207A88150029E206 /* ProfileController.swift */; };
 		C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */; };
 		C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */; };
 		C92ED61B2060C74B004AC9A2 /* ProfileLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */; };
+		C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -202,11 +204,13 @@
 		C77B55741D05632E00FF375C /* MenuBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		C7E095C81D14C6690081F88C /* SettingsLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsLauncher.swift; sourceTree = "<group>"; };
 		C7E095CE1D15C0020081F88C /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
+		C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
 		C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientMaskView.swift; sourceTree = "<group>"; };
 		C92C3EC9207A88150029E206 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
 		C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
 		C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileLauncher.swift; sourceTree = "<group>"; };
+		C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
 		E24F455AB391FC717A52882D /* Pods-gamves.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.release.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.release.xcconfig"; sourceTree = "<group>"; };
 		E3B0DD69767FAC16A4611662 /* Pods-gamves.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -344,6 +348,8 @@
 		828DB5DB1EFE406700403C66 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */,
+				C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */,
 				82BAAF2D1EFE453E0021C405 /* Globals.swift */,
 				828DB5DE1EFE408500403C66 /* Gradients.swift */,
 				828DB5DC1EFE407400403C66 /* Reachability.swift */,
@@ -757,6 +763,7 @@
 				8272C9531EFF755B005D1C9A /* CategoryTableViewSectionCell.swift in Sources */,
 				825237BA2024E3CF00D6ED92 /* ChooseAvatarView.swift in Sources */,
 				C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */,
+				C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */,
 				82E1AC281FF62FD600209AEF /* SearchSingleImageCell.swift in Sources */,
 				8278277A1FE1789200162102 /* ProfileCollectionViewCell.swift in Sources */,
 				826844561FF048D1008BA13B /* RangeSlider.swift in Sources */,
@@ -781,6 +788,7 @@
 				C77B55171CFFF3AD00FF375C /* AppDelegate.swift in Sources */,
 				8272A2AC1FD7D5FA00D14A76 /* CameraController.swift in Sources */,
 				822760C9200EDBCE00860638 /* NotificationCell.swift in Sources */,
+				C925F9AF20E1EAE000E9B1E9 /* CustomSearchBar.swift in Sources */,
 				826D58391F8ED7570014A2C8 /* MessageCell.swift in Sources */,
 				828DB5DD1EFE407400403C66 /* Reachability.swift in Sources */,
 				822D620A1FD5FCCE0025481E /* SearchController.swift in Sources */,

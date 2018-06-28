@@ -42,5 +42,7 @@ target 'gamves' do
   pod 'RSKImageCropper'
 
   pod 'SwiftPhotoGallery'
+
+  pod 'PopupDialog'
   
 end

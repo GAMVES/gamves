@@ -11,6 +11,7 @@ import Alamofire
 import AVFoundation
 import SwiftyJSON
 import NVActivityIndicatorView
+import PopupDialog
 
 /*protocol VidewVideoProtocol {
     func openVideoById(id: Int)
@@ -82,9 +83,32 @@ class SearchController: UIViewController,
     XMLParserDelegate,
     //VidewVideoProtocol,
     UIBarPositioningDelegate,
-    TableViewCellDelegate
-{   
+    TableViewCellDelegate,
+    CustomSearchControllerDelegate
+{
+    func didStartSearching() {
+        
+    }
+    
+    func didTapOnSearchButton() {
+        
+    }
+    
+    func didTapOnCancelButton() {
+        
+    }
+    
+    func didChangeSearchText(searchText: String) {
+        
+    }
+    
 
+    var customSearchBar: CustomSearchBar!
+    
+    var customDelegate: CustomSearchControllerDelegate!
+
+    var customSearchController: CustomSearchController!
+    
     var delegateMedia:MediaDelegate?
     
     var mediaController: MediaController!
@@ -146,7 +170,7 @@ class SearchController: UIViewController,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.start = 11
         self.end = 22
         
@@ -193,26 +217,28 @@ class SearchController: UIViewController,
             self.view.addConstraintsWithFormat("V:|[v0][v1(50)]|", views:
                 self.tableView,
                 buttonView)
+
             self.view.addConstraintsWithFormat("H:|[v0]|", views: buttonView)
             
             self.buttonView.isHidden = true
             
         } else {
             
-            self.view.addConstraintsWithFormat("V:|[v0]|", views: self.tableView)
-            
+            self.view.addConstraintsWithFormat("V:|[v0]|", views: self.tableView)            
         }
+
+        self.configureCustomSearchController()
         
-        self.searchController = UISearchController(searchResultsController: nil)
+        /*self.searchController = UISearchController(searchResultsController: nil)
         self.searchController.searchResultsUpdater = self
         self.searchController.dimsBackgroundDuringPresentation = false
         self.searchController.searchBar.placeholder = "Search Youtube Videos"
         self.searchController.searchBar.delegate = self
         self.searchController.searchBar.sizeToFit()
         self.searchController.searchBar.barTintColor = UIColor.gamvesColor
-        self.searchController.searchBar.tintColor = .white
+        self.searchController.searchBar.tintColor = .white*/
         
-        self.tableView.tableHeaderView = self.searchController.searchBar
+        //self.tableView.tableHeaderView = self.customSearchController.searchBar
       
         definesPresentationContext = true
            
@@ -231,14 +257,22 @@ class SearchController: UIViewController,
         self.tableView.backgroundView = UIImageView(image: image!)
 
         
+        
+        //if #available(iOS 11.0, *) {
+        //    self.searchController.searchBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        //}
+        
         /////////////////////////////
         
         
-        guard let headerView = self.tableView.tableHeaderView else { return }
+        /*guard let headerView = self.tableView.tableHeaderView else { return }
         headerView.translatesAutoresizingMaskIntoConstraints = false
         
-        let headerWidth = headerView.bounds.size.width;
-        let temporaryWidthConstraints = NSLayoutConstraint.constraints(withVisualFormat: "[headerView(width)]", options: NSLayoutFormatOptions(rawValue: UInt(0)), metrics: ["width": headerWidth], views: ["headerView": headerView])
+        let headerWidth = headerView.bounds.size.width
+        let temporaryWidthConstraints = NSLayoutConstraint.constraints(withVisualFormat: "[headerView(width)]", 
+            options: NSLayoutFormatOptions(rawValue: UInt(0)), 
+            metrics: ["width": headerWidth], 
+            views: ["headerView": headerView])
         
         headerView.addConstraints(temporaryWidthConstraints)
         
@@ -255,13 +289,13 @@ class SearchController: UIViewController,
         self.tableView.tableHeaderView = headerView
         
         headerView.removeConstraints(temporaryWidthConstraints)
-        headerView.translatesAutoresizingMaskIntoConstraints = true
-        
-        //self.tableView.register(CustomHeader.self, forCellReuseIdentifier: "CustomHeader")
+        headerView.translatesAutoresizingMaskIntoConstraints = true */       
+       
 
         self.tableView.register(CustomHeader.self, forHeaderFooterViewReuseIdentifier: "CustomHeader")
         
-    }
+    }   
+  
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -344,6 +378,15 @@ class SearchController: UIViewController,
         self.tableView.estimatedSectionHeaderHeight = 100
         self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension
 
+    }
+
+    func configureCustomSearchController() {
+        customSearchController = CustomSearchController(searchResultsController: self, searchBarFrame: CGRect(x:0.0, y:0.0, width:self.tableView.frame.size.width, height:80.0), searchBarFont: UIFont(name: "Futura", size: 26.0)!, searchBarTextColor: UIColor.orange, searchBarTintColor: UIColor.black)
+        
+        customSearchController.customSearchBar.placeholder = "Search in this awesome bar..."
+        self.tableView.tableHeaderView = customSearchController.customSearchBar
+        
+        customSearchController.customDelegate = self
     }
 
 
@@ -436,92 +479,52 @@ class SearchController: UIViewController,
     }
     
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        if(section == 0) {
-            
-            /*var containerView = UIView()
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {      
 
-            var upperView = UIView()
-            upperView.backgroundColor = UIColor.gamvesColor
-
-            var bottomView = UIView()
-            bottomView.backgroundColor = UIColor.gamvesColor
-
-            containerView.addSubview(upperView)
-            containerView.addSubview(bottomView)
-
-            containerView.addConstraintsWithFormat("H:|[v0]|", views: upperView)
-            containerView.addConstraintsWithFormat("H:|[v0]|", views: bottomView)
-
-            containerView.addConstraintsWithFormat("V:|[v0(50)][v1(50)]|", views:
-                upperView,
-                bottomView)
-
-            let arrowUpImageView = UIImageView()
-            arrowUpImageView.contentMode = .scaleAspectFill
-            arrowUpImageView.layer.masksToBounds = true
-            arrowUpImageView.image = UIImage(named: "arrow_up_text_white")
-            
-            upperView.addSubview(arrowUpImageView)
-
-            var tipLabel = UILabel()
-            tipLabel.text="Type the keyword of the video you want to find"      
-            tipLabel.font = UIFont.systemFont(ofSize: 16)
-            tipLabel.textAlignment = .left
-            tipLabel.lineBreakMode = .byWordWrapping
-            tipLabel.numberOfLines = 2
-            tipLabel.textColor = UIColor.white
-
-            upperView.addSubview(tipLabel)
-
-            upperView.addConstraintsWithFormat("V:|[v0(50)]|", views: arrowUpImageView)
-            upperView.addConstraintsWithFormat("V:|[v0(50)]|", views: tipLabel)
-
-            upperView.addConstraintsWithFormat("H:|[v0(50)][v1]|", views:
-                arrowUpImageView,
-                tipLabel)         
-
-            
-            /////////////
-
-            var helpLabel = UILabel()
-            helpLabel.text="Touch a suggestion listed below"      
-            helpLabel.font = UIFont.systemFont(ofSize: 16)
-            helpLabel.textAlignment = .left
-            helpLabel.lineBreakMode = .byWordWrapping
-            helpLabel.numberOfLines = 2
-            helpLabel.textColor = UIColor.white
-
-            bottomView.addSubview(helpLabel)
-
-            let helpImageView = UIImageView()
-            helpImageView.contentMode = .scaleAspectFill
-            helpImageView.layer.masksToBounds = true
-            helpImageView.image = UIImage(named: "help")
-            
-            bottomView.addSubview(helpImageView)
-
-            bottomView.addConstraintsWithFormat("V:|[v0]|", views: arrowUpImageView)
-            bottomView.addConstraintsWithFormat("V:|[v0]|", views: tipLabel)
-
-            bottomView.addConstraintsWithFormat("H:|[v0][v1(50)]|", views:
-                helpLabel,
-                helpImageView)    
-
-
-
-            return containerView*/
-        }
-
-        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "CustomHeader") as! CustomHeader
-
-        //headerView.customLabel.text = content[section].name  // set this however is appropriate for your app's model
-        headerView.sectionNumber = section
-        //headerView.delegate = self as! CustomHeaderDelegate
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "CustomHeader") as! CustomHeader     
+        headerView.sectionNumber = section     
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openHelp))
+        headerView.helpImageView.isUserInteractionEnabled = true
+        headerView.helpImageView.addGestureRecognizer(tapGestureRecognizer)
 
         return headerView
         
+    }
+
+    // https://github.com/Orderella/PopupDialog
+
+    func openHelp() { 
+        
+        // Prepare the popup assets
+        let title = "THIS IS THE DIALOG TITLE"
+        let message = "This is the message section of the popup dialog default view"
+        let image = UIImage(named: "gamves_icons_white")
+
+        // Create the dialog
+        let popup = PopupDialog(title: title, message: message, image: image)
+
+        // Create buttons
+        let buttonOne = CancelButton(title: "CANCEL") {
+            print("You canceled the car dialog.")
+        }
+
+        // This button will not the dismiss the dialog
+        let buttonTwo = DefaultButton(title: "ADMIRE CAR", dismissOnTap: false) {
+            print("What a beauty!")
+        }
+
+        let buttonThree = DefaultButton(title: "BUY CAR", height: 60) {
+            print("Ah, maybe next time :)")
+        }
+
+        // Add buttons to dialog
+        // Alternatively, you can use popup.addButton(buttonOne)
+        // to add a single button
+        popup.addButtons([buttonOne, buttonTwo, buttonThree])
+
+        // Present dialog
+        self.present(popup, animated: true, completion: nil)
+
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -1334,8 +1337,8 @@ class CustomHeader: UITableViewHeaderFooterView {
 
     let tipLabel: UILabel = {
         let label = UILabel()
-        label.text="Type the keyword of the video you want to find"      
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.text="Type keywords to find your video"      
+        label.font = UIFont.systemFont(ofSize: 20)
         label.textAlignment = .left
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
@@ -1349,23 +1352,24 @@ class CustomHeader: UITableViewHeaderFooterView {
 
     let helpLabel: UILabel = {
         let label = UILabel()
-        label.text="Touch a suggestion listed below"  
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.text="Or select suggestions below"  
+        label.font = UIFont.systemFont(ofSize: 20)
         label.textAlignment = .left
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
         label.textAlignment = .left
         label.textColor = UIColor.white
         return label
-    }()
+    }()   
 
     var helpImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
-        imageView.image = UIImage(named: "help")
+        imageView.image = UIImage(named: "help_white")
         return imageView
     }()
+
 
     var sectionNumber: Int!  // you don't have to do this, but it can be useful to have reference back to the section number so that when you tap on a button, you know which section you came from
 
@@ -1384,17 +1388,17 @@ class CustomHeader: UITableViewHeaderFooterView {
         self.addConstraintsWithFormat("H:|[v0]|", views: upperView)
         self.addConstraintsWithFormat("H:|[v0]|", views: bottomView)
 
-        self.addConstraintsWithFormat("V:|[v0(50)][v1(50)]|", views:
+        self.addConstraintsWithFormat("V:|[v0(60)][v1(60)]|", views:
             upperView,
             bottomView)
 
         upperView.addSubview(arrowUpImageView)
         upperView.addSubview(tipLabel)
 
-        upperView.addConstraintsWithFormat("V:|[v0(50)]|", views: arrowUpImageView)
-        upperView.addConstraintsWithFormat("V:|[v0(50)]|", views: tipLabel)
+        upperView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: arrowUpImageView)
+        upperView.addConstraintsWithFormat("V:|-10-[v0(40)]-10-|", views: tipLabel)
 
-        upperView.addConstraintsWithFormat("H:|[v0(50)][v1]|", views:
+        upperView.addConstraintsWithFormat("H:|-10-[v0(40)]-10-[v1]|", views:
             arrowUpImageView,
             tipLabel)         
         
@@ -1404,9 +1408,9 @@ class CustomHeader: UITableViewHeaderFooterView {
         bottomView.addSubview(helpImageView)
 
         bottomView.addConstraintsWithFormat("V:|[v0]|", views: helpLabel)
-        bottomView.addConstraintsWithFormat("V:|[v0]|", views: helpImageView)
+        bottomView.addConstraintsWithFormat("V:|-10-[v0(40)]-10-|", views: helpImageView)
 
-        bottomView.addConstraintsWithFormat("H:|[v0][v1(50)]|", views:
+        bottomView.addConstraintsWithFormat("H:|-40-[v0]-10-[v1(40)]-10-|", views:
             helpLabel,
             helpImageView) 
 
