@@ -305,6 +305,8 @@ class SearchController: UIViewController,
             self.searchController.isActive = true
             
             self.searchController.searchBar.text = self.termToSearch
+            
+            print(self.termToSearch)
 
             if self.type == SearchType.isImageGallery ||  self.type == SearchType.isSingleImage ||  self.type == SearchType.isSingleImageDelete {
             
