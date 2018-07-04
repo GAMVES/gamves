@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 import Alamofire
 import AVFoundation
 import SwiftyJSON
@@ -139,7 +140,7 @@ class SearchController: UIViewController,
     var delegateSearch:SearchProtocol!   
 
     var parser = XMLParser()
-    var resultArr = [String]()
+    var trends = [GamvesTrendCategory]()
     
     var isSuggestion = Bool()
     var type:SearchType!
@@ -166,7 +167,7 @@ class SearchController: UIViewController,
     var buttonCancel:UIButton!
     var buttonClear:UIButton!
 
-    let cellHeight = 150
+    let cellHeight = 150  
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -254,9 +255,7 @@ class SearchController: UIViewController,
         let homeImage = "background_vertical"
         let image = UIImage(named: homeImage)        
 
-        self.tableView.backgroundView = UIImageView(image: image!)
-
-        
+        self.tableView.backgroundView = UIImageView(image: image!)       
         
         //if #available(iOS 11.0, *) {
         //    self.searchController.searchBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
@@ -293,14 +292,18 @@ class SearchController: UIViewController,
        
 
         self.tableView.register(CustomHeader.self, forHeaderFooterViewReuseIdentifier: "CustomHeader")
-        
+        self.tableView.register(HeaderView.self, forHeaderFooterViewReuseIdentifier: "HeaderView")        
     }   
   
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if self.termToSearch != nil {
+        //if self.termToSearch != nil || !self.termToSearch.isEmpty {
+
+        print(self.termToSearch)
+        
+        if !self.termToSearch.isEmpty {
             
             self.searchController.isActive = true
             
@@ -337,6 +340,11 @@ class SearchController: UIViewController,
                 
             }
             
+        } else {
+
+
+            self.loadTrends()
+
         }
     }
 
@@ -444,11 +452,11 @@ class SearchController: UIViewController,
         
         if !self.searchController.searchBar.text!.isEmpty {            
             isSuggestion = true
-            resultArr = [String]()        
+            self.trends = [GamvesTrendCategory]()        
             self.findSuggestion(stringToSearch: searchController.searchBar.text!)
         } else {
             
-            resultArr.removeAll()
+            self.trends.removeAll()
             self.tableView.reloadData()
         }      
     }
@@ -461,7 +469,7 @@ class SearchController: UIViewController,
             if !Global.containsSwearWord(text: self.searchController.searchBar.text! , swearWords: Global.listOfSwearWords ) {
 
                 isSuggestion = true
-                resultArr = [String]()        
+                self.trends = [GamvesTrendCategory]()        
                 self.findSuggestion(stringToSearch: searchController.searchBar.text!)
 
             } else {
@@ -471,23 +479,38 @@ class SearchController: UIViewController,
             }
 
         } else {
-            resultArr.removeAll()
+            self.trends.removeAll()
             self.tableView.reloadData()
         }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return self.trends.count
     }
     
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {      
 
-        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "CustomHeader") as! CustomHeader     
-        headerView.sectionNumber = section     
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openHelp))
-        headerView.helpImageView.isUserInteractionEnabled = true
-        headerView.helpImageView.addGestureRecognizer(tapGestureRecognizer)
+        var headerView = UITableViewHeaderFooterView()
+
+        if section == 0 {
+
+            let customView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "CustomHeader") as! CustomHeader
+            customView.sectionNumber = section
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openHelp))
+            customView.helpImageView.isUserInteractionEnabled = true
+            customView.helpImageView.addGestureRecognizer(tapGestureRecognizer)
+            
+            return customView
+
+        } else {
+
+            headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderView") as! HeaderView
+            
+            headerView.textLabel?.text = self.trends[section].name
+            headerView.textLabel?.backgroundColor = UIColor.white
+            headerView.backgroundView?.backgroundColor = UIColor.gray
+        }
 
         return headerView
         
@@ -539,7 +562,8 @@ class SearchController: UIViewController,
         
         if isSuggestion {
             
-            c = resultArr.count 
+            c = self.trends[section].trend.count 
+
         } else {        
             
             if type == SearchType.isVideo {
@@ -571,12 +595,14 @@ class SearchController: UIViewController,
         print(self.type)
         
         let index = indexPath.row as Int
+        let section = indexPath.section as Int
         var cell = UITableViewCell()
         
         if isSuggestion {
             
             cell = tableView.dequeueReusableCell(withIdentifier: self.cellId, for: indexPath)
-            cell.textLabel?.text = resultArr[index] as String
+            let tr = self.trends[section].trend[index] as GamvesTrend
+            cell.textLabel?.text = tr.name
             
         } else {
             
@@ -812,29 +838,30 @@ class SearchController: UIViewController,
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         searchController.searchBar.endEditing(true)
-        let index = indexPath.row as Int        
+        let index = indexPath.row as Int    
+        let section = indexPath.section as Int      
         
         if isSuggestion {
             
-            var sg = resultArr[index]
+            var tr = self.trends[section].trend[index] as GamvesTrend
             
             self.isSuggestion = false
             
-            self.resultArr.removeAll()
+            self.trends.removeAll()
             
-            self.lastTerm = sg
+            self.lastTerm = tr.name
             
             if type == SearchType.isVideo {
         
-                self.findVideoFromSuggestion(suggestion: sg)
+                self.findVideoFromSuggestion(suggestion: tr.name)
                 
             } else if type == SearchType.isImageGallery {
                 
-                self.findImagesFromSuggestion(suggestion: sg, isSingle: false)
+                self.findImagesFromSuggestion(suggestion: tr.name, isSingle: false)
                 
             } else if type == SearchType.isSingleImage {
                 
-                self.findImagesFromSuggestion(suggestion: sg, isSingle: true)
+                self.findImagesFromSuggestion(suggestion: tr.name, isSingle: true)
             }
         
         } else {
@@ -864,8 +891,7 @@ class SearchController: UIViewController,
                     
                     var relaod = Bool()
                 
-                    let title = self.searchImages[index].title as String
-                   
+                    let title = self.searchImages[index].title as String                   
                     
                     if self.searchImages[index].checked {
                     
@@ -974,9 +1000,98 @@ class SearchController: UIViewController,
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {        
         if (elementName == "suggestion") {
             let suggestion : String = attributeDict["data"]!
-            resultArr.append(suggestion)
+            let trend = GamvesTrendCategory()
+            trend.name = suggestion
+            self.trends.append(trend)
         }
-     }
+     }	
+
+    func loadTrends()
+    {
+
+        self.activityIndicatorView?.startAnimating()
+
+        let queryCategoryTrends = PFQuery(className:"CategoryTrends")
+        queryCategoryTrends.findObjectsInBackground { (trendCategoryPF, error) in
+            
+            if error != nil
+            {
+                
+                print("error")
+                
+            } else
+            {
+                
+                if let trendCategoryPF = trendCategoryPF
+                {
+
+                    var countCats = 0
+
+                    var countTrendsCategory = trendCategoryPF.count
+                    
+                    print(countTrendsCategory)
+                    
+                    for trendCat in trendCategoryPF {
+                        
+                        let gamvesTrendCategory = GamvesTrendCategory()
+                        gamvesTrendCategory.name = trendCat["name"] as! String
+                        gamvesTrendCategory.description = trendCat["description"] as! String
+                        gamvesTrendCategory.objectId = trendCat.objectId!
+
+                        let trendRealtion = trendCat["trend"] as! PFRelation
+                        let trendsQuery = trendRealtion.query()                        
+                        trendsQuery.findObjectsInBackground(block: { (trendsPF, error) in
+                            
+                            if error != nil
+                            {
+                                print("error")
+                                
+                            } else {
+                        
+                                
+                                if let trendsPF = trendsPF
+                                {
+                                    var countTrends = trendsPF.count
+                                    
+                                    print(countTrends)
+                                    
+                                    for trendPF in trendsPF {
+
+                                        let trend = GamvesTrend()
+                                        trend.name = trendPF["name"] as! String
+                                        trend.description = trendPF["description"] as! String
+                                        trend.objectId = trendPF.objectId!
+
+                                        gamvesTrendCategory.trend.append(trend)
+
+                                    }
+
+                                }
+
+                                self.trends.append(gamvesTrendCategory)
+
+
+                                if countCats == ( countTrendsCategory - 1 ) {
+
+                                    self.activityIndicatorView?.stopAnimating()
+                                    self.tableView.reloadData()
+
+                                }
+
+                                countCats = countCats + 1
+                            }
+                        })
+                        
+                    }
+
+                    self.isSuggestion = true           
+                    
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
+
 
 
     func findVideoFromSuggestion(suggestion: String) {
@@ -1307,121 +1422,19 @@ class SearchController: UIViewController,
 }
 
 
-protocol CustomHeaderDelegate: class {
-    func didTapButton(in section: Int)
-}
+class HeaderView: UITableViewHeaderFooterView{
 
-// define CustomHeader class with necessary `delegate`, `@IBOutlet` and `@IBAction`:
-
-class CustomHeader: UITableViewHeaderFooterView {
-    
-     var delegate: CustomHeaderDelegate?
-
-    let upperView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
-        return view
-    }()
-
-    let bottomView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
-        return view
-    }()
-
-    var arrowUpImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.masksToBounds = true
-        imageView.image = UIImage(named: "arrow_up_text_white")
-        return imageView
-    }()
-
-    let tipLabel: UILabel = {
-        let label = UILabel()
-        label.text="Type keywords to find your video"      
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textAlignment = .left
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 2
-        label.textAlignment = .left
-        label.textColor = UIColor.white
-        return label
-    }()
-
-    ////////
-
-
-    let helpLabel: UILabel = {
-        let label = UILabel()
-        label.text="Or select suggestions below"  
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textAlignment = .left
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 2
-        label.textAlignment = .left
-        label.textColor = UIColor.white
-        return label
-    }()   
-
-    var helpImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.masksToBounds = true
-        imageView.image = UIImage(named: "help_white")
-        return imageView
-    }()
-
-
-    var sectionNumber: Int!  // you don't have to do this, but it can be useful to have reference back to the section number so that when you tap on a button, you know which section you came from
-
-    /*func didTapButton(_ sender: AnyObject) {
-        delegate?.didTapButton(in: sectionNumber)
-    }*/
-    
-    override init(reuseIdentifier: String?) {
+    override
+    init(reuseIdentifier: String?){
         super.init(reuseIdentifier: reuseIdentifier)
-        
-        //self.delegate = self as! CustomHeaderDelegate
-
-        self.addSubview(upperView)
-        self.addSubview(bottomView)
-
-        self.addConstraintsWithFormat("H:|[v0]|", views: upperView)
-        self.addConstraintsWithFormat("H:|[v0]|", views: bottomView)
-
-        self.addConstraintsWithFormat("V:|[v0(60)][v1(60)]|", views:
-            upperView,
-            bottomView)
-
-        upperView.addSubview(arrowUpImageView)
-        upperView.addSubview(tipLabel)
-
-        upperView.addConstraintsWithFormat("V:|-10-[v0(40)]|", views: arrowUpImageView)
-        upperView.addConstraintsWithFormat("V:|-10-[v0(40)]-10-|", views: tipLabel)
-
-        upperView.addConstraintsWithFormat("H:|-10-[v0(40)]-10-[v1]|", views:
-            arrowUpImageView,
-            tipLabel)         
-        
-        /////////////      
-
-        bottomView.addSubview(helpLabel)      
-        bottomView.addSubview(helpImageView)
-
-        bottomView.addConstraintsWithFormat("V:|[v0]|", views: helpLabel)
-        bottomView.addConstraintsWithFormat("V:|-10-[v0(40)]-10-|", views: helpImageView)
-
-        bottomView.addConstraintsWithFormat("H:|-40-[v0]-10-[v1(40)]-10-|", views:
-            helpLabel,
-            helpImageView) 
-
+        self.backgroundView = UIView()
+        self.backgroundView!.backgroundColor = UIColor.clear
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    required
+    init?(coder: NSCoder){
+        super.init(coder: coder)!
     }
-
-
+    
 }
 

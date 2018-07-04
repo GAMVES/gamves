@@ -100,6 +100,7 @@
 		C7E095C91D14C6690081F88C /* SettingsLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E095C81D14C6690081F88C /* SettingsLauncher.swift */; };
 		C7E095CF1D15C0020081F88C /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E095CE1D15C0020081F88C /* SettingCell.swift */; };
 		C925F9AF20E1EAE000E9B1E9 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */; };
+		C92B3D3F20EC7EAC00700BA4 /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */; };
 		C92BC7C82085AFB200EDEBCD /* GradientMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */; };
 		C92C3ECA207A88150029E206 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92C3EC9207A88150029E206 /* ProfileController.swift */; };
 		C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */; };
@@ -205,6 +206,7 @@
 		C7E095C81D14C6690081F88C /* SettingsLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsLauncher.swift; sourceTree = "<group>"; };
 		C7E095CE1D15C0020081F88C /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
+		C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
 		C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientMaskView.swift; sourceTree = "<group>"; };
 		C92C3EC9207A88150029E206 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 				82C9084A1FA0FD790059FAB8 /* Downloader.swift */,
 				825C30751FA4FD0900A018FE /* Feeds.swift */,
 				C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */,
+				C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -742,6 +745,7 @@
 				8274BA7E2028BD5200434839 /* Date+Extensions.swift in Sources */,
 				825C30761FA4FD0900A018FE /* Feeds.swift in Sources */,
 				C77B55521D02345100FF375C /* VideoCell.swift in Sources */,
+				C92B3D3F20EC7EAC00700BA4 /* CustomHeader.swift in Sources */,
 				C7E095C91D14C6690081F88C /* SettingsLauncher.swift in Sources */,
 				8268445C1FF2A82B008BA13B /* LoginController+Extensions.swift in Sources */,
 				82C6F7591F8AA8F50090C725 /* Color+Extensions.swift in Sources */,

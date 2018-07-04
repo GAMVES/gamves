@@ -649,7 +649,7 @@ SelectorProtocol {
         media.delegate = self
         media.delegateSearch = self
         //media.termToSearch = fanpageTextField.text!
-        media.termToSearch = self.fanpage.name
+        //media.termToSearch = self.fanpage.name
         media.setType(type: MediaType.selectVideo)
         media.setSearchType(type: SearchType.isVideo)
         navigationController?.pushViewController(media, animated: true)
@@ -658,7 +658,7 @@ SelectorProtocol {
 	func handleSearch() {
         self.type = UploadType.youtube
         //searchController.termToSearch = fanpageTextField.text!
-        searchController.termToSearch = self.fanpage.name
+        //searchController.termToSearch = self.fanpage.name
         searchController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
