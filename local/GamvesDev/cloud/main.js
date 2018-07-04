@@ -1002,3 +1002,53 @@
 
 	});
 
+
+	// --
+	// Get Location reverse-geocoding.	
+
+	Parse.Cloud.afterSave("Location", function(request) {
+
+		var hasCoder = request.object.get("hasCoder");
+
+		console.log("hasCoder: " +hasCoder);
+
+		if ( !hasCoder || hasCoder == undefined ) {
+
+			console.log("Has hasCoder");
+
+			var geolocation = request.object.get("geolocation");
+
+			var latitude = geolocation.latitude;
+			var longitude = geolocation.longitude;
+
+			var geocoder = require('geocoder');
+
+			geocoder.reverseGeocode( latitude, longitude, function ( err, data ) {
+
+				if(err){
+			        console.log(err);
+			        //response.error('Error! ' + err);
+			    }else{
+			        
+			        //console.log(data);
+			        //response.success(data.results[0].formatted_address);
+
+			        var allAdrs = data.results[0].formatted_address;
+
+			        var res = allAdrs.split(",");
+
+			        request.object.set("address", res[0]);
+			        request.object.set("city", res[1]);
+			        request.object.set("state", res[2]);
+			        request.object.set("country", res[3]);
+			        request.object.set("hasCoder", true);
+					request.object.save();  
+
+			    }
+	  			
+			});
+		}		
+
+	});
+
+
