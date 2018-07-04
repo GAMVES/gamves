@@ -55,8 +55,7 @@ __pycache__/
 
 # Distribution / packaging
 Scripts/
-tcl/*
-tk8*/*
+tcl/
 .Python
 include/
 bin/
