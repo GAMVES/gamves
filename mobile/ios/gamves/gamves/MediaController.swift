@@ -960,8 +960,20 @@ private extension MediaController {
                       
             //self.searchController.type = SearchType.isVideo
             //self.searchController.type = SearchType.isImageGallery
+            
+            //print(self.type)
+            
+            //self.searchController.type = self.type
+            
+            
+            if self.type == MediaType.selectVideo {
+                
+                self.searchController.type = SearchType.isVideo
+                
+            }
+            
 
-            self.searchController.type = self.searchType
+            //self.searchController.type = self.searchType
 
             self.searchController.searchSize = self.searchSize
             self.searchController.termToSearch = self.termToSearch

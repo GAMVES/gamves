@@ -143,6 +143,7 @@ class SearchController: UIViewController,
     var trends = [GamvesTrendCategory]()
     
     var isSuggestion = Bool()
+    var isInitial = Bool()
     var type:SearchType!
     var searchSize:SearchSize!
     var searchImages = [SearchImage]()
@@ -171,6 +172,8 @@ class SearchController: UIViewController,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.isInitial = true
 
         self.start = 11
         self.end = 22
@@ -255,40 +258,13 @@ class SearchController: UIViewController,
         let homeImage = "background_vertical"
         let image = UIImage(named: homeImage)        
 
+        self.title = "SEARCH VIDEO"
+
         self.tableView.backgroundView = UIImageView(image: image!)       
         
         //if #available(iOS 11.0, *) {
         //    self.searchController.searchBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        //}
-        
-        /////////////////////////////
-        
-        
-        /*guard let headerView = self.tableView.tableHeaderView else { return }
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let headerWidth = headerView.bounds.size.width
-        let temporaryWidthConstraints = NSLayoutConstraint.constraints(withVisualFormat: "[headerView(width)]", 
-            options: NSLayoutFormatOptions(rawValue: UInt(0)), 
-            metrics: ["width": headerWidth], 
-            views: ["headerView": headerView])
-        
-        headerView.addConstraints(temporaryWidthConstraints)
-        
-        headerView.setNeedsLayout()
-        headerView.layoutIfNeeded()
-        
-        let headerSize = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
-        let height = headerSize.height
-        var frame = headerView.frame
-        
-        frame.size.height = height
-        headerView.frame = frame
-        
-        self.tableView.tableHeaderView = headerView
-        
-        headerView.removeConstraints(temporaryWidthConstraints)
-        headerView.translatesAutoresizingMaskIntoConstraints = true */       
+        //}   
        
 
         self.tableView.register(CustomHeader.self, forHeaderFooterViewReuseIdentifier: "CustomHeader")
@@ -385,15 +361,15 @@ class SearchController: UIViewController,
         self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonClear)
         self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonCancel)
         
-        self.tableView.estimatedSectionHeaderHeight = 100
-        self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension
+        //self.tableView.estimatedSectionHeaderHeight = 120
+        //self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension
 
     }
 
     func configureCustomSearchController() {
         customSearchController = CustomSearchController(searchResultsController: self, searchBarFrame: CGRect(x:0.0, y:0.0, width:self.tableView.frame.size.width, height:80.0), searchBarFont: UIFont(name: "Futura", size: 26.0)!, searchBarTextColor: UIColor.orange, searchBarTintColor: UIColor.black)
         
-        customSearchController.customSearchBar.placeholder = "Search in this awesome bar..."
+        customSearchController.customSearchBar.placeholder = "search video ..."
         self.tableView.tableHeaderView = customSearchController.customSearchBar
         
         customSearchController.customDelegate = self
@@ -485,13 +461,28 @@ class SearchController: UIViewController,
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.trends.count
+        var countSections = Int()
+
+        if isInitial {
+
+            countSections = self.trends.count
+
+        } else {                 
+                    
+            countSections = 1                                             
+        }
+
+        return countSections
     }
     
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {      
 
         var headerView = UITableViewHeaderFooterView()
+
+        if !isInitial {
+            return headerView
+        }
 
         if section == 0 {
 
@@ -500,13 +491,13 @@ class SearchController: UIViewController,
             let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(openHelp))
             customView.helpImageView.isUserInteractionEnabled = true
             customView.helpImageView.addGestureRecognizer(tapGestureRecognizer)
+            customView.firstLabel.text = self.trends[section].name
             
             return customView
 
         } else {
 
-            headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderView") as! HeaderView
-            
+            headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderView") as! HeaderView            
             headerView.textLabel?.text = self.trends[section].name
             headerView.textLabel?.backgroundColor = UIColor.white
             headerView.backgroundView?.backgroundColor = UIColor.gray
@@ -553,7 +544,18 @@ class SearchController: UIViewController,
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 100
+        var height = CGFloat()
+        
+        if !isInitial {
+           return 0
+        }
+
+        if section == 0 {
+            height = 120
+        } else {
+            height = 40
+        }
+        return height
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -851,9 +853,13 @@ class SearchController: UIViewController,
             
             self.lastTerm = tr.name
             
+            print(lastTerm)
+            
             if type == SearchType.isVideo {
         
                 self.findVideoFromSuggestion(suggestion: tr.name)
+
+                self.isInitial = false
                 
             } else if type == SearchType.isImageGallery {
                 
@@ -1007,7 +1013,7 @@ class SearchController: UIViewController,
      }	
 
     func loadTrends()
-    {
+    {       
 
         self.activityIndicatorView?.startAnimating()
 

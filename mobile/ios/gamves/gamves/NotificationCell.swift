@@ -139,7 +139,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
 
                         notification.type = type!
 
-                        let cover = notificationPF["cover"] as! PFFile
+                        let cover 	= notificationPF["cover"] as! PFFile
 
                         let avatar = notificationPF["posterAvatar"] as! PFFile
 
