@@ -419,6 +419,7 @@ class SearchController: UIViewController,
     
     func goBack()
     {
+        self.isInitial = true
         print("back")
         _ = navigationController?.popViewController(animated: true)
     }
@@ -927,6 +928,8 @@ class SearchController: UIViewController,
                     
                 } else  {
                 
+                    self.isInitial = true
+                    
                     let searchImage = self.searchImages[index] as SearchImage
                     
                     delegateMedia?.didPickImage!(searchImage.image)
