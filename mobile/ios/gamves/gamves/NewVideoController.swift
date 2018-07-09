@@ -40,10 +40,10 @@ SelectorProtocol {
 
 	//-- TITTLE
     
-    let welcome: PaddingLabel = {
+    let selectCategory: PaddingLabel = {
         let label = PaddingLabel()
-        label.text = "Select category, fanpage and type"
-        label.font = UIFont.systemFont(ofSize: 13)
+        label.text = "Select category for your video"
+        label.font = UIFont.systemFont(ofSize: 18)
         label.textColor = UIColor.white
         label.textAlignment = .center
         return label
@@ -74,28 +74,23 @@ SelectorProtocol {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    //-- FANPAGE
 
-    /*var fanpageDownPicker: DownPicker!
-    let fanpageTextField: UITextField = {
-        let tf = UITextField()        
-        tf.translatesAutoresizingMaskIntoConstraints = false        
-        return tf
-    }()*/
+    let selectFanpage: PaddingLabel = {
+        let label = PaddingLabel()
+        label.text = "Select fanpage for your category"
+        label.font = UIFont.systemFont(ofSize: 18)
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        return label
+    }()
+    
+    var selectorFanpageView:SelectorView!  
 
-    var selectorFanpageView:SelectorView!
+    //-- localVideoRowView local
 
-    //-- VIDEO
-
-    let youtubeVideoRowView: UIView = {
-        let view = UIView()        
-        view.translatesAutoresizingMaskIntoConstraints = false        
-        view.layer.cornerRadius = 5        
-        view.layer.masksToBounds = true
-        view.backgroundColor = UIColor.white
-        return view
-    }()   
-
-    let localVideoRowView: UIView = {
+     let localVideoRowView: UIView = {
         let view = UIView()        
         view.translatesAutoresizingMaskIntoConstraints = false        
         view.layer.masksToBounds = true
@@ -104,56 +99,7 @@ SelectorProtocol {
         return view
     }() 
 
-     let previewVideoRowView: UIView = {
-        let view = UIView()        
-        view.translatesAutoresizingMaskIntoConstraints = false        
-        view.layer.masksToBounds = true
-        view.layer.cornerRadius = 5   
-        return view
-    }()
-    
-    let previewVideoSeparatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
 
-    
-    //-- youtubeVideoRowView youtube
-
-	let youtubeUrlTextField: UITextField = {
-        let tf = UITextField()
-        tf.placeholder = "Youtube url"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.layer.cornerRadius = 5
-        tf.backgroundColor = UIColor.white
-        //tf.text = "o7Kd6VVp6jE"   
-        tf.tag = 0
-        return tf
-    }()     
-
-    lazy var searchButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor
-        button.translatesAutoresizingMaskIntoConstraints = false          
-        button.addTarget(self, action: #selector(handleSearch), for: .touchUpInside)  
-        let imageIcon = UIImage(named: "search_icon")    
-        imageIcon?.maskWithColor(color: UIColor.white)
-        button.setImage(imageIcon, for: .normal)
-        button.layer.cornerRadius = 5
-        button.isEnabled = false
-        return button
-    }()
-
-    let youtubeVideoSeparatorView: UIView = {
-        let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }() 
-
-    //-- localVideoRowView local
 
     lazy var videoButton: UIButton = {
         let button = UIButton(type: .system)
@@ -176,6 +122,22 @@ SelectorProtocol {
     }()
 
 	//-- previewVideoRowView 
+
+    let previewVideoRowView: UIView = {
+        let view = UIView()        
+        view.translatesAutoresizingMaskIntoConstraints = false        
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 5   
+        return view
+    }()
+    
+    let previewVideoSeparatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()    
+
 
 	let thumbnailConteinerView: UIView = {
         let view = UIView()        
@@ -277,14 +239,12 @@ SelectorProtocol {
     var videoSelData = Data()
     var videoSelThumbnail = UIImage()
     
-    var newVideoId = String()
-    
-    var isYoutubeHidden = Bool()
+    var newVideoId = String()   
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.saveButton.isEnabled = true
+        self.saveButton.isEnabled = true       
         
         let navItem = UINavigationItem()
         navItem.title = "Share your video"
@@ -309,21 +269,19 @@ SelectorProtocol {
     
         self.scrollView.contentSize.width = self.view.frame.width
 
-        self.scrollView.addSubview(self.welcome)
-		self.scrollView.addSubview(self.categoriesContainerView)
+        self.scrollView.addSubview(self.selectCategory)
+        self.scrollView.addSubview(self.categoriesContainerView)
         self.scrollView.addSubview(self.categorySeparatorView)        
         self.scrollView.addSubview(self.localVideoRowView)
-        self.scrollView.addSubview(self.localVideoSeparatorView)
-        self.scrollView.addSubview(self.youtubeVideoRowView)
-        self.scrollView.addSubview(self.youtubeVideoSeparatorView)
+        self.scrollView.addSubview(self.localVideoSeparatorView)        
         self.scrollView.addSubview(self.previewVideoRowView)
         self.scrollView.addSubview(self.previewVideoSeparatorView)
         self.scrollView.addSubview(self.saveButton)
         self.scrollView.addSubview(self.bottomView)
-        
+
         
         let cwidth:CGFloat = self.view.frame.width
-        let cp:CGFloat = 12
+        let cp:CGFloat = 20
         let cs:CGFloat = cwidth - (cp*2)
         
         print(cwidth)
@@ -331,45 +289,35 @@ SelectorProtocol {
         print(cs)
         
         self.metricsNew["cp"]    =  cp
-        self.metricsNew["cs"]    =  cs
-        
-        if self.isYoutubeHidden {
-            
-            self.metricsNew["yt"]  =  0
-            self.metricsNew["cy"]  =  0
-            
-        } else {
-            
-            self.metricsNew["yt"]  =  40
-            self.metricsNew["cy"]  =  cp
-        }
+        self.metricsNew["cs"]    =  cs      
 
-        self.scrollView.addConstraintsWithFormat(
-            "V:|[v0(40)][v1(320)][v2(cp)][v3(60)][v4(cy)][v5(yt)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|", views:
-            self.welcome,
+        self.metricsNew["yt"]  =  40
+        self.metricsNew["cy"]  =  cp
+
+        //"V:|[v0(40)][v1(320)][v2(cp)][v3(60)][v4(cy)][v5(yt)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|"
+
+         self.scrollView.addConstraintsWithFormat(
+            "V:|[v0(40)][v1(340)][v2(cp)][v3(60)][v4(cy)][v5(120)][v6(cp)][v7(60)][v8]|", views:
+            self.selectCategory,
             self.categoriesContainerView,
             self.categorySeparatorView,            
             self.localVideoRowView,
-            self.localVideoSeparatorView,
-            self.youtubeVideoRowView,
-            self.youtubeVideoSeparatorView,
+            self.localVideoSeparatorView,            
             self.previewVideoRowView,
             self.previewVideoSeparatorView,
             self.saveButton,
             self.bottomView,
-            metrics: metricsNew)
+            metrics: metricsNew)           
         
-        self.scrollView.addConstraintsWithFormat("H:|[v0(cs)]|", views: self.welcome, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|[v0(cs)]|", views: self.selectCategory, metrics: metricsNew)
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.categoriesContainerView, metrics: metricsNew)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.categorySeparatorView, metrics: metricsNew)
-        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.youtubeVideoRowView, metrics: metricsNew)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.youtubeVideoSeparatorView, metrics: metricsNew)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.categorySeparatorView, metrics: metricsNew)        
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.localVideoRowView, metrics: metricsNew)
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.localVideoSeparatorView, metrics: metricsNew)
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.previewVideoRowView, metrics: metricsNew)
         self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.saveButton, metrics: metricsNew)
-        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.bottomView, metrics: metricsNew)
-        
+        self.scrollView.addConstraintsWithFormat("H:|-cp-[v0(cs)]-cp-|", views: self.bottomView, metrics: metricsNew)        
+      
 	    //-- categoriesContainerView
         
         let selectorWidth = cwidth - 20
@@ -383,15 +331,21 @@ SelectorProtocol {
         self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.selectorCategoryView)
         
         self.categoriesContainerView.addSubview(self.categoryTypeSeparatorView)
+        self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.categoryTypeSeparatorView)
+
+        self.categoryTypeSeparatorView.addSubview(self.selectFanpage)
+        self.categoryTypeSeparatorView.addConstraintsWithFormat("H:|[v0]|", views: self.selectFanpage)
+        self.categoryTypeSeparatorView.addConstraintsWithFormat("V:|[v0]|", views: self.selectFanpage)
         
         self.selectorFanpageView = SelectorView(frame: selRect, isEdit: false)
         self.selectorFanpageView.delegateSelector = self
         self.selectorFanpageView.setSelectorType(type: SelectorType.TypeFanpage)
+
         self.categoriesContainerView.addSubview(self.selectorFanpageView)
         self.categoriesContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.selectorFanpageView)
         
         self.categoriesContainerView.addConstraintsWithFormat(
-            "V:|[v0(150)][v1(20)][v2(150)]|",
+            "V:|[v0(150)][v1(40)][v2(150)]|",
             views:
             self.selectorCategoryView,
             self.categoryTypeSeparatorView,
@@ -402,84 +356,77 @@ SelectorProtocol {
         for i in ids {
             let cat = Global.categories_gamves[i]?.name as! String
             categories.append(cat)
-        }
-    
-		//-- youtubeVideoRowView youtube
+        }        
 
-		self.youtubeVideoRowView.addSubview(self.youtubeUrlTextField)
-		self.youtubeVideoRowView.addSubview(self.searchButton)		
+        self.localVideoRowView.addSubview(self.videoButton)             
 
-		self.youtubeVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.youtubeUrlTextField)		
-		self.youtubeVideoRowView.addConstraintsWithFormat("V:|[v0(40)]|", views: self.searchButton)	
-
-		self.youtubeVideoRowView.addConstraintsWithFormat("H:|[v0][v1(40)]|", views: 
-			self.youtubeUrlTextField,
-			self.searchButton)		
-
-		//-- youtubeVideoRowView local
-
-		self.localVideoRowView.addSubview(self.videoButton)				
-
-		self.localVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.videoButton)
+        self.localVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.videoButton)
         self.localVideoRowView.addConstraintsWithFormat("H:|[v0]|", views:
-			self.videoButton)
+            self.videoButton)
 
-		//-- previewVideoRowView 
-	
-		self.previewVideoRowView.addSubview(self.thumbnailConteinerView)
-		self.previewVideoRowView.addSubview(self.thumbnailSeparatorView)	
-		self.previewVideoRowView.addSubview(self.titleDescContainerView)			
+        //-- previewVideoRowView 
+    
+        self.previewVideoRowView.addSubview(self.thumbnailConteinerView)
+        self.previewVideoRowView.addSubview(self.thumbnailSeparatorView)    
+        self.previewVideoRowView.addSubview(self.titleDescContainerView)            
 
-		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.thumbnailConteinerView)		
-		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.thumbnailSeparatorView)	
-		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.titleDescContainerView)
-		self.previewVideoRowView.addConstraintsWithFormat("H:|[v0(120)][v1(2)][v2]|", views: 
-			self.thumbnailConteinerView,
-			self.thumbnailSeparatorView,
-			self.titleDescContainerView)
+        self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.thumbnailConteinerView)      
+        self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.thumbnailSeparatorView)  
+        self.previewVideoRowView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.titleDescContainerView)
+        self.previewVideoRowView.addConstraintsWithFormat("H:|[v0(120)][v1(2)][v2]|", views: 
+            self.thumbnailConteinerView,
+            self.thumbnailSeparatorView,
+            self.titleDescContainerView)
 
-		self.thumbnailConteinerView.addSubview(self.cameraButton)
-		self.previewVideoRowView.addConstraintsWithFormat("H:|[v0]|", views: self.cameraButton)
-		self.previewVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.cameraButton)
+        self.thumbnailConteinerView.addSubview(self.cameraButton)
+        self.previewVideoRowView.addConstraintsWithFormat("H:|[v0]|", views: self.cameraButton)
+        self.previewVideoRowView.addConstraintsWithFormat("V:|[v0]|", views: self.cameraButton)
 
-		self.titleDescContainerView.addSubview(self.titleTextField)
-		self.titleDescContainerView.addSubview(self.titleDescSeparatorView)		
-		self.titleDescContainerView.addSubview(self.descriptionTextView)
+        self.titleDescContainerView.addSubview(self.titleTextField)
+        self.titleDescContainerView.addSubview(self.titleDescSeparatorView)     
+        self.titleDescContainerView.addSubview(self.descriptionTextView)
 
-		self.titleDescContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.titleTextField)	
-		self.titleDescContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.titleDescSeparatorView)	
-		self.titleDescContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.descriptionTextView)
+        self.titleDescContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.titleTextField)    
+        self.titleDescContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.titleDescSeparatorView)    
+        self.titleDescContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.descriptionTextView)
 
-		self.titleDescContainerView.addConstraintsWithFormat("V:|[v0(40)][v1(2)][v2]|", views:
-			self.titleTextField,
-			self.titleDescSeparatorView,
-			self.descriptionTextView)	
-		
-		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor) //,x: 0, y: 0, width: 80.0, height: 80.0)
+        self.titleDescContainerView.addConstraintsWithFormat("V:|[v0(40)][v1(2)][v2]|", views:
+            self.titleTextField,
+            self.titleDescSeparatorView,
+            self.descriptionTextView)   
+        
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor) //,x: 0, y: 0, width: 80.0, height: 80.0)
 
         //Looks for single or multiple taps.
         //self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
-        if isYoutubeHidden {
-        
-            self.prepTextFields(inView: [self.titleDescContainerView])
-            
-        } else {
-            
-            self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
-            
-        }
+        self.prepTextFields(inView: [self.titleDescContainerView])
+
+        self.categoryTypeSeparatorView.isHidden = true
+        self.selectorFanpageView.isHidden = true
+
+        self.localVideoRowView.isHidden = true
+        self.localVideoSeparatorView.isHidden = true   
+
+        self.previewVideoRowView.isHidden = true
+        self.previewVideoSeparatorView.isHidden = true
+        self.saveButton.isHidden = true
+        self.bottomView.isHidden = true
         
     }
     
     func categorySelected(category: CategoryGamves) {
-        self.selectorFanpageView.loadFanpage(category: category)
-        
+        self.categoryTypeSeparatorView.isHidden = false
+        self.selectorFanpageView.isHidden = false  
+        self.selectorFanpageView.loadFanpage(category: category)        
     }
     
     func fanpageSelected(fanpage: GamvesFanpage) {
         
         self.fanpage = fanpage
+
+        self.localVideoRowView.isHidden = false
+        self.localVideoSeparatorView.isHidden = false   
         
         self.videoButton.isEnabled = true
         self.cameraButton.isEnabled = true
@@ -682,6 +629,8 @@ SelectorProtocol {
     }
     
     func didPickVideo(url: URL, data: Data, thumbnail: UIImage) {
+
+        self.showVideoRow()
         
         self.videoSelLocalUrl = url
         self.videoSelData = data
@@ -696,16 +645,15 @@ SelectorProtocol {
 
     func setResultOfsearch(videoId: String, title: String, description : String, duration: String, image : UIImage)
     {
+        self.showVideoRow()
+
     	self.videoId = videoId
     	self.videoTitle = title
     	self.videoDescription = description
     	self.thumbnailImage = image
         self.videoSelThumbnail = image
 
-        if !isYoutubeHidden {
-            self.video_url = "https://www.youtube.com/watch?v=" + self.videoId
-            self.youtubeUrlTextField.text = self.video_url
-        }
+        self.video_url = "https://www.youtube.com/watch?v=" + self.videoId        
         
     	self.titleTextField.text = title
     	self.descriptionTextView.text = description
@@ -713,6 +661,14 @@ SelectorProtocol {
         
         self.saveButton.isEnabled = true
         
+    }
+
+    func showVideoRow()
+    {
+        self.previewVideoRowView.isHidden = false
+        self.previewVideoSeparatorView.isHidden = false
+        self.saveButton.isHidden = false
+        self.bottomView.isHidden = false
     }
     
     func setVideoSearchType(type: UploadType) {

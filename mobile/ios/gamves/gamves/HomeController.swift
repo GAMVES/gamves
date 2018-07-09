@@ -376,8 +376,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }  
     
     
-    func addNewVideo() {
-        newVideoController.isYoutubeHidden = true
+    func addNewVideo() {        
         newVideoController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]

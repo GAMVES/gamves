@@ -94,11 +94,7 @@ extension NewVideoController : UITextFieldDelegate, UITextViewDelegate {
         
         var scroll = Int()
          
-        if textObj as! NSObject == youtubeUrlTextField {
-        
-            scroll = 60
-        
-        } else if textObj as! NSObject == titleTextField {
+       if textObj as! NSObject == titleTextField {
          
             scroll = 90
         
@@ -181,15 +177,7 @@ extension NewVideoController : UITextFieldDelegate, UITextViewDelegate {
         
         //if (self.current?.isKind(of: UITextField()))! {
         
-        if (self.current === youtubeUrlTextField) {
-            
-            submitForm()
-            
-        } else if (self.current === titleTextField) {
-         
-            youtubeUrlTextField.becomeFirstResponder()
-            
-        } else if (self.current === descriptionTextView) {
+        if (self.current === descriptionTextView) {
          
             titleTextField.becomeFirstResponder()
             
@@ -199,11 +187,7 @@ extension NewVideoController : UITextFieldDelegate, UITextViewDelegate {
     
     func doBtnNext(_ sender: Any) {
         
-        if (self.current === youtubeUrlTextField) {
-            
-            titleTextField.becomeFirstResponder()
-            
-        } else if (self.current === titleTextField) {
+       if (self.current === titleTextField) {
             
             descriptionTextView.becomeFirstResponder()
         }

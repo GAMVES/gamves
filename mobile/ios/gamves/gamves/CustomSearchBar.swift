@@ -63,8 +63,7 @@ class CustomSearchBar: UISearchBar {
     }
     
     func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        //filterSearchController(searchBar)
-        print("")
+        //filterSearchController(searchBar)        
     }
     
     required init?(coder aDecoder: NSCoder) {

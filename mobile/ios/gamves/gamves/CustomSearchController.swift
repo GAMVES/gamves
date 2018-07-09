@@ -20,6 +20,8 @@ protocol CustomSearchControllerDelegate {
     func didChangeSearchText(searchText: String)
     
     func searchBarCancelButtonClicked()
+
+    func filterSearchController(id: Int)
 }
 
 
@@ -94,6 +96,10 @@ class CustomSearchController: UISearchController, UISearchBarDelegate {
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         customSearchBar.resignFirstResponder()
         customDelegate.didTapOnSearchButton()
+    }
+
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        customDelegate.filterSearchController(id: selectedScope)
     }
     
 }

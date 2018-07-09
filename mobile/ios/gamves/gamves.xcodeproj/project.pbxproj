@@ -107,6 +107,7 @@
 		C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */; };
 		C92ED61B2060C74B004AC9A2 /* ProfileLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */; };
 		C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */; };
+		C9A0011C20F3CEE900906F33 /* NewFriendController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0011B20F3CEE900906F33 /* NewFriendController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -213,6 +214,7 @@
 		C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
 		C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileLauncher.swift; sourceTree = "<group>"; };
 		C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
+		C9A0011B20F3CEE900906F33 /* NewFriendController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendController.swift; sourceTree = "<group>"; };
 		E24F455AB391FC717A52882D /* Pods-gamves.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.release.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.release.xcconfig"; sourceTree = "<group>"; };
 		E3B0DD69767FAC16A4611662 /* Pods-gamves.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -524,6 +526,7 @@
 				82E66DB81FD4B51000968E88 /* NewVideoController.swift */,
 				82B0343C1FDFC35F009CD1A7 /* YouTubePlayerController.swift */,
 				C92C3EC9207A88150029E206 /* ProfileController.swift */,
+				C9A0011B20F3CEE900906F33 /* NewFriendController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -773,6 +776,7 @@
 				826844561FF048D1008BA13B /* RangeSlider.swift in Sources */,
 				824E67D41F5D781C0025096D /* InfoView.swift in Sources */,
 				826B8CC420184C37008C19A3 /* MediaController.swift in Sources */,
+				C9A0011C20F3CEE900906F33 /* NewFriendController.swift in Sources */,
 				82DD00371F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift in Sources */,
 				C92C3ECA207A88150029E206 /* ProfileController.swift in Sources */,
 				82970BA41F1DBFF000F6ABAD /* VideoPage.swift in Sources */,

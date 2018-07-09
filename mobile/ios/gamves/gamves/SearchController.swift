@@ -83,11 +83,8 @@ class SearchController: UIViewController,
     UIBarPositioningDelegate,
     TableViewCellDelegate,
     CustomSearchControllerDelegate
-{
-    
-    
-
-    //var customSearchBar: CustomSearchBar!
+{   
+     
     
     //https://www.appcoda.com/custom-search-bar-tutorial
     //var customDelegate: CustomSearchControllerDelegate!
@@ -153,6 +150,8 @@ class SearchController: UIViewController,
     var buttonClear:UIButton!
 
     let cellHeight = 150  
+
+    var videoSelectedScope = Int()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -278,7 +277,7 @@ class SearchController: UIViewController,
                 
             } else if self.type == SearchType.isVideo {
                 
-                self.findVideoFromSuggestion(suggestion:  self.termToSearch)
+                self.findVideoFromSuggestion(suggestion:  self.termToSearch, videoId: String())
                 
             }
             
@@ -420,9 +419,22 @@ class SearchController: UIViewController,
             isInitial = false
             
             self.trends = [GamvesTrendCategory]()
-            
-            self.findSuggestion(stringToSearch:
-            self.customSearchController.customSearchBar.text!)
+
+            if self.videoSelectedScope == 1 {
+
+                let text = self.customSearchController.customSearchBar.text
+
+                let chunks = text?.components(separatedBy: "//")
+
+                print(chunks)
+
+                self.findVideoFromSuggestion(suggestion: String(), videoId: chunks![2])
+
+            } else {
+
+                self.findSuggestion(stringToSearch:
+                self.customSearchController.customSearchBar.text!)
+            }
             
         } else {
 
@@ -482,6 +494,10 @@ class SearchController: UIViewController,
         }
 
         
+    }
+
+    func filterSearchController(id: Int) {
+       self.videoSelectedScope = id
     }
 
     /*func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
@@ -943,7 +959,7 @@ class SearchController: UIViewController,
             
             if type == SearchType.isVideo {
         
-                self.findVideoFromSuggestion(suggestion: tr.name)
+                self.findVideoFromSuggestion(suggestion: tr.name, videoId: String())
 
                 self.isInitial = false
                 
@@ -1193,15 +1209,24 @@ class SearchController: UIViewController,
 
 
 
-    func findVideoFromSuggestion(suggestion: String) {
+    func findVideoFromSuggestion(suggestion: String, videoId:String) {
         
         isSuggestion = false        
         self.customSearchController.customSearchBar.isLoading = true
         
         self.activityIndicatorView?.startAnimating()
+
+        var urlString = String()
         
-        var urlString:String = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id,snippet(title,description,channelTitle,thumbnails))&order=viewCount&q=\(suggestion)&type=video&maxResults=50&key=\(Global.api_key)"
+        if videoId.isEmpty {
         
+            urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id,snippet(title,description,channelTitle,thumbnails))&order=viewCount&q=\(suggestion)&type=video&maxResults=50&key=\(Global.api_key)"
+        
+        } else {
+
+            urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id,snippet(title,description,channelTitle,thumbnails))&order=viewCount&id=\(videoId)&type=video&maxResults=50&key=\(Global.api_key)"
+        }
+                 
         let urlwithPercentEscapes = urlString.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         
         Alamofire.request(urlwithPercentEscapes!, method: .get)
