@@ -62,6 +62,10 @@ class CustomSearchBar: UISearchBar {
         isTranslucent = false
     }
     
+    func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        //filterSearchController(searchBar)
+        print("")
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

@@ -14,6 +14,8 @@ import PopupDialog
 class Global: NSObject
 {
   
+    static var trends_stored = [GamvesTrendCategory]()
+
     static var listOfSwearWords = [String]()
 
     static func setBadWordsArray(words: String)

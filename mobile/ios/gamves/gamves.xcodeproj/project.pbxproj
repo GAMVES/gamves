@@ -75,7 +75,7 @@
 		82C6F75C1F8AA8F50090C725 /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82C6F7571F8AA8F50090C725 /* UIImage+Extension.swift */; };
 		82C908491FA0B8220059FAB8 /* ImagesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82C908481FA0B8220059FAB8 /* ImagesCollectionViewCell.swift */; };
 		82C9084B1FA0FD790059FAB8 /* Downloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82C9084A1FA0FD790059FAB8 /* Downloader.swift */; };
-		82DD00301F9CF21600CD19D7 /* GroupNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DD002F1F9CF21500CD19D7 /* GroupNameViewController.swift */; };
+		82DD00301F9CF21600CD19D7 /* NewGroupNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DD002F1F9CF21500CD19D7 /* NewGroupNameViewController.swift */; };
 		82DD00341F9D021C00CD19D7 /* UINavigationBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DD00331F9D021C00CD19D7 /* UINavigationBar+Extension.swift */; };
 		82DD00371F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DD00361F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift */; };
 		82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E1AC231FF422D400209AEF /* NewFanpageController.swift */; };
@@ -179,7 +179,7 @@
 		82C6F7571F8AA8F50090C725 /* UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
 		82C908481FA0B8220059FAB8 /* ImagesCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesCollectionViewCell.swift; sourceTree = "<group>"; };
 		82C9084A1FA0FD790059FAB8 /* Downloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Downloader.swift; sourceTree = "<group>"; };
-		82DD002F1F9CF21500CD19D7 /* GroupNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupNameViewController.swift; sourceTree = "<group>"; };
+		82DD002F1F9CF21500CD19D7 /* NewGroupNameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewGroupNameViewController.swift; sourceTree = "<group>"; };
 		82DD00331F9D021C00CD19D7 /* UINavigationBar+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Extension.swift"; sourceTree = "<group>"; };
 		82DD00361F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupUserCollectionViewCell.swift; sourceTree = "<group>"; };
 		82E1AC231FF422D400209AEF /* NewFanpageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewFanpageController.swift; sourceTree = "<group>"; };
@@ -520,7 +520,7 @@
 				C7E095C81D14C6690081F88C /* SettingsLauncher.swift */,
 				82BD5EF81F915D1E00BD8760 /* ChatViewController.swift */,
 				82BD5EFA1F91635400BD8760 /* SelectContactViewController.swift */,
-				82DD002F1F9CF21500CD19D7 /* GroupNameViewController.swift */,
+				82DD002F1F9CF21500CD19D7 /* NewGroupNameViewController.swift */,
 				82E66DB81FD4B51000968E88 /* NewVideoController.swift */,
 				82B0343C1FDFC35F009CD1A7 /* YouTubePlayerController.swift */,
 				C92C3EC9207A88150029E206 /* ProfileController.swift */,
@@ -749,7 +749,7 @@
 				C7E095C91D14C6690081F88C /* SettingsLauncher.swift in Sources */,
 				8268445C1FF2A82B008BA13B /* LoginController+Extensions.swift in Sources */,
 				82C6F7591F8AA8F50090C725 /* Color+Extensions.swift in Sources */,
-				82DD00301F9CF21600CD19D7 /* GroupNameViewController.swift in Sources */,
+				82DD00301F9CF21600CD19D7 /* NewGroupNameViewController.swift in Sources */,
 				824EDD771FDD5DB300D513D8 /* TakePicturesController.swift in Sources */,
 				824E67C11F5458130025096D /* LoginController+Extension.swift in Sources */,
 				82C908491FA0B8220059FAB8 /* ImagesCollectionViewCell.swift in Sources */,

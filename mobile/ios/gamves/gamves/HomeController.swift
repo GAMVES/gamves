@@ -44,8 +44,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return launcher
     }()
 
-    lazy var groupNameViewController: GroupNameViewController = {
-        let groupName = GroupNameViewController()
+    lazy var newGroupNameViewController: NewGroupNameViewController = {
+        let groupName = NewGroupNameViewController()
         groupName.homeController = self
         return groupName
     }()
@@ -404,15 +404,14 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func clearNewVideo() {
         self.newVideoController = NewVideoController()
         newVideoController.homeController = self
-    }   
-    
+    }
     
     func selectGroupName(users: [GamvesUser]) {
-        self.groupNameViewController.view.backgroundColor = UIColor.white
-        self.groupNameViewController.gamvesUsers = users
+        self.newGroupNameViewController.view.backgroundColor = UIColor.white
+        self.newGroupNameViewController.gamvesUsers = users
         self.navigationController?.navigationBar.tintColor = UIColor.white
         self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        self.navigationController?.pushViewController(groupNameViewController, animated: true)
+        self.navigationController?.pushViewController(newGroupNameViewController, animated: true)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

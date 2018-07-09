@@ -13,7 +13,7 @@ import ParseLiveQuery
 import GameKit
 import NVActivityIndicatorView
 
-class GroupNameViewController: UIViewController,
+class NewGroupNameViewController: UIViewController,
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate,
     UICollectionViewDataSource,

@@ -1,9 +1,7 @@
-//
-//  SearchController.swift
+///  SearchController.swift
 //  gamves
 //
 //  Created by Jose Vigil on 12/4/17.
-//  Copyright © 2017 letsbuildthatapp. All rights reserved.
 //
 
 import UIKit
@@ -81,32 +79,18 @@ protocol SearchProtocol {
 class SearchController: UIViewController, 
     UITableViewDelegate, UITableViewDataSource,
     UISearchResultsUpdating, UISearchBarDelegate,
-    XMLParserDelegate,
-    //VidewVideoProtocol,
+    XMLParserDelegate,    
     UIBarPositioningDelegate,
     TableViewCellDelegate,
     CustomSearchControllerDelegate
 {
-    func didStartSearching() {
-        
-    }
     
-    func didTapOnSearchButton() {
-        
-    }
-    
-    func didTapOnCancelButton() {
-        
-    }
-    
-    func didChangeSearchText(searchText: String) {
-        
-    }
     
 
-    var customSearchBar: CustomSearchBar!
+    //var customSearchBar: CustomSearchBar!
     
-    var customDelegate: CustomSearchControllerDelegate!
+    //https://www.appcoda.com/custom-search-bar-tutorial
+    //var customDelegate: CustomSearchControllerDelegate!
 
     var customSearchController: CustomSearchController!
     
@@ -126,7 +110,7 @@ class SearchController: UIViewController,
     
     var searchURL = String()
     
-    var searchController = UISearchController(searchResultsController: nil)
+    //var searchController = UISearchController(searchResultsController: nil)
     
     var videoDetailsDict : [Int:YVideo]!
     var filteredVideos = [YVideo]()
@@ -140,7 +124,7 @@ class SearchController: UIViewController,
     var delegateSearch:SearchProtocol!   
 
     var parser = XMLParser()
-    var trends = [GamvesTrendCategory]()
+    var trends = [GamvesTrendCategory]()    
     
     var isSuggestion = Bool()
     var isInitial = Bool()
@@ -230,20 +214,7 @@ class SearchController: UIViewController,
             
             self.view.addConstraintsWithFormat("V:|[v0]|", views: self.tableView)            
         }
-
-        self.configureCustomSearchController()
         
-        /*self.searchController = UISearchController(searchResultsController: nil)
-        self.searchController.searchResultsUpdater = self
-        self.searchController.dimsBackgroundDuringPresentation = false
-        self.searchController.searchBar.placeholder = "Search Youtube Videos"
-        self.searchController.searchBar.delegate = self
-        self.searchController.searchBar.sizeToFit()
-        self.searchController.searchBar.barTintColor = UIColor.gamvesColor
-        self.searchController.searchBar.tintColor = .white*/
-        
-        //self.tableView.tableHeaderView = self.customSearchController.searchBar
-      
         definesPresentationContext = true
            
         self.videoDetailsDict = [Int:YVideo]()
@@ -260,30 +231,25 @@ class SearchController: UIViewController,
 
         self.title = "SEARCH VIDEO"
 
-        self.tableView.backgroundView = UIImageView(image: image!)       
-        
-        //if #available(iOS 11.0, *) {
-        //    self.searchController.searchBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        //}   
-       
+        self.tableView.backgroundView = UIImageView(image: image!)              
 
         self.tableView.register(CustomHeader.self, forHeaderFooterViewReuseIdentifier: "CustomHeader")
-        self.tableView.register(HeaderView.self, forHeaderFooterViewReuseIdentifier: "HeaderView")        
+        self.tableView.register(HeaderView.self, forHeaderFooterViewReuseIdentifier: "HeaderView")
+        
+        self.configureCustomSearchController()
     }   
   
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewDidAppear(animated)        
         
-        //if self.termToSearch != nil || !self.termToSearch.isEmpty {
-
         print(self.termToSearch)
         
         if !self.termToSearch.isEmpty {
             
-            self.searchController.isActive = true
+            self.customSearchController.isActive = true
             
-            self.searchController.searchBar.text = self.termToSearch
+            self.customSearchController.customSearchBar.text = self.termToSearch
             
             print(self.termToSearch)
 
@@ -305,7 +271,7 @@ class SearchController: UIViewController,
                     
                     self.addDeletButtons()
 
-                    self.searchController.searchBar.isHidden = true
+                    self.customSearchController.customSearchBar.isHidden = true
                     self.activityIndicatorView?.stopAnimating()
 
                 }
@@ -361,18 +327,22 @@ class SearchController: UIViewController,
         self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonClear)
         self.buttonView.addConstraintsWithFormat("V:|[v0]|", views: self.buttonCancel)
         
-        //self.tableView.estimatedSectionHeaderHeight = 120
-        //self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension
-
-    }
+      }
 
     func configureCustomSearchController() {
+
         customSearchController = CustomSearchController(searchResultsController: self, searchBarFrame: CGRect(x:0.0, y:0.0, width:self.tableView.frame.size.width, height:80.0), searchBarFont: UIFont(name: "Futura", size: 26.0)!, searchBarTextColor: UIColor.orange, searchBarTintColor: UIColor.black)
         
-        customSearchController.customSearchBar.placeholder = "search video ..."
-        self.tableView.tableHeaderView = customSearchController.customSearchBar
+        self.customSearchController.customSearchBar.placeholder = "  Search video here ..."
+
+        self.customSearchController.customSearchBar.showsScopeBar = true
+
+        self.customSearchController.customSearchBar.scopeButtonTitles = ["Terms", "Youtube url"]
+
+        self.customSearchController.customDelegate = self
+
+        self.tableView.tableHeaderView = self.customSearchController.customSearchBar     
         
-        customSearchController.customDelegate = self
     }
 
 
@@ -422,28 +392,119 @@ class SearchController: UIViewController,
         self.isInitial = true
         print("back")
         _ = navigationController?.popViewController(animated: true)
+    }  
+    
+    
+    // MARK: CustomSearchControllerDelegate functions
+    
+    func didStartSearching() {
+        print("")
+    }
+    
+    
+    func didTapOnSearchButton() {
+        print("")
+    }
+    
+    
+    func didTapOnCancelButton() {
+        print("")   
+    }
+    
+    
+    func didChangeSearchText(searchText: String) {        
+
+        if !self.customSearchController.customSearchBar.text!.isEmpty {       
+            
+            isSuggestion = true
+            isInitial = false
+            
+            self.trends = [GamvesTrendCategory]()
+            
+            self.findSuggestion(stringToSearch:
+            self.customSearchController.customSearchBar.text!)
+            
+        } else {
+
+            self.loadInitialAgain()
+            //self.trends.removeAll()
+            //self.tableView.reloadData()
+        }    
+
     }
 
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        print("")
+    }
+    
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        print("")
+    }
+    
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        print("")   
+    }
+    
+    
+    // MARK: UISearchResultsUpdating delegate function
+    
+    func updateSearchResultsForSearchController(searchController: UISearchController) {
+        print("")
+    }
+    
+     func didEndSearching() {
+        print("")
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        print("")
+    }
+    
+
+    func searchBarCancelButtonClicked() {    
+
+        self.customSearchController.customSearchBar.text = ""   
+        self.loadInitialAgain()
+    }
+
+    func loadInitialAgain()
+    {
+        self.isSuggestion = true
+        self.isInitial = true
+
+        self.trends = [GamvesTrendCategory]()
+        self.trends = Global.trends_stored
+
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
 
         
-        if !self.searchController.searchBar.text!.isEmpty {            
+    }
+
+    /*func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+
+        
+        if !self.customSearchController.searchBar.text!.isEmpty {
             isSuggestion = true
             self.trends = [GamvesTrendCategory]()        
-            self.findSuggestion(stringToSearch: searchController.searchBar.text!)
+            self.findSuggestion(stringToSearch: customSearchController.searchBar.text!)
         } else {
             
             self.trends.removeAll()
             self.tableView.reloadData()
-        }      
-    }
+        }     
+         
+    }*/
     
-    @available(iOS 8.0, *)
+    /*@available(iOS 8.0, *)
     func updateSearchResults(for searchController: UISearchController) {       
 
         if !searchController.searchBar.text!.isEmpty {
 
-            if !Global.containsSwearWord(text: self.searchController.searchBar.text! , swearWords: Global.listOfSwearWords ) {
+            if !Global.containsSwearWord(text: self.customSearchController.customSearchBar.text! , swearWords: Global.listOfSwearWords ) {
 
                 isSuggestion = true
                 self.trends = [GamvesTrendCategory]()        
@@ -451,7 +512,7 @@ class SearchController: UIViewController,
 
             } else {
 
-                self.searchController.searchBar.text = ""
+                self.customSearchController.customSearchBar.text = ""
 
             }
 
@@ -459,7 +520,7 @@ class SearchController: UIViewController,
             self.trends.removeAll()
             self.tableView.reloadData()
         }
-    }
+    }*/
     
     func numberOfSections(in tableView: UITableView) -> Int {
         var countSections = Int()
@@ -564,8 +625,15 @@ class SearchController: UIViewController,
         var c = 0
         
         if isSuggestion {
+
+            if isInitial {
             
-            c = self.trends[section].trend.count 
+                c = self.trends[section].trend.count 
+
+            } else {
+
+                c = self.trends.count
+            }
 
         } else {        
             
@@ -604,7 +672,14 @@ class SearchController: UIViewController,
         if isSuggestion {
             
             cell = tableView.dequeueReusableCell(withIdentifier: self.cellId, for: indexPath)
-            let tr = self.trends[section].trend[index] as GamvesTrend
+
+            var tr = GamvesTrend()
+
+            if isInitial {
+                tr = self.trends[section].trend[index] as GamvesTrend
+            } else {
+                tr.name = self.trends[index].name
+            }
             cell.textLabel?.text = tr.name
             
         } else {
@@ -840,13 +915,23 @@ class SearchController: UIViewController,
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        searchController.searchBar.endEditing(true)
+        self.customSearchController.customSearchBar.endEditing(true)
+        
         let index = indexPath.row as Int    
         let section = indexPath.section as Int      
         
         if isSuggestion {
             
-            var tr = self.trends[section].trend[index] as GamvesTrend
+            var tr = GamvesTrend()
+            if isInitial {
+            
+                tr = self.trends[section].trend[index] as GamvesTrend
+            
+            } else {
+            
+                tr.name = self.trends[index].name                
+
+            }
             
             self.isSuggestion = false
             
@@ -870,6 +955,8 @@ class SearchController: UIViewController,
                 
                 self.findImagesFromSuggestion(suggestion: tr.name, isSingle: true)
             }
+
+            self.customSearchController.customSearchBar.text = tr.name
         
         } else {
          
@@ -929,7 +1016,7 @@ class SearchController: UIViewController,
                 } else  {
                 
                     self.isInitial = true
-                    
+
                     let searchImage = self.searchImages[index] as SearchImage
                     
                     delegateMedia?.didPickImage!(searchImage.image)
@@ -954,6 +1041,7 @@ class SearchController: UIViewController,
         } else if type == SearchType.isImageGallery {
             
             let lastElement = self.rowGalleryImages.count - 1
+
             if indexPath.row == lastElement {
                 
                 if self.end < 88 {
@@ -969,6 +1057,7 @@ class SearchController: UIViewController,
         } else if type == SearchType.isSingleImage {
             
             let lastElement = self.searchImages.count - 1
+
             if indexPath.row == lastElement {
              
                 if self.end < 88 {
@@ -1079,8 +1168,9 @@ class SearchController: UIViewController,
 
                                 self.trends.append(gamvesTrendCategory)
 
-
                                 if countCats == ( countTrendsCategory - 1 ) {
+
+                                    Global.trends_stored = self.trends
 
                                     self.activityIndicatorView?.stopAnimating()
                                     self.tableView.reloadData()
@@ -1106,7 +1196,7 @@ class SearchController: UIViewController,
     func findVideoFromSuggestion(suggestion: String) {
         
         isSuggestion = false        
-        searchController.searchBar.isLoading = true
+        self.customSearchController.customSearchBar.isLoading = true
         
         self.activityIndicatorView?.startAnimating()
         
@@ -1175,7 +1265,7 @@ class SearchController: UIViewController,
 
                                             if i == (countItems-1) {
                                                 
-                                                self.searchController.searchBar.isLoading = false
+                                                self.customSearchController.customSearchBar.isLoading = false
 
                                                 DispatchQueue.main.async {
                                                     self.tableView.reloadData()
@@ -1279,7 +1369,7 @@ class SearchController: UIViewController,
     
     func findImagesFromSuggestion(suggestion: String, isSingle: Bool) {
         
-        searchController.searchBar.isLoading = true
+        self.customSearchController.customSearchBar.isLoading = true
         self.activityIndicatorView?.startAnimating()
         
         var size = String()
@@ -1400,7 +1490,7 @@ class SearchController: UIViewController,
                                                 }
                                             }
                                             
-                                            self.searchController.searchBar.isLoading = false
+                                            self.customSearchController.customSearchBar.isLoading = false
                                             
                                             DispatchQueue.main.async(execute: {
                                                 
