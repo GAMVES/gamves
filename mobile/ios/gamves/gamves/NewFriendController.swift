@@ -2,34 +2,382 @@
 //  NewFriendController.swift
 //  gamves
 //
-//  Created by XCodeClub on 2018-07-09.
-//  Copyright © 2018 letsbuildthatapp. All rights reserved.
+//  Created by Jose Vigil on 2018-07-09.
 //
 
 import UIKit
+import NVActivityIndicatorView
+import Parse
 
-class NewFriendController: UIViewController {
+class NewFriendController: UIViewController,
+    UICollectionViewDataSource,
+    UICollectionViewDelegate,
+    UICollectionViewDelegateFlowLayout,
+    UITableViewDataSource, 
+    UITableViewDelegate
+ {   
+
+    var homeController: HomeController?
+
+    var gamvesUsers = [GamvesUser]()
+    var selectedUsers = [GamvesUser]()
+    
+    var activityView:NVActivityIndicatorView?
+
+    let info: PaddingLabel = {
+        let label = PaddingLabel()
+        label.text = "Select the people you may know below and add them as friends"
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = UIColor.white
+        label.numberOfLines = 2
+        label.textAlignment = .center
+        label.backgroundColor = UIColor.gamvesColor
+        return label
+    }()
+
+    let friendsSelected: PaddingLabel = {
+        let label = PaddingLabel()
+        label.text = "Friends selected"
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        label.backgroundColor = UIColor.gambesDarkColor
+        return label
+    }()    
+   
+    lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = UIColor.gamvesBlackColor
+        cv.dataSource = self
+        cv.delegate = self
+        return cv
+    }()
+
+
+    let friendsAvailable: PaddingLabel = {
+        let label = PaddingLabel()
+        label.text = "Friends list"
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = UIColor.white
+        label.backgroundColor = UIColor.gambesDarkColor
+        label.textAlignment = .center
+        return label
+    }()
+
+    lazy var tableView: UITableView = {
+        let rect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        let tv = UITableView(frame: rect)
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        tv.backgroundColor = UIColor.green
+        tv.dataSource = self
+        tv.delegate = self
+        return tv
+    }()
+
+    var addButton: UIButton = {
+        let button = UIButton()        
+        button.translatesAutoresizingMaskIntoConstraints = false        
+        button.isUserInteractionEnabled = true
+        button.setTitle("Add selected friends", for: UIControlState())
+        button.addTarget(self, action: #selector(handleAdd), for: .touchUpInside)
+        button.layer.cornerRadius = 5              
+        button.backgroundColor = UIColor.gamvesBlackColor
+        return button
+    }()
+    
+    let cellIdCollectionView = "friendsCellIdCollectionView"
+    let cellIdTableView = "friendsCellIdTableView"
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-    }
+        self.title = "ADD FRIENDS"
+
+        self.view.backgroundColor = UIColor.gamvesColor
+
+        self.view.addSubview(self.info)
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.info)        
+
+        self.view.addSubview(self.friendsSelected)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.friendsSelected)
+
+        self.view.addSubview(self.collectionView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
+                
+        self.view.addSubview(self.friendsAvailable)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.friendsAvailable)
+        
+        self.view.addSubview(self.tableView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
+        
+        self.view.addSubview(self.addButton)
+        self.view.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.addButton)     
+
+        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(40)][v2(150)][v3(40)][v4][v5(60)]-10-|", views: 
+            self.info,
+            self.friendsSelected,
+            self.collectionView, 
+            self.friendsAvailable,
+            self.tableView,
+            self.addButton)        
+
+        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+
+        self.tableView.register(FriendsTableViewCell.self, forCellReuseIdentifier: self.cellIdTableView)        
+        
+        self.collectionView.register(CatFanSelectorViewCell.self, forCellWithReuseIdentifier: cellIdCollectionView)
+
+        self.fetchUsers()
+
+        self.disableAddButton()
+    }   
+
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        if self.gamvesUsers.count > 0 {
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+        
+        if self.selectedUsers.count > 0 {
+            
+            self.selectedUsers.removeAll()
+            
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+            
+        }
+
+        self.disableAddButton()
+    }   
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+    }
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let count = self.selectedUsers.count
+        print(count)
+        return count
     }
-    */
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let size = CGSize(width: 130, height: 130)
+        return size
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        var cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellIdCollectionView, for: indexPath) as! CatFanSelectorViewCell        
+        
+        let index = indexPath.item
+        let user:GamvesUser = self.selectedUsers[index]
+
+        cell.avatarImage.image = user.avatar
+        cell.nameLabel.text = user.name       
+   
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("index : \(indexPath)")
+    }
+
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        print("index : \(indexPath)")
+        
+        //let cell = self.collectionView.cellForItem(at: indexPath) as! CatFanSelectorViewCell
+        
+    }
+
+    //////////////
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }   
+   
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let countItems = Int(self.gamvesUsers.count)
+        print(countItems)
+        return countItems
+    }  
+        
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdTableView, for: indexPath) as! FriendsTableViewCell       
+        
+        let index = indexPath.item
+        let user:GamvesUser = self.gamvesUsers[index]
+
+        cell.nameLabel.text = user.name
+        print(user.name)
+        cell.profileImageView.image = user.avatar            
+            
+        if user.isChecked
+        {
+            cell.checkLabel.isHidden = false
+            
+        } else
+        {
+            cell.checkLabel.isHidden = true
+            
+        }
+
+        return cell 
+    } 
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {  
+        
+        print(indexPath.row)       
+
+        let user = self.gamvesUsers[indexPath.row] as GamvesUser
+
+        let checked = user.isChecked
+            
+        if !checked
+        {
+            self.gamvesUsers[indexPath.item].isChecked  = true
+
+            if !self.selectedUsers.contains(where: { $0.name == user.name }) {
+            
+                self.selectedUsers.append(user) 
+            }
+
+            self.enableAddButton()
+            
+        } else
+        {
+            self.gamvesUsers[indexPath.item].isChecked = false
+
+            let indexOfUser = selectedUsers.index{$0 === user}
+            
+            print(indexOfUser)
+    
+            self.selectedUsers.remove(at: indexOfUser!)
+
+            self.disableAddButton()
+
+        }   
+         
+
+        DispatchQueue.main.async {
+
+            self.collectionView.reloadData()
+
+            self.tableView.reloadData()
+
+        }        
+        
+    } 
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        var height = CGFloat()
+
+        height = 100
+
+        return height
+    
+    }
+
+    func enableAddButton() {
+
+        self.addButton.isEnabled = true 
+        self.addButton.alpha = 1
+    }
+
+    func disableAddButton() {
+
+        self.addButton.isEnabled = false
+        self.addButton.alpha = 0.4
+    }    
+
+    func fetchUsers()
+    {
+
+        self.activityView?.startAnimating()
+        
+        let userQuery = PFQuery(className:"_User")        
+        userQuery.whereKey("iDUserType", equalTo: 2)
+        userQuery.findObjectsInBackground(block: { (users, error) in
+            
+            if error == nil
+            {
+                let usersCount =  users?.count
+                var count = 0
+                
+                print(usersCount)
+                
+                for user in users!
+                {
+                    let gamvesUser = GamvesUser()
+                    gamvesUser.name = user["Name"] as! String
+                    
+                    print(gamvesUser.name)
+                    
+                    gamvesUser.userId = user.objectId!
+                    gamvesUser.userName = user["username"] as! String
+                    if user["status"] != nil
+                    {
+                        gamvesUser.status = user["status"] as! String
+                    }
+                    gamvesUser.userObj = user as! PFUser
+                    
+                    let userId = user.objectId as! String
+                    
+                    if PFUser.current()?.objectId == userId
+                    {
+                        gamvesUser.isSender = true
+                    }
+                    
+                    let picture = user["pictureSmall"] as! PFFile
+                    picture.getDataInBackground(block: { (data, error) in
+                        
+                        let image = UIImage(data: data!)
+                        gamvesUser.avatar = image!
+                        gamvesUser.isAvatarDownloaded = true
+                        gamvesUser.isAvatarQuened = false
+                        
+                        self.gamvesUsers.append(gamvesUser)
+                        
+                        if (usersCount! - 1) == count
+                        {
+                            DispatchQueue.main.async {
+                                self.tableView.reloadData()
+                                self.activityView?.stopAnimating()
+                            }
+                        }
+                        
+                        count = count + 1
+
+                    })
+                }
+            }
+        })
+    }
+
+
+    func handleAdd() {
+
+        print("add")
+        
+    }
+
 
 }

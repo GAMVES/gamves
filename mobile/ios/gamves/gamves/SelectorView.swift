@@ -3,7 +3,6 @@
 //  gamves
 //
 //  Created by Jose Vigil on 01/02/2018.
-//  Copyright © 2018 letsbuildthatapp. All rights reserved.
 //
 
 import UIKit

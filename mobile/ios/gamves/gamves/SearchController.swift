@@ -424,11 +424,11 @@ class SearchController: UIViewController,
 
                 let text = self.customSearchController.customSearchBar.text
 
-                let chunks = text?.components(separatedBy: "//")
+                let chunks = text?.components(separatedBy: "//") as! [String]
 
                 print(chunks)
 
-                self.findVideoFromSuggestion(suggestion: String(), videoId: chunks![2])
+                self.findVideoFromSuggestion(suggestion: String(), videoId: chunks[2])
 
             } else {
 

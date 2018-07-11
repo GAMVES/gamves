@@ -168,7 +168,7 @@ class HomeViewController: UIViewController,
 
     var _status = UserStatistics()
     var _location = UserStatistics()
-    var _time = UserStatistics()
+    var _friends = UserStatistics()
     var _approval = UserStatistics()
     var _activity = UserStatistics()
     var _history = UserStatistics()
@@ -316,6 +316,7 @@ class HomeViewController: UIViewController,
     
         _status.desc = "Offline"
         _status.icon = UIImage(named: "status_offline")!
+        _status.second_icon = UIImage(named: "time")!
         _status.id = 0
         self.userStatistics.append(_status)
     
@@ -325,12 +326,12 @@ class HomeViewController: UIViewController,
         _location.icon = UIImage(named: "map")!
         self.userStatistics.append(_location)
     
-        _time.desc = "Week count"
-        _time.data = "04:50 hs"
-        _time.id = 2
-        _time.icon = UIImage(named: "time")!
-        self.userStatistics.append(_time)
-    
+        _friends.desc = "Friends" 
+        _friends.data = "04:50 hs"
+        _friends.id = 2
+        _friends.icon = UIImage(named: "add_friend")!
+        self.userStatistics.append(_friends)
+
         _approval.desc = "Approvals"
         _approval.id = 3
         _approval.icon = UIImage(named: "check_circle")!
@@ -571,7 +572,11 @@ class HomeViewController: UIViewController,
 			self.loadStatistics()
 
             self._approval.approval = count as Int
-            self.collectionView.reloadData()
+            
+            DispatchQueue.main.async {
+                
+                self.collectionView.reloadData()
+            }
             
         })
         
@@ -659,8 +664,7 @@ class HomeViewController: UIViewController,
            
             navigationController?.pushViewController(self.chatViewController, animated: true)
     
-        }
-        
+        }                
     }
 
     @objc func handleSpousePhotoImageView(sender: UITapGestureRecognizer)
@@ -738,6 +742,7 @@ class HomeViewController: UIViewController,
         
         print(stats.desc)
         print(stats.approval)
+        print(id)
         
         if id == 0
         {
@@ -746,20 +751,24 @@ class HomeViewController: UIViewController,
                 stats.icon = UIImage(named: "status_online")!
                 cell.descLabel.text = "Online"
 
-                cell.dataLabel.isHidden = true
+                //cell.dataLabel.isHidden = true
 
             } else
             {
                 stats.icon = UIImage(named: "status_offline")!
-                cell.descLabel.text = "Offline"
+                cell.descLabel.text = "Offline"                
 
-                 cell.dataLabel.text = stats.data
+                cell.dataLabel.text = stats.data
 
-            }
+            }      
+
+            //cell.secondIconImageView.image = UIImage(named: "time")!
+            //cell.secondIconImageView.alpha = 0.4
             
-            
-            
-        }
+        } //else {
+
+            //cell.secondIconImageView.isHidden = true      
+        //}
         
         if stats.approval > 0 {
             
@@ -775,21 +784,25 @@ class HomeViewController: UIViewController,
             
             cell.layer.cornerRadius = 10
             
-        }
+        }        
         
-        /*else {
-            
-            stats.icon = UIImage(named: "check_circle")!
-            
-            cell.descLabel.textColor = UIColor.darkGray
-            cell.dataLabel.textColor = UIColor.lightGray
-            
-            cell.backgroundColor = UIColor.gamvesBackgoundColor
-            cell.layer.cornerRadius = 0
-            
-        }*/
    
         cell.iconImageView.image = stats.icon
+        
+        if id == 0 {
+            
+            print(stats.desc)
+
+            cell.secondIconImageView.image = stats.second_icon
+
+            cell.secondIconImageView.alpha = 0.4
+
+        } 
+
+        //else {
+
+        //    cell.secondIconImageView.isHidden = true
+        //}
         
         if id > 0
         {

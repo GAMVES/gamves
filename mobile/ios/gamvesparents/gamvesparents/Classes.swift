@@ -293,6 +293,7 @@ class UserStatistics
     var desc = String()
     var data = String()
     var icon = UIImage()
+    var second_icon = UIImage()
     var approval = Int()
 }
 

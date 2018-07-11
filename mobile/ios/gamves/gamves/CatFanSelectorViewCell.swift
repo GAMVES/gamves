@@ -23,7 +23,7 @@ class CatFanSelectorViewCell: UICollectionViewCell {
     let separatorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.gray
-        view.backgroundColor = UIColor.gambesDarkColor
+        //view.backgroundColor = UIColor.gambesDarkColor
         return view
     }()
     

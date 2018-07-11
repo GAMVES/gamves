@@ -28,6 +28,14 @@ class HomeCollectionViewCell: BaseCell {
         label.textColor = UIColor.darkGray
         return label
     }()
+
+     lazy var secondIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit        
+        imageView.isUserInteractionEnabled = true        
+        return imageView
+    }()
     
     var dataLabel: PaddingLabel = {
         let label = PaddingLabel()
@@ -58,14 +66,23 @@ class HomeCollectionViewCell: BaseCell {
         
         self.backView.addSubview(self.iconImageView)
         self.backView.addSubview(self.descLabel)
+        self.backView.addSubview(self.secondIconImageView)
         self.backView.addSubview(self.dataLabel)
         
         self.backView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.iconImageView)
         self.backView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.descLabel)
+        self.backView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.secondIconImageView)
         self.backView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.dataLabel)
         
-        self.backView.addConstraintsWithFormat("H:|-15-[v0(30)]-10-[v1][v2(100)]|", views: self.iconImageView, self.descLabel, self.dataLabel)
+        self.backView.addConstraintsWithFormat("H:|-15-[v0(30)]-10-[v1][v2(30)][v3(100)]|", views: 
+            self.iconImageView, 
+            self.descLabel, 
+            self.secondIconImageView,
+            self.dataLabel)
+
+        //secondIconImageView.backgroundColor = UIColor.red
+        //dataLabel.backgroundColor = UIColor.cyan
         
     }
-    
+
 }

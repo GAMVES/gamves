@@ -64,10 +64,17 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             }
         })
         
-        floaty.addItem(title: "Select Contact", handler: { item in
+        floaty.addItem(title: "New Chat", handler: { item in
             
             if self.homeController != nil {
                 self.homeController?.selectContact(group: false)
+            }
+        })
+
+        floaty.addItem(title: "Add Friend", handler: { item in
+            
+            if self.homeController != nil {
+                self.homeController?.addFriend()
             }
         })
         

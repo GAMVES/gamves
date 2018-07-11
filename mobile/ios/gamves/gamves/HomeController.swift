@@ -17,9 +17,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     let homeCellId          = "homeCellId"
     let feedCellId          = "feedCellId"
     let notificationCellId  = "notificationCellId"
-    let profileCellId       = "profileCellId"
+    let profileCellId       = "profileCellId"   
     
-    //let titles = ["Home", "Trending", "Community", "Profile"]
     let titles = ["Home", "Activity", "Notifications", "Profile"]
     
     var cellFree:FeedCell!
@@ -29,8 +28,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     var locationManager : CLLocationManager = CLLocationManager()
     
-    var didFindLocation = Bool()
-
+    var didFindLocation = Bool()    
 
     lazy var chatLauncher: ChatViewController = {
         let launcher = ChatViewController()
@@ -56,7 +54,13 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return selector
     }()
 
-     lazy var menuBar: MenuBar = {
+    lazy var newFriendController: NewFriendController = {
+        let newFriend = NewFriendController()
+        newFriend.homeController = self
+        return newFriend
+    }()
+
+    lazy var menuBar: MenuBar = {
         let mb = MenuBar()
         mb.homeController = self
         return mb
@@ -364,8 +368,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(self.chatLauncher, animated: true)
-    } 
-    
+    }    
     
     func selectContact(group: Bool) {
         selectContactViewController.isGroup = group
@@ -373,6 +376,13 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(selectContactViewController, animated: true)
+    }  
+
+    func addFriend() {        
+        newFriendController.view.backgroundColor = UIColor.white
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(newFriendController, animated: true)
     }  
     
     
