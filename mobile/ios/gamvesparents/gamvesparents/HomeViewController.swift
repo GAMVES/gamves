@@ -37,6 +37,11 @@ class HomeViewController: UIViewController,
     var youSonChatId = Int()
     var youSpouseChatId = Int()
     var groupChatId = Int()
+
+    var friendApprovalViewController: FriendApprovalViewController = {
+        let friend = FriendApprovalViewController()
+        return friend
+    }()
     
     var approvalViewController: ApprovalViewController = {
         let selector = ApprovalViewController()
@@ -166,12 +171,12 @@ class HomeViewController: UIViewController,
     
     var sonOnline = Bool()
 
-    var _status = UserStatistics()
-    var _location = UserStatistics()
-    var _friends = UserStatistics()
-    var _approval = UserStatistics()
-    var _activity = UserStatistics()
-    var _history = UserStatistics()
+    var _status     = UserStatistics()
+    var _location   = UserStatistics()
+    var _friends    = UserStatistics()
+    var _approval   = UserStatistics()
+    var _activity   = UserStatistics()
+    var _history    = UserStatistics()
 
     var photoCornerRadius = Int()
     
@@ -188,6 +193,8 @@ class HomeViewController: UIViewController,
     var locations = [LocationGamves]()
 
     var puserId = String()
+
+    var friendCount = Int()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -446,7 +453,7 @@ class HomeViewController: UIViewController,
                     
                 }                               
                 
-                self.userStatistics[2].data = timecounted
+                self.userStatistics[0].data = timecounted
             
                 DispatchQueue.main.async {
                 
@@ -569,9 +576,11 @@ class HomeViewController: UIViewController,
             
             print(count)
             
-			self.loadStatistics()
+			//self.loadStatistics()
 
-            self._approval.approval = count as Int
+            //self._approval.approval = count as Int
+
+            self.userStatistics[3].approval = count as Int
             
             DispatchQueue.main.async {
                 
@@ -579,6 +588,11 @@ class HomeViewController: UIViewController,
             }
             
         })
+
+
+        self.getFriendsAmount()
+
+        self.getFriendsApproval(familyId: familyId)               
         
         self.renderSon()
         
@@ -591,7 +605,41 @@ class HomeViewController: UIViewController,
         self.loadUserStatus()
         
         self.loadSonProfileInfo()
-        
+
+    }
+
+    func getFriendsAmount() {
+
+        Global.getFriendsAmount(posterId: self.puserId, completionHandler: { ( count ) -> () in
+
+            self.friendCount = count
+
+        })
+    }
+
+
+    func getFriendsApproval(familyId: String) {
+
+        Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
+            
+            print(count)
+
+            let friendData = "\(count) \(self.friendCount)"
+            
+            self.userStatistics[2].data = friendData
+
+            //self.loadStatistics()
+
+            //self._approval.approval = count as Int
+            
+            DispatchQueue.main.async {
+                
+                self.collectionView.reloadData()
+            }
+            
+        })
+
+
     }
     
     func renderSon() {
@@ -822,7 +870,14 @@ class HomeViewController: UIViewController,
             navigationController?.pushViewController(self.locationViewController, animated: true) 
             tabBarController?.tabBar.isHidden = true         
         
-        } else if indexPath.row == 2 { //Week Count
+        } else if indexPath.row == 2 { //Friends
+
+            friendApprovalViewController.homeViewController = self
+            friendApprovalViewController.view.backgroundColor = UIColor.white
+            navigationController?.navigationBar.tintColor = UIColor.white
+            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            navigationController?.pushViewController(friendApprovalViewController, animated: true)
+            tabBarController?.tabBar.isHidden = true            
             
             
         } else if indexPath.row == 3 { //Approval

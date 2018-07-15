@@ -19,10 +19,10 @@ class NewFriendController: UIViewController,
 
     var homeController: HomeController?
 
-    var gamvesUsers = [GamvesUser]()
+    
     var selectedUsers = [GamvesUser]()
     
-    var activityView:NVActivityIndicatorView?
+    var activityIndicatorView:NVActivityIndicatorView?
 
     let info: PaddingLabel = {
         let label = PaddingLabel()
@@ -81,7 +81,7 @@ class NewFriendController: UIViewController,
         let button = UIButton()        
         button.translatesAutoresizingMaskIntoConstraints = false        
         button.isUserInteractionEnabled = true
-        button.setTitle("Add selected friends", for: UIControlState())
+        button.setTitle("Invite friends", for: UIControlState())
         button.addTarget(self, action: #selector(handleAdd), for: .touchUpInside)
         button.layer.cornerRadius = 5              
         button.backgroundColor = UIColor.gamvesBlackColor
@@ -124,7 +124,7 @@ class NewFriendController: UIViewController,
             self.tableView,
             self.addButton)        
 
-        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
 
         self.tableView.register(FriendsTableViewCell.self, forCellReuseIdentifier: self.cellIdTableView)        
         
@@ -138,7 +138,7 @@ class NewFriendController: UIViewController,
     
     override func viewWillAppear(_ animated: Bool) {
         
-        if self.gamvesUsers.count > 0 {
+        if Global.gamvesAllUsers.count > 0 {
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -157,6 +157,19 @@ class NewFriendController: UIViewController,
 
         self.disableAddButton()
     }   
+
+    override func viewWillDisappear(_ animated: Bool) {
+
+        for user in self.selectedUsers {
+
+            let indexOfUser = Global.gamvesAllUsers.index{$0 === user}
+
+            Global.gamvesAllUsers[indexOfUser!].isChecked = false
+
+        }
+
+    }
+   
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -211,7 +224,7 @@ class NewFriendController: UIViewController,
     }   
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let countItems = Int(self.gamvesUsers.count)
+        let countItems = Int(Global.gamvesAllUsers.count)
         print(countItems)
         return countItems
     }  
@@ -222,7 +235,7 @@ class NewFriendController: UIViewController,
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdTableView, for: indexPath) as! FriendsTableViewCell       
         
         let index = indexPath.item
-        let user:GamvesUser = self.gamvesUsers[index]
+        let user:GamvesUser = Global.gamvesAllUsers[index]
 
         cell.nameLabel.text = user.name
         print(user.name)
@@ -246,13 +259,13 @@ class NewFriendController: UIViewController,
         
         print(indexPath.row)       
 
-        let user = self.gamvesUsers[indexPath.row] as GamvesUser
+        let user = Global.gamvesAllUsers[indexPath.row] as GamvesUser
 
         let checked = user.isChecked
             
         if !checked
         {
-            self.gamvesUsers[indexPath.item].isChecked  = true
+            Global.gamvesAllUsers[indexPath.item].isChecked  = true
 
             if !self.selectedUsers.contains(where: { $0.name == user.name }) {
             
@@ -263,7 +276,7 @@ class NewFriendController: UIViewController,
             
         } else
         {
-            self.gamvesUsers[indexPath.item].isChecked = false
+            Global.gamvesAllUsers[indexPath.item].isChecked = false
 
             let indexOfUser = selectedUsers.index{$0 === user}
             
@@ -311,7 +324,7 @@ class NewFriendController: UIViewController,
     func fetchUsers()
     {
 
-        self.activityView?.startAnimating()
+        self.activityIndicatorView?.startAnimating()
         
         let userQuery = PFQuery(className:"_User")        
         userQuery.whereKey("iDUserType", equalTo: 2)
@@ -354,13 +367,13 @@ class NewFriendController: UIViewController,
                         gamvesUser.isAvatarDownloaded = true
                         gamvesUser.isAvatarQuened = false
                         
-                        self.gamvesUsers.append(gamvesUser)
+                        Global.gamvesAllUsers.append(gamvesUser)
                         
                         if (usersCount! - 1) == count
                         {
                             DispatchQueue.main.async {
                                 self.tableView.reloadData()
-                                self.activityView?.stopAnimating()
+                                self.activityIndicatorView?.stopAnimating()
                             }
                         }
                         
@@ -373,11 +386,79 @@ class NewFriendController: UIViewController,
     }
 
 
-    func handleAdd() {
+    func handleAdd() {  
 
-        print("add")
-        
-    }
+        self.activityIndicatorView?.startAnimating()  
 
+        let countFriendsApproval = self.selectedUsers.count
 
+        var count = 0
+
+        for user in self.selectedUsers {
+
+            let friendsApproval: PFObject = PFObject(className: "FriendsApproval")
+
+            if let userId = PFUser.current()?.objectId {
+                friendsApproval["posterId"] = userId    
+            }       
+
+            let familyId = Global.gamvesFamily.objectId
+
+            friendsApproval["familyId"] = familyId 
+
+            friendsApproval["approved"] = 0
+            
+            friendsApproval["friendId"] = user.userId
+
+            let name = Global.gamvesFamily.sonsUsers[0].firstName
+
+            let title = "\(name)'s friend request with \(user.firstName)"
+
+            friendsApproval["title"] = title 
+
+            //let friendsRelation: PFRelation = friendsApproval.relation(forKey: "Friends")
+            //for user in self.selectedUsers {
+                //friendsRelation.add(user.typeObj)            
+            //}
+
+            friendsApproval["type"] = 1          
+            
+            friendsApproval.saveInBackground { (resutl, error) in
+                
+                if error == nil {
+
+                    if count == (countFriendsApproval - 1) {
+                    
+                        self.activityIndicatorView?.stopAnimating()
+                        
+                        let title = "Friend Approval Requested!"
+                        let message = "The invitations for becoming new friends have been sent to your parents for appoval. Thanks for submitting!"
+                        
+                        let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                        
+                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                 
+                            
+                            DispatchQueue.main.async {
+
+                                let indexOfUser = Global.gamvesAllUsers.index{$0 === user}
+
+                                Global.gamvesAllUsers[indexOfUser!].isChecked = false
+
+                                self.tableView.reloadData()
+                            }            
+
+                            self.navigationController?.popToRootViewController(animated: true)
+                            self.homeController?.clearNewVideo()
+                            
+                        }))
+                        
+                        self.present(alert, animated: true)
+
+                    }
+
+                    count = count + 1 
+                }
+            }
+        }
+    }       
 }

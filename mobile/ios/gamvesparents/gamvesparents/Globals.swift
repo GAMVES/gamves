@@ -102,6 +102,8 @@ class Global: NSObject
         
     //static var approvals = [Approvals]()
     static var approvals = Dictionary<Int, Approvals>()
+    static var friendApproval = Dictionary<String, FriendApproval>()   
+    static var friends = [GamvesUser]()
     static var histories = [HistoryGamves]()
     
     static var admin_delimitator:String = "---is_admin_chat---"
@@ -1115,6 +1117,166 @@ class Global: NSObject
                 }
             }
         }
+    }
+
+    static func getFriendsApprovasByFamilyId(familyId:String, completionHandler : @escaping (_ resutl: Int) -> ()) {
+        
+        let queryFriendApproval = PFQuery(className:"FriendsApproval")
+        queryFriendApproval.whereKey("familyId", equalTo: familyId)
+        print(familyId)
+        queryFriendApproval.findObjectsInBackground { (friendApprovalObjects, error) in
+            
+            if error != nil
+            {
+                print("error")
+
+                completionHandler(0)
+
+            } else
+            {
+                
+                if let friendApprovalObjects = friendApprovalObjects
+                {
+                    
+                    var countFriendAapprovals = friendApprovalObjects.count
+                    var count = 0
+                    
+                    print(countFriendAapprovals)
+                    
+                    var countNotApproved = 0                   
+
+                    var countFriends = Int()
+                    var countRequests = Int()
+                    
+                    if countFriendAapprovals > 0 {
+
+                        for friendApprovalObj in friendApprovalObjects
+                        {
+
+                            let friendApproval = FriendApproval()  
+
+                            let approved = friendApprovalObj["approved"] as! Int
+
+                            let type = friendApprovalObj["type"] as! Int
+
+                            let title = friendApprovalObj["title"] as! String
+                                
+                            let posterId = friendApprovalObj["posterId"] as! String
+
+                            let friendId = friendApprovalObj["friendId"] as! String
+
+                            friendApproval.objectId = friendApprovalObj.objectId!
+                            friendApproval.objectPF = friendApprovalObj
+                            friendApproval.posterId = posterId
+                            friendApproval.friendId = friendId
+                            friendApproval.title    = title
+                            friendApproval.approved = approved  
+                            friendApproval.type     = type 
+
+                            if self.userDictionary[posterId] == nil
+                            {
+                                let userQuery = PFQuery(className:"_User")
+                                userQuery.whereKey("objectId", equalTo: posterId)
+                                userQuery.getFirstObjectInBackground(block: { (user, error) in
+                                
+                                    if error == nil
+                                    {               
+                                        
+                                        Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
+                                            
+                                            if let objectId = user?.objectId {
+                                                 
+                                                friendApproval.thumbnail = gamvesUser.avatar    
+
+                                                self.friendApproval[posterId] = friendApproval                                     
+                                            }
+                                            
+                                        })             
+                                    }
+                                })
+
+                            } else {
+
+                                friendApproval.approved = approved
+                                
+                               let user =  self.userDictionary[posterId] as! GamvesUser
+                                
+                                friendApproval.thumbnail = user.avatar
+
+                                self.friendApproval[posterId] = friendApproval            
+
+                            }    
+
+                        }    
+
+                        completionHandler(countFriendAapprovals)
+
+                    } else {
+
+                        completionHandler(0)
+
+                    }                    
+                }
+            } 
+        }
+    }
+
+    static func getFriendsAmount(posterId:String, completionHandler : @escaping (_ amount: Int) -> ()) {
+
+        let userQuery = PFQuery(className:"Friends")
+        userQuery.whereKey("posterId", equalTo: posterId)
+        userQuery.getFirstObjectInBackground(block: { (friendObject, error) in
+        
+            if error == nil
+            {               
+                                    
+                var countFriends = friendObject!["amount"] as! Int
+
+                var friendsIds = friendObject!["friends"] as! [String]
+
+                completionHandler(friendsIds.count)   
+
+                DispatchQueue.global().async {
+
+                    for friendId in friendsIds {
+
+                        let userQuery = PFQuery(className:"_User")
+                        userQuery.whereKey("objectId", equalTo: friendId)
+                        userQuery.getFirstObjectInBackground(block: { (user, error) in
+                        
+                            if error == nil
+                            {                               
+                                
+                                if self.userDictionary[(user?.objectId!)!] == nil
+                                {
+
+                                    Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
+                                        
+                                        if let objectId = user?.objectId {  
+
+                                            self.friends.append(gamvesUser)                                                                                                  
+                                                
+                                        }                                   
+                                    })
+
+                                }  else {
+
+                                    self.friends.append(self.userDictionary[(user?.objectId!)!]!)
+
+                                }          
+                            }
+                        })
+                    }
+                }              
+
+
+            } else {
+
+                completionHandler(0)   
+            }
+        })
+
+
     }
     
     static func parseFanpage(fanpage:PFObject, fanpageId :Int, fanpageImage: UIImage, completionHandler : @escaping (_ resutl:FanpageGamves) -> ())

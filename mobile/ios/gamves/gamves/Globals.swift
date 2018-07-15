@@ -14,6 +14,8 @@ import PopupDialog
 class Global: NSObject
 {
   
+    static var gamvesAllUsers = [GamvesUser]()
+
     static var trends_stored = [GamvesTrendCategory]()
 
     static var listOfSwearWords = [String]()

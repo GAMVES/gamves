@@ -29,7 +29,7 @@ class VideoApprovalPlayerView: UIView {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "VIDEO APPROVAL"
+        label.text = "FRIEND APPROVAL"
         label.textColor = UIColor.white
         label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textAlignment = .center

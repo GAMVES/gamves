@@ -10,6 +10,18 @@ import Foundation
 import UIKit
 import Parse
 
+class FriendApproval
+{
+    var objectId = String()       
+    var objectPF:PFObject!
+    var posterId = String() 
+    var title = String()    
+    var approved = Int()    
+    var thumbnail:UIImage?
+    var type = Int()
+    var friendId = String() 
+}
+
 class LocationGamves {
     var objectPF:PFObject!
     var objectId = String()
@@ -122,6 +134,9 @@ class GamvesUser
     var chatId = Int()
     var isChecked = Bool()
     var gender = GamvesGender()
+
+    var school = String()
+    var grade = String()
 }
 
 class GamvesGender
