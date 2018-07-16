@@ -133,9 +133,9 @@ class ButtonsFriendApprovalView: UIView {
 
         },{()->() in
 
-            print(positiveButtonText)
+            print(positiveButtonText)            
 
-            self.updateFriendApprovalStatus(referenceId: self.referenceId, status: -1);           
+            self.updateFriendApprovalStatus(status: -1)
         
         }])
         
@@ -162,6 +162,23 @@ class ButtonsFriendApprovalView: UIView {
             }
         }
     }
+
+
+     func updateFriendApprovalStatus(status: Int) {    
+
+        let friendApprovalPF = self.friendApproval.objectPF       
+                
+        friendApprovalPF?["approved"] = status
+        
+        friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
+           
+           self.delegate.closedRefresh()
+           self.closeApprovalWindow()
+            
+        })            
+        
+    }
+    
 
     func addFriend() {
 
@@ -199,19 +216,6 @@ class ButtonsFriendApprovalView: UIView {
 
     }
     
-    func updateFriendApprovalStatus(status: Int) {    
-
-        let friendApprovalPF = self.friendApproval.objectPF       
-                
-        friendApprovalPF?["approved"] = status
-        
-        friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
-           
-           self.delegate.closedRefresh()
-           self.closeApprovalWindow()
-            
-        })            
-        
-    }
+   
 
 }

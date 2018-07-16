@@ -214,7 +214,7 @@ class FriendApprovalLauncher: UIView {
             
             if friendApproval.type == 2 
             {
-                buttonsFriendApprovalView.friendApproval = friendApproval.objectPF
+                buttonsFriendApprovalView.friendApproval = friendApproval
             }
 
             view.addSubview(buttonsFriendApprovalView)

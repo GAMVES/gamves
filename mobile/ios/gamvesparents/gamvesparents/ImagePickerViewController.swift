@@ -79,7 +79,7 @@ RSKImageCropViewControllerDelegate {
     
     lazy var finishButton: UIButton = {
         let button = UIButton(type: .system)
-        let image = UIImage(named: "pause")
+        let image = UIImage(named: "add_image")
         button.setImage(image, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.gambesDarkColor
@@ -176,7 +176,7 @@ RSKImageCropViewControllerDelegate {
 
                 title = "Child Image"
                 message = "Pick up an image for your son by touching the (+) add image"
-                buttonTitle = "Choose child Image"
+                buttonTitle = "Select child Image"
                 imageName = "son_photo"
 
                 break
@@ -185,7 +185,7 @@ RSKImageCropViewControllerDelegate {
 
                 title = "Family Image"
                 message = "Choose a family image where the three of you are present"
-                buttonTitle = "Choose Family Image"
+                buttonTitle = "Select Family Image"
                 imageName = "family_photo"
 
                 break
@@ -194,7 +194,7 @@ RSKImageCropViewControllerDelegate {
 
                 title = "Your Image"
                 message = "Choose your image"
-                buttonTitle = "Choose Your Image"
+                buttonTitle = "Select Your Image"
                 imageName = "your_photo"
 
                 break
@@ -203,7 +203,7 @@ RSKImageCropViewControllerDelegate {
 
                 title = "spouse Image"
                 message = "Choose your spouse image"
-                buttonTitle = "Choose Your Spouse Image"
+                buttonTitle = "Select Your Spouse Image"
                 imageName = "spouse_photo"
 
                 break    

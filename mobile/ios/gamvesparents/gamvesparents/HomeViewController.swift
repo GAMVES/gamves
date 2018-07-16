@@ -31,6 +31,7 @@ class HomeViewController: UIViewController,
     let liveQueryClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .remoteWs)
     
     private var approvalSubscription: Subscription<PFObject>!
+    private var friendApprovalSubscription: Subscription<PFObject>!
     
     let liveQueryClientApproval: Client = ParseLiveQuery.Client(server: Global.localWs) // .remoteWs .localWs)
 
@@ -983,9 +984,29 @@ class HomeViewController: UIViewController,
                 
                 self.approvalSubscription = liveQueryClientApproval.subscribe(approvalQuery).handle(Event.updated) { _, approvals in
                     
-                    Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
+                    Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in                        
+
+                            self._approval_approval = count as Int
+
+                            self.loadStatistics()
                         
-                            self._approval.approval = count as Int
+                    })
+                }
+                
+                var friendsApprovalQuery = PFQuery(className: "FriendsApproval").whereKey("familyId", equalTo: familyId)
+                
+                self.friendApprovalSubscription = liveQueryClientApproval.subscribe(friendsApprovalQuery).handle(Event.updated) { _, approvals in
+                    
+                    Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in       
+                            
+
+                            let friendData = "\(count)   \(self.friendCount)"
+            
+                            //self.userStatistics[2].data = friendData
+
+                            self._friends_data = friendData
+
+                            self.loadStatistics()
                         
                     })
                 }

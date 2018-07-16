@@ -176,7 +176,9 @@ class Global: NSObject
             
             gamvesUser.userName = user["username"] as! String
 
-            gamvesUser.familyId = user["familyId"] as! String            
+            if user["familyId"] != nil {
+                gamvesUser.familyId = user["familyId"] as! String
+            }
             
             print(user.email)
             
