@@ -315,7 +315,13 @@ class HomeViewController: UIViewController,
 
         self.loadStatistics()
         
-    }
+    }   
+
+    var _status_time = String()
+
+    var _friends_data = "04:50 hs"
+
+    var _approval_approval = Int()
     
     func loadStatistics() {
 
@@ -325,6 +331,7 @@ class HomeViewController: UIViewController,
         _status.icon = UIImage(named: "status_offline")!
         _status.second_icon = UIImage(named: "time")!
         _status.id = 0
+        _status.data = _status_time
         self.userStatistics.append(_status)
     
         _location.desc = "Last location"
@@ -334,7 +341,7 @@ class HomeViewController: UIViewController,
         self.userStatistics.append(_location)
     
         _friends.desc = "Friends" 
-        _friends.data = "04:50 hs"
+        _friends.data = _friends_data
         _friends.id = 2
         _friends.icon = UIImage(named: "add_friend")!
         self.userStatistics.append(_friends)
@@ -342,6 +349,7 @@ class HomeViewController: UIViewController,
         _approval.desc = "Approvals"
         _approval.id = 3
         _approval.icon = UIImage(named: "check_circle")!
+        _approval.approval = _approval_approval
         self.userStatistics.append(_approval)
     
         _activity.desc = "Activity"
@@ -453,7 +461,11 @@ class HomeViewController: UIViewController,
                     
                 }                               
                 
-                self.userStatistics[0].data = timecounted
+                //self.userStatistics[0].data = timecounted
+
+                self._status_time = timecounted
+
+                self.loadUserStatus()
             
                 DispatchQueue.main.async {
                 
@@ -580,7 +592,11 @@ class HomeViewController: UIViewController,
 
             //self._approval.approval = count as Int
 
-            self.userStatistics[3].approval = count as Int
+            self._approval_approval = count as Int
+
+            //self.userStatistics[3].approval = count as Int
+
+            self.loadStatistics()
             
             DispatchQueue.main.async {
                 
@@ -624,11 +640,13 @@ class HomeViewController: UIViewController,
             
             print(count)
 
-            let friendData = "\(count) \(self.friendCount)"
+            let friendData = "\(count)   \(self.friendCount)"
             
-            self.userStatistics[2].data = friendData
+            //self.userStatistics[2].data = friendData
 
-            //self.loadStatistics()
+            self._friends_data = friendData
+
+            self.loadStatistics()
 
             //self._approval.approval = count as Int
             

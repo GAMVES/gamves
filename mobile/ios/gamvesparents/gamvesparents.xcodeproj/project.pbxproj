@@ -91,6 +91,7 @@
 		C95A487620F7D4D700E2D522 /* FriendApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95A487520F7D4D700E2D522 /* FriendApprovalCell.swift */; };
 		C9709B4120F6899A0098B061 /* FriendApprovalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9709B4020F6899A0098B061 /* FriendApprovalViewController.swift */; };
 		C9709B4320F6B5190098B061 /* FriendApprovalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9709B4220F6B5190098B061 /* FriendApprovalLauncher.swift */; };
+		C97D24D120FC05380030A2FD /* FriendSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97D24D020FC05380030A2FD /* FriendSectionHeader.swift */; };
 		C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */; };
 		C98F266420B25EB700755733 /* UIAlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98F266320B25EB700755733 /* UIAlertController+Extension.swift */; };
 		C98F266620B26AE300755733 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98F266520B26AE300755733 /* ImagePickerViewController.swift */; };
@@ -187,6 +188,7 @@
 		C95A487520F7D4D700E2D522 /* FriendApprovalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendApprovalCell.swift; sourceTree = "<group>"; };
 		C9709B4020F6899A0098B061 /* FriendApprovalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendApprovalViewController.swift; sourceTree = "<group>"; };
 		C9709B4220F6B5190098B061 /* FriendApprovalLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendApprovalLauncher.swift; sourceTree = "<group>"; };
+		C97D24D020FC05380030A2FD /* FriendSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSectionHeader.swift; sourceTree = "<group>"; };
 		C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PFGeoPoint+Extension.swift"; sourceTree = "<group>"; };
 		C98F266320B25EB700755733 /* UIAlertController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Extension.swift"; sourceTree = "<group>"; };
 		C98F266520B26AE300755733 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
@@ -467,6 +469,7 @@
 				8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */,
 				C95A487520F7D4D700E2D522 /* FriendApprovalCell.swift */,
 				C9BBCCED20FBAE170042D4B8 /* FriendCollectionViewCell.swift */,
+				C97D24D020FC05380030A2FD /* FriendSectionHeader.swift */,
 			);
 			name = cells;
 			sourceTree = "<group>";
@@ -692,6 +695,7 @@
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
 				C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */,
+				C97D24D120FC05380030A2FD /* FriendSectionHeader.swift in Sources */,
 				C73A31971DA3064A00C86C96 /* TabBarViewController.swift in Sources */,
 				C98F266420B25EB700755733 /* UIAlertController+Extension.swift in Sources */,
 				82557C4D2016CE2B00752301 /* HistoryViewController.swift in Sources */,

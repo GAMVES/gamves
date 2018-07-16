@@ -1777,11 +1777,30 @@ class ProfileViewController: UIViewController,
                 Global.gamvesFamily.familyImage = self.familyPhotoImageSmall
                 
                 Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")
-                completionHandler(true)             
+
+                DispatchQueue.main.async() {
+                    self.updateMembersWithFamily(family:family)
+                }
+
+                completionHandler(true)  
+
+
                
             }
         }   
     }  
+
+    func updateMembersWithFamily(family:PFObject) {
+
+        self.spouse["familyId"] = family.objectId
+        self.spouse.saveEventually()
+
+        self.son["familyId"] = family.objectId
+        self.spouse.saveEventually()
+
+        self.you["familyId"] = family.objectId
+        self.you.saveEventually()
+    }
     
     
     func createChatGroups(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())

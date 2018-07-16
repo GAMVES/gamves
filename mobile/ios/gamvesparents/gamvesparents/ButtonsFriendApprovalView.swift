@@ -9,7 +9,11 @@ import UIKit
 import Parse
 
 
-class ButtonsFriendApprovalView: UIView {
+class ButtonsFriendApprovalView: UIView {    
+
+    var type:FriendApprovalType!
+
+    var friendApproval:FriendApproval!
 
      lazy var approveButton: UIButton = {
         let button = UIButton(type: .system)
@@ -59,10 +63,12 @@ class ButtonsFriendApprovalView: UIView {
 
     var approved = Bool()
     
-    init(frame: CGRect, obj: FriendApprovalView, delegate:FriendApprovalProtocol, approved:Int) {
-        super.init(frame: frame)       
-        
-        self.delegate = delegate        
+    init(frame: CGRect, obj: FriendApprovalView, friendApproval: FriendApproval, delegate:FriendApprovalProtocol, approved:Int) {
+        super.init(frame: frame)               
+
+        self.friendApproval = friendApproval
+
+        self.delegate = delegate
       
     }
     
@@ -89,9 +95,19 @@ class ButtonsFriendApprovalView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     @objc func touchUpApprove() {
         
-        //updateApprovalStatus(referenceId: self.referenceId, status: 1);
+        if self.type == FriendApprovalType.YouInvite {
+
+            
+
+        } else if self.type == FriendApprovalType.YouAreInvited {
+
+            self.addFriend()            
+        }
+
+        
     }
     
     @objc func touchUpReject() {
@@ -119,7 +135,7 @@ class ButtonsFriendApprovalView: UIView {
 
             print(positiveButtonText)
 
-            //self.updateApprovalStatus(referenceId: self.referenceId, status: -1);           
+            self.updateFriendApprovalStatus(referenceId: self.referenceId, status: -1);           
         
         }])
         
@@ -146,75 +162,56 @@ class ButtonsFriendApprovalView: UIView {
             }
         }
     }
-    
-    func updateApprovalStatus(referenceId:Int,  status: Int){
+
+    func addFriend() {
+
+        let friendApprovalPF = self.friendApproval.objectPF
+
+        friendApprovalPF?["approved"] = 0
         
-        print(referenceId)
-        
-        let queryApprovals = PFQuery(className: "Approvals")
-        queryApprovals.whereKey("referenceId", equalTo: referenceId)
-        queryApprovals.getFirstObjectInBackground { (approval, error) in
+        friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
+           
+            let userId = self.friendApproval.friendId
+
+            let friend =  Global.userDictionary[userId] as! GamvesUser            
+
+            var family = PFObject(className: "Family")
+
+             let friendsApproval: PFObject = PFObject(className: "FriendsApproval")
             
-            if error != nil
-            {
-                print("error")
+            friendsApproval["posterId"] = self.friendApproval.posterId
+            friendsApproval["familyId"] = friend.familyId 
+            friendsApproval["approved"] = 0    
+            friendsApproval["type"] = 2    
+            friendsApproval["friendId"] = self.friendApproval.friendId 
+
+            friendsApproval.saveInBackground { (resutl, error) in
                 
-            } else {
+                if error == nil {
+
+                    self.delegate.closedRefresh()
+                    self.closeApprovalWindow()
                 
-                approval?["approved"] = status
+                }
+            }           
+            
+        })           
+
+    }
+    
+    func updateFriendApprovalStatus(status: Int) {    
+
+        let friendApprovalPF = self.friendApproval.objectPF       
                 
-                approval?.saveInBackground(block: { (resutl, error) in
-                    
-                    if self.approvalType == ApprovalType.TypeVideo { //Update Video Approval
-                        
-                        let queryApprovals = PFQuery(className: "Videos")
-                        queryApprovals.whereKey("videoId", equalTo: referenceId)
-                        queryApprovals.getFirstObjectInBackground { (video, error) in
-                            
-                            if error != nil
-                            {
-                                print("error")
-                                
-                            } else {
-                                
-                                video!["approved"] = true
-                                video!["authorized"] = true
-                                
-                                video?.saveEventually()
-                                
-                                self.delegate.closedRefresh()
-                                self.closeApprovalWindow()
-                                
-                            }
-                        }
-                        
-                        
-                    } else if self.approvalType == ApprovalType.TypeFanpage {
-                        
-                        let queryApprovals = PFQuery(className: "Fanpages")
-                        queryApprovals.whereKey("fanpageId", equalTo: referenceId)
-                        queryApprovals.getFirstObjectInBackground { (fanpage, error) in
-                        
-                            if error != nil
-                            {
-                                print("error")
-                                
-                            } else {
-                                
-                                fanpage!["approved"] = true
-                                
-                                fanpage?.saveEventually()
-                                
-                                self.delegate.closedRefresh()
-                                self.closeApprovalWindow()
-                                
-                            }
-                        }
-                    }
-                    
-                })
-            }
-        }
+        friendApprovalPF?["approved"] = status
+        
+        friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
+           
+           self.delegate.closedRefresh()
+           self.closeApprovalWindow()
+            
+        })            
+        
     }
 
 }

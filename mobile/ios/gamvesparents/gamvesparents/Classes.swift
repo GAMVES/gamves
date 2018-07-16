@@ -137,6 +137,8 @@ class GamvesUser
 
     var school = String()
     var grade = String()
+
+    var familyId = String()
 }
 
 class GamvesGender

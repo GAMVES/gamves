@@ -146,7 +146,6 @@ class FriendApprovalView: UIView {
         self.userView.addSubview(self.gradeLabel)     
         self.userView.addConstraintsWithFormat("H:|-140-[v0]|", views: self.gradeLabel)
         self.userView.addConstraintsWithFormat("V:|-90-[v0(30)]|", views: self.gradeLabel)   
-        
 
     }   
     
@@ -196,23 +195,28 @@ class FriendApprovalLauncher: UIView {
 
             var type:FriendApprovalType!
 
-             if friendApproval.type == 1 {
+            if friendApproval.type == 1 {
                 type = FriendApprovalType.YouInvite 
             } else if friendApproval.type == 2 {
-                type = FriendApprovalType.YouInvite 
+                type = FriendApprovalType.YouAreInvited 
             }
 
             friendApprovalView = FriendApprovalView(frame: friendFrame, friendApproval: friendApproval, type:type)
             friendApprovalView.backgroundColor = UIColor.gamvesColor           
-
            
             view.addSubview(friendApprovalView)
             
             let apprFrame = CGRect(x: 0, y: buttonsHeight, width: Int(keyWindow.frame.width), height: buttonsHeight)
             
-            buttonsFriendApprovalView = ButtonsFriendApprovalView(frame: apprFrame, obj: friendApprovalView, delegate: self.delegate, approved: approved)
+            buttonsFriendApprovalView = ButtonsFriendApprovalView(frame: apprFrame, obj: friendApprovalView, friendApproval: friendApproval, delegate: self.delegate, approved: approved)
             buttonsFriendApprovalView.backgroundColor = UIColor.gamvesBackgoundColor
+            buttonsFriendApprovalView.type = type
             
+            if friendApproval.type == 2 
+            {
+                buttonsFriendApprovalView.friendApproval = friendApproval.objectPF
+            }
+
             view.addSubview(buttonsFriendApprovalView)
             buttonsFriendApprovalView.addSubViews()
 

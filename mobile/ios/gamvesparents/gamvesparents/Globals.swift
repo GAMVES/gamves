@@ -175,6 +175,8 @@ class Global: NSObject
             gamvesUser.isRegister = registered            
             
             gamvesUser.userName = user["username"] as! String
+
+            gamvesUser.familyId = user["familyId"] as! String            
             
             print(user.email)
             

@@ -83,6 +83,29 @@ FriendApprovalProtocol
         return 2 
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "FriendSectionHeader", for: indexPath) as! FriendSectionHeader
+
+        if indexPath.section == 0 {
+
+            let image  = UIImage(named: "add_friend")
+            sectionHeaderView.profileImageView.image = image
+
+            sectionHeaderView.nameLabel.text = "INVITATIONS"
+
+        } else if indexPath.section == 1 {
+        
+            let image  = UIImage(named: "group")
+            sectionHeaderView.profileImageView.image = image
+
+            sectionHeaderView.nameLabel.text = "FRIENDS"
+        }
+
+        return sectionHeaderView
+
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         var countItems = Int()
