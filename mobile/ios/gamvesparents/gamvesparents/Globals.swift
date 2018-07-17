@@ -231,7 +231,7 @@ class Global: NSObject
                         
                         print(userGamves.typeNumber)
                         
-                        if isFamily {
+                        //if isFamily {
                             
                             var gender = GamvesGender()
                             
@@ -297,7 +297,7 @@ class Global: NSObject
                                 completionHandler(userGamves)
                             }
                             
-                        }
+                        //}
                         
                         if typeNumber != Global.SON && typeNumber != Global.DAUGHTER {
                             
@@ -1162,8 +1162,6 @@ class Global: NSObject
                             let approved = friendApprovalObj["approved"] as! Int
 
                             let type = friendApprovalObj["type"] as! Int
-
-                            let title = friendApprovalObj["title"] as! String
                                 
                             let posterId = friendApprovalObj["posterId"] as! String
 
@@ -1172,8 +1170,7 @@ class Global: NSObject
                             friendApproval.objectId = friendApprovalObj.objectId!
                             friendApproval.objectPF = friendApprovalObj
                             friendApproval.posterId = posterId
-                            friendApproval.friendId = friendId
-                            friendApproval.title    = title
+                            friendApproval.friendId = friendId                            
                             friendApproval.approved = approved  
                             friendApproval.type     = type 
 

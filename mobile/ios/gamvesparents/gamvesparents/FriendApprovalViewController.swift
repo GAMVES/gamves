@@ -118,7 +118,6 @@ FriendApprovalProtocol
 
             countItems = Global.friends.count
         }
-
          
         print(countItems)
         return countItems
@@ -141,13 +140,23 @@ FriendApprovalProtocol
             let realIndex = index - 1
             
             let keyIndex = keysArray[index] as String
-            let approval:FriendApproval = Global.friendApproval[keyIndex]!
+            let approval:FriendApproval = Global.friendApproval[keyIndex]!  
+
+            var title = String()
+
+            /*if approval.type == 1 {
+                //type = FriendApprovalType.YouInvite                 
+            } else if approval.type == 2 {
+                //type = FriendApprovalType.YouAreInvited 
+            }*/
+
+            let friendId = approval.posterId
+
+            let friend = Global.userDictionary[friendId] as! GamvesUser
+
+            title = friend.name
             
-            //let approval:Approvals = Global.approvals[index]
-            
-            print(approval.title)
-            
-            cella.nameLabel.text = approval.title
+            cella.nameLabel.text = title
             
             if approval.approved == 0 || approval.approved == 2 || approval.approved == -1 { // NOT
                 
@@ -155,9 +164,7 @@ FriendApprovalProtocol
                     
                     cella.statusLabel.text = "REJECTED"
 
-                    cella.setCheckLabel(color: UIColor.red, symbol: "-")
-                    
-                    //(color: UIColor.red, symbol: "-" )
+                    cella.setCheckLabel(color: UIColor.red, symbol: "-")               
                     
                 } else  {
                     

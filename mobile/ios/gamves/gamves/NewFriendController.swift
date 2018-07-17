@@ -130,7 +130,19 @@ class NewFriendController: UIViewController,
         
         self.collectionView.register(CatFanSelectorViewCell.self, forCellWithReuseIdentifier: cellIdCollectionView)
 
-        self.fetchUsers()
+        self.activityIndicatorView?.startAnimating()
+
+        Global.fetchUsers(completionHandler: { (resutl) in
+
+            if resutl {
+
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.activityIndicatorView?.stopAnimating()
+                }
+            }
+
+        })
 
         self.disableAddButton()
     }   
@@ -285,9 +297,7 @@ class NewFriendController: UIViewController,
             self.selectedUsers.remove(at: indexOfUser!)
 
             self.disableAddButton()
-
-        }   
-         
+        }        
 
         DispatchQueue.main.async {
 
@@ -321,69 +331,7 @@ class NewFriendController: UIViewController,
         self.addButton.alpha = 0.4
     }    
 
-    func fetchUsers()
-    {
-
-        self.activityIndicatorView?.startAnimating()
-        
-        let userQuery = PFQuery(className:"_User")        
-        userQuery.whereKey("iDUserType", equalTo: 2)
-        userQuery.findObjectsInBackground(block: { (users, error) in
-            
-            if error == nil
-            {
-                let usersCount =  users?.count
-                var count = 0
-                
-                print(usersCount)
-                
-                for user in users!
-                {
-                    let gamvesUser = GamvesUser()
-                    gamvesUser.name = user["Name"] as! String
-                    
-                    print(gamvesUser.name)
-                    
-                    gamvesUser.userId = user.objectId!
-                    gamvesUser.userName = user["username"] as! String
-                    if user["status"] != nil
-                    {
-                        gamvesUser.status = user["status"] as! String
-                    }
-                    gamvesUser.userObj = user as! PFUser
-                    
-                    let userId = user.objectId as! String
-                    
-                    if PFUser.current()?.objectId == userId
-                    {
-                        gamvesUser.isSender = true
-                    }
-                    
-                    let picture = user["pictureSmall"] as! PFFile
-                    picture.getDataInBackground(block: { (data, error) in
-                        
-                        let image = UIImage(data: data!)
-                        gamvesUser.avatar = image!
-                        gamvesUser.isAvatarDownloaded = true
-                        gamvesUser.isAvatarQuened = false
-                        
-                        Global.gamvesAllUsers.append(gamvesUser)
-                        
-                        if (usersCount! - 1) == count
-                        {
-                            DispatchQueue.main.async {
-                                self.tableView.reloadData()
-                                self.activityIndicatorView?.stopAnimating()
-                            }
-                        }
-                        
-                        count = count + 1
-
-                    })
-                }
-            }
-        })
-    }
+    
 
 
     func handleAdd() {  
@@ -402,24 +350,17 @@ class NewFriendController: UIViewController,
                 friendsApproval["posterId"] = userId    
             }       
 
-            let familyId = Global.gamvesFamily.objectId
+            let name = Global.userDictionary[user.userId]?.firstName
+
+            let familyId = user.familyId
+
+            print(familyId)
 
             friendsApproval["familyId"] = familyId 
 
             friendsApproval["approved"] = 0
             
-            friendsApproval["friendId"] = user.userId
-
-            let name = Global.gamvesFamily.sonsUsers[0].firstName
-
-            let title = "\(name)'s friend request with \(user.firstName)"
-
-            friendsApproval["title"] = title 
-
-            //let friendsRelation: PFRelation = friendsApproval.relation(forKey: "Friends")
-            //for user in self.selectedUsers {
-                //friendsRelation.add(user.typeObj)            
-            //}
+            friendsApproval["friendId"] = user.userId                       
 
             friendsApproval["type"] = 1          
             

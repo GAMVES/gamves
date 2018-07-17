@@ -14,8 +14,7 @@ class FriendApproval
 {
     var objectId = String()       
     var objectPF:PFObject!
-    var posterId = String() 
-    var title = String()    
+    var posterId = String()    
     var approved = Int()    
     var thumbnail:UIImage?
     var type = Int()

@@ -170,6 +170,10 @@ class Global: NSObject
                 registered = user["isRegister"] as! Bool
             }
             
+            if user["familyId"] != nil {
+                gamvesUser.familyId = user["familyId"] as! String
+            }
+            
             gamvesUser.isRegister = registered
             
             gamvesUser.userName = user["username"] as! String
@@ -427,23 +431,95 @@ class Global: NSObject
         adminQuery.getFirstObjectInBackground(block: { (user, error) in
         
             if error == nil
-            {               
+            {
+                let adminId = (user?.objectId)!
                 
-                Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
-                    
-                    if let objectId = user?.objectId {
+                if Global.userDictionary[adminId] == nil {
+                
+                    Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
                         
-                        print(objectId)
+                        if let objectId = user?.objectId {
+                            
+                            print(objectId)
+                            
+                            self.gamves_official_id = objectId
+                            
+                        }
                         
-                        self.gamves_official_id = objectId
-                        
-                    }
-                    
-                })             
+                    })
+                }
             }
         })
         
+    }
+
+    static func fetchUsers(completionHandler : @escaping (_ resutl:Bool) -> ())
+    {
+        let userQuery = PFQuery(className:"_User")        
+        userQuery.whereKey("iDUserType", equalTo: 2)
+
+        if let userId = PFUser.current() {
+            userQuery.whereKey("objectId", notEqualTo: userId)
+        }
+
+        userQuery.findObjectsInBackground(block: { (users, error) in
+            
+            if error == nil
+            {
+                let usersCount =  users?.count
+                var count = 0
+                
+                print(usersCount)
+                
+                for user in users!
+                {
+                    let userId = user.objectId
+
+                    if Global.userDictionary[userId!] == nil {
+
+                        Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { (gamvedUser) in
+
+                            Global.gamvesAllUsers.append(gamvedUser)                           
+
+                            if (usersCount! - 1) == count
+                            {
+                                completionHandler(true)
+                            }
+
+                            count = count + 1
+
+                        })
+
+                    } else {
+
+                        Global.gamvesAllUsers.append(Global.userDictionary[userId!]!)                        
+
+                        if (usersCount! - 1) == count
+                        {
+                            completionHandler(true)
+                        }
+                        
+                        count = count + 1
+                    }                    
+                }
+            }
+        })
     }   
+
+    /*static func endedCheck(usersCount:Int, count: Int) -> Int {
+        
+        if (usersCount - 1) == count
+        {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                self.activityIndicatorView?.stopAnimating()
+            }
+        }
+
+        count = count + 1
+
+        return count
+    }*/
 
     static func loadConfigData() {
 
@@ -848,6 +924,8 @@ class Global: NSObject
                             self.userDictionary[user.objectId!]?.chatId = chatId
                         }
                     }
+                    
+                    print(user)
                     
                     self.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
                         

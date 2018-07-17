@@ -428,6 +428,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                 isFamily = true
                                             }
                                             
+                                            let userName = author.username
+                                            
                                             Global.addUserToDictionary(user: author, isFamily: isFamily, completionHandler: { (gamvedUser) in
                                                 
                                                 fan.author = author as! PFUser
