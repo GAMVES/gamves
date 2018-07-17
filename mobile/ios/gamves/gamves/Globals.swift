@@ -506,6 +506,7 @@ class Global: NSObject
         })
     }   
 
+
     /*static func endedCheck(usersCount:Int, count: Int) -> Int {
         
         if (usersCount - 1) == count

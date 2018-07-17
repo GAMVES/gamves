@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import QuartzCore
 
 class FriendApprovalCell: BaseCell {
     
@@ -19,6 +20,23 @@ class FriendApprovalCell: BaseCell {
             statusLabel.textColor = isHighlighted ? UIColor.white : UIColor.black
         }
     }
+
+    let containerView: UIView = {
+        let view = UIView()
+        //view.backgroundColor = UIColor.cyan
+        return view
+    }() 
+
+    let typeLabel: UILabel = {
+        let label = UILabel()        
+        label.textColor = UIColor.darkGray
+        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.layer.cornerRadius = 10
+        label.numberOfLines = 2
+        label.textAlignment = .center
+        label.textColor = UIColor.white        
+        return label
+    }()
     
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -30,21 +48,19 @@ class FriendApprovalCell: BaseCell {
     
     let dividerLineView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
+        view.backgroundColor = UIColor.gamvesColor
         return view
     }()
     
     
     var nameLabel: UILabel = {
-        let label = UILabel()
-        //label.text = "Mark Zuckerberg"
+        let label = UILabel()        
         label.font = UIFont.systemFont(ofSize: 18)
         return label
     }()
     
     let statusLabel: UILabel = {
-        let label = UILabel()
-        //label.text = "Your friend's message and something else..."
+        let label = UILabel()        
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 14)
         return label
@@ -55,66 +71,53 @@ class FriendApprovalCell: BaseCell {
         return label
     }()
     
-    let typeLabel: UILabel = {
-        let label = UILabel()
-        //label.text = "Your friend's message and something else..."
-        label.textColor = UIColor.darkGray
-        label.font = UIFont.systemFont(ofSize: 14)
-        return label
-    }()
-    
     override func setupViews() {
         
-        addSubview(profileImageView)
-        addSubview(dividerLineView)
+        self.addSubview(self.profileImageView)
+        self.addSubview(self.dividerLineView)
         
-        setupContainerView()
+        self.setupContainerView()
         
-        addConstraintsWithFormat("H:|-12-[v0(68)]", views: profileImageView)
-        addConstraintsWithFormat("V:[v0(68)]", views: profileImageView)
+        self.addConstraintsWithFormat("H:|-12-[v0(68)]", views: self.profileImageView)
+        self.addConstraintsWithFormat("V:[v0(68)]", views: self.profileImageView)
         
-        addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.dividerLineView)
+        self.addConstraintsWithFormat("V:[v0(0.3)]|", views: self.dividerLineView)
         
     }
     
     func setCheckLabel(color:UIColor, symbol:String) {
         
-        checkLabel =  Global.createCircularLabel(text: symbol, size: 30, fontSize: 24.0, borderWidth: 3.0, color:color ) //UIColor.gamvesColor)
-        addSubview(checkLabel)
+        self.checkLabel =  Global.createCircularLabel(text: symbol, size: 30, fontSize: 24.0, borderWidth: 3.0, color:color ) //UIColor.gamvesColor)
+        self.addSubview(self.checkLabel)
         
-        addConstraintsWithFormat("H:|-50-[v0(30)]", views: checkLabel)
-        addConstraintsWithFormat("V:|-60-[v0(30)]", views: checkLabel)
+        self.addConstraintsWithFormat("H:|-50-[v0(30)]", views: self.checkLabel)
+        self.addConstraintsWithFormat("V:|-60-[v0(30)]", views: self.checkLabel)
         
     }
     
-    fileprivate func setupContainerView() {
+    fileprivate func setupContainerView() {      
         
-        let containerView = UIView()
-        let nameStatusView = UIView()
+        self.addSubview(self.containerView)
+        self.addSubview(self.typeLabel)        
         
-        addSubview(containerView)
-        addSubview(nameStatusView)
+        self.addConstraintsWithFormat("H:|-90-[v0][v1(120)]-20-|", views: self.containerView, self.typeLabel)
         
-        addConstraintsWithFormat("H:|-90-[v0][v1(100)]|", views: containerView, nameStatusView)
+        self.addConstraintsWithFormat("V:[v0(50)]", views: self.containerView)
+        self.addConstraintsWithFormat("V:[v0(50)]", views: self.typeLabel)
         
-        addConstraintsWithFormat("V:[v0(50)]", views: containerView)
-        addConstraintsWithFormat("V:[v0(50)]", views: nameStatusView)
+        self.addConstraint(NSLayoutConstraint(item: self.containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.typeLabel, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.containerView.addSubview(self.nameLabel)
+        self.containerView.addSubview(self.statusLabel)
         
-        containerView.addSubview(nameLabel)
-        containerView.addSubview(statusLabel)
-        
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: nameLabel)
-        containerView.addConstraintsWithFormat("V:|[v0]-10-[v1(24)]|", views: nameLabel, statusLabel)
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: statusLabel)
-        
-        nameStatusView.addSubview(typeLabel)
-        nameStatusView.addConstraintsWithFormat("H:|[v0]-20-|", views: typeLabel)
-        nameStatusView.addConstraintsWithFormat("V:|-20-[v0]|", views: typeLabel)
+        self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: self.nameLabel)
+        self.containerView.addConstraintsWithFormat("V:|[v0]-10-[v1(24)]|", views: self.nameLabel, self.statusLabel)
+        self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: self.statusLabel)    
+     
         
     }
     

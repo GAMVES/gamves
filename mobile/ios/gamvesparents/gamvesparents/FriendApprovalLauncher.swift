@@ -27,31 +27,40 @@ class FriendApprovalView: UIView {
     let contanierView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false     
-        //view.backgroundColor = UIColor.red           
+        view.backgroundColor = UIColor.red           
         return view
     }() 
 
     let titleView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false     
-        view.backgroundColor = UIColor.gambesDarkColor
+        view.backgroundColor = UIColor.gamvesBackgoundColor
         return view
-    }()   
+    }()  
+
+    let iconImageView: UIImageView = {
+        let imageView = UIImageView()
+        let image  = UIImage(named: "add_friend")
+        imageView.image = image
+        imageView.contentMode = .scaleAspectFill        
+        imageView.tintColor = UIColor.white
+        imageView.layer.masksToBounds = true
+        return imageView
+    }() 
 
     let titleLabel: PaddingLabel = {
         let label = PaddingLabel()        
         label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.textColor = UIColor.white
+        label.textColor = UIColor.black
         label.numberOfLines = 3
-        label.textAlignment = .center
-        //label.backgroundColor = UIColor.gamvesColor
+        label.textAlignment = .left        
         return label
     }()
 
     let userView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false     
-        view.backgroundColor = UIColor.gamvesColor           
+        view.backgroundColor = UIColor.gambesDarkColor           
         return view
     }() 
 
@@ -89,6 +98,8 @@ class FriendApprovalView: UIView {
 
         self.type = type
 
+        self.backgroundColor = UIColor.green
+
         let sonId = friendApproval.posterId
         let son =  Global.userDictionary[sonId] as! GamvesUser
 
@@ -97,7 +108,7 @@ class FriendApprovalView: UIView {
 
         if type == FriendApprovalType.YouInvite {
 
-            titleLabel.text = "\(son.firstName) wants to be a friend of \(friend.firstName), please accept and send a requeste to his/her parents"
+            titleLabel.text = "\(son.firstName) wants to become friends with \(friend.firstName)"
 
         } else if type == FriendApprovalType.YouAreInvited { 
 
@@ -115,37 +126,45 @@ class FriendApprovalView: UIView {
 
         self.addSubview(self.contanierView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.contanierView)
-        self.addConstraintsWithFormat("V:|-50-[v0]|", views: self.contanierView)
+        self.addConstraintsWithFormat("V:|-20-[v0]|", views: self.contanierView)
 
         self.contanierView.addSubview(self.titleView)
         self.contanierView.addConstraintsWithFormat("H:|[v0]|", views: self.titleView)
         self.contanierView.addConstraintsWithFormat("V:|[v0(120)]|", views: self.titleView)
 
-        self.titleView.addSubview(self.titleLabel)
-        self.titleView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.titleLabel)
-        self.titleView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.titleLabel)
+        self.titleView.addSubview(self.iconImageView)        
+        self.titleView.addConstraintsWithFormat("V:|-30-[v0(50)]|", views: self.iconImageView)
+        self.titleView.addSubview(self.titleLabel)        
+        self.titleView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.titleLabel)     
+
+        self.titleView.addConstraintsWithFormat("H:|-30-[v0(50)]-30-[v1]-30-|", views: self.iconImageView, self.titleLabel)
+
+        self.iconImageView.alpha = 0.3
+        self.titleLabel.alpha = 0.3
+
+
 
         self.contanierView.addSubview(self.userView)
         self.contanierView.addConstraintsWithFormat("H:|[v0]|", views: self.userView)        
-        self.contanierView.addConstraintsWithFormat("V:|-120-[v0(250)]|", views: self.userView)        
+        self.contanierView.addConstraintsWithFormat("V:|-120-[v0(200)]|", views: self.userView)        
 
         ///// USER 
 
         self.userView.addSubview(self.profileImageView)     
         self.userView.addConstraintsWithFormat("H:|-20-[v0(100)]|", views: self.profileImageView)
-        self.userView.addConstraintsWithFormat("V:|-20-[v0(100)]|", views: self.profileImageView)
+        self.userView.addConstraintsWithFormat("V:|-40-[v0(100)]|", views: self.profileImageView)
 
         self.userView.addSubview(self.nameLabel)     
         self.userView.addConstraintsWithFormat("H:|-140-[v0]|", views: self.nameLabel)
-        self.userView.addConstraintsWithFormat("V:|-20-[v0(50)]|", views: self.nameLabel)
+        self.userView.addConstraintsWithFormat("V:|-40-[v0(50)]|", views: self.nameLabel)
 
         self.userView.addSubview(self.schoolLabel)     
         self.userView.addConstraintsWithFormat("H:|-140-[v0]|", views: self.schoolLabel)
-        self.userView.addConstraintsWithFormat("V:|-60-[v0(30)]|", views: self.schoolLabel)
+        self.userView.addConstraintsWithFormat("V:|-80-[v0(30)]|", views: self.schoolLabel)
             
         self.userView.addSubview(self.gradeLabel)     
         self.userView.addConstraintsWithFormat("H:|-140-[v0]|", views: self.gradeLabel)
-        self.userView.addConstraintsWithFormat("V:|-90-[v0(30)]|", views: self.gradeLabel)   
+        self.userView.addConstraintsWithFormat("V:|-110-[v0(30)]|", views: self.gradeLabel)   
 
     }   
     
@@ -186,7 +205,7 @@ class FriendApprovalLauncher: UIView {
             
             view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)                 
             
-            let friendHeight = 450
+            let friendHeight = 320
             let buttonsHeight = screenHeight - friendHeight 
 
             print(buttonsHeight)
@@ -206,7 +225,7 @@ class FriendApprovalLauncher: UIView {
            
             view.addSubview(friendApprovalView)
             
-            let apprFrame = CGRect(x: 0, y: buttonsHeight, width: Int(keyWindow.frame.width), height: buttonsHeight)
+            let apprFrame = CGRect(x: 0, y: friendHeight, width: Int(keyWindow.frame.width), height: buttonsHeight)
             
             buttonsFriendApprovalView = ButtonsFriendApprovalView(frame: apprFrame, obj: friendApprovalView, friendApproval: friendApproval, delegate: self.delegate, approved: approved)
             buttonsFriendApprovalView.backgroundColor = UIColor.gamvesBackgoundColor

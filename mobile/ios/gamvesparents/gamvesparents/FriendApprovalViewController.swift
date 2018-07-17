@@ -22,7 +22,7 @@ UICollectionViewDelegateFlowLayout,
 FriendApprovalProtocol
 {
 
-     var homeViewController:HomeViewController?
+    var homeViewController:HomeViewController?
     
     var isGroup = Bool()
     
@@ -40,6 +40,10 @@ FriendApprovalProtocol
     }()
     
     let approvlCellId = "approvlCellId"
+
+    let emptyCellId = "emptyCellId"
+
+    let sectionHeaderId = "friendSectionHeader"
     
     var familyId = String()
 
@@ -54,6 +58,10 @@ FriendApprovalProtocol
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
     
         self.collectionView.register(FriendApprovalCell.self, forCellWithReuseIdentifier: approvlCellId)
+
+        self.collectionView.register(FriendEmptyCollectionViewCell.self, forCellWithReuseIdentifier: emptyCellId)
+      
+        self.collectionView.register(FriendSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
         
         self.collectionView.reloadData()
         
@@ -85,21 +93,23 @@ FriendApprovalProtocol
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "FriendSectionHeader", for: indexPath) as! FriendSectionHeader
+        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! FriendSectionHeader
+
+        sectionHeaderView.backgroundColor = UIColor.gamvesBackgoundColor
 
         if indexPath.section == 0 {
 
             let image  = UIImage(named: "add_friend")
             sectionHeaderView.profileImageView.image = image
 
-            sectionHeaderView.nameLabel.text = "INVITATIONS"
+            sectionHeaderView.nameLabel.text = "Invitations"
 
         } else if indexPath.section == 1 {
         
             let image  = UIImage(named: "group")
             sectionHeaderView.profileImageView.image = image
 
-            sectionHeaderView.nameLabel.text = "FRIENDS"
+            sectionHeaderView.nameLabel.text = "Friends list"
         }
 
         return sectionHeaderView
@@ -117,10 +127,27 @@ FriendApprovalProtocol
         } else if section == 1 {
 
             countItems = Global.friends.count
+
+            if countItems == 0
+            {
+                countItems = 1               
+
+            }
         }
          
         print(countItems)
         return countItems
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+               
+        return CGSize(width: collectionView.frame.size.width, height: 100)
+
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {               
+        
+        return CGSize(width: collectionView.frame.size.width, height: 80)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -140,27 +167,25 @@ FriendApprovalProtocol
             let realIndex = index - 1
             
             let keyIndex = keysArray[index] as String
-            let approval:FriendApproval = Global.friendApproval[keyIndex]!  
+            let friendApproval:FriendApproval = Global.friendApproval[keyIndex]!
 
-            var title = String()
+            var title = String()            
 
-            /*if approval.type == 1 {
-                //type = FriendApprovalType.YouInvite                 
-            } else if approval.type == 2 {
-                //type = FriendApprovalType.YouAreInvited 
-            }*/
+            if let friendId:String = friendApproval.friendId as String {
 
-            let friendId = approval.posterId
+                if Global.userDictionary[friendId] != nil {
+                
+                    let friend = Global.userDictionary[friendId] as! GamvesUser
 
-            let friend = Global.userDictionary[friendId] as! GamvesUser
-
-            title = friend.name
+                    title = friend.name
+                }
+            }           
             
             cella.nameLabel.text = title
             
-            if approval.approved == 0 || approval.approved == 2 || approval.approved == -1 { // NOT
+            if friendApproval.approved == 0 || friendApproval.approved == 2 || friendApproval.approved == -1 { // NOT
                 
-                if approval.approved == -1 {
+                if friendApproval.approved == -1 {
                     
                     cella.statusLabel.text = "REJECTED"
 
@@ -175,7 +200,7 @@ FriendApprovalProtocol
                 
                 cella.checkLabel.isHidden = false
                 
-            } else if approval.approved == 1 { //APPROVED
+            } else if friendApproval.approved == 1 { //APPROVED
             
                 cella.statusLabel.text = "APPROVED"
                 cella.checkLabel.isHidden = true
@@ -183,28 +208,49 @@ FriendApprovalProtocol
                 cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: "✓" )
             }       
             
-            cella.profileImageView.image = approval.thumbnail!
+            cella.profileImageView.image = friendApproval.thumbnail!
+
+            if friendApproval.type == 1 {                       
+
+                cella.typeLabel.text = "YOU\nINVITE"
+                cella.typeLabel.backgroundColor = UIColor.gamvesLightBlueColor
+
+            } else if friendApproval.type == 2 {                
+
+                cella.typeLabel.text = "RECEIVED\nINVITATION"
+                cella.typeLabel.backgroundColor = UIColor.blue
+            }
 
             return cella
             
         } else if indexPath.section == 1 {
 
-            let cellf = self.collectionView.dequeueReusableCell(withReuseIdentifier: approvlCellId, for: indexPath) as! FriendCollectionViewCell
+            let countItems = Global.friends.count
 
+            if countItems == 0 {                
+
+                let celle = self.collectionView.dequeueReusableCell(withReuseIdentifier: self.emptyCellId, for: indexPath) as! FriendEmptyCollectionViewCell
+                
+                celle.messageLabel.text = "No friends yet, invite!"
+
+                return celle
+
+            } else if countItems > 0 {
             
+                let cellf = self.collectionView.dequeueReusableCell(withReuseIdentifier: self.approvlCellId, for: indexPath) as! FriendCollectionViewCell
 
-            return cellf
+                return cellf
+
+            }
+
+            return cell
             
         }
 
         return cell
 
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        return CGSize(width: self.view.frame.width, height: 100)
-    }
+    }    
+ 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
@@ -216,7 +262,12 @@ FriendApprovalProtocol
         
         self.friendApprovalLauncher = FriendApprovalLauncher()
         friendApprovalLauncher.delegate = self
-        friendApprovalLauncher.showUserForFriend(friendApproval: friendApproval, approved: friendApproval.approved, screenHeight: Int(self.view.frame.height))
+        
+        let screenSize = UIScreen.main.bounds
+        let screenWidth = screenSize.width
+        let screenHeight = screenSize.height
+        
+        friendApprovalLauncher.showUserForFriend(friendApproval: friendApproval, approved: friendApproval.approved, screenHeight: Int(screenHeight))
        
     }   
 

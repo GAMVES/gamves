@@ -155,6 +155,8 @@ class Global: NSObject
             print(PFUser.current()?.username)
         }
         
+        print(userId)
+        
         if self.userDictionary[userId] == nil
         {
             
@@ -1174,29 +1176,42 @@ class Global: NSObject
                             friendApproval.approved = approved  
                             friendApproval.type     = type 
 
+                            var notNull = Bool()
+
                             if self.userDictionary[posterId] == nil
                             {
-                                let userQuery = PFQuery(className:"_User")
-                                userQuery.whereKey("objectId", equalTo: posterId)
-                                userQuery.getFirstObjectInBackground(block: { (user, error) in
-                                
-                                    if error == nil
-                                    {               
-                                        
-                                        Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
-                                            
-                                            if let objectId = user?.objectId {
-                                                 
-                                                friendApproval.thumbnail = gamvesUser.avatar    
 
-                                                self.friendApproval[posterId] = friendApproval                                     
-                                            }
-                                            
-                                        })             
-                                    }
-                                })
+                                print(posterId)
 
-                            } else {
+                                Global.addUnknownUserToDictionary(userId: posterId, completionHandlerUnknownUser: { ( gamvesUser ) -> () in                                            
+
+                                    friendApproval.thumbnail = gamvesUser.avatar    
+
+                                    self.friendApproval[posterId] = friendApproval    
+
+                                })                                 
+
+                                notNull = true
+
+                            } else if self.userDictionary[friendId] == nil
+                            {
+
+                                print(friendId)
+
+                                Global.addUnknownUserToDictionary(userId: friendId, completionHandlerUnknownUser: { ( gamvesUser ) -> () in                                            
+
+                                    friendApproval.thumbnail = gamvesUser.avatar    
+
+                                    self.friendApproval[friendId] = friendApproval    
+
+                                })                                 
+
+                                notNull = true
+
+                            }
+
+
+                            if !notNull {
 
                                 friendApproval.approved = approved
                                 
@@ -1220,6 +1235,29 @@ class Global: NSObject
                 }
             } 
         }
+    }
+
+    static func addUnknownUserToDictionary(userId: String, completionHandlerUnknownUser : @escaping (_ gamvesUser: GamvesUser) -> ()) {
+
+        let userQuery = PFQuery(className:"_User")
+        userQuery.whereKey("objectId", equalTo: userId)
+        userQuery.getFirstObjectInBackground(block: { (user, error) in
+        
+            if error == nil
+            {               
+                
+                Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
+                    
+                    if let objectId = user?.objectId {
+
+                        completionHandlerUnknownUser(gamvesUser)                         
+                                                         
+                    }
+                    
+                })             
+            }
+        })
+
     }
 
     static func getFriendsAmount(posterId:String, completionHandler : @escaping (_ amount: Int) -> ()) {

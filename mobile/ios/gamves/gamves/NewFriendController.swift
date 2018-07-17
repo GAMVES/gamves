@@ -329,9 +329,7 @@ class NewFriendController: UIViewController,
 
         self.addButton.isEnabled = false
         self.addButton.alpha = 0.4
-    }    
-
-    
+    }       
 
 
     func handleAdd() {  
@@ -352,7 +350,7 @@ class NewFriendController: UIViewController,
 
             let name = Global.userDictionary[user.userId]?.firstName
 
-            let familyId = user.familyId
+            let familyId = Global.gamvesFamily.objectId
 
             print(familyId)
 
@@ -360,7 +358,7 @@ class NewFriendController: UIViewController,
 
             friendsApproval["approved"] = 0
             
-            friendsApproval["friendId"] = user.userId                       
+            friendsApproval["friendId"] = user.userId
 
             friendsApproval["type"] = 1          
             
