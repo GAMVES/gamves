@@ -334,8 +334,8 @@
 		var sonId 	 = request.params.sonId;
 		var youId 	 = request.params.youId;
 		var familyId = request.params.familyId;
-		var school   = request.params.school;
-		var grade   = request.params.grade;
+		var schoolId   = request.params.schoolId;
+		var gradeId   = request.params.gradeId;
 
 		console.log("******************");
 		console.log(spouseId);
@@ -351,7 +351,7 @@
 
 	    	spouse.set("familyId", familyId);
 
-	    	spouse.set("school", school);
+	    	spouse.set("schoolId", schoolId);
 
 	    	spouse.save(null, {useMasterKey: true});
 
@@ -363,9 +363,9 @@
 
 	    	son.set("familyId", familyId);.
 
-	    	son.set("school", school);
+	    	son.set("schoolId", schoolId);
 
-	    	son.set("grade", grade);
+	    	son.set("gradeId", gradeId);
 
 	    	son.save(null, {useMasterKey: true});
 
@@ -377,7 +377,7 @@
 
 	    	you.set("familyId", familyId);
 
-	    	you.set("school", school);
+	    	you.set("schoolId", schoolId);
 
 	    	you.save(null, {useMasterKey: true});
 
