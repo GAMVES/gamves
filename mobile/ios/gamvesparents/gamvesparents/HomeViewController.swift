@@ -605,11 +605,9 @@ class HomeViewController: UIViewController,
             }
             
         })
+        
 
-
-        self.getFriendsAmount()
-
-        self.getFriendsApproval(familyId: familyId)               
+        self.getFriends(familyId: familyId)               
         
         self.renderSon()
         
@@ -623,42 +621,34 @@ class HomeViewController: UIViewController,
         
         self.loadSonProfileInfo()
 
-    }
-
-    func getFriendsAmount() {
-
-        Global.getFriendsAmount(posterId: self.puserId, completionHandler: { ( count ) -> () in
-
-            self.friendCount = count
-
-        })
-    }
+    }    
 
 
-    func getFriendsApproval(familyId: String) {
+    func getFriends(familyId: String) {
 
-        Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
-            
-            print(count)
+        let userId = Global.gamvesFamily.sonsUsers[0].userId
 
-            let friendData = "\(count)   \(self.friendCount)"
-            
-            //self.userStatistics[2].data = friendData
+        Global.getFriendsAmount(posterId: userId, completionHandler: { ( countFriends ) -> () in
 
-            self._friends_data = friendData
+            self.friendCount = countFriends
 
-            self.loadStatistics()
-
-            //self._approval.approval = count as Int
-            
-            DispatchQueue.main.async {
+            Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( countApprovals ) -> () in
                 
-                self.collectionView.reloadData()
-            }
-            
+                print(countApprovals)
+
+                let friendData = "\(countApprovals)   \(self.friendCount)"
+                
+                self._friends_data = friendData
+
+                self.loadStatistics()
+
+                DispatchQueue.main.async {
+                    
+                    self.collectionView.reloadData()
+                }
+                
+            })
         })
-
-
     }
     
     func renderSon() {

@@ -15,7 +15,7 @@ import NVActivityIndicatorView
 protocol FriendApprovalProtocol {
     func closedRefresh()
     func update(name:String)
-    func addedeUser(friendName:String, posterName:String)      
+    func usersAdded(friendName:String, posterName:String)
 }
 
 class FriendApprovalViewController: UIViewController,
@@ -49,6 +49,8 @@ FriendApprovalProtocol
     let emptyCellId = "emptyCellId"
 
     let sectionHeaderId = "friendSectionHeader"
+
+    let friendCell = "friendCell"
     
     var familyId = String()
 
@@ -65,9 +67,11 @@ FriendApprovalProtocol
         self.collectionView.register(FriendApprovalCell.self, forCellWithReuseIdentifier: approvlCellId)
 
         self.collectionView.register(FriendEmptyCollectionViewCell.self, forCellWithReuseIdentifier: emptyCellId)
+        
+        self.collectionView.register(FriendCollectionViewCell.self, forCellWithReuseIdentifier: friendCell)
       
         self.collectionView.register(FriendSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
-        
+
         self.collectionView.reloadData()
         
         self.familyId = Global.gamvesFamily.objectId
@@ -91,11 +95,17 @@ FriendApprovalProtocol
         Global.friendApproval = Dictionary<String, FriendApproval>() 
         
         Global.getFriendsApprovasByFamilyId(familyId: self.familyId) { ( count ) in
+            
+            let userId = Global.gamvesFamily.sonsUsers[0].userId
 
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-                self.activityIndicatorView?.stopAnimating()    
-            }                        
+            Global.getFriendsAmount(posterId: userId, completionHandler: { ( count ) -> () in
+
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                    self.activityIndicatorView?.stopAnimating()    
+                }
+
+            })                                    
         }
     }
 
@@ -241,7 +251,17 @@ FriendApprovalProtocol
 
             } else if countItems > 0 {
             
-                let cellf = self.collectionView.dequeueReusableCell(withReuseIdentifier: self.approvlCellId, for: indexPath) as! FriendCollectionViewCell
+                let cellf = self.collectionView.dequeueReusableCell(withReuseIdentifier: self.friendCell, for: indexPath) as! FriendCollectionViewCell
+
+                let keysFriendsArray = Array(Global.friends.keys)
+
+                let keyIndexFriend = keysFriendsArray[index] as String
+                let friend:GamvesUser = Global.friends[keyIndexFriend]! as GamvesUser
+
+                cellf.profileImageView.image    = friend.avatar
+                cellf.nameLabel.text            = friend.name
+                cellf.schoolLabel.text          = friend.school.schoolName
+                cellf.gradeLabel.text           = friend.level.description
 
                 return cellf
 
@@ -258,20 +278,36 @@ FriendApprovalProtocol
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        let section = indexPath.section
+
         let index:Int = indexPath.item
+
+        if section == 0 {           
         
-        let keysArray = Array(Global.friendApproval.keys)
-        let keyIndex = keysArray[index]
-        let friendApproval:FriendApproval = Global.friendApproval[keyIndex]!      
+            let keysArray = Array(Global.friendApproval.keys)
+            let keyIndex = keysArray[index]
+            let friendApproval:FriendApproval = Global.friendApproval[keyIndex]!      
+            
+            self.friendApprovalLauncher = FriendApprovalLauncher()
+            friendApprovalLauncher.delegate = self
+            
+            let screenSize = UIScreen.main.bounds
+            let screenWidth = screenSize.width
+            let screenHeight = screenSize.height
+            
+            friendApprovalLauncher.showUserForFriend(friendApproval: friendApproval, approved: friendApproval.approved, screenHeight: Int(screenHeight))
+
+        } else if section == 1 {            
         
-        self.friendApprovalLauncher = FriendApprovalLauncher()
-        friendApprovalLauncher.delegate = self
+            let keysFriendArray = Array(Global.friends.keys)
+            let keyFriendIndex = keysFriendArray[index]
+            let friend:GamvesUser = Global.friends[keyFriendIndex]!   
+
+            print("user: \(friend.name)")
+
+        } 
+
         
-        let screenSize = UIScreen.main.bounds
-        let screenWidth = screenSize.width
-        let screenHeight = screenSize.height
-        
-        friendApprovalLauncher.showUserForFriend(friendApproval: friendApproval, approved: friendApproval.approved, screenHeight: Int(screenHeight))
        
     }   
 
@@ -293,10 +329,10 @@ FriendApprovalProtocol
         
     }
 
-     func addedeUser(friendName:String, posterName:String)   {
+     func usersAdded(friendName:String, posterName:String)   {
 
-        let title   = "Friend request sent to \(name) parents"
-        let message = "An invitations to friend \(name) has been sent to the parents for appoval"
+        let title   = "Congratulations!"
+        let message = "\(friendName) and \(friendName) are now friends"
         
         let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
         

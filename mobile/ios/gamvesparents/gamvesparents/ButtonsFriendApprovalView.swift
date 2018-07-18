@@ -247,27 +247,45 @@ class ButtonsFriendApprovalView: UIView {
             var posterId = self.friendApproval.posterId           
             let friendId = self.friendApproval.friendId
 
-            let friendPF =  Global.userDictionary[friendId]?.typeObj
+            let friendPF =  Global.userDictionary[friendId]?.userObj
             let posterObj: PFObject = PFObject(className: "Friends")
             posterObj["userId"] = posterId
             let relationFriends = posterObj.relation(forKey: "friends")
             relationFriends.add(friendPF!)
-            posterObj.saveEventually()
-            
-            let posterPF =  Global.userDictionary[posterId]?.typeObj
-            let friendObj: PFObject = PFObject(className: "Friends")
-            friendObj["userId"] = posterId
-            let relationPoster = friendObj.relation(forKey: "friends")
-            relationPoster.add(posterPF!)
-            friendObj.saveEventually()
-
-            let posterName =  Global.userDictionary[posterId]?.name
-            let friendName =  Global.userDictionary[friendId]?.name
-
-            self.activityIndicatorView?.stopAnimating()
-            self.delegate.addUser(friendName: friendName, posterName: posterName)
-            self.closeApprovalWindow()
+            posterObj.saveInBackground(block: { (friendSPF, error) in
                 
+                if error == nil {
+                    
+                    let posterPF =  Global.userDictionary[posterId]?.userObj
+                    let friendObj: PFObject = PFObject(className: "Friends")
+                    friendObj["userId"] = friendId
+                    let relationPoster = friendObj.relation(forKey: "friends")
+                    relationPoster.add(posterPF!)
+                    
+                    friendObj.saveInBackground(block: { (posterSPF, error) in
+                        
+                        if error == nil {
+                            
+                            let posterName =  Global.userDictionary[posterId]?.name
+                            let friendName =  Global.userDictionary[friendId]?.name
+                            
+                            self.activityIndicatorView?.stopAnimating()
+                            self.delegate.usersAdded(friendName: friendName!, posterName: posterName!)
+                            self.closeApprovalWindow()
+                            
+                        } else {
+                            
+                            print(error)
+                        }
+                        
+                    })
+                    
+                    
+                } else {
+                    
+                    print(error)
+                }
+            })
             
         })           
 
