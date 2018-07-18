@@ -1174,54 +1174,49 @@ class Global: NSObject
                             friendApproval.posterId = posterId
                             friendApproval.friendId = friendId                            
                             friendApproval.approved = approved  
-                            friendApproval.type     = type 
+                            friendApproval.type     = type                                                       
 
-                            var notNull = Bool()
+                            var userId = String()
 
-                            if self.userDictionary[posterId] == nil
-                            {
+                            if type == 1 {
 
-                                print(posterId)
+                                userId = friendId
 
-                                Global.addUnknownUserToDictionary(userId: posterId, completionHandlerUnknownUser: { ( gamvesUser ) -> () in                                            
+                            } else if type == 2 {
 
-                                    friendApproval.thumbnail = gamvesUser.avatar    
-
-                                    self.friendApproval[posterId] = friendApproval    
-
-                                })                                 
-
-                                notNull = true
-
-                            } else if self.userDictionary[friendId] == nil
-                            {
-
-                                print(friendId)
-
-                                Global.addUnknownUserToDictionary(userId: friendId, completionHandlerUnknownUser: { ( gamvesUser ) -> () in                                            
-
-                                    friendApproval.thumbnail = gamvesUser.avatar    
-
-                                    self.friendApproval[friendId] = friendApproval    
-
-                                })                                 
-
-                                notNull = true
-
+                                userId = posterId
                             }
 
+                            if self.userDictionary[userId] == nil
+                            {
 
-                            if !notNull {
+                                print(userId)
+
+                                Global.addUnknownUserToDictionary(userId: userId, completionHandlerUnknownUser: { ( gamvesUser ) -> () in                                            
+
+                                    friendApproval.approved = approved
+
+                                    friendApproval.user = gamvesUser
+
+                                    friendApproval.title = gamvesUser.name                                    
+
+                                    self.friendApproval[userId] = friendApproval    
+
+                                }) 
+
+                            } else {
 
                                 friendApproval.approved = approved
                                 
-                               let user =  self.userDictionary[posterId] as! GamvesUser
+                                let user =  self.userDictionary[userId] as! GamvesUser
                                 
-                                friendApproval.thumbnail = user.avatar
+                                friendApproval.title = user.name 
 
-                                self.friendApproval[posterId] = friendApproval            
+                                friendApproval.user = user                         
 
-                            }    
+                                self.friendApproval[userId] = friendApproval            
+
+                            }
 
                         }    
 

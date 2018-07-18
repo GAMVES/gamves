@@ -14,11 +14,18 @@ class FriendApproval
 {
     var objectId = String()       
     var objectPF:PFObject!
+
+    var user = GamvesUser()
+
+    var title = String()
+
     var posterId = String()    
-    var approved = Int()    
-    var thumbnail:UIImage?
-    var type = Int()
     var friendId = String() 
+
+    var approved = Int()    
+    //var thumbnail:UIImage?
+    var type = Int()
+    
 }
 
 class LocationGamves {

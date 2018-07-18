@@ -10,9 +10,11 @@ import Parse
 import GameKit
 import Floaty
 import PopupDialog
+import NVActivityIndicatorView
 
 protocol FriendApprovalProtocol {
-    func closedRefresh()    
+    func closedRefresh()
+    func update(name:String)      
 }
 
 class FriendApprovalViewController: UIViewController,
@@ -21,6 +23,8 @@ UICollectionViewDelegate,
 UICollectionViewDelegateFlowLayout,
 FriendApprovalProtocol
 {
+    
+    var activityIndicatorView:NVActivityIndicatorView?
 
     var homeViewController:HomeViewController?
     
@@ -66,6 +70,8 @@ FriendApprovalProtocol
         self.collectionView.reloadData()
         
         self.familyId = Global.gamvesFamily.objectId
+
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
     }
     
 
@@ -77,13 +83,18 @@ FriendApprovalProtocol
         super.didReceiveMemoryWarning()
     }
     
-    func closedRefresh() {       
+    func closedRefresh() {   
+
+        self.activityIndicatorView?.startAnimating()    
 
         Global.friendApproval = Dictionary<String, FriendApproval>() 
         
         Global.getFriendsApprovasByFamilyId(familyId: self.familyId) { ( count ) in
-            
-            self.collectionView.reloadData()
+
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                self.activityIndicatorView?.stopAnimating()    
+            }                        
         }
     }
 
@@ -100,14 +111,14 @@ FriendApprovalProtocol
         if indexPath.section == 0 {
 
             let image  = UIImage(named: "add_friend")
-            sectionHeaderView.profileImageView.image = image
+            sectionHeaderView.iconImageView.image = image
 
             sectionHeaderView.nameLabel.text = "Invitations"
 
         } else if indexPath.section == 1 {
         
             let image  = UIImage(named: "group")
-            sectionHeaderView.profileImageView.image = image
+            sectionHeaderView.iconImageView.image = image
 
             sectionHeaderView.nameLabel.text = "Friends list"
         }
@@ -169,19 +180,11 @@ FriendApprovalProtocol
             let keyIndex = keysArray[index] as String
             let friendApproval:FriendApproval = Global.friendApproval[keyIndex]!
 
-            var title = String()            
-
-            if let friendId:String = friendApproval.friendId as String {
-
-                if Global.userDictionary[friendId] != nil {
-                
-                    let friend = Global.userDictionary[friendId] as! GamvesUser
-
-                    title = friend.name
-                }
-            }           
+            var title = String()
             
-            cella.nameLabel.text = title
+            print(friendApproval.title )
+
+            cella.nameLabel.text = friendApproval.title            
             
             if friendApproval.approved == 0 || friendApproval.approved == 2 || friendApproval.approved == -1 { // NOT
                 
@@ -208,17 +211,17 @@ FriendApprovalProtocol
                 cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: "✓" )
             }       
             
-            cella.profileImageView.image = friendApproval.thumbnail!
+            cella.profileImageView.image = friendApproval.user.avatar
 
             if friendApproval.type == 1 {                       
 
-                cella.typeLabel.text = "YOU\nINVITE"
+                cella.typeLabel.text = "INVITED\nFRIEND"
                 cella.typeLabel.backgroundColor = UIColor.gamvesLightBlueColor
 
             } else if friendApproval.type == 2 {                
 
-                cella.typeLabel.text = "RECEIVED\nINVITATION"
-                cella.typeLabel.backgroundColor = UIColor.blue
+                cella.typeLabel.text = "FRIEND\nINVITATION"
+                cella.typeLabel.backgroundColor = UIColor.gamvesTurquezeColor
             }
 
             return cella
@@ -271,6 +274,23 @@ FriendApprovalProtocol
        
     }   
 
+    func update(name:String)  {
+
+        let title   = "Friend request sent to \(name) parents"
+        let message = "An invitations to friend \(name) has been sent to the parents for appoval"
+        
+        let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                                             
+
+            self.closedRefresh()            
+            
+        }))
+        
+        self.present(alert, animated: true)
+
+        
+    }
   
 
 }

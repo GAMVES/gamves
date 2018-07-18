@@ -1779,10 +1779,12 @@ class ProfileViewController: UIViewController,
                 Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")    
 
                 let familyParams = [
-                    "spouseId" : self.spouse.objectId,
-                    "sonId" : self.son.objectId,
-                    "youId" : self.you.objectId,
-                    "familyId" : family.objectId
+                    "spouseId"  : self.spouse.objectId,
+                    "sonId"     : self.son.objectId,
+                    "youId"     : self.you.objectId,
+                    "familyId"  : family.objectId,
+                    "school"    : "\(self.puserId)_son_school"),
+                    "grade"    : "\(self.puserId)_son_grade",
                     ] as [String : Any]
 
                 PFCloud.callFunction(inBackground: "saveFamilyIdToMembers", withParameters: familyParams) { (result, error) in
@@ -1797,7 +1799,6 @@ class ProfileViewController: UIViewController,
             }                 
         }   
     }   
-    
     
     func createChatGroups(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())
     {

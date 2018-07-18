@@ -98,31 +98,32 @@ class FriendApprovalView: UIView {
 
         self.type = type
 
-        self.backgroundColor = UIColor.green
-
-        let sonId = friendApproval.posterId
-        let son =  Global.userDictionary[sonId] as! GamvesUser
+        self.backgroundColor = UIColor.green        
 
         let friendId = friendApproval.friendId
         let friend =  Global.userDictionary[friendId] as! GamvesUser
 
-        if type == FriendApprovalType.YouInvite {
+        let posterId = friendApproval.posterId
+        let poster =  Global.userDictionary[posterId] as! GamvesUser        
 
-            titleLabel.text = "\(son.firstName) wants to become friends with \(friend.firstName)"
+        if type == FriendApprovalType.YouInvite {                        
+
+            titleLabel.text = "\(poster.firstName) wants to become friends with \(friend.firstName)"
 
         } else if type == FriendApprovalType.YouAreInvited { 
 
-            titleLabel.text = "FRIEND REQUEST"
+            titleLabel.text = "\(friend.firstName) wants to become friends with \(poster.firstName)"            
         }
 
-        self.nameLabel.text = friend.name
-        self.schoolLabel.text = Global.gamvesFamily.schoolName
+        self.nameLabel.text = friendApproval.user.name
 
-        let level = "\(friend.levelNumber) - \(friend.levelDescription)"     
+        self.schoolLabel.text = friendApproval.user.school
+
+        let level = friendApproval.user.grade //"\(friend.levelNumber) - \(friend.levelDescription)"     
 
         self.gradeLabel.text = level 
 
-        self.profileImageView.image = friendApproval.thumbnail        
+        self.profileImageView.image = friendApproval.user.avatar
 
         self.addSubview(self.contanierView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.contanierView)

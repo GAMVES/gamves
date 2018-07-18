@@ -7,7 +7,7 @@
 
 import UIKit
 import Parse
-
+import NVActivityIndicatorView
 
 class ButtonsFriendApprovalView: UIView {    
 
@@ -61,6 +61,8 @@ class ButtonsFriendApprovalView: UIView {
     
     var approvalType:ApprovalType!
 
+    var activityIndicatorView:NVActivityIndicatorView?
+
     var approved = Bool()
     
     init(frame: CGRect, obj: FriendApprovalView, friendApproval: FriendApproval, delegate:FriendApprovalProtocol, approved:Int) {
@@ -68,11 +70,12 @@ class ButtonsFriendApprovalView: UIView {
 
         self.friendApproval = friendApproval
 
-        self.delegate = delegate
-      
+        self.delegate = delegate    
     }
     
     func addSubViews() {
+
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.bottomView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
         
         self.addSubview(self.approveButton)
         self.addSubview(self.rejectButton)
@@ -100,14 +103,12 @@ class ButtonsFriendApprovalView: UIView {
         
         if self.type == FriendApprovalType.YouInvite {
 
-            
+            self.updateFriendRegisterApproval()
 
         } else if self.type == FriendApprovalType.YouAreInvited {
 
             self.addFriend()            
-        }
-
-        
+        }        
     }
     
     @objc func touchUpReject() {
@@ -179,6 +180,50 @@ class ButtonsFriendApprovalView: UIView {
         
     }
     
+
+    func updateFriendRegisterApproval() {
+
+        self.activityIndicatorView?.startAnimating()
+
+        let friendApprovalPF = self.friendApproval.objectPF
+
+        friendApprovalPF?["approved"] = 1
+        
+        friendApprovalPF?.saveInBackground(block: { (resutl, error) in    
+
+            let friendsRegisterApproval: PFObject = PFObject(className: "FriendsApproval")
+
+            var posterId = self.friendApproval.posterId  
+
+            friendsRegisterApproval["posterId"] = posterId
+
+            let friendId = self.friendApproval.friendId  
+
+            var friend = Global.userDictionary[friendId]
+
+            friendsRegisterApproval["friendId"] = friendId        
+
+            let familyId = friend?.familyId
+
+            print(familyId)
+
+            friendsRegisterApproval["familyId"] = familyId 
+
+            friendsRegisterApproval["approved"] = 0            
+
+            friendsRegisterApproval["type"] = 2      
+            
+            friendsRegisterApproval.saveInBackground { (resutl, error) in
+                
+                if error == nil {                    
+
+                    self.activityIndicatorView?.stopAnimating()
+                    self.delegate.update(name: (friend?.name)!)
+                    self.closeApprovalWindow()                                       
+                }
+            }
+        })  
+    }
 
     func addFriend() {
 

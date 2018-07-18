@@ -10,7 +10,7 @@ import UIKit
 class FriendSectionHeader: UICollectionViewCell {
 
 
-	let profileImageView: UIImageView = {
+	let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill        
         imageView.tintColor = UIColor.white
@@ -42,9 +42,9 @@ class FriendSectionHeader: UICollectionViewCell {
     
     func setupViews() {
 
-    	self.addSubview(self.profileImageView)     
-        self.addConstraintsWithFormat("H:|-20-[v0(40)]|", views: self.profileImageView)
-        self.addConstraintsWithFormat("V:|-20-[v0(40)]|", views: self.profileImageView)
+    	self.addSubview(self.iconImageView)     
+        self.addConstraintsWithFormat("H:|-20-[v0(40)]|", views: self.iconImageView)
+        self.addConstraintsWithFormat("V:|-20-[v0(40)]|", views: self.iconImageView)
 
         self.addSubview(self.nameLabel)     
         self.addConstraintsWithFormat("H:|-85-[v0]|", views: self.nameLabel)
@@ -54,7 +54,7 @@ class FriendSectionHeader: UICollectionViewCell {
         self.addConstraintsWithFormat("H:|[v0]|", views: dividerLineView)
         self.addConstraintsWithFormat("V:[v0(0.3)]|", views: dividerLineView)
 
-        self.profileImageView.alpha = 0.5
+        self.iconImageView.alpha = 0.5
         self.nameLabel.alpha        = 0.5
         self.dividerLineView.alpha  = 0.5 
 
