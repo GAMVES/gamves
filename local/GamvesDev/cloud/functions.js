@@ -323,3 +323,65 @@
 		}); 
 
 	}
+
+
+	// --
+	// Add familyId to members.
+
+	Parse.Cloud.define("saveFamilyIdToMembers", function( request, response ) {
+
+		var spouseId = request.params.spouseId;
+		var sonId 	 = request.params.sonId;
+		var youId 	 = request.params.youId;
+		var familyId = request.params.familyId;
+		var school   = request.params.school;
+		var grade   = request.params.grade;
+
+		console.log("******************");
+		console.log(spouseId);
+		console.log(sonId);
+		console.log(youId);
+		console.log(familyId);
+		console.log("******************");
+
+		var userQuery = new Parse.Query(Parse.User);		
+		userQuery.equalTo("objectId", spouseId);
+		
+	    return userQuery.first().then(function(spouse) {
+
+	    	spouse.set("familyId", familyId);
+
+	    	spouse.set("school", school);
+
+	    	spouse.save(null, {useMasterKey: true});
+
+	    	userQuery.equalTo("objectId", sonId);
+			
+	        return userQuery.first();
+
+	    }).then(function(son) {   
+
+	    	son.set("familyId", familyId);.
+
+	    	son.set("school", school);
+
+	    	son.set("grade", grade);
+
+	    	son.save(null, {useMasterKey: true});
+
+	    	userQuery.equalTo("objectId", youId);
+
+	    	return userQuery.first();
+
+	    }).then(function(you) {   
+
+	    	you.set("familyId", familyId);
+
+	    	you.set("school", school);
+
+	    	you.save(null, {useMasterKey: true});
+
+	    	response.success(true); 
+		});	
+
+	});	
