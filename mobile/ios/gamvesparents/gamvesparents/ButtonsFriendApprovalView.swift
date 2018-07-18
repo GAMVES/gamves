@@ -18,7 +18,7 @@ class ButtonsFriendApprovalView: UIView {
      lazy var approveButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gamvesSemaphorGreenColor
-        button.setTitle("APPROVE SEND INVITATION", for: UIControlState())
+        //button.setTitle("APPROVE SEND INVITATION", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -92,6 +92,15 @@ class ButtonsFriendApprovalView: UIView {
             self.rejectButton,
             self.laterButton,
             self.bottomView)
+
+        if self.type == FriendApprovalType.YouInvite {
+
+            self.approveButton.setTitle("ACCEPT SEND INVITATION", for: UIControlState())           
+
+        } else if self.type == FriendApprovalType.YouAreInvited {
+
+            self.approveButton.setTitle("ACCEPT INVITATION", for: UIControlState())            
+        } 
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -101,11 +110,11 @@ class ButtonsFriendApprovalView: UIView {
     
     @objc func touchUpApprove() {
         
-        if self.type == FriendApprovalType.YouInvite {
+        if self.type == FriendApprovalType.YouInvite {           
 
             self.updateFriendRegisterApproval()
 
-        } else if self.type == FriendApprovalType.YouAreInvited {
+        } else if self.type == FriendApprovalType.YouAreInvited {            
 
             self.addFriend()            
         }        
@@ -227,35 +236,38 @@ class ButtonsFriendApprovalView: UIView {
 
     func addFriend() {
 
+        self.activityIndicatorView?.startAnimating()
+
         let friendApprovalPF = self.friendApproval.objectPF
 
-        friendApprovalPF?["approved"] = 0
+        friendApprovalPF?["approved"] = 1
         
         friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
            
-            let userId = self.friendApproval.friendId
+            var posterId = self.friendApproval.posterId           
+            let friendId = self.friendApproval.friendId
 
-            let friend =  Global.userDictionary[userId] as! GamvesUser            
-
-            var family = PFObject(className: "Family")
-
-             let friendsApproval: PFObject = PFObject(className: "FriendsApproval")
+            let friendPF =  Global.userDictionary[friendId]?.typeObj
+            let posterObj: PFObject = PFObject(className: "Friends")
+            posterObj["userId"] = posterId
+            let relationFriends = posterObj.relation(forKey: "friends")
+            relationFriends.add(friendPF!)
+            posterObj.saveEventually()
             
-            friendsApproval["posterId"] = self.friendApproval.posterId
-            friendsApproval["familyId"] = friend.familyId 
-            friendsApproval["approved"] = 0    
-            friendsApproval["type"] = 2    
-            friendsApproval["friendId"] = self.friendApproval.friendId 
+            let posterPF =  Global.userDictionary[posterId]?.typeObj
+            let friendObj: PFObject = PFObject(className: "Friends")
+            friendObj["userId"] = posterId
+            let relationPoster = friendObj.relation(forKey: "friends")
+            relationPoster.add(posterPF!)
+            friendObj.saveEventually()
 
-            friendsApproval.saveInBackground { (resutl, error) in
-                
-                if error == nil {
+            let posterName =  Global.userDictionary[posterId]?.name
+            let friendName =  Global.userDictionary[friendId]?.name
 
-                    self.delegate.closedRefresh()
-                    self.closeApprovalWindow()
+            self.activityIndicatorView?.stopAnimating()
+            self.delegate.addUser(friendName: friendName, posterName: posterName)
+            self.closeApprovalWindow()
                 
-                }
-            }           
             
         })           
 

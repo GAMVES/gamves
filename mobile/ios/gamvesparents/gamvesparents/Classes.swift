@@ -128,9 +128,7 @@ class GamvesUser
     var isRegister = Bool()
     
     var levelNumber = Int()
-    var levelDescription = String()
-    
-    var levelId = String()
+    var levelDescription = String()  
     
     var typeNumber = Int()
     var typeObj:PFObject!
@@ -141,8 +139,11 @@ class GamvesUser
     var isChecked = Bool()
     var gender = GamvesGender()
 
-    var school = String()
-    var grade = String()
+    var schoolId = String()
+    var levelId = String()
+
+    var school = GamvesSchools()
+    var level  = GamvesLevel()
 
     var familyId = String()
 }
@@ -241,7 +242,7 @@ struct Page {
 class GamvesFamily
 {
     var sonsUsers:[GamvesUser]!
-    var levels:[LevelsGamves]!
+    var levels:[GamvesLevel]!
     
     var youUser:GamvesUser!
     var spouseUser:GamvesUser!
@@ -262,7 +263,7 @@ class GamvesFamily
     init()
     {
         self.sonsUsers = [GamvesUser]()
-        self.levels = [LevelsGamves]()
+        self.levels = [GamvesLevel]()
     }
     
     func getFamilyUserById(userId : String) -> GamvesUser?
@@ -293,7 +294,7 @@ class GamvesFamily
 }
 
 
-class LevelsGamves
+class GamvesLevel
 {
     var objectId = String()
     var description = String()

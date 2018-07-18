@@ -1443,11 +1443,13 @@ class ProfileViewController: UIViewController,
         
         let full_name = son_name?.components(separatedBy: " ")
         let firstName = full_name?[0]
-        let lastName = full_name?[1]
-        
-        for school in Global.schools {
-            if self.sonSchoolTextField.text == school.schoolName {
-                Global.gamvesFamily.school = school
+        let lastName = full_name?[1]   
+
+        let skeys = Array(Global.schools.keys)
+        for s in skeys {
+            let school = Global.schools[s]
+            if self.sonSchoolTextField.text == school?.schoolName {
+                Global.gamvesFamily.school = school!
             }
         }
         
@@ -1727,13 +1729,15 @@ class ProfileViewController: UIViewController,
         
         let pfimageSmall = PFFile(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall, 1.0)!)
         family.setObject(pfimageSmall!, forKey: "pictureSmall")
-        
-        for school in Global.schools {
-            if self.sonSchoolTextField.text == school.schoolName {
+
+        let skeys = Array(Global.schools.keys)
+        for s in skeys {
+            let school = Global.schools[s]
+            if self.sonSchoolTextField.text == school?.schoolName {
                 let schoolRelation = family.relation(forKey: "school")
-                schoolRelation.add(school.schoolOBj)
+                schoolRelation.add((school?.schoolOBj)!)
             }
-        }
+        }    
         
         var son_grade:String = Global.defaults.string(forKey: "\(self.puserId)_son_grade") as! String
         
@@ -1776,15 +1780,25 @@ class ProfileViewController: UIViewController,
 
                 Global.gamvesFamily.familyImage = self.familyPhotoImageSmall
                 
-                Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")    
+                Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")  
+
+                var school = String()
+                if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_school") {
+                    school = "\(self.puserId)_son_school"
+                }  
+
+                var grade = String()
+                if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_grade") {
+                    grade = "\(self.puserId)_son_grade"
+                }
 
                 let familyParams = [
                     "spouseId"  : self.spouse.objectId,
                     "sonId"     : self.son.objectId,
                     "youId"     : self.you.objectId,
                     "familyId"  : family.objectId,
-                    "school"    : "\(self.puserId)_son_school"),
-                    "grade"    : "\(self.puserId)_son_grade",
+                    "school"    : school,
+                    "grade"     : grade,
                     ] as [String : Any]
 
                 PFCloud.callFunction(inBackground: "saveFamilyIdToMembers", withParameters: familyParams) { (result, error) in

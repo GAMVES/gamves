@@ -93,6 +93,14 @@ class FriendApprovalView: UIView {
         return label
     }() 
 
+    let schoolImageView: UIImageView = {
+        let imageView = UIImageView()                
+        imageView.contentMode = .scaleAspectFill                
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 5
+        return imageView
+    }()
+
     init(frame: CGRect, friendApproval: FriendApproval, type:FriendApprovalType) {
         super.init(frame: frame)
 
@@ -117,13 +125,18 @@ class FriendApprovalView: UIView {
 
         self.nameLabel.text = friendApproval.user.name
 
-        self.schoolLabel.text = friendApproval.user.school
+        self.schoolLabel.text = friendApproval.user.school.schoolName
 
-        let level = friendApproval.user.grade //"\(friend.levelNumber) - \(friend.levelDescription)"     
+        self.schoolImageView.image = friendApproval.user.school.thumbnail
 
-        self.gradeLabel.text = level 
+        let levelDesc = friendApproval.user.level.description
+        let levelGrade = friendApproval.user.level.grade 
 
-        self.profileImageView.image = friendApproval.user.avatar
+        let leve_desc = "\(levelGrade) - \(levelDesc)"
+
+        self.gradeLabel.text = leve_desc 
+
+        self.profileImageView.image = friendApproval.user.avatar        
 
         self.addSubview(self.contanierView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.contanierView)
@@ -142,8 +155,6 @@ class FriendApprovalView: UIView {
 
         self.iconImageView.alpha = 0.3
         self.titleLabel.alpha = 0.3
-
-
 
         self.contanierView.addSubview(self.userView)
         self.contanierView.addConstraintsWithFormat("H:|[v0]|", views: self.userView)        
@@ -165,7 +176,17 @@ class FriendApprovalView: UIView {
             
         self.userView.addSubview(self.gradeLabel)     
         self.userView.addConstraintsWithFormat("H:|-140-[v0]|", views: self.gradeLabel)
-        self.userView.addConstraintsWithFormat("V:|-110-[v0(30)]|", views: self.gradeLabel)   
+        self.userView.addConstraintsWithFormat("V:|-110-[v0(30)]|", views: self.gradeLabel)  
+
+        let width = self.frame.width 
+
+        let leftMargin = width - 120
+
+        let imageMetrics = ["leftMargin" : leftMargin]
+
+        self.userView.addSubview(self.schoolImageView)     
+        self.userView.addConstraintsWithFormat("H:|-leftMargin-[v0(100)]|", views: self.schoolImageView, metrics: imageMetrics)
+        self.userView.addConstraintsWithFormat("V:|-130-[v0(30)]|", views: self.schoolImageView)          
 
     }   
     

@@ -38,14 +38,14 @@ class Global: NSObject
 
     static var device = String()
     
-    static var levels = Dictionary<String, LevelsGamves>()
+    static var levels = Dictionary<String, GamvesLevel>()
     
     static var levelsLoaded = Bool()
     static var familyLoaded = Bool()
     
     static var familyDataGromGlobal = Bool()
     
-    static var schools = [GamvesSchools]()
+    static var schools = Dictionary<String, GamvesSchools>() 
 
     static var serverUrl = "https://parseapi.back4app.com/"
     
@@ -178,9 +178,27 @@ class Global: NSObject
             
             gamvesUser.userName = user["username"] as! String
 
-            if user["familyId"] != nil {
-                gamvesUser.familyId = user["familyId"] as! String
+            if user["schoolId"] != nil {
+                
+                let schoolId = user["schoolId"] as! String
+                gamvesUser.schoolId = schoolId
+
+                if Global.schools[schoolId] != nil {
+                    gamvesUser.school = Global.schools[schoolId]!
+                    if isFamily {
+                        Global.gamvesFamily.school = gamvesUser.school
+                    }
+                }
             }
+
+            if user["levelId"] != nil {
+                let levelId = user["levelId"] as! String
+                gamvesUser.levelId = levelId
+
+                if Global.levels[levelId] != nil {
+                    gamvesUser.level = Global.levels[levelId]!
+                }
+            }          
             
             print(user.email)
             
@@ -935,7 +953,7 @@ class Global: NSObject
                     
                     for level in levelObjects {
                         
-                        let levelGamves = LevelsGamves()
+                        let levelGamves = GamvesLevel()
                         levelGamves.description = level["description"] as! String
                         levelGamves.grade = level["grade"] as! Int
                         
@@ -1566,17 +1584,30 @@ class Global: NSObject
                         
                         gSchool.objectId = school.objectId!
                         gSchool.schoolName = schoolName
-                        gSchool.schoolOBj = school as PFObject
+                        gSchool.schoolOBj = school as PFObject                  
+
+                        let thumnail = school["thumbnail"] as! PFFile
                         
-                        Global.schools.append(gSchool)
+                        thumnail.getDataInBackground(block: { (data, error) in
+                                            
+                            if error == nil {
+                                
+                                let image_school = UIImage(data: data!)
+
+                                gSchool.thumbnail = image_school                                
+
+                                Global.schools[school.objectId!] = gSchool
+
+                                if count == (countSchools - 1)
+                                {
+                                    completionHandler(true, schoolsArray)
+                                }
+                                count = count + 1
+
+                            }
+                        })
+
                         
-                        Global.gamvesFamily.school = gSchool
-                        
-                        if count == (countSchools - 1)
-                        {
-                            completionHandler(true, schoolsArray)
-                        }
-                        count = count + 1
                     }
                 }
             }

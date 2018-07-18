@@ -77,17 +77,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             if PFUser.current() != nil
             {
                 
-                Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
-                
-                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-                
+                Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
+                    
+                    Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                        
+                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                        
+                    })
+                    
+                    self.loadChatChannels()
+                    
                 })
-
-                self.loadChatChannels()
+                
             
             }
             
         })
+        
+        
 
         
         if PFUser.current() != nil

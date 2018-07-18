@@ -14,7 +14,8 @@ import NVActivityIndicatorView
 
 protocol FriendApprovalProtocol {
     func closedRefresh()
-    func update(name:String)      
+    func update(name:String)
+    func addedeUser(friendName:String, posterName:String)      
 }
 
 class FriendApprovalViewController: UIViewController,
@@ -275,6 +276,24 @@ FriendApprovalProtocol
     }   
 
     func update(name:String)  {
+
+        let title   = "Friend request sent to \(name) parents"
+        let message = "An invitations to friend \(name) has been sent to the parents for appoval"
+        
+        let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                                             
+
+            self.closedRefresh()            
+            
+        }))
+        
+        self.present(alert, animated: true)
+
+        
+    }
+
+     func addedeUser(friendName:String, posterName:String)   {
 
         let title   = "Friend request sent to \(name) parents"
         let message = "An invitations to friend \(name) has been sent to the parents for appoval"
