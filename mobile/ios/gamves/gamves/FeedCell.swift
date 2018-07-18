@@ -57,7 +57,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         self.registerLiveQuery()
         
         let floaty = Floaty()
-        floaty.addItem(title: "New Group", handler: { item in
+        /*floaty.addItem(title: "New Group", handler: { item in
 
             if self.homeController != nil {
                 self.homeController?.selectContact(group: true)
@@ -76,7 +76,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             if self.homeController != nil {
                 self.homeController?.addFriend()
             }
-        })
+        })*/
         
         self.addSubview(floaty)
 
@@ -186,6 +186,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
         
         cell.nameLabel.text = chatfeed.room
+        
+        print(chatfeed.room)
 
         var message = String()
         

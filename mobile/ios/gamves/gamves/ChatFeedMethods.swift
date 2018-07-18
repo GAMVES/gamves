@@ -146,6 +146,9 @@ class ChatFeedMethods: NSObject {
                                 chatfeed.badgeNumber = counter
                                 chatfeed.key = chatId
                                 
+                                print(chatId)
+                                print(chatfeed.room)
+                                
                                 self.chatFeeds[chatId] = chatfeed
                         
                                 if (chatfeedsCount-1) == fcount {

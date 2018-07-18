@@ -58,7 +58,7 @@ import Floaty
         
         let floaty = Floaty()
         
-        floaty.addItem(title: "New Fanpage", handler: { item in
+        /*floaty.addItem(title: "New Fanpage", handler: { item in
             
             if self.homeController != nil
             {
@@ -74,7 +74,7 @@ import Floaty
                 self.homeController?.addNewVideo()
             }
             
-        })
+        })*/
         
         self.addSubview(floaty)
 

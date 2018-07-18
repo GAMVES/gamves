@@ -15,6 +15,7 @@ import IGColorPicker
 import PulsingHalo
 import KenBurns
 import RSKImageCropper
+import Floaty
 
 public enum ProfileSaveType {
     case profile
@@ -253,6 +254,8 @@ class ProfileCell: BaseCell,
     var selectedImage:SelectedImage!    
 
     var selectedBackImage = UIImage()
+
+    var floaty = Floaty()
     
     override func setupViews() {
         super.setupViews()
@@ -306,6 +309,46 @@ class ProfileCell: BaseCell,
             self.bioLabel,
             metrics: metricsRegisterView)
 
+        
+        floaty.verticalDirection = .down
+        
+        let height = self.frame.height - 250
+
+        floaty.paddingY = height + 50
+        floaty.paddingX = 50
+
+        floaty.sizeThatFits(CGSize(width: 60, height: 60))
+            
+        floaty.itemSpace = 30
+        
+        
+        let item = FloatyItem()
+        item.icon = UIImage(named: "icon")
+
+        
+        
+        item.buttonColor = UIColor.blue
+        item.circleShadowColor = UIColor.red
+        item.titleShadowColor = UIColor.blue
+        item.titleLabelPosition = .left
+        item.titleLabel.font =  UIFont.systemFont(ofSize: 30)
+        
+        item.handler = { item in
+            
+        }
+        
+        item.title = "Edit fanpage"
+
+        //floaty.addItem(title: "I got a title")
+        //floaty.addItem("I got a icon", icon: UIImage(named: "icShare"))
+        
+        floaty.addItem(item: item)
+        
+       
+        
+        self.addSubview(floaty)
+        
+        
         self.profileView.bringSubview(toFront: self.registerRowView)
         
         let userId = PFUser.current()?.objectId
@@ -328,6 +371,8 @@ class ProfileCell: BaseCell,
             self.rightregisterRowView, 
             metrics: metricsRegisterView)
 
+        self.footerView.isHidden = true
+
         self.footerView.addSubview(self.editProfileButton)
         self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.editProfileButton)
         
@@ -342,7 +387,7 @@ class ProfileCell: BaseCell,
             self.editProfileButton, 
             self.editFanpageButton, 
             metrics: metricsFooterView)
-        
+
         self.footerView.addSubview(self.saveProfileButton)
         self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.saveProfileButton)
         self.saveProfileButton.isHidden = true
@@ -371,10 +416,13 @@ class ProfileCell: BaseCell,
         self.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
         self.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
 
-        self.labelEmptyMessage.isHidden = true           
+        self.labelEmptyMessage.isHidden = true
+        
+        
        
-    }    
-       
+    }
+    
+    
 
     func setProfileType(type: ProfileSaveType) {
 

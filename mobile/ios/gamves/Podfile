@@ -9,7 +9,7 @@ target 'gamves' do
 
   pod 'DeviceKit'
   
-  pod 'Floaty', :git => 'https://github.com/kciter/Floaty.git', :tag => '4.0.0'
+  pod 'Floaty', :git => 'https://github.com/kciter/Floaty.git', :tag => '4.0.1'
   
   pod 'NVActivityIndicatorView'
   

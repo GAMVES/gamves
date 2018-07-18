@@ -9,7 +9,7 @@ PODS:
   - CalmParametricAnimations (1.0.1)
   - DeviceKit (1.0.1)
   - DownPicker (0.1.34)
-  - Floaty (4.0.0)
+  - Floaty (4.0.1)
   - IGColorPicker (0.3.0):
     - M13Checkbox (~> 2.2.0)
   - ISEmojiView (0.0.6)
@@ -44,7 +44,7 @@ DEPENDENCIES:
   - AWSS3
   - DeviceKit
   - DownPicker
-  - Floaty (from `https://github.com/kciter/Floaty.git`, tag `4.0.0`)
+  - Floaty (from `https://github.com/kciter/Floaty.git`, tag `4.0.1`)
   - IGColorPicker
   - ISEmojiView
   - KenBurns
@@ -61,12 +61,12 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   Floaty:
     :git: https://github.com/kciter/Floaty.git
-    :tag: 4.0.0
+    :tag: 4.0.1
 
 CHECKOUT OPTIONS:
   Floaty:
     :git: https://github.com/kciter/Floaty.git
-    :tag: 4.0.0
+    :tag: 4.0.1
 
 SPEC CHECKSUMS:
   AACarousel: 6131fa3650201a3ce10b6581621f3cade221b079
@@ -78,7 +78,7 @@ SPEC CHECKSUMS:
   CalmParametricAnimations: 8747c67d71e07be5e5b3b9d524560d1fbe74be94
   DeviceKit: 461e525867e48e725f41699c1cab3100df1258ff
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
-  Floaty: df27b72d9ed1e58d48aa3717327ffdb857268c63
+  Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
   IGColorPicker: 645a9523b5ff756bf29e0a858d2fe06ea7b910ff
   ISEmojiView: 2ab7c5ad9c58a318cefcf407af374464ccc56f1d
   KenBurns: 9224ab7ac7cda5e7fc6659fa6f2875f73360483c
@@ -96,6 +96,6 @@ SPEC CHECKSUMS:
   UITextView+Placeholder: 77680995fcdd07c3f52ec92fe1150874a2ac89ff
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 15c9ce67959c3519a54dfc4c9c1bf4befeb88ef9
+PODFILE CHECKSUM: 921fa84f8c6e29ef12eb650056d33275ed6b59f6
 
 COCOAPODS: 1.4.0
