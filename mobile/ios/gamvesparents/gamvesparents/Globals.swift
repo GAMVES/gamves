@@ -138,7 +138,7 @@ class Global: NSObject
     
     static var gamvesFamily = GamvesFamily()
     
-    static var chatVideos = Dictionary<Int, VideoGamves>()
+    static var chatVideos = Dictionary<Int, GamvesVideo>()
     
     static var hasNewFeed = Bool()
     
@@ -173,7 +173,11 @@ class Global: NSObject
                 registered = user["isRegister"] as! Bool
             }
             
-            gamvesUser.isRegister = registered            
+            gamvesUser.isRegister = registered    
+
+            if user["familyId"] != nil {
+                gamvesUser.familyId = user["familyId"] as! String
+            }        
             
             gamvesUser.userName = user["username"] as! String
 
@@ -383,7 +387,7 @@ class Global: NSObject
         
     }
     
-    static func getImageVideo(videothumburl: String, video:VideoGamves, completionHandler : (_ video:VideoGamves) -> Void)
+    static func getImageVideo(videothumburl: String, video:GamvesVideo, completionHandler : (_ video:GamvesVideo) -> Void)
     {
         
         if let vurl = URL(string: videothumburl)
@@ -1102,7 +1106,7 @@ class Global: NSObject
                                                     
                                                     approval.thumbnail = iconImage
                                                     
-                                                    let gamvesFanpage = Global.parseFanpage(fanpage: fanpageObject!, fanpageId : fanpageId, fanpageImage: iconImage!, completionHandler: { ( fanpageGamves:FanpageGamves ) -> () in
+                                                    let gamvesFanpage = Global.parseFanpage(fanpage: fanpageObject!, fanpageId : fanpageId, fanpageImage: iconImage!, completionHandler: { ( fanpageGamves:GamvesFanpage ) -> () in
                                                         
                                                         approval.fanpage = fanpageGamves
                                                         
@@ -1367,10 +1371,10 @@ class Global: NSObject
 
     }
     
-    static func parseFanpage(fanpage:PFObject, fanpageId :Int, fanpageImage: UIImage, completionHandler : @escaping (_ resutl:FanpageGamves) -> ())
+    static func parseFanpage(fanpage:PFObject, fanpageId :Int, fanpageImage: UIImage, completionHandler : @escaping (_ resutl:GamvesFanpage) -> ())
     {
         
-        let fanpageGamves = FanpageGamves()
+        let fanpageGamves = GamvesFanpage()
         
         let name = fanpage["pageName"] as! String
         
@@ -1419,7 +1423,7 @@ class Global: NSObject
                                     
                                     var count = Int()
                                     
-                                    var fanpage_images  = [FanpageImageGamves]()
+                                    var fanpage_images  = [GamvesFanpageImage]()
                                     
                                     for album in albumsPF {
                                         
@@ -1431,7 +1435,7 @@ class Global: NSObject
                                                 
                                                 let image_album = UIImage(data: data!)
                                                 
-                                                let gamves_image = FanpageImageGamves()
+                                                let gamves_image = GamvesFanpageImage()
                                                 
                                                 gamves_image.cover_image = image_album!
                                                 
@@ -1461,10 +1465,10 @@ class Global: NSObject
     
     
     
-    static func parseVideo(video:PFObject, chatId :Int, videoImage: UIImage ) -> VideoGamves
+    static func parseVideo(video:PFObject, chatId :Int, videoImage: UIImage ) -> GamvesVideo
     {
     
-        let videoGamves = VideoGamves()
+        let videoGamves = GamvesVideo()
        
         let title = video["title"] as! String
         

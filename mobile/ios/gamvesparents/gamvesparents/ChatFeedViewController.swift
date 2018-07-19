@@ -324,7 +324,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
             
             let chatId = chatfeed.chatId! as Int
             print(chatId)
-            var video = VideoGamves()
+            var video = GamvesVideo()
             
             video = Global.chatVideos[chatId]!
             

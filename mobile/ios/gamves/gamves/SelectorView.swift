@@ -9,7 +9,7 @@ import UIKit
 import Parse
 
 protocol SelectorProtocol {
-    func categorySelected(category : CategoryGamves)
+    func categorySelected(category : GamvesCategory)
     func fanpageSelected(fanpage : GamvesFanpage)
     func reoadFanpageCollection()
 }
@@ -25,7 +25,7 @@ class SelectorView: BaseCell,
     UICollectionViewDelegateFlowLayout
 {
     
-    var categoriesGamves = [CategoryGamves]()
+    var categoriesGamves = [GamvesCategory]()
     
     var gamvesFanpage = [GamvesFanpage]()
     
@@ -120,7 +120,7 @@ class SelectorView: BaseCell,
         self.selectorType = type
     }
     
-    func loadFanpage(category:CategoryGamves) {
+    func loadFanpage(category:GamvesCategory) {
 
         if category.name == "PERSONAL" {
 

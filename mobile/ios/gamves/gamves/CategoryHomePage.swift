@@ -173,7 +173,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
   
         let headerView = tableView.dequeueReusableCell(withIdentifier: categorySectionCellId) as! CategoryTableViewSectionCell
         
-        let catcel:CategoryGamves = Global.categories_gamves[section]!
+        let catcel:GamvesCategory = Global.categories_gamves[section]!
         
         headerView.name.text  = catcel.name
         
@@ -267,7 +267,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                     for pcategory in pcategories
                     {
                         
-                        let cat = CategoryGamves()
+                        let cat = GamvesCategory()
                         cat.cateobj = pcategory as PFObject
                         
                         print(pcategory.objectId)
@@ -354,7 +354,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         
         for i in ids {
             
-            var cat = Global.categories_gamves[i] as! CategoryGamves
+            var cat = Global.categories_gamves[i] as! GamvesCategory
             
             var fanpageAmount = 0
             
@@ -553,7 +553,7 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         let id = collectionView.tag as Int
         
-        let category:CategoryGamves = Global.categories_gamves[id]!
+        let category:GamvesCategory = Global.categories_gamves[id]!
         
         print(category.name)
         

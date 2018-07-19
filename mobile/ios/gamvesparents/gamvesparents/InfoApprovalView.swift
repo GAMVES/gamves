@@ -10,8 +10,8 @@ import UIKit
 
 class InfoApprovalView: UIView {
     
-    var videoGamves:VideoGamves!
-    var fanpageGamves:FanpageGamves!
+    var videoGamves:GamvesVideo!
+    var fanpageGamves:GamvesFanpage!
 
 	let infoContView: UIView = {
         let view = UIView()
@@ -87,9 +87,9 @@ class InfoApprovalView: UIView {
     init(frame: CGRect, obj: AnyObject) {
         super.init(frame: frame)    
         
-        if (obj is VideoGamves) {
+        if (obj is GamvesVideo) {
             
-            let video = obj as! VideoGamves
+            let video = obj as! GamvesVideo
             
             self.videoGamves = video
             
@@ -99,9 +99,9 @@ class InfoApprovalView: UIView {
             let paddDescVideo =  "                       \(video.description)"
             self.infoDescLabel.text = paddDescVideo
         
-        } else if (obj is FanpageGamves) {
+        } else if (obj is GamvesFanpage) {
             
-            let fanpage = obj as! FanpageGamves
+            let fanpage = obj as! GamvesFanpage
             
             self.fanpageGamves = fanpage
 

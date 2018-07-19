@@ -47,8 +47,9 @@ class Global: NSObject
     static var notifications = [GamvesNotification]()
 
     static var userTypes = Dictionary<Int, UserTypeGamves>()
-    
-    static var levels = Dictionary<String, LevelsGamves>()
+
+    static var schools = Dictionary<String, GamvesSchools>()
+    static var levels = Dictionary<String, GamvesLevel>()
     
     //static var serverUrl = "http://25.55.180.51:1337/1/"
     //static var serverUrl = "http://127.0.0.1:1337/1/"
@@ -132,11 +133,11 @@ class Global: NSObject
     static var familyLoaded = Bool()
     static var chatFeedLoaded = Bool()
     
-    static var chatVideos = Dictionary<Int, VideoGamves>()
+    static var chatVideos = Dictionary<Int, GamvesVideo>()
     
     static var hasNewFeed = Bool()
     
-    static var categories_gamves = Dictionary<Int, CategoryGamves>()
+    static var categories_gamves = Dictionary<Int, GamvesCategory>()
 
     static var fanpageData:AnyObject!
     
@@ -173,6 +174,28 @@ class Global: NSObject
             if user["familyId"] != nil {
                 gamvesUser.familyId = user["familyId"] as! String
             }
+
+            if user["schoolId"] != nil {
+                
+                let schoolId = user["schoolId"] as! String
+                gamvesUser.schoolId = schoolId
+
+                if Global.schools[schoolId] != nil {
+                    gamvesUser.school = Global.schools[schoolId]!
+                    if isFamily {
+                        Global.gamvesFamily.school = gamvesUser.school
+                    }
+                }
+            }
+
+            if user["levelId"] != nil {
+                let levelId = user["levelId"] as! String
+                gamvesUser.levelId = levelId
+
+                if Global.levels[levelId] != nil {
+                    gamvesUser.level = Global.levels[levelId]!
+                }
+            } 
             
             gamvesUser.isRegister = registered
             
@@ -307,6 +330,60 @@ class Global: NSObject
             
             completionHandler(self.userDictionary[userId]!)
         }
+    }
+
+    static func loadSchools(completionHandler : @escaping (_ user:Bool, _ schoolsArray: NSMutableArray) -> ()) {
+        
+        let schoolsArray:NSMutableArray = []
+        
+        let querySchool = PFQuery(className:"Schools")
+        
+        querySchool.findObjectsInBackground(block: { (schools, error) in
+            
+            if error == nil
+            {
+                if let schools = schools
+                {
+                    var countSchools = schools.count
+                    var count = 0
+                    
+                    for school in schools
+                    {
+                        let schoolName = school["name"] as! String
+                        schoolsArray.add(schoolName)
+                        
+                        let gSchool = GamvesSchools()
+                        
+                        gSchool.objectId = school.objectId!
+                        gSchool.schoolName = schoolName
+                        gSchool.schoolOBj = school as PFObject                  
+
+                        let thumnail = school["thumbnail"] as! PFFile
+                        
+                        thumnail.getDataInBackground(block: { (data, error) in
+                                            
+                            if error == nil {
+                                
+                                let image_school = UIImage(data: data!)
+
+                                gSchool.thumbnail = image_school                                
+
+                                Global.schools[school.objectId!] = gSchool
+
+                                if count == (countSchools - 1)
+                                {
+                                    completionHandler(true, schoolsArray)
+                                }
+                                count = count + 1
+
+                            }
+                        })
+
+                        
+                    }
+                }
+            }
+        })
     }
     
     static func adduserToFamilyFromGlobal(gamvesUser : GamvesUser){
@@ -1054,6 +1131,12 @@ class Global: NSObject
             
             NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoggedin), object: nil)
         }
+
+        Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in })
+
+
+        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in })
+
     }
     
     func handleLogin() {
@@ -1120,7 +1203,7 @@ class Global: NSObject
                     
                     for level in levelObjects {
                         
-                        let levelGamves = LevelsGamves()
+                        let levelGamves = GamvesLevel()
                         levelGamves.description = level["description"] as! String
                         levelGamves.grade = level["grade"] as! Int
                         
@@ -1243,7 +1326,7 @@ class Global: NSObject
                                 {
                                     for school in schools!
                                     {
-                                        self.gamvesFamily.school = school["name"] as! String
+                                        self.gamvesFamily.schoolName = school["name"] as! String
 
                                         self.gamvesFamily.schoolShort = school["short"] as! String                                       
 
@@ -1327,9 +1410,9 @@ class Global: NSObject
         }
     }
     
-    static func getGamvesVideoFromObject(videoPF:PFObject, completionHandler : @escaping (_ video:VideoGamves) -> ()) {
+    static func getGamvesVideoFromObject(videoPF:PFObject, completionHandler : @escaping (_ video:GamvesVideo) -> ()) {
         
-        let video = VideoGamves()      
+        let video = GamvesVideo()      
         
         video.title                     = videoPF["title"] as! String
         video.description               = videoPF["description"] as! String

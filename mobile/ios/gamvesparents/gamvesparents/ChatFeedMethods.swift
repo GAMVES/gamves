@@ -170,7 +170,7 @@ class ChatFeedMethods: NSObject {
                         
                         if (videos?.count)! > 0
                         {
-                            var videosGamves = [VideoGamves]()
+                            var videosGamves = [GamvesVideo]()
                             
                             if let videos = videos
                             {

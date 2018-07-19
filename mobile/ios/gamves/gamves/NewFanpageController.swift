@@ -61,7 +61,7 @@ ChooseAvatarProtocol
     
     var homeController: HomeController?
     
-    var category:CategoryGamves?
+    var category:GamvesCategory?
 
     var current : AnyObject?
     
@@ -645,7 +645,7 @@ ChooseAvatarProtocol
                             
                             if Downloader.fanpageImagesDictionary[fpId] != nil {
                             
-                                let imagesArray = Downloader.fanpageImagesDictionary[fpId] as! [FanpageImageGamves]
+                                let imagesArray = Downloader.fanpageImagesDictionary[fpId] as! [GamvesFanpageImage]
                                 
                                 print(imagesArray.count)
                                 
@@ -718,12 +718,13 @@ ChooseAvatarProtocol
             
             }
             
+            
             self.collectionView.reloadData()
         }
         
     }
     
-    func categorySelected(category : CategoryGamves){
+    func categorySelected(category : GamvesCategory){
         print(category.name)
         self.category = category
         self.nameTextField.becomeFirstResponder()
@@ -1272,7 +1273,7 @@ ChooseAvatarProtocol
         
             if Downloader.fanpageImagesDictionary[fpId] != nil {
                 
-                let imagesArrayDownloaded = Downloader.fanpageImagesDictionary[fpId] as! [FanpageImageGamves]               
+                let imagesArrayDownloaded = Downloader.fanpageImagesDictionary[fpId] as! [GamvesFanpageImage]
              
                 for dImage in imagesArrayDownloaded {           
 

@@ -11,7 +11,7 @@ import Parse
 
 class InfoView: UIView {
     
-    var videoGamves:VideoGamves!
+    var videoGamves:GamvesVideo!
 
 	let infoContainerView: UIView = {
         let view = UIView()
@@ -124,7 +124,7 @@ class InfoView: UIView {
     var existLike = Bool()
     var likesPF:PFObject!
 
-    init(frame: CGRect, video: VideoGamves)
+    init(frame: CGRect, video: GamvesVideo)
     {
         super.init(frame: frame)    
 

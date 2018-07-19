@@ -291,7 +291,7 @@ class VideoApprovalLauncher: UIView {
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
 
-    func showVideoPlayer(videoGamves: VideoGamves, approved :Int){
+    func showVideoPlayer(videoGamves: GamvesVideo, approved :Int){
                 
         let videoUrl = videoGamves.s3_source
         let videoObj = videoGamves.videoObj!

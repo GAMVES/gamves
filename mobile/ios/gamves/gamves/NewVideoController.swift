@@ -27,7 +27,7 @@ SelectorProtocol {
     
     var homeController: HomeController?
     
-    var category = CategoryGamves()
+    var category = GamvesCategory()
     var fanpage = GamvesFanpage()
     var current : AnyObject?
     
@@ -415,7 +415,7 @@ SelectorProtocol {
         
     }
     
-    func categorySelected(category: CategoryGamves) {
+    func categorySelected(category: GamvesCategory) {
         self.categoryTypeSeparatorView.isHidden = false
         self.selectorFanpageView.isHidden = false  
         self.selectorFanpageView.loadFanpage(category: category)        

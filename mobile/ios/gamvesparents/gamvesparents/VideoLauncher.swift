@@ -306,7 +306,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
     
     var videoId = Int()
 
-    func showVideoPlayer(videoGamves: VideoGamves){
+    func showVideoPlayer(videoGamves: GamvesVideo){
         
         self.keyWindoWidth = (UIApplication.shared.keyWindow?.frame.size.width)!
         self.keyWindoHeight = (UIApplication.shared.keyWindow?.frame.size.height)!

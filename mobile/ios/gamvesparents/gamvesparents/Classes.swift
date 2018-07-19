@@ -65,7 +65,7 @@ class HistoryGamves
     var title = String()
     var description = String()
     var videoId = Int()
-    var videoGamves = VideoGamves()
+    var videoGamves = GamvesVideo()
 }
 
 
@@ -95,8 +95,8 @@ class Approvals
     var title = String()
     var description = String()
     var approved = Int()
-    var video = VideoGamves()
-    var fanpage = FanpageGamves()
+    var video = GamvesVideo()
+    var fanpage = GamvesFanpage()
     var type = Int()
 }
 
@@ -154,7 +154,7 @@ class GamvesGender
     var female =  Bool()
 }
 
-class VideoGamves
+class GamvesVideo
 {    
     var title = String()
     var description = String()
@@ -186,7 +186,7 @@ class VideoGamves
 
 }
 
-class CategoryGamves
+class GamvesCategory
 {
     var cover = String()
     var name = String()
@@ -196,12 +196,12 @@ class CategoryGamves
     
     var cateobj:PFObject?
     
-    var fanpages = [FanpageGamves]()
+    var fanpages = [GamvesFanpage]()
     
     var selected = Bool()
 }
 
-class FanpageGamves
+class GamvesFanpage
 {
     var objectId = String()
     var cover   = String()
@@ -215,17 +215,17 @@ class FanpageGamves
     var cover_image = UIImage()
     var icon_image  = UIImage()
     
-    var videos = [VideoGamves]()
+    var videos = [GamvesVideo]()
     
     var fanpageObj:PFObject?
     
     var categoryObj:PFObject?
     var categoryName = String()
     
-    var fanpage_images  = [FanpageImageGamves]()
+    var fanpage_images  = [GamvesFanpageImage]()
 }
 
-class FanpageImageGamves
+class GamvesFanpageImage
 {
     var objectId = String()
     var source = String()

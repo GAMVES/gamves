@@ -105,7 +105,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
 
                         if type == 1 { //video
 
-                            let videoGamves = VideoGamves()
+                            let videoGamves = GamvesVideo()
                             let videoObj:PFObject = (notificationPF["video"] as? PFObject)!
 
                             do {

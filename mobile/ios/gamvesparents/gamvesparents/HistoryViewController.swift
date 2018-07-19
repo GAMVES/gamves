@@ -265,7 +265,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
 
             var chatId = history.videoId
 
-            var video = VideoGamves()
+            var video = GamvesVideo()
                 
             video = Global.chatVideos[chatId]!
             

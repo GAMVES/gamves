@@ -27,8 +27,8 @@ class FanpagePage: UIViewController,
     weak var delegate:CellDelegate?       
     
     var fanpageGamves  = GamvesFanpage()
-    var videosGamves  = [VideoGamves]()
-    var fanpageImages = [FanpageImageGamves]()
+    var videosGamves  = [GamvesVideo]()
+    var fanpageImages = [GamvesFanpageImage]()
     
     var timer:Timer? = nil
 
@@ -454,7 +454,7 @@ class FanpagePage: UIViewController,
         
         if Downloader.fanpageImagesDictionary[fanpageId] != nil
         {
-            self.fanpageImages =  Downloader.fanpageImagesDictionary[fanpageId] as! [FanpageImageGamves]
+            self.fanpageImages =  Downloader.fanpageImagesDictionary[fanpageId] as! [GamvesFanpageImage]
             
             self.fanpageImages.shuffled
             
@@ -555,7 +555,7 @@ class FanpagePage: UIViewController,
 
     func setFanpageData()
     {        
-        self.videosGamves = [VideoGamves]()
+        self.videosGamves = [GamvesVideo]()
         
         self.collectionView.reloadData()        
         
@@ -607,7 +607,7 @@ class FanpagePage: UIViewController,
                         for qvideoinfo in videoArray
                         {
                             
-                            let video = VideoGamves()
+                            let video = GamvesVideo()
                             
                             var videothum = qvideoinfo["thumbnail"] as! PFFile
                             

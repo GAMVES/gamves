@@ -37,7 +37,7 @@ class GamvesNotification {
     var title = String()
     var description = String()
     var date = Date()
-    var video = VideoGamves()
+    var video = GamvesVideo()
     var fanpage = GamvesFanpage()
     var type = Int()
     var posterId = String()
@@ -80,9 +80,13 @@ class GamvesUser {
     var isRegister = Bool()
     
     var levelNumber = Int()
-    var levelDescription = String()
-    
-    var levelId = String()
+    var levelDescription = String()   
+
+    var schoolId = String()
+    var levelId = String()   
+
+    var school = GamvesSchools()
+    var level  = GamvesLevel()
     
     var typeNumber = Int()
     var typeObj:PFObject!
@@ -96,8 +100,15 @@ class GamvesUser {
     var familyId = String()
 }
 
+class GamvesSchools
+{
+    var objectId = String()
+    var thumbnail:UIImage?
+    var schoolName = String()    
+    var schoolOBj:PFObject!
+}
 
-class LevelsGamves {
+class GamvesLevel {
 
     var objectId = String()
     var description = String()
@@ -121,7 +132,7 @@ class GamvesGender {
     var female =  Bool()
 }
 
-class VideoGamves {
+class GamvesVideo {
 
     var authorized = Bool()
     var title = String()
@@ -150,7 +161,7 @@ class VideoGamves {
 
 }
 
-class CategoryGamves {
+class GamvesCategory {
 
     var cover = String()
     var name = String()
@@ -186,20 +197,20 @@ class GamvesFanpage {
         self.cover_image = image
     }
     
-    var videos = [VideoGamves]()
+    var videos = [GamvesVideo]()
     
     var fanpageObj:PFObject?
     
     var categoryObj:PFObject?
     var categoryName = String()
     
-    var fanpage_images  = [FanpageImageGamves]()
+    var fanpage_images  = [GamvesFanpageImage]()
     
     var isFavorite = Bool()
     var favoritePF:PFObject?
 }
 
-class FanpageImageGamves {
+class GamvesFanpageImage {
 
     var albumPF:PFObject!
     var objectId = String()
@@ -219,7 +230,7 @@ struct Page {
 class GamvesFamily {
 
     var sonsUsers:[GamvesUser]!
-    var levels:[LevelsGamves]!
+    var levels:[GamvesLevel]!
     
     var youUser:GamvesUser!
     var registerUser:GamvesUser!
@@ -227,7 +238,7 @@ class GamvesFamily {
     
     var familyName = String()
     var objectId = String()
-    var school = String()
+    var schoolName = String()
     var schoolShort = String()
     
     var sonRegisterChatId = Int()
@@ -235,11 +246,13 @@ class GamvesFamily {
     var familyChatId = Int()    
     
     var familyImage = UIImage()
+
+    var school = GamvesSchools()
     
     init()
     {
         self.sonsUsers = [GamvesUser]()
-        self.levels = [LevelsGamves]()
+        self.levels = [GamvesLevel]()
     }
     
     func getFamilyUserById(userId : String) -> GamvesUser?

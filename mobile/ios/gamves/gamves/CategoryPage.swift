@@ -17,7 +17,7 @@ UICollectionViewDelegateFlowLayout {
     
     weak var delegate:CellDelegate?
 
-    var categoryGamves = CategoryGamves()
+    var categoryGamves = GamvesCategory()
     var fanpagesGamves  = [GamvesFanpage]()
 
     let coverContainerView: UIView = {

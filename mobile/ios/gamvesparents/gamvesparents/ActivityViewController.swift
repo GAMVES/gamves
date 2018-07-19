@@ -240,7 +240,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
                         
                         if (videos?.count)! > 0
                         {
-                            var videosGamves = [VideoGamves]()
+                            var videosGamves = [GamvesVideo]()
                             
                             if let videos = videos
                             {
@@ -354,7 +354,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
             
             let chatId = chatfeed.chatId! as Int
             print(chatId)
-            var video = VideoGamves()
+            var video = GamvesVideo()
             
             video = Global.chatVideos[chatId]!
             

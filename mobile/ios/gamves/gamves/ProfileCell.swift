@@ -50,7 +50,7 @@ class ProfileCell: BaseCell,
 
     var userStatistics = [UserStatistics]()
 
-    var videosGamves  = [VideoGamves]()
+    var videosGamves  = [GamvesVideo]()
     let cellVideoCollectionId = "cellVideoCollectionId"    
 
     let profileView: UIView = {
@@ -109,25 +109,74 @@ class ProfileCell: BaseCell,
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.textAlignment = .left
-        //label.backgroundColor = UIColor.green
+        label.font = UIFont.boldSystemFont(ofSize: 23)
+        label.textAlignment = .left        
         return label
     }()
     
+
+    let infoView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor.gamvesBackgoundColor
+        return v
+    }()
+
+    let joinedLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textAlignment = .right        
+        return label
+    }()
 
     let bioLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray        
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textAlignment = .left        
+        return label
+    }()
+
+    let schoolLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.textAlignment = .center        
+        return label
+    }()
+    
+
+    let gradeLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray        
+        label.font = UIFont.systemFont(ofSize: 15)
         label.textAlignment = .center        
         return label
     }()
 
+    let lowView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false        
+        return view
+    }()
+
+
+
     // DATA
     
     let lineView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.gray
+        return view
+    }()
+
+    let lineFooterView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.gray
@@ -157,12 +206,12 @@ class ProfileCell: BaseCell,
     let footerView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        //v.backgroundColor = UIColor.red
+        v.backgroundColor = UIColor.gamvesBackgoundColor
         return v
     }()
 
 
-    lazy var editProfileButton: UIButton = {
+    /*lazy var editProfileButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor        
         button.setTitle("Edit Profile", for: UIControlState())
@@ -184,7 +233,7 @@ class ProfileCell: BaseCell,
         button.addTarget(self, action: #selector(handleEditFanpage), for: .touchUpInside)
         button.layer.cornerRadius = 5
         return button
-    }()
+    }()*/
     
     var saveDesc:String  = "Save Profile"
     var colorDesc:String = "Choose Color"
@@ -217,12 +266,23 @@ class ProfileCell: BaseCell,
 
     var labelEmptyMessage: UILabel = {
         let label = UILabel()
-        label.text = "There are no videos yet loaded for your profile"
-        //label.sizeToFit()
+        label.text = "There are no videos yet loaded for your profile"        
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.gray
         label.numberOfLines = 3
         label.textAlignment = .center
+        return label
+    }()
+
+
+    let footerLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Edit your public profile and fanpage using the + button. Customize to your wish!"
+        label.textColor = UIColor.gray        
+        label.numberOfLines = 2
+        label.font = UIFont.boldSystemFont(ofSize: 15)
+        label.textAlignment = .left        
         return label
     }()
 
@@ -255,19 +315,26 @@ class ProfileCell: BaseCell,
 
     var selectedBackImage = UIImage()
 
-    var floaty = Floaty()
+    var floaty = Floaty(size: 80)
     
     override func setupViews() {
         super.setupViews()
+
+        let userId = PFUser.current()?.objectId
+        let user = Global.gamvesFamily.getFamilyUserById(userId: userId!) as! GamvesUser
 
         self.saveProfileButton.setTitle(saveDesc, for: .normal)
         
         self.getProfileVideos()
         
         let width = self.frame.width
-        let paddingRegister = (width - 100)/2
+        let paddingRegister = (width - 150)/2
         
         print(paddingRegister)
+
+        //self.backgroundColor = UIColor.yellow
+        //self.profileView.backgroundColor = UIColor.blue
+        //self.dataView.backgroundColor = UIColor.green
         
         let metricsRegisterView = ["paddingRegister": paddingRegister]
         
@@ -280,13 +347,17 @@ class ProfileCell: BaseCell,
         self.addSubview(self.dataView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.dataView)
 
+        self.addSubview(self.lineFooterView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.lineFooterView)
+
         self.addSubview(self.footerView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)        
         
-        self.addConstraintsWithFormat("V:|[v0(220)][v1(1)][v2][v3(70)]|", views:
+        self.addConstraintsWithFormat("V:|[v0(240)][v1(1)][v2][v3(1)][v4(70)]|", views:
             self.profileView, 
             self.lineView, 
             self.dataView,
+            self.lineFooterView,
             self.footerView)        
         
         // SON VIEW  
@@ -296,66 +367,104 @@ class ProfileCell: BaseCell,
         self.profileView.addSubview(self.sonLabel)
         self.profileView.addSubview(self.bioLabel)
 
+
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
         self.profileView.addConstraintsWithFormat("V:|[v0(100)]|", views:
             self.backImageView)        
         
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.registerRowView)
-        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
-        self.profileView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.bioLabel)
-        self.profileView.addConstraintsWithFormat("V:|-50-[v0(100)]-5-[v1(20)][v2]|", views:
+        self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
+        self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)
+
+        self.profileView.addConstraintsWithFormat("V:|-20-[v0(150)][v1(40)][v2]-10-|", views:
             self.registerRowView,
             self.sonLabel,
             self.bioLabel,
-            metrics: metricsRegisterView)
+            metrics: metricsRegisterView)   
 
+        self.profileView.addSubview(self.infoView)  
+        self.profileView.addConstraintsWithFormat("H:|-220-[v0]|", views: self.infoView) 
+        self.profileView.addConstraintsWithFormat("V:|-100-[v0]|", views: self.infoView)          
+
+        self.infoView.addSubview(self.joinedLabel)  
+        self.infoView.addSubview(self.schoolLabel)  
+        self.infoView.addSubview(self.gradeLabel)
+        self.infoView.addSubview(self.lowView)
+
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.joinedLabel)
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.schoolLabel)
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.gradeLabel)
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.lowView)
         
-        floaty.verticalDirection = .down
+        self.infoView.addConstraintsWithFormat("V:|[v0(30)][v1(50)][v2(20)][v3]|", views: 
+            self.joinedLabel,
+            self.schoolLabel, 
+            self.gradeLabel,
+            self.lowView)         
         
-        let height = self.frame.height - 250
+        let dateFormatter = DateFormatter()  
+        let joined = dateFormatter.dateFormat = "MM/dd/yy"
+        let date = user.userObj.createdAt! as Date
 
-        floaty.paddingY = height + 50
-        floaty.paddingX = 50
+        self.joinedLabel.text = dateFormatter.string(from: date)  
+        self.schoolLabel.text = user.school.schoolName
+        self.gradeLabel.text = user.level.description
 
-        floaty.sizeThatFits(CGSize(width: 60, height: 60))
+        //self.joinedLabel.backgroundColor = UIColor.red
+        //self.schoolLabel.backgroundColor = UIColor.cyan
+        //self.gradeLabel.backgroundColor = UIColor.green      
+
+        self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
+        self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)            
+         
+        //self.sonLabel.backgroundColor = UIColor.cyan
+        //self.bioLabel.backgroundColor = UIColor.green
+        
+        //FLOATY      
+
+        self.floaty.paddingY = 35
+        self.floaty.paddingX = 20                    
+        self.floaty.itemSpace = 30
+        self.floaty.shadowRadius = 20
+        self.floaty.buttonColor = UIColor.gamvesYellowColor
+        self.floaty.sizeToFit()
+
+        //floaty.verticalDirection = .down        
+        
+        let itemEditProfile = FloatyItem()
+        itemEditProfile.icon = UIImage(named: "edit")                
+        itemEditProfile.buttonColor = UIColor.white
+        itemEditProfile.titleLabelPosition = .left
+        itemEditProfile.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemEditProfile.title = "EDIT PROFILE"
+        itemEditProfile.handler = { item in
             
-        floaty.itemSpace = 30
-        
-        
-        let item = FloatyItem()
-        item.icon = UIImage(named: "icon")
+            self.handleEditProfile()
+            self.floaty.isHidden = true
 
-        
-        
-        item.buttonColor = UIColor.blue
-        item.circleShadowColor = UIColor.red
-        item.titleShadowColor = UIColor.blue
-        item.titleLabelPosition = .left
-        item.titleLabel.font =  UIFont.systemFont(ofSize: 30)
-        
-        item.handler = { item in
-            
         }
-        
-        item.title = "Edit fanpage"
 
-        //floaty.addItem(title: "I got a title")
-        //floaty.addItem("I got a icon", icon: UIImage(named: "icShare"))
-        
-        floaty.addItem(item: item)
-        
-       
-        
-        self.addSubview(floaty)
-        
+        let itemEditFanpage = FloatyItem()
+        itemEditFanpage.icon = UIImage(named: "page")                
+        itemEditFanpage.buttonColor = UIColor.white
+        itemEditFanpage.titleLabelPosition = .left
+        itemEditFanpage.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemEditFanpage.title = "EDIT FANPAGE"
+        itemEditFanpage.handler = { item in
+            
+            self.handleEditFanpage()            
+
+        }
+
+        self.floaty.addItem(item: itemEditProfile)       
+        self.floaty.addItem(item: itemEditFanpage)       
+        self.addSubview(floaty)        
         
         self.profileView.bringSubview(toFront: self.registerRowView)
-        
-        let userId = PFUser.current()?.objectId
-        
-        let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
+                        
+        let name = user.name
         self.sonLabel.text = name
-        self.sonLabel.textAlignment = NSTextAlignment.center
+        //self.sonLabel.textAlignment = NSTextAlignment.center
         
         self.registerRowView.addSubview(self.leftregisterRowView)
         self.registerRowView.addSubview(self.sonProfileImageView)
@@ -365,28 +474,19 @@ class ProfileCell: BaseCell,
         self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.sonProfileImageView)
         self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.rightregisterRowView)            
         
-        self.registerRowView.addConstraintsWithFormat("H:|[v0(paddingRegister)][v1(100)][v2(paddingRegister)]|", views: 
+        self.registerRowView.addConstraintsWithFormat("H:|[v0(30)][v1(150)][v2]|", views: 
             self.leftregisterRowView, 
             self.sonProfileImageView, 
             self.rightregisterRowView, 
-            metrics: metricsRegisterView)
+            metrics: metricsRegisterView)                 
 
-        self.footerView.isHidden = true
-
-        self.footerView.addSubview(self.editProfileButton)
-        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.editProfileButton)
-        
-        self.footerView.addSubview(self.editFanpageButton)
-        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.editFanpageButton)
+        self.footerView.addSubview(self.footerLabel)    
+        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.footerLabel)
+        self.footerView.addConstraintsWithFormat("H:|-10-[v0]-100-|", views: self.footerLabel)   
         
         let splitFooter = (width - 60)/2
         
-        let metricsFooterView = ["sf": splitFooter]
-        
-        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: 
-            self.editProfileButton, 
-            self.editFanpageButton, 
-            metrics: metricsFooterView)
+        let metricsFooterView = ["sf": splitFooter]   
 
         self.footerView.addSubview(self.saveProfileButton)
         self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.saveProfileButton)
@@ -400,11 +500,7 @@ class ProfileCell: BaseCell,
 
         self.dataView.addSubview(self.collectionView)
         self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView) 
-        self.dataView.addConstraintsWithFormat("V:|-20-[v0]|", views: self.collectionView) 
-       
-        //self.bioLabel.text = "I like doing this and that with my information"
-
-        //self.dataView.backgroundColor = UIColor.red
+        self.dataView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)     
 
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
 
@@ -416,8 +512,7 @@ class ProfileCell: BaseCell,
         self.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
         self.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
 
-        self.labelEmptyMessage.isHidden = true
-        
+        self.labelEmptyMessage.isHidden = true    
         
        
     }
@@ -430,8 +525,8 @@ class ProfileCell: BaseCell,
 
         if type == ProfileSaveType.chat {
 
-            self.editProfileButton.setTitle(chatDesc, for: .normal)
-            self.editFanpageButton.setTitle(closeDesc, for: .normal)
+            //self.editProfileButton.setTitle(chatDesc, for: .normal)
+            //self.editFanpageButton.setTitle(closeDesc, for: .normal)
 
         }
 
@@ -533,7 +628,7 @@ class ProfileCell: BaseCell,
 
             self.sonProfileImageView.image = sonImage
             
-            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 50, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
+            Global.setRoundedImage(image: sonProfileImageView, cornerRadius: 75, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
             
             self.sonProfileImageView.layer.shadowColor = UIColor.black.cgColor
             self.sonProfileImageView.layer.shadowOpacity = 1
@@ -585,8 +680,8 @@ class ProfileCell: BaseCell,
                 self.saveProfileButton.isHidden = false
                 self.cancelProfileButton.isHidden = false
 
-                self.editProfileButton.isHidden = true
-                self.editFanpageButton.isHidden = true
+                //self.editProfileButton.isHidden = true
+                //self.editFanpageButton.isHidden = true
                 
                 //-- Background
                 
@@ -808,7 +903,7 @@ class ProfileCell: BaseCell,
             
             self.bioLabel.text = self.initialSetting.bio
          
-            self.videosGamves = [VideoGamves]()
+            self.videosGamves = [GamvesVideo]()
             self.videosGamves = self.initialSetting.videos
             
             self.enableDisableButtonToNormal()
@@ -827,8 +922,8 @@ class ProfileCell: BaseCell,
         self.saveProfileButton.isHidden = true
         self.cancelProfileButton.isHidden = true
 
-        self.editProfileButton.isHidden = false
-        self.editFanpageButton.isHidden = false
+        //self.editProfileButton.isHidden = false
+        //self.editFanpageButton.isHidden = false
         
         self.editBackImageView.isHidden = true
         self.editAvatarImageView.isHidden = true
@@ -1047,7 +1142,7 @@ class ProfileCell: BaseCell,
                         for qvideoinfo in videoArray
                         {
                             
-                            let video = VideoGamves()
+                            let video = GamvesVideo()
                             
                             var videothum = qvideoinfo["thumbnail"] as! PFFile
                             
@@ -1239,7 +1334,7 @@ class InitialSetting {
     var backImage:UIImage!
     var avatarImage:UIImage!
     var bio = String()
-    var videos = [VideoGamves]()
+    var videos = [GamvesVideo]()
 }
 
 

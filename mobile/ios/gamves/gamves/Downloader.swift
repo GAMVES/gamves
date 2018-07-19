@@ -13,7 +13,7 @@ import Parse
 class Downloader: NSObject
 {
     
-    static var fanpageImagesDictionary = Dictionary<Int, [FanpageImageGamves]>()
+    static var fanpageImagesDictionary = Dictionary<Int, [GamvesFanpageImage]>()
     
     static var quenedImages = Dictionary<Int, Bool>()
     
@@ -46,7 +46,7 @@ class Downloader: NSObject
                         if (fanpageAlbums?.count)! > 0
                         {
                             
-                            var images = [FanpageImageGamves]()
+                            var images = [GamvesFanpageImage]()
                             
                             let countFanpageAlbums = fanpageAlbums?.count
                             
@@ -58,7 +58,7 @@ class Downloader: NSObject
                             {
                                 //print(fanpageAlbum["name"])
                                 
-                                let image = FanpageImageGamves()
+                                let image = GamvesFanpageImage()
                                 
                                 image.albumPF = fanpageAlbum
                                 

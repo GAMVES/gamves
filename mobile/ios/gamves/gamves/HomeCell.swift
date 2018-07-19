@@ -140,13 +140,13 @@ import Floaty
                              
                 if data != nil 
                 {
-                    if (data?.isKind(of: CategoryGamves.self))!
+                    if (data?.isKind(of: GamvesCategory.self))!
                     {
                             print("category")
                         
                             let category = viewController as! CategoryPage                        
                         
-                            category.categoryGamves = data as! CategoryGamves
+                            category.categoryGamves = data as! GamvesCategory
                         
                             category.setCategoryData()                            
                         

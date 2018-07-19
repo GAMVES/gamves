@@ -158,7 +158,7 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
             
             if approval.type == 1 { //Video
                 
-                var video = VideoGamves()
+                var video = GamvesVideo()
                 
                 video = Global.chatVideos[approval.referenceId]!
                 
@@ -168,7 +168,7 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
                 
             } else if approval.type == 2 { //Fanpage
                 
-                var fanpage = FanpageGamves()
+                var fanpage = GamvesFanpage()
                 fanpage = approval.fanpage
                 
                 let fanpageApprovalLauncher = FanpageApprovalLauncher()

@@ -18,7 +18,7 @@ class FanpageApprovalView: UIView,
     var fanpageApprovalView:FanpageApprovalView!
     var keyWindow: UIView!
     
-    var fanpageGamves:FanpageGamves!
+    var fanpageGamves:GamvesFanpage!
     
     var yLocation = CGFloat()
     var xLocation = CGFloat()
@@ -96,7 +96,7 @@ class FanpageApprovalView: UIView,
     
     let cellFanId = "cellFanId"
     
-    var fanpageImagesArray  = [FanpageImageGamves]()
+    var fanpageImagesArray  = [GamvesFanpageImage]()
     
     var fanpageId = Int()
     
@@ -166,7 +166,7 @@ class FanpageApprovalView: UIView,
         self.fanpageId = fanpageId
     }
     
-    func setFanpageGamves(fanpageGamves: FanpageGamves) {
+    func setFanpageGamves(fanpageGamves: GamvesFanpage) {
         
         self.fanpageGamves = fanpageGamves
         self.avatarImage.image = fanpageGamves.icon_image
@@ -245,7 +245,7 @@ class FanpageApprovalLauncher: UIView {
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
 
-    func showFanpageList(fanpageGamves: FanpageGamves){
+    func showFanpageList(fanpageGamves: GamvesFanpage){
         
         let fanpageId = fanpageGamves.fanpageId
         
