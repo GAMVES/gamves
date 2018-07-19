@@ -127,6 +127,11 @@ class Global: NSObject
     static var badgeNumber = Bool()
     
     static var userDictionary = Dictionary<String, GamvesUser>()
+
+
+    static var friends = Dictionary<String, GamvesUser>()
+
+    static var friendsAmount = Int()
     
     static var gamvesFamily = GamvesFamily()
     
@@ -384,6 +389,84 @@ class Global: NSObject
                 }
             }
         })
+    }
+
+    static func getFriendsAmount(posterId:String, completionHandler : @escaping (_ amount: Int) -> ()) {
+
+        let userQuery = PFQuery(className:"Friends")
+        userQuery.whereKey("userId", equalTo: posterId)
+        userQuery.getFirstObjectInBackground(block: { (friendObject, error) in
+        
+            if error == nil
+            {
+
+                let friendsRelation = friendObject?.relation(forKey: "friends")
+                let queryRelation = friendsRelation?.query()
+                queryRelation?.findObjectsInBackground(block: { (usersPf, error) in
+                    
+                    if error == nil {
+                        
+                        let countFriends = usersPf?.count
+                        
+                        if countFriends == 0 {
+                            
+                            completionHandler(0)
+                            
+                        } else {
+                            
+                            var count = 0
+                            
+                            for userPF in usersPf! {
+                                
+                                if self.userDictionary[(userPF.objectId!)] == nil
+                                {
+                                    
+                                    Global.addUserToDictionary(user: userPF as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
+                                        
+                                        if let objectId = userPF.objectId {
+                                            
+                                            self.friends[gamvesUser.userId] = gamvesUser                                   
+                                            
+                                            if count == (countFriends! - 1) {
+                                                completionHandler(countFriends!)
+                                            }
+
+                                            count = count + 1
+                                            
+                                        }
+                                    })
+                                    
+                                }  else {
+                                    
+                                    if let userId = userPF.objectId {
+                                        
+                                        let user = self.userDictionary[userId]
+                                        
+                                        self.friends[userId] = user                               
+                                        
+                                        if count == (countFriends! - 1) {
+                                            completionHandler(countFriends!)
+                                        }
+
+                                        count = count + 1
+                                    }
+                                }
+                            
+                            }
+                        
+                        }                        
+                    }           
+                    
+                })   
+
+
+            } else {
+
+                completionHandler(0)   
+            }
+        })
+
+
     }
     
     static func adduserToFamilyFromGlobal(gamvesUser : GamvesUser){
@@ -1120,6 +1203,14 @@ class Global: NSObject
                         
                         Global.chatFeedLoaded = true
                     })
+
+                    let userId = Global.gamvesFamily.sonsUsers[0].userId
+
+                    Global.getFriendsAmount(posterId: userId, completionHandler: { ( countFriends ) -> () in
+
+                        self.friendsAmount = countFriends
+                    })
+                    
                 })
             })
             
@@ -1136,6 +1227,7 @@ class Global: NSObject
 
 
         Global.loaLevels(completionHandler: { ( result:Bool ) -> () in })
+        
 
     }
     
@@ -1553,5 +1645,32 @@ class Global: NSObject
         UIColor.init(netHex: 0x189ea6),
         UIColor.init(netHex: 0x97a618)        
     ]
+
+
+    static func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+
+        // Figure out what our orientation is, and use that to form the rectangle
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio, height:  size.height * widthRatio)
+        }
+
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRect(x:0, y:0, width:newSize.width, height:newSize.height)
+
+        // Actually do the resizing to the rect using the ImageContext stuff
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage!
+    }
 
 }

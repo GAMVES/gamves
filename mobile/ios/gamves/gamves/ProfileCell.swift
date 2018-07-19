@@ -21,6 +21,7 @@ public enum ProfileSaveType {
     case profile
     case color
     case chat
+    case publicProfile
 }
 
 public enum SelectedImage {
@@ -57,13 +58,13 @@ class ProfileCell: BaseCell,
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
         v.backgroundColor = UIColor.gamvesBackgoundColor
-        v.layer.cornerRadius = 20
+        v.layer.cornerRadius = 15
         return v
     }() 
 
     var friendImageView: CustomImageView = {
         let imageView = CustomImageView()
-        let image = UIImage(named: "friends")
+        let image = UIImage(named: "group")
         imageView.image = image
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.masksToBounds = true
@@ -74,9 +75,8 @@ class ProfileCell: BaseCell,
     let friendsLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.gray
-        label.text = "Friends"
-        label.font = UIFont.boldSystemFont(ofSize: 23)
+        label.textColor = UIColor.gray        
+        label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textAlignment = .left        
         return label
     }()
@@ -193,8 +193,6 @@ class ProfileCell: BaseCell,
         return view
     }()
 
-
-
     // DATA
     
     let lineView: UIView = {
@@ -238,31 +236,6 @@ class ProfileCell: BaseCell,
         return v
     }()
 
-
-    /*lazy var editProfileButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor        
-        button.setTitle("Edit Profile", for: UIControlState())
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor.white, for: UIControlState())
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        button.addTarget(self, action: #selector(handleEditProfile), for: .touchUpInside)
-        button.layer.cornerRadius = 5 
-        return button
-    }()
-    
-    lazy var editFanpageButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor
-        button.setTitle("Edit Fanpage", for: UIControlState())
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor.white, for: UIControlState())
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        button.addTarget(self, action: #selector(handleEditFanpage), for: .touchUpInside)
-        button.layer.cornerRadius = 5
-        return button
-    }()*/
-    
     var saveDesc:String  = "Save Profile"
     var colorDesc:String = "Choose Color"
     var chatDesc:String = "Chat"
@@ -346,7 +319,7 @@ class ProfileCell: BaseCell,
     var floaty = Floaty(size: 80)
     
     override func setupViews() {
-        super.setupViews()
+        super.setupViews()      
 
         let userId = PFUser.current()?.objectId
         let user = Global.gamvesFamily.getFamilyUserById(userId: userId!) as! GamvesUser
@@ -356,13 +329,7 @@ class ProfileCell: BaseCell,
         self.getProfileVideos()
         
         let width = self.frame.width
-        let paddingRegister = (width - 150)/2
-        
-        print(paddingRegister)
-
-        //self.backgroundColor = UIColor.yellow
-        //self.profileView.backgroundColor = UIColor.blue
-        //self.dataView.backgroundColor = UIColor.green
+        let paddingRegister = (width - 150)/2  
         
         let metricsRegisterView = ["paddingRegister": paddingRegister]
         
@@ -414,18 +381,24 @@ class ProfileCell: BaseCell,
         self.profileView.addConstraintsWithFormat("H:|-220-[v0]|", views: self.infoView) 
         self.profileView.addConstraintsWithFormat("V:|-100-[v0]|", views: self.infoView)    
 
-        let leftSpace = width - 200     
+        let leftSpace = width - 100     
 
         let mestricsLeft = ["leftSpace":leftSpace]
-        self.profileView.addConstraintsWithFormat("H:|-leftSpace-[v0(150)]|", views: self.friendsView, metrics:mestricsLeft)
-        self.profileView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views:self.friendsView)       
+        self.profileView.addConstraintsWithFormat("H:|-leftSpace-[v0(80)]|", views: self.friendsView, metrics:mestricsLeft)
+        self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.friendsView)       
 
         self.friendsView.addSubview(self.friendImageView)  
         self.friendsView.addSubview(self.friendsLabel)  
 
-        self.friendsView.addConstraintsWithFormat("V:|-5-[v0(50)]-5-|", views: self.friendImageView)
+        self.friendsLabel.text = "\(Global.friendsAmount)"
+
+        self.friendsView.addConstraintsWithFormat("V:|-5-[v0(30)]-5-|", views: self.friendImageView)
         self.friendsView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.friendsLabel)
-        self.friendsView.addConstraintsWithFormat("H:|-5-[v0(50)]-5-[v1]-5-|", views: self.friendImageView, self.friendsLabel)
+        self.friendsView.addConstraintsWithFormat("H:|-10-[v0(30)]-5-[v1]|", views: self.friendImageView, self.friendsLabel)
+        
+        let gesture = UITapGestureRecognizer(target: self, action:  #selector (showFriends))
+        self.friendsView.addGestureRecognizer(gesture)
+        self.friendsView.alpha = 0.5
         
         self.infoView.addSubview(self.joinedLabel)  
         self.infoView.addSubview(self.schoolLabel)  
@@ -449,17 +422,10 @@ class ProfileCell: BaseCell,
 
         self.joinedLabel.text = dateFormatter.string(from: date)  
         self.schoolLabel.text = user.school.schoolName
-        self.gradeLabel.text = user.level.description
-
-        //self.joinedLabel.backgroundColor = UIColor.red
-        //self.schoolLabel.backgroundColor = UIColor.cyan
-        //self.gradeLabel.backgroundColor = UIColor.green      
+        self.gradeLabel.text = user.level.description   
 
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
-        self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)            
-         
-        //self.sonLabel.backgroundColor = UIColor.cyan
-        //self.bioLabel.backgroundColor = UIColor.green
+        self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)               
         
         //FLOATY      
 
@@ -553,11 +519,14 @@ class ProfileCell: BaseCell,
         self.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
         self.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
 
-        self.labelEmptyMessage.isHidden = true    
-        
+        self.labelEmptyMessage.isHidden = true          
        
     }
     
+    func showFriends() {
+
+        print("show friends")
+    }
     
 
     func setProfileType(type: ProfileSaveType) {

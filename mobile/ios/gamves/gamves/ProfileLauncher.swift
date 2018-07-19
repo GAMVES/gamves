@@ -122,6 +122,12 @@ class ProfileLauncher: UIView {
     
     var view:UIView!
 
+    var initialTouchPoint: CGPoint = CGPoint(x: 0,y: 0)
+
+    //private lazy var panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture))
+
+    var panGesture  = UIPanGestureRecognizer()
+
     func showProfileView(gamvesUser: GamvesUser){          
         
         if let keyWindow = UIApplication.shared.keyWindow {
@@ -135,15 +141,17 @@ class ProfileLauncher: UIView {
             //let profileHeight = keyWindow.frame.width * 9 / 16
             let profileFrame = CGRect(x: 0, y: -60, width: keyWindow.frame.width, height: keyWindow.frame.height + 60) 
 
-            profileView = ProfileView(frame: profileFrame)                        
-            profileView.setUser(user: gamvesUser)
-            view.addSubview(profileView)            
+            self.profileView = ProfileView(frame: profileFrame)                        
+            self.profileView.setUser(user: gamvesUser)
+            //self.profileView.isUserInteractionEnabled = true
+           
+            self.profileView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture)))      
             
-            //fanpageApprovalView.setViews(view: view, fanpageApprovalView: fanpageApprovalView)
+            //self.profileView.addGestureRecognizer(self.panGesture)
 
-            //view.backgroundColor = UIColor.gamvesColor
-            
-            keyWindow.addSubview(view)
+            view.addSubview(self.profileView)   
+              
+            keyWindow.addSubview(self.view)
 
             view.tag = 1
             
@@ -156,7 +164,43 @@ class ProfileLauncher: UIView {
                     //UIApplication.shared.setStatusBarHidden(true, with: .fade)
                     
             })
+
         }
     }
-    
+  
+
+    func handlePanGesture(sender: UIPanGestureRecognizer) {
+
+        let touchPoint = sender.location(in: self.profileView?.window)
+
+        if sender.state == UIGestureRecognizerState.began {
+
+            initialTouchPoint = touchPoint
+
+        } else if sender.state == UIGestureRecognizerState.changed {
+
+            if touchPoint.y - initialTouchPoint.y > 0 {
+
+                self.profileView.frame = CGRect(x: 0, y: touchPoint.y - initialTouchPoint.y, width: self.profileView.frame.size.width, height: self.view.frame.size.height)
+
+            }
+
+        } else if sender.state == UIGestureRecognizerState.ended || sender.state == UIGestureRecognizerState.cancelled {
+            
+            if touchPoint.y - initialTouchPoint.y > 100 {                
+
+                for subview in (UIApplication.shared.keyWindow?.subviews)! {
+                    if (subview.tag == 1) {
+                        subview.removeFromSuperview()
+                    }
+                }
+
+            } else {
+                
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.profileView.frame = CGRect(x: 0, y: 0, width: self.profileView.frame.size.width, height: self.profileView.frame.size.height)
+                })
+            }
+        }
+    }    
 }
