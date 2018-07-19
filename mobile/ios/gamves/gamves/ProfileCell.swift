@@ -51,7 +51,35 @@ class ProfileCell: BaseCell,
     var userStatistics = [UserStatistics]()
 
     var videosGamves  = [GamvesVideo]()
-    let cellVideoCollectionId = "cellVideoCollectionId"    
+    let cellVideoCollectionId = "cellVideoCollectionId"   
+
+    let friendsView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor.gamvesBackgoundColor
+        v.layer.cornerRadius = 20
+        return v
+    }() 
+
+    var friendImageView: CustomImageView = {
+        let imageView = CustomImageView()
+        let image = UIImage(named: "friends")
+        imageView.image = image
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+
+    let friendsLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray
+        label.text = "Friends"
+        label.font = UIFont.boldSystemFont(ofSize: 23)
+        label.textAlignment = .left        
+        return label
+    }()
 
     let profileView: UIView = {
         let view = UIView()
@@ -86,7 +114,7 @@ class ProfileCell: BaseCell,
     let leftregisterRowView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        //view.backgroundColor = UIColor.white
+        //view.backgroundColor = UIColor.white        
         return view
     }()
     
@@ -362,15 +390,15 @@ class ProfileCell: BaseCell,
         
         // SON VIEW  
         
+
         self.profileView.addSubview(self.backImageView)
         self.profileView.addSubview(self.registerRowView)
         self.profileView.addSubview(self.sonLabel)
         self.profileView.addSubview(self.bioLabel)
-
+        self.profileView.addSubview(self.friendsView)
 
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
-        self.profileView.addConstraintsWithFormat("V:|[v0(100)]|", views:
-            self.backImageView)        
+        self.profileView.addConstraintsWithFormat("V:|[v0(100)]|", views:self.backImageView)        
         
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.registerRowView)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
@@ -384,8 +412,21 @@ class ProfileCell: BaseCell,
 
         self.profileView.addSubview(self.infoView)  
         self.profileView.addConstraintsWithFormat("H:|-220-[v0]|", views: self.infoView) 
-        self.profileView.addConstraintsWithFormat("V:|-100-[v0]|", views: self.infoView)          
+        self.profileView.addConstraintsWithFormat("V:|-100-[v0]|", views: self.infoView)    
 
+        let leftSpace = width - 200     
+
+        let mestricsLeft = ["leftSpace":leftSpace]
+        self.profileView.addConstraintsWithFormat("H:|-leftSpace-[v0(150)]|", views: self.friendsView, metrics:mestricsLeft)
+        self.profileView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views:self.friendsView)       
+
+        self.friendsView.addSubview(self.friendImageView)  
+        self.friendsView.addSubview(self.friendsLabel)  
+
+        self.friendsView.addConstraintsWithFormat("V:|-5-[v0(50)]-5-|", views: self.friendImageView)
+        self.friendsView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.friendsLabel)
+        self.friendsView.addConstraintsWithFormat("H:|-5-[v0(50)]-5-[v1]-5-|", views: self.friendImageView, self.friendsLabel)
+        
         self.infoView.addSubview(self.joinedLabel)  
         self.infoView.addSubview(self.schoolLabel)  
         self.infoView.addSubview(self.gradeLabel)
