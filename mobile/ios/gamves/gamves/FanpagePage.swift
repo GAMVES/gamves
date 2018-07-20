@@ -823,7 +823,7 @@ class FanpagePage: UIViewController,
 
             if gamvesUserPoster?.userId != userId {
 
-                let profileLauncher = ProfileLauncher()             
+                let profileLauncher = PublicProfileLauncher()
                 profileLauncher.showProfileView(gamvesUser: gamvesUserPoster!)        
 
             }

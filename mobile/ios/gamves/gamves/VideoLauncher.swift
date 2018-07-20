@@ -323,63 +323,56 @@ class VideoLauncher: UIView, KeyboardDelegate {
         self.keyWindoHeight = (UIApplication.shared.keyWindow?.frame.size.height)!
 
         let videoUrl = videoGamves.s3_source
-        let videoObj = videoGamves.videoObj        
-        
+        let videoObj = videoGamves.videoObj     
         
         let videoId = videoObj?["videoId"] as! Int
         
         self.videoId = videoId
         
-        let fanpageId = videoGamves.fanpageId
-        
-        print("Showing video player....\(videoUrl)")
+        let fanpageId = videoGamves.fanpageId     
         
         if let keyWindow = UIApplication.shared.keyWindow {
 
-            view = UIView(frame: keyWindow.frame)
-            view.backgroundColor = UIColor.white
+            self.view = UIView(frame: keyWindow.frame)
+            self.view.backgroundColor = UIColor.white
             
-            view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)
+            self.view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)            
             
-            //16 x 9 is the aspect ratio of all HD videos
             let videoHeight = keyWindow.frame.width * 9 / 16
             let videoPlayerFrame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: videoHeight)           
 
             self.videoPlayerView = VideoPlayerView(frame: videoPlayerFrame)                        
             self.videoPlayerView.setNativePlayer(url: videoUrl)
-            view.addSubview(self.videoPlayerView)               
+            self.view.addSubview(self.videoPlayerView)               
 
-            videoPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.reopenVideo))) 
+            self.videoPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.reopenVideo))) 
 
             let panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture))                                 
             self.videoPlayerView.addGestureRecognizer(panGesture)            
             
             let infoHeight = 90            
-            let infoFrame = CGRect(x: 0, y: Int(videoPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
+            let infoFrame = CGRect(x: 0, y: Int(self.videoPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
             
             infoView = InfoView(frame: infoFrame, video: videoGamves)
-            view.addSubview(infoView)
+            self.view.addSubview(infoView)
 
             let diff = Int(videoHeight) + Int(infoHeight)
             let chatHeight = Int(keyWindow.frame.height) - diff
             
-            let chatY = Int(videoPlayerView.frame.height) + Int(infoView.frame.height)
+            let chatY = Int(self.videoPlayerView.frame.height) + Int(infoView.frame.height)
             
             let chatFrame = CGRect(x: 0, y: chatY, width: Int(keyWindow.frame.width), height: chatHeight)
             
-            chatView = ChatView(parent: ChatViewType.VideoLauncher, frame: chatFrame, isVideo: true)
+            self.chatView = ChatView(parent: ChatViewType.VideoLauncher, frame: chatFrame, isVideo: true)
             
-            let params = ["chatId": videoId, "isVideoChat": true, "thumbnailImage": videoGamves.image, "delegate":self] as [String : Any]
-            
-            chatView.setParams(parameters: params)
-
-            view.addSubview(chatView)
-            
+            let params = ["chatId": videoId, "isVideoChat": true, "thumbnailImage": videoGamves.image, "delegate":self] as [String : Any]            
+            self.chatView.setParams(parameters: params)
+            self.view.addSubview(chatView)            
             chatView.loadChatFeed()
             
-            videoPlayerView.setViews(view: view, videoLauncherVidew: self)
+            self.videoPlayerView.setViews(view: self.view, videoLauncherVidew: self)
             
-            keyWindow.addSubview(view)
+            keyWindow.addSubview(self.view)
 
             view.tag = 1
             

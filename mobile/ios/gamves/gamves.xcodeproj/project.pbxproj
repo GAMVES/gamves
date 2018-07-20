@@ -100,13 +100,13 @@
 		C7E095C91D14C6690081F88C /* SettingsLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E095C81D14C6690081F88C /* SettingsLauncher.swift */; };
 		C7E095CF1D15C0020081F88C /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E095CE1D15C0020081F88C /* SettingCell.swift */; };
 		C925F9AF20E1EAE000E9B1E9 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */; };
+		C926096921015EC5000CFF84 /* PublicProfileLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */; };
 		C92B3D3F20EC7EAC00700BA4 /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */; };
 		C92BC7C82085AFB200EDEBCD /* GradientMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */; };
 		C92BCA8220F44F8200BD37F0 /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */; };
 		C92C3ECA207A88150029E206 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92C3EC9207A88150029E206 /* ProfileController.swift */; };
 		C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */; };
 		C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */; };
-		C92ED61B2060C74B004AC9A2 /* ProfileLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */; };
 		C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */; };
 		C9A0011C20F3CEE900906F33 /* NewFriendController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0011B20F3CEE900906F33 /* NewFriendController.swift */; };
 /* End PBXBuildFile section */
@@ -208,13 +208,13 @@
 		C7E095C81D14C6690081F88C /* SettingsLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsLauncher.swift; sourceTree = "<group>"; };
 		C7E095CE1D15C0020081F88C /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
+		C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileLauncher.swift; sourceTree = "<group>"; };
 		C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
 		C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientMaskView.swift; sourceTree = "<group>"; };
 		C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = "<group>"; };
 		C92C3EC9207A88150029E206 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
 		C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
-		C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileLauncher.swift; sourceTree = "<group>"; };
 		C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
 		C9A0011B20F3CEE900906F33 /* NewFriendController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendController.swift; sourceTree = "<group>"; };
 		E24F455AB391FC717A52882D /* Pods-gamves.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.release.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.release.xcconfig"; sourceTree = "<group>"; };
@@ -491,9 +491,9 @@
 		C77B554D1D0233F800FF375C /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				C92ED61A2060C74B004AC9A2 /* ProfileLauncher.swift */,
 				C75742B61D5D93FA001C066C /* VideoLauncher.swift */,
 				826844571FF058F3008BA13B /* NoConnectionController.swift */,
+				C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -744,7 +744,6 @@
 				C7E095CF1D15C0020081F88C /* SettingCell.swift in Sources */,
 				82E66DB91FD4B51000968E88 /* NewVideoController.swift in Sources */,
 				82BAAF2E1EFE453E0021C405 /* Globals.swift in Sources */,
-				C92ED61B2060C74B004AC9A2 /* ProfileLauncher.swift in Sources */,
 				82FFF52A2022CF6E005F45AA /* SelectorView.swift in Sources */,
 				C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */,
 				82477BB620090DD000A45922 /* ChatView.swift in Sources */,
@@ -756,6 +755,7 @@
 				8268445C1FF2A82B008BA13B /* LoginController+Extensions.swift in Sources */,
 				82C6F7591F8AA8F50090C725 /* Color+Extensions.swift in Sources */,
 				82DD00301F9CF21600CD19D7 /* NewGroupNameViewController.swift in Sources */,
+				C926096921015EC5000CFF84 /* PublicProfileLauncher.swift in Sources */,
 				824EDD771FDD5DB300D513D8 /* TakePicturesController.swift in Sources */,
 				824E67C11F5458130025096D /* LoginController+Extension.swift in Sources */,
 				82C908491FA0B8220059FAB8 /* ImagesCollectionViewCell.swift in Sources */,
