@@ -47,23 +47,13 @@ class Global: NSObject
     static var notifications = [GamvesNotification]()
 
     static var userTypes = Dictionary<Int, UserTypeGamves>()
-
     static var schools = Dictionary<String, GamvesSchools>()
-    static var levels = Dictionary<String, GamvesLevel>()
-    
-    //static var serverUrl = "http://25.55.180.51:1337/1/"
-    //static var serverUrl = "http://127.0.0.1:1337/1/"
-    //static var serverUrl = "http://192.168.16.22:1337/1/"
-    
-    //static var localWs = "ws://25.55.180.51:1337/1/" //Change to wss once online and with ssl
-    //static var localWs = "wss://127.0.0.1:1337/1/"
-    //static var localWs = "wss://192.168.16.22:1337/1/"    
+    static var levels = Dictionary<String, GamvesLevel>()  
+    static var consoles = Dictionary<String, [GamvesConsole]>()  
 
     static var serverUrl = "https://parseapi.back4app.com/"
     
-    static var localWs = "wss://devgamves.back4app.io"
-
-    //static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
+    static var localWs = "wss://devgamves.back4app.io"    
     
     static var defaults = UserDefaults.standard
     
@@ -73,18 +63,13 @@ class Global: NSObject
     
     static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
 
-    static var search_engine = "010975053378915722447:h2ob_fkvam0"
-
-    // KEY      AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU
-    
-    // ENGINE   010975053378915722447:h2ob_fkvam0
+    static var search_engine = "010975053378915722447:h2ob_fkvam0"    
     
     static var api_image_base = "https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v="
     static var api_image_format = "&format=json"
     
     static var api_desc_base = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id="
-    static var api_desc_middle = "&fields=items/snippet/title,items/snippet/description&key="
-    
+    static var api_desc_middle = "&fields=items/snippet/title,items/snippet/description&key="    
     
     static var api_suggestion_base = "https://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q="
     static var api_suggestion_mid = "&key="
@@ -127,7 +112,6 @@ class Global: NSObject
     static var badgeNumber = Bool()
     
     static var userDictionary = Dictionary<String, GamvesUser>()
-
 
     static var friends = Dictionary<String, GamvesUser>()
 
@@ -220,6 +204,10 @@ class Global: NSObject
             }
             
             gamvesUser.userObj = user
+
+            if Global.consoles[userId] != nil {
+                gamvesUser.consoles = Global.consoles[userId] as! [GamvesConsole]
+            }
             
             if user["pictureSmall"] != nil
             {
@@ -1221,6 +1209,8 @@ class Global: NSObject
                     
                 })
             })
+
+            self.loadConstoles()
             
             self.loadChatChannels()
 
@@ -1234,13 +1224,46 @@ class Global: NSObject
         Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in })
 
 
-        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in })
-        
+        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in })        
 
     }
     
     func handleLogin() {
         Global.loadChatChannels()
+    }
+
+    static func loadConstoles() {
+
+        var queryConsoles = PFQuery(className: "Consoles")   
+        
+        if let userId = PFUser.current()?.objectId {
+
+            queryConsoles.whereKey("userId", contains: userId)        
+        
+            queryConsoles.findObjectsInBackground(block: { (consolesPF, error) in
+                
+                if consolesPF != nil {
+                    
+                    let consoleCount = consolesPF?.count
+
+                    var consoles = [GamvesConsole]()
+
+                    for consolePF in consolesPF! {
+
+                        let contole  = GamvesConsole()
+                        contole.objectId    = consolePF.objectId!
+                        contole.consoleOBj = consolePF
+                        contole.username    = consolePF["username"] as! String
+
+                        consoles.append(contole)
+                    }
+
+                    Global.consoles[userId] = consoles
+                }
+
+            })    
+        }        
+
     }
     
     static func loadChatChannels()

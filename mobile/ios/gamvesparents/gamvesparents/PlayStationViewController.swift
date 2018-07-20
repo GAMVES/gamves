@@ -175,18 +175,7 @@ class PlayStationViewController: UIViewController
         topView.addConstraintsWithFormat("H:|[v0]|", views: titleLabel)
         topView.addConstraintsWithFormat("V:|-topTitle-[v0(80)]|", views: titleLabel, metrics: metricsTitle)
 
-        self.setScreenByType()   
-
-		/*
-        self.topView.backgroundColor 				= UIColor.orange  
-        self.titleLabel.backgroundColor 			= UIColor.green  
-        self.photoContainerView.backgroundColor 	= UIColor.cyan  
-        self.pictureImageView.backgroundColor 		= UIColor.brown 
-        self.messageLabel.backgroundColor 			= UIColor.yellow
-        self.saveButton.backgroundColor 			= UIColor.red 
-        self.bottomView.backgroundColor 			= UIColor.blue       
-        */
-       
+        self.setScreenByType()   	
     }
 
     func setScreenByType() {

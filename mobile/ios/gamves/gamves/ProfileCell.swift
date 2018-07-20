@@ -54,6 +54,21 @@ class ProfileCell: BaseCell,
     var videosGamves  = [GamvesVideo]()
     let cellVideoCollectionId = "cellVideoCollectionId"   
 
+
+    // Onliine
+
+    var onlineImageView: UIImageView = {
+        let imageView = UIImageView()
+        let image = UIImage(named: "status_online")
+        imageView.image = image
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
+    // Friends
+
     let friendsView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
@@ -81,6 +96,8 @@ class ProfileCell: BaseCell,
         return label
     }()
 
+
+
     let profileView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -97,7 +114,7 @@ class ProfileCell: BaseCell,
     
     // SON VIEW
     
-    let registerRowView: UIView = {
+    let registerpstView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false        
         return view
@@ -110,7 +127,7 @@ class ProfileCell: BaseCell,
         return imageView
     }()
     
-    let leftregisterRowView: UIView = {
+    let leftregisterpstView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false        
         return view
@@ -124,7 +141,7 @@ class ProfileCell: BaseCell,
         return imageView
     }()
     
-    let rightregisterRowView: UIView = {
+    let rightregisterpstView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false        
         return view
@@ -157,6 +174,8 @@ class ProfileCell: BaseCell,
         return v
     }()
 
+    //Joined
+
     let joinedLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -164,49 +183,16 @@ class ProfileCell: BaseCell,
         label.font = UIFont.systemFont(ofSize: 14)
         label.textAlignment = .right        
         return label
+    }()
+
+    //SchoolView   
+
+    let schoolView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor.gamvesBackgoundColor
+        return v
     }()    
-
-    let schoolLabel: UILabel =   { 
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.gray
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textAlignment = .center        
-        return label
-    }()
-    
-    // Info row, left grade and pls, right iso
-
-    let rowView: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false        
-        return v
-    }()
-
-
-    let rowLeftView: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false        
-        return v
-    }()
-
-    let gradeLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.gray        
-        label.font = UIFont.systemFont(ofSize: 15)
-        label.textAlignment = .center        
-        return label
-    }()
-
-    let plsLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.gray        
-        label.font = UIFont.systemFont(ofSize: 15)
-        label.textAlignment = .center        
-        return label
-    }()
 
     var schoolIconImageView: CustomImageView = {
         let imageView = CustomImageView()        
@@ -215,6 +201,89 @@ class ProfileCell: BaseCell,
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
+
+    let schoolLabel: UILabel =   { 
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.textAlignment = .center        
+        return label
+    }()  
+
+    // gradeUserPlsView
+
+    let gradeUserPlsView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor.gamvesBackgoundColor
+        return v
+    }()
+
+    // gradePlsView
+
+    let gradeUserView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor.gamvesBackgoundColor
+        return v
+    }()
+
+    // gradeLabel   
+
+    let gradeLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray        
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textAlignment = .left        
+        return label
+    }()
+
+    // pstView
+
+    let pstUserView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false        
+        return v
+    }()
+
+
+    var pstStatusImageView: UIImageView = {
+        let imageView = UIImageView()
+        let image = UIImage(named: "status_offline")
+        imageView.image = image
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+
+    let plsUsernameLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray        
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textAlignment = .left        
+        return label
+    }()
+
+    let pstIconView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false        
+        return v
+    }()
+
+    var plsIconImageView: CustomImageView = {
+        let imageView = CustomImageView()    
+        let image = UIImage(named: "pls_icon")
+        imageView.tintColor = UIColor.gray
+        imageView.image = image    
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()   
 
     // DATA
     
@@ -381,33 +450,51 @@ class ProfileCell: BaseCell,
         // SON VIEW         
 
         self.profileView.addSubview(self.backImageView)
-        self.profileView.addSubview(self.registerRowView)
+        self.profileView.addSubview(self.registerpstView)
         self.profileView.addSubview(self.sonLabel)
         self.profileView.addSubview(self.bioLabel)
-        self.profileView.addSubview(self.friendsView)
+        
+        //Status
+        self.profileView.addSubview(self.onlineImageView)
+        self.profileView.addSubview(self.friendsView)       
+
 
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
         self.profileView.addConstraintsWithFormat("V:|[v0(100)]|", views:self.backImageView)        
         
-        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.registerRowView)
+        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.registerpstView)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)
 
         self.profileView.addConstraintsWithFormat("V:|-20-[v0(150)][v1(40)][v2]-10-|", views:
-            self.registerRowView,
+            self.registerpstView,
             self.sonLabel,
             self.bioLabel,
             metrics: metricsRegisterView)   
 
+        // Right Box -> InfoView
+
+        let widthModule = self.frame.width / 3        
+        let m = widthModule + ( widthModule / 2 )
+        let infoMetrics = [ "widthModule" : m ]
+
         self.profileView.addSubview(self.infoView)  
-        self.profileView.addConstraintsWithFormat("H:|-220-[v0]|", views: self.infoView) 
+        self.profileView.addConstraintsWithFormat("H:|-widthModule-[v0]|", views: self.infoView, metrics: infoMetrics) 
         self.profileView.addConstraintsWithFormat("V:|-100-[v0]|", views: self.infoView)    
 
-        let leftSpace = width - 100     
+       let leftOnline = width - 160
+       let mestricsLeftOnline = ["leftOnline":leftOnline] 
 
-        let mestricsLeft = ["leftSpace":leftSpace]
+        self.profileView.addConstraintsWithFormat("H:|-leftOnline-[v0(40)]|", views: self.onlineImageView, metrics:mestricsLeftOnline)
+        self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.onlineImageView)       
+
+        let leftSpace = leftOnline + 60     
+        let mestricsLeft = ["leftSpace":leftSpace] 
+
         self.profileView.addConstraintsWithFormat("H:|-leftSpace-[v0(80)]|", views: self.friendsView, metrics:mestricsLeft)
         self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.friendsView)       
+
+        //Friends
 
         self.friendsView.addSubview(self.friendImageView)  
         self.friendsView.addSubview(self.friendsLabel)  
@@ -416,47 +503,91 @@ class ProfileCell: BaseCell,
 
         self.friendsView.addConstraintsWithFormat("V:|-5-[v0(30)]-5-|", views: self.friendImageView)
         self.friendsView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.friendsLabel)
-        self.friendsView.addConstraintsWithFormat("H:|-15-[v0(30)]-5-[v1]|", views: self.friendImageView, self.friendsLabel)
+        self.friendsView.addConstraintsWithFormat("H:|-15-[v0(30)]-5-[v1]|", views: 
+            self.friendImageView, 
+            self.friendsLabel)
         
         let gesture = UITapGestureRecognizer(target: self, action:  #selector (showFriends))
         self.friendsView.addGestureRecognizer(gesture)
         self.friendsView.alpha = 0.5
+
+        //Infoview
+
+        //self.joinedLabel.backgroundColor    = UIColor.green
+        //self.schoolView.backgroundColor     = UIColor.brown
+        //self.gradeUserPlsView.backgroundColor     = UIColor.cyan        
         
         self.infoView.addSubview(self.joinedLabel)  
-        self.infoView.addSubview(self.schoolLabel)  
-        self.infoView.addSubview(self.rowView)        
-
-        self.joinedLabel.backgroundColor = UIColor.yellow
-        self.schoolLabel.backgroundColor = UIColor.green
-        self.gradeLabel.backgroundColor = UIColor.cyan
-        self.rowView.backgroundColor = UIColor.blue
+        self.infoView.addSubview(self.schoolView)  
+        self.infoView.addSubview(self.gradeUserPlsView)
 
         self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.joinedLabel)
-        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.schoolLabel) 
-        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.rowView)           
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.schoolView) 
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.gradeUserPlsView) 
 
-        self.infoView.addConstraintsWithFormat("V:|[v0(30)][v1(50)][v2]|", views: 
+        self.infoView.addConstraintsWithFormat("V:|[v0(25)][v1(50)][v2]|", views: 
             self.joinedLabel,
-            self.schoolLabel, 
-            self.rowView) 
+            self.schoolView,
+            self.gradeUserPlsView)
 
-        self.rowView.addSubview(self.rowLeftView)
-        self.rowView.addSubview(self.schoolIconImageView)
+        //Schoolview
 
-        self.rowView.addConstraintsWithFormat("V:|[v0]|", views: self.rowLeftView)
-        self.rowView.addConstraintsWithFormat("V:|[v0]|", views: self.schoolIconImageView)
+        self.schoolView.addSubview(self.schoolIconImageView)
+        self.schoolView.addSubview(self.schoolLabel)
 
-        self.rowView.addConstraintsWithFormat("H:|[v0][v0(40)]|", views: self.rowLeftView, self.schoolIconImageView)
+        self.schoolView.addConstraintsWithFormat("V:|-5-[v0(40)]-5-|", views: self.schoolIconImageView)
+        self.schoolView.addConstraintsWithFormat("V:|[v0]|", views: self.schoolLabel)
 
-        self.rowLeftView.addSubview(self.gradeLabel)
-        self.rowLeftView.addSubview(self.plsLabel)
+        self.schoolView.addConstraintsWithFormat("H:|-5-[v0(40)][v1]|", views: 
+            self.schoolIconImageView, 
+            self.schoolLabel)
 
-        self.rowLeftView.addConstraintsWithFormat("H:|[v0]|", views: self.gradeLabel)
-        self.rowLeftView.addConstraintsWithFormat("H:|[v0]|", views: self.plsLabel)       
+        // gradePlsView
+
+        self.gradeUserPlsView.addSubview(self.gradeUserView)
+        self.gradeUserPlsView.addSubview(self.pstIconView)
+
+        self.gradeUserPlsView.addConstraintsWithFormat("V:|[v0]|", views: self.gradeUserView)
+        self.gradeUserPlsView.addConstraintsWithFormat("V:|-10-[v0]|", views: self.pstIconView)
+
+        self.gradeUserPlsView.addConstraintsWithFormat("H:|[v0][v1(50)]-10-|", views: 
+            self.gradeUserView, 
+            self.pstIconView)
+
+        //plsIconImageView
+
+        self.pstIconView.addSubview(self.plsIconImageView)
+        self.pstIconView.addConstraintsWithFormat("V:|[v0(50)]|", views: self.plsIconImageView)
+        self.pstIconView.addConstraintsWithFormat("H:|[v0(50)]|", views: self.plsIconImageView)     
+
+        self.plsIconImageView.alpha = 0.4   
+
+        // gradeUserView
+
+        self.gradeLabel
+        self.plsUsernameLabel
+
+        self.gradeUserView.addSubview(self.gradeLabel)
+        self.gradeUserView.addSubview(self.pstUserView)
+
+        self.gradeUserView.addConstraintsWithFormat("H:|[v0]|", views: self.gradeLabel)
+        self.gradeUserView.addConstraintsWithFormat("H:|[v0]|", views: self.pstUserView)
         
-        self.rowLeftView.addConstraintsWithFormat("V:|[v0][v1]|", views: 
-            self.gradeLabel,
-            self.plsLabel)  
+        self.gradeUserView.addConstraintsWithFormat("V:|[v0(25)][v1]|", views: 
+            self.gradeLabel, 
+            self.pstUserView)
+
+        // pstUserView
+
+        self.pstUserView.addSubview(self.pstStatusImageView)
+        self.pstUserView.addSubview(self.plsUsernameLabel)
+
+        self.gradeUserView.addConstraintsWithFormat("V:|[v0(20)]-10-|", views: self.pstStatusImageView)
+        self.gradeUserView.addConstraintsWithFormat("V:|[v0]-10-|", views: self.plsUsernameLabel)
+        
+        self.gradeUserView.addConstraintsWithFormat("H:|-10-[v0(20)]-10-[v1]|", views: 
+            self.pstStatusImageView, 
+            self.plsUsernameLabel)      
 
         let dateFormatter = DateFormatter()  
         let joined = dateFormatter.dateFormat = "MM/dd/yy"
@@ -464,8 +595,9 @@ class ProfileCell: BaseCell,
 
         self.joinedLabel.text = "since:  \(dateFormatter.string(from: date))"
         self.schoolLabel.text = user.school.schoolName
-        self.gradeLabel.text = user.level.fullDesc
+        self.gradeLabel.text = "  \(user.level.fullDesc)"
         self.schoolIconImageView.image = user.school.icon
+        self.plsUsernameLabel.text = user.consoles[0].username
 
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)               
@@ -510,24 +642,24 @@ class ProfileCell: BaseCell,
         self.floaty.addItem(item: itemEditFanpage)       
         self.addSubview(floaty)        
         
-        self.profileView.bringSubview(toFront: self.registerRowView)
+        self.profileView.bringSubview(toFront: self.registerpstView)
                         
         let name = user.name
         self.sonLabel.text = name
         //self.sonLabel.textAlignment = NSTextAlignment.center
         
-        self.registerRowView.addSubview(self.leftregisterRowView)
-        self.registerRowView.addSubview(self.sonProfileImageView)
-        self.registerRowView.addSubview(self.rightregisterRowView)
+        self.registerpstView.addSubview(self.leftregisterpstView)
+        self.registerpstView.addSubview(self.sonProfileImageView)
+        self.registerpstView.addSubview(self.rightregisterpstView)
         
-        self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.leftregisterRowView)
-        self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.sonProfileImageView)
-        self.registerRowView.addConstraintsWithFormat("V:|[v0]|", views: self.rightregisterRowView)            
+        self.registerpstView.addConstraintsWithFormat("V:|[v0]|", views: self.leftregisterpstView)
+        self.registerpstView.addConstraintsWithFormat("V:|[v0]|", views: self.sonProfileImageView)
+        self.registerpstView.addConstraintsWithFormat("V:|[v0]|", views: self.rightregisterpstView)            
         
-        self.registerRowView.addConstraintsWithFormat("H:|[v0(30)][v1(150)][v2]|", views: 
-            self.leftregisterRowView, 
+        self.registerpstView.addConstraintsWithFormat("H:|[v0(30)][v1(150)][v2]|", views: 
+            self.leftregisterpstView, 
             self.sonProfileImageView, 
-            self.rightregisterRowView, 
+            self.rightregisterpstView, 
             metrics: metricsRegisterView)                 
 
         self.footerView.addSubview(self.footerLabel)    
@@ -565,6 +697,23 @@ class ProfileCell: BaseCell,
         self.labelEmptyMessage.isHidden = true          
        
     }
+    
+    /*if id == 0
+    {
+        if self.sonOnline
+        {
+            stats.icon = UIImage(named: "status_online")!
+            cell.descLabel.text = "Online"
+    
+        } else {
+    
+            stats.icon = UIImage(named: "status_offline")!
+            cell.descLabel.text = "Offline"
+            cell.dataLabel.text = stats.data
+    
+        }
+    
+    }*/
     
     func showFriends() {
 
@@ -783,7 +932,7 @@ class ProfileCell: BaseCell,
                 
                 self.editAvatarImageView.layer.addSublayer(haloAvatar)
                 self.editAvatarImageView.addSubview(editAvatarButton)
-                self.registerRowView.addSubview(self.editAvatarImageView)
+                self.registerpstView.addSubview(self.editAvatarImageView)
                 
                 //-- Color
                 
@@ -807,7 +956,7 @@ class ProfileCell: BaseCell,
 
                 self.editColorView.layer.addSublayer(haloColor)
                 self.editColorView.addSubview(editColorButton)
-                self.registerRowView.addSubview(self.editColorView)
+                self.registerpstView.addSubview(self.editColorView)
                 
                 //-- Bio
                 
@@ -833,7 +982,7 @@ class ProfileCell: BaseCell,
                 
                 self.editBioView.layer.addSublayer(haloBio)
                 self.editBioView.addSubview(editBioButton)
-                self.registerRowView.addSubview(self.editBioView)
+                self.registerpstView.addSubview(self.editBioView)
             
                 self.collectionView.reloadData()
                 

@@ -10,6 +10,14 @@ import Foundation
 import UIKit
 import Parse
 
+class GamvesConsole {
+
+    var consoleOBj:PFObject!
+    var objectId = String()    
+    var username = String()       
+
+}
+
 class GamvesTrend {
 
     var objectId = String()
@@ -107,6 +115,8 @@ class GamvesUser {
     var gender = GamvesGender()
     
     var familyId = String()
+
+    var consoles = [GamvesConsole]()
 }
 
 class GamvesLevel {
