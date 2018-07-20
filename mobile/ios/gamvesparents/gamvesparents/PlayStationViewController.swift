@@ -9,6 +9,7 @@
 
 import UIKit
 import RSKImageCropper
+import Parse
 
 class PlayStationViewController: UIViewController
 {
@@ -216,9 +217,9 @@ class PlayStationViewController: UIViewController
 
     func handleSave() {
 
-        if userTextField.isEmpty {
+        if (userTextField.text?.isEmpty)! {
 
-            self.showAlert("Empty field", "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in
+            self.showAlert(title: "Empty field", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in
 
                 print("")
 
@@ -228,16 +229,19 @@ class PlayStationViewController: UIViewController
 
             let consoles: PFObject = PFObject(className: "Consoles")
 
-            let son_userId = Global.defaults.string(forKey: "\(self.puserId)_son_userId")                                            
+            if let userId = PFUser.current()?.objectId
+            {                
+                let son_userId = Global.defaults.string(forKey: "\(userId)_son_userId")                                            
+                consoles["userId"] = son_userId
+            }
 
-            consoles["type"] = 1            
-            consoles["userId"] = son_userId
+            consoles["type"] = 1                        
             consoles["username"] = userTextField.text            
             consoles.saveInBackground { (resutl, error) in
                 
                 if error == nil {
 
-                    self.showAlert("Username saved", "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in
+                    self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in
 
                         print("")
 
@@ -251,7 +255,7 @@ class PlayStationViewController: UIViewController
 
     func handleSkip() {
 
-        self.showAlert("Skip username", "You will be able to provide your username later", completionHandler: { (gamvesUser) in
+        self.showAlert(title: "Skip username", message: "You will be able to provide your username later", completionHandler: { (gamvesUser) in
 
             print("")
 
@@ -268,7 +272,7 @@ class PlayStationViewController: UIViewController
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in          
             
             
-            completionHandler(resutl)
+            completionHandler(true)
 
         }))
         
@@ -279,8 +283,7 @@ class PlayStationViewController: UIViewController
 
            
 
-            self.navigationController?.popToRootViewController(animated: true)
-            self.homeController?.clearNewVideo()
+            
             
 
 
