@@ -503,9 +503,7 @@ class ProfileViewController: UIViewController,
         
             NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
             
-            NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
-            
-            //NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)                   
             
         }
         
@@ -519,15 +517,9 @@ class ProfileViewController: UIViewController,
         
         if Global.familyDataGromGlobal {
             self.loadFamilyDataGromGlobal()
-        }
-
-        //self.familyLoaded()
-        //self.levelsLoaded()
-        //self.loadFamilyDataGromGlobal()
+       }
 
         self.boyConstraints()
-
-
 
     }
     
@@ -1203,6 +1195,8 @@ class ProfileViewController: UIViewController,
                                                         
                                                         ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in                                                 
                                                             
+                                                            // REGISTRATION COMPLETED
+
                                                             self.navigationController?.popViewController(animated: true)
                                                             
                                                         })

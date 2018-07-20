@@ -585,17 +585,9 @@ class HomeViewController: UIViewController,
         
         let familyId = Global.gamvesFamily.objectId
         
-        Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in
-            
-            print(count)
-            
-			//self.loadStatistics()
-
-            //self._approval.approval = count as Int
-
-            self._approval_approval = count as Int
-
-            //self.userStatistics[3].approval = count as Int
+        Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in                      
+		
+            self._approval_approval = count as Int            
 
             self.loadStatistics()
             
@@ -684,18 +676,15 @@ class HomeViewController: UIViewController,
     
     func generateGroupImage() -> UIImage
     {
-        let LeftImage = self.sonPhotoImageView.image // 355 X 200
-        //let RightImage = self.spousePhotoImageView.image  // 355 X 60
+        let LeftImage = self.sonPhotoImageView.image        
         
-        let size = CGSize(width: LeftImage!.size.width, height: LeftImage!.size.height)
-        
+        let size = CGSize(width: LeftImage!.size.width, height: LeftImage!.size.height)        
         
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        
-        LeftImage?.draw(in: CGRect(x: 0, y: 0, width:size.width, height: size.height))
-        //RightImage?.draw(in: CGRect(x: size.width/2, y: 0, width:size.width, height: size.height))
-        
+
+        LeftImage?.draw(in: CGRect(x: 0, y: 0, width:size.width, height: size.height))                
         var newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+
         UIGraphicsEndImageContext()
         
         return newImage
@@ -806,26 +795,17 @@ class HomeViewController: UIViewController,
             if self.sonOnline
             {
                 stats.icon = UIImage(named: "status_online")!
-                cell.descLabel.text = "Online"
+                cell.descLabel.text = "Online"               
 
-                //cell.dataLabel.isHidden = true
-
-            } else
-            {
+            } else {
+               
                 stats.icon = UIImage(named: "status_offline")!
                 cell.descLabel.text = "Offline"                
-
                 cell.dataLabel.text = stats.data
 
-            }      
-
-            //cell.secondIconImageView.image = UIImage(named: "time")!
-            //cell.secondIconImageView.alpha = 0.4
+            }              
             
-        } //else {
-
-            //cell.secondIconImageView.isHidden = true      
-        //}
+        } 
         
         if stats.approval > 0 {
             
@@ -854,12 +834,7 @@ class HomeViewController: UIViewController,
 
             cell.secondIconImageView.alpha = 0.4
 
-        } 
-
-        //else {
-
-        //    cell.secondIconImageView.isHidden = true
-        //}
+        }       
         
         if id > 0
         {

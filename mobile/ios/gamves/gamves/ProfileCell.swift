@@ -58,7 +58,7 @@ class ProfileCell: BaseCell,
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
         v.backgroundColor = UIColor.gamvesBackgoundColor
-        v.layer.cornerRadius = 15
+        v.layer.cornerRadius = 20
         return v
     }() 
 
@@ -105,16 +105,14 @@ class ProfileCell: BaseCell,
 
     var backImageView: KenBurnsImageView = {
         let imageView = KenBurnsImageView()
-        imageView.contentMode = .scaleAspectFill //.scaleFill
-        imageView.clipsToBounds = true     
-        //imageView.image = UIImage(named: "universe")
+        imageView.contentMode = .scaleAspectFill 
+        imageView.clipsToBounds = true             
         return imageView
     }()
     
     let leftregisterRowView: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        //view.backgroundColor = UIColor.white        
+        view.translatesAutoresizingMaskIntoConstraints = false        
         return view
     }()
     
@@ -128,8 +126,7 @@ class ProfileCell: BaseCell,
     
     let rightregisterRowView: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        //view.backgroundColor = UIColor.white
+        view.translatesAutoresizingMaskIntoConstraints = false        
         return view
     }()
     
@@ -141,7 +138,17 @@ class ProfileCell: BaseCell,
         label.textAlignment = .left        
         return label
     }()
+
+    let bioLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray        
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textAlignment = .left        
+        return label
+    }()
     
+    // INFO -> Contains right box: since, school, grade, pls and school iso.
 
     let infoView: UIView = {
         let v = UIView()
@@ -157,18 +164,9 @@ class ProfileCell: BaseCell,
         label.font = UIFont.systemFont(ofSize: 14)
         label.textAlignment = .right        
         return label
-    }()
+    }()    
 
-    let bioLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.gray        
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.textAlignment = .left        
-        return label
-    }()
-
-    let schoolLabel: UILabel = {
+    let schoolLabel: UILabel =   { 
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
@@ -177,6 +175,20 @@ class ProfileCell: BaseCell,
         return label
     }()
     
+    // Info row, left grade and pls, right iso
+
+    let rowView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false        
+        return v
+    }()
+
+
+    let rowLeftView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false        
+        return v
+    }()
 
     let gradeLabel: UILabel = {
         let label = UILabel()
@@ -187,10 +199,21 @@ class ProfileCell: BaseCell,
         return label
     }()
 
-    let lowView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false        
-        return view
+    let plsLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray        
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textAlignment = .center        
+        return label
+    }()
+
+    var schoolIconImageView: CustomImageView = {
+        let imageView = CustomImageView()        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
     }()
 
     // DATA
@@ -355,8 +378,7 @@ class ProfileCell: BaseCell,
             self.lineFooterView,
             self.footerView)        
         
-        // SON VIEW  
-        
+        // SON VIEW         
 
         self.profileView.addSubview(self.backImageView)
         self.profileView.addSubview(self.registerRowView)
@@ -394,7 +416,7 @@ class ProfileCell: BaseCell,
 
         self.friendsView.addConstraintsWithFormat("V:|-5-[v0(30)]-5-|", views: self.friendImageView)
         self.friendsView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.friendsLabel)
-        self.friendsView.addConstraintsWithFormat("H:|-10-[v0(30)]-5-[v1]|", views: self.friendImageView, self.friendsLabel)
+        self.friendsView.addConstraintsWithFormat("H:|-15-[v0(30)]-5-[v1]|", views: self.friendImageView, self.friendsLabel)
         
         let gesture = UITapGestureRecognizer(target: self, action:  #selector (showFriends))
         self.friendsView.addGestureRecognizer(gesture)
@@ -402,27 +424,48 @@ class ProfileCell: BaseCell,
         
         self.infoView.addSubview(self.joinedLabel)  
         self.infoView.addSubview(self.schoolLabel)  
-        self.infoView.addSubview(self.gradeLabel)
-        self.infoView.addSubview(self.lowView)
+        self.infoView.addSubview(self.rowView)        
+
+        self.joinedLabel.backgroundColor = UIColor.yellow
+        self.schoolLabel.backgroundColor = UIColor.green
+        self.gradeLabel.backgroundColor = UIColor.cyan
+        self.rowView.backgroundColor = UIColor.blue
 
         self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.joinedLabel)
-        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.schoolLabel)
-        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.gradeLabel)
-        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.lowView)
-        
-        self.infoView.addConstraintsWithFormat("V:|[v0(30)][v1(50)][v2(20)][v3]|", views: 
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.schoolLabel) 
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.rowView)           
+
+        self.infoView.addConstraintsWithFormat("V:|[v0(30)][v1(50)][v2]|", views: 
             self.joinedLabel,
             self.schoolLabel, 
-            self.gradeLabel,
-            self.lowView)         
+            self.rowView) 
+
+        self.rowView.addSubview(self.rowLeftView)
+        self.rowView.addSubview(self.schoolIconImageView)
+
+        self.rowView.addConstraintsWithFormat("V:|[v0]|", views: self.rowLeftView)
+        self.rowView.addConstraintsWithFormat("V:|[v0]|", views: self.schoolIconImageView)
+
+        self.rowView.addConstraintsWithFormat("H:|[v0][v0(40)]|", views: self.rowLeftView, self.schoolIconImageView)
+
+        self.rowLeftView.addSubview(self.gradeLabel)
+        self.rowLeftView.addSubview(self.plsLabel)
+
+        self.rowLeftView.addConstraintsWithFormat("H:|[v0]|", views: self.gradeLabel)
+        self.rowLeftView.addConstraintsWithFormat("H:|[v0]|", views: self.plsLabel)       
         
+        self.rowLeftView.addConstraintsWithFormat("V:|[v0][v1]|", views: 
+            self.gradeLabel,
+            self.plsLabel)  
+
         let dateFormatter = DateFormatter()  
         let joined = dateFormatter.dateFormat = "MM/dd/yy"
         let date = user.userObj.createdAt! as Date
 
-        self.joinedLabel.text = dateFormatter.string(from: date)  
+        self.joinedLabel.text = "since:  \(dateFormatter.string(from: date))"
         self.schoolLabel.text = user.school.schoolName
-        self.gradeLabel.text = user.level.description   
+        self.gradeLabel.text = user.level.fullDesc
+        self.schoolIconImageView.image = user.school.icon
 
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)               

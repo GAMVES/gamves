@@ -51,19 +51,8 @@ class Global: NSObject
     
     static var localWs = "wss://devgamves.back4app.io"
 
-    static var locationPF = PFGeoPoint()    
-    
-    //static var serverUrl = "http://25.55.180.51:1337/1/"
-    //static var serverUrl = "http://192.168.0.211:1337/1/"
-    //static var serverUrl = "http://192.168.16.22:1337/1/"
-    //static var serverUrl = "http://127.0.0.1:1337/1/"
-    //static var serverUrl = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
-    
-    //static var localWs = "wss://25.55.180.51:1337/1/"
-    //static var localWs = "wss://192.168.16.22:1337/1/"
-    //static var localWs = "wss://127.0.0.1:1337/1/"
-    //static var remoteWs = "wss://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
-    
+    static var locationPF = PFGeoPoint()       
+   
     static var userTypes = Dictionary<Int, UserTypeGamves>()
     
     static var youImageName = "youImage"
@@ -74,19 +63,6 @@ class Global: NSObject
     static var spouseImageNameSmall = "spouseImageSmall"
     static var familyImageName = "familyImage"
     static var familyImageNameSmall = "familyImageSmall"
-    
-    /*static func getUserTypeObjById(id:Int) -> PFObject {
-        
-        var obj:PFObject!
-        
-        for ust in userTypes {
-            if ust.idUserType == id {
-                obj = ust.userTypeObj!
-            }
-        }
-        
-        return obj
-    }*/
     
     static func getTypeDescById(id:Int) -> String {
         let descType = userTypes[id]?.description
@@ -119,9 +95,9 @@ class Global: NSObject
     static var key_you_son_chat_id = "you_son_chat_id"
     static var key_you_spouse_son_chat_id = "you_spouse_son_chat_id"
     
-    static var keySpouseSmall   = String() //"\(Global.keySpouse)Small"
-    static var keyYourSmall     = String() //"\(Global.keyYour)Small"
-    static var keySonSmall      = String() //"\(Global.keySon)Small"
+    static var keySpouseSmall   = String() 
+    static var keyYourSmall     = String() 
+    static var keySonSmall      = String() 
     
     //Notifications
     static var notificationKeyFamilyLoaded              = "com.gamves.gamvesparent.familyLoaded"
@@ -212,14 +188,7 @@ class Global: NSObject
             } else {
                 
                 gamvesUser.email = user["username"] as! String
-            }
-
-            //if user.password != nil {
-
-            //    gamvesUser.password = user.password as! String   
-
-            //} 
-
+            }          
             
             if user["status"] != nil
             {

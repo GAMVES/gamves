@@ -90,6 +90,7 @@
 		C93D611C20A3DA8300245CC7 /* SettingsLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93D611B20A3DA8300245CC7 /* SettingsLauncher.swift */; };
 		C93D611E20A3E58A00245CC7 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93D611D20A3E58900245CC7 /* SettingCell.swift */; };
 		C95A487620F7D4D700E2D522 /* FriendApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95A487520F7D4D700E2D522 /* FriendApprovalCell.swift */; };
+		C969A4F22101DA0A00DD4AA5 /* PlayStationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C969A4F12101DA0A00DD4AA5 /* PlayStationViewController.swift */; };
 		C9709B4120F6899A0098B061 /* FriendApprovalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9709B4020F6899A0098B061 /* FriendApprovalViewController.swift */; };
 		C9709B4320F6B5190098B061 /* FriendApprovalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9709B4220F6B5190098B061 /* FriendApprovalLauncher.swift */; };
 		C97D24D120FC05380030A2FD /* FriendSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97D24D020FC05380030A2FD /* FriendSectionHeader.swift */; };
@@ -188,6 +189,7 @@
 		C93D611B20A3DA8300245CC7 /* SettingsLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsLauncher.swift; sourceTree = "<group>"; };
 		C93D611D20A3E58900245CC7 /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		C95A487520F7D4D700E2D522 /* FriendApprovalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendApprovalCell.swift; sourceTree = "<group>"; };
+		C969A4F12101DA0A00DD4AA5 /* PlayStationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayStationViewController.swift; sourceTree = "<group>"; };
 		C9709B4020F6899A0098B061 /* FriendApprovalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendApprovalViewController.swift; sourceTree = "<group>"; };
 		C9709B4220F6B5190098B061 /* FriendApprovalLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendApprovalLauncher.swift; sourceTree = "<group>"; };
 		C97D24D020FC05380030A2FD /* FriendSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSectionHeader.swift; sourceTree = "<group>"; };
@@ -345,6 +347,7 @@
 				82557C5E20173C0100752301 /* LocationViewController.swift */,
 				C98F266520B26AE300755733 /* ImagePickerViewController.swift */,
 				C9709B4020F6899A0098B061 /* FriendApprovalViewController.swift */,
+				C969A4F12101DA0A00DD4AA5 /* PlayStationViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -725,6 +728,7 @@
 				C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */,
 				C98F266620B26AE300755733 /* ImagePickerViewController.swift in Sources */,
 				828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */,
+				C969A4F22101DA0A00DD4AA5 /* PlayStationViewController.swift in Sources */,
 				C93D611C20A3DA8300245CC7 /* SettingsLauncher.swift in Sources */,
 				8212D7081F7843B600F2A121 /* ImageView+Extensions.swift in Sources */,
 				82E372351FB16520000AD7EB /* ChatViewController.swift in Sources */,

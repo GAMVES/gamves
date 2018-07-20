@@ -365,26 +365,34 @@ class Global: NSObject
 
                         let thumnail = school["thumbnail"] as! PFFile
                         
-                        thumnail.getDataInBackground(block: { (data, error) in
+                        thumnail.getDataInBackground(block: { (data_thumbnail, error) in
                                             
                             if error == nil {
                                 
-                                let image_school = UIImage(data: data!)
+                                let thumb_school = UIImage(data: data_thumbnail!)
 
-                                gSchool.thumbnail = image_school                                
+                                gSchool.thumbnail = thumb_school 
 
-                                Global.schools[school.objectId!] = gSchool
+                                let icon = school["iso"] as! PFFile
+                            
+                                icon.getDataInBackground(block: { (data_icon, error) in
 
-                                if count == (countSchools - 1)
-                                {
-                                    completionHandler(true, schoolsArray)
-                                }
-                                count = count + 1
+                                    let icon_school = UIImage(data: data_icon!)
+
+                                    gSchool.icon = icon_school 
+
+                                    Global.schools[school.objectId!] = gSchool
+
+                                    if count == (countSchools - 1)
+                                    {
+                                        completionHandler(true, schoolsArray)
+                                    }
+                                    count = count + 1
+
+                                })                      
 
                             }
-                        })
-
-                        
+                        })                       
                     }
                 }
             }

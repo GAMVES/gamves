@@ -39,6 +39,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         //connect = true
         //if connect {
+
+        //window?.rootViewController = UINavigationController(rootViewController: PlayStationViewController())
+        //return true            
             
         if Reachability.isConnectedToNetwork() == true {
     

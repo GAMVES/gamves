@@ -62,6 +62,15 @@ class ChatFeed {
     var key:Int?
 }
 
+class GamvesSchools
+{
+    var objectId = String()
+    var icon:UIImage?
+    var thumbnail:UIImage?
+    var schoolName = String()    
+    var schoolOBj:PFObject!
+}
+
 class GamvesUser {
 
     var userObj:PFUser! = nil
@@ -98,14 +107,6 @@ class GamvesUser {
     var gender = GamvesGender()
     
     var familyId = String()
-}
-
-class GamvesSchools
-{
-    var objectId = String()
-    var thumbnail:UIImage?
-    var schoolName = String()    
-    var schoolOBj:PFObject!
 }
 
 class GamvesLevel {
