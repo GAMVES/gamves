@@ -85,7 +85,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
 
         if self.delegateFeed != nil {
             self.delegateFeed.uploadData()
-        }       
+        }      
         
         self.navigationController?.popToRootViewController(animated: true)
     }

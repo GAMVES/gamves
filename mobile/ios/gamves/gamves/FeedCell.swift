@@ -91,7 +91,10 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         self.collectionView.backgroundView = UIImageView(image: image!)
         
         
+        
+        
     }
+    
     
     override func layoutSubviews() {
         self.reloadCollectionView()

@@ -24,6 +24,20 @@ class ChatMethods: NSObject
         
         chatFeed["isVideoChat"] = false
 
+        let date = Date()
+
+        let calendar = Calendar.current        
+
+        let minutes = calendar.component(.minute, from: date)
+
+        let seconds = calendar.component(.second, from: date)        
+
+        let strMinutes = String(format: "%02d", minutes)
+
+        let strSeconds = String(format: "%02d", seconds)                   
+
+        chatFeed["time"] = "\(strMinutes):\(strSeconds)"
+
         let groupImageFile:PFFile!
 
         if gamvesUsers.count > 2
