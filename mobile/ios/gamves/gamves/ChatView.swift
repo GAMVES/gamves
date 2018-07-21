@@ -1608,6 +1608,8 @@
 
             if self.isNewChat {
 
+                self.activityView.startAnimating()     
+
                 self.addNewFeedAppendUser(completionHandler: { ( result ) -> () in                    
 
                     if self.isSingleUser() {
@@ -1618,7 +1620,9 @@
                     self.sendMessageAtLast(sendPush:sendPush)
 
                     self.isNewChat = false
-                    
+
+                    self.activityView.stopAnimating()     
+
                 })
 
             } else {
