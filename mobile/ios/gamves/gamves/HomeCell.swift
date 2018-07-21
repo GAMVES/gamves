@@ -40,8 +40,7 @@ import Floaty
         self.categoryPage.delegate = self
         
         self.fanpagePage = FanpagePage()
-        self.fanpagePage.delegate = self      
-        
+        self.fanpagePage.delegate = self
         let initialPage = 0     
 
         self.pages.append(self.categoryHomePage)

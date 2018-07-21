@@ -39,7 +39,8 @@ class ProfileCell: BaseCell,
     MediaDelegate,
     RSKImageCropViewControllerDelegate   
 {
-    var gamvesUser:GamvesUser!
+    
+    var profileUser:GamvesUser!
 
     var imageCropVC = RSKImageCropViewController()
 
@@ -408,13 +409,14 @@ class ProfileCell: BaseCell,
 
     var selectedBackImage = UIImage()
 
-    var floaty = Floaty(size: 80)
+    var floaty = Floaty(size: 80)        
     
     override func setupViews() {
-        super.setupViews()      
+        super.setupViews()  
 
-        let userId = PFUser.current()?.objectId
-        let user = Global.gamvesFamily.getFamilyUserById(userId: userId!) as! GamvesUser
+        self.profileUser = Global.profileUser           
+
+        let userId = Global.profileUser.userId        
 
         self.saveProfileButton.setTitle(saveDesc, for: .normal)
         
@@ -512,11 +514,7 @@ class ProfileCell: BaseCell,
         self.friendsView.alpha = 0.5
 
         //Infoview
-
-        //self.joinedLabel.backgroundColor    = UIColor.green
-        //self.schoolView.backgroundColor     = UIColor.brown
-        //self.gradeUserPlsView.backgroundColor     = UIColor.cyan        
-        
+       
         self.infoView.addSubview(self.joinedLabel)  
         self.infoView.addSubview(self.schoolView)  
         self.infoView.addSubview(self.gradeUserPlsView)
@@ -591,13 +589,16 @@ class ProfileCell: BaseCell,
 
         let dateFormatter = DateFormatter()  
         let joined = dateFormatter.dateFormat = "MM/dd/yy"
-        let date = user.userObj.createdAt! as Date
+        let date = profileUser.userObj.createdAt! as Date
 
         self.joinedLabel.text = "since:  \(dateFormatter.string(from: date))"
-        self.schoolLabel.text = user.school.schoolName
-        self.gradeLabel.text = "  \(user.level.fullDesc)"
-        self.schoolIconImageView.image = user.school.icon
-        self.plsUsernameLabel.text = user.consoles[0].username
+        self.schoolLabel.text = profileUser.school.schoolName
+        self.gradeLabel.text = "  \(profileUser.level.fullDesc)"
+        self.schoolIconImageView.image = profileUser.school.icon
+        
+        if self.profileUser.consoles.count > 0 {
+            self.plsUsernameLabel.text = profileUser.consoles[0].username
+        }
 
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)               
@@ -644,7 +645,7 @@ class ProfileCell: BaseCell,
         
         self.profileView.bringSubview(toFront: self.registerpstView)
                         
-        let name = user.name
+        let name = profileUser.name
         self.sonLabel.text = name
         //self.sonLabel.textAlignment = NSTextAlignment.center
         
@@ -742,14 +743,16 @@ class ProfileCell: BaseCell,
 
         var userId = String()
 
-        if self.gamvesUser == nil {
+        userId = self.profileUser.userId
 
-            userId = (PFUser.current()?.objectId)!
+        /*if self.gamvesUser == nil {
+
+            userId = (PFUser.current()?.objectId)!            
 
         } else {
 
             userId = self.gamvesUser.userId
-        }
+        }*/
         
         queryUser.whereKey("userId", equalTo: userId)
         
@@ -814,14 +817,16 @@ class ProfileCell: BaseCell,
         
         var userId = String()
 
-        if self.gamvesUser == nil {
+        userId = self.profileUser.userId
+
+        /*if self.gamvesUser == nil {
 
             userId = (PFUser.current()?.objectId)!
 
         } else {
 
             userId = self.gamvesUser.userId
-        }
+        }*/
         
 
         //if let sonImage:UIImage = Global.gamvesFamily.getFamilyUserById(userId: userId)?.avatar {
@@ -854,9 +859,9 @@ class ProfileCell: BaseCell,
 
             var chatId = Int()
             
-            if self.gamvesUser.chatId > 0
+            if self.profileUser.chatId > 0
             {
-                chatId = self.gamvesUser.chatId
+                chatId = self.profileUser.chatId
             } else
             {
                 chatId = Global.getRandomInt()
@@ -864,11 +869,9 @@ class ProfileCell: BaseCell,
 
             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)           
 
-            let userDataDict:[String: AnyObject] = ["gamvesUser": self.gamvesUser, "chatId": chatId as AnyObject] 
+            let userDataDict:[String: AnyObject] = ["gamvesUser": self.profileUser, "chatId": chatId as AnyObject] 
 
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil, userInfo: userDataDict)      
-
-            //NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: self)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil, userInfo: userDataDict)  
         
         } else if !self.editCreated {
         

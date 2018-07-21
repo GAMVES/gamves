@@ -3,7 +3,6 @@
 //  gamves
 //
 //  Created by Jose Vigil on 6/19/17.
-//  Copyright © 2017 letsbuildthatapp. All rights reserved.
 //
 
 import UIKit
@@ -16,27 +15,22 @@ import SwiftPhotoGallery
 class FanpagePage: UIViewController,
     UICollectionViewDataSource, 
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout,
-    //AACarouselDelegate,
+    UICollectionViewDelegateFlowLayout,    
     SwiftPhotoGalleryDataSource, 
     SwiftPhotoGalleryDelegate
 {    
-    
-    var activityVideoView: NVActivityIndicatorView!
-    
-    weak var delegate:CellDelegate?       
-    
-    var fanpageGamves  = GamvesFanpage()
-    var videosGamves  = [GamvesVideo]()
-    var fanpageImages = [GamvesFanpageImage]()
-    
-    var timer:Timer? = nil
+
+    //-  UI & COMPONENTS   
+
+    //- All page view
 
     let coverContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.red //UIColor(white: 0, alpha: 1)
+        view.backgroundColor = UIColor.red 
         return view
     }()
+
+    //- Header background image
 
     var coverImageView: KenBurnsImageView = {
         let imageView = KenBurnsImageView()
@@ -44,43 +38,23 @@ class FanpagePage: UIViewController,
         return imageView
     }()    
 
+    //- Go back button
+
     lazy var arrowBackButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(named: "arrow_back_white")
         button.setImage(image, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white   
-        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
-        //button.backgroundColor = UIColor.green
+        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)        
         return button
     }()
 
-     let separatorButtonsView: UIView = {
-        let view = UIView()
-        //view.backgroundColor = UIColor.blue
-        return view
-    }()
+    //- Fanpge avatar
 
-    lazy var favoriteButton: UIButton = {
-        let button = UIButton(type: .system)
-        let image = UIImage(named: "favorite")
-        button.setImage(image, for: UIControlState())
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.tintColor = .white   
-        button.addTarget(self, action: #selector(handleFavoriteButton), for: .touchUpInside)
-        //button.backgroundColor = UIColor.cyan
-        return button
-    }()
-
-    let separatorCenterView: UIView = {
-        let view = UIView()
-        //view.backgroundColor = UIColor.green        
-        return view
-    }()
-    
-    var iconImageView: UIImageView = {
+    var avatarImageView: UIImageView = {
         let image = UIImageView()
-        image.contentMode = .scaleAspectFill //.scaleFill
+        image.contentMode = .scaleAspectFill 
         image.clipsToBounds = true
         image.backgroundColor = UIColor.gamvesColor
         image.layer.cornerRadius = 30
@@ -89,29 +63,39 @@ class FanpagePage: UIViewController,
         return image
     }()
 
+     let separatorButtonsView: UIView = {
+        let view = UIView()        
+        return view
+    }()
+
+    //- Separetor Label
+
+    let separatorCenterView: UIView = {
+        let view = UIView()               
+        return view
+    }()        
+
     var fanpageName: UILabel = {
-        let label = UILabel()
-        //label.text = "Setting"
+        let label = UILabel()        
         label.sizeToFit()
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.white
         return label
     }()
 
-    let cellVideoCollectionId = "cellVideoCollectionId"
-    let cellImageCollectionId = "cellImageCollectionId"
-    
-    let videosContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.white //UIColor(white: 0, alpha: 1)
-        return view
+    //- Favorite button
+
+    lazy var favoriteButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(named: "favorite")
+        button.setImage(image, for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white   
+        button.addTarget(self, action: #selector(handleFavoriteButton), for: .touchUpInside)        
+        return button
     }()
-    
-    let bottomLineContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.black //UIColor(white: 0, alpha: 1)
-        return view
-    }()
+
+    //- Images Collection
 
     lazy var imageCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -123,6 +107,14 @@ class FanpagePage: UIViewController,
         return cv
     }()   
 
+    //- Fanpage Collection
+
+    let collectionContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white //UIColor(white: 0, alpha: 1)
+        return view
+    }()
+
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -132,37 +124,56 @@ class FanpagePage: UIViewController,
         return cv
     }()
 
-    var gallery:SwiftPhotoGallery?
+    //- Bottom line 
 
-    /*var carouselView: AACarousel = {
-        let iconView = AACarousel()
-        return iconView
-    }()*/
+    let bottomLineContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black //UIColor(white: 0, alpha: 1)
+        return view
+    }()
 
-     var isFavorite = Bool()
-
-    var favorite:PFObject!
+    //- Empty message
 
     var labelEmptyMessage: UILabel = {
         let label = UILabel()
-        label.text = "There are no videos yet loaded for this fanpage"
-        //label.sizeToFit()
+        label.text = "There are no videos yet loaded for this fanpage"        
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.gray
         label.numberOfLines = 3
         label.textAlignment = .center
         return label
     }()
+
+
+    //- VARIABLES & OBJCETS    
+
+    var fanpageGamves  = GamvesFanpage()
+    var videosGamves  = [GamvesVideo]()
+    var fanpageImages = [GamvesFanpageImage]()     
     
-    override func viewWillAppear(_ animated: Bool) {
-        self.view.isHidden = true
-    }
+    weak var delegate:CellDelegate?       
+    
+    var activityVideoView: NVActivityIndicatorView!
+    
+    var timer:Timer? = nil
+
+    var gallery:SwiftPhotoGallery?    
+
+     var isFavorite = Bool()
+
+    var favorite:PFObject!
+
+    let cellVideoCollectionId = "cellVideoCollectionId"
+    let cellImageCollectionId = "cellImageCollectionId"
+
+    var categoryName = String()   
+
+    var posterId = String()  
+    
     
     override func viewDidLoad() {
 
-        super.viewDidLoad()
-        
-        print(self.fanpageImages.count)
+        super.viewDidLoad()        
 
         self.view.addSubview(self.coverContainerView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.coverContainerView)
@@ -172,15 +183,15 @@ class FanpagePage: UIViewController,
         self.coverContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.coverImageView)
     
         self.coverContainerView.addSubview(self.arrowBackButton)
-        self.coverContainerView.addSubview(self.iconImageView)
+        self.coverContainerView.addSubview(self.avatarImageView)
         self.coverContainerView.addSubview(self.separatorButtonsView)
         self.coverContainerView.addSubview(self.favoriteButton)
         
         //horizontal constraints
-        self.coverContainerView.addConstraintsWithFormat("H:|[v0(60)][v1(60)]-10-[v2][v3(60)]|", views: arrowBackButton, iconImageView, separatorButtonsView, favoriteButton)
+        self.coverContainerView.addConstraintsWithFormat("H:|[v0(60)][v1(60)]-10-[v2][v3(60)]|", views: arrowBackButton, avatarImageView, separatorButtonsView, favoriteButton)
         
         self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.arrowBackButton)
-        self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.iconImageView)
+        self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.avatarImageView)
         self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.separatorButtonsView)       
         self.coverContainerView.addConstraintsWithFormat("V:|-10-[v0(60)]|", views: self.favoriteButton)       
     
@@ -196,12 +207,12 @@ class FanpagePage: UIViewController,
        
         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
         
-        self.view.addSubview(self.videosContainerView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.videosContainerView)
+        self.view.addSubview(self.collectionContainerView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionContainerView)
         
-        self.videosContainerView.addSubview(self.collectionView)
-        self.videosContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
-        self.videosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)       
+        self.collectionContainerView.addSubview(self.collectionView)
+        self.collectionContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
+        self.collectionContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)       
         
         self.view.addSubview(self.imageCollectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.imageCollectionView)
@@ -211,7 +222,7 @@ class FanpagePage: UIViewController,
         self.view.addConstraintsWithFormat("V:|[v0(80)][v1(80)][v2]|", views: 
             self.coverContainerView,
             self.imageCollectionView, 
-            self.videosContainerView)
+            self.collectionContainerView)
         
         self.coverContainerView.addSubview(self.bottomLineContainerView)
         self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomLineContainerView)
@@ -219,7 +230,7 @@ class FanpagePage: UIViewController,
         
         self.imageCollectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
         
-        self.activityVideoView = Global.setActivityIndicator(container: self.videosContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityVideoView = Global.setActivityIndicator(container: self.collectionContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
         
         let widthImages = view.frame.width
         let heightImages = (view.frame.width - 16 - 16) * 9 / 16
@@ -230,12 +241,8 @@ class FanpagePage: UIViewController,
             "widthImages":widthImages,
             "heightImages":heightImages,
             "padding" : padding
-        ]
-        
-        //self.view.addSubview(self.carouselView)
-        //self.view.addConstraintsWithFormat("H:|[v0]|", views: self.carouselView)
-        //self.view.addConstraintsWithFormat("V:|-padding-[v0(heightImages)]-padding-|", views: self.carouselView, metrics: metricsImages)
-        //self.carouselView.isHidden = true
+        ]       
+   
 
         self.gallery = SwiftPhotoGallery(delegate: self, dataSource: self)
 
@@ -255,10 +262,83 @@ class FanpagePage: UIViewController,
         Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: nil, repeats: true)
         
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        self.view.isHidden = true
+    }
     
     override func viewWillDisappear(_ animated: Bool) {
         self.favoriteButton.tintColor = UIColor.white
-    } 
+    }
+
+    func setFanpageGamvesData(data: GamvesFanpage) {              
+        
+        self.checkFavorite()    
+
+        self.fanpageGamves = data as GamvesFanpage
+
+        self.categoryName = self.fanpageGamves.categoryName             
+
+        if self.categoryName == "PERSONAL" {
+
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(avatarTapped(tapGestureRecognizer:)))
+            self.avatarImageView.isUserInteractionEnabled = true
+            self.avatarImageView.addGestureRecognizer(tapGestureRecognizer)
+
+        }
+        
+        self.fanpageName.text = self.fanpageGamves.name
+        
+        let fanpageId = data.fanpageObj?["fanpageId"] as! Int
+        
+        let name = data.fanpageObj?["pageName"] as! String
+        
+        self.newKenBurnsImageView(image: self.fanpageGamves.cover_image)
+        
+        self.avatarImageView.image = self.fanpageGamves.icon_image
+        
+        if Downloader.fanpageImagesDictionary[fanpageId] != nil {
+
+            self.fanpageImages =  Downloader.fanpageImagesDictionary[fanpageId] as! [GamvesFanpageImage]
+            
+            self.fanpageImages.shuffled
+            
+            print(self.fanpageImages.count)
+            
+            var titleImageArray = [String]()
+            var sourceArray = [String]()
+            
+            for gamvesImage in self.fanpageImages {
+                
+                titleImageArray.append(gamvesImage.name)
+                sourceArray.append(gamvesImage.source)
+            }
+                            
+            self.imageCollectionView.reloadData()
+
+            self.startTimer()
+        }
+        
+        if self.coverContainerView.tag != 1 {
+            self.setupGradientLayer()
+        }
+        
+        self.view.isHidden = false
+    }
+
+    func avatarTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+
+        self.posterId = self.fanpageGamves.posterId
+
+        if Global.userDictionary[posterId] != nil {
+
+            let gamvesUserPoster = Global.userDictionary[posterId] as! GamvesUser
+
+            let userDataDict:[String: GamvesUser] = ["gamvesUser": gamvesUserPoster]
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil, userInfo: userDataDict)       
+        }
+            
+    }
 
     func scrollAutomatically(_ timer1: Timer) {        
         
@@ -377,13 +457,11 @@ class FanpagePage: UIViewController,
     }
 
 
-    func handleBackButton() 
-    {
-        print("hola") 
-        if ( delegate != nil )
-        {
-            if self.timer != nil
-            {
+    func handleBackButton()  {
+        
+        if ( delegate != nil ) {
+
+            if self.timer != nil {
                 self.timer?.invalidate()
             }
             
@@ -412,96 +490,12 @@ class FanpagePage: UIViewController,
         self.coverContainerView.bringSubview(toFront: self.favoriteButton)    
         self.coverContainerView.bringSubview(toFront: self.favoriteButton)
     }
-    
-    func setFanpageGamvesData(data: GamvesFanpage)
-    {              
-        
-        self.fanpageGamves = data as GamvesFanpage
-        
-        print(fanpageGamves.fanpageObj?.objectId)
-        
-        self.checkFavorite()
-        
-        /*self.isFavorite = self.fanpageGamves.isFavorite
+  
+    func scrollToNextCell() {
 
-        print(self.isFavorite)
-        
-        print(self.fanpageGamves.author.username)
-        
-        if self.isFavorite {            
-                
-            self.favoriteButton.tintColor = UIColor.red
-
-            self.favorite = self.fanpageGamves.favoritePF
-
-        } else {
-
-            self.isFavorite = false
-
-            self.favoriteButton.tintColor = UIColor.white
-
-        }*/
-        
-        self.fanpageName.text = self.fanpageGamves.name
-        
-        let fanpageId = data.fanpageObj?["fanpageId"] as! Int
-        
-        let name = data.fanpageObj?["pageName"] as! String
-        
-        self.newKenBurnsImageView(image: self.fanpageGamves.cover_image)
-        
-        self.iconImageView.image = self.fanpageGamves.icon_image
-        
-        if Downloader.fanpageImagesDictionary[fanpageId] != nil
-        {
-            self.fanpageImages =  Downloader.fanpageImagesDictionary[fanpageId] as! [GamvesFanpageImage]
-            
-            self.fanpageImages.shuffled
-            
-            print(self.fanpageImages.count)
-            
-            var titleImageArray = [String]()
-            var sourceArray = [String]()
-            
-            for gamvesImage in self.fanpageImages {
-                
-                titleImageArray.append(gamvesImage.name)
-                sourceArray.append(gamvesImage.source)
-            }
-            
-            //self.carouselView.delegate = self            
-            //self.carouselView.setCarouselData(paths: sourceArray,  describedTitle: titleImageArray, isAutoScroll: true, timer: 5.0, defaultImage: "defaultImage")            
-            //optional methods
-            //self.carouselView.setCarouselOpaque(layer: false, describedTitle: false, pageIndicator: false)            
-            //self.carouselView.setCarouselLayout(displayStyle: 0, pageIndicatorPositon: 5, pageIndicatorColor: nil, describedTitleColor: nil, layerColor: nil)
-            
-            self.imageCollectionView.reloadData()
-
-            self.startTimer()
-        }
-        
-        if self.coverContainerView.tag != 1 {
-            self.setupGradientLayer()
-        }
-        
-        self.view.isHidden = false
-    }
-    
-    
-    /**
-     Scroll to Next Cell
-     */
-    func scrollToNextCell()
-    {
-        //get cell size
-        let cellSize = CGSize(width:self.coverContainerView.frame.width, height:self.coverContainerView.frame.height)
-        
-        //get current content Offset of the Collection view
-        let contentOffset = self.imageCollectionView.contentOffset;
-        
-        //scroll to next cell
-        self.imageCollectionView.scrollRectToVisible(CGRect(x:contentOffset.x + cellSize.width, y:contentOffset.y, width:cellSize.width, height:cellSize.height), animated: true);
-        
+        let cellSize = CGSize(width:self.coverContainerView.frame.width, height:self.coverContainerView.frame.height)        
+        let contentOffset = self.imageCollectionView.contentOffset               
+        self.imageCollectionView.scrollRectToVisible(CGRect(x:contentOffset.x + cellSize.width, y:contentOffset.y, width:cellSize.width, height:cellSize.height), animated: true)        
     }
     
     func startTimer()
@@ -511,29 +505,6 @@ class FanpagePage: UIViewController,
         RunLoop.main.add(self.timer!, forMode: RunLoopMode.commonModes)
     }
     
-    func autoScrollImageSlider() {
-        
-        /*DispatchQueue.global(qos: .background).async {
-            
-            DispatchQueue.main.async {
-                
-                let lastIndex = (self.fanpageImages.count) - 1
-                
-                let currentIndex = self.imageCollectionView.indexPathsForVisibleItems
-                let nextIndex = currentIndex[0].row + 1
-                
-                if nextIndex > lastIndex {
-                    
-                    self.btnLeftArrowAction()
-                    
-                } else {
-                    
-                    self.btnRightArrowAction()
-                    
-                }
-            }
-        }*/
-    }
     
     func btnLeftArrowAction() {
         let collectionBounds = self.imageCollectionView.bounds
@@ -553,15 +524,16 @@ class FanpagePage: UIViewController,
     }   
     
 
-    func setFanpageData()
-    {        
-        self.videosGamves = [GamvesVideo]()
-        
+    func setFanpageData() {   
+
+        self.videosGamves = [GamvesVideo]()        
         self.collectionView.reloadData()        
-        
-        self.getFanpageVideos(fan: fanpageGamves)
-        
+        self.getFanpageVideos(fan: fanpageGamves)        
     }
+
+     func autoScrollImageSlider() {
+
+     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -817,25 +789,38 @@ class FanpagePage: UIViewController,
         
         print(posterId)
         
-        let gamvesUserPoster = Global.userDictionary[posterId]
+        let gamvesUserPoster = Global.userDictionary[posterId] as! GamvesUser
 
         if let userId = PFUser.current()?.objectId {
 
-            if gamvesUserPoster?.userId != userId {
+            //Not open my user
+            
+            if gamvesUserPoster.userId != userId {
 
-                let profileLauncher = PublicProfileLauncher()
-                profileLauncher.showProfileView(gamvesUser: gamvesUserPoster!)        
+                if gamvesUserPoster.userName == "gamvesadmin" {
+
+                    var chatId = Int()
+
+                    if gamvesUserPoster.chatId > 0 {
+
+                        chatId = gamvesUserPoster.chatId
+                    } else {
+                        chatId = Global.getRandomInt()
+                    }
+
+                    let userDataDict:[String: AnyObject] = ["gamvesUser": gamvesUserPoster, "chatId": chatId as AnyObject]
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil, userInfo: userDataDict) 
+
+                } else  {
+
+                    let profileLauncher = PublicProfileLauncher()
+                    profileLauncher.showProfileView(gamvesUser: gamvesUserPoster)
+
+                }
 
             }
-        }
-
-        //NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: self)
-
-        //let userDataDict:[String: GamvesUser] = ["gamvesUserPoster": gamvesUserPoster!]      
-        //NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil, userInfo: userDataDict)      
-
-        //let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        //appDelegate.homeController.showUserProfile(user:gamvesUserPoster!)
+        }     
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout:
@@ -878,10 +863,7 @@ class FanpagePage: UIViewController,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
     
-        if collectionView == self.imageCollectionView
-        {
-            //self.carouselView.isHidden = false
-            //carouselView.startScrollImageView()
+        if collectionView == self.imageCollectionView {           
 
             gallery?.modalPresentationStyle = .overCurrentContext
             present(self.gallery!, animated: true, completion: nil)
@@ -896,15 +878,12 @@ class FanpagePage: UIViewController,
             let video = self.videosGamves[indexPath.row]
             video.fanpageId = fanpageGamves.fanpageId
             
-            videoLauncher.showVideoPlayer(videoGamves: video)
-            
-        }
-        
+            videoLauncher.showVideoPlayer(videoGamves: video)            
+        }        
     }
     
-    func downloadImages(_ url:String, _ index:Int) {
-        
-        //self.carouselView.images[index] = self.fanpageImages[index].cover_image
+    func downloadImages(_ url:String, _ index:Int) {       
+       
         
     }
     
@@ -915,17 +894,7 @@ class FanpagePage: UIViewController,
     func callBackFirstDisplayView(_ imageView:UIImageView, _ url:[String], _ index:Int){
         
     }
-
-
-    ///gallery
-
-    /*func numberOfImagesInGallery(gallery: SwiftPhotoGallery) -> Int {
-        return self.carouselView.images.count
-    }
-
-    func imageInGallery(gallery: SwiftPhotoGallery, forIndex: Int) -> UIImage? {
-        return UIImage(named: self.carouselView.images[forIndex])
-    }*/
+   
     
     func numberOfImagesInGallery(gallery: SwiftPhotoGallery) -> Int {
         return self.fanpageImages.count
@@ -936,8 +905,7 @@ class FanpagePage: UIViewController,
     }
 
 
-    func galleryDidTapToClose(gallery: SwiftPhotoGallery) {
-        // do something cool like:
+    func galleryDidTapToClose(gallery: SwiftPhotoGallery) {        
         dismiss(animated: true, completion: nil)
     }
 

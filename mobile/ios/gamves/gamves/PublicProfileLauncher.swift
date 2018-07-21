@@ -16,15 +16,7 @@ class PublicProfileView: UIView,
  UICollectionViewDelegateFlowLayout 
  {
 
-
-    var publicProfileLauncher:PublicProfileLauncher!
-    var keyWindow: UIView!
-    var playerLayer: AVPlayerLayer!    
-
-    var homeController:HomeController!
-    let profileCellId = "profileCellId"
-    var profileHome:ProfileCell!
-    var gamvesUser:GamvesUser!
+    //-  UI & COMPONENTS    
 
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -35,10 +27,23 @@ class PublicProfileView: UIView,
         return cv
     }()  
 
+    //- VARIABLES & OBJCETS    
+
+    var publicProfileLauncher:PublicProfileLauncher!
+    var keyWindow: UIView!
+
+    var homeController:HomeController!
+    
+    let profileCellId = "profileCellId"
+    
+    var profileHome:ProfileCell!
+
+    var gamvesUser:GamvesUser!    
+
     override init(frame: CGRect) {        
         super.init(frame: frame)
-
-        self.collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: self.profileCellId)       
+        
+        self.collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: self.profileCellId)
 
         self.addSubview(self.collectionView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
@@ -77,9 +82,7 @@ class PublicProfileView: UIView,
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
 
-        profileHome = cell as! ProfileCell        
-
-        profileHome.gamvesUser = self.gamvesUser         
+        profileHome = cell as! ProfileCell             
 
         profileHome.setSonProfileImageView()
 
@@ -93,7 +96,9 @@ class PublicProfileView: UIView,
         return CGSize(width: self.frame.width, height: self.frame.height - 50)
     }
 
-    func setUser(user:GamvesUser) {    
+    func setUser(user:GamvesUser) {        
+        
+        Global.setProfileUser(user: user)
 
         NotificationCenter.default.addObserver(self, selector: #selector(closeProfile), name: NSNotification.Name(rawValue: Global.notificationKeyCloseVideo), object: nil)         
 
@@ -101,9 +106,8 @@ class PublicProfileView: UIView,
     }
     
     
-    func closeProfile()
-    {
-        //REMOVE IF EXISTS VIDEO RUNNING
+    func closeProfile() {
+        
         for subview in (UIApplication.shared.keyWindow?.subviews)! {
             if (subview.tag == 1)
             {                
@@ -119,6 +123,8 @@ class PublicProfileLauncher: UIView {
     class func className() -> String {
         return "PublicProfileLauncher"
     }
+
+    var homeController:HomeController!
         
     var infoView:InfoView!
     var chatView:ChatView!
@@ -134,18 +140,17 @@ class PublicProfileLauncher: UIView {
     var lastX = CGFloat()   
 
     var keyWindoWidth = CGFloat()
-    var keyWindoHeight = CGFloat()
-
-    //var valpha = CGFloat() 
+    var keyWindoHeight = CGFloat()    
 
     var originalVideoFrame = CGRect()
-    //var downVideoFrame = CGRect()
     
     var videoId = Int()
 
     var initialTouchPoint: CGPoint = CGPoint(x: 0,y: 0)
 
     func showProfileView(gamvesUser: GamvesUser){
+        
+        Global.profileUser = gamvesUser
         
         self.keyWindoWidth = (UIApplication.shared.keyWindow?.frame.size.width)!
         self.keyWindoHeight = (UIApplication.shared.keyWindow?.frame.size.height)!   
@@ -265,7 +270,7 @@ class PublicProfileLauncher: UIView {
 
             let smallOriginFrame = CGRect(x: 0, y: 0, width: thumbWidth, height: thumbHeight)
 
-            self.publicProfileView.playerLayer.frame = smallOriginFrame
+            //self.publicProfileView.playerLayer.frame = smallOriginFrame
 
             UIApplication.shared.keyWindow?.bringSubview(toFront: self.publicProfileView)
             
@@ -274,8 +279,8 @@ class PublicProfileLauncher: UIView {
             
         }, completion: { (completedAnimation) in            
             
-            self.publicProfileView.playerLayer.borderWidth = 1.0
-            self.publicProfileView.playerLayer.borderColor = UIColor.white.cgColor
+            //self.publicProfileView.playerLayer.borderWidth = 1.0
+            //self.publicProfileView.playerLayer.borderColor = UIColor.white.cgColor
 
             UIApplication.shared.setStatusBarHidden(false, with: .fade)
             

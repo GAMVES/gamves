@@ -104,7 +104,6 @@
 		C92B3D3F20EC7EAC00700BA4 /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */; };
 		C92BC7C82085AFB200EDEBCD /* GradientMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */; };
 		C92BCA8220F44F8200BD37F0 /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */; };
-		C92C3ECA207A88150029E206 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92C3EC9207A88150029E206 /* ProfileController.swift */; };
 		C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */; };
 		C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */; };
 		C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */; };
@@ -212,7 +211,6 @@
 		C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
 		C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientMaskView.swift; sourceTree = "<group>"; };
 		C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = "<group>"; };
-		C92C3EC9207A88150029E206 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
 		C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
 		C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
@@ -528,7 +526,6 @@
 				82DD002F1F9CF21500CD19D7 /* NewGroupNameViewController.swift */,
 				82E66DB81FD4B51000968E88 /* NewVideoController.swift */,
 				82B0343C1FDFC35F009CD1A7 /* YouTubePlayerController.swift */,
-				C92C3EC9207A88150029E206 /* ProfileController.swift */,
 				C9A0011B20F3CEE900906F33 /* NewFriendController.swift */,
 			);
 			name = Controller;
@@ -782,7 +779,6 @@
 				C92BCA8220F44F8200BD37F0 /* FriendsTableViewCell.swift in Sources */,
 				C9A0011C20F3CEE900906F33 /* NewFriendController.swift in Sources */,
 				82DD00371F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift in Sources */,
-				C92C3ECA207A88150029E206 /* ProfileController.swift in Sources */,
 				82970BA41F1DBFF000F6ABAD /* VideoPage.swift in Sources */,
 				82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */,
 				82BD5EFF1F93AC9600BD8760 /* ContactCell.swift in Sources */,

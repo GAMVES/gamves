@@ -20,8 +20,8 @@ class Global: NSObject
 
     static var listOfSwearWords = [String]()
 
-    static func setBadWordsArray(words: String)
-    {
+    static func setBadWordsArray(words: String) {
+
         self.listOfSwearWords = words.split(separator: "|").map(String.init)
         
         print(listOfSwearWords)
@@ -29,15 +29,21 @@ class Global: NSObject
 
     static var listOfChatColors = [String]()
 
-    static func setChatColorsArray(colors: String)
-    {
+    static func setChatColorsArray(colors: String) {
+
         self.listOfChatColors = colors.split(separator: "|").map(String.init)
         
         print(listOfChatColors)
-    }
-    
+    }    
     
     static var pagesPageView = [UIViewController]()
+
+    static var profileUser = GamvesUser()
+    
+    static func setProfileUser(user:GamvesUser) {
+        self.profileUser = GamvesUser()
+        self.profileUser = user
+    }
 
     static var pictureRecorded = GamvesPicture()
     static var audioRecorded = GamvesAudio()

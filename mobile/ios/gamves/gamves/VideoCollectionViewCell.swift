@@ -148,26 +148,11 @@ class VideoCollectionViewCell: BaseCell {
         self.addConstraintsWithFormat("H:|-pr-[v0(30)]", views: self.checkView, metrics : paddingMetrics)
         self.addConstraintsWithFormat("V:|-pt-[v0(30)]", views: self.checkView, metrics : paddingMetrics)
         
-        self.checkView.addSubview(checkLabel)
-        //checkLabel.frame = CGRect(x: checkView.center.x, y: checkView.center.y, width: 30, height: 30)
+        self.checkView.addSubview(checkLabel)      
         self.checkView.addConstraintsWithFormat("H:|[v0(30)]|", views: checkLabel)
         self.checkView.addConstraintsWithFormat("V:|[v0(30)]|", views: checkLabel)
         
 
     }
-    
-    /*override func layoutSubviews() {     
-
-        self.profileButton.frame.origin.x = self.thumbnailImageView.frame.origin.x
-        self.profileButton.frame.origin.y = self.thumbnailImageView.frame.origin.y
-
-        self.profileButton.frame = self.thumbnailImageView.frame
-    }*/
-
-
-    //func handleViewProfile(button: UIButton) {
-
-        //let userDataDict:[String: GamvesUser] = ["gamvesUserPoster": gamvesUserPoster]      
-        //NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil, userInfo: userDataDict)      
-    //}
+   
 }

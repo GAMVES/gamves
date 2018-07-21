@@ -9,38 +9,19 @@ import UIKit
 import Parse
 import PopupDialog
 
+class HomeController: UICollectionViewController, 
+UICollectionViewDelegateFlowLayout, 
+CLLocationManagerDelegate {
 
-class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CLLocationManagerDelegate {
-    
-    var popup:PopupDialog! = nil
-    
-    let homeCellId          = "homeCellId"
-    let feedCellId          = "feedCellId"
-    let notificationCellId  = "notificationCellId"
-    let profileCellId       = "profileCellId"   
-    
-    let titles = ["Home", "Activity", "Notifications", "Profile"]
-    
-    var cellFree:FeedCell!
-    var cellHome:HomeCell!
-    var notificationCell:NotificationCell!
-    var profileHome:ProfileCell!
-    
-    var locationManager : CLLocationManager = CLLocationManager()
-    
-    var didFindLocation = Bool()    
+    //-  UI & COMPONENTS    
 
-    lazy var chatLauncher: ChatViewController = {
+    //- Controllers
+
+    lazy var chatViewController: ChatViewController = {
         let launcher = ChatViewController()
         launcher.homeController = self
         return launcher
-    }()
-
-    lazy var settingsLauncher: SettingsLauncher = {
-        let launcher = SettingsLauncher()
-        launcher.homeController = self
-        return launcher
-    }()
+    }()        
 
     lazy var newGroupNameViewController: NewGroupNameViewController = {
         let groupName = NewGroupNameViewController()
@@ -58,13 +39,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let newFriend = NewFriendController()
         newFriend.homeController = self
         return newFriend
-    }()
-
-    lazy var menuBar: MenuBar = {
-        let mb = MenuBar()
-        mb.homeController = self
-        return mb
-    }()
+    }()    
 
     lazy var newVideoController: NewVideoController = {
         let newvideo = NewVideoController()
@@ -78,12 +53,48 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return newFanpage
     }()
 
+    //- Launchers
 
-    lazy var profileController: ProfileController = {
-        let profile = ProfileController()
-        profile.homeController = self
-        return profile
+    lazy var settingsLauncher: SettingsLauncher = {
+        let launcher = SettingsLauncher()
+        launcher.homeController = self
+        return launcher
+    }()    
+
+    lazy var puplicProfileLauncher: PublicProfileLauncher = {
+        let launcher = PublicProfileLauncher()
+        launcher.homeController = self
+        return launcher
     }()
+
+    //- MenuBar
+
+    lazy var menuBar: MenuBar = {
+        let mb = MenuBar()
+        mb.homeController = self
+        return mb
+    }()
+
+
+    //- VARIABLES & OBJCETS    
+    
+    var popup:PopupDialog! = nil
+    
+    let homeCellId          = "homeCellId"
+    let feedCellId          = "feedCellId"
+    let notificationCellId  = "notificationCellId"
+    let profileCellId       = "profileCellId"   
+    
+    let titles = ["Home", "Activity", "Notifications", "Profile"]
+    
+    var cellFree:FeedCell!
+    var cellHome:HomeCell!
+    var notificationCell:NotificationCell!
+    var profileHome:ProfileCell!
+    
+    var locationManager : CLLocationManager = CLLocationManager()
+    
+    var didFindLocation = Bool()   
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,18 +103,12 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
         navigationController?.navigationBar.isTranslucent = false
         
-        locationManager.delegate = self
-        
-        // For use when the app is open & in the background
-        locationManager.requestAlwaysAuthorization()
-        
-        // For use when the app is open
-        //locationManager.requestWhenInUseAuthorization()
-        
-        // If location services is enabled get the users location
+        locationManager.delegate = self      
+        locationManager.requestAlwaysAuthorization()                
+        //locationManager.requestWhenInUseAuthorization()       
         if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest // You can change the locaiton accuary here.
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest 
             locationManager.startUpdatingLocation()
             didFindLocation = false
         }
@@ -117,44 +122,37 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         setupCollectionView()
         setupMenuBar()
         setupNavBarButtons()
-        
-        //Global.buildPopup(viewController:self, title: "Hola", message: "Este es un mensaje")
+       
+        NotificationCenter.default.addObserver(self, selector: #selector(openChatFromUser), name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil)        
 
-        NotificationCenter.default.addObserver(self, selector: #selector(openChatFromUser), name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)     
 
-        NotificationCenter.default.addObserver(self, selector: #selector(showProfileController), name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil)        
+        NotificationCenter.default.addObserver(self, selector: #selector(showProfileController), name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil)                   
         
+    }
+
+    func familyLoaded() {
+
+      if let userId = PFUser.current()?.objectId {            
+
+            let profileUser = Global.userDictionary[userId] as! GamvesUser               
+
+            Global.setProfileUser(user: profileUser)
+        }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        
-        print("")
-        
-        //self.view.setNeedsLayout()
-        
-        //self.collectionView?.reloadData()
-        
-    }
-
+   
     func openChatFromUser(_ notification: NSNotification) {
-
-        //let userDataDict:[String: GamvesUser] = ["gamvesUser": self.gamvesUser, "chatId": chatId] 
 
         if let user = notification.userInfo?["gamvesUser"] as? GamvesUser {    
 
             if let chatId = notification.userInfo?["chatId"] as? Int {
             
                 self.openChat(room: user.name, chatId: chatId, users: [user])
-
             }
-        }
-        
+        }        
     }
 
-
-    override func viewDidLayoutSubviews() {
-        //print("did")
-    }
     
     func setupCollectionView() {
         
@@ -172,9 +170,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.contentInset = UIEdgeInsetsMake(50, 0, 0, 0)
         collectionView?.scrollIndicatorInsets = UIEdgeInsetsMake(50, 0, 0, 0)
         
-        collectionView?.isPagingEnabled = true
-        
-        //collectionView?.alwaysBounceVertical = false
+        collectionView?.isPagingEnabled = true       
+       
     }
     
     func setupNavBarButtons() {
@@ -215,11 +212,13 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     } 
 
     func showProfileController(_ notification: NSNotification) {
-        profileController.modalPresentationStyle = .overCurrentContext
-        navigationController?.navigationBar.tintColor = UIColor.white        
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]        
-        navigationController?.pushViewController(profileController, animated: true)
+        
+        if let user = notification.userInfo?["gamvesUser"] as? GamvesUser {  
+
+            self.puplicProfileLauncher.showProfileView(gamvesUser: user)
+        }         
     }
+
 
     func getHomeCell() -> HomeCell 
     {
@@ -265,16 +264,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }  
    
     
-    fileprivate func setupMenuBar() {
-        
-        //navigationController?.hidesBarsOnSwipe = true
-        
-        /*let redView = UIView()
-         redView.backgroundColor = UIColor.gamvesBlackColor // .rgb(230, green: 32, blue: 31)
-         view.addSubview(redView)
-         view.addConstraintsWithFormat("H:|[v0]|", views: redView)
-         view.addConstraintsWithFormat("V:[v0(50)]", views: redView)*/
-
+    fileprivate func setupMenuBar() {        
+       
         view.addSubview(menuBar)
         view.addConstraintsWithFormat("H:|[v0]|", views: menuBar)
         view.addConstraintsWithFormat("V:[v0(50)]", views: menuBar)
@@ -359,16 +350,18 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func openChat(room: String, chatId:Int, users:[GamvesUser]) {
         
-        self.chatLauncher.modalPresentationStyle = .overCurrentContext
-        self.chatLauncher.chatId = chatId
-        self.chatLauncher.gamvesUsers = users
-        self.chatLauncher.delegateFeed = cellFree
-        self.chatLauncher.room = room
-        chatLauncher.view.backgroundColor = UIColor.white
+        self.chatViewController.modalPresentationStyle = .overCurrentContext
+        self.chatViewController.chatId = chatId
+        self.chatViewController.gamvesUsers = users
+        self.chatViewController.delegateFeed = cellFree
+        self.chatViewController.room = room
+        chatViewController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        navigationController?.pushViewController(self.chatLauncher, animated: true)
-    }    
+        navigationController?.pushViewController(self.chatViewController, animated: true)
+    } 
+
+   
     
     func selectContact(group: Bool) {
         selectContactViewController.isGroup = group

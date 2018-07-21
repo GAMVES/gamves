@@ -181,8 +181,7 @@
             let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
             cv.backgroundColor = UIColor.white
             cv.dataSource = self
-            cv.delegate = self
-            //cv.automaticallyAdjustsScrollViewInsets = true
+            cv.delegate = self            
             return cv
         }()
         
@@ -249,9 +248,7 @@
         var audioRecorder    :AVAudioRecorder!
         var settings         = [String : Int]()
         
-        var fileManager:FileManager!
-        
-        //var delegateChat:UpdateChatCell!
+        var fileManager:FileManager!     
         
         let backView: UIImageView = {
             let imageView = UIImageView()
@@ -272,9 +269,7 @@
         
         var chatTextTimer:ChatTimer!
         
-        var emoticonKeyboardState:EmoticonKeyboardState!
-        
-        //var homeController:HomeController!
+        var emoticonKeyboardState:EmoticonKeyboardState!                
         
         var pictureWidth = CGFloat()
         var pictureHeight = CGFloat()
@@ -286,6 +281,8 @@
         var chatType:ChatViewType!
 
         var puserId = String()
+
+        var isNewChat = Bool()
         
         init(parent: ChatViewType, frame: CGRect, isVideo:Bool) {
             super.init(frame: frame)
@@ -419,10 +416,8 @@
             
             self.bringSubview(toFront: self.collectionView)
             self.bringSubview(toFront: self.messageContainerView)
-            self.bringSubview(toFront: self.activityView)
-            
+            self.bringSubview(toFront: self.activityView)            
         }
-        
         
         
         func timeCount(time: String) {
@@ -657,16 +652,9 @@
                             
                             self.activityView.stopAnimating()
                             
-                            if !self.isVideo
-                            {
+                            if !self.isVideo {
                                 
-                                self.addNewFeedAppendUser(completionHandler: { ( result ) -> () in
-                                    
-                                    if self.isSingleUser()
-                                    {
-                                        self.initializeOnlineSubcritpion()
-                                    }
-                                })
+                                self.isNewChat = true                                
                             }
                         }
                     }
@@ -686,7 +674,6 @@
                 id = id + 1                    
             }           
         }
-
         
         func loadChatsVideos(chatFeed:PFObject, userCount:Int, completionHandler : @escaping (_ resutl:[MessageChat]) -> ()) {
             
@@ -750,13 +737,8 @@
                                 
                                 if let range = messageText.range(of: Global.admin_delimitator) {
                                     messageText.removeSubrange(range)
-                                }
-                                
-                            }
-                            
-                            print(messageText)
-
-
+                                }                                
+                            }                           
                             
                             if PFUser.current()?.objectId == userId {
                                 message.isSender = true
@@ -1620,10 +1602,34 @@
         
         //-- MESSAGE
         
-        func sendMessage(sendPush:Bool)
-        {
+        func sendMessage(sendPush:Bool) {
+
             print(inputTextField.text)
+
+            if self.isNewChat {
+
+                self.addNewFeedAppendUser(completionHandler: { ( result ) -> () in                    
+
+                    if self.isSingleUser() {
+
+                        self.initializeOnlineSubcritpion()
+                    }
+
+                    self.sendMessageAtLast(sendPush:sendPush)
+
+                    self.isNewChat = false
+                    
+                })
+
+            } else {
+
+                self.sendMessageAtLast(sendPush:sendPush)
+            }                    
             
+        }
+
+        func sendMessageAtLast(sendPush:Bool) {
+
             let messagePF: PFObject = PFObject(className: "ChatVideo")
             
             var userId = String()
@@ -1668,7 +1674,7 @@
                     }
                 }
             }
-            
+
         }
         
         
@@ -2065,27 +2071,19 @@
                         if resutl && !self.isVideo {
                             
                             self.sendPushWithCoud(message: message!)
-                        } //else {
-                            
-                            //completionHandlerSave(resutl)
-                        //}
+                        } 
                         
                         completionHandlerSave    (resutl)
                     })
                 }
             })
-        }
-        
+        }        
         
         @objc func handleKeyboardNotification(notification: NSNotification) {
             
-            if let userInfo = notification.userInfo {
+            if let userInfo = notification.userInfo {        
 
-                //print(self.superview)
-                print(type(of: self.superview))
-
-                let className : String = String(describing: self.superview)
-                print(className)
+                let className : String = String(describing: self.superview)                
                 
                 let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
                 
