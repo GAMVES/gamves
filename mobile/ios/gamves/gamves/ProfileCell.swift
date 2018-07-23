@@ -53,10 +53,11 @@ class ProfileCell: BaseCell,
     var userStatistics = [UserStatistics]()
 
     var videosGamves  = [GamvesVideo]()
-    let cellVideoCollectionId = "cellVideoCollectionId"   
+    let cellVideoCollectionId = "cellVideoCollectionId"  
 
+    // Status and Friends
 
-    // Onliine
+    // Online Status
 
     var onlineImageView: UIImageView = {
         let imageView = UIImageView()
@@ -97,7 +98,7 @@ class ProfileCell: BaseCell,
         return label
     }()
 
-
+    //- Profile
 
     let profileView: UIView = {
         let view = UIView()
@@ -181,7 +182,7 @@ class ProfileCell: BaseCell,
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 12)
         label.textAlignment = .right        
         return label
     }()
@@ -409,7 +410,11 @@ class ProfileCell: BaseCell,
 
     var selectedBackImage = UIImage()
 
-    var floaty = Floaty(size: 80)        
+    var floaty = Floaty(size: 80)      
+
+    var leftOnline = CGFloat()
+
+    var sonOnline = Bool()
     
     override func setupViews() {
         super.setupViews()  
@@ -454,12 +459,7 @@ class ProfileCell: BaseCell,
         self.profileView.addSubview(self.backImageView)
         self.profileView.addSubview(self.registerpstView)
         self.profileView.addSubview(self.sonLabel)
-        self.profileView.addSubview(self.bioLabel)
-        
-        //Status
-        self.profileView.addSubview(self.onlineImageView)
-        self.profileView.addSubview(self.friendsView)       
-
+        self.profileView.addSubview(self.bioLabel)  
 
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
         self.profileView.addConstraintsWithFormat("V:|[v0(100)]|", views:self.backImageView)        
@@ -482,21 +482,19 @@ class ProfileCell: BaseCell,
 
         self.profileView.addSubview(self.infoView)  
         self.profileView.addConstraintsWithFormat("H:|-widthModule-[v0]|", views: self.infoView, metrics: infoMetrics) 
-        self.profileView.addConstraintsWithFormat("V:|-100-[v0]|", views: self.infoView)    
+        self.profileView.addConstraintsWithFormat("V:|-100-[v0]|", views: self.infoView)            
 
-       let leftOnline = width - 160
-       let mestricsLeftOnline = ["leftOnline":leftOnline] 
+        // Friends               
 
-        self.profileView.addConstraintsWithFormat("H:|-leftOnline-[v0(40)]|", views: self.onlineImageView, metrics:mestricsLeftOnline)
-        self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.onlineImageView)       
+        self.leftOnline = width - 160
+
+        self.profileView.addSubview(self.friendsView)                    
 
         let leftSpace = leftOnline + 60     
         let mestricsLeft = ["leftSpace":leftSpace] 
 
         self.profileView.addConstraintsWithFormat("H:|-leftSpace-[v0(80)]|", views: self.friendsView, metrics:mestricsLeft)
-        self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.friendsView)       
-
-        //Friends
+        self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.friendsView)               
 
         self.friendsView.addSubview(self.friendImageView)  
         self.friendsView.addSubview(self.friendsLabel)  
@@ -519,7 +517,7 @@ class ProfileCell: BaseCell,
         self.infoView.addSubview(self.schoolView)  
         self.infoView.addSubview(self.gradeUserPlsView)
 
-        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.joinedLabel)
+        self.infoView.addConstraintsWithFormat("H:|[v0]-20-|", views: self.joinedLabel)
         self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.schoolView) 
         self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.gradeUserPlsView) 
 
@@ -687,9 +685,7 @@ class ProfileCell: BaseCell,
 
         self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
 
-        self.collectionView.backgroundColor = UIColor.white
-        
-        self.profileSaveType = ProfileSaveType.profile    
+        self.collectionView.backgroundColor = UIColor.white       
 
         self.addSubview(self.labelEmptyMessage)
         self.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
@@ -697,6 +693,26 @@ class ProfileCell: BaseCell,
 
         self.labelEmptyMessage.isHidden = true          
        
+    }
+
+    func setType(type:ProfileSaveType){
+        
+        print(type)
+
+        self.profileSaveType = type
+
+        //Status
+        if self.profileSaveType == ProfileSaveType.publicProfile {
+
+            self.userOnline()
+            
+            self.profileView.addSubview(self.onlineImageView)
+            let mestricsLeftOnline = ["leftOnline":self.leftOnline] 
+
+            self.profileView.addConstraintsWithFormat("H:|-leftOnline-[v0(40)]|", views: self.onlineImageView, metrics:mestricsLeftOnline)
+            self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.onlineImageView)  
+        }
+
     }
     
     /*if id == 0
@@ -715,6 +731,63 @@ class ProfileCell: BaseCell,
         }
     
     }*/
+
+    func userOnline() {
+
+        let userId = Global.profileUser.userId 
+
+        let queryOnline = PFQuery(className:"UserStatus")
+        queryOnline.whereKey("userId", equalTo: userId)
+        queryOnline.getFirstObjectInBackground { (usersOnline, error) in 
+            
+            if error != nil
+            {
+                print("error")
+
+                self.onlineImageView.image = UIImage(named: "status_offline")
+
+            } else {
+                
+                self.changeSingleUserStatus(onlineMessage:usersOnline!)
+                
+            }
+        }
+    }
+
+    func changeSingleUserStatus(onlineMessage:PFObject)
+    {
+        let status = onlineMessage["status"] as! Int
+        
+        if status == 2 {
+            
+            self.sonOnline = true
+
+             DispatchQueue.main.async {
+                        
+                self.onlineImageView.image = UIImage(named: "status_online")
+                
+            }
+
+            
+        } else if status == 1 {
+            
+            self.sonOnline = false
+            
+            if self.userStatistics.count > 0  {
+
+                if let lastSeen = onlineMessage.updatedAt {
+
+                    self.userStatistics[0].data = "\(lastSeen)"
+
+                     DispatchQueue.main.async {
+                        
+                        self.onlineImageView.image = UIImage(named: "status_online")
+                        
+                    }
+                }
+            }
+        }         
+    }
     
     func showFriends() {
 

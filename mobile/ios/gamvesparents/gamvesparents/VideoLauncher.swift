@@ -354,7 +354,9 @@ class VideoLauncher: UIView, KeyboardDelegate {
             
             let chatFrame = CGRect(x: 0, y: chatY, width: Int(keyWindow.frame.width), height: chatHeight)
             
-            chatView = ChatView(parent: ChatViewType.VideoLauncher, frame: chatFrame, isVideo: true, showInput:false)
+            //chatView = ChatView(parent: ChatViewType.VideoLauncher, frame: chatFrame, isVideo: true, showInput:false)
+            
+            chatView = ChatView(parent: ChatViewType.VideoLauncher, frame: chatFrame, isVideo: true)
             
             let params = ["chatId": videoId, "isVideoChat": true, "thumbnailImage": videoGamves.image, "delegate":self] as [String : Any]
             

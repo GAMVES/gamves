@@ -11,7 +11,7 @@ import AVFoundation
 import Parse
 
 class PublicProfileView: UIView,
- UICollectionViewDataSource, 
+ UICollectionViewDataSource,
  UICollectionViewDelegate, 
  UICollectionViewDelegateFlowLayout 
  {
@@ -36,7 +36,7 @@ class PublicProfileView: UIView,
     
     let profileCellId = "profileCellId"
     
-    var profileHome:ProfileCell!
+    var profileCell = ProfileCell ()
 
     var gamvesUser:GamvesUser!    
 
@@ -65,37 +65,55 @@ class PublicProfileView: UIView,
         fatalError("init(coder:) has not been implemented")
     }
 
-     func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
-    }   
-
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    
+    /*func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> ProfileCell {
     
         let identifier: String
 
         identifier = profileCellId
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! ProfileCell
 
-        profileHome = cell as! ProfileCell             
-
+        profileHome = cell
         profileHome.setSonProfileImageView()
-
+        profileHome.setType(type: ProfileSaveType.publicProfile)
         profileHome.setProfileType(type: ProfileSaveType.chat)
 
         return cell
 
+    }*/
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        var identifier = String()
+        
+        identifier = profileCellId
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! UICollectionViewCell
+        
+        
+        
+        profileCell = cell as! ProfileCell
+        profileCell.setSonProfileImageView()
+        profileCell.setType(type: ProfileSaveType.publicProfile)
+        profileCell.setProfileType(type: ProfileSaveType.chat)
+        
+        return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.frame.width, height: self.frame.height - 50)
+        return CGSize(width: self.frame.width, height: self.frame.height)
     }
-
+    
+    
     func setUser(user:GamvesUser) {        
         
         Global.setProfileUser(user: user)

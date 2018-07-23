@@ -90,7 +90,7 @@ CLLocationManagerDelegate {
     var cellFree:FeedCell!
     var cellHome:HomeCell!
     var notificationCell:NotificationCell!
-    var profileHome:ProfileCell!
+    //var profileHome:ProfileCell!
     
     var locationManager : CLLocationManager = CLLocationManager()
     
@@ -334,7 +334,8 @@ CLLocationManagerDelegate {
             
         } else if indexPath.item == 3 {
             
-            profileHome = cell as! ProfileCell
+            let profileHome = cell as! ProfileCell
+            profileHome.profileSaveType = ProfileSaveType.profile
             profileHome.homeController = self
             profileHome.setProfileType(type: ProfileSaveType.profile)
         }
