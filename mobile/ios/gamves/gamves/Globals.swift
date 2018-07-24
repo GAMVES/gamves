@@ -121,6 +121,8 @@ class Global: NSObject
 
     static var friends = Dictionary<String, GamvesUser>()
 
+    static var allUsers = Dictionary<String, GamvesUser>()
+
     static var friendsAmount = Int()
     
     static var gamvesFamily = GamvesFamily()

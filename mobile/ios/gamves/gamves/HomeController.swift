@@ -53,6 +53,12 @@ CLLocationManagerDelegate {
         return newFanpage
     }()
 
+    lazy var friendsViewController: FriendsViewController = {
+        let friendsController = FriendsViewController()
+        friendsController.homeController = self
+        return friendsController
+    }()
+
     //- Launchers
 
     lazy var settingsLauncher: SettingsLauncher = {
@@ -386,6 +392,13 @@ CLLocationManagerDelegate {
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(newVideoController, animated: true)
     }
+
+    func showFriends() {        
+        friendsViewController.view.backgroundColor = UIColor.white
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(friendsViewController, animated: true)
+    }    
     
     func addNewFanpage(edit:Bool) {
         if edit {

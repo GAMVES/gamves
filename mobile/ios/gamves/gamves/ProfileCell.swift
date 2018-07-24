@@ -1,5 +1,3 @@
-
-
 //
 //  ProfileCell.swift
 //  gamves
@@ -97,6 +95,8 @@ class ProfileCell: BaseCell,
         label.textAlignment = .left        
         return label
     }()
+
+    var friendsButton:UIButton! //nulled button       
 
     //- Profile
 
@@ -506,10 +506,13 @@ class ProfileCell: BaseCell,
         self.friendsView.addConstraintsWithFormat("H:|-15-[v0(30)]-5-[v1]|", views: 
             self.friendImageView, 
             self.friendsLabel)
-        
-        let gesture = UITapGestureRecognizer(target: self, action:  #selector (showFriends))
-        self.friendsView.addGestureRecognizer(gesture)
-        self.friendsView.alpha = 0.5
+
+        //let tap = UITapGestureRecognizer(target: self, action: #selector(showFriends))
+        //tap.numberOfTapsRequired = 1 
+        //self.friendsView.addGestureRecognizer(tap)        
+
+        self.friendsView.isUserInteractionEnabled = true
+        self.friendsView.alpha = 0.5        
 
         //Infoview
        
@@ -607,7 +610,7 @@ class ProfileCell: BaseCell,
         self.floaty.paddingX = 20                    
         self.floaty.itemSpace = 30
         self.floaty.shadowRadius = 20
-        self.floaty.buttonColor = UIColor.gamvesYellowColor
+        self.floaty.buttonColor = UIColor.gamvesTurquezeColor
         self.floaty.sizeToFit()
 
         //floaty.verticalDirection = .down        
@@ -693,6 +696,37 @@ class ProfileCell: BaseCell,
 
         self.labelEmptyMessage.isHidden = true          
        
+    }
+    
+    override func layoutSubviews() {
+
+        if self.friendsView.frame.width > 0 {
+
+            if self.friendsButton == nil {
+
+                self.friendsButton = UIButton(type: .system)
+                //self.friendsButton.backgroundColor = UIColor.cyan
+                self.friendsButton.addTarget(self, action: #selector(self.showFriends), for: .touchUpInside)  
+
+                let x = self.friendsView.frame.maxX - 80
+                let y = self.friendsView.frame.maxY - 40
+                let width = self.friendsView.frame.width
+                let height = self.friendsView.frame.height                            
+
+                self.addSubview(self.friendsButton)
+
+                let mestrics = ["x":x, "y":y, "width":width, "height":height] 
+
+                self.addConstraintsWithFormat("H:|-x-[v0(width)]|", views: self.friendsButton, metrics:mestrics)                
+                self.addConstraintsWithFormat("V:|-y-[v0(height)]|", views:self.friendsButton, metrics:mestrics)                               
+
+            }            
+        }       
+    }
+
+    func showFriends() {       
+
+        self.homeController?.showFriends()
     }
 
     func setType(type:ProfileSaveType){
@@ -789,10 +823,7 @@ class ProfileCell: BaseCell,
         }         
     }
     
-    func showFriends() {
-
-        print("show friends")
-    }
+   
     
 
     func setProfileType(type: ProfileSaveType) {
@@ -1083,6 +1114,8 @@ class ProfileCell: BaseCell,
         }          
         
     }
+
+
     
     func handleSaveProfile() {
         
@@ -1378,9 +1411,7 @@ class ProfileCell: BaseCell,
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        
-    }
+    
 
     func getProfileVideos()
     {

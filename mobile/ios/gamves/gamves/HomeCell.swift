@@ -21,7 +21,9 @@ import Floaty
     var categoryPage:CategoryPage!
     var fanpagePage:FanpagePage!
     
-    var index = Int()      
+    var index = Int()     
+
+    var floaty = Floaty(size: 80)  
     
     override func setupViews() 
     {
@@ -53,9 +55,8 @@ import Floaty
 
         self.addSubview((self.pageController?.view)!)
 
-        removeSwipeGesture()
+        removeSwipeGesture()       
         
-        let floaty = Floaty()
         
         /*floaty.addItem(title: "New Fanpage", handler: { item in
             
@@ -74,8 +75,52 @@ import Floaty
             }
             
         })*/
+
+        //FLOATY      
+
+        self.floaty.paddingY = 35
+        self.floaty.paddingX = 20                    
+        self.floaty.itemSpace = 30
+        self.floaty.shadowRadius = 20
+        self.floaty.buttonColor = UIColor.gamvesYellowColor
+        self.floaty.sizeToFit()
+
+        //floaty.verticalDirection = .down        
         
-        self.addSubview(floaty)
+        let itemNewFanpage = FloatyItem()
+        itemNewFanpage.icon = UIImage(named: "like")                
+        itemNewFanpage.buttonColor = UIColor.white
+        itemNewFanpage.titleLabelPosition = .left
+        itemNewFanpage.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemNewFanpage.title = "NEW FANPAGE"
+        itemNewFanpage.handler = { item in
+            
+            if self.homeController != nil
+            {
+                self.homeController?.addNewFanpage(edit:false)
+            }
+
+        }
+
+        let itemNewVideo = FloatyItem()
+        itemNewVideo.icon = UIImage(named: "video")                
+        itemNewVideo.buttonColor = UIColor.white
+        itemNewVideo.titleLabelPosition = .left
+        itemNewVideo.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemNewVideo.title = "NEW VIDEO"
+        itemNewVideo.handler = { item in
+            
+            if self.homeController != nil
+            {
+                self.homeController?.addNewVideo()
+            }
+
+        }
+
+        self.floaty.addItem(item: itemNewFanpage)       
+        self.floaty.addItem(item: itemNewVideo)       
+        self.addSubview(floaty)          
+        
 
         NotificationCenter.default.addObserver(self, selector: #selector(setLastFanpage), name: NSNotification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: nil)
         

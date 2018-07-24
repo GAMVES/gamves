@@ -105,8 +105,13 @@
 		C92BC7C82085AFB200EDEBCD /* GradientMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */; };
 		C92BCA8220F44F8200BD37F0 /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */; };
 		C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */; };
+		C92CDDBC21064FCD001B5978 /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CDDBB21064FCD001B5978 /* FriendCell.swift */; };
 		C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */; };
 		C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */; };
+		C9383D62210593CB008E54D5 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9383D61210593CB008E54D5 /* FriendsViewController.swift */; };
+		C98FD87F2106131200631D78 /* FriendEmptyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */; };
+		C98FD8812106133F00631D78 /* FriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */; };
+		C98FD883210613B000631D78 /* FriendSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD882210613B000631D78 /* FriendSectionHeader.swift */; };
 		C9A0011C20F3CEE900906F33 /* NewFriendController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0011B20F3CEE900906F33 /* NewFriendController.swift */; };
 /* End PBXBuildFile section */
 
@@ -212,8 +217,13 @@
 		C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientMaskView.swift; sourceTree = "<group>"; };
 		C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = "<group>"; };
 		C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
+		C92CDDBB21064FCD001B5978 /* FriendCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
 		C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
 		C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
+		C9383D61210593CB008E54D5 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
+		C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendEmptyCollectionViewCell.swift; sourceTree = "<group>"; };
+		C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendCollectionViewCell.swift; sourceTree = "<group>"; };
+		C98FD882210613B000631D78 /* FriendSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendSectionHeader.swift; sourceTree = "<group>"; };
 		C9A0011B20F3CEE900906F33 /* NewFriendController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendController.swift; sourceTree = "<group>"; };
 		E24F455AB391FC717A52882D /* Pods-gamves.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.release.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.release.xcconfig"; sourceTree = "<group>"; };
 		E3B0DD69767FAC16A4611662 /* Pods-gamves.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.debug.xcconfig"; sourceTree = "<group>"; };
@@ -424,6 +434,10 @@
 		82FFF52B2022D350005F45AA /* cells */ = {
 			isa = PBXGroup;
 			children = (
+				C92CDDBB21064FCD001B5978 /* FriendCell.swift */,
+				C98FD882210613B000631D78 /* FriendSectionHeader.swift */,
+				C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */,
+				C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */,
 				82FFF52E2022D795005F45AA /* CatFanSelectorViewCell.swift */,
 				C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */,
 			);
@@ -527,6 +541,7 @@
 				82E66DB81FD4B51000968E88 /* NewVideoController.swift */,
 				82B0343C1FDFC35F009CD1A7 /* YouTubePlayerController.swift */,
 				C9A0011B20F3CEE900906F33 /* NewFriendController.swift */,
+				C9383D61210593CB008E54D5 /* FriendsViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -749,6 +764,7 @@
 				C77B55521D02345100FF375C /* VideoCell.swift in Sources */,
 				C92B3D3F20EC7EAC00700BA4 /* CustomHeader.swift in Sources */,
 				C7E095C91D14C6690081F88C /* SettingsLauncher.swift in Sources */,
+				C9383D62210593CB008E54D5 /* FriendsViewController.swift in Sources */,
 				8268445C1FF2A82B008BA13B /* LoginController+Extensions.swift in Sources */,
 				82C6F7591F8AA8F50090C725 /* Color+Extensions.swift in Sources */,
 				82DD00301F9CF21600CD19D7 /* NewGroupNameViewController.swift in Sources */,
@@ -760,15 +776,18 @@
 				828DB5DF1EFE408500403C66 /* Gradients.swift in Sources */,
 				825568D91FA3FA2F0074C49C /* Array+Extension.swift in Sources */,
 				82E1AC2B1FF6B5AA00209AEF /* SearchGridImageCell.swift in Sources */,
+				C98FD8812106133F00631D78 /* FriendCollectionViewCell.swift in Sources */,
 				822D620F1FD650910025481E /* UISearch+Extension.swift in Sources */,
 				C75742B71D5D93FA001C066C /* VideoLauncher.swift in Sources */,
 				8294F9D21FDA4EF80082D99D /* RecordVideoViewController.swift in Sources */,
 				822010B61FF96A5A008C9027 /* NewFanpageController+Extensions.swift in Sources */,
 				8294F9D01FDA4EF40082D99D /* PlayVideoViewController.swift in Sources */,
 				82C9084B1FA0FD790059FAB8 /* Downloader.swift in Sources */,
+				C92CDDBC21064FCD001B5978 /* FriendCell.swift in Sources */,
 				82E372291FAFD5CF000AD7EB /* Classes.swift in Sources */,
 				8272C9531EFF755B005D1C9A /* CategoryTableViewSectionCell.swift in Sources */,
 				825237BA2024E3CF00D6ED92 /* ChooseAvatarView.swift in Sources */,
+				C98FD87F2106131200631D78 /* FriendEmptyCollectionViewCell.swift in Sources */,
 				C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */,
 				C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */,
 				82E1AC281FF62FD600209AEF /* SearchSingleImageCell.swift in Sources */,
@@ -793,6 +812,7 @@
 				82C62C471F044950005A308E /* CategoryCollectionViewCell.swift in Sources */,
 				82DD00341F9D021C00CD19D7 /* UINavigationBar+Extension.swift in Sources */,
 				824E67C91F5B99E00025096D /* ChatTableViewCell.swift in Sources */,
+				C98FD883210613B000631D78 /* FriendSectionHeader.swift in Sources */,
 				C77B55171CFFF3AD00FF375C /* AppDelegate.swift in Sources */,
 				8272A2AC1FD7D5FA00D14A76 /* CameraController.swift in Sources */,
 				822760C9200EDBCE00860638 /* NotificationCell.swift in Sources */,

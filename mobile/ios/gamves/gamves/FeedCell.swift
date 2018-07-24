@@ -36,6 +36,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     }()
     
     let cellId = "cellId"
+
+    var floaty = Floaty(size: 80)     
     
     override func setupViews() {
         super.setupViews()
@@ -56,7 +58,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         self.registerLiveQuery()
         
-        let floaty = Floaty()
+        //let floaty = Floaty()
         /*floaty.addItem(title: "New Group", handler: { item in
 
             if self.homeController != nil {
@@ -78,7 +80,70 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             }
         })*/
         
-        self.addSubview(floaty)
+        //FLOATY      
+
+        self.floaty.paddingY = 35
+        self.floaty.paddingX = 20                    
+        self.floaty.itemSpace = 30
+        self.floaty.shadowRadius = 20
+        self.floaty.buttonColor = UIColor.gamvesGreenColor
+        self.floaty.sizeToFit()
+
+        //floaty.verticalDirection = .down        
+        
+        let itemNewGroup = FloatyItem()
+        itemNewGroup.icon = UIImage(named: "group_add")                
+        itemNewGroup.buttonColor = UIColor.white
+        itemNewGroup.titleLabelPosition = .left
+        itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemNewGroup.title = "NEW GROUP"
+        itemNewGroup.handler = { item in
+            
+            if self.homeController != nil {
+                self.homeController?.selectContact(group: true)
+            }
+        }
+
+
+        let itemNewChat = FloatyItem()
+        itemNewChat.icon = UIImage(named: "chat_room_black")                
+        itemNewChat.buttonColor = UIColor.white
+        itemNewChat.titleLabelPosition = .left
+        itemNewChat.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemNewChat.title = "NEW CHAT"
+        itemNewChat.handler = { item in
+            
+            if self.homeController != nil {
+                self.homeController?.selectContact(group: false)
+            }    
+
+        }
+
+
+        let itemAddFriend = FloatyItem()
+        itemAddFriend.icon = UIImage(named: "friend_add")                
+        itemAddFriend.buttonColor = UIColor.white
+        itemAddFriend.titleLabelPosition = .left
+        itemAddFriend.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemAddFriend.title = "ADD FRIEND"
+        itemAddFriend.handler = { item in
+            
+            if self.homeController != nil {
+                self.homeController?.addFriend()
+            }     
+
+        }
+
+
+
+        
+
+        self.floaty.addItem(item: itemNewGroup)  
+        self.floaty.addItem(item: itemNewChat)  
+        self.floaty.addItem(item: itemAddFriend)       
+        self.addSubview(floaty) 
+
+
 
         /*let homeImage = "background"
         let image = UIImage(named: homeImage)        
