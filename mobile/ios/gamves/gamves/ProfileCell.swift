@@ -227,7 +227,7 @@ class ProfileCell: BaseCell,
     let gradeUserView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesBackgoundColor
+        v.backgroundColor = UIColor.gamvesBackgoundColor        
         return v
     }()
 
@@ -250,7 +250,6 @@ class ProfileCell: BaseCell,
         return v
     }()
 
-
     var pstStatusImageView: UIImageView = {
         let imageView = UIImageView()
         let image = UIImage(named: "status_offline")
@@ -270,22 +269,33 @@ class ProfileCell: BaseCell,
         return label
     }()
 
-    let pstIconView: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false        
-        return v
-    }()
+    //- Points
 
-    var plsIconImageView: CustomImageView = {
-        let imageView = CustomImageView()    
-        let image = UIImage(named: "pls_icon")
-        imageView.tintColor = UIColor.gray
-        imageView.image = image    
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.masksToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        return imageView
+    let pointsView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false             
+        return v
     }()   
+
+    let pointsLabelLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray        
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.text = "Points:"        
+        label.textAlignment = .center        
+        return label
+    }() 
+
+    let pointsLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.gray        
+        label.font = UIFont.systemFont(ofSize: 35)
+        label.text = "0"        
+        label.textAlignment = .center        
+        return label
+    }()  
 
     // DATA
     
@@ -544,22 +554,25 @@ class ProfileCell: BaseCell,
         // gradePlsView
 
         self.gradeUserPlsView.addSubview(self.gradeUserView)
-        self.gradeUserPlsView.addSubview(self.pstIconView)
+        self.gradeUserPlsView.addSubview(self.pointsView)
 
         self.gradeUserPlsView.addConstraintsWithFormat("V:|[v0]|", views: self.gradeUserView)
-        self.gradeUserPlsView.addConstraintsWithFormat("V:|-10-[v0]|", views: self.pstIconView)
+        self.gradeUserPlsView.addConstraintsWithFormat("V:|[v0]|", views: self.pointsView)
 
-        self.gradeUserPlsView.addConstraintsWithFormat("H:|[v0][v1(50)]-10-|", views: 
+        self.gradeUserPlsView.addConstraintsWithFormat("H:|[v0][v1(50)]|", views: 
             self.gradeUserView, 
-            self.pstIconView)
+            self.pointsView)
 
         //plsIconImageView
 
-        self.pstIconView.addSubview(self.plsIconImageView)
-        self.pstIconView.addConstraintsWithFormat("V:|[v0(50)]|", views: self.plsIconImageView)
-        self.pstIconView.addConstraintsWithFormat("H:|[v0(50)]|", views: self.plsIconImageView)     
+        self.pointsView.addSubview(self.pointsLabel)
+        self.pointsView.addSubview(self.pointsLabelLabel)
 
-        self.plsIconImageView.alpha = 0.4   
+        self.pointsView.addConstraintsWithFormat("H:|[v0]|", views: self.pointsLabelLabel)
+        self.pointsView.addConstraintsWithFormat("H:|[v0]|", views: self.pointsLabel)
+
+        self.pointsView.addConstraintsWithFormat("V:|[v0(20)][v1]|", views: self.pointsLabelLabel, self.pointsLabel)
+        
 
         // gradeUserView
 
@@ -584,7 +597,7 @@ class ProfileCell: BaseCell,
         self.gradeUserView.addConstraintsWithFormat("V:|[v0(20)]-10-|", views: self.pstStatusImageView)
         self.gradeUserView.addConstraintsWithFormat("V:|[v0]-10-|", views: self.plsUsernameLabel)
         
-        self.gradeUserView.addConstraintsWithFormat("H:|-10-[v0(20)]-10-[v1]|", views: 
+        self.gradeUserView.addConstraintsWithFormat("H:|[v0(20)]-5-[v1]|", views: 
             self.pstStatusImageView, 
             self.plsUsernameLabel)      
 
@@ -598,7 +611,14 @@ class ProfileCell: BaseCell,
         self.schoolIconImageView.image = profileUser.school.icon
         
         if self.profileUser.consoles.count > 0 {
+
             self.plsUsernameLabel.text = profileUser.consoles[0].username
+
+        } else {
+
+            self.pstStatusImageView.isHidden = true
+            self.plsUsernameLabel.isHidden = true
+
         }
 
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
