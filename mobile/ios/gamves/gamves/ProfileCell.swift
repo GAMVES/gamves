@@ -23,8 +23,13 @@ public enum ProfileSaveType {
 }
 
 public enum SelectedImage {
-        case avatar
+    case avatar
     case background
+}
+
+public enum SelectedColorTarget {
+    case dataView
+    case collectionView
 }
 
 
@@ -37,6 +42,8 @@ class ProfileCell: BaseCell,
     MediaDelegate,
     RSKImageCropViewControllerDelegate   
 {
+
+    var colorTarget:SelectedColorTarget!
     
     var profileUser:GamvesUser!
 
@@ -441,7 +448,7 @@ class ProfileCell: BaseCell,
     var showColors = Bool()
 
     var editColorButton:UIButton!
-    var editBioButton:UIButton!
+    var editColorCollButton:UIButton!
     
     override func setupViews() {
         super.setupViews()  
@@ -1163,10 +1170,10 @@ class ProfileCell: BaseCell,
                 var imageColor = UIImage(named: "color")
                 imageColor = Global.resizeImage(image: imageColor!, targetSize: CGSize(width:60, height:60))                
                 imageColor = imageColor?.maskWithColor(color: UIColor.gamvesBackgoundColor)          
-
-               self.editColorButton.setImage(imageColor, for: .normal)
-               self.editColorButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
-               self.editColorButton.isUserInteractionEnabled = true
+                
+                self.editColorButton.setImage(imageColor, for: .normal)
+                self.editColorButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
+                self.editColorButton.isUserInteractionEnabled = true
                 
                 let haloColor = PulsingHaloLayer()
                 haloColor.position.x = self.editColorButton.center.x
@@ -1184,26 +1191,26 @@ class ProfileCell: BaseCell,
                 
                 self.editBioView = UIView(frame: CGRect(x:halfWidth, y:140, width:60, height:60))
         
-                self.editBioButton = UIButton(type: UIButtonType.system)
-                self.editBioButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                var editBioButton = UIButton(type: UIButtonType.system)
+                editBioButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
                 var imageBio = UIImage(named: "edit")
                 imageBio = Global.resizeImage(image: imageBio!, targetSize: CGSize(width:60, height:60))                
                 imageBio = imageBio?.maskWithColor(color: UIColor.gamvesBackgoundColor)                
 
-                self.editBioButton.setImage(imageBio, for: .normal)
-                self.editBioButton.addTarget(self, action: #selector(self.handleChangeBio), for: .touchUpInside)
-                self.editBioButton.isUserInteractionEnabled = true
+                editBioButton.setImage(imageBio, for: .normal)
+                editBioButton.addTarget(self, action: #selector(self.handleChangeBio), for: .touchUpInside)
+                editBioButton.isUserInteractionEnabled = true
                 
                 let haloBio = PulsingHaloLayer()
-                haloBio.position.x = self.editBioButton.center.x
-                haloBio.position.y = self.editBioButton.center.y
+                haloBio.position.x = editBioButton.center.x
+                haloBio.position.y = editBioButton.center.y
                 haloBio.haloLayerNumber = 5
                 haloBio.backgroundColor = UIColor.lightGray.cgColor
                 haloBio.radius = 60
                 haloBio.start()    
                 self.editBioView.layer.addSublayer(haloBio)
 
-                self.editBioView.addSubview(self.editBioButton)
+                self.editBioView.addSubview(editBioButton)
                 self.editOverlayView.addSubview(self.editBioView)
 
                 //-- CollectionColor
@@ -1213,16 +1220,15 @@ class ProfileCell: BaseCell,
 
                 self.editColorCollView = UIView(frame: CGRect(x:xColl, y:yColl, width:100, height:100))
                 
-                var editColorCollButton = UIButton(type: UIButtonType.system)
-                editColorCollButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                self.editColorCollButton = UIButton(type: UIButtonType.system)
+                self.editColorCollButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
                 var imageColorColl = UIImage(named: "color")
                 imageColorColl = Global.resizeImage(image: imageColorColl!, targetSize: CGSize(width:60, height:60))                
                 imageColorColl = imageColorColl?.maskWithColor(color: UIColor.gamvesBackgoundColor)          
 
-                editColorCollButton.setImage(imageColorColl, for: .normal)
-                
-                editColorCollButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
-                editColorCollButton.isUserInteractionEnabled = true
+               self.editColorCollButton.setImage(imageColorColl, for: .normal)                
+               self.editColorCollButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
+               self.editColorCollButton.isUserInteractionEnabled = true
                 
                 let haloColorColl = PulsingHaloLayer()
                 haloColorColl.position.x = self.editColorCollView.center.x
@@ -1233,7 +1239,7 @@ class ProfileCell: BaseCell,
                 haloColorColl.start()
                 self.editColorCollView.layer.addSublayer(haloColorColl)
 
-                self.editColorCollView.addSubview(editColorCollButton)
+                self.editColorCollView.addSubview(self.editColorCollButton)
                 self.editOverlayView.addSubview(self.editColorCollView)                                               
                 
                 self.editCreated = true                
@@ -1412,6 +1418,16 @@ class ProfileCell: BaseCell,
 
     func handleChangeColor(sender : UIButton) {
 
+        if sender == self.editColorButton {
+
+            self.colorTarget = SelectedColorTarget.dataView
+        
+        } else if sender == self.editColorCollButton {
+
+            self.colorTarget = SelectedColorTarget.collectionView
+
+        }
+
         self.friendsView.isUserInteractionEnabled = false
         self.dataView.isUserInteractionEnabled = false
 
@@ -1427,13 +1443,7 @@ class ProfileCell: BaseCell,
                     
         })*/
 
-        if sender == self.editColorButton {
-
-        
-        } else if sender == self.editBioButton {
-
-
-        } 
+         
 
         self.editOverlayView.isHidden = true
 
@@ -1555,9 +1565,19 @@ class ProfileCell: BaseCell,
     
     func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath) {
  
-        self.profileView.backgroundColor = colorPickerView.colors[indexPath.item]
+        if self.colorTarget == SelectedColorTarget.collectionView {
+
+            self.dataView.backgroundColor = colorPickerView.colors[indexPath.item]
+
+            self.collectionView.backgroundColor = colorPickerView.colors[indexPath.item]
+
+        } else if self.colorTarget == SelectedColorTarget.dataView {
+
+            self.profileView.backgroundColor = colorPickerView.colors[indexPath.item]
         
-        self.sonProfileImageView.borderColor = colorPickerView.colors[indexPath.item]
+            self.sonProfileImageView.borderColor = colorPickerView.colors[indexPath.item]   
+
+        }       
         
     }
     
