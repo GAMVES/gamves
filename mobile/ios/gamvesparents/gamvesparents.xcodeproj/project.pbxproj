@@ -862,6 +862,7 @@
 					"$(PROJECT_DIR)/gamvesparents",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/gamvesparents/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gamves.parents;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -885,6 +886,7 @@
 					"$(PROJECT_DIR)/gamvesparents",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/gamvesparents/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gamves.parents;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -67,7 +67,7 @@ class ProfileCell: BaseCell,
         return imageView
     }()
     
-    // Friends
+    // Friendsvie
 
     let friendsView: UIView = {
         let v = UIView()
@@ -105,20 +105,13 @@ class ProfileCell: BaseCell,
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.white
         return view
-    }()
-    
-    let registerViewContent: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.white
-        return view
     }()  
     
     // SON VIEW
     
-    let registerpstView: UIView = {
+    let sonView: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false        
+        view.translatesAutoresizingMaskIntoConstraints = false          
         return view
     }()
 
@@ -129,7 +122,7 @@ class ProfileCell: BaseCell,
         return imageView
     }()
     
-    let leftregisterpstView: UIView = {
+    let leftsonView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false        
         return view
@@ -143,7 +136,7 @@ class ProfileCell: BaseCell,
         return imageView
     }()
     
-    let rightregisterpstView: UIView = {
+    let rightsonView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false        
         return view
@@ -171,8 +164,7 @@ class ProfileCell: BaseCell,
 
     let infoView: UIView = {
         let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesBackgoundColor
+        v.translatesAutoresizingMaskIntoConstraints = false        
         return v
     }()
 
@@ -191,8 +183,7 @@ class ProfileCell: BaseCell,
 
     let schoolView: UIView = {
         let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesBackgoundColor
+        v.translatesAutoresizingMaskIntoConstraints = false        
         return v
     }()    
 
@@ -217,8 +208,7 @@ class ProfileCell: BaseCell,
 
     let gradeUserPlsView: UIView = {
         let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesBackgoundColor
+        v.translatesAutoresizingMaskIntoConstraints = false        
         return v
     }()
 
@@ -226,8 +216,7 @@ class ProfileCell: BaseCell,
 
     let gradeUserView: UIView = {
         let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesBackgoundColor        
+        v.translatesAutoresizingMaskIntoConstraints = false               
         return v
     }()
 
@@ -282,7 +271,7 @@ class ProfileCell: BaseCell,
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray        
         label.font = UIFont.systemFont(ofSize: 13)
-        label.text = "Points:"        
+        label.text = "points"        
         label.textAlignment = .center        
         return label
     }() 
@@ -315,8 +304,7 @@ class ProfileCell: BaseCell,
     
     let dataView: UIView = {
         let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        //v.backgroundColor = UIColor.white
+        v.translatesAutoresizingMaskIntoConstraints = false        
         return v
     }()
     
@@ -326,19 +314,15 @@ class ProfileCell: BaseCell,
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        //cv.backgroundColor = UIColor.white
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)        
         cv.dataSource = self
         cv.delegate = self
         return cv
     }()
 
-    let footerView: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesBackgoundColor
-        return v
-    }()
+    //- Footer
+
+    var footerView:UIView!            
 
     var saveDesc:String  = "Save Profile"
     var colorDesc:String = "Choose Color"
@@ -347,8 +331,7 @@ class ProfileCell: BaseCell,
     
     lazy var saveProfileButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor
-        //button.setTitle(colorDesc, for: UIControlState())
+        button.backgroundColor = UIColor.gambesDarkColor        
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
@@ -379,7 +362,6 @@ class ProfileCell: BaseCell,
         return label
     }()
 
-
     let footerLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -391,6 +373,36 @@ class ProfileCell: BaseCell,
         return label
     }()
 
+    //- Edit buttons overlay 
+
+    let editOverlayView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false              
+        return view
+    }()
+
+    //- Color popup view 
+
+    let colorView: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false               
+        v.layer.cornerRadius = 15
+        v.backgroundColor = UIColor.black       
+        return v
+    }()   
+
+    lazy var colorCloseButton: UIButton = {
+        let button = UIButton(type: .system)
+        var image = UIImage(named: "cancel")
+        //image = image?.maskWithColor(color: UIColor.white)
+        image = Global.resizeImage(image: image!, targetSize: CGSize(width:50, height:50))
+        button.setImage(image, for: .normal)        
+        button.translatesAutoresizingMaskIntoConstraints = false        
+        button.addTarget(self, action: #selector(handleHideColor), for: .touchUpInside)
+        //button.backgroundColor = UIColor.cyan
+        return button
+    }()
+    
     lazy var chatViewController: ChatViewController = {
         let launcher = ChatViewController()
         return launcher
@@ -398,9 +410,8 @@ class ProfileCell: BaseCell,
 
     var activityIndicatorView:NVActivityIndicatorView?
     
-    var cellId = String()
+    var cellId = String()   
     
-    var colorPickerView: ColorPickerView!
     var colorPickerViewController:ColorPickerViewController!
 
     var editProfile = Bool()
@@ -411,6 +422,7 @@ class ProfileCell: BaseCell,
     var editAvatarImageView:UIView!
     var editColorView:UIView!
     var editBioView:UIView!
+    var editColorCollView:UIView!
     
     var initialSetting = InitialSetting()
     
@@ -425,11 +437,16 @@ class ProfileCell: BaseCell,
     var leftOnline = CGFloat()
 
     var sonOnline = Bool()
+
+    var showColors = Bool()
+
+    var editColorButton:UIButton!
+    var editBioButton:UIButton!
     
     override func setupViews() {
         super.setupViews()  
 
-        self.profileUser = Global.profileUser           
+        self.profileUser = Global.profileUser
 
         let userId = Global.profileUser.userId        
 
@@ -453,33 +470,30 @@ class ProfileCell: BaseCell,
 
         self.addSubview(self.lineFooterView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.lineFooterView)
-
-        self.addSubview(self.footerView)
-        self.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)        
         
-        self.addConstraintsWithFormat("V:|[v0(240)][v1(1)][v2][v3(1)][v4(70)]|", views:
+        self.addConstraintsWithFormat("V:|[v0(240)][v1(1)][v2][v3(1)]|", views: //[v4(70)]
             self.profileView, 
             self.lineView, 
             self.dataView,
-            self.lineFooterView,
-            self.footerView)        
+            self.lineFooterView)//,
+            //self.footerView)        
         
         // SON VIEW         
 
         self.profileView.addSubview(self.backImageView)
-        self.profileView.addSubview(self.registerpstView)
+        self.profileView.addSubview(self.sonView)
         self.profileView.addSubview(self.sonLabel)
         self.profileView.addSubview(self.bioLabel)  
 
         self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
         self.profileView.addConstraintsWithFormat("V:|[v0(100)]|", views:self.backImageView)        
         
-        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.registerpstView)
+        self.profileView.addConstraintsWithFormat("H:|[v0]|", views: self.sonView)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)
 
         self.profileView.addConstraintsWithFormat("V:|-20-[v0(150)][v1(40)][v2]-10-|", views:
-            self.registerpstView,
+            self.sonView,
             self.sonLabel,
             self.bioLabel,
             metrics: metricsRegisterView)   
@@ -487,8 +501,8 @@ class ProfileCell: BaseCell,
         // Right Box -> InfoView
 
         let widthModule = self.frame.width / 3        
-        let m = widthModule + ( widthModule / 2 )
-        let infoMetrics = [ "widthModule" : m ]
+        let module = widthModule + ( widthModule / 2 )
+        let infoMetrics = [ "widthModule" : module ]
 
         self.profileView.addSubview(self.infoView)  
         self.profileView.addConstraintsWithFormat("H:|-widthModule-[v0]|", views: self.infoView, metrics: infoMetrics) 
@@ -571,8 +585,7 @@ class ProfileCell: BaseCell,
         self.pointsView.addConstraintsWithFormat("H:|[v0]|", views: self.pointsLabelLabel)
         self.pointsView.addConstraintsWithFormat("H:|[v0]|", views: self.pointsLabel)
 
-        self.pointsView.addConstraintsWithFormat("V:|[v0(20)][v1]|", views: self.pointsLabelLabel, self.pointsLabel)
-        
+        self.pointsView.addConstraintsWithFormat("V:|[v0(20)][v1]|", views: self.pointsLabelLabel, self.pointsLabel)       
 
         // gradeUserView
 
@@ -626,81 +639,70 @@ class ProfileCell: BaseCell,
         
         //FLOATY      
 
-        self.floaty.paddingY = 35
+        self.floaty.paddingY = 20
         self.floaty.paddingX = 20                    
         self.floaty.itemSpace = 30
-        self.floaty.shadowRadius = 20
-        self.floaty.buttonColor = UIColor.gamvesTurquezeColor
+        self.floaty.hasShadow = true
+        self.floaty.shadowColor = UIColor.black
+        self.floaty.buttonColor = UIColor.gamvesFucsiaColor
+        var addImage = UIImage(named: "add_symbol")
+        addImage = addImage?.maskWithColor(color: UIColor.white)
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:60, height:60))
+        self.floaty.buttonImage = addImage
         self.floaty.sizeToFit()
 
         //floaty.verticalDirection = .down        
         
         let itemEditProfile = FloatyItem()
         itemEditProfile.icon = UIImage(named: "edit")                
-        itemEditProfile.buttonColor = UIColor.white
+        itemEditProfile.buttonColor = UIColor.gamvesFucsiaColor
         itemEditProfile.titleLabelPosition = .left
         itemEditProfile.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemEditProfile.title = "EDIT PROFILE"
         itemEditProfile.handler = { item in
-            
             self.handleEditProfile()
-            self.floaty.isHidden = true
+            
+            self.editOverlayView.isHidden = false
+            self.footerView.isHidden = false
 
+            self.floaty.isHidden = true
         }
 
         let itemEditFanpage = FloatyItem()
         itemEditFanpage.icon = UIImage(named: "page")                
-        itemEditFanpage.buttonColor = UIColor.white
+        itemEditFanpage.buttonColor = UIColor.gamvesFucsiaColor
         itemEditFanpage.titleLabelPosition = .left
         itemEditFanpage.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-        itemEditFanpage.title = "EDIT FANPAGE"
+        itemEditFanpage.title = "EDIT YOUR FANPAGE"
         itemEditFanpage.handler = { item in
-            
-            self.handleEditFanpage()            
-
+            self.handleEditFanpage()
         }
 
         self.floaty.addItem(item: itemEditProfile)       
         self.floaty.addItem(item: itemEditFanpage)       
         self.addSubview(floaty)        
         
-        self.profileView.bringSubview(toFront: self.registerpstView)
+        self.profileView.bringSubview(toFront: self.sonView)
                         
         let name = profileUser.name
         self.sonLabel.text = name
         //self.sonLabel.textAlignment = NSTextAlignment.center
         
-        self.registerpstView.addSubview(self.leftregisterpstView)
-        self.registerpstView.addSubview(self.sonProfileImageView)
-        self.registerpstView.addSubview(self.rightregisterpstView)
+        self.sonView.addSubview(self.leftsonView)
+        self.sonView.addSubview(self.sonProfileImageView)
+        self.sonView.addSubview(self.rightsonView)
         
-        self.registerpstView.addConstraintsWithFormat("V:|[v0]|", views: self.leftregisterpstView)
-        self.registerpstView.addConstraintsWithFormat("V:|[v0]|", views: self.sonProfileImageView)
-        self.registerpstView.addConstraintsWithFormat("V:|[v0]|", views: self.rightregisterpstView)            
+        self.sonView.addConstraintsWithFormat("V:|[v0]|", views: self.leftsonView)
+        self.sonView.addConstraintsWithFormat("V:|[v0]|", views: self.sonProfileImageView)
+        self.sonView.addConstraintsWithFormat("V:|[v0]|", views: self.rightsonView)            
         
-        self.registerpstView.addConstraintsWithFormat("H:|[v0(30)][v1(150)][v2]|", views: 
-            self.leftregisterpstView, 
+        self.sonView.addConstraintsWithFormat("H:|[v0(30)][v1(150)][v2]|", views: 
+            self.leftsonView, 
             self.sonProfileImageView, 
-            self.rightregisterpstView, 
-            metrics: metricsRegisterView)                 
+            self.rightsonView, 
+            metrics: metricsRegisterView)        
 
-        self.footerView.addSubview(self.footerLabel)    
-        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.footerLabel)
-        self.footerView.addConstraintsWithFormat("H:|-10-[v0]-100-|", views: self.footerLabel)   
-        
-        let splitFooter = (width - 60)/2
-        
-        let metricsFooterView = ["sf": splitFooter]   
-
-        self.footerView.addSubview(self.saveProfileButton)
-        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.saveProfileButton)
-        self.saveProfileButton.isHidden = true
-        
-        self.footerView.addSubview(self.cancelProfileButton)
-        self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.cancelProfileButton)
-        self.cancelProfileButton.isHidden = true
-        
-        self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.saveProfileButton, self.cancelProfileButton, metrics: metricsFooterView)    
+        //- DataView
 
         self.dataView.addSubview(self.collectionView)
         self.dataView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.collectionView) 
@@ -714,11 +716,91 @@ class ProfileCell: BaseCell,
         self.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
         self.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
 
-        self.labelEmptyMessage.isHidden = true          
-       
+        self.labelEmptyMessage.isHidden = true      
+
+        //Popup colors        
+
+        let hm  = (self.frame.height - 110) //+ 120
+        let hc  = self.frame.width  - 80        
+
+        let metricsModule = ["hm":hm]     
+
+        self.addSubview(self.colorView)
+        self.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.colorView)
+        self.addConstraintsWithFormat("V:|-hm-[v0(90)]-10-|", views: self.colorView, metrics: metricsModule)
+        
+        let offset = CGSize(width:100, height:100)
+        self.colorView.dropShadow(color: UIColor.black, opacity: 0.5, offSet: offset, radius: 10.0, scale: true)
+
+        self.colorPickerViewController = ColorPickerViewController()          
+        colorPickerViewController.colorPickerView.delegate = self
+        self.colorView.addSubview(self.colorPickerViewController)
+
+        self.colorView.addConstraintsWithFormat("H:|-10-[v0]-80-|", views: self.colorPickerViewController)
+        self.colorView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.colorPickerViewController)
+
+        let lb = self.frame.width - 90
+
+        let metricsButton = ["lb":lb] 
+
+        self.colorView.addSubview(self.colorCloseButton)
+        self.colorView.addConstraintsWithFormat("H:|-lb-[v0(60)]|", views: self.colorCloseButton, metrics: metricsButton)
+        self.colorView.addConstraintsWithFormat("V:|-20-[v0(60)]-20-|", views: self.colorCloseButton)
+
+        //-- Overlay
+
+        self.addSubview(self.editOverlayView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.editOverlayView)
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.editOverlayView)       
+
+        self.editOverlayView.isHidden = true
+        self.colorView.isHidden = true
+
     }
     
     override func layoutSubviews() {
+
+        if self.footerView == nil {
+
+            let w = self.frame.width 
+            let h = self.frame.height
+
+            let topPadding = h - 70
+            let metrisFooter = ["topPadding":topPadding]
+
+            //- Footer 
+
+            self.footerView = UIView()
+            self.footerView.translatesAutoresizingMaskIntoConstraints = false
+            self.footerView.backgroundColor = UIColor.gamvesColor
+
+            self.addSubview(self.footerView)
+            self.addConstraintsWithFormat("H:|[v0]|", views: self.footerView)        
+            self.addConstraintsWithFormat("V:|-topPadding-[v0]|", views: self.footerView, metrics: metrisFooter)   
+
+            self.footerView.addSubview(self.footerLabel)    
+            self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.footerLabel)
+            self.footerView.addConstraintsWithFormat("H:|-10-[v0]-100-|", views: self.footerLabel)
+
+            self.footerLabel.isHidden = true   
+            
+            let splitFooter = (w - 60) / 2 
+            
+            let metricsFooterView = ["sf": splitFooter]   
+
+            self.footerView.addSubview(self.saveProfileButton)
+            self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.saveProfileButton)
+            self.saveProfileButton.isHidden = true
+            
+            self.footerView.addSubview(self.cancelProfileButton)
+            self.footerView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.cancelProfileButton)
+            self.cancelProfileButton.isHidden = true
+            
+            self.footerView.addConstraintsWithFormat("H:|-20-[v0(sf)]-20-[v1(sf)]-20-|", views: self.saveProfileButton, self.cancelProfileButton, metrics: metricsFooterView)    
+
+            self.footerView.isHidden = true   
+            
+        }
 
         if self.friendsView.frame.width > 0 {
 
@@ -744,6 +826,14 @@ class ProfileCell: BaseCell,
         }       
     }
 
+    func hideNotEditable(status: Bool) {
+
+        self.friendsView.isHidden   = status
+        self.infoView.isHidden      = status
+        self.collectionView.isHidden      = status
+
+    }
+
     func showFriends() {       
 
         self.homeController?.showFriends()
@@ -766,25 +856,8 @@ class ProfileCell: BaseCell,
             self.profileView.addConstraintsWithFormat("H:|-leftOnline-[v0(40)]|", views: self.onlineImageView, metrics:mestricsLeftOnline)
             self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.onlineImageView)  
         }
-
-    }
-    
-    /*if id == 0
-    {
-        if self.sonOnline
-        {
-            stats.icon = UIImage(named: "status_online")!
-            cell.descLabel.text = "Online"
-    
-        } else {
-    
-            stats.icon = UIImage(named: "status_offline")!
-            cell.descLabel.text = "Offline"
-            cell.dataLabel.text = stats.data
-    
-        }
-    
-    }*/
+    }   
+  
 
     func userOnline() {
 
@@ -842,9 +915,6 @@ class ProfileCell: BaseCell,
             }
         }         
     }
-    
-   
-    
 
     func setProfileType(type: ProfileSaveType) {
 
@@ -978,6 +1048,7 @@ class ProfileCell: BaseCell,
 
     func handleEditProfile() {
 
+        self.backgroundColor = UIColor(white: 1, alpha: 0.5)
 
         if self.profileSaveType == ProfileSaveType.chat {
 
@@ -999,10 +1070,24 @@ class ProfileCell: BaseCell,
         
         } else if !self.editCreated {
         
-            DispatchQueue.main.async {
+            DispatchQueue.main.async {                  
+
+                //self.hideNotEditable(status:true)    
+
+                let backgroundEdit = UIView()
+                backgroundEdit.translatesAutoresizingMaskIntoConstraints = false
+                backgroundEdit.backgroundColor = UIColor.black
+                backgroundEdit.alpha = 0.5
                 
+                self.editOverlayView.addSubview(backgroundEdit)
+                self.editOverlayView.addConstraintsWithFormat("V:|[v0]|", views: backgroundEdit)
+                self.editOverlayView.addConstraintsWithFormat("H:|[v0]|", views: backgroundEdit)
+
+                self.editOverlayView.isHidden = false
+
                 self.editProfile = true
                 let w = self.frame.width
+                let h = self.frame.height               
                 
                 //-- Bottom single button
                 
@@ -1013,15 +1098,19 @@ class ProfileCell: BaseCell,
                 //self.editFanpageButton.isHidden = true
                 
                 //-- Background
+
+                let halfWidth = (w/2) + 30               
                 
-                self.editBackImageView = UIView(frame: CGRect(x:30, y:30, width:50, height:50))
+                self.editBackImageView = UIView(frame: CGRect(x:halfWidth, y:20, width:100, height:100))
                 
                 var editBackImageButton = UIButton(type: UIButtonType.system)
-                editBackImageButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
-                let imageBack = UIImage(named: "camera_black")
-                imageBack?.maskWithColor(color: UIColor.gamvesBackgoundColor)
+                editBackImageButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                var imageBack = UIImage(named: "camera_black")                
+                imageBack = Global.resizeImage(image: imageBack!, targetSize: CGSize(width:60, height:60))                
+                imageBack = imageBack?.maskWithColor(color: UIColor.gamvesBackgoundColor)           
+                
                 editBackImageButton.setImage(imageBack, for: .normal)
-                editBackImageButton.isUserInteractionEnabled = true
+                editBackImageButton.isUserInteractionEnabled = true                
                 editBackImageButton.addTarget(self, action: #selector(self.handleChangeBackgoundImage), for: .touchUpInside)
                 
                 let haloBack = PulsingHaloLayer()
@@ -1029,22 +1118,24 @@ class ProfileCell: BaseCell,
                 haloBack.position.y = editBackImageButton.center.y
                 haloBack.haloLayerNumber = 5
                 haloBack.backgroundColor = UIColor.gamvesBackgoundColor.cgColor
-                haloBack.radius = 40
+                haloBack.radius = 60
                 haloBack.start()
-                
                 self.editBackImageView.layer.addSublayer(haloBack)
+                
                 self.editBackImageView.addSubview(editBackImageButton)
-                self.profileView.addSubview(self.editBackImageView)
+                self.editOverlayView.addSubview(self.editBackImageView)
                 
-                //-- Avatar
+                //-- Avatar               
                 
-                let halfWidth = w/2 - 25
+                self.editAvatarImageView = UIView(frame: CGRect(x:70, y:50, width:100, height:100))
                 
-                self.editAvatarImageView = UIView(frame: CGRect(x:halfWidth, y:25, width:50, height:50))
+                var editAvatarButton = UIButton(type: .system)
                 
-                var editAvatarButton = UIButton(type: UIButtonType.system)
-                editAvatarButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
-                let imageAvatar = UIImage(named: "camera_black")
+                editAvatarButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                var imageAvatar = UIImage(named: "camera_black")
+                imageAvatar = Global.resizeImage(image: imageAvatar!, targetSize: CGSize(width:60, height:60))                
+                imageAvatar = imageBack?.maskWithColor(color: UIColor.gamvesBackgoundColor)          
+                
                 editAvatarButton.setImage(imageAvatar, for: .normal)
                 editAvatarButton.addTarget(self, action: #selector(self.handleChangeAvatarImage), for: .touchUpInside)
                 editAvatarButton.isUserInteractionEnabled = true
@@ -1054,72 +1145,109 @@ class ProfileCell: BaseCell,
                 haloAvatar.position.y = editAvatarButton.center.y
                 haloAvatar.haloLayerNumber = 5
                 haloAvatar.backgroundColor = UIColor.gamvesBackgoundColor.cgColor
-                haloAvatar.radius = 40
-                haloAvatar.start()
-                
+                haloAvatar.radius = 60
+                haloAvatar.start()                
                 self.editAvatarImageView.layer.addSublayer(haloAvatar)
+
                 self.editAvatarImageView.addSubview(editAvatarButton)
-                self.registerpstView.addSubview(self.editAvatarImageView)
+                self.editOverlayView.addSubview(self.editAvatarImageView)
                 
                 //-- Color
+
+                let xColor = w - 80
                 
-                self.editColorView = UIView(frame: CGRect(x:30, y:60, width:50, height:50))
+                self.editColorView = UIView(frame: CGRect(x:xColor, y:120, width:100, height:100))
                 
-                var editColorButton = UIButton(type: UIButtonType.system)
-                editColorButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
-                let imageColor = UIImage(named: "color")
-                imageColor?.maskWithColor(color: UIColor.lightGray)
-                editColorButton.setImage(imageColor, for: .normal)
-                editColorButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
-                editColorButton.isUserInteractionEnabled = true
+                self.editColorButton = UIButton(type: UIButtonType.system)
+                self.editColorButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                var imageColor = UIImage(named: "color")
+                imageColor = Global.resizeImage(image: imageColor!, targetSize: CGSize(width:60, height:60))                
+                imageColor = imageColor?.maskWithColor(color: UIColor.gamvesBackgoundColor)          
+
+               self.editColorButton.setImage(imageColor, for: .normal)
+               self.editColorButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
+               self.editColorButton.isUserInteractionEnabled = true
                 
                 let haloColor = PulsingHaloLayer()
-                haloColor.position.x = editColorButton.center.x
-                haloColor.position.y = editColorButton.center.y
+                haloColor.position.x = self.editColorButton.center.x
+                haloColor.position.y = self.editColorButton.center.y
                 haloColor.haloLayerNumber = 5
                 haloColor.backgroundColor = UIColor.lightGray.cgColor
-                haloColor.radius = 40
+                haloColor.radius = 60
                 haloColor.start()
-
                 self.editColorView.layer.addSublayer(haloColor)
-                self.editColorView.addSubview(editColorButton)
-                self.registerpstView.addSubview(self.editColorView)
+
+                self.editColorView.addSubview(self.editColorButton)
+                self.editOverlayView.addSubview(self.editColorView)
                 
-                //-- Bio
+                //-- Bio                
                 
-                let bX = w - 70
-                
-                self.editBioView = UIView(frame: CGRect(x:bX, y:60, width:50, height:50))
+                self.editBioView = UIView(frame: CGRect(x:halfWidth, y:140, width:60, height:60))
         
-                var editBioButton = UIButton(type: UIButtonType.system)
-                editBioButton = UIButton(frame: CGRect(x:0, y:0, width:50, height:50))
-                let imageBio = UIImage(named: "edit")
-                imageBio?.maskWithColor(color: UIColor.lightGray)
-                editBioButton.setImage(imageBio, for: .normal)
-                editBioButton.addTarget(self, action: #selector(self.handleChangeBio), for: .touchUpInside)
-                editBioButton.isUserInteractionEnabled = true
+                self.editBioButton = UIButton(type: UIButtonType.system)
+                self.editBioButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                var imageBio = UIImage(named: "edit")
+                imageBio = Global.resizeImage(image: imageBio!, targetSize: CGSize(width:60, height:60))                
+                imageBio = imageBio?.maskWithColor(color: UIColor.gamvesBackgoundColor)                
+
+                self.editBioButton.setImage(imageBio, for: .normal)
+                self.editBioButton.addTarget(self, action: #selector(self.handleChangeBio), for: .touchUpInside)
+                self.editBioButton.isUserInteractionEnabled = true
                 
                 let haloBio = PulsingHaloLayer()
-                haloBio.position.x = editBioButton.center.x
-                haloBio.position.y = editBioButton.center.y
+                haloBio.position.x = self.editBioButton.center.x
+                haloBio.position.y = self.editBioButton.center.y
                 haloBio.haloLayerNumber = 5
                 haloBio.backgroundColor = UIColor.lightGray.cgColor
-                haloBio.radius = 40
-                haloBio.start()
-                
+                haloBio.radius = 60
+                haloBio.start()    
                 self.editBioView.layer.addSublayer(haloBio)
-                self.editBioView.addSubview(editBioButton)
-                self.registerpstView.addSubview(self.editBioView)
-            
-                self.collectionView.reloadData()
+
+                self.editBioView.addSubview(self.editBioButton)
+                self.editOverlayView.addSubview(self.editBioView)
+
+                //-- CollectionColor
+
+                let xColl = ( w / 2 ) - 30
+                let yColl = ( h / 2 ) - 60
+
+                self.editColorCollView = UIView(frame: CGRect(x:xColl, y:yColl, width:100, height:100))
                 
-                self.editCreated = true
+                var editColorCollButton = UIButton(type: UIButtonType.system)
+                editColorCollButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                var imageColorColl = UIImage(named: "color")
+                imageColorColl = Global.resizeImage(image: imageColorColl!, targetSize: CGSize(width:60, height:60))                
+                imageColorColl = imageColorColl?.maskWithColor(color: UIColor.gamvesBackgoundColor)          
+
+                editColorCollButton.setImage(imageColorColl, for: .normal)
+                
+                editColorCollButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
+                editColorCollButton.isUserInteractionEnabled = true
+                
+                let haloColorColl = PulsingHaloLayer()
+                haloColorColl.position.x = self.editColorCollView.center.x
+                haloColorColl.position.y = self.editColorCollView.center.y
+                haloColorColl.haloLayerNumber = 5
+                haloColorColl.backgroundColor = UIColor.lightGray.cgColor
+                haloColorColl.radius = 60
+                haloColorColl.start()
+                self.editColorCollView.layer.addSublayer(haloColorColl)
+
+                self.editColorCollView.addSubview(editColorCollButton)
+                self.editOverlayView.addSubview(self.editColorCollView)                                               
+                
+                self.editCreated = true                
             }
         }
     }
 
+    func hideNonEditable(status:Bool) {
+        self.friendsView.isHidden       = status
+        self.friendsButton.isHidden     = status
+        self.collectionView.isHidden    = status
+    }
 
-     func handleEditFanpage() {
+    func handleEditFanpage() {
         
         //Call branch add code here
 
@@ -1130,9 +1258,7 @@ class ProfileCell: BaseCell,
         } else {
 
             self.homeController?.addNewFanpage(edit:true)
-
-        }          
-        
+        }                  
     }
 
 
@@ -1146,13 +1272,9 @@ class ProfileCell: BaseCell,
             self.activityIndicatorView?.startAnimating()
             
             let backImage:UIImage = self.selectedBackImage
-
-            let backImagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage, 1.0)!)
-            
-            self.profilePF["pictureBackground"] = backImagePF
-            
+            let backImagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage, 1.0)!)            
+            self.profilePF["pictureBackground"] = backImagePF            
             self.profilePF["bio"] = self.bioLabel.text
-
             let backColor:UIColor = self.profileView.backgroundColor!
 
             if let rgb:[CGFloat] = backColor.rgb() {
@@ -1167,21 +1289,15 @@ class ProfileCell: BaseCell,
                 if error == nil {
 
                     let sonUser:PFUser = PFUser.current()!
-
-                    let userId = PFUser.current()?.objectId
-                    
-                    let firstName = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
-                    
+                    let userId = PFUser.current()?.objectId                    
+                    let firstName = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name                    
                     let sonImagePF = PFFile(name: "\(firstName)picture.png", data: UIImageJPEGRepresentation(self.sonProfileImageView.image!, 1.0)!)
                     sonUser.setObject(sonImagePF!, forKey: "picture")
-
                     let sonImageLow = self.sonProfileImageView.image?.lowestQualityJPEGNSData as! Data
                     var sonSmallImage = UIImage(data: sonImageLow)
-
                     let sonImageSmallPF = PFFile(name: "\(firstName)pictureSmall.png", data: UIImageJPEGRepresentation(sonSmallImage!, 1.0)!)
-
                     sonUser.setObject(sonImageSmallPF!, forKey: "pictureSmall")               
-                    
+
                     sonUser.saveInBackground(block: { (user, error) in
                         
                         self.showApprovalMessage()
@@ -1223,6 +1339,8 @@ class ProfileCell: BaseCell,
     }
 
     func handleCancelProfile() {
+
+        self.footerView.isHidden = true
         
         self.profileView.backgroundColor = self.initialSetting.backColor
         
@@ -1238,14 +1356,11 @@ class ProfileCell: BaseCell,
             self.videosGamves = self.initialSetting.videos
             
             self.enableDisableButtonToNormal()
-
             
         } else if self.profileSaveType == ProfileSaveType.color {
          
-            self.clearColorButton()
-            
-        }
-    
+            self.clearColorButton()            
+        }    
     }
 
     func enableDisableButtonToNormal() {
@@ -1262,7 +1377,6 @@ class ProfileCell: BaseCell,
         self.editBioView.isHidden = true
 
         self.editCreated = false
-
     }
 
     
@@ -1270,35 +1384,71 @@ class ProfileCell: BaseCell,
         
         self.colorPickerViewController.isHidden = true
         self.saveProfileButton.setTitle(self.saveDesc, for: .normal)
-        self.profileSaveType = ProfileSaveType.profile
-        
+        self.profileSaveType = ProfileSaveType.profile        
+    } 
+
+    func handleHideColor() {
+
+        self.colorView.isHidden = true
+
+        self.footerView.isHidden = false   
+
+        self.editOverlayView.isHidden = false
+
+        // Show Footer with buttons
+
+        // Show edit buttons
+
+
+
+        /*UIView.animate(withDuration: 0.5, animations: { 
+            self.colorView.frame.origin.y += 120
+        }, completion: { (completedAnimation) in                   
+
+            print("")
+                    
+        })*/
     }   
-   
 
     func handleChangeColor(sender : UIButton) {
+
+        self.friendsView.isUserInteractionEnabled = false
+        self.dataView.isUserInteractionEnabled = false
+
+        self.colorView.isHidden = false
+
+        self.footerView.isHidden = true
+
+        /*UIView.animate(withDuration: 0.5, animations: { 
+            self.colorView.frame.origin.y -= 120
+        }, completion: { (completedAnimation) in                   
+
+            print("")
+                    
+        })*/
+
+        if sender == self.editColorButton {
+
         
-        if !self.colorCreated {
-    
-            let colorFrame = self.dataView.frame
-            
-            self.colorPickerViewController = ColorPickerViewController(frame: colorFrame)
-            colorPickerViewController.cornerRadius = 20
-            
-            colorPickerViewController.colorPickerView.delegate = self
-            
-            self.addSubview(colorPickerViewController)
-            
-            self.colorCreated = true
-            
-        }  else {
-            
-            self.colorPickerViewController.isHidden = false
+        } else if sender == self.editBioButton {
+
+
+        } 
+
+        self.editOverlayView.isHidden = true
+
+        /*self.footerView.isHidden = false
+
+        //resize collectionView
+        self.dataView.frame = CGRect(x: self.dataView.frame.maxX, y: self.dataView.frame.maxY, width: self.dataView.frame.width, height: self.dataView.frame.height - 70.0)
         
-        }
+        self.showColors = true
         
         self.saveProfileButton.setTitle(self.colorDesc, for: .normal)
         
         self.profileSaveType = ProfileSaveType.color
+
+        self.layoutIfNeeded()*/
         
     }
     
@@ -1685,22 +1835,23 @@ class ColorPickerViewController: UIView, ColorPickerViewDelegateFlowLayout {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = .white
-       
+        self.cornerRadius = 15
+        self.backgroundColor = UIColor.white
+              
         // Setup colorPickerView
         //colorPickerView.delegate = self
-        colorPickerView.layoutDelegate = self
-        colorPickerView.style = .circle
-        colorPickerView.selectionStyle = .check
-        colorPickerView.isSelectedColorTappable = false
-        colorPickerView.preselectedIndex = colorPickerView.colors.indices.first
+        self.colorPickerView.layoutDelegate = self
+        self.colorPickerView.style = .circle
+        self.colorPickerView.selectionStyle = .check
+        self.colorPickerView.isSelectedColorTappable = false
+        self.colorPickerView.preselectedIndex = colorPickerView.colors.indices.first        
         
         self.addSubview(self.backgroundView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.backgroundView)
         self.addConstraintsWithFormat("V:|[v0]|", views: self.backgroundView)
         
         self.backgroundView.addSubview(self.colorPickerView)
-        self.backgroundView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.colorPickerView)
+        self.backgroundView.addConstraintsWithFormat("H:|[v0]|", views: self.colorPickerView)
         self.backgroundView.addConstraintsWithFormat("V:|[v0]|", views: self.colorPickerView)
 
         

@@ -99,8 +99,6 @@ SelectorProtocol {
         return view
     }() 
 
-
-
     lazy var videoButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor        
@@ -169,8 +167,7 @@ SelectorProtocol {
 
 
 	let titleDescContainerView: UIView = {
-        let view = UIView()        
-        //view.backgroundColor = UIColor.gamvesColor
+        let view = UIView()                
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -292,11 +289,9 @@ SelectorProtocol {
         self.metricsNew["cs"]    =  cs      
 
         self.metricsNew["yt"]  =  40
-        self.metricsNew["cy"]  =  cp
+        self.metricsNew["cy"]  =  cp       
 
-        //"V:|[v0(40)][v1(320)][v2(cp)][v3(60)][v4(cy)][v5(yt)][v6(cp)][v7(120)][v8(cp)][v9(60)][v10]|"
-
-         self.scrollView.addConstraintsWithFormat(
+        self.scrollView.addConstraintsWithFormat(
             "V:|[v0(40)][v1(340)][v2(cp)][v3(60)][v4(cy)][v5(120)][v6(cp)][v7(60)][v8]|", views:
             self.selectCategory,
             self.categoriesContainerView,
@@ -442,38 +437,12 @@ SelectorProtocol {
     func backButtonPressed(sender: UIBarButtonItem) {
         self.navigationController?.popToRootViewController(animated: true)
     }
-    
-    //func dismissKeyboard()
-    //{
-    //    self.view.endEditing(true)
-    //}
-    
+      
     override func viewWillLayoutSubviews() {
         
         self.scrollView.contentSize.width = self.view.frame.width
         
-    }    
-
-    /*func selectedFanpage(picker: DownPicker) {
-
-        let value = picker.getTextField().text
-        print(value)
-        
-        let ids = Array(self.category.fanpages)
-        
-        for fpage in self.category.fanpages {
-            
-            if fpage.name == value
-            {
-                self.fanpage = fpage
-            }
-        }
-        
-        self.videoButton.isEnabled = true
-        self.cameraButton.isEnabled = true
-        self.titleTextField.isEnabled = true
-        self.descriptionTextView.isEditable = true
-    }*/
+    }     
     
     var thumbnailImage      = UIImage()
     var thumbnail_url       = String()
