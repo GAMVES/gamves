@@ -25,11 +25,8 @@ import Floaty
 
     var floaty = Floaty(size: 80)  
     
-    override func setupViews() 
-    {
+    override func setupViews() {
         super.setupViews()   
-
-        //self.backgroundColor = UIColor.green
 
         self.pageController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil) 
         self.pageController!.dataSource = self       
@@ -55,26 +52,7 @@ import Floaty
 
         self.addSubview((self.pageController?.view)!)
 
-        removeSwipeGesture()       
-        
-        
-        /*floaty.addItem(title: "New Fanpage", handler: { item in
-            
-            if self.homeController != nil
-            {
-                self.homeController?.addNewFanpage(edit:false)
-            }
-            
-        })
-        
-        floaty.addItem(title: "New Video", handler: { item in
-            
-            if self.homeController != nil
-            {
-                self.homeController?.addNewVideo()
-            }
-            
-        })*/
+        self.removeSwipeGesture()             
 
         //FLOATY      
 
@@ -83,13 +61,19 @@ import Floaty
         self.floaty.itemSpace = 30
         self.floaty.shadowRadius = 20
         self.floaty.buttonColor = UIColor.gamvesYellowColor
+        var addImage = UIImage(named: "add_symbol")
+        addImage = addImage?.maskWithColor(color: UIColor.white)
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
+        self.floaty.buttonImage = addImage
         self.floaty.sizeToFit()
 
         //floaty.verticalDirection = .down        
         
         let itemNewFanpage = FloatyItem()
-        itemNewFanpage.icon = UIImage(named: "like")                
-        itemNewFanpage.buttonColor = UIColor.white
+        var likeImage = UIImage(named: "like")
+        likeImage = likeImage?.maskWithColor(color: UIColor.white)
+        itemNewFanpage.icon = likeImage                   
+        itemNewFanpage.buttonColor = UIColor.gamvesYellowColor
         itemNewFanpage.titleLabelPosition = .left
         itemNewFanpage.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewFanpage.title = "NEW FANPAGE"
@@ -103,15 +87,17 @@ import Floaty
         }
 
         let itemNewVideo = FloatyItem()
-        itemNewVideo.icon = UIImage(named: "video")                
-        itemNewVideo.buttonColor = UIColor.white
+        var videoImage = UIImage(named: "video")
+        videoImage = videoImage?.maskWithColor(color: UIColor.white)
+        itemNewVideo.icon = videoImage  
+        itemNewVideo.buttonColor = UIColor.gamvesYellowColor
         itemNewVideo.titleLabelPosition = .left
         itemNewVideo.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewVideo.title = "NEW VIDEO"
         itemNewVideo.handler = { item in
             
-            if self.homeController != nil
-            {
+            if self.homeController != nil {
+
                 self.homeController?.addNewVideo()
             }
 
@@ -119,19 +105,16 @@ import Floaty
 
         self.floaty.addItem(item: itemNewFanpage)       
         self.floaty.addItem(item: itemNewVideo)       
-        self.addSubview(floaty)          
-        
+        self.addSubview(floaty)            
 
         NotificationCenter.default.addObserver(self, selector: #selector(setLastFanpage), name: NSNotification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: nil)
         
-        Global.pagesPageView = self.pages
-        
+        Global.pagesPageView = self.pages        
     }
-    
    
 
-    func removeSwipeGesture()
-    {
+    func removeSwipeGesture() {
+
         for view in self.pageController!.view.subviews {
             if let subView = view as? UIScrollView {
                 subView.isScrollEnabled = false

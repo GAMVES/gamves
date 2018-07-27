@@ -56,44 +56,30 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         self.collectionView.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
         
-        self.registerLiveQuery()
+        self.registerLiveQuery()        
         
-        //let floaty = Floaty()
-        /*floaty.addItem(title: "New Group", handler: { item in
-
-            if self.homeController != nil {
-                self.homeController?.selectContact(group: true)
-            }
-        })
-        
-        floaty.addItem(title: "New Chat", handler: { item in
-            
-            if self.homeController != nil {
-                self.homeController?.selectContact(group: false)
-            }
-        })
-
-        floaty.addItem(title: "Add Friend", handler: { item in
-            
-            if self.homeController != nil {
-                self.homeController?.addFriend()
-            }
-        })*/
-        
-        //FLOATY      
+        //FLOATY             
 
         self.floaty.paddingY = 35
         self.floaty.paddingX = 20                    
         self.floaty.itemSpace = 30
         self.floaty.shadowRadius = 20
+        self.floaty.hasShadow = true
+        self.floaty.shadowColor = UIColor.black
         self.floaty.buttonColor = UIColor.gamvesGreenColor
+        var addImage = UIImage(named: "add_symbol")
+        addImage = addImage?.maskWithColor(color: UIColor.white)
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
+        self.floaty.buttonImage = addImage
         self.floaty.sizeToFit()
 
         //floaty.verticalDirection = .down        
         
         let itemNewGroup = FloatyItem()
-        itemNewGroup.icon = UIImage(named: "group_add")                
-        itemNewGroup.buttonColor = UIColor.white
+        var groupAddImage = UIImage(named: "group_add")
+        groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
+        itemNewGroup.icon = groupAddImage
+        itemNewGroup.buttonColor = UIColor.gamvesGreenColor
         itemNewGroup.titleLabelPosition = .left
         itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewGroup.title = "NEW GROUP"
@@ -104,10 +90,11 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             }
         }
 
-
-        let itemNewChat = FloatyItem()
-        itemNewChat.icon = UIImage(named: "chat_room_black")                
-        itemNewChat.buttonColor = UIColor.white
+        let itemNewChat = FloatyItem()    
+        var chatRoomImage = UIImage(named: "chat_room_black")
+        chatRoomImage = chatRoomImage?.maskWithColor(color: UIColor.white)
+        itemNewChat.icon = chatRoomImage
+        itemNewChat.buttonColor = UIColor.gamvesGreenColor
         itemNewChat.titleLabelPosition = .left
         itemNewChat.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewChat.title = "NEW CHAT"
@@ -121,8 +108,10 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
 
 
         let itemAddFriend = FloatyItem()
-        itemAddFriend.icon = UIImage(named: "friend_add")                
-        itemAddFriend.buttonColor = UIColor.white
+        var addFriendImage = UIImage(named: "friend_add")
+        addFriendImage = addFriendImage?.maskWithColor(color: UIColor.white)
+        itemAddFriend.icon = addFriendImage
+        itemAddFriend.buttonColor = UIColor.gamvesGreenColor
         itemAddFriend.titleLabelPosition = .left
         itemAddFriend.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemAddFriend.title = "ADD FRIEND"
@@ -130,7 +119,7 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             
             if self.homeController != nil {
                 self.homeController?.addFriend()
-            }     
+            }    
 
         }
 

@@ -651,9 +651,10 @@ class ProfileCell: BaseCell,
         
         //FLOATY      
 
-        self.floaty.paddingY = 20
+        self.floaty.paddingY = 35
         self.floaty.paddingX = 20                    
         self.floaty.itemSpace = 30
+        self.floaty.shadowRadius = 20
         self.floaty.hasShadow = true
         self.floaty.shadowColor = UIColor.black
         self.floaty.buttonColor = UIColor.gamvesFucsiaColor
