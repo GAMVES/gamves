@@ -30,6 +30,7 @@ public enum SelectedImage {
 public enum SelectedColorTarget {
     case dataView
     case collectionView
+    case fontColor
 }
 
 
@@ -430,6 +431,13 @@ class ProfileCell: BaseCell,
     var editColorView:UIView!
     var editBioView:UIView!
     var editColorCollView:UIView!
+    var editFontView:UIView!
+
+     let backgroundEdit: UIView = {
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false                     
+        return v
+    }()   
     
     var initialSetting = InitialSetting()
     
@@ -449,6 +457,7 @@ class ProfileCell: BaseCell,
 
     var editColorButton:UIButton!
     var editColorCollButton:UIButton!
+    var editFontButton:UIButton!
     
     override func setupViews() {
         super.setupViews()  
@@ -537,11 +546,7 @@ class ProfileCell: BaseCell,
         self.friendsView.addConstraintsWithFormat("H:|-15-[v0(30)]-5-[v1]|", views: 
             self.friendImageView, 
             self.friendsLabel)
-
-        //let tap = UITapGestureRecognizer(target: self, action: #selector(showFriends))
-        //tap.numberOfTapsRequired = 1 
-        //self.friendsView.addGestureRecognizer(tap)        
-
+      
         self.friendsView.isUserInteractionEnabled = true
         self.friendsView.alpha = 0.5        
 
@@ -654,14 +659,16 @@ class ProfileCell: BaseCell,
         self.floaty.buttonColor = UIColor.gamvesFucsiaColor
         var addImage = UIImage(named: "add_symbol")
         addImage = addImage?.maskWithColor(color: UIColor.white)
-        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:60, height:60))
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
         self.floaty.buttonImage = addImage
         self.floaty.sizeToFit()
 
         //floaty.verticalDirection = .down        
         
         let itemEditProfile = FloatyItem()
-        itemEditProfile.icon = UIImage(named: "edit")                
+        var editImage = UIImage(named: "edit")
+        editImage = editImage?.maskWithColor(color: UIColor.white)
+        itemEditProfile.icon = editImage
         itemEditProfile.buttonColor = UIColor.gamvesFucsiaColor
         itemEditProfile.titleLabelPosition = .left
         itemEditProfile.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
@@ -676,7 +683,9 @@ class ProfileCell: BaseCell,
         }
 
         let itemEditFanpage = FloatyItem()
-        itemEditFanpage.icon = UIImage(named: "page")                
+        var fanImage = UIImage(named: "page")
+        fanImage = fanImage?.maskWithColor(color: UIColor.white)
+        itemEditFanpage.icon = fanImage
         itemEditFanpage.buttonColor = UIColor.gamvesFucsiaColor
         itemEditFanpage.titleLabelPosition = .left
         itemEditFanpage.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
@@ -813,8 +822,7 @@ class ProfileCell: BaseCell,
 
             if self.friendsButton == nil {
 
-                self.friendsButton = UIButton(type: .system)
-                //self.friendsButton.backgroundColor = UIColor.cyan
+                self.friendsButton = UIButton(type: .system)                
                 self.friendsButton.addTarget(self, action: #selector(self.showFriends), for: .touchUpInside)  
 
                 let x = self.friendsView.frame.maxX - 80
@@ -848,11 +856,8 @@ class ProfileCell: BaseCell,
 
     func setType(type:ProfileSaveType){
         
-        print(type)
-
         self.profileSaveType = type
-
-        //Status
+        
         if self.profileSaveType == ProfileSaveType.publicProfile {
 
             self.userOnline()
@@ -944,16 +949,7 @@ class ProfileCell: BaseCell,
 
         var userId = String()
 
-        userId = self.profileUser.userId
-
-        /*if self.gamvesUser == nil {
-
-            userId = (PFUser.current()?.objectId)!            
-
-        } else {
-
-            userId = self.gamvesUser.userId
-        }*/
+        userId = self.profileUser.userId    
         
         queryUser.whereKey("userId", equalTo: userId)
         
@@ -970,15 +966,32 @@ class ProfileCell: BaseCell,
                         let backImage = self.profilePF["pictureBackground"] as! PFFile
                         
                         let colorArray:[CGFloat] = self.profilePF["backgroundColor"] as! [CGFloat]
-                        
-                        let bio = self.profilePF["bio"] as! String
-                        
-                        self.bioLabel.text = bio
-                        
                         let backgroundColor = UIColor.rgb(colorArray[0], green: colorArray[1], blue: colorArray[2])
                         
                         self.initialSetting.backColor = backgroundColor
                         self.profileView.backgroundColor = backgroundColor
+                        
+                        let bio = self.profilePF["bio"] as! String
+                        
+                        self.bioLabel.text = bio
+
+                        if self.profilePF["fontColor"] != nil {
+
+                            let fontColorArray:[CGFloat] = self.profilePF["fontColor"] as! [CGFloat]
+                            let fontColorColor = UIColor.rgb(fontColorArray[0], green: fontColorArray[1], blue: fontColorArray[2])                        
+                            self.setFontcolor(color:fontColorColor)
+                            self.initialSetting.fontColor = fontColorColor
+                        }
+
+                        if self.profilePF["collectionColor"] != nil {
+
+                            let collColorArray:[CGFloat] = self.profilePF["collectionColor"] as! [CGFloat]
+                            let collColorColor = UIColor.rgb(collColorArray[0], green: collColorArray[1], blue: collColorArray[2])                                                                       
+                            
+                            self.dataView.backgroundColor = collColorColor  
+                            self.collectionView.backgroundColor = collColorColor                       
+                            self.initialSetting.collectionColor = collColorColor
+                        }
                         
                         backImage.getDataInBackground { (imageData, error) in
                             
@@ -1081,14 +1094,13 @@ class ProfileCell: BaseCell,
 
                 //self.hideNotEditable(status:true)    
 
-                let backgroundEdit = UIView()
-                backgroundEdit.translatesAutoresizingMaskIntoConstraints = false
-                backgroundEdit.backgroundColor = UIColor.black
-                backgroundEdit.alpha = 0.5
+               self.backgroundEdit.translatesAutoresizingMaskIntoConstraints = false
+               self.backgroundEdit.backgroundColor = UIColor.black
+               self.backgroundEdit.alpha = 0.5
                 
-                self.editOverlayView.addSubview(backgroundEdit)
-                self.editOverlayView.addConstraintsWithFormat("V:|[v0]|", views: backgroundEdit)
-                self.editOverlayView.addConstraintsWithFormat("H:|[v0]|", views: backgroundEdit)
+                self.editOverlayView.addSubview(self.backgroundEdit)
+                self.editOverlayView.addConstraintsWithFormat("V:|[v0]|", views: self.backgroundEdit)
+                self.editOverlayView.addConstraintsWithFormat("H:|[v0]|", views: self.backgroundEdit)
 
                 self.editOverlayView.isHidden = false
 
@@ -1106,14 +1118,14 @@ class ProfileCell: BaseCell,
                 
                 //-- Background
 
-                let halfWidth = (w/2) + 30               
+                let halfWidth = (w/2) + 10               
                 
-                self.editBackImageView = UIView(frame: CGRect(x:halfWidth, y:20, width:100, height:100))
+                self.editBackImageView = UIView(frame: CGRect(x:halfWidth, y:30, width:100, height:100))
                 
                 var editBackImageButton = UIButton(type: UIButtonType.system)
-                editBackImageButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                editBackImageButton = UIButton(frame: CGRect(x:0, y:0, width:40, height:40))
                 var imageBack = UIImage(named: "camera_black")                
-                imageBack = Global.resizeImage(image: imageBack!, targetSize: CGSize(width:60, height:60))                
+                imageBack = Global.resizeImage(image: imageBack!, targetSize: CGSize(width:40, height:40))                
                 imageBack = imageBack?.maskWithColor(color: UIColor.gamvesBackgoundColor)           
                 
                 editBackImageButton.setImage(imageBack, for: .normal)
@@ -1125,7 +1137,7 @@ class ProfileCell: BaseCell,
                 haloBack.position.y = editBackImageButton.center.y
                 haloBack.haloLayerNumber = 5
                 haloBack.backgroundColor = UIColor.gamvesBackgoundColor.cgColor
-                haloBack.radius = 60
+                haloBack.radius = 40
                 haloBack.start()
                 self.editBackImageView.layer.addSublayer(haloBack)
                 
@@ -1134,13 +1146,13 @@ class ProfileCell: BaseCell,
                 
                 //-- Avatar               
                 
-                self.editAvatarImageView = UIView(frame: CGRect(x:70, y:50, width:100, height:100))
+                self.editAvatarImageView = UIView(frame: CGRect(x:85, y:80, width:100, height:100))
                 
                 var editAvatarButton = UIButton(type: .system)
                 
-                editAvatarButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                editAvatarButton = UIButton(frame: CGRect(x:0, y:0, width:40, height:40))
                 var imageAvatar = UIImage(named: "camera_black")
-                imageAvatar = Global.resizeImage(image: imageAvatar!, targetSize: CGSize(width:60, height:60))                
+                imageAvatar = Global.resizeImage(image: imageAvatar!, targetSize: CGSize(width:40, height:40))                
                 imageAvatar = imageBack?.maskWithColor(color: UIColor.gamvesBackgoundColor)          
                 
                 editAvatarButton.setImage(imageAvatar, for: .normal)
@@ -1152,7 +1164,7 @@ class ProfileCell: BaseCell,
                 haloAvatar.position.y = editAvatarButton.center.y
                 haloAvatar.haloLayerNumber = 5
                 haloAvatar.backgroundColor = UIColor.gamvesBackgoundColor.cgColor
-                haloAvatar.radius = 60
+                haloAvatar.radius = 40
                 haloAvatar.start()                
                 self.editAvatarImageView.layer.addSublayer(haloAvatar)
 
@@ -1163,12 +1175,12 @@ class ProfileCell: BaseCell,
 
                 let xColor = w - 80
                 
-                self.editColorView = UIView(frame: CGRect(x:xColor, y:120, width:100, height:100))
+                self.editColorView = UIView(frame: CGRect(x:xColor, y:105, width:100, height:100))
                 
                 self.editColorButton = UIButton(type: UIButtonType.system)
-                self.editColorButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                self.editColorButton = UIButton(frame: CGRect(x:0, y:0, width:40, height:40))
                 var imageColor = UIImage(named: "color")
-                imageColor = Global.resizeImage(image: imageColor!, targetSize: CGSize(width:60, height:60))                
+                imageColor = Global.resizeImage(image: imageColor!, targetSize: CGSize(width:40, height:40))                
                 imageColor = imageColor?.maskWithColor(color: UIColor.gamvesBackgoundColor)          
                 
                 self.editColorButton.setImage(imageColor, for: .normal)
@@ -1180,7 +1192,7 @@ class ProfileCell: BaseCell,
                 haloColor.position.y = self.editColorButton.center.y
                 haloColor.haloLayerNumber = 5
                 haloColor.backgroundColor = UIColor.lightGray.cgColor
-                haloColor.radius = 60
+                haloColor.radius = 40
                 haloColor.start()
                 self.editColorView.layer.addSublayer(haloColor)
 
@@ -1189,12 +1201,12 @@ class ProfileCell: BaseCell,
                 
                 //-- Bio                
                 
-                self.editBioView = UIView(frame: CGRect(x:halfWidth, y:140, width:60, height:60))
+                self.editBioView = UIView(frame: CGRect(x:70, y:200, width:40, height:40))
         
                 var editBioButton = UIButton(type: UIButtonType.system)
-                editBioButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                editBioButton = UIButton(frame: CGRect(x:0, y:0, width:40, height:40))
                 var imageBio = UIImage(named: "edit")
-                imageBio = Global.resizeImage(image: imageBio!, targetSize: CGSize(width:60, height:60))                
+                imageBio = Global.resizeImage(image: imageBio!, targetSize: CGSize(width:40, height:40))                
                 imageBio = imageBio?.maskWithColor(color: UIColor.gamvesBackgoundColor)                
 
                 editBioButton.setImage(imageBio, for: .normal)
@@ -1206,36 +1218,62 @@ class ProfileCell: BaseCell,
                 haloBio.position.y = editBioButton.center.y
                 haloBio.haloLayerNumber = 5
                 haloBio.backgroundColor = UIColor.lightGray.cgColor
-                haloBio.radius = 60
+                haloBio.radius = 40
                 haloBio.start()    
                 self.editBioView.layer.addSublayer(haloBio)
 
                 self.editBioView.addSubview(editBioButton)
                 self.editOverlayView.addSubview(self.editBioView)
 
+                //-- Color Font               
+                
+                self.editFontView = UIView(frame: CGRect(x:halfWidth, y:130, width:40, height:40))
+        
+                self.editFontButton = UIButton(type: UIButtonType.system)
+                self.editFontButton = UIButton(frame: CGRect(x:0, y:0, width:40, height:40))
+                var imageFont = UIImage(named: "color")
+                imageFont = Global.resizeImage(image: imageFont!, targetSize: CGSize(width:40, height:40))                
+                imageFont = imageFont?.maskWithColor(color: UIColor.gamvesBackgoundColor)                
+
+                self.editFontButton.setImage(imageFont, for: .normal)
+                self.editFontButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
+                self.editFontButton.isUserInteractionEnabled = true
+                
+                let haloFont = PulsingHaloLayer()
+                haloFont.position.x = self.editFontButton.center.x
+                haloFont.position.y = self.editFontButton.center.y
+                haloFont.haloLayerNumber = 5
+                haloFont.backgroundColor = UIColor.lightGray.cgColor
+                haloFont.radius = 40
+                haloFont.start()    
+                self.editFontView.layer.addSublayer(haloFont)
+
+                self.editFontView.addSubview(self.editFontButton)
+                self.editOverlayView.addSubview(self.editFontView)
+
                 //-- CollectionColor
 
                 let xColl = ( w / 2 ) - 30
-                let yColl = ( h / 2 ) - 60
+                let yColl = ( h / 2 ) + 50
 
                 self.editColorCollView = UIView(frame: CGRect(x:xColl, y:yColl, width:100, height:100))
                 
                 self.editColorCollButton = UIButton(type: UIButtonType.system)
-                self.editColorCollButton = UIButton(frame: CGRect(x:0, y:0, width:60, height:60))
+                self.editColorCollButton = UIButton(frame: CGRect(x:0, y:0, width:40, height:40))
                 var imageColorColl = UIImage(named: "color")
-                imageColorColl = Global.resizeImage(image: imageColorColl!, targetSize: CGSize(width:60, height:60))                
+                imageColorColl = Global.resizeImage(image: imageColorColl!, targetSize: CGSize(width:40, height:40))                
                 imageColorColl = imageColorColl?.maskWithColor(color: UIColor.gamvesBackgoundColor)          
 
-               self.editColorCollButton.setImage(imageColorColl, for: .normal)                
-               self.editColorCollButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
-               self.editColorCollButton.isUserInteractionEnabled = true
+                self.editColorCollButton.setImage(imageColorColl, for: .normal)                
+                self.editColorCollButton.addTarget(self, action: #selector(self.handleChangeColor), for: .touchUpInside)
+                self.editColorCollButton.isUserInteractionEnabled = true
                 
                 let haloColorColl = PulsingHaloLayer()
-                haloColorColl.position.x = self.editColorCollView.center.x
-                haloColorColl.position.y = self.editColorCollView.center.y
+                haloColorColl.position.x = self.editColorCollButton.center.x
+                haloColorColl.position.y = self.editColorCollButton.center.y
                 haloColorColl.haloLayerNumber = 5
                 haloColorColl.backgroundColor = UIColor.lightGray.cgColor
-                haloColorColl.radius = 60
+                haloColorColl.radius = 40
                 haloColorColl.start()
                 self.editColorCollView.layer.addSublayer(haloColorColl)
 
@@ -1255,8 +1293,6 @@ class ProfileCell: BaseCell,
 
     func handleEditFanpage() {
         
-        //Call branch add code here
-
         if self.profileSaveType == ProfileSaveType.chat {            
 
             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)           
@@ -1270,8 +1306,6 @@ class ProfileCell: BaseCell,
 
     
     func handleSaveProfile() {
-        
-        //NOT WORKING
 
         if self.profileSaveType == ProfileSaveType.profile {
 
@@ -1281,15 +1315,25 @@ class ProfileCell: BaseCell,
             let backImagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage, 1.0)!)            
             self.profilePF["pictureBackground"] = backImagePF            
             self.profilePF["bio"] = self.bioLabel.text
+
             let backColor:UIColor = self.profileView.backgroundColor!
-
-            if let rgb:[CGFloat] = backColor.rgb() {
+            if let rgbBack:[CGFloat] = backColor.rgb() {
     
-                print(rgb)
-
-                self.profilePF["backgroundColor"] = rgb             
+                self.profilePF["backgroundColor"] = rgbBack             
             } 
-            
+
+            let fontColor:UIColor = self.sonLabel.textColor
+            if let rgbFont:[CGFloat] = fontColor.rgb() {                   
+
+                self.profilePF["fontColor"] = rgbFont             
+            }
+
+            let colllColor:UIColor = self.dataView.backgroundColor!
+            if let rgbColl:[CGFloat] = colllColor.rgb() {                   
+
+                self.profilePF["collectionColor"] = rgbColl             
+            }
+
             self.profilePF.saveInBackground(block: { (profile, error) in                
                 
                 if error == nil {
@@ -1306,7 +1350,7 @@ class ProfileCell: BaseCell,
 
                     sonUser.saveInBackground(block: { (user, error) in
                         
-                        self.showApprovalMessage()
+                        self.showApprovalMessage()                        
                         
                     })
                 }
@@ -1320,7 +1364,7 @@ class ProfileCell: BaseCell,
             
         } else if self.profileSaveType == ProfileSaveType.chat {
 
-                //Open Chant
+            //Open Chant
 
         }
     }
@@ -1348,6 +1392,8 @@ class ProfileCell: BaseCell,
 
         self.footerView.isHidden = true
         
+        self.floaty.isHidden = false
+
         self.profileView.backgroundColor = self.initialSetting.backColor
         
         if self.profileSaveType == ProfileSaveType.profile {
@@ -1357,6 +1403,11 @@ class ProfileCell: BaseCell,
             self.setSonProfileImageView()
             
             self.bioLabel.text = self.initialSetting.bio
+
+            self.setFontcolor(color: self.initialSetting.fontColor)
+
+            self.dataView.backgroundColor = self.initialSetting.collectionColor
+            self.collectionView.backgroundColor = self.initialSetting.collectionColor
          
             self.videosGamves = [GamvesVideo]()
             self.videosGamves = self.initialSetting.videos
@@ -1371,23 +1422,25 @@ class ProfileCell: BaseCell,
 
     func enableDisableButtonToNormal() {
 
-        self.saveProfileButton.isHidden = true
-        self.cancelProfileButton.isHidden = true
+        self.footerView.isHidden            = true
+        self.floaty.isHidden                = false
 
-        //self.editProfileButton.isHidden = false
-        //self.editFanpageButton.isHidden = false
+        self.saveProfileButton.isHidden     = true
+        self.cancelProfileButton.isHidden   = true
         
-        self.editBackImageView.isHidden = true
-        self.editAvatarImageView.isHidden = true
-        self.editColorView.isHidden = true
-        self.editBioView.isHidden = true
+        self.editBackImageView.isHidden     = true
+        self.editAvatarImageView.isHidden   = true
+        self.editColorView.isHidden         = true
+        self.editBioView.isHidden           = true
+        self.editColorCollView.isHidden     = true
+        self.editFontView.isHidden          = true
 
-        self.editCreated = false
+        self.backgroundEdit.isHidden        = true 
+
+        self.editCreated                    = false
     }
-
     
-    func clearColorButton() {
-        
+    func clearColorButton() {        
         self.colorPickerViewController.isHidden = true
         self.saveProfileButton.setTitle(self.saveDesc, for: .normal)
         self.profileSaveType = ProfileSaveType.profile        
@@ -1396,23 +1449,13 @@ class ProfileCell: BaseCell,
     func handleHideColor() {
 
         self.colorView.isHidden = true
-
         self.footerView.isHidden = false   
-
         self.editOverlayView.isHidden = false
-
-        // Show Footer with buttons
-
-        // Show edit buttons
-
-
 
         /*UIView.animate(withDuration: 0.5, animations: { 
             self.colorView.frame.origin.y += 120
-        }, completion: { (completedAnimation) in                   
-
-            print("")
-                    
+        }, completion: { (completedAnimation) in
+            print("")                    
         })*/
     }   
 
@@ -1426,6 +1469,9 @@ class ProfileCell: BaseCell,
 
             self.colorTarget = SelectedColorTarget.collectionView
 
+        } else if sender == self.editFontButton {
+
+            self.colorTarget = SelectedColorTarget.fontColor
         }
 
         self.friendsView.isUserInteractionEnabled = false
@@ -1435,40 +1481,21 @@ class ProfileCell: BaseCell,
 
         self.footerView.isHidden = true
 
+        self.editOverlayView.isHidden = true
+
         /*UIView.animate(withDuration: 0.5, animations: { 
             self.colorView.frame.origin.y -= 120
         }, completion: { (completedAnimation) in                   
-
-            print("")
-                    
+            print("")                    
         })*/
-
-         
-
-        self.editOverlayView.isHidden = true
-
-        /*self.footerView.isHidden = false
-
-        //resize collectionView
-        self.dataView.frame = CGRect(x: self.dataView.frame.maxX, y: self.dataView.frame.maxY, width: self.dataView.frame.width, height: self.dataView.frame.height - 70.0)
-        
-        self.showColors = true
-        
-        self.saveProfileButton.setTitle(self.colorDesc, for: .normal)
-        
-        self.profileSaveType = ProfileSaveType.color
-
-        self.layoutIfNeeded()*/
         
     }
     
     func handleChangeBackgoundImage(sender : UIButton) {        
-        //Media Controller Here
         self.selectedImage = SelectedImage.background        
         let media = MediaController()
         media.isImageMultiSelection = false
         media.delegate = self
-        //media.termToSearch = self.nameTextField.text!
         media.setType(type: MediaType.selectImage)
         media.searchType = SearchType.isSingleImage
         media.searchSize = SearchSize.imageSmall
@@ -1476,16 +1503,12 @@ class ProfileCell: BaseCell,
     }    
    
     
-    func handleChangeAvatarImage(sender : UIButton) {
-        
-        //Media Controller Here
+    func handleChangeAvatarImage(sender : UIButton) {        
 
         self.selectedImage = SelectedImage.avatar
-
        let media = MediaController()
         media.isImageMultiSelection = false
-        media.delegate = self
-        //media.termToSearch = self.nameTextField.text!
+        media.delegate = self        
         media.setType(type: MediaType.selectImage)
         media.searchType = SearchType.isSingleImage
         media.searchSize = SearchSize.imageSmall
@@ -1514,9 +1537,7 @@ class ProfileCell: BaseCell,
         self.homeController?.navigationController?.popViewController(animated: true)
     }
 
-    func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
-    
-    //func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect) {
+    func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {   
         
          let imageLow = croppedImage.lowestQualityJPEGNSData as Data
          var smallImage = UIImage(data: imageLow)
@@ -1541,12 +1562,9 @@ class ProfileCell: BaseCell,
         
         var alertController = UIAlertController(title: "Slogan ", message: "Enter your slogan", preferredStyle: .alert)
         
-        let confirmAction = UIAlertAction(title: "Enter", style: .default) { (_) in
-            
-            let bio = alertController.textFields?[0].text
-            
-            self.bioLabel.text = bio
-            
+        let confirmAction = UIAlertAction(title: "Enter", style: .default) { (_) in            
+            let bio = alertController.textFields?[0].text            
+            self.bioLabel.text = bio            
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in }
@@ -1556,29 +1574,44 @@ class ProfileCell: BaseCell,
         }
         
         alertController.addAction(confirmAction)
-        alertController.addAction(cancelAction)
-        
+        alertController.addAction(cancelAction)        
         
         window?.rootViewController?.present(alertController, animated: true, completion: nil)
     
     }
     
     func colorPickerView(_ colorPickerView: ColorPickerView, didSelectItemAt indexPath: IndexPath) {
+
+        let color = colorPickerView.colors[indexPath.item] as UIColor
  
         if self.colorTarget == SelectedColorTarget.collectionView {
 
-            self.dataView.backgroundColor = colorPickerView.colors[indexPath.item]
-
-            self.collectionView.backgroundColor = colorPickerView.colors[indexPath.item]
+            self.dataView.backgroundColor = color
+            self.collectionView.backgroundColor = color
 
         } else if self.colorTarget == SelectedColorTarget.dataView {
 
-            self.profileView.backgroundColor = colorPickerView.colors[indexPath.item]
-        
-            self.sonProfileImageView.borderColor = colorPickerView.colors[indexPath.item]   
+            self.profileView.backgroundColor = color        
+            self.sonProfileImageView.borderColor = color
 
-        }       
-        
+        } else if self.colorTarget == SelectedColorTarget.fontColor {
+            
+            self.setFontcolor(color: color)
+
+        }        
+    }
+
+    func setFontcolor(color: UIColor) {
+
+        self.sonLabel.textColor       = color
+        self.bioLabel.textColor       = color
+        self.joinedLabel.textColor    = color
+        self.schoolLabel.textColor    = color
+        self.gradeLabel.textColor     = color
+        self.plsUsernameLabel.textColor = color
+        self.pointsLabelLabel.textColor = color
+        self.pointsLabel.textColor    = color
+
     }
     
     func colorPickerView(_ colorPickerView: ColorPickerView, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -1600,31 +1633,21 @@ class ProfileCell: BaseCell,
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
 
-    func getProfileVideos()
-    {
+    func getProfileVideos() {
         
         self.activityIndicatorView?.startAnimating()
         
-        let queryvideos = PFQuery(className:"Videos")      
-
-        if let userId = PFUser.current()?.objectId {
-
-            print(userId)
-            
+        let queryvideos = PFQuery(className:"Videos")
+        if let userId = PFUser.current()?.objectId {            
             queryvideos.whereKey("posterId", equalTo: userId)    
         }
         
         queryvideos.whereKey("approved", equalTo: true)
-
         queryvideos.findObjectsInBackground(block: { (videoObjects, error) in
             
-            if error != nil
-            {
-                print("error")
-                
+            if error != nil {
+                print("error")                
             } else {
                 
                 let countVideosLoaded = Int()
@@ -1634,8 +1657,8 @@ class ProfileCell: BaseCell,
                 
                 print(countVideos)
                 
-                if countVideos! > 0
-                {
+                if countVideos! > 0 {
+
                     if let videoArray = videoObjects
                     {
                         for qvideoinfo in videoArray
@@ -1666,8 +1689,7 @@ class ProfileCell: BaseCell,
                             let durDouble = Double(durStr)
                             video.ytb_duration              = durDouble!
                             
-                            video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]
-                            //video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
+                            video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]                            
                             video.order                     = qvideoinfo["order"] as! Int
                             video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
                             
@@ -1691,9 +1713,9 @@ class ProfileCell: BaseCell,
                                     
                                     self.videosGamves.append(video)
                                     
-                                    print("***********")
-                                    print("countVideos: \(countVideos!)")
-                                    print("countVideosLoaded: \(countVideosLoaded)")
+                                    //print("***********")
+                                    //print("countVideos: \(countVideos!)")
+                                    //print("countVideosLoaded: \(countVideosLoaded)")
                                     
                                     if ( (countVideos!-1) == count)
                                     {
@@ -1731,10 +1753,10 @@ class ProfileCell: BaseCell,
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
              
-        let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell
+        let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell        
         
-        cellVideo.thumbnailImageView.image = videosGamves[indexPath.row].image
-        
+        cellVideo.thumbnailImageView.image = videosGamves[indexPath.row].image        
+
         let posterId = videosGamves[indexPath.row].posterId
         
         if posterId == Global.gamves_official_id {
@@ -1780,10 +1802,9 @@ class ProfileCell: BaseCell,
        
         let height = (self.frame.width - 16 - 16) * 9 / 16
            
-        size = CGSize(width: self.frame.width, height: height + 16 + 88)
+        size = CGSize(width: self.frame.width, height: height + 16 + 88)      
         
-        
-        return size //CGSize(width: view.frame.width, height: height + 16 + 88)
+        return size 
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -1791,12 +1812,10 @@ class ProfileCell: BaseCell,
         var spacing = CGFloat()        
         spacing = 0       
         return spacing
-        
     }
     
    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
-    {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if !self.editProfile || self.profileSaveType == ProfileSaveType.chat {
             
@@ -1830,6 +1849,8 @@ class ProfileCell: BaseCell,
 
 class InitialSetting {
     var backColor:UIColor!
+    var fontColor:UIColor!
+    var collectionColor:UIColor!
     var backImage:UIImage!
     var avatarImage:UIImage!
     var bio = String()
@@ -1856,9 +1877,8 @@ class ColorPickerViewController: UIView, ColorPickerViewDelegateFlowLayout {
         super.init(frame: frame)
         
         self.cornerRadius = 15
-        self.backgroundColor = UIColor.white
-              
-        // Setup colorPickerView
+        self.backgroundColor = UIColor.white             
+        
         //colorPickerView.delegate = self
         self.colorPickerView.layoutDelegate = self
         self.colorPickerView.style = .circle
@@ -1872,18 +1892,13 @@ class ColorPickerViewController: UIView, ColorPickerViewDelegateFlowLayout {
         
         self.backgroundView.addSubview(self.colorPickerView)
         self.backgroundView.addConstraintsWithFormat("H:|[v0]|", views: self.colorPickerView)
-        self.backgroundView.addConstraintsWithFormat("V:|[v0]|", views: self.colorPickerView)
-
-        
+        self.backgroundView.addConstraintsWithFormat("V:|[v0]|", views: self.colorPickerView)        
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
-    
-    
+
 }
 
 

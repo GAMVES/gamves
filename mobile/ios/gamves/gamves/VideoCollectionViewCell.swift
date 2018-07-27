@@ -21,8 +21,14 @@ class VideoCollectionViewCell: BaseCell {
     }()
 
     let rowView: UIView = {
+        let view = UIView()              
+        return view
+    }()
+
+    let rowBackgrtoundView: UIView = {
         let view = UIView()       
-        //view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.white
+        view.alpha = 0.5
         return view
     }()
     
@@ -30,22 +36,13 @@ class VideoCollectionViewCell: BaseCell {
         let imageView = CustomImageView()        
         imageView.layer.cornerRadius = 25
         imageView.layer.masksToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        //imageView.addTarget(self, action: #selector(handleViewProfile), for: .touchUpInside)
+        imageView.contentMode = .scaleAspectFill       
         return imageView
     }()
-
-    /*lazy var profileButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false     
-        button.backgroundColor = UIColor.red
-        //button.addTarget(self, action: #selector(handleViewProfile), for: .touchUpInside)          
-        return button
-    }()*/ 
+  
 
      let labelsView: UIView = {
-        let view = UIView()       
-        //view.backgroundColor = UIColor.white
+        let view = UIView()               
         return view
     }()   
 
@@ -70,8 +67,7 @@ class VideoCollectionViewCell: BaseCell {
     }()
 
     let separatorView: UIView = {
-        let view = UIView()        
-        //view.backgroundColor = UIColor.white
+        let view = UIView()                
         return view
     }()
     
@@ -95,8 +91,12 @@ class VideoCollectionViewCell: BaseCell {
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: rowView)    
         addConstraintsWithFormat("H:|-16-[v0]-16-|", views: separatorView)      
          
-        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(50)]-10-[v2(1)]|", 
+        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(50)]-10-[v2(3)]|", 
             views: thumbnailImageView, rowView, separatorView)
+
+        rowView.addSubview(rowBackgrtoundView) 
+        rowView.addConstraintsWithFormat("H:|[v0]|", views: rowBackgrtoundView)
+        rowView.addConstraintsWithFormat("V:|[v0]|", views: rowBackgrtoundView)
         
         rowView.addSubview(userProfileImageView) 
         rowView.addSubview(labelsView)
@@ -105,7 +105,7 @@ class VideoCollectionViewCell: BaseCell {
         rowView.addConstraintsWithFormat("V:|[v0(50)]|", views: userProfileImageView)
 
         rowView.addConstraintsWithFormat("H:|-50-[v0]|", views: labelsView)
-        rowView.addConstraintsWithFormat("V:|[v0(50)]|", views: labelsView)
+        rowView.addConstraintsWithFormat("V:|[v0(50)]|", views: labelsView)        
 
         labelsView.addSubview(videoName) 
         labelsView.addSubview(videoDatePublish) 
@@ -116,9 +116,7 @@ class VideoCollectionViewCell: BaseCell {
         labelsView.addConstraintsWithFormat("H:|-10-[v0]|", views: videoDatePublish)
         labelsView.addConstraintsWithFormat("V:|-25-[v0(25)]|", views: videoDatePublish)
         
-        //self.profileButton.addTarget(self, action:#selector(handleViewProfile(button:)), for: .touchUpInside)
-
-        self.separatorView.backgroundColor = UIColor.lightGray
+        self.separatorView.backgroundColor = UIColor.gray
         
         self.checkView = UIView()        
         
