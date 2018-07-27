@@ -412,9 +412,7 @@
 	// --
 	// Update or create Budges
 
-	Parse.Cloud.afterSave("ChatVideo", function(request) {
-
-		console.info("_________________________________________________________");
+	Parse.Cloud.afterSave("ChatVideo", function(request) {		
 
 		var object = request.object;
 
@@ -455,6 +453,10 @@
 	        }
 
 	    });
+
+	    //Add points
+		savePointByUserId(userId, 10);
+
 	});
 
 	// --
@@ -1050,5 +1052,20 @@
 		}		
 
 	});
+
+
+	// --
+	// SavePoints for action.	
+
+	function savePointByUserId(userId, points) {		
+		var Points = Parse.Object.extend("Points");
+		var point = new Points();
+		point.set("userId", userId);
+		point.set("points", points);		
+		point.save();  
+	}
+
+
+
 
 

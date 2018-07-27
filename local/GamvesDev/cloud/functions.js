@@ -361,7 +361,7 @@
 
 	    }).then(function(son) {   
 
-	    	son.set("familyId", familyId);.
+	    	son.set("familyId", familyId);
 
 	    	son.set("schoolId", schoolId);
 
@@ -385,3 +385,12 @@
 		});	
 
 	});	
+
+	function savePointByUserId(userId, points) {
+		console.log("savePointByUserId");
+		var Points = Parse.Object.extend("Points");
+		var point = new Points();
+		point.set("userId", userId);
+		point.set("points", points);		
+		point.save();  
+	}
