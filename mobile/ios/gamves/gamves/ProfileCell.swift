@@ -649,11 +649,7 @@ class ProfileCell: BaseCell,
         }
 
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
-        self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)               
-        
-        
-        // Floaty
-        self.createFloaty()
+        self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)                     
 
         self.profileView.bringSubview(toFront: self.sonView)
                         
@@ -731,13 +727,55 @@ class ProfileCell: BaseCell,
 
     }
 
+    func setType(type:ProfileSaveType){
+        
+        self.profileSaveType = type
+        
+        if self.profileSaveType == ProfileSaveType.publicProfile {
+
+            self.userOnline()
+            
+            self.profileView.addSubview(self.onlineImageView)
+            let mestricsLeftOnline = ["leftOnline":self.leftOnline] 
+
+            self.profileView.addConstraintsWithFormat("H:|-leftOnline-[v0(40)]|", views: self.onlineImageView, metrics:mestricsLeftOnline)
+            self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.onlineImageView)  
+        }
+
+        
+
+
+    }   
+  
+    func setProfileType(type: ProfileSaveType) {
+        
+        print(type)
+
+        self.profileSaveType = type
+
+        if type == ProfileSaveType.chat {
+
+            //self.editProfileButton.setTitle(chatDesc, for: .normal)
+            //self.editFanpageButton.setTitle(closeDesc, for: .normal)
+
+        }
+
+        self.loadProfileInfo()
+
+         // Floaty
+        self.createFloaty()
+    }
+     
+
     func createFloaty() {
 
         self.floatyBase()
+        
+        print(self.profileSaveType)
 
         //floaty.verticalDirection = .down   
 
-        if self.profileSaveType == ProfileSaveType.publicProfile {                
+        if self.profileSaveType == ProfileSaveType.profile {
             
             let itemEditProfile = FloatyItem()
             var editImage = UIImage(named: "edit")
@@ -771,7 +809,7 @@ class ProfileCell: BaseCell,
             self.floaty.addItem(item: itemEditProfile)       
             self.floaty.addItem(item: itemEditFanpage)      
 
-        } else {
+        } else if self.profileSaveType == ProfileSaveType.publicProfile {
 
             self.profileUser = Global.profileUser
 
@@ -939,23 +977,6 @@ class ProfileCell: BaseCell,
         self.homeController?.showFriends()
     }
 
-    func setType(type:ProfileSaveType){
-        
-        self.profileSaveType = type
-        
-        if self.profileSaveType == ProfileSaveType.publicProfile {
-
-            self.userOnline()
-            
-            self.profileView.addSubview(self.onlineImageView)
-            let mestricsLeftOnline = ["leftOnline":self.leftOnline] 
-
-            self.profileView.addConstraintsWithFormat("H:|-leftOnline-[v0(40)]|", views: self.onlineImageView, metrics:mestricsLeftOnline)
-            self.profileView.addConstraintsWithFormat("V:|-20-[v0(40)]|", views:self.onlineImageView)  
-        }
-    }   
-  
-
     func userOnline() {
 
         let userId = Global.profileUser.userId 
@@ -1011,22 +1032,7 @@ class ProfileCell: BaseCell,
                 }
             }
         }         
-    }
-
-    func setProfileType(type: ProfileSaveType) {
-
-        self.profileSaveType = type
-
-        if type == ProfileSaveType.chat {
-
-            //self.editProfileButton.setTitle(chatDesc, for: .normal)
-            //self.editFanpageButton.setTitle(closeDesc, for: .normal)
-
-        }
-
-        self.loadProfileInfo()
-    }
-        
+    }       
     
     func loadProfileInfo() {
         

@@ -341,8 +341,8 @@ CLLocationManagerDelegate {
         } else if indexPath.item == 3 {
             
             let profileHome = cell as! ProfileCell
-            profileHome.profileSaveType = ProfileSaveType.profile
-            profileHome.homeController = self
+            //profileHome.profileSaveType = ProfileSaveType.profile
+            profileHome.homeController = self            
             profileHome.setProfileType(type: ProfileSaveType.profile)
         }
         
@@ -352,8 +352,6 @@ CLLocationManagerDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: view.frame.height - 50)
     }
-    
-    
     
     func openChat(room: String, chatId:Int, users:[GamvesUser]) {
         

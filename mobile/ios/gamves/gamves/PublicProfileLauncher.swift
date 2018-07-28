@@ -86,8 +86,7 @@ class PublicProfileView: UIView,
         profileCell = cell as! ProfileCell
         profileCell.setSonProfileImageView()
         profileCell.publicProfileView = self
-        profileCell.setType(type: ProfileSaveType.publicProfile)
-        profileCell.setProfileType(type: ProfileSaveType.chat)
+        profileCell.setProfileType(type: ProfileSaveType.publicProfile)
         
         return cell
     }
