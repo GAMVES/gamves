@@ -72,24 +72,8 @@ class PublicProfileView: UIView,
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
-    }
-    
-    /*func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> ProfileCell {
-    
-        let identifier: String
-
-        identifier = profileCellId
-
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! ProfileCell
-
-        profileHome = cell
-        profileHome.setSonProfileImageView()
-        profileHome.setType(type: ProfileSaveType.publicProfile)
-        profileHome.setProfileType(type: ProfileSaveType.chat)
-
-        return cell
-
-    }*/
+    }   
+ 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -97,12 +81,11 @@ class PublicProfileView: UIView,
         
         identifier = profileCellId
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! UICollectionViewCell
-        
-        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! UICollectionViewCell       
         
         profileCell = cell as! ProfileCell
         profileCell.setSonProfileImageView()
+        profileCell.publicProfileView = self
         profileCell.setType(type: ProfileSaveType.publicProfile)
         profileCell.setProfileType(type: ProfileSaveType.chat)
         
@@ -124,14 +107,20 @@ class PublicProfileView: UIView,
     }
     
     
-    func closeProfile() {
+    func closeProfile(completionHandler : @escaping (_ resutl:Bool) -> ()) {
         
         for subview in (UIApplication.shared.keyWindow?.subviews)! {
             if (subview.tag == 1)
             {                
                 subview.removeFromSuperview()
+
+                UIApplication.shared.setStatusBarHidden(false, with: .fade)
+
+                completionHandler(true)
+
+                return
             }
-        }
+        }        
     }    
 
 }
@@ -224,9 +213,7 @@ class PublicProfileLauncher: UIView {
 
             if touchY > 500 {
 
-                self.publicProfileView.closeProfile()
-
-                UIApplication.shared.setStatusBarHidden(false, with: .fade)
+                self.publicProfileView.closeProfile(completionHandler: {(false) -> () in })                
             }
         }
 
@@ -246,9 +233,7 @@ class PublicProfileLauncher: UIView {
             
             if touchPoint.y - initialTouchPoint.y > 200 {                               
 
-                self.publicProfileView.closeProfile()
-                
-                UIApplication.shared.setStatusBarHidden(false, with: .fade)
+                self.publicProfileView.closeProfile(completionHandler: {(false) -> () in })               
 
             } else {
                 
@@ -257,7 +242,6 @@ class PublicProfileLauncher: UIView {
                 })
             }
         }
-
     } 
 
     

@@ -447,7 +447,7 @@ class ProfileCell: BaseCell,
 
     var selectedBackImage = UIImage()
 
-    var floaty = Floaty(size: 80)      
+    var floaty:Floaty!
 
     var leftOnline = CGFloat()
 
@@ -458,6 +458,8 @@ class ProfileCell: BaseCell,
     var editColorButton:UIButton!
     var editColorCollButton:UIButton!
     var editFontButton:UIButton!
+
+    var publicProfileView:PublicProfileView!
     
     override func setupViews() {
         super.setupViews()  
@@ -649,56 +651,10 @@ class ProfileCell: BaseCell,
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.sonLabel)
         self.profileView.addConstraintsWithFormat("H:|-30-[v0(250)]|", views: self.bioLabel)               
         
-        //FLOATY      
-
-        self.floaty.paddingY = 35
-        self.floaty.paddingX = 20                    
-        self.floaty.itemSpace = 30
-        self.floaty.shadowRadius = 20
-        self.floaty.hasShadow = true
-        self.floaty.shadowColor = UIColor.black
-        self.floaty.buttonColor = UIColor.gamvesFucsiaColor
-        var addImage = UIImage(named: "add_symbol")
-        addImage = addImage?.maskWithColor(color: UIColor.white)
-        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
-        self.floaty.buttonImage = addImage
-        self.floaty.sizeToFit()
-
-        //floaty.verticalDirection = .down        
         
-        let itemEditProfile = FloatyItem()
-        var editImage = UIImage(named: "edit")
-        editImage = editImage?.maskWithColor(color: UIColor.white)
-        itemEditProfile.icon = editImage
-        itemEditProfile.buttonColor = UIColor.gamvesFucsiaColor
-        itemEditProfile.titleLabelPosition = .left
-        itemEditProfile.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-        itemEditProfile.title = "EDIT PROFILE"
-        itemEditProfile.handler = { item in
-            self.handleEditProfile()
-            
-            self.editOverlayView.isHidden = false
-            self.footerView.isHidden = false
+        // Floaty
+        self.createFloaty()
 
-            self.floaty.isHidden = true
-        }
-
-        let itemEditFanpage = FloatyItem()
-        var fanImage = UIImage(named: "page")
-        fanImage = fanImage?.maskWithColor(color: UIColor.white)
-        itemEditFanpage.icon = fanImage
-        itemEditFanpage.buttonColor = UIColor.gamvesFucsiaColor
-        itemEditFanpage.titleLabelPosition = .left
-        itemEditFanpage.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-        itemEditFanpage.title = "EDIT YOUR FANPAGE"
-        itemEditFanpage.handler = { item in
-            self.handleEditFanpage()
-        }
-
-        self.floaty.addItem(item: itemEditProfile)       
-        self.floaty.addItem(item: itemEditFanpage)       
-        self.addSubview(floaty)        
-        
         self.profileView.bringSubview(toFront: self.sonView)
                         
         let name = profileUser.name
@@ -772,6 +728,134 @@ class ProfileCell: BaseCell,
 
         self.editOverlayView.isHidden = true
         self.colorView.isHidden = true
+
+    }
+
+    func createFloaty() {
+
+        self.floatyBase()
+
+        //floaty.verticalDirection = .down   
+
+        if self.profileSaveType == ProfileSaveType.publicProfile {                
+            
+            let itemEditProfile = FloatyItem()
+            var editImage = UIImage(named: "edit")
+            editImage = editImage?.maskWithColor(color: UIColor.white)
+            itemEditProfile.icon = editImage
+            itemEditProfile.buttonColor = UIColor.gamvesFucsiaColor
+            itemEditProfile.titleLabelPosition = .left
+            itemEditProfile.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+            itemEditProfile.title = "EDIT PROFILE"
+            itemEditProfile.handler = { item in
+                self.handleEditProfile()
+                
+                self.editOverlayView.isHidden = false
+                self.footerView.isHidden = false
+
+                self.floaty.isHidden = true
+            }
+
+            let itemEditFanpage = FloatyItem()
+            var fanImage = UIImage(named: "page")
+            fanImage = fanImage?.maskWithColor(color: UIColor.white)
+            itemEditFanpage.icon = fanImage
+            itemEditFanpage.buttonColor = UIColor.gamvesFucsiaColor
+            itemEditFanpage.titleLabelPosition = .left
+            itemEditFanpage.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+            itemEditFanpage.title = "EDIT YOUR FANPAGE"
+            itemEditFanpage.handler = { item in
+                self.handleEditFanpage()
+            }
+
+            self.floaty.addItem(item: itemEditProfile)       
+            self.floaty.addItem(item: itemEditFanpage)      
+
+        } else {
+
+            self.profileUser = Global.profileUser
+
+            let userId = Global.profileUser.userId  
+
+            if Global.friends[userId] == nil {
+
+                let itemAddFriend = FloatyItem()
+                var addFriendImage = UIImage(named: "friend_add")
+                addFriendImage = addFriendImage?.maskWithColor(color: UIColor.white)
+                itemAddFriend.icon = addFriendImage
+                itemAddFriend.buttonColor = UIColor.gamvesFucsiaColor
+                itemAddFriend.titleLabelPosition = .left
+                itemAddFriend.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+                itemAddFriend.title = "ADD FRIEND"
+                itemAddFriend.handler = { item in
+                    
+                    if self.homeController != nil {
+                        self.homeController?.addFriend()
+                    }    
+
+                }
+
+                self.floaty.addItem(item: itemAddFriend)    
+
+            } else {
+
+                let itemChat = FloatyItem()
+                var chatRoomImage = UIImage(named: "chat_room_black")
+                chatRoomImage = chatRoomImage?.maskWithColor(color: UIColor.white)
+                itemChat.icon = chatRoomImage
+                itemChat.buttonColor = UIColor.gamvesFucsiaColor
+                itemChat.titleLabelPosition = .left
+                itemChat.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+                itemChat.title = "CHAT WITH FRIEND"
+                itemChat.handler = { item in
+
+                    //Close profile view
+                    self.publicProfileView.closeProfile(completionHandler: { ( result:Bool ) -> () in 
+
+                        var chatId = Int()
+
+                        if self.profileUser.chatId > 0 {
+
+                            chatId = self.profileUser.chatId
+
+                        } else {
+
+                            chatId = Global.getRandomInt()
+                        }                                      
+                        
+                        let userDataDict:[String: AnyObject] = ["gamvesUser": self.profileUser, "chatId": chatId as AnyObject]
+                    
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil, userInfo: userDataDict) 
+                        
+                    })
+                }
+
+                self.floaty.addItem(item: itemChat)       
+
+            }
+        }
+
+
+        self.addSubview(floaty)    
+
+    }
+
+    func floatyBase() {
+
+         //FLOATY      
+        self.floaty = Floaty(size: 80)   
+        self.floaty.paddingY = 35
+        self.floaty.paddingX = 20                    
+        self.floaty.itemSpace = 30
+        self.floaty.shadowRadius = 20
+        self.floaty.hasShadow = true
+        self.floaty.shadowColor = UIColor.black
+        self.floaty.buttonColor = UIColor.gamvesFucsiaColor
+        var addImage = UIImage(named: "add_symbol")
+        addImage = addImage?.maskWithColor(color: UIColor.white)
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
+        self.floaty.buttonImage = addImage
+        self.floaty.sizeToFit()
 
     }
     
