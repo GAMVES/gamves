@@ -264,9 +264,9 @@ class VideoPlayerView: UIView {
 
     func savePoints(){
 
-        DispatchQueue.main.async {
+        //DispatchQueue.main.async {
 
-            if let userId = PFUser.current() {                
+            if let userId = PFUser.current()?.objectId {                
 
                 let pointsPF: PFObject  = PFObject(className: "Points")
                 pointsPF["userId"]      = userId
@@ -275,7 +275,7 @@ class VideoPlayerView: UIView {
 
             }
 
-        }
+        //}
 
     }
     
