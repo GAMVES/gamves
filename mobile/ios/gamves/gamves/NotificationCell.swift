@@ -9,6 +9,7 @@
 import UIKit
 import NVActivityIndicatorView
 import Parse
+import Floaty
 import ParseLiveQuery
 
 class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -34,7 +35,9 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
     
     let cellId = "cellId"
 
-    let fanpageHeight = CGFloat(90)    
+    let fanpageHeight = CGFloat(90) 
+
+    var floaty = Floaty(size: 80)    
     
     override func setupViews() {
         super.setupViews()
@@ -58,6 +61,41 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         let image = UIImage(named: homeImage)
         
         self.collectionView.backgroundView = UIImageView(image: image!)
+
+         //FLOATY      
+
+        self.floaty.paddingY = 35
+        self.floaty.paddingX = 20                    
+        self.floaty.itemSpace = 30
+        self.floaty.shadowRadius = 20
+        self.floaty.buttonColor = UIColor.gamvesCyanColor
+        var addImage = UIImage(named: "add_symbol")
+        addImage = addImage?.maskWithColor(color: UIColor.white)
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
+        self.floaty.buttonImage = addImage
+        self.floaty.sizeToFit()
+
+        //floaty.verticalDirection = .down        
+        
+        let itemGift = FloatyItem()
+        var giftImage = UIImage(named: "gift")
+        giftImage = giftImage?.maskWithColor(color: UIColor.white)
+        itemGift.icon = giftImage                   
+        itemGift.buttonColor = UIColor.gamvesCyanColor
+        itemGift.titleLabelPosition = .left
+        itemGift.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemGift.title = "GIFTS"
+        itemGift.handler = { item in
+            
+            if self.homeController != nil
+            {
+                self.homeController?.addNewFanpage(edit:false)
+            }
+
+        }
+
+        self.floaty.addItem(item: itemGift)          
+        self.addSubview(floaty) 
     }
     
     func registerLiveQuery()
@@ -250,7 +288,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         } else if notification.type == 2 { //fanpage
 
             cell.thumbnailImageView.isHidden = true   
-            cell.checkLabel.isHidden = true            
+            //cell.checkLabel.isHidden = true            
 
         }                
         

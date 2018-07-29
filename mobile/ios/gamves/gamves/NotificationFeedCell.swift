@@ -77,13 +77,13 @@ class NotificationFeedCell: BaseCell {
         return view
     }()
     
-    var checkView: UIView = {
+    /*var checkView: UIView = {
         let view = UIView()
         view.isHidden = true
         return view
-    }()
+    }()*/
 
-    var checkLabel = UILabel()
+    //var checkLabel = UILabel()
     
     var titleLabelHeightConstraint: NSLayoutConstraint?
     
@@ -131,19 +131,19 @@ class NotificationFeedCell: BaseCell {
         
         self.separatorView.backgroundColor = UIColor.lightGray
         
-        self.checkView = UIView()        
+        //self.checkView = UIView()
         
-        self.checkLabel =  Global.createCircularLabel(text: "New", size: 60, fontSize: 20.0, borderWidth: 3.0, color: UIColor.red)
+        //self.checkLabel =  Global.createCircularLabel(text: "New", size: 60, fontSize: 20.0, borderWidth: 3.0, color: UIColor.red)
         
-        let haloCheck = PulsingHaloLayer()
+        /*let haloCheck = PulsingHaloLayer()
         haloCheck.position.x = self.checkLabel.center.x
         haloCheck.position.y = self.checkLabel.center.y
         haloCheck.haloLayerNumber = 5
         haloCheck.backgroundColor = UIColor.white.cgColor
         haloCheck.radius = 100
-        haloCheck.start()
+        haloCheck.start()*/
         
-        self.checkView.layer.addSublayer(haloCheck)
+        /*self.checkView.layer.addSublayer(haloCheck)
         
         let cw = self.frame.width
         let ch = cw * 9 / 16
@@ -159,7 +159,7 @@ class NotificationFeedCell: BaseCell {
         
         self.checkView.addSubview(checkLabel)
         self.checkView.addConstraintsWithFormat("H:|[v0(60)]|", views: checkLabel)
-        self.checkView.addConstraintsWithFormat("V:|[v0(60)]|", views: checkLabel)        
+        self.checkView.addConstraintsWithFormat("V:|[v0(60)]|", views: checkLabel)*/        
         
     }
 
