@@ -51,6 +51,7 @@ class Global: NSObject
     static var device = String()
     
     static var notifications = [GamvesNotification]()
+    static var notificationsNew = [GamvesNotification]()
 
     static var userTypes = Dictionary<Int, UserTypeGamves>()
     static var schools = Dictionary<String, GamvesSchools>()

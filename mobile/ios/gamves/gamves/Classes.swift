@@ -47,8 +47,10 @@ class GamvesNotification {
     var date = Date()
     var video = GamvesVideo()
     var fanpage = GamvesFanpage()
+    var user = GamvesUser()
     var type = Int()
     var posterId = String()
+    var isNew = Bool()
 }
 
 class ChatFeed {

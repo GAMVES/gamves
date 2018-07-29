@@ -12,7 +12,10 @@ import Parse
 import Floaty
 import ParseLiveQuery
 
-class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class NotificationCell: BaseCell, 
+UICollectionViewDataSource,
+UICollectionViewDelegate,
+UICollectionViewDelegateFlowLayout {
 
 	var activityView: NVActivityIndicatorView!
     
@@ -34,10 +37,13 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
     }()
     
     let cellId = "cellId"
+    let sectionHeaderId = "notificationSectionHeader"
 
-    let fanpageHeight = CGFloat(90) 
+    let rowHeight = CGFloat(100)
 
-    var floaty = Floaty(size: 80)    
+    var floaty = Floaty(size: 80)   
+
+    var notificationLoaded = Bool() 
     
     override func setupViews() {
         super.setupViews()
@@ -51,6 +57,8 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.collectionView.register(NotificationFeedCell.self, forCellWithReuseIdentifier: cellId)
+
+        self.collectionView.register(NotificationSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
 
         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
         
@@ -108,151 +116,70 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
             
         }        
         
-        self.collectionView.reloadData()
+        //self.collectionView.reloadData()
         
     }
 
-    func fetchNotification()
-    {
-    
-        self.activityView.startAnimating()
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
+    }
+
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        queryNotification.findObjectsInBackground(block: { (notifications, error) in
+        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! NotificationSectionHeader
+        
+        sectionHeaderView.backgroundColor = UIColor.gamvesBlackColor
+        
+        if indexPath.section == 0 {
             
-            if error == nil
-            {
-                
-                let notificationsCount = notifications?.count
-                if notificationsCount! > 0
-                {
-
-                    var count = 0
-                    
-                    for notificationPF in notifications! {
-                   
-                        let notification = GamvesNotification()
-
-                        notification.objectId = (notificationPF.objectId as? String)!
-                        notification.title = (notificationPF["title"] as? String)!
-                        notification.referenceId = (notificationPF["referenceId"] as? Int)!
-                        notification.description = (notificationPF["description"] as? String)!
-                        notification.date = (notificationPF.createdAt as? Date)!
-                        notification.posterId = (notificationPF["posterId"] as? String)!
-
-                        let type =  notificationPF["type"] as? Int 
-
-                        if type == 1 { //video
-
-                            let videoGamves = GamvesVideo()
-                            let videoObj:PFObject = (notificationPF["video"] as? PFObject)!
-
-                            do {
-                                try videoObj.fetchIfNeeded()
-                            } catch _ {
-                               print("There was an error fetching video poiner")         
-                            }
-
-                            videoGamves.videoObj = videoObj
-                            notification.video = videoGamves
-                            print(videoObj["title"] as! String)
-                            
-                        } else if type == 2 { //Fanpage
-                            
-                            let fanpageGamves = GamvesFanpage()
-                            let fanpageObj = notificationPF["fanpage"] as? PFObject
-
-                            do {
-                                try fanpageObj?.fetchIfNeeded()
-                            } catch _ {
-                               print("There was an error fetching fanpage poiner")         
-                            }
-
-                            fanpageGamves.fanpageObj = fanpageObj
-                            notification.fanpage = fanpageGamves
-                        }
- 
-                        if let objectId:String = notificationPF.objectId {
-                            notification.objectId = objectId   
-                        }               
-
-                        notification.type = type!
-
-                        let cover 	= notificationPF["cover"] as! PFFile
-
-                        let avatar = notificationPF["posterAvatar"] as! PFFile
-
-                        avatar.getDataInBackground(block: { (imageAvatar, error) in
-                
-                            if error == nil {
-
-                                if let imageAvatarData = imageAvatar {
-
-                                    notification.avatar = UIImage(data:imageAvatarData)                                  
-
-                                    cover.getDataInBackground(block: { (imageCover, error) in
-                
-                                        if error == nil {
-
-                                            if let imageCoverData = imageCover {
-
-                                                notification.cover = UIImage(data:imageCoverData)
-
-                                                Global.notifications.append(notification)
-
-                                                if count == (notificationsCount! - 1) {
-
-                                                    self.collectionView.reloadData()
-
-                                                    self.activityView.stopAnimating()
-
-                                                    var sortedNotifications = Global.notifications.sorted(by: {
-                                                            $0.date.compare($1.date) == .orderedAscending
-                                                    })
-                                                        
-                                                    Global.notifications = sortedNotifications
-
-                                                }
-                                                
-                                                count = count + 1
-                                            }
-                                        }
-                                    })
-                                }
-                            }
-                        })
-                    }
-                    
-                } else
-                {
-                    self.activityView.stopAnimating()
-                }
-                
-            }
-        })
-    
-    }
-    
-    
-    func uploadData()
-    {
-        self.reloadCollectionView()
-    }
-    
-    func reloadCollectionView()
-    {
-        ChatFeedMethods.sortFeedByDate()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-        {
-            self.collectionView.reloadData()
+            var image  = UIImage(named: "add_notification")
+            image = image?.maskWithColor(color: UIColor.white)
+            image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
+            sectionHeaderView.iconImageView.image = image
+            
+            sectionHeaderView.nameLabel.text = "New"
+            
+        } else if indexPath.section == 1 {
+            
+            var image  = UIImage(named: "time_earlier")
+            image = image?.maskWithColor(color: UIColor.white)
+            image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
+            sectionHeaderView.iconImageView.image = image
+            
+            sectionHeaderView.nameLabel.text = "Earlier"
         }
+        
+        return sectionHeaderView
+        
     }
     
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
-        print(Global.notifications.count)
-        return Global.notifications.count
+
+        var countItems = Int()
+
+        if notificationLoaded {        
+        
+            if section == 0 {
+                
+                countItems = Global.notificationsNew.count
+                
+            } else if section == 1 {
+                
+                countItems = Global.notifications.count
+                
+                if countItems == 0
+                {
+                    countItems = 1
+                    
+                }
+            }
+        }
+            
+        print(countItems)
+        return countItems
+
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -261,7 +188,13 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! NotificationFeedCell
 
         let index = indexPath.item
-        let notification:GamvesNotification = Global.notifications[index]
+        var notification = GamvesNotification()
+        
+        if indexPath.section == 0 {
+            notification = Global.notificationsNew[index]
+        } else if indexPath.section == 1 {
+            notification = Global.notifications[index]
+        }
         
         cell.notificationName.text = notification.title
 
@@ -311,8 +244,13 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
 
         cell.notficationTimeElapsed.text = notification.date.elapsedTime
 
-        let gr = Gradients()
-        
+        //if notification.type == 2 {
+        //    cell.setupFanpage()
+        //}
+
+        //GRADIENT
+
+        let gr = Gradients()        
         var gradient : CAGradientLayer = CAGradientLayer()
         
         /*if  notification.type == 1 {
@@ -320,17 +258,9 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
         } else if notification.type == 2 {
             cell.setupFanpage()
              gradient = gr.getPastelGradient(UIColor.init(netHex: 0xf7d1f7))      
-        } */
+        } */       
 
-        if notification.type == 2 {
-            cell.setupFanpage()
-        }
-
-        Global.auxiliarColorArray.shuffle()
-
-        //let randomIndex = Int(arc4random_uniform(UInt32(Global.notificationColorArray.count)))
-        //let randomIndex = Int(arc4random_uniform(UInt32(Global.pasterColorArray.count)))        
-
+        Global.auxiliarColorArray.shuffle()  
         gradient = gr.getPastelGradient()        
         gradient.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
         cell.layer.insertSublayer(gradient, at: 0)
@@ -340,7 +270,7 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        var size = CGSize()
+        /*var size = CGSize()
         var height = CGFloat()
 
         let index = indexPath.item
@@ -358,9 +288,14 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
             
             size = CGSize(width: self.frame.width, height: height)
 
-        }        
+        }*/
         
-        return size //CGSize(width: self.frame.width, height: 100)
+        return CGSize(width: self.frame.width, height: rowHeight)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        return CGSize(width: collectionView.frame.size.width, height: 50)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -410,5 +345,165 @@ class NotificationCell: BaseCell, UICollectionViewDataSource, UICollectionViewDe
             }           
         }        
     }
+
+    func fetchNotification()
+    {
+    
+        self.activityView.startAnimating()
+        
+        queryNotification.findObjectsInBackground(block: { (notifications, error) in
+            
+            if error == nil
+            {
+                
+                let notificationsCount = notifications?.count
+                if notificationsCount! > 0
+                {
+
+                    var count = 0
+                    
+                    for notificationPF in notifications! {
+                   
+                        let notification = GamvesNotification()
+
+                        notification.objectId = (notificationPF.objectId as? String)!
+                        notification.title = (notificationPF["title"] as? String)!
+                        notification.referenceId = (notificationPF["referenceId"] as? Int)!
+                        notification.description = (notificationPF["description"] as? String)!
+                        notification.date = (notificationPF["date"] as? Date!)!
+                        
+                        if Calendar.current.isDateInToday(notification.date) {
+                            notification.isNew = true
+                        }
+                        
+                        notification.posterId = (notificationPF["posterId"] as? String)!
+
+                        let type =  notificationPF["type"] as? Int 
+
+                        if type == 1 { //video
+
+                            let videoGamves = GamvesVideo()
+                            let videoObj:PFObject = (notificationPF["video"] as? PFObject)!
+
+                            do {
+                                try videoObj.fetchIfNeeded()
+                            } catch _ {
+                               print("There was an error fetching video poiner")         
+                            }
+
+                            videoGamves.videoObj = videoObj
+                            notification.video = videoGamves
+                            print(videoObj["title"] as! String)
+                            
+                        } else if type == 2 { //Fanpage
+                            
+                            let fanpageGamves = GamvesFanpage()
+                            let fanpageObj = notificationPF["fanpage"] as? PFObject
+
+                            do {
+                                try fanpageObj?.fetchIfNeeded()
+                            } catch _ {
+                               print("There was an error fetching fanpage poiner")         
+                            }
+
+                            fanpageGamves.fanpageObj = fanpageObj
+                            notification.fanpage = fanpageGamves
+                        }
+ 
+                        if let objectId:String = notificationPF.objectId {
+                            notification.objectId = objectId   
+                        }               
+
+                        notification.type = type!
+
+                        let cover   = notificationPF["cover"] as! PFFile
+
+                        let avatar = notificationPF["posterAvatar"] as! PFFile
+
+                        avatar.getDataInBackground(block: { (imageAvatar, error) in
+                
+                            if error == nil {
+
+                                if let imageAvatarData = imageAvatar {
+
+                                    notification.avatar = UIImage(data:imageAvatarData)                                  
+
+                                    cover.getDataInBackground(block: { (imageCover, error) in
+                
+                                        if error == nil {
+
+                                            if let imageCoverData = imageCover {
+
+                                                notification.cover = UIImage(data:imageCoverData)
+
+                                                if notification.isNew {
+                                                    
+                                                    Global.notificationsNew.append(notification)                                     
+                                                    
+                                                } else {
+                                                
+                                                    Global.notifications.append(notification)
+                                                }
+
+                                                if count == (notificationsCount! - 1) {                          
+                                                    
+
+                                                    var sortedNotifications = Global.notifications.sorted(by: {
+                                                            $0.date.compare($1.date) == .orderedDescending
+                                                    })
+                                                        
+                                                    Global.notifications = sortedNotifications
+                                                    
+                                                    if Global.notificationsNew.count > 0 {
+                                                    
+                                                        var sortedNewNotifications = Global.notificationsNew.sorted(by: {
+                                                            $0.date.compare($1.date) == .orderedDescending
+                                                        })
+                                                        
+                                                        Global.notificationsNew = sortedNewNotifications
+                                                    }
+
+                                                    self.notificationLoaded = true
+                                                    
+                                                    self.collectionView.reloadData()
+                                                    
+                                                    self.activityView.stopAnimating()
+                                                }
+                                                
+                                                count = count + 1
+                                            }
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                    }
+                    
+                } else
+                {
+                    self.activityView.stopAnimating()
+                }
+                
+            }
+        })
+    
+    }
+    
+    
+    func uploadData()
+    {
+        self.reloadCollectionView()
+    }
+    
+    func reloadCollectionView()
+    {
+        ChatFeedMethods.sortFeedByDate()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
+        {
+            self.collectionView.reloadData()
+        }
+    }
+
 }
 
