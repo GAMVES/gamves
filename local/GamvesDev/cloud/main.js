@@ -455,7 +455,7 @@
 	    });
 
 	    //Add points
-		savePointByUserId(userId, 10);
+		savePointByUserId(userId, 1);
 
 	});
 
@@ -718,6 +718,11 @@
 				});
 			} 
 		}
+
+		var posterId = request.object.get("posterId");
+
+		//- Save points for Video
+		savePointByUserId(posterId, 10);
 
 	});
 
@@ -1053,16 +1058,59 @@
 
 	});
 
+	// --
+	// count Points for Fanpage
+
+	Parse.Cloud.afterSave("Fanpages", function(request) {
+
+		var posterId = request.object.get("posterId");
+		
+		savePointByUserId(posterId, 20);
+
+	});
+
+	// --
+	// count New Friends
+
+	Parse.Cloud.afterSave("FriendsApproval", function(request) {
+
+		var posterId = request.object.get("posterId");
+		
+		savePointByUserId(posterId, 5);
+
+	});
+
+	// --
+	// count Likes
+
+	Parse.Cloud.afterSave("Likes", function(request) {
+
+		var userId = request.object.get("userId");
+		
+		savePointByUserId(userId, 2);
+
+	});
+
 
 	// --
 	// SavePoints for action.	
 
-	function savePointByUserId(userId, points) {		
-		var Points = Parse.Object.extend("Points");
-		var point = new Points();
-		point.set("userId", userId);
-		point.set("points", points);		
-		point.save();  
+	function savePointByUserId(userId, points) {
+
+		var userQuery = new Parse.Query(Parse.User);
+			userQuery.equalTo("username", "gamvesadmin");
+		    userQuery.first().then(function(user) {
+
+	    	if ( user.id != userId ) {
+
+		    	var Points = Parse.Object.extend("Points");
+				var point = new Points();
+				point.set("userId", userId);
+				point.set("points", points);		
+				point.save();  
+			}
+
+		 });		
 	}
 
 
