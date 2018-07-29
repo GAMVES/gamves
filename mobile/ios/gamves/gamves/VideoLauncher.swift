@@ -116,7 +116,7 @@ class VideoPlayerView: UIView {
     
     func handleSliderChange() {
 
-        print(videoSlider.value)
+        print("value: \(videoSlider.value)")
         
         if let duration = player?.currentItem?.duration 
         {
@@ -188,6 +188,8 @@ class VideoPlayerView: UIView {
       
 
     var player: AVPlayer?
+
+    var countSecondsPlayed = Double()
     
     func setupPlayerView(urlString:String) {
         
@@ -202,7 +204,14 @@ class VideoPlayerView: UIView {
             } catch 
             {
                 print("Error info: \(error)")
-            }            
+            }
+
+            let asset = AVAsset(url: url)
+            var durationAll = asset.duration   
+
+            let quarter = CMTimeGetSeconds(durationAll) / 3
+            var limit = quarter * 2 
+            var limitReached = Bool()        
             
             self.playerLayer = AVPlayerLayer(player: self.player)
             self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect
@@ -218,6 +227,23 @@ class VideoPlayerView: UIView {
             self.player?.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main, using: { (progressTime) in
                 
                 let seconds = CMTimeGetSeconds(progressTime)
+
+                self.countSecondsPlayed = self.countSecondsPlayed + 1         
+
+                if self.countSecondsPlayed > limit && !limitReached {
+
+                    limitReached = true
+
+                    self.savePoints()
+
+                }  
+
+                //print("count:\(self.countSecondsPlayed)")
+                //print("count real:\(seconds)")
+                //print("total duration:\(CMTimeGetSeconds(durationAll))")
+                //print("limit:\(limit)")
+                //print("-------------------------------")
+
                 let secondsString = String(format: "%02d", Int(seconds.truncatingRemainder(dividingBy: 60)))
                 let minutesString = String(format: "%02d", Int(seconds / 60))
                 
@@ -234,6 +260,23 @@ class VideoPlayerView: UIView {
             })
         }
         
+    }
+
+    func savePoints(){
+
+        DispatchQueue.main.async {
+
+            if let userId = PFUser.current() {                
+
+                let pointsPF: PFObject  = PFObject(className: "Points")
+                pointsPF["userId"]      = userId
+                pointsPF["points"]      = 2
+                pointsPF.saveEventually()
+
+            }
+
+        }
+
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
