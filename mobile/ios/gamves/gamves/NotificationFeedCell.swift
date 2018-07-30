@@ -12,162 +12,198 @@ import PulsingHalo
 
 class NotificationFeedCell: BaseCell {
     
-    var checked = Bool()     
     
+    //- Thumbnail view
+
     let thumbnailImageView: CustomImageView = {
         let imageView = CustomImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
     }()
-    
+
+    //-Row view
+
     let rowView: UIView = {
-        let view = UIView()
-        //view.backgroundColor = UIColor.white
+        let view = UIView() 
+        //view.backgroundColor = UIColor.green       
+        return view
+    }()    
+
+    let userView: UIView = {
+        let view = UIView()       
+        //view.backgroundColor = UIColor.cyan 
         return view
     }()
+
+    let iconView: UIView = {
+        let view = UIView()  
+        view.layer.cornerRadius = 17.5          
+        //view.backgroundColor = UIColor.orange    
+        return view
+    }() 
     
+    let iconImageView: CustomImageView = {
+        let imageView = CustomImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.tintColor = UIColor.white
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
     let userProfileImageView: CustomImageView = {
         let imageView = CustomImageView()
-        imageView.layer.cornerRadius = 25
+        imageView.layer.cornerRadius = 40
         imageView.layer.masksToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
+
+    //- Data View
     
-    let labelsView: UIView = {
-        let view = UIView()        
+    let dataView: UIView = {
+        let view = UIView() 
+        //view.backgroundColor = UIColor.yellow           
         return view
     }()
+
+    let descTimeDotsView: UIView = {
+        let view = UIView() 
+        //view.backgroundColor = UIColor.gray           
+        return view
+    }()           
     
-    let notificationName: UILabel = {
+    let posterLabel: UILabel = {
         let label = UILabel()        
-        label.font = UIFont.boldSystemFont(ofSize: 22)
+        label.font = UIFont.systemFont(ofSize: 17)
         return label
     }()
 
-    let labelsTimeView: UIView = {
-        let view = UIView()        
+    let descTimeView: UIView = {
+        let view = UIView() 
+        //view.backgroundColor = UIColor.brown           
         return view
-    }()
+    }()           
     
-    let notficationDatePublish: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 10)
-        return label
-    }()
-
-    let notficationTimeElapsed: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 10)
-        return label
-    }()
     
     let descriptionTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.textContainerInset = UIEdgeInsetsMake(0, -4, 0, 0)
-        textView.textColor = UIColor.lightGray
+        textView.font = UIFont.systemFont(ofSize: 15)
+        textView.backgroundColor = UIColor.clear    
+        textView.textColor = UIColor.gray
         return textView
+    }()    
+
+    let timeLabel: UILabel = {
+        let label = UILabel()        
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.textColor = UIColor.gamvesColor
+        label.textAlignment = .right
+        return label
     }()
     
+    //-DotsView
+    
+    let dotsView: UIView = {
+        let view = UIView()        
+        return view
+    }()    
+
+    let dotsImageView: CustomImageView = {
+        let imageView = CustomImageView()
+        var image  = UIImage(named: "dots_hor")?.withRenderingMode(.alwaysTemplate)
+        imageView.image = image
+        imageView.tintColor = UIColor.black
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
+    //-Separator
+
     let separatorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.lightGray        
         return view
     }()
     
-    /*var checkView: UIView = {
-        let view = UIView()
-        view.isHidden = true
-        return view
-    }()*/
+    override func setupViews() {             
 
-    //var checkLabel = UILabel()
-    
-    var titleLabelHeightConstraint: NSLayoutConstraint?
-    
-    override func setupViews()
-    {             
+        //- Thumbnail view
+        
+        self.addSubview(self.thumbnailImageView)
+        self.addSubview(self.rowView)
+        self.addSubview(self.separatorView)
+        
+        self.addConstraintsWithFormat("H:|-16-[v0]-16-|", views: self.thumbnailImageView)
+        self.addConstraintsWithFormat("H:|-16-[v0]-16-|", views: self.rowView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.separatorView)
+        
+        self.addConstraintsWithFormat("V:|-16-[v0]-8-[v1(100)]-8-[v2(1)]|",
+                                 views: self.thumbnailImageView, self.rowView, self.separatorView)
 
-        //self.backgroundColor = randomPastelColor
-        
-        addSubview(thumbnailImageView)
-        addSubview(rowView)
-        addSubview(separatorView)
-        
-        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: thumbnailImageView)
-        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: rowView)
-        addConstraintsWithFormat("H:|[v0]|", views: separatorView)
-        
-        addConstraintsWithFormat("V:|-16-[v0]-8-[v1(50)]-8-[v2(1)]|",
-                                 views: thumbnailImageView, rowView, separatorView)
-        
-        rowView.addSubview(userProfileImageView)
-        rowView.addSubview(labelsView)
-        
-        rowView.addConstraintsWithFormat("H:|[v0(50)]|", views: userProfileImageView)
-        rowView.addConstraintsWithFormat("V:|[v0(50)]|", views: userProfileImageView)
-        
-        rowView.addConstraintsWithFormat("H:|-50-[v0]|", views: labelsView)
-        rowView.addConstraintsWithFormat("V:|[v0(50)]|", views: labelsView)
-        
-        labelsView.addSubview(notificationName)
-        labelsView.addSubview(labelsTimeView)             
-        
-        labelsView.addConstraintsWithFormat("H:|-10-[v0]|", views: notificationName)
-        labelsView.addConstraintsWithFormat("V:|[v0(25)]|", views: notificationName)
+        //Row View
 
-        labelsView.addConstraintsWithFormat("H:|[v0]|", views: labelsTimeView)
-        labelsView.addConstraintsWithFormat("V:|-25-[v0(25)]|", views: labelsTimeView)
+        self.rowView.addSubview(self.userView)
+        self.rowView.addSubview(self.dataView)
+        
+        self.rowView.addConstraintsWithFormat("V:|[v0(100)]|", views: self.userView)
+        self.rowView.addConstraintsWithFormat("V:|[v0(100)]|", views: self.dataView)        
+        self.rowView.addConstraintsWithFormat("H:|[v0(100)][v1]|", views: self.userView, self.dataView)
 
-        labelsTimeView.addSubview(notficationDatePublish)
-        labelsTimeView.addSubview(notficationTimeElapsed)  
-        
-        labelsView.addConstraintsWithFormat("V:|[v0(25)]|", views: notficationDatePublish)
-        labelsView.addConstraintsWithFormat("V:|[v0(25)]|", views: notficationTimeElapsed)
+        self.userView.addSubview(self.userProfileImageView)
+        self.userView.addConstraintsWithFormat("H:|-5-[v0(90)]-5-|", views: self.userProfileImageView)
+        self.userView.addConstraintsWithFormat("V:|-5-[v0(90)]-5-|", views: self.userProfileImageView)
 
-        labelsView.addConstraintsWithFormat("H:|-10-[v0]-10-[v1]-10-|", views: notficationDatePublish, notficationTimeElapsed)
-        
-        self.separatorView.backgroundColor = UIColor.lightGray
-        
-        //self.checkView = UIView()
-        
-        //self.checkLabel =  Global.createCircularLabel(text: "New", size: 60, fontSize: 20.0, borderWidth: 3.0, color: UIColor.red)
-        
-        /*let haloCheck = PulsingHaloLayer()
-        haloCheck.position.x = self.checkLabel.center.x
-        haloCheck.position.y = self.checkLabel.center.y
-        haloCheck.haloLayerNumber = 5
-        haloCheck.backgroundColor = UIColor.white.cgColor
-        haloCheck.radius = 100
-        haloCheck.start()*/
-        
-        /*self.checkView.layer.addSublayer(haloCheck)
-        
-        let cw = self.frame.width
-        let ch = cw * 9 / 16
-        
-        let pr = cw - 100
-        let pt = ch - 80
-        
-        let paddingMetrics = ["pr":pr,"pt":pt]
-        
-        self.addSubview(self.checkView)
-        self.addConstraintsWithFormat("H:|-pr-[v0(30)]", views: self.checkView, metrics : paddingMetrics)
-        self.addConstraintsWithFormat("V:|-pt-[v0(30)]", views: self.checkView, metrics : paddingMetrics)
-        
-        self.checkView.addSubview(checkLabel)
-        self.checkView.addConstraintsWithFormat("H:|[v0(60)]|", views: checkLabel)
-        self.checkView.addConstraintsWithFormat("V:|[v0(60)]|", views: checkLabel)*/        
+        self.userView.addSubview(self.iconView)     
+        self.userView.addConstraintsWithFormat("H:|-65-[v0(35)]|", views: self.iconView)
+        self.userView.addConstraintsWithFormat("V:|-65-[v0(35)]|", views: self.iconView)    
+
+        self.iconView.addSubview(self.iconImageView)
+        self.iconView.addConstraintsWithFormat("H:|-7.5-[v0(20)]-7.5-|", views: self.iconImageView)
+        self.iconView.addConstraintsWithFormat("V:|-7.5-[v0(20)]-7.5-|", views: self.iconImageView)        
+
+        self.dataView.addSubview(self.posterLabel)
+        self.dataView.addSubview(self.descTimeDotsView)
+        self.dataView.addConstraintsWithFormat("H:|[v0]|", views: self.posterLabel)
+        self.dataView.addConstraintsWithFormat("H:|[v0]|", views: self.descTimeDotsView)
+        self.dataView.addConstraintsWithFormat("V:|[v0(30)][v1]|", views: 
+            self.posterLabel,
+            self.descTimeDotsView)
+
+        self.descTimeDotsView.addSubview(self.descTimeView)        
+        self.descTimeDotsView.addSubview(self.dotsView)
+
+        self.dataView.addConstraintsWithFormat("V:|[v0]|", views: self.descTimeView)
+        self.dataView.addConstraintsWithFormat("V:|[v0]|", views: self.dotsView)
+        self.dataView.addConstraintsWithFormat("H:|[v0][v1(60)]|", views: 
+            self.descTimeView,
+            self.dotsView)
+
+
+        self.descTimeView.addSubview(self.descriptionTextView)        
+        self.descTimeView.addSubview(self.timeLabel)
+
+        self.descTimeView.addConstraintsWithFormat("H:|[v0]|", views: self.descriptionTextView)
+        self.descTimeView.addConstraintsWithFormat("H:|[v0]|", views: self.timeLabel)
+        self.dataView.addConstraintsWithFormat("V:|[v0][v1(20)]|", views: 
+            self.descriptionTextView,
+            self.timeLabel)
+
+        self.dotsView.addSubview(self.dotsImageView)
+        self.dotsView.addConstraintsWithFormat("H:|-10-[v0(40)]-10-|", views: self.dotsImageView)
+        self.dotsView.addConstraintsWithFormat("V:|[v0(40)]-40-|", views: self.dotsImageView)       
         
     }
 
-    func setupFanpage() {
+    func setThumbnailSize() {
+        self.addConstraintsWithFormat("V:|[v0(100)]-8-[v1(1)]|",
+                                 views: self.rowView, self.separatorView)        
+    } 
 
-        addConstraintsWithFormat("V:|-20-[v0(80)]-8-[v1(1)]|",
-                                 views: rowView, separatorView)
-        
-    }    
+
+    
         
 }

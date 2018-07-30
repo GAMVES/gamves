@@ -43,8 +43,8 @@ class NotificationSectionHeader: UICollectionViewCell {
     func setupViews() {
 
     	self.addSubview(self.iconImageView)     
-        self.addConstraintsWithFormat("H:|-10-[v0(30)]|", views: self.iconImageView)
-        self.addConstraintsWithFormat("V:|-10-[v0(30)]|", views: self.iconImageView)
+        self.addConstraintsWithFormat("H:|-10-[v0(28)]|", views: self.iconImageView)
+        self.addConstraintsWithFormat("V:|-10-[v0(28)]|", views: self.iconImageView)
 
         self.addSubview(self.nameLabel)     
         self.addConstraintsWithFormat("H:|-60-[v0]|", views: self.nameLabel)
@@ -54,9 +54,9 @@ class NotificationSectionHeader: UICollectionViewCell {
         self.addConstraintsWithFormat("H:|[v0]|", views: dividerLineView)
         self.addConstraintsWithFormat("V:[v0(0.3)]|", views: dividerLineView)
 
-        self.iconImageView.alpha = 0.5
-        self.nameLabel.alpha        = 0.5
-        self.dividerLineView.alpha  = 0.5 
+        //self.iconImageView.alpha    = 0.5
+        //self.nameLabel.alpha        = 0.5
+        //self.dividerLineView.alpha  = 0.5 
 
     }
 }

@@ -44,5 +44,7 @@ target 'gamves' do
   pod 'SwiftPhotoGallery'
 
   pod 'PopupDialog'
+
+  pod 'Atributika', :git => 'https://github.com/psharanda/Atributika.git', :tag => 'swift-3.2'
   
 end

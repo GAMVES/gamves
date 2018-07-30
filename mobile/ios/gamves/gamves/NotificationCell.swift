@@ -11,6 +11,7 @@ import NVActivityIndicatorView
 import Parse
 import Floaty
 import ParseLiveQuery
+import Atributika
 
 class NotificationCell: BaseCell, 
 UICollectionViewDataSource,
@@ -128,22 +129,22 @@ UICollectionViewDelegateFlowLayout {
         
         var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! NotificationSectionHeader
         
-        sectionHeaderView.backgroundColor = UIColor.gamvesBlackColor
+        sectionHeaderView.backgroundColor = UIColor.black
         
         if indexPath.section == 0 {
             
-            var image  = UIImage(named: "add_notification")
-            image = image?.maskWithColor(color: UIColor.white)
-            image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
+            var image  = UIImage(named: "add_notification_white")?.withRenderingMode(.alwaysTemplate)
+            //image = image?.maskWithColor(color: UIColor.white)
+            //image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
             sectionHeaderView.iconImageView.image = image
             
             sectionHeaderView.nameLabel.text = "New"
             
         } else if indexPath.section == 1 {
             
-            var image  = UIImage(named: "time_earlier")
-            image = image?.maskWithColor(color: UIColor.white)
-            image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
+            var image  = UIImage(named: "time_earlier_white")?.withRenderingMode(.alwaysTemplate)
+            //image = image?.maskWithColor(color: UIColor.white)
+            //image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
             sectionHeaderView.iconImageView.image = image
             
             sectionHeaderView.nameLabel.text = "Earlier"
@@ -176,8 +177,7 @@ UICollectionViewDelegateFlowLayout {
                 }
             }
         }
-            
-        print(countItems)
+
         return countItems
 
     }
@@ -194,9 +194,7 @@ UICollectionViewDelegateFlowLayout {
             notification = Global.notificationsNew[index]
         } else if indexPath.section == 1 {
             notification = Global.notifications[index]
-        }
-        
-        cell.notificationName.text = notification.title
+        }        
 
         var message:String = notification.description
 
@@ -214,16 +212,35 @@ UICollectionViewDelegateFlowLayout {
         
         cell.userProfileImageView.image = notification.avatar
 
+        var posterdesc = String()
+
         if notification.type == 1 { //video
 
             cell.thumbnailImageView.image = notification.cover
 
+            cell.iconImageView.image = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
+            
+            posterdesc = "shared a new video"
+
+            cell.iconView.backgroundColor = UIColor.blue     
+
         } else if notification.type == 2 { //fanpage
 
-            cell.thumbnailImageView.isHidden = true   
-            //cell.checkLabel.isHidden = true            
+            cell.thumbnailImageView.isHidden = true
 
-        }                
+            cell.iconImageView.image = UIImage(named: "like")?.withRenderingMode(.alwaysTemplate)                         
+
+            posterdesc = "shared a new fanpage"  
+
+            cell.iconView.backgroundColor = UIColor.red
+
+        }    
+
+        let b = Style("b").font(.boldSystemFont(ofSize: 18))
+
+        cell.posterLabel.attributedText = "<b>\(notification.posterName)</b> \(posterdesc)".style(tags: b).attributedString
+        
+        cell.descriptionTextView.text = notification.title
         
         var image = String()
         
@@ -240,13 +257,13 @@ UICollectionViewDelegateFlowLayout {
             dateFormatter.dateFormat = "EEE"
         }
         
-        cell.notficationDatePublish.text = dateFormatter.string(from: notification.date)
+        //cell.notficationDatePublish.text = dateFormatter.string(from: notification.date)
 
-        cell.notficationTimeElapsed.text = notification.date.elapsedTime
+        cell.timeLabel.text = notification.date.elapsedTime
 
-        //if notification.type == 2 {
-        //    cell.setupFanpage()
-        //}
+        if notification.type == 2 {
+            cell.setThumbnailSize()
+        }
 
         //GRADIENT
 
@@ -270,7 +287,7 @@ UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        /*var size = CGSize()
+        var size = CGSize()
         var height = CGFloat()
 
         let index = indexPath.item
@@ -280,17 +297,17 @@ UICollectionViewDelegateFlowLayout {
 
             height = (self.frame.width - 16 - 16) * 9 / 16
             
-            size = CGSize(width: self.frame.width, height: height + 16 + 88)        
+            size = CGSize(width: self.frame.width, height: height + 16 + 100)        
 
         } else if notification.type == 2 { //fanpage
 
-            height = fanpageHeight
+            height = self.rowHeight
             
             size = CGSize(width: self.frame.width, height: height)
 
-        }*/
+        }
         
-        return CGSize(width: self.frame.width, height: rowHeight)
+        return size //CGSize(width: self.frame.width, height: rowHeight)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -370,6 +387,7 @@ UICollectionViewDelegateFlowLayout {
                         notification.title = (notificationPF["title"] as? String)!
                         notification.referenceId = (notificationPF["referenceId"] as? Int)!
                         notification.description = (notificationPF["description"] as? String)!
+                        notification.posterName = (notificationPF["posterName"] as? String)!
                         notification.date = (notificationPF["date"] as? Date!)!
                         
                         if Calendar.current.isDateInToday(notification.date) {

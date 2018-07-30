@@ -44,6 +44,7 @@ class GamvesNotification {
     var referenceId = Int()
     var title = String()
     var description = String()
+    var posterName = String()
     var date = Date()
     var video = GamvesVideo()
     var fanpage = GamvesFanpage()

@@ -1,6 +1,7 @@
 PODS:
   - AACarousel (1.1.0)
   - Alamofire (4.5.0)
+  - Atributika (4.2.5)
   - AWSCore (2.6.8)
   - AWSS3 (2.6.8):
     - AWSCore (= 2.6.8)
@@ -41,6 +42,7 @@ PODS:
 DEPENDENCIES:
   - AACarousel
   - Alamofire
+  - Atributika (from `https://github.com/psharanda/Atributika.git`, tag `swift-3.2`)
   - AWSS3
   - DeviceKit
   - DownPicker
@@ -59,11 +61,17 @@ DEPENDENCIES:
   - YouTubePlayer
 
 EXTERNAL SOURCES:
+  Atributika:
+    :git: https://github.com/psharanda/Atributika.git
+    :tag: swift-3.2
   Floaty:
     :git: https://github.com/kciter/Floaty.git
     :tag: 4.0.1
 
 CHECKOUT OPTIONS:
+  Atributika:
+    :git: https://github.com/psharanda/Atributika.git
+    :tag: swift-3.2
   Floaty:
     :git: https://github.com/kciter/Floaty.git
     :tag: 4.0.1
@@ -71,6 +79,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AACarousel: 6131fa3650201a3ce10b6581621f3cade221b079
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  Atributika: 96431b5dbebf49f25aff121626c2e670bcb71e53
   AWSCore: 35fca7c45f37f5ffc4ddf75f7aa943f3588d9227
   AWSS3: 380f57d169fd4ebd0a5fca366b36563a3f6d87b2
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -96,6 +105,6 @@ SPEC CHECKSUMS:
   UITextView+Placeholder: 77680995fcdd07c3f52ec92fe1150874a2ac89ff
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 921fa84f8c6e29ef12eb650056d33275ed6b59f6
+PODFILE CHECKSUM: f377212c38522399f7e34f5d72ac2ba445f3b49a
 
 COCOAPODS: 1.4.0
