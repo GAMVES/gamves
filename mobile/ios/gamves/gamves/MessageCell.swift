@@ -96,22 +96,10 @@ class MessageCell: BaseCell {
         imageView.image = UIImage(named: "camera_black")
         imageView.isHidden = true
         return imageView
-    }()
-    
-     /*var gradientView: UIView = {
-        let view = UIView()        
-        return view
-    }()*/
-
-    //var gl:CAGradientLayer!
-
-    override func setupViews() {
-        
-        //addSubview(gradientView)
-        //addConstraintsWithFormat("H:|[v0]|", views: gradientView)
-        //addConstraintsWithFormat("V:|[v0]|", views: gradientView)
-
-
+    }()    
+     
+    override func setupViews() {        
+      
         addSubview(profileImageView)
         addSubview(dividerLineView)
         
@@ -127,16 +115,6 @@ class MessageCell: BaseCell {
 
         let clear = UIColor(white: 1, alpha: 0).cgColor
         let gamvesBackgoundColor = UIColor.gamvesBackgoundColor.cgColor
-
-        /*self.gl = CAGradientLayer()
-        self.gl.colors = [clear, gamvesBackgoundColor]
-        self.gl.locations = [0.0, 1.0] 
-
-        self.gl.frame = self.frame
-
-        self.layer.insertSublayer(gl, at: 0)  */                    
-            
-        //.insertSublayer(gradient, at: 0)
         
     }
     
@@ -180,11 +158,6 @@ class MessageCell: BaseCell {
         
         containerView.addConstraintsWithFormat("H:|[v0(20)]|", views: self.pictureIconView)
         containerView.addConstraintsWithFormat("V:|-28-[v0(20)]|", views: self.pictureIconView)
-
-
-       
-
-        
 
     }
     

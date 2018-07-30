@@ -40,7 +40,7 @@ UICollectionViewDelegateFlowLayout {
     let cellId = "cellId"
     let sectionHeaderId = "notificationSectionHeader"
 
-    let rowHeight = CGFloat(100)
+    let rowHeight = CGFloat(110)
 
     var floaty = Floaty(size: 80)   
 
@@ -109,7 +109,12 @@ UICollectionViewDelegateFlowLayout {
     
     func registerLiveQuery()
     {
-        queryNotification = PFQuery(className: "Notifications")    
+        queryNotification = PFQuery(className: "Notifications")
+        
+        if let userId = PFUser.current()?.objectId {
+        
+            queryNotification.whereKey("target", contains: userId)
+        }
         
         self.subscription = liveQueryClientFeed.subscribe(queryNotification).handle(Event.created) { _, notification in            
             
@@ -185,7 +190,7 @@ UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! NotificationFeedCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! NotificationFeedCell       
 
         let index = indexPath.item
         var notification = GamvesNotification()
@@ -195,6 +200,10 @@ UICollectionViewDelegateFlowLayout {
         } else if indexPath.section == 1 {
             notification = Global.notifications[index]
         }        
+
+        if notification.type == 2 {
+            cell.setThumbnailSize()
+        }
 
         var message:String = notification.description
 
@@ -259,25 +268,12 @@ UICollectionViewDelegateFlowLayout {
         
         //cell.notficationDatePublish.text = dateFormatter.string(from: notification.date)
 
-        cell.timeLabel.text = notification.date.elapsedTime
-
-        if notification.type == 2 {
-            cell.setThumbnailSize()
-        }
+        cell.timeLabel.text = notification.date.elapsedTime       
 
         //GRADIENT
 
         let gr = Gradients()        
         var gradient : CAGradientLayer = CAGradientLayer()
-        
-        /*if  notification.type == 1 {
-            gradient = gr.getPastelGradient(UIColor.init(netHex: 0xd5f7d1))      
-        } else if notification.type == 2 {
-            cell.setupFanpage()
-             gradient = gr.getPastelGradient(UIColor.init(netHex: 0xf7d1f7))      
-        } */       
-
-        Global.auxiliarColorArray.shuffle()  
         gradient = gr.getPastelGradient()        
         gradient.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
         cell.layer.insertSublayer(gradient, at: 0)
