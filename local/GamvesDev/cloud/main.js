@@ -897,7 +897,8 @@
 		var title = request.object.get("title");
 		var referenceId = request.object.get("referenceId");
 		var familyId = request.object.get("familyId");	
-		
+
+		var notificationSaved;		
 
 		if ( (approved==0 || approved==1) && !notified) { 
 
@@ -959,7 +960,24 @@
 
 		    	return notification.save(null, {useMasterKey: true});
 
-			}).then(function(notificationSaved) {
+			}).then(function(saved) {
+
+				notificationSaved = saved;
+
+				var friendslQuery = new Parse.Query("Friends");
+			    friendslQuery.equalTo("userId", posterId);
+			    return friendslQuery.first();
+
+			}).then(function(friends) {
+
+				var friendsArray = friends.get("friends");
+				notificationSaved.set("friends", friendsArray);
+
+				return notificationSaved.save(null, {useMasterKey: true});
+
+			}).then(function(saved) {	
+
+				notificationSaved = saved;
 
 				var familyQuery = new Parse.Query("Family");
 		        familyQuery.equalTo("objectId", familyId);
@@ -1035,7 +1053,7 @@
 				if(err){
 			        console.log(err);
 			        //response.error('Error! ' + err);
-			    }else{
+			    } else {
 			        
 			        //console.log(data);
 			        //response.success(data.results[0].formatted_address);
@@ -1075,8 +1093,34 @@
 	Parse.Cloud.afterSave("FriendsApproval", function(request) {
 
 		var posterId = request.object.get("posterId");
-		
+		var friendId = request.object.get("friendId");
+
+		//Save Points
 		savePointByUserId(posterId, 5);
+
+		var userQuery = new Parse.Query(Parse.User);		
+		userQuery.equalTo("objectId", spouseId);
+		
+	    return userQuery.first().then(function(poster) {
+
+	    	var posterImage = poster.get("pictureSmall");
+
+
+	    }).then(function(poster) {   
+
+
+
+		var Notifications = Parse.Object.extend("Notifications");
+
+
+		var notificationPoster = new Notifications();
+		notificationPoster.set("");
+
+		var point = new Points();
+		point.set("userId", userId);
+		point.set("points", points);		
+		point.save();
+
 
 	});
 
