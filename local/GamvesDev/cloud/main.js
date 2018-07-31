@@ -988,7 +988,7 @@
 		    	var levelRelation = family.relation("level").query();
 		        return levelRelation.find();
 
-		    }).then(function(levels) {	
+		    }).then(function(levels) {			    	
 
 				var title = dataPush[0];
 				var alert = "this is an alert";
@@ -1092,35 +1092,101 @@
 
 	Parse.Cloud.afterSave("FriendsApproval", function(request) {
 
-		var posterId = request.object.get("posterId");
-		var friendId = request.object.get("friendId");
+		var posterId = request.object.get("posterId");		
 
 		//Save Points
 		savePointByUserId(posterId, 5);
 
-		var userQuery = new Parse.Query(Parse.User);		
-		userQuery.equalTo("objectId", spouseId);
-		
-	    return userQuery.first().then(function(poster) {
+		var friendId = request.object.get("friendId");
+		var type = request.object.get("type");
 
-	    	var posterImage = poster.get("pictureSmall");
+		if ( type == 2 ) {
+
+			var posterPF;
+
+			var posterQuery = new Parse.Query(Parse.User);		
+			posterQuery.equalTo("objectId", posterId);
+			
+		    return posterQuery.first().then(function(restulPosterPF) {
+
+		    	posterPF = restulPosterPF;
+
+		    	var friendQuery = new Parse.Query(Parse.User);
+		    	friendQuery.equalTo("objectId", friendId);
+
+		    	return friendQuery.first();
+
+		    }).then(function(friendPF) {   		    	
+
+		    	let Notifications = Parse.Object.extend("Notifications");
+
+		    	let posterImage = posterPF.get("pictureSmall");
+		    	let posterName = posterPF.get("Name");
+
+				let friendImage = friendPF.get("pictureSmall");
+				let friendName = friendPF.get("Name");
+
+				//- Poster notification								
+
+				let notificationPoster = new Notifications();
+				let titlePoster = friendName + " has accepter your freind's request"; 
+				let dataPoster  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 
+
+				notificationPoster.set("posterAvatar", friendImage);
+				notificationPoster.set("title", titlePoster);			
+				notificationPoster.set("type", 3);					
+
+				notificationPoster.save(null, {useMasterKey: true}, {
+                    success: function(result) {
+						notificationPoster.add("target", posterId);
+                    	notificationPoster.save();                        
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }                    
+                });								
+
+				let objPoster = {
+		    		title:titlePoster,
+		    		alert:"You have a new friend!",
+		    		user:dataPoster,		    		
+		    		data:""
+		    	};
+		    	sendPushToUser(objPoster);
+
+		    	//- Friend notification								
+
+				let notificationFriend = new Notifications();
+				let titleFriend = "You and " + posterName + " are friends!"; 
+				let dataFriend  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 
+
+				notificationFriend.set("posterAvatar", posterImage);
+				notificationFriend.set("title", titleFriend);			
+				notificationFriend.set("type", 3);					
+
+				notificationFriend.save(null, {useMasterKey: true}, {
+                    success: function(result) {
+						notificationFriend.add("target", friendId);
+                    	notificationFriend.save();                        
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }                    
+                });								
+
+				let objFriend = {
+		    		title:titleFriend,
+		    		alert:"You have a new friend!",
+		    		user:friendPF,		    		
+		    		data:dataFriend
+		    	};
+		    	sendPushToUser(objFriend);
 
 
-	    }).then(function(poster) {   
 
+			});
 
-
-		var Notifications = Parse.Object.extend("Notifications");
-
-
-		var notificationPoster = new Notifications();
-		notificationPoster.set("");
-
-		var point = new Points();
-		point.set("userId", userId);
-		point.set("points", points);		
-		point.save();
-
+		}
 
 	});
 
@@ -1155,6 +1221,42 @@
 			}
 
 		 });		
+	}
+
+	function sendPushToUser(obj) {	
+
+		var title 		 = obj.title;
+		var alert 		 = obj.alert;		
+		var user 	 	 = obj.user;
+		var data 		 = obj.data;
+		var notification = obj.notification;
+
+		// Find devices associated with these users
+		var pushQuery = new Parse.Query(Parse.Installation);
+		pushQuery.matchesQuery('user', user);
+
+		// Send push notification to query
+		Parse.Push.send({
+		  where: pushQuery,
+		  data: {
+	          "title":title,
+	          "alert":alert,
+	          "data":data
+	      }
+		}, {
+	        useMasterKey: true,
+	        success: function () {
+	            
+	        	notification.set("notified", true);		            
+	            notification.save(null, {useMasterKey: true});
+
+	        },
+	        error: function (error) {
+	            //response.error('Error! ' + error.message);
+	            console.log('Error: ' + error.message);
+	        }
+	    });
+	   
 	}
 
 
