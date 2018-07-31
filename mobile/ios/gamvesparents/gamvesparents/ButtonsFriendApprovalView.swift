@@ -250,8 +250,13 @@ class ButtonsFriendApprovalView: UIView {
             let friendPF =  Global.userDictionary[friendId]?.userObj
             let posterObj: PFObject = PFObject(className: "Friends")
             posterObj["userId"] = posterId
-            let relationFriends = posterObj.relation(forKey: "friends")
-            relationFriends.add(friendPF!)
+            
+            //let relationFriends = posterObj.relation(forKey: "friends")
+            //relationFriends.add(friendPF!)
+            
+            var frindsPosterArray = posterObj["friends"] as! [String]
+            frindsPosterArray.append(friendId)
+            
             posterObj.saveInBackground(block: { (friendSPF, error) in
                 
                 if error == nil {
@@ -259,8 +264,12 @@ class ButtonsFriendApprovalView: UIView {
                     let posterPF =  Global.userDictionary[posterId]?.userObj
                     let friendObj: PFObject = PFObject(className: "Friends")
                     friendObj["userId"] = friendId
-                    let relationPoster = friendObj.relation(forKey: "friends")
-                    relationPoster.add(posterPF!)
+                    
+                    //let relationPoster = friendObj.relation(forKey: "friends")
+                    //relationPoster.add(posterPF!)
+                    
+                    var frindsFriendArray = friendObj["friends"] as! [String]
+                    frindsFriendArray.append(posterId)
                     
                     friendObj.saveInBackground(block: { (posterSPF, error) in
                         

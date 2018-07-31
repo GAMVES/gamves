@@ -58,20 +58,22 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         
         self.tableView.register(CategoryTableViewSectionCell.self, forCellReuseIdentifier: categorySectionCellId)
         self.tableView.register(CategoryTableCollCell.self, forCellReuseIdentifier: categoryCollectionCellId)
-        
-        //self.tableView.backgroundColor = UIColor.gamvesBackgoundColor
 
         let homeImage = "background_list_1"
         let image = UIImage(named: homeImage)        
 
-        self.tableView.backgroundView = UIImageView(image: image!)
-        
-        self.loadCategories()
+        self.tableView.backgroundView = UIImageView(image: image!)        
+
+        NotificationCenter.default.addObserver(self, selector: #selector(yourDataLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyYourUserDataLoaded), object: nil)
         
         refreshControl = UIRefreshControl()
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(loadCategories), for: UIControlEvents.valueChanged)
         tableView.addSubview(refreshControl) // not required when using UITableViewController
+    }
+    
+    func yourDataLoaded() {
+        self.loadCategories()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -234,8 +236,13 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     {
         
         let queryCategories = PFQuery(className:"Categories")
+
+        let filterTarget = [
+            Global.schoolShort,
+            Global.levelDescription.lowercased(),
+            Global.userId] as [String]
         
-        //queryCategories.whereKey("hasFanpage", equalTo: true)
+        queryCategories.whereKey("target", containedIn: filterTarget)
         
         if !Global.hasDateChanged()
         {
@@ -362,9 +369,16 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
             
             let queryFanpage = PFQuery(className:"Fanpages")
             
-            print(category?.objectId)
+            let filterTarget = [
+                Global.schoolShort,
+                Global.levelDescription.lowercased(),
+                Global.userId] as [String]
+            
+            queryFanpage.whereKey("target", containedIn: filterTarget)
             
             queryFanpage.whereKey("category", equalTo: category)
+            
+            print(category)
             
             queryFanpage.whereKey("approved", equalTo: true)
             

@@ -13,7 +13,11 @@ import PopupDialog
 
 class Global: NSObject
 {
-  
+    
+    static var userId = String()  
+    static var levelDescription = String()
+    static var schoolShort = String()
+
     static var gamvesAllUsers = [GamvesUser]()
 
     static var trends_stored = [GamvesTrendCategory]()
@@ -92,6 +96,7 @@ class Global: NSObject
     
     //Notifications
     static var notificationKeyFamilyLoaded  = "com.gamves.familyLoaded"
+    static var notificationKeyYourUserDataLoaded  = "com.gamves.yourUserDataLoaded"
     static var notificationKeyChatFeed      = "com.gamves.chatfeed"
     static var notificationKeyLoggedin      = "com.gamves.loggedin"
     static var notificationKeyCloseVideo    = "com.gamves.gamves.closeVideo"
@@ -145,7 +150,7 @@ class Global: NSObject
     }
 
     //Bool to foce download and skip chache. 
-    static var forceFromNetworkCache = Bool()
+    static var forceFromNetworkCache = Bool()    
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
@@ -669,24 +674,65 @@ class Global: NSObject
                 }
             }
         })
-    }   
+    }  
 
+    static func getYourUserData(id:String, completionHandler : @escaping (_ result:Bool) -> ())
+    {
 
-    /*static func endedCheck(usersCount:Int, count: Int) -> Int {
-        
-        if (usersCount - 1) == count
-        {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                self.activityIndicatorView?.stopAnimating()
+        let userQuery = PFQuery(className:"_User")                       
+        userQuery.whereKey("objectId", equalTo: id)
+        userQuery.getFirstObjectInBackground(block: { (userPF, error) in
+            
+            if error == nil
+            {
+                if let userId = userPF?.objectId {
+
+                    Global.userId = userId  
+
+                    let levelId  = userPF!["levelId"] as! String                    
+
+                    let queryLevel = PFQuery(className:"Level")
+                    queryLevel.whereKey("objectId", equalTo: levelId)
+                    queryLevel.getFirstObjectInBackground { (levelPF, error) in        
+                        
+                        if error != nil {
+
+                            print("error")
+                            
+                        } else {
+                            
+                            if levelPF != nil {
+
+                                Global.levelDescription = levelPF!["description"] as! String
+
+                                var schoolId = userPF!["schoolId"] as! String
+
+                                let querySchool = PFQuery(className:"Schools")
+                                querySchool.whereKey("objectId", equalTo: schoolId)
+                                querySchool.getFirstObjectInBackground { (schoolPF, error) in   
+
+                                    if error == nil {
+
+                                        Global.schoolShort = schoolPF!["short"] as! String
+
+                                       completionHandler(true)
+
+                                    } else {
+                                       completionHandler(false)
+                                    }
+                                }
+
+                            } else {
+                                completionHandler(false)
+                            }
+
+                        }
+                    }
+                }
             }
-        }
-
-        count = count + 1
-
-        return count
-    }*/
-
+        })
+    }   
+   
     static func loadConfigData() {
 
         let configQuery = PFQuery(className:"Config")        
@@ -1198,7 +1244,7 @@ class Global: NSObject
         
         if PFUser.current() != nil {
             
-            Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
+            Global.loadLevels(completionHandler: { ( result:Bool ) -> () in
                 
                 Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
                     
@@ -1233,7 +1279,7 @@ class Global: NSObject
         Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in })
 
 
-        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in })        
+        Global.loadLevels(completionHandler: { ( result:Bool ) -> () in })
 
     }
     
@@ -1317,7 +1363,53 @@ class Global: NSObject
         })
     }
     
-    static func loaLevels(completionHandler : @escaping (_ resutl:Bool) -> ()){
+    static func loadLevels(completionHandler : @escaping (_ resutl:Bool) -> ()){
+        
+        let queryLevel = PFQuery(className:"Level")
+        queryLevel.order(byAscending: "order")
+        queryLevel.findObjectsInBackground { (levelObjects, error) in
+            
+            if error != nil {
+                print("error")
+            } else {
+                
+                if let levelObjects = levelObjects {
+                    
+                    var countLevels = levelObjects.count
+                    
+                    var count = 0
+                    
+                    for level in levelObjects {
+                        
+                        let levelGamves = GamvesLevel()
+                        levelGamves.description = level["description"] as! String
+                        levelGamves.grade = level["grade"] as! Int
+                        
+                        let full = "\(levelGamves.grade) - \(levelGamves.description)"
+                        
+                        print(full)
+                        
+                        levelGamves.fullDesc = full
+                        levelGamves.objectId = level.objectId!
+                        levelGamves.levelObj = level
+                        
+                        self.levels[level.objectId!] = levelGamves
+                        
+                        if (countLevels-1)  == count {
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: self)
+                            
+                            completionHandler(true)
+                        }
+                        count = count + 1
+                        
+                    }
+                }
+            }
+        }
+    }
+
+
+    static func loadLevelByUserId(userId:String, completionHandler : @escaping (_ resutl:Bool) -> ()){
         
         let queryLevel = PFQuery(className:"Level")
         queryLevel.order(byAscending: "order")

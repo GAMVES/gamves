@@ -243,7 +243,27 @@ UICollectionViewDelegateFlowLayout {
 
             cell.iconView.backgroundColor = UIColor.red
 
-        }    
+        } else if notification.type == 3 { //friend
+
+            cell.thumbnailImageView.isHidden = true
+
+            cell.iconImageView.image = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate)                         
+
+            posterdesc = notification.title
+
+            cell.iconView.backgroundColor = UIColor.green
+            
+        } else if notification.type == 4 { //birthday
+
+            cell.thumbnailImageView.isHidden = true
+
+            cell.iconImageView.image = UIImage(named: "birthday")?.withRenderingMode(.alwaysTemplate)                         
+
+            posterdesc = notification.title
+
+            cell.iconView.backgroundColor = UIColor.magenta
+            
+        }
 
         let b = Style("b").font(.boldSystemFont(ofSize: 18))
 

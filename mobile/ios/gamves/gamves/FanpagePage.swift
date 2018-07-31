@@ -552,6 +552,13 @@ class FanpagePage: UIViewController,
         
         //queryvideos.whereKey("approved", equalTo: true)
         
+        let filterTarget = [
+            Global.schoolShort,
+            Global.levelDescription.lowercased(),
+            Global.userId] as [String]
+        
+        queryvideos.whereKey("target", containedIn: filterTarget)
+        
         if !Global.hasDateChanged()
         {
             queryvideos.cachePolicy = .cacheThenNetwork

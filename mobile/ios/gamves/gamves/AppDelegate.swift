@@ -74,6 +74,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             if let user = PFUser.current() {
                 
                 window?.rootViewController = UINavigationController(rootViewController: homeController)
+
+                if let userId = PFUser.current()?.objectId {
+
+                    Global.getYourUserData(id:userId, completionHandler: { ( result:Bool ) -> () in
+
+                        if result {
+
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyYourUserDataLoaded), object: self)
+
+                        } else {
+                            
+                            print("Level not loading")
+                        }
+                
+                    })
+                }
                 
             } else {
                 
