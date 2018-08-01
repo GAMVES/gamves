@@ -1,16 +1,6 @@
 	require('./functions');
-	require('./jobs');
-	//require('./init');
+	require('./jobs');	
 	require('./users');
-
-	/*
-	* If you want to use Advanced Cloud Code,
-	* exporting of module.exports.app is required.
-	* We mount it automaticaly to the Parse Server Deployment.
-	* If you don't want to use it just comment module.exports.app
-	*/
-	//module.exports.app = require('./app');
-
 
 	// --
 	// Run startup script
@@ -91,11 +81,7 @@
 					        	adminRelation.add(adm);	
 
 								user.signUp(null, {
-									success: function(userLogged) {								  	
-									  	
-										//var app_id 			= "0123456789";
-										//var master_key		= "9876543210";
-										//var server_url 		= "http://25.55.180.51:1337/1/";											
+									success: function(userLogged) {								  																	
 
 										//GamvesDev
 										var app_id 			= "PJwimi4PtpAKCpt8UAnDA0QBh5FHLhENew6YQLyI";
@@ -154,7 +140,6 @@
 								                    }
 								                    
 								                });
-
 
 				    						});
 
@@ -360,15 +345,9 @@
 
 					setUserVerified(userId, false);					
 
-			    } else { 
-
-					console.log("****************************************************"); 			    	
-					//console.log("llega"); 			    	
+			    } else { 										
 
 			    	var verifiedObject = results[0]; 					
-
-					//console.log("emailVerified: " + emailVerified);
-					//console.log("userId: " + emailVerified.get("userId"));					
 
 					verifiedObject.set("emailVerified", emailVerified);		
 
@@ -386,9 +365,6 @@
 	         	setUserVerified(userId, false);
 
 		        response.success(true);   
-
-	            //error.message("UserVerified lookup failed");
-	            //response.error(error);
 	        }      
 
 		});
@@ -488,14 +464,7 @@
 				var userId = bUserId.replace(/"/g, '');
 
 				createBadgeForUser(chatId, lastPoster, userId);
-
-				//var matchLastPoster = '"' + lastPoster.toString() + '"';
-
-				//if ( bUserId == matchLastPoster )
-				//{
-					//console.info("ENTRA: " + bUserId);
-					//createBadgeForUser(chatId, lastPoster, userId);
-				//}
+			
 			}
 
 		} else {
@@ -1051,6 +1020,7 @@
 			geocoder.reverseGeocode( latitude, longitude, function ( err, data ) {
 
 				if(err){
+
 			        console.log(err);
 			        //response.error('Error! ' + err);
 			    } else {
@@ -1182,9 +1152,62 @@
 		    	};
 		    	sendPushToUser(objFriend);
 
-
-
 			});
+
+
+			//Look for all Fanpages and videos of each useer and append the new user accordingly.
+
+			//friendId
+			//posterId
+
+			//- Fanpage Targets
+
+			let posterFanpageQuery = new Parse.Query("Fanpages");		
+			posterFanpageQuery.equalTo("posterId", posterId);			
+		    posterFanpageQuery.find().then(function(posterFanpagesPF) {
+		    	let count = posterFanpagesPF.length;		
+				for (let i=0; i<count; i++) {
+					let fanpagePF = posterFanpagesPF[i];
+					fanpagePF.get("target").add(friendId);
+					fanpagePF.save();
+				}
+		    });
+
+		    let friendFanpageQuery = new Parse.Query("Fanpages");		
+			friendFanpageQuery.equalTo("posterId", friendId);			
+		    friendFanpageQuery.find().then(function(friendFanpagesPF) {
+		    	let count = friendFanpagesPF.length;		
+				for (let i=0; i<count; i++) {
+					let fanpagePF = friendFanpagesPF[i];
+					fanpagePF.get("target").add(posterId);
+					fanpagePF.save();
+				}
+		    });
+
+		    //- Video Targets
+
+		    let posterVideoQuery = new Parse.Query("Videos");		
+			posterVideoQuery.equalTo("posterId", posterId);			
+		    posterVideoQuery.find().then(function(posterVideosPF) {
+		    	let count = posterVideosPF.length;		
+				for (let i=0; i<count; i++) {
+					let videoPF = posterVideosPF[i];
+					videoPF.get("target").add(friendId);
+					videoPF.save();
+				}
+		    });
+
+		    let friendVideoQuery = new Parse.Query("Videos");		
+			friendVideoQuery.equalTo("posterId", friendId);			
+		    friendVideoQuery.find().then(function(friendVideosPF) {
+		    	let count = friendVideosPF.length;		
+				for (let i=0; i<count; i++) {
+					let videoPF = friendVideosPF[i];
+					videoPF.get("target").add(posterId);
+					videoPF.save();
+				}
+		    });
+
 
 		}
 
@@ -1258,8 +1281,6 @@
 	    });
 	   
 	}
-
-
 
 
 
