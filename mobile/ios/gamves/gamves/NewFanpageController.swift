@@ -1162,6 +1162,15 @@ ChooseAvatarProtocol
                     
                     let authorRelation = fanpagePF.relation(forKey: "author")
                     authorRelation.add(PFUser.current()!)
+
+                    var targetArray = [String]()
+                    let ids = Array(Global.friends.keys) 
+                    for i in ids { 
+                        var friend = Global.friends[i] as! GamvesUser
+                        targetArray.append(friend.userId)
+                    }
+
+                    fanpagePF.addObjects(from: targetArray, forKey: "target")
                     
                     fanpagePF.saveInBackground(block: { (fanpge, error) in
                         

@@ -739,10 +739,25 @@ SelectorProtocol {
         let fanpageNumericId = Global.getRandomInt()
         videoPF["fanpageId"] = fanpageNumericId
         
-        //videoPF["videoId"] = self.videoId
-        
-        videoPF["fanpageObjId"] = self.fanpage.fanpageObj?.objectId
-        
+        var targetArray = [String]()
+        let ids = Array(Global.friends.keys) 
+        for i in ids { 
+            var friend = Global.friends[i] as! GamvesUser
+            targetArray.append(friend.userId)
+        }
+
+        if let fanpagePF:PFObject = self.fanpage.fanpageObj {
+
+            if let fanpageId:String = fanpagePF.objectId {
+
+                videoPF["fanpageObjId"] = fanpageId
+            }
+            
+            fanpagePF.addObjects(from: targetArray, forKey: "target")
+       
+            fanpagePF.saveEventually()
+        }   
+
         videoPF["posterId"] = PFUser.current()?.objectId
         
         let userId = PFUser.current()?.objectId
@@ -753,11 +768,9 @@ SelectorProtocol {
         let short = Global.gamvesFamily.schoolShort
         
         videoPF["folder"] = short
+               
+        videoPF["target"] = targetArray
         
-        print(videoPF)
-        
-        //videoPF["s3_source"]    = String()
-
         if self.videoSelThumbnail != nil {
         
             let filename = "\(Global.generateFileName()).png"
