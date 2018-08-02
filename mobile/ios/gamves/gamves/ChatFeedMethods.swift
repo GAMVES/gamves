@@ -30,20 +30,22 @@ class ChatFeedMethods: NSObject {
             let chatFeed = self.chatFeeds[i] as! ChatFeed
             let chatId = chatFeed.chatId         
 
-            switch chatFeed.type {
-                case 1?:
+            let type = chatFeed.type as! Int
+            
+            switch type {
+                case 1:
                     self.chatFeedFamily[chatId!] = chatFeed
                     break
 
-                case 2?:
+                case 2:
                     self.chatFeedAdmin[chatId!] = chatFeed
                     break
 
-                case 3?:
+                case 3:
                     self.chatFeedFriends[chatId!] = chatFeed
                     break
 
-                case 4?:
+                case 4:
                     self.chatFeedVideos[chatId!] = chatFeed
                     break
                 

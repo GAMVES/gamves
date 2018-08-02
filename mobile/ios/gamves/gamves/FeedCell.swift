@@ -14,7 +14,11 @@ import Floaty
 import NVActivityIndicatorView
 import PopupDialog
 
-class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, FeedDelegate {
+class FeedCell: BaseCell, 
+UICollectionViewDataSource, 
+UICollectionViewDelegate, 
+UICollectionViewDelegateFlowLayout, 
+FeedDelegate {
     
     var activityView: NVActivityIndicatorView!
     
@@ -139,11 +143,9 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
     }
     
-    
     override func layoutSubviews() {
         self.reloadCollectionView()
     }
-    
     
     func registerLiveQuery() {
     
@@ -219,12 +221,16 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return ChatFeedMethods.numChatFeedSections
+        let count = ChatFeedMethods.numChatFeedSections
+        print(count)
+        return count
     }
 
-       func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    //func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! NotificationSectionHeader
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+                
+        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! FeedSectionHeader
         
         sectionHeaderView.backgroundColor = UIColor.black
 
@@ -238,25 +244,9 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             image = image?.maskWithColor(color: UIColor.white)            
             sectionHeaderView.iconImageView.image = image
             
-            sectionHeaderView.nameLabel.text = "Family"
-            
-        } else if indexPath.section == 1 {
-            
-            var image  = UIImage(named: "friends")?.withRenderingMode(.alwaysTemplate)
-            image = image?.maskWithColor(color: UIColor.white)            
-            sectionHeaderView.iconImageView.image = image
-            
-            sectionHeaderView.nameLabel.text = "Friends"
+            sectionHeaderView.nameLabel.text = "Family"   
 
-        } else if indexPath.section == 2 {
-            
-            var image  = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
-            image = image?.maskWithColor(color: UIColor.white)            
-            sectionHeaderView.iconImageView.image = image
-            
-            sectionHeaderView.nameLabel.text = "Videos"
-
-        }  else if indexPath.section == 3 {
+        }  else if indexPath.section == 1 {
             
             var image  = UIImage(named: "admin")?.withRenderingMode(.alwaysTemplate)
             image = image?.maskWithColor(color: UIColor.white)            
@@ -264,14 +254,48 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
             
             sectionHeaderView.nameLabel.text = "Admin"
 
-        }
+        } else {
 
+            let has = hasFriendsAndVideSections(index: indexPath.section)
+            
+            if has == 1 {
+
+                var image  = UIImage(named: "friends")?.withRenderingMode(.alwaysTemplate)
+                image = image?.maskWithColor(color: UIColor.white)            
+                sectionHeaderView.iconImageView.image = image
+                
+                sectionHeaderView.nameLabel.text = "Friends"
+
+            } else if has == 2 {        
+            
+                var image  = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
+                image = image?.maskWithColor(color: UIColor.white)            
+                sectionHeaderView.iconImageView.image = image
+                
+                sectionHeaderView.nameLabel.text = "Videos"
+
+            }
+        }
         
         return sectionHeaderView
         
     }
 
+    func hasFriendsAndVideSections(index: Int) -> Int
+    {
+        var result = 0
 
+        if index == 2 && ChatFeedMethods.chatFeedFriends.count > 0 {           
+
+            result = 1
+
+        } else if index == 3 && ChatFeedMethods.chatFeedVideos.count > 0 {
+
+            result = 2
+        }
+
+        return result
+    }
     
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -280,24 +304,30 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         
         if section == 0 {
             
-            countItems = Global.notificationsNew.count
+            countItems = ChatFeedMethods.chatFeedFamily.count
             
         } else if section == 1 {
             
-            countItems = Global.notifications.count
+            countItems = ChatFeedMethods.chatFeedAdmin.count  
+
+        } else {
+
+            let has = hasFriendsAndVideSections(index: section)
             
-            if countItems == 0
-            {
-                countItems = 1
-                
+            if has == 1 {
+
+                countItems = ChatFeedMethods.chatFeedFriends.count
+
+            } else if has == 2 {      
+
+                countItems = ChatFeedMethods.chatFeedVideos.count                
             }
 
         }
 
+        print(countItems)
+        
         return countItems
-
-        //print(ChatFeedMethods.chatFeeds.count)
-        //return ChatFeedMethods.chatFeeds.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
