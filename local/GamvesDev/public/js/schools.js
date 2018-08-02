@@ -363,7 +363,7 @@
 
             var level = new Levels();
             level.set("grade", parseInt(res[0]));
-            level.set("description", res[1].replace(/ /g,''));           
+            level.set("description", res[1].replace(/\s/g,''));           
 
             level.save(null, {
               success: function (albumStored) {

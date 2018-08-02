@@ -1155,11 +1155,6 @@
 			});
 
 
-			//Look for all Fanpages and videos of each useer and append the new user accordingly.
-
-			//friendId
-			//posterId
-
 			//- Fanpage Targets
 
 			let posterFanpageQuery = new Parse.Query("Fanpages");		
@@ -1207,8 +1202,6 @@
 					videoPF.save();
 				}
 		    });
-
-
 		}
 
 	});
