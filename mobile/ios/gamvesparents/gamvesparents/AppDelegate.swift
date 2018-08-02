@@ -74,6 +74,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window?.makeKeyAndVisible()
         
         window?.rootViewController = TabBarViewController()
+
+        //- Load Admin
+        Global.loadAdminUser()
         
         Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
         
@@ -91,14 +94,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     self.loadChatChannels()
                     
                 })
-                
-            
             }
-            
         })
-        
-        
-
         
         if PFUser.current() != nil
         {

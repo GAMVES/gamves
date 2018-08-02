@@ -15,6 +15,8 @@ import TaskQueue
 class Global: NSObject
 {
 
+    static var adminUser = GamvesUser()
+
     static var listOfSwearWords = [String]()
 
     static func setBadWordsArray(words: String)
@@ -1238,6 +1240,31 @@ class Global: NSObject
             } 
         }
     }
+
+    static func loadAdminUser()
+    {
+
+        let adminQuery = PFQuery(className:"_User")
+        adminQuery.whereKey("username", equalTo: "gamvesadmin")
+        adminQuery.getFirstObjectInBackground(block: { (user, error) in
+        
+            if error == nil
+            {
+                let adminId = (user?.objectId)!
+                
+                if Global.userDictionary[adminId] == nil {
+                
+                    Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
+                        
+                        self.adminUser = gamvesUser
+                        
+                    })
+                }
+            }
+        })
+        
+    }
+
 
     static func addUnknownUserToDictionary(userId: String, completionHandlerUnknownUser : @escaping (_ gamvesUser: GamvesUser) -> ()) {
 

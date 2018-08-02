@@ -546,52 +546,7 @@ class Global: NSObject
                 }
             }
         }
-    }
-
-    /*static func loadFanpagesFavorites() {
-
-        DispatchQueue.main.async {
-
-            let ids = Array(Global.categories_gamves.keys)
-        
-            for i in ids {
-
-                var cat = Global.categories_gamves[i] as! CategoryGamves
-
-                for fanpage in cat.fanpages {
-
-                    let queryFavorite = PFQuery(className:"Favorites")
-
-                    if let userId = PFUser.current()?.objectId {
-                    
-                        queryFavorite.whereKey("userId", equalTo: userId)
-
-                    }
-
-                    if let fanpageId = fanpage.fanpageObj?.objectId {
-
-                        queryFavorite.whereKey("referenceId", equalTo: fanpageId)
-
-                    }
-                    
-                    queryFavorite.getFirstObjectInBackground { (favoritePF, error) in
-                        
-                        if error == nil {
-
-                            fanpage.isFavorite = false
-                            
-                        } else {
-
-                            fanpage.isFavorite = true
-
-                            fanpage.favoritePF = favoritePF
-
-                        }
-                    }
-                }
-            }
-        }
-    }*/
+    }  
 
     static func loadAdminUser()
     {
@@ -614,13 +569,11 @@ class Global: NSObject
                             
                             self.gamves_official_id = objectId
                             
-                        }
-                        
+                        }                        
                     })
                 }
             }
-        })
-        
+        })        
     }
 
     static func fetchUsers(completionHandler : @escaping (_ resutl:Bool) -> ())

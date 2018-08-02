@@ -13,7 +13,7 @@ import Parse
 class ChatMethods: NSObject
 {
  
-    static func addNewFeedAppendgroup(gamvesUsers:[GamvesUser], chatId:Int, completionHandlerGroup : @escaping (_ resutl:Bool) -> ())
+    static func addNewFeedAppendgroup(gamvesUsers:[GamvesUser], chatId:Int, type:Int,  completionHandlerGroup : @escaping (_ resutl:Bool) -> ())
     {
         
         let random = Int()
@@ -23,6 +23,8 @@ class ChatMethods: NSObject
         chatFeed["chatId"] = chatId
         
         chatFeed["isVideoChat"] = false
+
+        chatFeed["type"] = type
 
         let date = Date()
 

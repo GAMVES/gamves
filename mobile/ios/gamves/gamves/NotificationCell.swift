@@ -531,7 +531,7 @@ UICollectionViewDelegateFlowLayout {
     
     func reloadCollectionView()
     {
-        ChatFeedMethods.sortFeedByDate()
+        ChatFeedMethods.sortAllFeeds()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
         {

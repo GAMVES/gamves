@@ -12,10 +12,94 @@ import Parse
 
 class ChatFeedMethods: NSObject {
     
-    static var chatFeeds = Dictionary<Int, ChatFeed>()
+    static var chatFeeds        = Dictionary<Int, ChatFeed>()
 
-    static func sortFeedByDate() {
+    static var chatFeedFamily   = Dictionary<Int, ChatFeed>()
+    static var chatFeedAdmin    = Dictionary<Int, ChatFeed>()
+    static var chatFeedFriends  = Dictionary<Int, ChatFeed>()
+    static var chatFeedVideos   = Dictionary<Int, ChatFeed>()
+
+    static var numChatFeedSections = Int()
+
+    static func splitFeedSection() {
+
+        let keys = Array(self.chatFeeds.keys)
         
+        for i in keys {
+
+            let chatFeed = self.chatFeeds[i] as! ChatFeed
+            let chatId = chatFeed.chatId         
+
+            switch chatFeed.type {
+                case 1?:
+                    self.chatFeedFamily[chatId!] = chatFeed
+                    break
+
+                case 2?:
+                    self.chatFeedAdmin[chatId!] = chatFeed
+                    break
+
+                case 3?:
+                    self.chatFeedFriends[chatId!] = chatFeed
+                    break
+
+                case 4?:
+                    self.chatFeedVideos[chatId!] = chatFeed
+                    break
+                
+                default: break
+            }
+        }    
+
+        self.sortAllFeeds()   
+
+    }
+
+   static func sortAllFeeds() {
+
+        var count = 0
+
+         if self.chatFeedFamily.count > 0 {
+            self.chatFeedFamily = self.sortFeedByDate(chatFeedDict: self.chatFeedFamily)
+            count = count + 1
+        }
+
+        if self.chatFeedAdmin.count > 0 {
+            self.chatFeedAdmin = self.sortFeedByDate(chatFeedDict: self.chatFeedAdmin)
+            count = count + 1
+        }
+
+        if self.chatFeedFriends.count > 0 {
+            self.chatFeedFriends = self.sortFeedByDate(chatFeedDict: self.chatFeedFriends)
+            count = count + 1
+        }
+
+        if self.chatFeedVideos.count > 0 {
+            self.chatFeedVideos = self.sortFeedByDate(chatFeedDict: self.chatFeedVideos)
+            count = count + 1
+        }
+
+        self.numChatFeedSections = count
+
+    }
+
+
+    static func sortFeedByDate(chatFeedDict :Dictionary<Int, ChatFeed>) -> Dictionary<Int, ChatFeed>
+    {
+        
+        let sortedArray = chatFeedDict.sorted(by: {
+            $0.1.date?.compare($1.value.date!) == .orderedAscending
+        })
+        
+        var sortedChatFeeds = Dictionary<Int, ChatFeed>()
+        
+        for sorted in sortedArray {
+            sortedChatFeeds[sorted.key] = sorted.value
+        }
+        
+        return sortedChatFeeds
+        
+        /*
         var feeds = [ChatFeed]()
         
         for feed in self.chatFeeds {
@@ -31,7 +115,7 @@ class ChatFeedMethods: NSObject {
         for sorted in sortedFeeds {
             print(sorted.date)
             self.chatFeeds[sorted.key!] = sorted
-        }
+        }*/
     }
     
     func before(value1: String, value2: String) -> Bool {
@@ -100,6 +184,10 @@ class ChatFeedMethods: NSObject {
             chatfeed.lasPoster = chatFeedObj["lastPoster"] as? String
             let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
             chatfeed.isVideoChat = isVideoChat
+            
+            let type = chatFeedObj["type"] as! Int
+            chatfeed.type = type
+
             var chatId = chatFeedObj["chatId"] as! Int
             chatfeed.chatId = chatId
             
@@ -153,7 +241,7 @@ class ChatFeedMethods: NSObject {
                         
                                 if (chatfeedsCount-1) == fcount {
                                 
-                                    self.sortFeedByDate()
+                                    self.splitFeedSection()
                                     
                                     completionHandler(chatId)
                                 }

@@ -1974,6 +1974,8 @@
                 
                 print(videoId)
                 
+                self.chatFeed["type"] = 4 //video
+                
                 queryVideo.whereKey("videoId", equalTo: videoId)
                 
                 queryVideo.getFirstObjectInBackground(block: { (video, error) in
@@ -2023,6 +2025,8 @@
                         self.chatFeed["room"] = "\(self.gamvesUsers[0].userId)____\(myUser)"
                     }
                 }
+                
+                self.chatFeed["type"] = 3 //friend
             }
             
             if !self.isVideo {

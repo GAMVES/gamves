@@ -68,10 +68,14 @@ class ProfileViewController: UIViewController,
 
     var schoolsArray: NSMutableArray = []
  
-    var familyChatId = Int()
-    var sonRegisterChatId = Int()
-    var spouseRegisterChatId = Int()
-    var sonSpouseChatId = Int()
+    var familyChatId            = Int()
+    var sonRegisterChatId       = Int()
+    var spouseRegisterChatId    = Int()
+    var sonSpouseChatId         = Int()
+    var youAdminChatId          = Int()
+    var sonAdminChatId          = Int()
+    var spouseAdminChatId       = Int()
+
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -248,7 +252,6 @@ class ProfileViewController: UIViewController,
     ////////////////////////////    
     //// FAMILY INFORMATION ////
     ////////////////////////////
-
 
      let yourNameContainerView: UIView = {
         let view = UIView()
@@ -485,10 +488,14 @@ class ProfileViewController: UIViewController,
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
        
-        self.familyChatId    = Global.getRandomInt()
-        self.sonRegisterChatId       = Global.getRandomInt()
-        self.spouseRegisterChatId    = Global.getRandomInt()
-        self.sonSpouseChatId    = Global.getRandomInt()
+        self.familyChatId           = Global.getRandomInt()
+        self.sonRegisterChatId      = Global.getRandomInt()
+        self.spouseRegisterChatId   = Global.getRandomInt()
+        self.sonSpouseChatId        = Global.getRandomInt()
+
+        self.youAdminChatId        = Global.getRandomInt()
+        self.sonAdminChatId        = Global.getRandomInt()
+        self.spouseAdminChatId        = Global.getRandomInt()        
         
         if PFUser.current() != nil {
             self.son = PFUser.current()
@@ -522,6 +529,9 @@ class ProfileViewController: UIViewController,
         self.boyConstraints()
 
     }
+
+    
+
     
     func didpickImage(type:ProfileImagesTypes, smallImage:UIImage, croppedImage:UIImage)  {
      
@@ -1178,7 +1188,7 @@ class ProfileViewController: UIViewController,
                                         
                                         if resutl {
                                             
-                                            self.createChatGroups(completionHandlerFamilySave: { ( resutl ) -> () in
+                                            self.createChatGroups(completionHandlerChatGroups: { ( resutl ) -> () in
                                                 
                                                 if resutl {
                                                 
@@ -1808,19 +1818,13 @@ class ProfileViewController: UIViewController,
         }   
     }   
     
-    func createChatGroups(completionHandlerFamilySave : @escaping (_ resutl:Bool) -> ())
+    func createChatGroups(completionHandlerChatGroups : @escaping (_ resutl:Bool) -> ())
     {
         print("FAMILY SAVED")
         
         Global.defaults.setHasProfileInfo(value: true)
         
-        var queue = TaskQueue()
-        
-        /*if Global.userDictionary[self.you.objectId!] != nil {
-         Global.userDictionary[self.you.objectId!]?.typeObj = self.you
-         gYou = Global.userDictionary[self.you.objectId!]!
-         }*/
-        
+        var queue = TaskQueue()        
         ///SAVE SON
         
         queue.tasks +=~ { resutl, next in
@@ -1830,7 +1834,7 @@ class ProfileViewController: UIViewController,
             youSon.append(self.youGamves)
             youSon.append(self.sonGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonRegisterChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonRegisterChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youSon")
                 print(resutl)
@@ -1850,7 +1854,7 @@ class ProfileViewController: UIViewController,
             youSpouse.append(self.youGamves)
             youSpouse.append(self.spouseGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseRegisterChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseRegisterChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youSpouse")
                 print(resutl)
@@ -1871,7 +1875,7 @@ class ProfileViewController: UIViewController,
             sonSpouse.append(self.sonGamves)
             sonSpouse.append(self.spouseGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonSpouse, chatId: self.sonSpouseChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonSpouse, chatId: self.sonSpouseChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done sonSpouse")
                 print(resutl)
@@ -1885,11 +1889,7 @@ class ProfileViewController: UIViewController,
         
         //SAVE FAMILY
         
-        queue.tasks +=~ {
-            
-            print("FINISH")
-            
-            print("BACK AGAIN LOGIN AS: \(PFUser.current()?.username)")
+        queue.tasks +=~ { resutl, next in
             
             var youSpouseSon = [GamvesUser]()
             
@@ -1897,21 +1897,81 @@ class ProfileViewController: UIViewController,
             youSpouseSon.append(self.spouseGamves)
             youSpouseSon.append(self.sonGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouseSon, chatId: self.familyChatId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouseSon, chatId: self.familyChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youSpouseSon")
                 print(resutl)
-                if resutl {
-                    completionHandlerFamilySave(true)
+                if (resutl != nil) {
+                    next(nil)
                 }
                 
             })
             
         }
-        queue.run()
+
+        //SAVE YOU ADMIN
         
+        queue.tasks +=~ { resutl, next in
+            
+            var youAdmin = [GamvesUser]()
+            
+            youAdmin.append(self.youGamves)
+            youAdmin.append(Global.adminUser)
+            
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youAdmin, chatId: self.youAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                
+                print("done youAdmin")
+                print(resutl)
+                if (resutl != nil) {
+                    next(nil)
+                }
+                
+            })
+        }
+
+        //SAVE SON ADMIN
         
+        queue.tasks +=~ { resutl, next in
+            
+            var sonAdmin = [GamvesUser]()
+            
+            sonAdmin.append(self.sonGamves)
+            sonAdmin.append(Global.adminUser)
+            
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonAdmin, chatId: self.sonAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                
+                print("done sonAdmin")
+                print(resutl)
+                if (resutl != nil) {
+                    next(nil)
+                }
+                
+            })
+        }
+
+        //SAVE SPOSE ADMIN
         
+        queue.tasks +=~ {
+
+            print("FINISH")            
+            
+            var spouseAdmin = [GamvesUser]()
+            
+            spouseAdmin.append(self.spouseGamves)
+            spouseAdmin.append(Global.adminUser)
+            
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: spouseAdmin, chatId: self.spouseAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                
+                print("done spouseAdmin")
+                print(resutl)
+                if resutl {
+                    completionHandlerChatGroups(true)
+                }
+                
+            })
+        }
+        queue.run()                       
+
     }
 
    

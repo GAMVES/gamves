@@ -99,6 +99,8 @@
 		C77B55751D05632E00FF375C /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77B55741D05632E00FF375C /* MenuBar.swift */; };
 		C7E095C91D14C6690081F88C /* SettingsLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E095C81D14C6690081F88C /* SettingsLauncher.swift */; };
 		C7E095CF1D15C0020081F88C /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E095CE1D15C0020081F88C /* SettingCell.swift */; };
+		C9253A8F211274C9001B4A73 /* GiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9253A8E211274C9001B4A73 /* GiftViewController.swift */; };
+		C9253A91211277F4001B4A73 /* FeedSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9253A90211277F4001B4A73 /* FeedSectionHeader.swift */; };
 		C925F9AF20E1EAE000E9B1E9 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */; };
 		C926096921015EC5000CFF84 /* PublicProfileLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */; };
 		C92ABB9B210E5505009CC646 /* NotificationSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92ABB9A210E5505009CC646 /* NotificationSectionHeader.swift */; };
@@ -212,6 +214,8 @@
 		C77B55741D05632E00FF375C /* MenuBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		C7E095C81D14C6690081F88C /* SettingsLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsLauncher.swift; sourceTree = "<group>"; };
 		C7E095CE1D15C0020081F88C /* SettingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
+		C9253A8E211274C9001B4A73 /* GiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftViewController.swift; sourceTree = "<group>"; };
+		C9253A90211277F4001B4A73 /* FeedSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSectionHeader.swift; sourceTree = "<group>"; };
 		C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
 		C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileLauncher.swift; sourceTree = "<group>"; };
 		C92ABB9A210E5505009CC646 /* NotificationSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationSectionHeader.swift; sourceTree = "<group>"; };
@@ -436,6 +440,7 @@
 		82FFF52B2022D350005F45AA /* cells */ = {
 			isa = PBXGroup;
 			children = (
+				C9253A90211277F4001B4A73 /* FeedSectionHeader.swift */,
 				C92ABB9A210E5505009CC646 /* NotificationSectionHeader.swift */,
 				C92CDDBB21064FCD001B5978 /* FriendCell.swift */,
 				C98FD882210613B000631D78 /* FriendSectionHeader.swift */,
@@ -545,6 +550,7 @@
 				82B0343C1FDFC35F009CD1A7 /* YouTubePlayerController.swift */,
 				C9A0011B20F3CEE900906F33 /* NewFriendController.swift */,
 				C9383D61210593CB008E54D5 /* FriendsViewController.swift */,
+				C9253A8E211274C9001B4A73 /* GiftViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -763,6 +769,7 @@
 				82BAAF2E1EFE453E0021C405 /* Globals.swift in Sources */,
 				C92ABB9B210E5505009CC646 /* NotificationSectionHeader.swift in Sources */,
 				82FFF52A2022CF6E005F45AA /* SelectorView.swift in Sources */,
+				C9253A91211277F4001B4A73 /* FeedSectionHeader.swift in Sources */,
 				C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */,
 				82477BB620090DD000A45922 /* ChatView.swift in Sources */,
 				8274BA7E2028BD5200434839 /* Date+Extensions.swift in Sources */,
@@ -811,6 +818,7 @@
 				824E67C41F58D5D00025096D /* FanpageCollectionViewCell.swift in Sources */,
 				82418F361EF853E400D7E6BC /* HomeCell.swift in Sources */,
 				82C6F7581F8AA8F50090C725 /* ImageView+Extensions.swift in Sources */,
+				C9253A8F211274C9001B4A73 /* GiftViewController.swift in Sources */,
 				8294F9D41FDA4EFC0082D99D /* MergeVideoViewController.swift in Sources */,
 				82557C5D2016EE1200752301 /* ChatFeedMethods.swift in Sources */,
 				8268445A1FF2950E008BA13B /* NewVideoController+Extensions.swift in Sources */,

@@ -25,6 +25,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     private var subscription: Subscription<PFObject>!
     
     var queryChatFeed:PFQuery<PFObject>!
+
+    let sectionHeaderId = "feedSectionHeader"
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -132,6 +134,8 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
         let image = UIImage(named: homeImage)
         
         self.collectionView.backgroundView = UIImageView(image: image!)
+
+        self.collectionView.register(FeedSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
         
     }
     
@@ -206,18 +210,94 @@ class FeedCell: BaseCell, UICollectionViewDataSource, UICollectionViewDelegate, 
     
     func reloadCollectionView() {
         
-        ChatFeedMethods.sortFeedByDate()
+        ChatFeedMethods.sortAllFeeds()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 
             self.collectionView.reloadData()
         }
     }
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return ChatFeedMethods.numChatFeedSections
+    }
+
+       func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! NotificationSectionHeader
+        
+        sectionHeaderView.backgroundColor = UIColor.black
+
+        let sections = ChatFeedMethods.numChatFeedSections
+
+        // Handle what is has and adjust accordingly
+        
+        if indexPath.section == 0 {
+            
+            var image  = UIImage(named: "family")?.withRenderingMode(.alwaysTemplate)
+            image = image?.maskWithColor(color: UIColor.white)            
+            sectionHeaderView.iconImageView.image = image
+            
+            sectionHeaderView.nameLabel.text = "Family"
+            
+        } else if indexPath.section == 1 {
+            
+            var image  = UIImage(named: "friends")?.withRenderingMode(.alwaysTemplate)
+            image = image?.maskWithColor(color: UIColor.white)            
+            sectionHeaderView.iconImageView.image = image
+            
+            sectionHeaderView.nameLabel.text = "Friends"
+
+        } else if indexPath.section == 2 {
+            
+            var image  = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
+            image = image?.maskWithColor(color: UIColor.white)            
+            sectionHeaderView.iconImageView.image = image
+            
+            sectionHeaderView.nameLabel.text = "Videos"
+
+        }  else if indexPath.section == 3 {
+            
+            var image  = UIImage(named: "admin")?.withRenderingMode(.alwaysTemplate)
+            image = image?.maskWithColor(color: UIColor.white)            
+            sectionHeaderView.iconImageView.image = image
+            
+            sectionHeaderView.nameLabel.text = "Admin"
+
+        }
+
+        
+        return sectionHeaderView
+        
+    }
+
+
     
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(ChatFeedMethods.chatFeeds.count)
-        return ChatFeedMethods.chatFeeds.count
+
+         var countItems = Int()
+        
+        if section == 0 {
+            
+            countItems = Global.notificationsNew.count
+            
+        } else if section == 1 {
+            
+            countItems = Global.notifications.count
+            
+            if countItems == 0
+            {
+                countItems = 1
+                
+            }
+
+        }
+
+        return countItems
+
+        //print(ChatFeedMethods.chatFeeds.count)
+        //return ChatFeedMethods.chatFeeds.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
