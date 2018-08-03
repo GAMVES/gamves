@@ -62,9 +62,9 @@ class Global: NSObject
     static var levels = Dictionary<String, GamvesLevel>()  
     static var consoles = Dictionary<String, [GamvesConsole]>()  
 
-    static var serverUrl = "https://parseapi.back4app.com/"
+    static var serverUrl = "https://parseapi.back4app.com/"   
     
-    static var localWs = "wss://devgamves.back4app.io"    
+    static var localWs = "wss://gamvesone.back4app.io" 
     
     static var defaults = UserDefaults.standard
     
