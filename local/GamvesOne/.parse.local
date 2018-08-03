@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "GamvesOne": {
+      "applicationId": "tmceYyffdci7gVbqcSJsSQ5JlsKNwkVGKU9hogED"
+    },
+    "_default": {
+      "link": "GamvesOne"
+    }
+  }
+}
