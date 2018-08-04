@@ -3,7 +3,6 @@
 //  gamvesparents
 //
 //  Created by XCodeClub on 2018-07-20.
-//  Copyright © 2018 Lets Build That App. All rights reserved.
 //
 
 
@@ -11,7 +10,7 @@ import UIKit
 import RSKImageCropper
 import Parse
 
-class PlayStationViewController: UIViewController
+class FortniteViewController: UIViewController
 {
     let topView: UIView = {
         let view = UIView()
@@ -24,8 +23,9 @@ class PlayStationViewController: UIViewController
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false        
         label.textColor = .white
-        label.font = UIFont.boldSystemFont(ofSize: 30)
-        label.textAlignment = .center        
+        label.font = UIFont.boldSystemFont(ofSize: 28)
+        label.textAlignment = .center    
+        label.numberOfLines = 2    
         return label
     }()
 
@@ -65,6 +65,17 @@ class PlayStationViewController: UIViewController
         return tf
     }()
 
+    let passTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "Password"
+        tf.translatesAutoresizingMaskIntoConstraints = false  
+        tf.backgroundColor = UIColor.white 
+        tf.font = UIFont.boldSystemFont(ofSize: 20)  
+        tf.isSecureTextEntry = true
+        tf.tag = 0
+        return tf
+    }()
+
     let buttonsView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false        
@@ -73,12 +84,14 @@ class PlayStationViewController: UIViewController
     }()
     
     lazy var saveButton: UIButton = {
-        let button = UIButton(type: .system)                        
+        let button = UIButton(type: .system) 
+        let image = UIImage(named: "save")        
+        button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor.gambesDarkColor
+        button.backgroundColor = UIColor.gamvesFortniteDarkColor
         button.tintColor = .white
         button.layer.cornerRadius = 5
-        button.isEnabled = false
+        //button.isEnabled = false
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)
@@ -86,12 +99,14 @@ class PlayStationViewController: UIViewController
     }()
 
     lazy var skipButton: UIButton = {
-        let button = UIButton(type: .system)                 
+        let button = UIButton(type: .system)
+        let image = UIImage(named: "skip")        
+        button.setImage(image, for: .normal)                 
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor.gambesDarkColor
+        button.backgroundColor = UIColor.gamvesFortniteDarkColor
         button.tintColor = .white
         button.layer.cornerRadius = 5
-        button.isEnabled = false
+        //button.isEnabled = false
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.addTarget(self, action: #selector(handleSkip), for: .touchUpInside)
@@ -112,9 +127,11 @@ class PlayStationViewController: UIViewController
     var croppedImage = UIImage()
 
     override func viewDidLoad() {
-        super.viewDidLoad()      
+        super.viewDidLoad()
 
-        self.view.backgroundColor = UIColor.gamvesColor
+        self.navigationController?.navigationBar.barTintColor = UIColor.gamvesFortniteColor
+        
+        self.view.backgroundColor = UIColor.gamvesFortniteColor
 
         self.view.addSubview(topView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: topView)        
@@ -126,7 +143,10 @@ class PlayStationViewController: UIViewController
         self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: messageLabel)
 
         self.view.addSubview(userTextField)
-        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: userTextField)        
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: userTextField)  
+        
+        self.view.addSubview(passTextField)
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: passTextField)                
 
         self.view.addSubview(buttonsView)
         self.view.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: buttonsView)
@@ -145,11 +165,12 @@ class PlayStationViewController: UIViewController
         metricsPicker["photoSize"]             =  photoSize
         metricsPicker["padding"]               =  padding
 
-        self.view.addConstraintsWithFormat("V:|[v0(200)][v1(200)][v2(100)]-20-[v3(60)]-20-[v4(60)]-30-[v5]|", views: 
+        self.view.addConstraintsWithFormat("V:|[v0(150)][v1(150)][v2(100)]-20-[v3(60)]-20-[v4(60)]-40-[v5(60)]-30-[v6]|", views: 
             topView,
             photoContainerView,
             messageLabel,
             userTextField,
+            passTextField,
             buttonsView,
             bottomView,
             metrics: metricsPicker)
@@ -164,7 +185,7 @@ class PlayStationViewController: UIViewController
         self.buttonsView.addConstraintsWithFormat("V:|[v0]|", views: saveButton)      
         self.buttonsView.addConstraintsWithFormat("V:|[v0]|", views: skipButton)      
 
-        self.buttonsView.addConstraintsWithFormat("H:|-10-[v0(100)]-10-[v1]-10-|", views: skipButton, saveButton)      
+        self.buttonsView.addConstraintsWithFormat("H:|-30-[v0]-30-[v1(100)]-30-|", views: saveButton, skipButton)      
 
         var metricsTitle = [String:Int]()
         let topTitle = padding / 2
@@ -172,8 +193,8 @@ class PlayStationViewController: UIViewController
         metricsTitle["topTitle"]             =  topTitle
 
         topView.addSubview(titleLabel)        
-        topView.addConstraintsWithFormat("H:|[v0]|", views: titleLabel)
-        topView.addConstraintsWithFormat("V:|-topTitle-[v0(80)]|", views: titleLabel, metrics: metricsTitle)
+        topView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: titleLabel)
+        topView.addConstraintsWithFormat("V:|-topTitle-[v0(100)]|", views: titleLabel, metrics: metricsTitle)
 
         self.setScreenByType()   	
     }
@@ -185,19 +206,19 @@ class PlayStationViewController: UIViewController
         var buttonTitle = String()
         var imageName = String()
         
-        title = "Add user name"
-        message = "Provide your son/daughter PlayStation username. Will help Gamves to be more connected"
+        title = "Add Fortnite user name and password"
+        message = "Provide your son/daughter Fortnite username and password. With Gamves he/she will be able to win gifts for the game"
         buttonTitle = "  Select child Image"
         imageName = "son_photo"
         
 
         self.titleLabel.text = title
-        self.pictureImageView.image = UIImage(named: "playstation")
+        self.pictureImageView.image = UIImage(named: "fortnite")
         self.messageLabel.text = message
 
-        self.saveButton.setTitle("SAVE  USERNAME", for: .normal)
-        self.skipButton.setTitle("SKIP", for: .normal)
-    }
+        self.saveButton.setTitle("   SAVE", for: .normal)
+        self.skipButton.setTitle("   SKIP", for: .normal)
+    }   
     
 
     override func didReceiveMemoryWarning() {
@@ -206,9 +227,9 @@ class PlayStationViewController: UIViewController
 
     func handleSave() {
 
-        if (userTextField.text?.isEmpty)! {
+        if ( (userTextField.text?.isEmpty)! || (passTextField.text?.isEmpty)! ) {
 
-            self.showAlert(title: "Empty field", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in
+            self.showAlert(title: "Empty field", message: "Please provide username and password", completionHandler: { (gamvesUser) in
 
                 print("")
 
@@ -216,31 +237,64 @@ class PlayStationViewController: UIViewController
         
         } else {
 
-            let consoles: PFObject = PFObject(className: "Consoles")
 
-            if let userId = PFUser.current()?.objectId
-            {                
-                let son_userId = Global.defaults.string(forKey: "\(userId)_son_userId")                                            
-                consoles["userId"] = son_userId
-            }
+            self.checkUserExist(completionHandler: { ( result ) -> () in
 
-            consoles["type"] = 1                        
-            consoles["username"] = userTextField.text            
-            consoles.saveInBackground { (resutl, error) in
-                
-                if error == nil {
 
-                    self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in
+                if result {
 
-                        print("")
+                    let vendors: PFObject = PFObject(className: "Vendors")
 
-                        self.navigationController?.popViewController(animated: true)
+                    if let userId = PFUser.current()?.objectId
+                    {                
+                        let son_userId = Global.defaults.string(forKey: "\(userId)_son_userId")                                            
+                        vendors["userId"] = son_userId
+                    }
 
-                    })                    
+                    vendors["type"] = 1                        
+                    vendors["username"] = self.userTextField.text
+                    vendors["password"] = self.passTextField.text
+                    
+                    vendors.saveInBackground { (resutl, error) in
+                        
+                        if error == nil {
+
+                            self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in
+
+                                print("")
+
+                                //self.navigationController?.popViewController(animated: true)
+                                let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
+                                self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
+
+                            })                    
+                        }
+                    }
+
+                } else {
+
+                    self.showAlert(title: "Invalid username or password", message: "The username or password do not exist or they are not correct. Please try again", completionHandler: { (gamvesUser) in
+                        
+                        self.userTextField.text = ""
+                        self.passTextField.text = ""
+
+                    })
+
                 }
-            }
-        }        
+            })
+        }
     }
+
+    func checkUserExist(completionHandler : @escaping (_ resutl:Bool) -> ()) {
+
+        // Sam API here
+        
+        var result = Bool()
+        result = true
+
+        completionHandler(result)
+    }
+
 
     func handleSkip() {
 
@@ -248,8 +302,7 @@ class PlayStationViewController: UIViewController
 
             print("")
 
-        }) 
-
+        })
     }
 
     func showAlert(title:String, message:String, completionHandler : @escaping (_ resutl:Bool) -> ()) {
@@ -267,32 +320,7 @@ class PlayStationViewController: UIViewController
         
         self.present(alert, animated: true)
 
-    }
-
-
-           
-
-            
-            
-
-
-
-
-
-
-            
-
-
-
-
-
-
-
-
-
-
-
-   
+    }   
 
 }
 

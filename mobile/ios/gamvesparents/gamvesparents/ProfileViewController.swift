@@ -1207,7 +1207,10 @@ class ProfileViewController: UIViewController,
                                                             
                                                             // REGISTRATION COMPLETED
 
-                                                            self.navigationController?.popViewController(animated: true)
+                                                            //self.navigationController?.popViewController(animated: true)
+
+                                                            let fortniteViewController = FortniteViewController()                                                        
+                                                        self.navigationController?.pushViewController(fortniteViewController, animated: true)
                                                             
                                                         })
                                                         
