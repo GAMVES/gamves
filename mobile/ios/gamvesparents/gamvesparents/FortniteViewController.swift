@@ -254,7 +254,7 @@ class FortniteViewController: UIViewController
                     vendors["type"] = 1                        
                     vendors["username"] = self.userTextField.text
                     vendors["password"] = self.passTextField.text
-                    
+
                     vendors.saveInBackground { (resutl, error) in
                         
                         if error == nil {
@@ -264,6 +264,9 @@ class FortniteViewController: UIViewController
                                 print("")
 
                                 //self.navigationController?.popViewController(animated: true)
+
+                                UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
+                                
                                 let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
                                 self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
 

@@ -277,16 +277,29 @@ class AccountViewController: UIViewController,
     }
 
     func showImagePicker(type:ProfileImagesTypes) {
+
+        self.hideShowTabBar(status: true)
         
         imagePickerViewController.setType(type: type)
 
         imagePickerViewController.profileImagesPickerProtocol = profileViewController
         
-        print(self.navigationController)
+        //print(self.navigationController)
         
         self.navigationController?.pushViewController(imagePickerViewController, animated: true)        
       
     }
+
+     func hideShowTabBar(status: Bool)
+    {
+        self.tabBarController?.tabBar.isHidden = status
+        
+        if status
+        {
+            navigationController?.navigationBar.tintColor = UIColor.white
+        } 
+    }
+
 
     func setupNavBarButtons() {
  

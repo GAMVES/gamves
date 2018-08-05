@@ -1,9 +1,10 @@
 //
+
+
 //  ProfileViewController.swift
 //  gamvesparents
 //
 //  Created by Jose Vigil on 9/26/17.
-//  Copyright © 2017 Lets Build That App. All rights reserved.
 //
 
 import Foundation
@@ -75,7 +76,6 @@ class ProfileViewController: UIViewController,
     var youAdminChatId          = Int()
     var sonAdminChatId          = Int()
     var spouseAdminChatId       = Int()
-
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -161,8 +161,7 @@ class ProfileViewController: UIViewController,
      let sonNameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Name"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Clemente Vigil"
+        tf.translatesAutoresizingMaskIntoConstraints = false      
         tf.tag = 0
         return tf
     }()
@@ -177,8 +176,7 @@ class ProfileViewController: UIViewController,
     let sonUserTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "User name"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Clemente"
+        tf.translatesAutoresizingMaskIntoConstraints = false        
         tf.tag = 1
         return tf
     }()
@@ -190,17 +188,43 @@ class ProfileViewController: UIViewController,
         return view
     }()
 
+    let sonPassBirthContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 5
+        view.layer.masksToBounds = true        
+        return view
+    }()  
+
+    let sonUserVerticalSeparatorView: UIView = {
+        let view = UIView()        
+        view.backgroundColor = UIColor.gamvesColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
     let sonPasswordTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Password"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
-        tf.isSecureTextEntry = true
-        //tf.text = "clemente"
+        tf.isSecureTextEntry = true        
         tf.tag = 2
         return tf
     }()
+
+    let sonBirthdayTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "Birthday"
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        tf.autocapitalizationType = UITextAutocapitalizationType.none
+        tf.addTarget(self, action: #selector(showDatePicker), for: UIControlEvents.touchDown)        
+        tf.tag = 2
+        return tf
+    }()
+
+    let datePicker = UIDatePicker()
 
     ///////////////////////////
 
@@ -265,8 +289,7 @@ class ProfileViewController: UIViewController,
      let yourNameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Your name"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Jose Vigil"
+        tf.translatesAutoresizingMaskIntoConstraints = false        
         tf.tag = 0
         return tf
     }()
@@ -281,8 +304,7 @@ class ProfileViewController: UIViewController,
     let yourUserTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Your user name"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Jose"
+        tf.translatesAutoresizingMaskIntoConstraints = false        
         tf.tag = 1
         return tf
     }()  
@@ -297,8 +319,7 @@ class ProfileViewController: UIViewController,
     let yourFamilyTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Family name"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Familia Vigil"
+        tf.translatesAutoresizingMaskIntoConstraints = false        
         tf.tag = 2
         return tf
     }()
@@ -319,8 +340,7 @@ class ProfileViewController: UIViewController,
     let spouseNameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Spouse name"
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "Leda Olano"
+        tf.translatesAutoresizingMaskIntoConstraints = false        
         tf.tag = 3
         return tf
     }()
@@ -336,8 +356,7 @@ class ProfileViewController: UIViewController,
         let tf = UITextField()
         tf.placeholder = "Spouse email"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
-        tf.translatesAutoresizingMaskIntoConstraints = false
-        //tf.text = "ledaolano@gmail.com"
+        tf.translatesAutoresizingMaskIntoConstraints = false        
         tf.tag = 4
         return tf
     }()  
@@ -390,6 +409,8 @@ class ProfileViewController: UIViewController,
     var sonSaving = Bool()
 
     var puserId = String()
+
+    var photoEditTextHeight = Int()
     
     override func viewDidLoad() {        
         super.viewDidLoad()        
@@ -426,8 +447,12 @@ class ProfileViewController: UIViewController,
         self.sonNameContainerView.addSubview(self.sonNameTextField)
         self.sonNameContainerView.addSubview(self.sonNameSeparatorView)
         self.sonNameContainerView.addSubview(self.sonUserTextField)                
-        self.sonNameContainerView.addSubview(self.sonUserSeparatorView)  
-        self.sonNameContainerView.addSubview(self.sonPasswordTextField)            
+        self.sonNameContainerView.addSubview(self.sonUserSeparatorView)
+        self.sonNameContainerView.addSubview(self.sonPassBirthContainerView) 
+
+        self.sonPassBirthContainerView.addSubview(self.sonPasswordTextField)   
+        self.sonPassBirthContainerView.addSubview(self.sonUserVerticalSeparatorView)   
+        self.sonPassBirthContainerView.addSubview(self.sonBirthdayTextField)            
 
         let sons: NSMutableArray = ["Son", "Daughter"]
         self.sonUserTypeDownPicker = DownPicker(textField: sonUserTypeTextField, withData:sons as! [Any])
@@ -464,7 +489,7 @@ class ProfileViewController: UIViewController,
         let topPadding = 40 
 
         let photoContainerHeight = 120        
-        let photoEditTextHeight = photoContainerHeight / 3  
+        photoEditTextHeight = photoContainerHeight / 3  
 
         let schoolContainerHeight = 120
         let schoolEditTextHeight = schoolContainerHeight / 3
@@ -530,7 +555,35 @@ class ProfileViewController: UIViewController,
 
     }
 
+    func showDatePicker(){
+       
+        datePicker.datePickerMode = .date       
+        let toolbar = UIToolbar();
+        toolbar.sizeToFit()
+       
+        //let doneButton = UIBarButtonItem(title: "Select", style: UIBarButtonItemStyle.bordered, target: self, action: "donedatePicker")
+        //let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        //let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.bordered, target: self, action: "cancelDatePicker")
+        //toolbar.setItems([doneButton,spaceButton,cancelButton], animated: false)        
+        //self.sonBirthdayTextField.inputAccessoryView = toolbar         
+
+        self.sonBirthdayTextField.inputView = datePicker
+
+    }
+
+    func donedatePicker(){
     
+       let formatter = DateFormatter()
+       formatter.dateFormat = "dd/MM/yyyy"
+       self.sonBirthdayTextField.text = formatter.string(from: datePicker.date)
+    
+       self.view.endEditing(true) 
+   }
+
+    func cancelDatePicker(){
+   
+        self.view.endEditing(true)          
+    }
 
     
     func didpickImage(type:ProfileImagesTypes, smallImage:UIImage, croppedImage:UIImage)  {
@@ -719,7 +772,7 @@ class ProfileViewController: UIViewController,
     
     func hideShowTabBar(status: Bool)
     {
-        tabBarController?.tabBar.isHidden = status
+        self.tabBarController?.tabBar.isHidden = status
         
         if status
         {
@@ -813,17 +866,32 @@ class ProfileViewController: UIViewController,
         self.sonNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonNameSeparatorView)        
         self.sonNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.sonUserTextField)
         self.sonNameContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonUserSeparatorView)       
-        self.sonNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.sonPasswordTextField)         
+        self.sonNameContainerView.addConstraintsWithFormat("H:|-10-[v0]-5-|", views: self.sonPassBirthContainerView)         
 
         self.sonNameContainerView.addConstraintsWithFormat(
-            "V:|[v0(photoEditTextHeight)][v1(2)][v2(photoEditTextHeight)][v3(2)][v4(photoEditTextHeight)]|", 
+            "V:|[v0(photoEditTextHeight)][v1(2)][v2(photoEditTextHeight)][v3(2)][v4]|", 
             views: 
             self.sonNameTextField, 
             self.sonNameSeparatorView, 
             self.sonUserTextField,
             self.sonUserSeparatorView,            
-            self.sonPasswordTextField,
-            metrics: metricsProfile)       
+            self.sonPassBirthContainerView,
+            metrics: metricsProfile)     
+
+        let width = self.view.frame.width
+        let moduleWidth = Int((width / 2) - 30)
+        let moduleheight = photoEditTextHeight - 5
+        let moduleMetrics = ["moduleWidth":moduleWidth, "moduleheight":moduleheight]
+
+        self.sonPassBirthContainerView.addConstraintsWithFormat("V:|[v0(moduleheight)]|", views: self.sonPasswordTextField, metrics: moduleMetrics)
+        self.sonPassBirthContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonUserVerticalSeparatorView, metrics: moduleMetrics)
+        self.sonPassBirthContainerView.addConstraintsWithFormat("V:|[v0(moduleheight)]|", views: self.sonBirthdayTextField, metrics: moduleMetrics)
+        
+        self.sonPassBirthContainerView.addConstraintsWithFormat("H:|[v0(moduleWidth)]-2-[v1(2)]-10-[v2]|", views: 
+            self.sonPasswordTextField, 
+            self.sonUserVerticalSeparatorView,
+            self.sonBirthdayTextField,
+            metrics: moduleMetrics)
 
         self.sonSchoolContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.sonUserTypeTextField)
         self.sonSchoolContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonUserTypeSeparatorView)        
@@ -840,7 +908,6 @@ class ProfileViewController: UIViewController,
             self.sonSchoolSeparatorView,          
             self.sonGradeTextField,          
             metrics: metricsProfile)
-
 
         ///////
         
@@ -1114,6 +1181,7 @@ class ProfileViewController: UIViewController,
                 Global.defaults.set(self.sonNameTextField.text!, forKey: "\(self.puserId)_son_name")
                 Global.defaults.set(self.sonUserTextField.text!, forKey: "\(self.puserId)_son_username")
                 Global.defaults.set(self.sonPasswordTextField.text!, forKey: "\(self.puserId)_son_password")
+                Global.defaults.set(self.sonPasswordTextField.text!, forKey: "\(self.puserId)_son_birthday")
 
                 Global.defaults.set(self.sonUserTypeTextField.text!, forKey: "\(self.puserId)_son_type")
                 Global.defaults.set(self.sonSchoolTextField.text!, forKey: "\(self.puserId)_son_school")
@@ -1142,6 +1210,8 @@ class ProfileViewController: UIViewController,
                             DispatchQueue.main.async() {
 
                                 Global.loadConfigData()
+
+                                self.hideShowTabBar(status: true)
 
                                 self.accountViewController.showImagePicker(type: ProfileImagesTypes.You)
 
@@ -1210,7 +1280,7 @@ class ProfileViewController: UIViewController,
                                                             //self.navigationController?.popViewController(animated: true)
 
                                                             let fortniteViewController = FortniteViewController()                                                        
-                                                        self.navigationController?.pushViewController(fortniteViewController, animated: true)
+                                                            self.navigationController?.pushViewController(fortniteViewController, animated: true)
                                                             
                                                         })
                                                         
@@ -1273,14 +1343,19 @@ class ProfileViewController: UIViewController,
             message += "Password is empty"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.sonPasswordTextField)
             
-        }
-        else if (self.sonPasswordTextField.text?.characters.count)! < 8
+        } else if (self.sonPasswordTextField.text?.characters.count)! < 8
         {
             errors = true
             message += "Password must be at least 8 characters"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.sonPasswordTextField)
-        }
-        else if (self.sonUserTypeTextField.text?.isEmpty)!
+
+        } else if (self.sonBirthdayTextField.text?.isEmpty)!
+        {
+            errors = true
+            message += "Birthday is empty"
+            Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.sonBirthdayTextField)
+            
+        } else if (self.sonUserTypeTextField.text?.isEmpty)!
         {
             errors = true
             message += "Type is empty"
@@ -1410,6 +1485,7 @@ class ProfileViewController: UIViewController,
         let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
         let son_user_name = Global.defaults.string(forKey: "\(self.puserId)_son_username")
         let son_password = Global.defaults.string(forKey: "\(self.puserId)_son_password")
+        let son_birthday = Global.defaults.string(forKey: "\(self.puserId)_son_birthday")
         let son_type = Global.defaults.string(forKey: "\(self.puserId)_son_type")
         
         var type = Int()
@@ -1465,6 +1541,7 @@ class ProfileViewController: UIViewController,
         let sonParams = [
             "user_name" : son_user_name?.lowercased(),
             "user_password" : son_password,
+            "son_birthday" : son_birthday,
             "firstName" : firstName,
             "lastName" : lastName,
             "iDUserType" : type,

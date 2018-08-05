@@ -39,10 +39,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         //connect = true
         //if connect {        
-     
 
-        window?.rootViewController = UINavigationController(rootViewController: FortniteViewController())
-        return true            
+        //window?.rootViewController = UINavigationController(rootViewController: FortniteViewController())
+        //return true            
             
         if Reachability.isConnectedToNetwork() == true {
     

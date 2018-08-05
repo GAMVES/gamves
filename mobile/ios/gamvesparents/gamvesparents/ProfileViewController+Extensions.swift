@@ -64,23 +64,38 @@ extension ProfileViewController : UITextFieldDelegate {
     public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool 
     {
         
-        if tbKeyboardProfile == nil {
+        if textField == self.sonBirthdayTextField {
+
+            let bbBirthiSubmit = UIBarButtonItem.init(title: "Done", style: .plain,
+                                                 target: self, action: #selector(ProfileViewController.donedatePicker))
+
+            let bbiBirthClose = UIBarButtonItem.init(title: "Close", style: .plain,
+                                                 target: self, action: #selector(ProfileViewController.cancelDatePicker))
             
-            tbKeyboardProfile = UIToolbar.init(frame: CGRect.init(x: 0, y: 0,
-                                                           width: self.view.frame.size.width, height: 44))
-            let bbiPrev = UIBarButtonItem.init(title: "Previous",
-                                               style: .plain, target: self, action: #selector(doBtnPrev))
-            
-            let bbiNext = UIBarButtonItem.init(title: "Next", style: .plain,
-                                               target: self, action: #selector(doBtnNext))
-            
-            let bbiSpacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
-                                            target: nil, action: nil)
-            
-            let bbiSubmit = UIBarButtonItem.init(title: "Close", style: .plain,
-                                                 target: self, action: #selector(ProfileViewController.doBtnClose))
-            
-            tbKeyboardProfile?.items = [bbiPrev, bbiNext, bbiSpacer, bbiSubmit]
+            tbKeyboardProfile?.items = [bbBirthiSubmit, bbiBirthClose]
+        
+        } else {
+
+
+            if tbKeyboardProfile == nil {
+                
+                tbKeyboardProfile = UIToolbar.init(frame: CGRect.init(x: 0, y: 0,
+                                                               width: self.view.frame.size.width, height: 44))
+                let bbiPrev = UIBarButtonItem.init(title: "Previous",
+                                                   style: .plain, target: self, action: #selector(doBtnPrev))
+                
+                let bbiNext = UIBarButtonItem.init(title: "Next", style: .plain,
+                                                   target: self, action: #selector(doBtnNext))
+                
+                let bbiSpacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                                target: nil, action: nil)
+                
+                let bbiSubmit = UIBarButtonItem.init(title: "Close", style: .plain,
+                                                     target: self, action: #selector(ProfileViewController.doBtnClose))
+                
+                tbKeyboardProfile?.items = [bbiPrev, bbiNext, bbiSpacer, bbiSubmit]
+                
+            }
             
         }
         
