@@ -62,7 +62,7 @@ bin/
 env/
 build/
 develop-eggs/
-dist/
+#dist/
 downloads/
 eggs/
 .eggs/
@@ -70,7 +70,7 @@ lib/
 lib64/
 lib64
 parts/
-sdist/
+#dist/
 var/
 *.egg-info/
 .installed.cfg
