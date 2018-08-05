@@ -1,20 +1,10 @@
 
   $( document ).ready(function() {
-
-    //Parse.serverURL = "http://25.55.180.51:1337/1/";
-    //Parse.serverURL = "http://192.168.1.43:1337/1/";
-    //Parse.serverURL = "http://127.0.0.1:1337/1/";
-    //Parse.initialize("0123456789"); //local
-
-    //Sashido
-    //Parse.initialize("lTEkncCXc0jS7cyEAZwAr2IYdABenRsY86KPhzJT"); 
-    //Parse.javaScriptKey = "cRbLP23wEF669kaYy3PGcRWuPRYp6frneKjszJhJ"; 
-    //Parse.serverURL = "https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/";
-
+   
     //Back4app
     Parse.serverURL = "https://parseapi.back4app.com";
-    Parse.initialize("fyJV5DhvVXJz2Vlk53K3eeqNKzwdBQhftfBwCyQ7");     
-    Parse.javaScriptKey = "rgIGEFmrye1pjlozjvJ1b80vU8IusPyURojuNo9K";    
+    Parse.initialize("tmceYyffdci7gVbqcSJsSQ5JlsKNwkVGKU9hogED");     
+    Parse.javaScriptKey = "0dCzh2emIYzHwnZrOnEyOwpSNEIgVOndfF8c2bQI";    
 
     var currentUser = Parse.User.current();
     if (!currentUser) {
@@ -30,7 +20,7 @@
 
     loadschools();
 
-    var parseFileThumbanil;     
+    var parseFileThumbanil, parseFileIso;     
 
     var schoolIdArray = [];
     var _sId;
@@ -148,6 +138,10 @@
 
                           $("#input_thumb_school").unbind("change").change(function() {
                             loadThumbImage(this);
+                          });
+
+                          $("#input_iso_school").unbind("change").change(function() {
+                            loadThumbImage(this);
                           });              
 
                         }); 
@@ -238,6 +232,23 @@
         }
     }    
 
+    function loadIsoImage(input) {
+        if (input.files && input.files[0]) {         
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#img_iso_school').attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);
+          var desc = $("#edit_name").val();
+          desc = desc.replace(/[^a-zA-Z ]/g, "");
+          desc = desc.replace(" ", "");
+          if (hasWhiteSpace(desc))
+            desc = desc.replace(" ", "");
+          var thunbname = "i_" + desc.toLowerCase() + ".png";
+          parseFileThumbanil = new Parse.File(thunbname, input.files[0], "image/png");                   
+        }
+    }   
+
     function hasWhiteSpace(s) {
       return s.indexOf(' ') >= 0;
     }
@@ -247,6 +258,7 @@
           var Schools = Parse.Object.extend("Schools");         
           var school = new Schools();    
           school.set("thumbnail", parseFileThumbanil);
+          school.set("iso", parseFileIso);
           school.set("name", $("#edit_name").val());   
           var short =  $("#edit_short").val();          
           school.set("short", short);  

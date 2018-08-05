@@ -1,3 +1,4 @@
+
  
   <div class="container_school">         
   <h3>SCHOOLS</h3><br>
@@ -6,7 +7,8 @@
         <tr>
           <th data-column-id="id" data-type="numeric" data-identifier="true">ID</th>
           <th data-column-id="objectId">ObjectId</th>
-          <th data-column-id="thumbnail" data-formatter="thumbnail">Thumbnail</th>          
+          <th data-column-id="thumbnail" data-formatter="thumbnail">Thumbnail</th>  
+          <th data-column-id="iso" data-formatter="iso">Iso</th>          
           <th data-column-id="name">Name</th>        
           <th data-column-id="grades" data-formatter="grades">Grades</th>                    
           <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>       
@@ -30,9 +32,13 @@
                     <label class="control-label">Short:</label>
                     <input type="text" class="form-control" id="edit_short" name="edit_short"/>
                   </div>                 
-                  <label for="name" class="control-label">Thumbnail:</label><br>                                        
+                  <label for="name" class="control-label">Thumbnail:</label><br>                                       
                     <img id="img_thumbnail_school" height="60" width="120"/>                 
                     <input id="input_thumb_school" type="file"></input>
+                  </div>                             
+                  <label for="name" class="control-label">Iso:</label><br>                                       
+                    <img id="img_iso_school" height="60" width="120"/>                 
+                    <input id="input_iso_school" type="file"></input>
                   </div>                             
             </div>
             <div class="modal-footer">

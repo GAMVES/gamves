@@ -87,6 +87,12 @@
 
 			user.set("username", user_name);
 			user.set("password", user_password);
+
+			if (request.params.user_birthday) {
+				let user_birthday = request.params.user_birthday;
+				user.set("birthday", user_birthday);
+			}
+			
 			user.set("Name", firstName + " " + lastName);
 		  	user.set("firstName", firstName);
 		  	user.set("lastName", lastName);
