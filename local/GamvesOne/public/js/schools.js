@@ -333,7 +333,7 @@
       } 
       
       function saveCategoriesForTarget(categoriesPF, schoolId) {
-                    
+
             let cat0 = categoriesPF[0];          
 
             cat0.add("target", schoolId); 
@@ -513,6 +513,50 @@
 
         });  
       }
+
+    window.otherSchools = [];  
+
+    window.loadOtherSchools = function(schoolId)
+    {  
+        let queryOtherSchools = new Parse.Query("Schools");  
+        queryOtherSchools.notEqualTo("objectId", schoolId);          
+        queryOtherSchools.find({
+            success: function (schools) {
+
+                if (schools.length>0)
+                {
+                    var count = schools.length;                  
+
+                    for (var i=0; i<count; i++) {                       
+
+                        var school = schools[i];
+
+                        let shortName = school.get("short");
+                        let schoolName = school.get("name");
+
+                        var other = { short: shortName, name: schoolName };
+
+                        otherSchools.push(other);                  
+
+                    }
+                }
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
+            }
+        });
+    }
+
+    window.checkChecked = function(formname, schoolId) {
+        var shortArrays = [schoolId];
+        $('#' + formname + ' input[type="checkbox"]').each(function() {
+            if ($(this).is(":checked")) {
+                let short = $(this).val();
+                shortArrays.push(short);                
+            }
+        });
+        return shortArrays;
+     }
 
   });
 

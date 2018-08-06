@@ -7,13 +7,13 @@ document.addEventListener("LoadCategories", function(event){
     var categoriesLenght = 0;
     var categoryName;
 
-    loadOtherSchools();
+    loadOtherSchools(schoolId);
     loadCategories();
 
     var parseFileThumbanil; 
     var parseFileBackImage; 
 
-    var otherSchools = [];   
+    //var otherSchools = [];   
 
     function loadCategories()
     {  
@@ -128,9 +128,7 @@ document.addEventListener("LoadCategories", function(event){
                             saveCategory();
                         });                    
 
-                        $( "#new_category" ).unbind("click").click(function() {
-
-                            $('#schools_viewed').empty();
+                        $( "#new_category" ).unbind("click").click(function() {                            
 
                             $("#category_title").text("New Category"); 
 
@@ -143,9 +141,12 @@ document.addEventListener("LoadCategories", function(event){
                                 for (var i = 0; i < categoriesLenght; i++) {                          
                                 $("#edit_order_categories").append(($("<option/>", { html: i })));                                     
                                 }    
-                            } 
-                          
+                            }
+                            
                             //Other Schools
+
+                            $('#schools_viewed_categories').empty();                          
+                            
                             let count = otherSchools.length;                           
 
                             for (var i=0; i<count; i++) {                       
@@ -155,7 +156,7 @@ document.addEventListener("LoadCategories", function(event){
                                 let short = other.short;
                                 let name = other.name;
 
-                                $('#schools_viewed').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
+                                $('#schools_viewed_categories').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
 
                             }
                             
@@ -224,7 +225,7 @@ document.addEventListener("LoadCategories", function(event){
         });
     }   
 
-    function loadOtherSchools()
+    /*function loadOtherSchools()
     {  
         let queryOtherSchools = new Parse.Query("Schools");  
         queryOtherSchools.notEqualTo("objectId", schoolId);          
@@ -253,7 +254,7 @@ document.addEventListener("LoadCategories", function(event){
                 console.log("Error: " + error.code + " " + error.message);
             }
         });
-    }       
+    }*/       
     
     function loadThumbImage(input) {
         if (input.files && input.files[0]) {         

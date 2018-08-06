@@ -11,10 +11,11 @@ document.addEventListener("LoadFanpage", function(event){
       var fanpageId;
       var fanpageObjs = [];
       var _fId;
-      var fanpageIdArray = []; 
+      var fanpageIdArray = [];       
 
       var queryCategory = new Parse.Query("Categories");             
       queryCategory.equalTo("objectId", catId);
+      queryCategory.containedIn("target", [schoolId]);
       queryCategory.first({
           success: function (category) {
               
@@ -151,20 +152,36 @@ document.addEventListener("LoadFanpage", function(event){
                               loadAlbumImage(this);
                           });                   
 
-                          $( "#new_fanpage" ).unbind("click").click(function() {                             
+                          $( "#new_fanpage" ).unbind("click").click(function() {         
+                           
                                                           
                              $("#fanpage_title").text("New Fanpage"); 
 
                              $('#edit_modal_fanpage').modal('show');       
 
-                              if (fanpagesLenght==0){
-                                  $("#edit_order_fanpage").append(($("<option/>", { html: 0 })));                                     
-                              } else {
-                                fanpagesLenght++;
-                                for (var i = 0; i < fanpagesLenght; i++) {                          
-                                  $("#edit_order_fanpage").append(($("<option/>", { html: i })));                                     
-                                }    
-                              }           
+                                if (fanpagesLenght==0){
+                                    $("#edit_order_fanpage").append(($("<option/>", { html: 0 })));                                     
+                                } else {
+                                    fanpagesLenght++;
+                                    for (var i = 0; i < fanpagesLenght; i++) {                          
+                                    $("#edit_order_fanpage").append(($("<option/>", { html: i })));                                     
+                                    }    
+                                } 
+                              
+                                $('#schools_viewed_fanpages').empty();                          
+                            
+                                let count = otherSchools.length;                           
+
+                                for (var i=0; i<count; i++) {                       
+
+                                    let other = otherSchools[i];
+
+                                    let short = other.short;
+                                    let name = other.name;
+
+                                    $('#schools_viewed_fanpages').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
+
+                                }
 
                           });               
 
@@ -301,20 +318,19 @@ document.addEventListener("LoadFanpage", function(event){
               fanpage.set("pageAbout", $("#edit_about").val());
               fanpage.set("pageIcon", parseFileIcon);
               fanpage.set("pageCover", parseFileCover);
-              fanpage.set("categoryName", categoryName);
-              fanpage.set("target", [schoolId]);
+              fanpage.set("categoryName", categoryName);             
 
               var order = $("#edit_order_fanpage").val();          
               fanpage.set("order", parseInt(order));  
 
-               var authorRelation = fanpage.relation("author");
+              var authorRelation = fanpage.relation("author");
               authorRelation.add(user);             
 
-              fanpage.set("approved", true);  
-
+              fanpage.set("approved", true);
               fanpage.set("posterId" , user.id);
-
               fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
+
+              cat.set("target", checkChecked("frm_edit", schoolId));
                                          
               fanpage.save(null, {
                   success: function (pet) {
