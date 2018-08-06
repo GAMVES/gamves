@@ -285,10 +285,9 @@ document.addEventListener("LoadVideo", function(event){
                     var vrnd = Math.floor(100000 + Math.random() * 900000);
                     video.set("videoId", vrnd);              
 
-                    video.set("fanpageObjId", fanpageObj.id); 
-                    
+                    video.set("fanpageObjId", fanpageObj.id);                     
                     video.set("poster_name", "Gamves Official");       
-
+                    video.set("target", [schoolId]);
                     video.set("source_type", 2);  //YOUTUBE     
 
                     video.save(null, {

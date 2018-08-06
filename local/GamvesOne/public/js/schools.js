@@ -141,7 +141,7 @@
                           });
 
                           $("#input_iso_school").unbind("change").change(function() {
-                            loadThumbImage(this);
+                            loadIsoImage(this);
                           });              
 
                         }); 
@@ -245,7 +245,7 @@
           if (hasWhiteSpace(desc))
             desc = desc.replace(" ", "");
           var thunbname = "i_" + desc.toLowerCase() + ".png";
-          parseFileThumbanil = new Parse.File(thunbname, input.files[0], "image/png");                   
+          parseFileIso = new Parse.File(thunbname, input.files[0], "image/png");                   
         }
     }   
 
@@ -311,13 +311,10 @@
                       trendingBackground = image.get("image");
 
                     }
-
-                  }                
+                  }               
 
                   var Category = Parse.Object.extend("Categories"); 
-
                   var categoryPersonal = new Category();    
-
                   categoryPersonal.set("thumbnail", personal);
                   categoryPersonal.set("backImage", personalBackground);
                   categoryPersonal.set("schoolId", schoolNew.id);                    
@@ -393,39 +390,31 @@
                               clearField(); 
                             }
                             count++;
-
                       },
                       error: function (response, error) {
                           console.log('Error: ' + error.message);
                       }
 
                     });
-
-                    
-
-
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
               }
 
             });
-
           } 
-
-
       }
 
       function clearField(){
         $("#edit_model_school").find("input[type=text], textarea").val("");
         $("#edit_model_school").find("input[type=file], textarea").val("");      
-        $('#img_thumbnail').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+        $('#img_thumbnail_school').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
+        $('#img_iso_school').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");                     
         $("#img_back").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
       }
 
 
       function createSchoolS3Folder(s3folder) {
-
 
          Parse.Cloud.run("createS3Folder", { folder: s3folder }).then(function(result) {    
 
@@ -440,10 +429,7 @@
             $('#error_message').html("<p>" + errort + "</p>");
 
         });  
-
-
       }
-
 
   });
 

@@ -23,32 +23,48 @@
                 <h4 id="category_title" class="modal-title"></h4>
             </div>
             <div class="modal-body">
+                
                 <form method="post" id="frm_edit">                  
+                  
                   <div class="form-group">                   
+                   
                    <div class="form-group">
-                    <label for="salary" class="control-label">Description:</label>
-                    <input type="text" class="form-control" id="edit_description" name="edit_description"/>
+                      <label for="salary" class="control-label">Description:</label>
+                      <input type="text" class="form-control" id="edit_description" name="edit_description"/>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="frm_edit" class="control-label">Order:</label>
+                      <select name="edit_order_categories" id="edit_order_categories"></select>                      
+                    </div>
+
+                    <div class="form-group">
+                      <label for="frm_edit" class="control-label">Thumbnail:</label><br>                                        
+                      <img id="img_thumbnail" height="60" width="60"/>                 
+                      <input id="input_thumb_image" type="file"></input>
+                    </div>     
+
+                    <div class="form-group">
+                      <label for="frm_edit" class="control-label">BackImage:</label>                    
+                      <div id="edit_backimage" height="50" width="50" /> 
+                        <img id="img_back" height="60" width="120"/>                   
+                        <input id="input_back_image" type="file"></input>
+                      </div>   
+                    </div>
+
+                    <div class="form-group">
+                      <label for="frm_edit" class="control-label">Viewed by:</label>      
+                      <div id="schools_viewed"></div>                                    
+                    </div>
+                  
                   </div>
-                  <div class="form-group">
-                    <label for="name" class="control-label">Order:</label>
-                    <select name="edit_order_categories" id="edit_order_categories"></select>                      
+
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="button" id="btn_edit_category" class="btn btn-primary">Save</button>
                   </div>
-                  <label for="name" class="control-label">Thumbnail:</label><br>                                        
-                    <img id="img_thumbnail" height="60" width="60"/>                 
-                    <input id="input_thumb_image" type="file"></input>
-                  </div>             
-                  <div class="form-group">
-                    <label for="name" class="control-label">BackImage:</label>                    
-                    <div id="edit_backimage" height="50" width="50" /> 
-                    <img id="img_back" height="60" width="120"/>                   
-                    <input id="input_back_image" type="file"></input>
-                  </div>                  
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="btn_edit_category" class="btn btn-primary">Save</button>
-            </div>
-            </form>
+
+              </form>
         </div>
       </div>
     </div>

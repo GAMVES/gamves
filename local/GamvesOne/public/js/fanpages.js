@@ -302,6 +302,7 @@ document.addEventListener("LoadFanpage", function(event){
               fanpage.set("pageIcon", parseFileIcon);
               fanpage.set("pageCover", parseFileCover);
               fanpage.set("categoryName", categoryName);
+              fanpage.set("target", [schoolId]);
 
               var order = $("#edit_order_fanpage").val();          
               fanpage.set("order", parseInt(order));  

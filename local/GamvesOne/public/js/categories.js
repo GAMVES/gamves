@@ -7,10 +7,13 @@ document.addEventListener("LoadCategories", function(event){
     var categoriesLenght = 0;
     var categoryName;
 
+    loadOtherSchools();
     loadCategories();
 
     var parseFileThumbanil; 
     var parseFileBackImage; 
+
+    var otherSchools = [];
 
     function loadCategories()
     {
@@ -139,8 +142,31 @@ document.addEventListener("LoadCategories", function(event){
                             for (var i = 0; i < categoriesLenght; i++) {                          
                               $("#edit_order_categories").append(($("<option/>", { html: i })));                                     
                             }    
-                          }           
+                          } 
+                          
+                            //Other Schools
+                            let count = otherSchools.length;                           
 
+                            for (var i=0; i<count; i++) {                       
+
+                                let other = otherSchools[i];
+
+                                let short = other.short;
+                                let name = other.schoolName;
+
+                                let label = document.createElement("label");                        
+                                let checkbox = document.createElement("input");
+
+                                checkbox.type = "checkbox";    
+                                checkbox.name = short;
+                                checkbox.value = false;        
+
+                                label.appendChild(checkbox);   
+                                label.appendChild(name);
+
+                                document.getElementById('schools_viewed').appendChild(label);                                
+
+                            }
                         }); 
 
                       /* Executes after data is loaded and rendered */
@@ -202,8 +228,50 @@ document.addEventListener("LoadCategories", function(event){
                 console.log("Error: " + error.code + " " + error.message);
             }
         });
-    }
-         
+    }   
+
+    function loadOtherSchools()
+    {  
+        let queryOtherSchools = new Parse.Query("Schools");  
+        queryOtherSchools.notEqualTo("schoolId", schoolId);          
+        queryOtherSchools.find({
+            success: function (schools) {
+
+                if (schools.length>0)
+                {
+                    var count = schools.length;                  
+
+                    for (var i=0; i<count; i++) {                       
+
+                        var school = schools[i];
+
+                        let shortName = school.get("short");
+                        let schoolName = school.get("name");
+
+                        var other = { short: shortName, name: schoolName };
+
+                        otherSchools.push(other);
+
+                        /*var label = document.createElement("label");                        
+                        var checkbox = document.createElement("input");
+
+                        checkbox.type = "checkbox";    
+                        checkbox.name = short + "_" + i; 
+                        checkbox.value = false;        
+
+                        label.appendChild(checkbox);   
+                        label.appendChild(schoolName);
+
+                        document.getElementById('schools_viewed').appendChild(label);*/
+
+                    }
+                }
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
+            }
+        });
+    }       
     
     function loadThumbImage(input) {
         if (input.files && input.files[0]) {         
@@ -241,6 +309,7 @@ document.addEventListener("LoadCategories", function(event){
           var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
           cat.set("backImage", parseFileBackImage);
+          cat.set("target", [schoolId]);
           cat.save(null, {
               success: function (pet) {
                   console.log('Category created successful with name: ' + cat.get("pageName"));
