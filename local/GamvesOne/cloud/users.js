@@ -57,9 +57,7 @@
 	    	var fileBackground = new Parse.File("background.png", dataPhotoBackground, "image/png");
 
 			profile.set("pictureBackground", fileBackground);
-
 			profile.set("bio", "Your phrase here");		
-
 			profile.set("backgroundColor", [228, 239, 245]);
 
 			return profile.save(null, {useMasterKey: true});
