@@ -1,6 +1,7 @@
 document.addEventListener("LoadCategories", function(event){
 
-    var schoolId = event.detail;
+    var schoolId = event.detail[0];
+    var short = event.detail[1];
 
     var selectedItem = [];   
     var selected = -1; 
@@ -13,12 +14,10 @@ document.addEventListener("LoadCategories", function(event){
     var parseFileThumbanil; 
     var parseFileBackImage; 
 
-    //var otherSchools = [];   
-
     function loadCategories()
     {  
         queryCategory = new Parse.Query("Categories");  
-        queryCategory.containedIn("target", [schoolId]);          
+        queryCategory.containedIn("target", [short]);          
         queryCategory.find({
             success: function (categories) {
 
@@ -98,7 +97,8 @@ document.addEventListener("LoadCategories", function(event){
 
                       var event = new CustomEvent("LoadFanpage", {detail: {
                           categoryId: categoryId,
-                          schoolId: schoolId
+                          schoolId: schoolId,
+                          short: short
                       }}); //{ detail: categoryId });
                       document.dispatchEvent(event);                                                              
 
@@ -153,10 +153,10 @@ document.addEventListener("LoadCategories", function(event){
 
                                 let other = otherSchools[i];
 
-                                let short = other.short;
+                                let shortTarget = other.short;
                                 let name = other.name;
 
-                                $('#schools_viewed_categories').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
+                                $('#schools_viewed_categories').append('<input name="accesories" type="checkbox" value="' + shortTarget + '"/> '+ name +'<br/>');
 
                             }
                             
@@ -224,37 +224,6 @@ document.addEventListener("LoadCategories", function(event){
             }
         });
     }   
-
-    /*function loadOtherSchools()
-    {  
-        let queryOtherSchools = new Parse.Query("Schools");  
-        queryOtherSchools.notEqualTo("objectId", schoolId);          
-        queryOtherSchools.find({
-            success: function (schools) {
-
-                if (schools.length>0)
-                {
-                    var count = schools.length;                  
-
-                    for (var i=0; i<count; i++) {                       
-
-                        var school = schools[i];
-
-                        let shortName = school.get("short");
-                        let schoolName = school.get("name");
-
-                        var other = { short: shortName, name: schoolName };
-
-                        otherSchools.push(other);                  
-
-                    }
-                }
-            },
-            error: function (error) {
-                console.log("Error: " + error.code + " " + error.message);
-            }
-        });
-    }*/       
     
     function loadThumbImage(input) {
         if (input.files && input.files[0]) {         
@@ -285,14 +254,13 @@ document.addEventListener("LoadCategories", function(event){
       function saveCategory() {            
           
           var Category = Parse.Object.extend("Categories");         
-          var cat = new Category();    
-          cat.set("schoolId", schoolId);
+          var cat = new Category();              
           cat.set("thumbnail", parseFileThumbanil);
           cat.set("name", $("#edit_description").val());
           var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
           cat.set("backImage", parseFileBackImage);
-          cat.set("target", checkChecked("frm_edit", schoolId));
+          cat.set("target", checkChecked("frm_edit", short));
           cat.save(null, {
               success: function (pet) {
                   console.log('Category created successful with name: ' + cat.get("pageName"));
@@ -306,16 +274,7 @@ document.addEventListener("LoadCategories", function(event){
           });
       }
 
-      function checkChecked(formname, schoolId) {
-        var shortArrays = [schoolId];
-        $('#' + formname + ' input[type="checkbox"]').each(function() {
-            if ($(this).is(":checked")) {
-                let short = $(this).val();
-                shortArrays.push(short);                
-            }
-        });
-        return shortArrays;
-     }
+      
 
       function clearField(){
           $("#edit_model_category").find("input[type=text], textarea").val("");

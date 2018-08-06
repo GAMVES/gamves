@@ -2,6 +2,7 @@ document.addEventListener("LoadFanpage", function(event){
 
       var catId = event.detail.categoryId;
       var schoolId = event.detail.schoolId;
+      var short = event.detail.short;
       
       var selectedItem = [];   
       var selected = -1;
@@ -15,7 +16,7 @@ document.addEventListener("LoadFanpage", function(event){
 
       var queryCategory = new Parse.Query("Categories");             
       queryCategory.equalTo("objectId", catId);
-      queryCategory.containedIn("target", [schoolId]);
+      queryCategory.containedIn("target", [short]);
       queryCategory.first({
           success: function (category) {
               
@@ -330,7 +331,7 @@ document.addEventListener("LoadFanpage", function(event){
               fanpage.set("posterId" , user.id);
               fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
 
-              cat.set("target", checkChecked("frm_edit", schoolId));
+              cat.set("target", checkChecked("frm_edit", short));
                                          
               fanpage.save(null, {
                   success: function (pet) {

@@ -43,8 +43,9 @@
                       item = {};
                       item["id"] = i+1;
                       var objectId = schools[i].id;
-                      dataJson.objectId = objectId;
-                      item["objectId"] = objectId;                  
+                      dataJson.objectId = objectId;                      
+                      item["objectId"] = objectId; 
+                      item["short"] = schools[i].get("short");                                      
                       if (schools[i].get("thumbnail") != undefined){                
                         var thumbnail = schools[i].get("thumbnail");
                         item["thumbnail"] = thumbnail._url;
@@ -87,20 +88,22 @@
                            $("#gridSchool").bootgrid("deselect", [parseInt(selected)]);                                              
                        }
 
-                      var countSelected=0;
-                      var rowIds = [];
-                      var schoolId;
+                      let countSelected=0;
+                      let rowIds = [];
+                      let schoolId;
+                      let short; 
                       for (var i = 0; i < rows.length; i++)
                       {                      
                           rowIds.push(rows[i].id); 
                           schoolId = rows[i].objectId; 
-                          schoolName = rows[i].name;                              
+                          short = rows[i].short; 
+
                       }              
 
                       selected = rowIds.join(",");
                       selectedItem.push(selected);   
 
-                      var event = new CustomEvent("LoadCategories", { detail: schoolId });
+                      var event = new CustomEvent("LoadCategories", { detail: [schoolId,short] });
                       document.dispatchEvent(event);                                                              
 
                      //alert("Select: " + rowIds.join(","));
@@ -260,7 +263,7 @@
           school.set("thumbnail", parseFileThumbanil);
           school.set("iso", parseFileIso);
           school.set("name", $("#edit_name").val());   
-          let short =  $("#edit_short").val();          
+          var short =  $("#edit_short").val();          
           school.set("short", short);  
 
           school.save(null, {
@@ -268,9 +271,9 @@
 
                   console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
 
-                  checkKnownCategoryExistByName(schoolNew.id, function(categoriesPF) {
+                  checkKnownCategoryExistByName(short, function(categoriesPF) {
                       
-                    saveCategoriesForTarget(categoriesPF, schoolNew.id);                                            
+                        saveCategoriesForTarget(categoriesPF, short);                                            
 
                   });       
                   
@@ -285,7 +288,7 @@
           
       }      
 
-      function checkKnownCategoryExistByName(schoolId, callback) {
+      function checkKnownCategoryExistByName(short, callback) {
 
           var trending = "TRENDING";
           var personal = "PERSONAL";
@@ -321,7 +324,7 @@
                 } else {
 
                     // Create New
-                    createCategories(schoolId);
+                    createCategories(short);
                 }
 
             },
@@ -332,16 +335,16 @@
           });
       } 
       
-      function saveCategoriesForTarget(categoriesPF, schoolId) {
+      function saveCategoriesForTarget(categoriesPF, short) {
 
             let cat0 = categoriesPF[0];          
 
-            cat0.add("target", schoolId); 
+            cat0.add("target", short); 
             cat0.save();
 
             let cat1 = categoriesPF[1];
 
-            cat1.add("target", schoolId); 
+            cat1.add("target", short); 
             cat1.save();
 
             loadschools();
@@ -351,7 +354,7 @@
 
     }
 
-      function createCategories(schoolId) {                
+      function createCategories(short) {                
 
           var queryImages = new Parse.Query("Images");  
           queryImages.ascending("createdAt");    
@@ -402,7 +405,7 @@
 
                                     categoriesArrayCreated.push(catTrendPF);  
                                     
-                                    saveCategoriesForTarget(categoriesArrayCreated, schoolId);
+                                    saveCategoriesForTarget(categoriesArrayCreated, short);
 
                                 },
                                 error: function (error) {
@@ -547,8 +550,8 @@
         });
     }
 
-    window.checkChecked = function(formname, schoolId) {
-        var shortArrays = [schoolId];
+    window.checkChecked = function(formname, short) {
+        var shortArrays = [short];
         $('#' + formname + ' input[type="checkbox"]').each(function() {
             if ($(this).is(":checked")) {
                 let short = $(this).val();
