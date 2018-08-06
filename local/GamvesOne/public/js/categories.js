@@ -13,7 +13,7 @@ document.addEventListener("LoadCategories", function(event){
     var parseFileThumbanil; 
     var parseFileBackImage; 
 
-    var otherSchools = [];
+    var otherSchools = [];   
 
     function loadCategories()
     {  
@@ -130,18 +130,20 @@ document.addEventListener("LoadCategories", function(event){
 
                         $( "#new_category" ).unbind("click").click(function() {
 
-                          $("#category_title").text("New Category"); 
+                            $('#schools_viewed').empty();
 
-                          $('#edit_model_category').modal('show');                               
+                            $("#category_title").text("New Category"); 
 
-                          if (categoriesLenght==0){
-                              $("#edit_order_categories").append(($("<option/>", { html: 0 })));                                     
-                          } else {
-                            categoriesLenght++;
-                            for (var i = 0; i < categoriesLenght; i++) {                          
-                              $("#edit_order_categories").append(($("<option/>", { html: i })));                                     
-                            }    
-                          } 
+                            $('#edit_model_category').modal('show');                               
+
+                            if (categoriesLenght==0){
+                                $("#edit_order_categories").append(($("<option/>", { html: 0 })));                                     
+                            } else {
+                                categoriesLenght++;
+                                for (var i = 0; i < categoriesLenght; i++) {                          
+                                $("#edit_order_categories").append(($("<option/>", { html: i })));                                     
+                                }    
+                            } 
                           
                             //Other Schools
                             let count = otherSchools.length;                           
@@ -151,69 +153,62 @@ document.addEventListener("LoadCategories", function(event){
                                 let other = otherSchools[i];
 
                                 let short = other.short;
-                                let name = other.schoolName;
+                                let name = other.name;
 
-                                let label = document.createElement("label");                        
-                                let checkbox = document.createElement("input");
-
-                                checkbox.type = "checkbox";    
-                                checkbox.name = short;
-                                checkbox.value = false;        
-
-                                label.appendChild(checkbox);   
-                                label.appendChild(name);
-
-                                document.getElementById('schools_viewed').appendChild(label);                                
+                                $('#schools_viewed').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
 
                             }
+                            
                         }); 
 
-                      /* Executes after data is loaded and rendered */
-                      grid.find(".command-edit").on("click", function(e) {
+                        /* Executes after data is loaded and rendered */
+                        grid.find(".command-edit").on("click", function(e) {
 
-                          //alert("You pressed edit on row: " + $(this).data("row-id"));
-                          var ele =$(this).parent();
-                          var g_id = $(this).parent().siblings(':first').html();
-                          var g_name = $(this).parent().siblings(':nth-of-type(2)').html();
+                            //alert("You pressed edit on row: " + $(this).data("row-id"));
+                            var ele =$(this).parent();
+                            var g_id = $(this).parent().siblings(':first').html();
+                            var g_name = $(this).parent().siblings(':nth-of-type(2)').html();
 
-                          console.log(g_id);
-                          console.log(g_name);
+                            console.log(g_id);
+                            console.log(g_name);
 
-                          //console.log(grid.data());//
-                          $('#edit_model_category').modal('show');
+                            //console.log(grid.data());//
+                            $('#edit_model_category').modal('show');
 
-                          if ($(this).data("row-id") >0) {
+                            if ($(this).data("row-id") >0) {
 
-                            var f = ele.siblings(':first').html();                        
-                            var a1 = ele.siblings(':nth-of-type(1)').html();
-                            var a2 = ele.siblings(':nth-of-type(2)').html();
-                            var a3 = ele.siblings(':nth-of-type(3)');
-                            var a4 = ele.siblings(':nth-of-type(4)').html();
-                            var a5 = ele.siblings(':nth-of-type(5)').html();
-                            var a6 = ele.siblings(':nth-of-type(6)').html();
-                            var a7 = ele.siblings(':nth-of-type(7)').html();
+                                var f = ele.siblings(':first').html();                        
+                                var a1 = ele.siblings(':nth-of-type(1)').html();
+                                var a2 = ele.siblings(':nth-of-type(2)').html();
+                                var a3 = ele.siblings(':nth-of-type(3)');
+                                var a4 = ele.siblings(':nth-of-type(4)').html();
+                                var a5 = ele.siblings(':nth-of-type(5)').html();
+                                var a6 = ele.siblings(':nth-of-type(6)').html();
+                                var a7 = ele.siblings(':nth-of-type(7)').html();
 
-                            // collect the data
-                            //$('#edit_id').val(ele.siblings(':first').html());                                                
-                            $("#edit_thumbnail").append(a4);
-                            $('#edit_order_categories').val(a5);
-                            $('#edit_description').val(a6);
-                            $('#edit_backimage').append(a7); 
+                                // collect the data
+                                //$('#edit_id').val(ele.siblings(':first').html());                                                
+                                $("#edit_thumbnail").append(a4);
+                                $('#edit_order_categories').val(a5);
+                                $('#edit_description').val(a6);
+                                $('#edit_backimage').append(a7); 
 
-                            $("#category_title").text("Edit category - " + a6);                       
+                                $("#category_title").text("Edit category - " + a6);                       
 
-                          } else {
-                             alert('Now row selected! First select row, then click edit button');
-                          }
+                            } else {
+                                alert('Now row selected! First select row, then click edit button');
+                            }
 
-                      }).end().find(".command-delete").on("click", function(e) {
-
-
-                      }).end().find(".command-fanpage").on("click", function(e) {                    
+                        }).end().find(".command-delete").on("click", function(e) {
 
 
-                      });
-                  });                  
+                        }).end().find(".command-fanpage").on("click", function(e) {                    
+
+
+                        });
+
+                    }); 
+
 
                 } else {
                     console.log("Nothing found, please try again");
@@ -232,7 +227,7 @@ document.addEventListener("LoadCategories", function(event){
     function loadOtherSchools()
     {  
         let queryOtherSchools = new Parse.Query("Schools");  
-        queryOtherSchools.notEqualTo("schoolId", schoolId);          
+        queryOtherSchools.notEqualTo("objectId", schoolId);          
         queryOtherSchools.find({
             success: function (schools) {
 
@@ -249,19 +244,7 @@ document.addEventListener("LoadCategories", function(event){
 
                         var other = { short: shortName, name: schoolName };
 
-                        otherSchools.push(other);
-
-                        /*var label = document.createElement("label");                        
-                        var checkbox = document.createElement("input");
-
-                        checkbox.type = "checkbox";    
-                        checkbox.name = short + "_" + i; 
-                        checkbox.value = false;        
-
-                        label.appendChild(checkbox);   
-                        label.appendChild(schoolName);
-
-                        document.getElementById('schools_viewed').appendChild(label);*/
+                        otherSchools.push(other);                  
 
                     }
                 }
@@ -298,8 +281,8 @@ document.addEventListener("LoadCategories", function(event){
         }
     }
 
-      function saveCategory() {          
-
+      function saveCategory() {            
+          
           var Category = Parse.Object.extend("Categories");         
           var cat = new Category();    
           cat.set("schoolId", schoolId);
@@ -308,7 +291,7 @@ document.addEventListener("LoadCategories", function(event){
           var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
           cat.set("backImage", parseFileBackImage);
-          cat.set("target", [schoolId]);
+          cat.set("target", checkChecked("frm_edit", schoolId));
           cat.save(null, {
               success: function (pet) {
                   console.log('Category created successful with name: ' + cat.get("pageName"));
@@ -321,6 +304,17 @@ document.addEventListener("LoadCategories", function(event){
               }
           });
       }
+
+      function checkChecked(formname, schoolId) {
+        var shortArrays = [schoolId];
+        $('#' + formname + ' input[type="checkbox"]').each(function() {
+            if ($(this).is(":checked")) {
+                let short = $(this).val();
+                shortArrays.push(short);                
+            }
+        });
+        return shortArrays;
+     }
 
       function clearField(){
           $("#edit_model_category").find("input[type=text], textarea").val("");
