@@ -16,10 +16,9 @@ document.addEventListener("LoadCategories", function(event){
     var otherSchools = [];
 
     function loadCategories()
-    {
-  
+    {  
         queryCategory = new Parse.Query("Categories");  
-        queryCategory.equalTo("schoolId", schoolId);          
+        queryCategory.containedIn("target", [schoolId]);          
         queryCategory.find({
             success: function (categories) {
 

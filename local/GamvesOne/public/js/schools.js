@@ -268,24 +268,13 @@
 
                   console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
 
-                  checkKnownCategoryExistByName(schoolNew.id, function(categoriesPF){
-
-                      categoriesPF[0].set("target", [schoolId]); 
-                      categoriesPF[0].save();
-
-                      categoriesPF[1].set("target", [schoolId]); 
-                      categoriesPF[1].save();
-
-                      loadschools();
-                      clearField();
-                      createSchoolS3Folder(short);
-
-                      $('#edit_model_school').modal('hide');
-
-                      return schoolNew;                     
+                  checkKnownCategoryExistByName(schoolNew.id, function(categoriesPF) {
+                      
+                    saveCategoriesForTarget(categoriesPF, schoolNew.id);                                            
 
                   });       
                   
+                  createSchoolS3Folder();
 
               },
               error: function (response, error) {
@@ -293,7 +282,8 @@
               }
 
           });
-      }
+          
+      }      
 
       function checkKnownCategoryExistByName(schoolId, callback) {
 
@@ -301,12 +291,11 @@
           var personal = "PERSONAL";
 
           let queryCategories = new Parse.Query("Categories");  
-          queryCategories.equalTo("name", trending);          
-          queryCategories.equalTo("name", personal);          
+          queryCategories.containedIn("name", [trending, personal]);                    
           queryCategories.find({
             success: function (categoriesPF) {
 
-                let categories = [];
+                let categoriesArray = [];
 
                 if (categoriesPF.length>0)
                 {
@@ -320,24 +309,19 @@
 
                         if ( (name == trending) || (name == personal) ) {
 
-                            categories.push(categoryPF);
+                            categoriesArray.push(categoryPF);
                         }
                     }
                 }
 
-                if (categories.length > 0) {
+                if (categoriesArray.length > 0) {
 
-                    callback(categories);
+                    callback(categoriesArray);
 
                 } else {
 
                     // Create New
-                    createCategories(schoolId, function(categoriesCreated){
-
-                        callback(categoriesCreated);
-
-                   });
-
+                    createCategories(schoolId);
                 }
 
             },
@@ -346,74 +330,91 @@
             }
 
           });
-      }      
+      } 
+      
+      function saveCategoriesForTarget(categoriesPF, schoolId) {
+                    
+            let cat0 = categoriesPF[0];          
 
-      function createCategories(schoolId, callbackCategories) {                
+            cat0.add("target", schoolId); 
+            cat0.save();
+
+            let cat1 = categoriesPF[1];
+
+            cat1.add("target", schoolId); 
+            cat1.save();
+
+            loadschools();
+            clearField();           
+
+            $('#edit_model_school').modal('hide');
+
+    }
+
+      function createCategories(schoolId) {                
 
           var queryImages = new Parse.Query("Images");  
           queryImages.ascending("createdAt");    
           queryImages.find({
             success: function (images) {
 
-                  var personal, personalBackground, trending, trendingBackground;
+                    var personal, personalBackground, trending, trendingBackground;
 
-                  for (var i=0;i<images.length; i++) {
+                    for (var i=0;i<images.length; i++) {
+                        var image = images[i];
+                        var name = image.get("name");
+                        if (name=="personal") {
+                            personal = image.get("image");                        
+                        } else if (name=="trending") {
+                            trending = image.get("image");                                            
+                        } else if (name=="personal_background") {
+                            personalBackground = image.get("image");                        
+                        } else if (name=="trending_background") {
+                            trendingBackground = image.get("image");
+                        }
+                    } 
 
-                    var image = images[i];
+                    var categoriesArrayCreated = [];              
 
-                    var name = image.get("name");
-
-                    if (name=="personal") {
-
-                        personal = image.get("image");
-                    
-                    } else if (name=="trending") {
-
-                        trending = image.get("image");
-                                        
-                    } else if (name=="personal_background") {
-
-                        personalBackground = image.get("image");
-                    
-                    } else if (name=="trending_background") {
-
-                      trendingBackground = image.get("image");
-
-                    }
-
-                  } 
-
-                  let categoriesId = [];              
-
-                  var Category = Parse.Object.extend("Categories"); 
-                  var categoryPersonal = new Category();    
-                  categoryPersonal.set("thumbnail", personal);
-                  categoryPersonal.set("backImage", personalBackground);
-                  //categoryPersonal.set("schoolId", schoolNew.id);                    
-                  //categoryPersonal.set("target", [schoolId]);                    
-                  categoryPersonal.set("name", "PERSONAL");
-                  categoryPersonal.set("order", 1);                                      
-                  categoryPersonal.set("description", "Personal pages for each registeres kid to customize");                      
-
-                  categoryPersonal.save();   
-
-                  categoriesId.push(categoryPersonal);               
+                    var Category = Parse.Object.extend("Categories"); 
+                    var categoryPersonal = new Category();    
+                    categoryPersonal.set("thumbnail", personal);
+                    categoryPersonal.set("backImage", personalBackground);
+                    categoryPersonal.set("name", "PERSONAL");
+                    categoryPersonal.set("order", 1);                                      
+                    categoryPersonal.set("description", "Personal pages for each registeres kid to customize");                                          
                   
-                  var categoryTrending = new Category();    
+                    categoryPersonal.save(null, { 
+                        success: function (catPerPF) {              	                          	                  
+                  
+                            categoriesArrayCreated.push(catPerPF);
 
-                  categoryTrending.set("thumbnail", trending);
-                  categoryTrending.set("backImage", trendingBackground);
-                  //categoryTrending.set("schoolId", schoolNew.id);    
-                  //categoryPersonal.set("target", [schoolId]); 
-                  categoryTrending.set("name", "TRENDING");  
-                  categoryTrending.set("order", 0);                                      
-                  categoryTrending.set("description", "Most viewed and liked fanpages, trendings in general");                                       
+                            var categoryTrending = new Category();    
 
-                  categoryTrending.save();  
+                            categoryTrending.set("thumbnail", trending);
+                            categoryTrending.set("backImage", trendingBackground);                            
+                            categoryTrending.set("name", "TRENDING");  
+                            categoryTrending.set("order", 0);                                      
+                            categoryTrending.set("description", "Most viewed and liked fanpages, trendings in general");                                       
 
-                  categoriesId.push(categoryPersonal);               
+                            categoryTrending.save(null, { 
+                                success: function (catTrendPF) {                          
 
-                  callbackCategories.push(categoriesId);                
+                                    categoriesArrayCreated.push(catTrendPF);  
+                                    
+                                    saveCategoriesForTarget(categoriesArrayCreated, schoolId);
+
+                                },
+                                error: function (error) {
+                                    console.log('Error! ' + error.message);
+                                }
+                            }); 
+
+                        },
+                        error: function (error) {
+                            console.log('Error! ' + error.message);
+                        }
+                    }); 
 
                 },
                 error: function (error) {
@@ -444,7 +445,7 @@
           var lsize = optionTexts.length;
           var count = 1;
 
-          for (var i=0; i<lsize; i++){ 
+          for (var i=0; i<lsize; i++) { 
 
             var values = optionTexts[i];
 
@@ -494,14 +495,16 @@
       }
 
 
-      function createSchoolS3Folder(s3folder) {
+      function createSchoolS3Folder() {
 
-         Parse.Cloud.run("createS3Folder", { folder: s3folder }).then(function(result) {    
+        let short =  $("#edit_short").val();          
+
+        Parse.Cloud.run("createS3Folder", { folder: s3folder }).then(function(result) {    
 
             console.log("__________________________");                         
             console.log(JSON.stringify(result));       
            
-         }, function(error) {
+        }, function(error) {
 
             console.log("error :" +errort);
             // error
