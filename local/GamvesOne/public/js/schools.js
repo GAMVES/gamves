@@ -260,17 +260,33 @@
           school.set("thumbnail", parseFileThumbanil);
           school.set("iso", parseFileIso);
           school.set("name", $("#edit_name").val());   
-          var short =  $("#edit_short").val();          
+          let short =  $("#edit_short").val();          
           school.set("short", short);  
+
           school.save(null, {
               success: function (schoolNew) {
-                  console.log('school created successful with name: ' + schoolNew.get("pageName"));
-                  $('#edit_model_school').modal('hide');
-                  createCategories(schoolNew);
-                  loadschools();
-                  clearField();
-                  createSchoolS3Folder(short);
-                  return schoolNew;
+
+                  console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
+
+                  checkKnownCategoryExistByName(schoolNew.id, function(categoriesPF){
+
+                      categoriesPF[0].set("target", [schoolId]); 
+                      categoriesPF[0].save();
+
+                      categoriesPF[1].set("target", [schoolId]); 
+                      categoriesPF[1].save();
+
+                      loadschools();
+                      clearField();
+                      createSchoolS3Folder(short);
+
+                      $('#edit_model_school').modal('hide');
+
+                      return schoolNew;                     
+
+                  });       
+                  
+
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
@@ -279,7 +295,60 @@
           });
       }
 
-      function createCategories(schoolNew) {                
+      function checkKnownCategoryExistByName(schoolId, callback) {
+
+          var trending = "TRENDING";
+          var personal = "PERSONAL";
+
+          let queryCategories = new Parse.Query("Categories");  
+          queryCategories.equalTo("name", trending);          
+          queryCategories.equalTo("name", personal);          
+          queryCategories.find({
+            success: function (categoriesPF) {
+
+                let categories = [];
+
+                if (categoriesPF.length>0)
+                {
+                    let count = categoriesPF.length;                  
+
+                    for (let i=0; i<count; i++) {                       
+
+                        let categoryPF = categoriesPF[i];
+
+                        let name = categoryPF.get("name");
+
+                        if ( (name == trending) || (name == personal) ) {
+
+                            categories.push(categoryPF);
+                        }
+                    }
+                }
+
+                if (categories.length > 0) {
+
+                    callback(categories);
+
+                } else {
+
+                    // Create New
+                    createCategories(schoolId, function(categoriesCreated){
+
+                        callback(categoriesCreated);
+
+                   });
+
+                }
+
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
+            }
+
+          });
+      }      
+
+      function createCategories(schoolId, callbackCategories) {                
 
           var queryImages = new Parse.Query("Images");  
           queryImages.ascending("createdAt");    
@@ -311,31 +380,42 @@
                       trendingBackground = image.get("image");
 
                     }
-                  }               
+
+                  } 
+
+                  let categoriesId = [];              
 
                   var Category = Parse.Object.extend("Categories"); 
                   var categoryPersonal = new Category();    
                   categoryPersonal.set("thumbnail", personal);
                   categoryPersonal.set("backImage", personalBackground);
-                  categoryPersonal.set("schoolId", schoolNew.id);                    
+                  //categoryPersonal.set("schoolId", schoolNew.id);                    
+                  //categoryPersonal.set("target", [schoolId]);                    
                   categoryPersonal.set("name", "PERSONAL");
                   categoryPersonal.set("order", 1);                                      
                   categoryPersonal.set("description", "Personal pages for each registeres kid to customize");                      
 
-                  categoryPersonal.save();                  
+                  categoryPersonal.save();   
+
+                  categoriesId.push(categoryPersonal);               
                   
                   var categoryTrending = new Category();    
 
                   categoryTrending.set("thumbnail", trending);
                   categoryTrending.set("backImage", trendingBackground);
-                  categoryTrending.set("schoolId", schoolNew.id);    
+                  //categoryTrending.set("schoolId", schoolNew.id);    
+                  //categoryPersonal.set("target", [schoolId]); 
                   categoryTrending.set("name", "TRENDING");  
                   categoryTrending.set("order", 0);                                      
                   categoryTrending.set("description", "Most viewed and liked fanpages, trendings in general");                                       
 
-                  categoryTrending.save();                  
+                  categoryTrending.save();  
 
-               },
+                  categoriesId.push(categoryPersonal);               
+
+                  callbackCategories.push(categoriesId);                
+
+                },
                 error: function (error) {
                     console.log("Error: " + error.code + " " + error.message);
                 }
