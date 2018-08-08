@@ -126,6 +126,8 @@ class FortniteViewController: UIViewController
 
     var croppedImage = UIImage()
 
+    var puserId = String()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -196,7 +198,22 @@ class FortniteViewController: UIViewController
         topView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: titleLabel)
         topView.addConstraintsWithFormat("V:|-topTitle-[v0(100)]|", views: titleLabel, metrics: metricsTitle)
 
-        self.setScreenByType()   	
+        self.setScreenByType()   
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }	
+    }
+
+    override func viewWillDisappear(_ animated : Bool) {
+        super.viewWillDisappear(animated)
+
+        if self.isMovingFromParentViewController {
+
+            self.navigationController?.navigationBar.barTintColor = UIColor.gamvesColor
+            
+        }
     }
 
     func setScreenByType() {
@@ -206,7 +223,7 @@ class FortniteViewController: UIViewController
         var buttonTitle = String()
         var imageName = String()
         
-        title = "Add Fortnite user name and password"
+        title = "Registration completed. Please add Fortnite user name and password"
         message = "Provide your son/daughter Fortnite username and password. With Gamves he/she will be able to win gifts for the game"
         buttonTitle = "  Select child Image"
         imageName = "son_photo"
@@ -268,7 +285,10 @@ class FortniteViewController: UIViewController
                                 UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
                                 
                                 let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
-                                self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
+                                self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)                                   
+
+                                Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_completed")
+                                   
 
                             })                    
                         }

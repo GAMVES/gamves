@@ -405,7 +405,7 @@ class HomeViewController: UIViewController,
         
         tabBarController?.tabBar.isHidden = false
 
-        Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_completed")
+        //Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_completed")
 
         if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_fortnite_completed") {            
 
@@ -418,6 +418,9 @@ class HomeViewController: UIViewController,
                 let fortniteViewController = FortniteViewController()                                                        
                 self.navigationController?.pushViewController(fortniteViewController, animated: true)
 
+            } else {
+
+                 self.navigationController?.navigationBar.barTintColor = UIColor.gamvesColor
             }
 
         }

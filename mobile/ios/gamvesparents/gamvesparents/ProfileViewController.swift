@@ -1282,10 +1282,24 @@ class ProfileViewController: UIViewController,
                                                             
                                                             // REGISTRATION COMPLETED
 
-                                                            Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_completed") 
+                                                            if userId == PFUser.current()?.objectId {
 
-                                                            self.activityIndicatorView?.stopAnimating()
-                                                            self.navigationController?.popViewController(animated: true)
+                                                                Global.defaults.set(false, forKey: "\(userId)_fortnite_completed") 
+                                                            }
+
+                                                            let title = "Congratulations Registration Completed!"
+                                                            let message = "Thanks very much for registering to Gamves. You can now provide your son/dounghter the credentials you provided to login, the same with your spouse. Before you start using Gamves please provide one las optional information about Fortnite"
+                                                            
+                                                            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                                                            
+                                                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                                                                
+                                                                self.activityIndicatorView?.stopAnimating()
+                                                                self.navigationController?.popViewController(animated: true)
+                                                                
+                                                            }))
+                                                            
+                                                            self.present(alert, animated: true)                                                            
 
                                                             //let fortniteViewController = FortniteViewController()                                                        
                                                             //self.navigationController?.pushViewController(fortniteViewController, animated: true)
