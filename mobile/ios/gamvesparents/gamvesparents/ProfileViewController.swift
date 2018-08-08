@@ -188,6 +188,8 @@ class ProfileViewController: UIViewController,
         return view
     }()
 
+    var birthDate = String()
+
     let sonPassBirthContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
@@ -540,7 +542,7 @@ class ProfileViewController: UIViewController,
         }
         
         if Global.familyLoaded {
-            self.familyLoaded()
+            self.familyLoaded()            
         }
         
         if Global.levelsLoaded {
@@ -575,7 +577,12 @@ class ProfileViewController: UIViewController,
     
        let formatter = DateFormatter()
        formatter.dateFormat = "dd/MM/yyyy"
+       
        self.sonBirthdayTextField.text = formatter.string(from: datePicker.date)
+
+       let dateFormatterParse = DateFormatter()
+       dateFormatterParse.dateFormat = "yyyy-MM-dd" //"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+       self.birthDate = dateFormatterParse.string(from: datePicker.date)
     
        self.view.endEditing(true) 
    }
@@ -879,7 +886,7 @@ class ProfileViewController: UIViewController,
             metrics: metricsProfile)     
 
         let width = self.view.frame.width
-        let moduleWidth = Int((width / 2) - 30)
+        let moduleWidth = Int((width / 2) + 40)
         let moduleheight = photoEditTextHeight - 5
         let moduleMetrics = ["moduleWidth":moduleWidth, "moduleheight":moduleheight]
 
@@ -1181,7 +1188,7 @@ class ProfileViewController: UIViewController,
                 Global.defaults.set(self.sonNameTextField.text!, forKey: "\(self.puserId)_son_name")
                 Global.defaults.set(self.sonUserTextField.text!, forKey: "\(self.puserId)_son_username")
                 Global.defaults.set(self.sonPasswordTextField.text!, forKey: "\(self.puserId)_son_password")
-                Global.defaults.set(self.sonPasswordTextField.text!, forKey: "\(self.puserId)_son_birthday")
+                Global.defaults.set(self.sonBirthdayTextField.text!, forKey: "\(self.puserId)_son_birthday")
 
                 Global.defaults.set(self.sonUserTypeTextField.text!, forKey: "\(self.puserId)_son_type")
                 Global.defaults.set(self.sonSchoolTextField.text!, forKey: "\(self.puserId)_son_school")
@@ -1264,8 +1271,6 @@ class ProfileViewController: UIViewController,
                                                 
                                                     print("GROUPS CREATED")
                                                     
-                                                    self.activityIndicatorView?.stopAnimating()
-                                                    
                                                     self.hideShowTabBar(status:false)
                                                     self.tabBarViewController?.selectedIndex = 0
                                                     
@@ -1277,10 +1282,13 @@ class ProfileViewController: UIViewController,
                                                             
                                                             // REGISTRATION COMPLETED
 
-                                                            //self.navigationController?.popViewController(animated: true)
+                                                            Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_completed") 
 
-                                                            let fortniteViewController = FortniteViewController()                                                        
-                                                            self.navigationController?.pushViewController(fortniteViewController, animated: true)
+                                                            self.activityIndicatorView?.stopAnimating()
+                                                            self.navigationController?.popViewController(animated: true)
+
+                                                            //let fortniteViewController = FortniteViewController()                                                        
+                                                            //self.navigationController?.pushViewController(fortniteViewController, animated: true)
                                                             
                                                         })
                                                         
@@ -1437,7 +1445,7 @@ class ProfileViewController: UIViewController,
                 
             } else if (spouseEmailTextField.text?.isEmpty)!
             {
-                errors = true
+                errors = true  
                 message += "Email is empty"
                 Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.spouseEmailTextField)
                 
@@ -1482,11 +1490,11 @@ class ProfileViewController: UIViewController,
             self.puserId = userId
         }
         
-        let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
-        let son_user_name = Global.defaults.string(forKey: "\(self.puserId)_son_username")
-        let son_password = Global.defaults.string(forKey: "\(self.puserId)_son_password")
-        let son_birthday = Global.defaults.string(forKey: "\(self.puserId)_son_birthday")
-        let son_type = Global.defaults.string(forKey: "\(self.puserId)_son_type")
+        let son_name        = Global.defaults.string(forKey: "\(self.puserId)_son_name")
+        let son_user_name   = Global.defaults.string(forKey: "\(self.puserId)_son_username")
+        let son_password    = Global.defaults.string(forKey: "\(self.puserId)_son_password")
+        //let son_birthday  = Global.defaults.string(forKey: "\(self.puserId)_son_birthday")
+        let son_type        = Global.defaults.string(forKey: "\(self.puserId)_son_type")
         
         var type = Int()
         if son_type == "Son" {
@@ -1526,28 +1534,31 @@ class ProfileViewController: UIViewController,
         
         let full_name = son_name?.components(separatedBy: " ")
         let firstName = full_name?[0]
-        let lastName = full_name?[1]   
+        let lastName = full_name?[1]
+        
+        var short = String()
 
         let skeys = Array(Global.schools.keys)
         for s in skeys {
             let school = Global.schools[s]
             if self.sonSchoolTextField.text == school?.schoolName {
                 Global.gamvesFamily.school = school!
+                short = (school?.short)!
             }
         }
         
-        let schoolId = Global.gamvesFamily.school.objectId
+        let schoolId:String! = Global.gamvesFamily.school.objectId
         
         let sonParams = [
             "user_name" : son_user_name?.lowercased(),
             "user_password" : son_password,
-            "son_birthday" : son_birthday,
+            "user_birthday" : self.birthDate,
             "firstName" : firstName,
             "lastName" : lastName,
             "iDUserType" : type,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
-            "schoolId": schoolId,
+            "short": short,
             "dataPhotoImage": dataPhotoImage,
             "dataPhotoImageSmall": dataPhotoImageSmall,
             "dataPhotoBackground": dataPhotoUniverse

@@ -289,6 +289,11 @@ class Global: NSObject
                                 adduserToFamilyFromGlobal(gamvesUser: userGamves)
                                 
                                 completionHandler(userGamves)
+                            
+                            } else if  gamvesUser.userName == "gamvesadmin" {
+                            
+                                self.userDictionary[gamvesUser.userId] = gamvesUser
+                                
                             }
                             
                         //}
@@ -1616,11 +1621,14 @@ class Global: NSObject
                         let schoolName = school["name"] as! String
                         schoolsArray.add(schoolName)
                         
+                        let short = school["short"] as! String
+                        
                         let gSchool = GamvesSchools()
                         
                         gSchool.objectId = school.objectId!
                         gSchool.schoolName = schoolName
-                        gSchool.schoolOBj = school as PFObject                  
+                        gSchool.schoolOBj = school as PFObject
+                        gSchool.short = short
 
                         let thumnail = school["thumbnail"] as! PFFile
                         

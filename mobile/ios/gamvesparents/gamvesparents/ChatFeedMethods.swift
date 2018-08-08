@@ -113,6 +113,8 @@ class ChatFeedMethods: NSObject {
                                 
                                 var chatThumbnail = UIImage()
                                 
+                                print(first)
+                                
                                 if first == PFUser.current()?.objectId
                                 {
                                     chatFeedRoom = (Global.userDictionary[second]?.name)!

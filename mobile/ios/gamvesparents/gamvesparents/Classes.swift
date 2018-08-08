@@ -105,7 +105,8 @@ class GamvesSchools
 {
     var objectId = String()
     var thumbnail:UIImage?
-    var schoolName = String()    
+    var schoolName = String()
+    var short = String()
     var schoolOBj:PFObject!
 }
 

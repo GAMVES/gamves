@@ -404,6 +404,33 @@ class HomeViewController: UIViewController,
     override func viewWillAppear(_ animated: Bool) {
         
         tabBarController?.tabBar.isHidden = false
+
+        Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_completed")
+
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_fortnite_completed") {            
+
+            let is_fortnite_completed = Global.defaults.object(forKey: "\(self.puserId)_fortnite_completed") as! Bool
+
+            if !is_fortnite_completed {
+                
+                self.hideShowTabBar(status: true)
+
+                let fortniteViewController = FortniteViewController()                                                        
+                self.navigationController?.pushViewController(fortniteViewController, animated: true)
+
+            }
+
+        }
+    }
+
+    func hideShowTabBar(status: Bool)
+    {
+        self.tabBarController?.tabBar.isHidden = status
+        
+        if status
+        {
+            navigationController?.navigationBar.tintColor = UIColor.white
+        } 
     }
   
     func getTimeCount() {
