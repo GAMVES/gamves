@@ -2,10 +2,9 @@
 	* Cloud Code 
 	*/
 
-	// -- Add Gamves User as Family from Registrant
+	// -- Add Gamves User as Family from Registrant	
 
-	//var http = require('http-get');
-
+	//var moment = require('moment');
 
 	Parse.Cloud.define("createGamvesUser", function (request, response) {
 
@@ -31,7 +30,7 @@
 
 	    }).then(function(typeObj) {   
 
-	        objects.push(typeObj);
+	        objects.push(typeObj);             
 
 	        var levelQuery = new Parse.Query("Level");
 	        levelQuery.equalTo("objectId", request.params.levelObj);
@@ -39,7 +38,7 @@
 
 	    }).then(function(levelObj) {
 
-	    	objects.push(levelObj);
+	    	objects.push(levelObj);       
 
 	    	var queryRole = new Parse.Query(Parse.Role);
 			queryRole.equalTo('name', 'admin');
@@ -65,6 +64,8 @@
 		}).then(function(profileObj) {	        
 
 			profile = profileObj;
+			
+	        console.log("3) profileObj: " + profileObj.id);	        
 
 	        var user_name = request.params.user_name;	        
 	        var user_email = request.params.user_email;
@@ -79,7 +80,7 @@
 	    	var fileSmall = new Parse.File(firstName+"small.png", dataPhotoImageSmall, "image/png");
 
 	    	var levelObj = request.params.levelObj;
-			var userTypeObj = request.params.userTypeObj;	
+			var userTypeObj = request.params.userTypeObj;				  
 	    
 			var user = new Parse.User();
 
@@ -88,6 +89,7 @@
 
 			if (request.params.user_birthday) {
 				let user_birthday = request.params.user_birthday;
+				//let bdate = moment(user_birthday, "yyyy-MM-dd'T'HH:mm:ssZ");
 				user.set("birthday", user_birthday);
 			}
 			
@@ -100,16 +102,12 @@
 
 			var lobjectId = objects[1].id;
 
-			if (iDUserType==2 || iDUserType==3) { // only son and daughter
-				
+			if (iDUserType==2 || iDUserType==3) { // only son and daughter				
 				user.set("levelObjId", lobjectId);
-
 				//Register			
-
-
 			} else {				
 				user.set("email", user_email);
-			}		
+			}			
 
 			let relationType = user.relation("userType")
 		    relationType.add(objects[0]);
@@ -118,11 +116,11 @@
 		    relationLevel.add(objects[1]);
 
 		    var profileRelation = user.relation("profile");
-			profileRelation.add(profile);
+			profileRelation.add(profileObj);			
 
-		    return user.signUp(null, {useMasterKey: true} );
+		    return user.signUp(null, {useMasterKey: true} );		 
 		
-	    }).then(function(userSaved) {
+	    }).then(function(userSaved) {	    	        
 
 	    	resutlUser = userSaved;
 
@@ -130,30 +128,28 @@
 
 	    	return profile.save(null, {useMasterKey: true});
 		
-		}).then(function(profileSaved) {
+		}).then(function(profileSaved) {		
 
-			profile = profileSaved;
+			profile = profileSaved;		        
 
 	    	var adminRole = objects[2];
 
 	    	var adminRoleRelation = adminRole.relation("users");
 			adminRoleRelation.add(resutlUser);		    	
 
-	    	adminRole.save(null, {useMasterKey: true});	    	
-
-	    	profile.set("userId", resutlUser.objectId);
+	    	adminRole.save(null, {useMasterKey: true});	    	    	
 
 	        return resutlUser.save(null, {useMasterKey: true});
 
-	    }).then(function(userSaved) {
+	    }).then(function(userSaved) {	    	
 
 	    	resutlUser = userSaved;
 
 	    	if ( iDUserType==2 || iDUserType==3 ) {
 
 		    	var queryCategory = new Parse.Query("Categories");
-				queryCategory.equalTo('name', 'PERSONAL');
-				queryCategory.equalTo('schoolId', request.params.schoolId)
+				queryCategory.equalTo('name', 'PERSONAL');				
+				queryCategory.containedIn("target", [request.params.short]);    
 				return queryCategory.first({useMasterKey:true});
 
 	       	 } else {
@@ -163,18 +159,20 @@
 
 		}).then(function(category) {
 
-			if ( iDUserType==2 || iDUserType==3 ) {		
+			if ( iDUserType==2 || iDUserType==3 ) {					
 
 				categorySaved = category;					                			
 
 				var queryFanpage = new Parse.Query("Fanpages");
-				queryFanpage.equalTo('categoryName', 'PERSONAL');			
+				queryFanpage.equalTo('categoryName', 'PERSONAL');
+				queryFanpage.containedIn("target", [request.params.short]);    			
 				return queryFanpage.first({useMasterKey:true});
 			}
 
 		}).then(function(fanpagesFound) {
 
-			if ( iDUserType==2 || iDUserType==3 ) {
+			if ( iDUserType==2 || iDUserType==3 ) {			
+	        	
 
 				var count = 0;
 				
@@ -230,7 +228,7 @@
 
 		}).then(function(fanpage) {	
 
-			if ( iDUserType==2 || iDUserType==3 ) {
+			if ( iDUserType==2 || iDUserType==3 ) {	        	     	
 
 				fanpageSaved = fanpage;
 
@@ -240,7 +238,7 @@
 
  		}).then(function(config) {	
 
- 			if ( iDUserType==2 || iDUserType==3 ) {
+ 			if ( iDUserType==2 || iDUserType==3 ) { 				        	      	
 
 	            var master = config.get("master_key"); 
 				var configRelation = config.relation("images").query();
@@ -253,7 +251,8 @@
 		    
 			if ( iDUserType==2 || iDUserType==3 ) {	
 
-				let count = images.length;						
+				let count = images.length;		
+	        		
 
 		    	for (var j=0; j <images.length; j++) {
 			        					                
@@ -301,6 +300,8 @@
 
     	}).then(function(fanpageReSaved) {	
 
+	    	console.log("11) fanpageReSaved: " + fanpageReSaved);	    	
+
     		var Notification = Parse.Object.extend("Notifications");         
 	        var notification = new Notification();		        						
 
@@ -324,6 +325,8 @@
 		}).then(function(object) {
 
     		if ( iDUserType==2 || iDUserType==3 ) {	
+    	
+	    		console.log("12) object: " + object);	    
 
     			response.success(resutlUser); 
     		}
@@ -332,7 +335,7 @@
 
 	        response.error(error);
 
-	    });	
+	    });
 
 	});
 

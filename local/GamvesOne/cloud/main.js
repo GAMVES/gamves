@@ -11,6 +11,8 @@
 		var query = new Parse.Query(Parse.User);
 	    query.equalTo("username", _admuser);
 
+	    console.log("--1--");
+
 	    query.find({
 	        useMasterKey: true,
 	        success: function(results) {
@@ -53,6 +55,8 @@
 					registerFather.set(d, "Register-Father");
 					registerFather.save(); 
 
+					console.log("--2--");
+
 					var admin = new UserTypes();
 					admin.set(t, -1);
 					admin.set(d, "Administrator");					
@@ -79,6 +83,8 @@
 
 								var adminRelation = user.relation("userType");
 					        	adminRelation.add(adm);	
+
+					        	console.log("--3--");
 
 								user.signUp(null, {
 									success: function(userLogged) {								  																	
@@ -108,6 +114,8 @@
 										var UserVerified = Parse.Object.extend("UserVerified");
 										var userVer = new UserVerified();		
 										userVer.save();
+
+										console.log("--4--");
 										
 							        	var queryRole = new Parse.Query(Parse.Role);
 										queryRole.equalTo('name', 'admin');
@@ -125,6 +133,8 @@
 												profile.set("bio", "Gamves Administrator");		
 												profile.set("backgroundColor", [228, 239, 245]);
 												profile.set("userId", user.id);		
+
+												console.log("--5--");
 
 												profile.save(null, {useMasterKey: true}, {
 

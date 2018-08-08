@@ -2,6 +2,45 @@
 	* Cloud Code 
 	*/
 
+	//var moment = require('moment');
+
+	Parse.Cloud.define("gimmeDate", function (request, response) {
+
+		let user_birthday = request.params.user_birthday;		
+
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; 
+		var yyyy = today.getFullYear();
+
+		if(dd<10) 
+		{
+		    dd='0'+dd;
+		} 
+
+		if(mm<10) 
+		{
+		    mm='0'+mm;
+		} 	
+
+		let todayCompare = yyyy + '-' + mm + '-' + dd;
+
+		var a = new Date(user_birthday);
+		var b = new Date(todayCompare);
+
+		let equal;
+
+		if (a == b) {
+			equal = true;
+		} else {
+			equal = false;
+		}	
+
+		response.success("todayCompare: " + todayCompare + " equal:  " + equal);		
+		
+	});
+
+
 
 	// -- Send push notification.
 
