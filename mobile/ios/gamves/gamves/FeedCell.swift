@@ -333,8 +333,37 @@ FeedDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MessageCell
         
         let index = indexPath.item
-        let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
-        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
+
+        let section = indexPath.section
+
+        var chatfeed = ChatFeed()
+
+         if section == 0 {           
+
+            let key: Int = Array(ChatFeedMethods.chatFeedFamily)[index].key
+            chatfeed = ChatFeedMethods.chatFeedFamily[key]!
+            
+        } else if section == 1 {           
+            
+            let key: Int = Array(ChatFeedMethods.chatFeedAdmin)[index].key
+            chatfeed = ChatFeedMethods.chatFeedAdmin[key]!
+
+        } else {
+
+            let has = hasFriendsAndVideSections(index: section)
+            
+            if has == 1 {
+
+                let key: Int = Array(ChatFeedMethods.chatFeedFriends)[index].key
+                chatfeed = ChatFeedMethods.chatFeedFriends[key]!
+
+            } else if has == 2 {      
+
+                let key: Int = Array(ChatFeedMethods.chatFeedVideos)[index].key
+                chatfeed = ChatFeedMethods.chatFeedVideos[key]!   
+            }
+
+        }        
         
         cell.nameLabel.text = chatfeed.room
         
