@@ -23,7 +23,7 @@
     var parseFileThumbanil, parseFileIso;     
 
     var schoolIdArray = [];
-    var _sId;
+    var _sId, _schoolId_for_grade;
 
     function loadschools()
     {
@@ -43,7 +43,8 @@
                       item = {};
                       item["id"] = i+1;
                       var objectId = schools[i].id;
-                      dataJson.objectId = objectId;                      
+                      dataJson.objectId = objectId;   
+                      schoolIdArray.push(objectId);                   
                       item["objectId"] = objectId; 
                       item["short"] = schools[i].get("short");                                      
                       if (schools[i].get("thumbnail") != undefined){                
@@ -73,12 +74,10 @@
                         },                        
                         "commands": function(column, row) {
                             return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>&nbsp;" + 
-                                   "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;"; 
-                                   //"<button type=\"button\" class=\"btn btn-xs btn-default command-fanpage\" data-row-id=\"" + row.id + "\">Fanpages</button>";
+                                   "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;";                                    
                         },
-                        "grades": function(column, row) {
-                            var scid = schoolIdArray[(row.id-1)];  
-                            return "<button type=\"button\ data-fanpage=\"" + scid + "\" class=\"btn btn-xs btn-default command-grades\" data-row-id=\"" + row.id + "\">Grades</button>&nbsp;";                                       
+                        "grades": function(column, row) {                                                        
+                            return "<button type=\"button\ data-school-id=\"" + row.objectId + "\" class=\"btn btn-xs btn-default command-grades\" data-row-id=\"" + row.id + "\">Grades</button>&nbsp;";                                       
                         }                    
                       }  
 
@@ -118,8 +117,7 @@
                       
                   }).on("loaded.rs.jquery.bootgrid", function() {  
 
-                        $("#loader_school").hide();                 
-                    
+                        $("#loader_school").hide();                
 
                         $( "#btn_edit_school" ).unbind("click").click(function() {
                             saveSchool();
@@ -190,9 +188,11 @@
 
                           $('#edit_modal_grade').modal('show');                                                                 
 
-                          var row  =$(this).attr('data-row-id'); 
+                          var row  = $(this).attr('data-row-id');                                                   
 
                           _sId = row-1;
+
+                          _schoolId_for_grade = schoolIdArray[_sId]; //$(this).attr('data-school-id');   
 
                       }).end().find(".command-delete").on("click", function(e) {
 
@@ -455,7 +455,8 @@
             var res = values.split("-");
 
             var level = new Levels();
-            level.set("grade", parseInt(res[0]));
+            level.set("grade", parseInt(res[0]));            
+            level.set("schoolId",  _schoolId_for_grade);
             level.set("description", res[1].replace(/\s/g,''));           
 
             level.save(null, {
