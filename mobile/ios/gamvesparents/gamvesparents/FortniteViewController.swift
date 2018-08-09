@@ -276,9 +276,7 @@ class FortniteViewController: UIViewController
                         
                         if error == nil {
 
-                            self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in
-
-                                print("")
+                            self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in                               
 
                                 //self.navigationController?.popViewController(animated: true)
 
@@ -321,9 +319,16 @@ class FortniteViewController: UIViewController
 
     func handleSkip() {
 
-        self.showAlert(title: "Skip username", message: "You will be able to provide your username later", completionHandler: { (gamvesUser) in
+        self.showAlert(title: "Skip Fortnite credentials", message: "You will be able to provide your username later", completionHandler: { (gamvesUser) in
 
             print("")
+
+            Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_skipped")
+
+            self.navigationController?.popViewController(animated: true)
+
+            self.navigationController?.navigationBar.barTintColor = UIColor.gamvesColor
+
 
         })
     }

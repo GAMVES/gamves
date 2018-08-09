@@ -1282,10 +1282,8 @@ class ProfileViewController: UIViewController,
                                                             
                                                             // REGISTRATION COMPLETED
 
-                                                            if userId == PFUser.current()?.objectId {
-
-                                                                Global.defaults.set(false, forKey: "\(userId)_fortnite_completed") 
-                                                            }
+                                                            Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_completed") 
+                                                            Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_skipped")
 
                                                             let title = "Congratulations Registration Completed!"
                                                             let message = "Thanks very much for registering to Gamves. You can now provide your son/dounghter the credentials you provided to login, the same with your spouse. Before you start using Gamves please provide one las optional information about Fortnite"

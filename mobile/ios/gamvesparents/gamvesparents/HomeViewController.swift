@@ -405,24 +405,20 @@ class HomeViewController: UIViewController,
         
         tabBarController?.tabBar.isHidden = false
 
-        //Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_completed")
-
         if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_fortnite_completed") {            
 
             let is_fortnite_completed = Global.defaults.object(forKey: "\(self.puserId)_fortnite_completed") as! Bool
 
-            if !is_fortnite_completed {
+            let is_fortnite_skipped = Global.defaults.object(forKey: "\(self.puserId)_fortnite_skipped") as! Bool
+
+            if !is_fortnite_completed && !is_fortnite_skipped {
                 
                 self.hideShowTabBar(status: true)
 
                 let fortniteViewController = FortniteViewController()                                                        
                 self.navigationController?.pushViewController(fortniteViewController, animated: true)
 
-            } else {
-
-                 self.navigationController?.navigationBar.barTintColor = UIColor.gamvesColor
-            }
-
+            } 
         }
     }
 
