@@ -679,23 +679,45 @@ class ProfileViewController: UIViewController,
             
             self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
-        })
+            self.sonSchoolDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
+        })     
+
+        //Populate empty so loaded when school selected
+        let grades: NSMutableArray = [] 
+        self.setGrades(grades: grades)
+        self.sonGradeDownPicker.setPlaceholder("Tap to choose grade...") 
         
-        let grades: NSMutableArray = [] //["5 - Fig", "5 - Chestnut"]
+        self.you = PFUser.current()
+        self.setGrades(grades: grades)
+    }
+
+    func setGrades(grades: NSMutableArray) {
+
+        print(grades)
+        
+        self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])            
+    }
+
+    func handleSchoolPickerChange() {
+
+        self.sonGradeTextField.text = ""
+
+        let grades: NSMutableArray = [] 
         
         let lkeys = Array(Global.levels.keys)
         
         for l in lkeys {
-            grades.add(Global.levels[l]?.fullDesc)
-        }
+
+            let schoolId = Global.levels[l]?.schoolId
+
+            if self.sonSchoolTextField.text! == Global.schools[schoolId!]?.schoolName {
+
+                grades.add(Global.levels[l]?.fullDesc)
+            }
+            
+        }        
         
-        print(grades)
-        
-        self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])
-        sonGradeDownPicker.setPlaceholder("Tap to choose grade...")
-        
-        self.you = PFUser.current()
-        
+        self.setGrades(grades: grades)
     }
     
     func familyLoaded() {
@@ -711,7 +733,7 @@ class ProfileViewController: UIViewController,
             
             if profile_completed
             {
-                self.hideShowTabBar(status:false)
+                self.hideShowTabBar(hidden:false)
                 self.loadFamilyDataGromGlobal()
                 self.segmentedControl.setEnabled(true, forSegmentAt: 1)
             }
@@ -719,7 +741,7 @@ class ProfileViewController: UIViewController,
         } else
         {
 
-            self.hideShowTabBar(status:true)
+            self.hideShowTabBar(hidden:true)
             
         }
     }
@@ -777,11 +799,11 @@ class ProfileViewController: UIViewController,
         scrollView.setContentOffset(CGPoint(x:0, y:0), animated: false)
     }
     
-    func hideShowTabBar(status: Bool)
+    func hideShowTabBar(hidden: Bool)
     {
-        self.tabBarController?.tabBar.isHidden = status
+        self.tabBarController?.tabBar.isHidden = hidden
         
-        if status
+        if hidden
         {
             navigationController?.navigationBar.tintColor = UIColor.white
         } 
@@ -1218,7 +1240,7 @@ class ProfileViewController: UIViewController,
 
                                 Global.loadConfigData()
 
-                                self.hideShowTabBar(status: true)
+                                self.hideShowTabBar(hidden: true)
 
                                 self.accountViewController.showImagePicker(type: ProfileImagesTypes.You)
 
@@ -1271,10 +1293,12 @@ class ProfileViewController: UIViewController,
                                                 
                                                     print("GROUPS CREATED")
                                                     
-                                                    self.hideShowTabBar(status:false)
+                                                    self.hideShowTabBar(hidden:true)
+
                                                     self.tabBarViewController?.selectedIndex = 0
                                                     
-                                                    Global.defaults.set(true, forKey: "\(self.puserId)_profile_completed")                                                                                                       
+                                                    Global.defaults.set(true, forKey: "\(self.puserId)_profile_completed")  
+
                                                     
                                                     Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
                                                         
@@ -1286,7 +1310,11 @@ class ProfileViewController: UIViewController,
                                                             Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_skipped")
 
                                                             let title = "Congratulations Registration Completed!"
-                                                            let message = "Thanks very much for registering to Gamves. You can now provide your son/dounghter the credentials you provided to login, the same with your spouse. Before you start using Gamves please provide one las optional information about Fortnite"
+                                                            var message = "\n\nThanks very much for registering to Gamves. You can share the app with your family! \n\n"
+                                                            
+                                                            message = message + "Fortnite users\n\n" 
+
+                                                            message = message +  "Before you start using Gamves please provide one las optional information about Fortnite, otherwise you can complete it later."
                                                             
                                                             let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                                                             
@@ -1294,16 +1322,23 @@ class ProfileViewController: UIViewController,
                                                                 
                                                                 self.activityIndicatorView?.stopAnimating()
                                                                 self.navigationController?.popViewController(animated: true)
+
+                                                                self.hideShowTabBar(hidden:false)
+                                                                
+                                                            }))
+
+                                                            alert.addAction(UIAlertAction(title: "Fornite", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                                      
+                                                                
+                                                                
+                                                                let fortniteViewController = FortniteViewController()
+                                                                fortniteViewController.isRegistering = true
+                                                                self.navigationController?.pushViewController(fortniteViewController, animated: true)
                                                                 
                                                             }))
                                                             
-                                                            self.present(alert, animated: true)                                                            
-
-                                                            //let fortniteViewController = FortniteViewController()                                                        
-                                                            //self.navigationController?.pushViewController(fortniteViewController, animated: true)
+                                                            self.present(alert, animated: true)                                                     
                                                             
-                                                        })
-                                                        
+                                                        })                                                        
                                                     })
                                                 }
                                             })

@@ -934,6 +934,7 @@ class Global: NSObject
                         
                         let levelGamves = GamvesLevel()
                         levelGamves.description = level["description"] as! String
+                        levelGamves.schoolId = level["schoolId"] as! String
                         levelGamves.grade = level["grade"] as! Int
                         
                         let full = "\(levelGamves.grade) - \(levelGamves.description)"
@@ -943,7 +944,7 @@ class Global: NSObject
                         levelGamves.fullDesc = full
                         levelGamves.objectId = level.objectId!
                         levelGamves.levelObj = level
-                        
+                                                
                         self.levels[level.objectId!] = levelGamves
                         
                         if (countLevels-1)  == count {

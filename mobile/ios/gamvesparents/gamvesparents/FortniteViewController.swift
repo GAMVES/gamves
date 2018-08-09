@@ -128,6 +128,8 @@ class FortniteViewController: UIViewController
 
     var puserId = String()
 
+    var isRegistering = Bool()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -276,17 +278,11 @@ class FortniteViewController: UIViewController
                         
                         if error == nil {
 
-                            self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in                               
+                            self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in                                                               
 
-                                //self.navigationController?.popViewController(animated: true)
+                                self.popController()
 
-                                UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
-                                
-                                let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
-                                self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)                                   
-
-                                Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_completed")
-                                   
+                                Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_completed")                                   
 
                             })                    
                         }
@@ -323,14 +319,10 @@ class FortniteViewController: UIViewController
 
             print("")
 
+            self.self.popController()
+
             Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_skipped")
-
-            self.navigationController?.popViewController(animated: true)
-
-            self.navigationController?.navigationBar.barTintColor = UIColor.gamvesColor
-
-
-        })
+       })
     }
 
     func showAlert(title:String, message:String, completionHandler : @escaping (_ resutl:Bool) -> ()) {
@@ -349,6 +341,21 @@ class FortniteViewController: UIViewController
         self.present(alert, animated: true)
 
     }   
+
+    func popController() {
+
+        UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
+
+        if self.isRegistering {
+                                
+            let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
+            self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)                                   
+
+        } else {
+
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
 
 }
 

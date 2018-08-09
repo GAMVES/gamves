@@ -287,13 +287,10 @@ class GamvesFamily
                 sonwithId = son
             
             }
-        }
-        
+        }        
         return sonwithId
-    }
-    
+    }    
 }
-
 
 class GamvesLevel
 {
@@ -302,6 +299,7 @@ class GamvesLevel
     var grade = Int()   
     var fullDesc = String() 
     var levelObj:PFObject?
+    var schoolId = String()
 }
 
 class UserTypeGamves
