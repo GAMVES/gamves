@@ -1889,34 +1889,8 @@ class ProfileViewController: UIViewController,
                 
                 Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")  
 
-                var school = String()
-                if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_school") {
-                    school = "\(self.puserId)_son_school"
-                }  
-
-                var grade = String()
-                if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_grade") {
-                    grade = "\(self.puserId)_son_grade"
-                }
-
-                let familyParams = [
-                    "spouseId"  : self.spouse.objectId,
-                    "sonId"     : self.son.objectId,
-                    "youId"     : self.you.objectId,
-                    "familyId"  : family.objectId,
-                    "school"    : school,
-                    "grade"     : grade,
-                    ] as [String : Any]
-
-                PFCloud.callFunction(inBackground: "saveFamilyIdToMembers", withParameters: familyParams) { (result, error) in
-                    
-                    if error == nil {
-                        
-                        print(result)
-
-                        completionHandler(true)  
-                    }                        
-                }
+                completionHandler(true)  
+                
             }                 
         }   
     }   
