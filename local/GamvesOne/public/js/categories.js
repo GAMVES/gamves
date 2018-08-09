@@ -260,7 +260,7 @@ document.addEventListener("LoadCategories", function(event){
           var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
           cat.set("backImage", parseFileBackImage);
-          cat.set("target", checkChecked("frm_edit", short));
+          cat.set("target", window.checkChecked("frm_edit", short));
           cat.save(null, {
               success: function (pet) {
                   console.log('Category created successful with name: ' + cat.get("pageName"));

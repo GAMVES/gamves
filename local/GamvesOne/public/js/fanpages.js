@@ -153,7 +153,7 @@ document.addEventListener("LoadFanpage", function(event){
                               loadAlbumImage(this);
                           });                   
 
-                          $( "#new_fanpage" ).unbind("click").click(function() {         
+                          $( "#new_fanpage" ).unbind("click").click(function() {        
                            
                                                           
                              $("#fanpage_title").text("New Fanpage"); 
@@ -331,7 +331,7 @@ document.addEventListener("LoadFanpage", function(event){
               fanpage.set("posterId" , user.id);
               fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
 
-              cat.set("target", checkChecked("frm_edit", short));
+              fanpage.set("target", window.checkChecked("frm_edit", short));
                                          
               fanpage.save(null, {
                   success: function (pet) {

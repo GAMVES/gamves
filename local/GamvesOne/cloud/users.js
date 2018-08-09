@@ -103,7 +103,7 @@
 			var lobjectId = objects[1].id;
 
 			if (iDUserType==2 || iDUserType==3) { // only son and daughter				
-				user.set("levelObjId", lobjectId);
+				user.set("levelId", lobjectId);
 				//Register			
 			} else {				
 				user.set("email", user_email);

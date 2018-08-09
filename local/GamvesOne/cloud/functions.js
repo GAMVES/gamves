@@ -383,42 +383,44 @@
 		console.log(familyId);
 		console.log("******************");
 
-		var userQuery = new Parse.Query(Parse.User);		
-		userQuery.equalTo("objectId", spouseId);
+		var spouseQuery = new Parse.Query(Parse.User);		
+		spouseQuery.equalTo("objectId", spouseId);
 		
-	    return userQuery.first().then(function(spouse) {
+	    return spouseQuery.first().then(function(spousePF) {
 
-	    	spouse.set("familyId", familyId);
+	    	spousePF.set("familyId", familyId);
 
-	    	spouse.set("schoolId", schoolId);
+	    	spousePF.set("schoolId", schoolId);
 
-	    	spouse.save(null, {useMasterKey: true});
+	    	spousePF.save(null, {useMasterKey: true});
 
-	    	userQuery.equalTo("objectId", sonId);
+			var sonQuery = new Parse.Query(Parse.User);	
+	    	sonQuery.equalTo("objectId", sonId);
 			
-	        return userQuery.first();
+	        return sonQuery.first();
 
-	    }).then(function(son) {   
+	    }).then(function(sonPF) {   
 
-	    	son.set("familyId", familyId);
+	    	sonPF.set("familyId", familyId);
 
-	    	son.set("schoolId", schoolId);
+	    	sonPF.set("schoolId", schoolId);
 
-	    	son.set("gradeId", gradeId);
+	    	sonPF.set("gradeId", gradeId);
 
-	    	son.save(null, {useMasterKey: true});
+	    	sonPF.save(null, {useMasterKey: true});
 
-	    	userQuery.equalTo("objectId", youId);
+	    	var youQuery = new Parse.Query(Parse.User);	
+	    	youQuery.equalTo("objectId", youId);
 
-	    	return userQuery.first();
+	    	return youQuery.first();
 
-	    }).then(function(you) {   
+	    }).then(function(youPF) {   
 
-	    	you.set("familyId", familyId);
+	    	youPF.set("familyId", familyId);
 
-	    	you.set("schoolId", schoolId);
+	    	youPF.set("schoolId", schoolId);
 
-	    	you.save(null, {useMasterKey: true});
+	    	youPF.save(null, {useMasterKey: true});
 
 	    	response.success(true); 
 		});	
