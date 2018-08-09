@@ -1281,5 +1281,43 @@
 	   
 	}
 
+	// --
+	// Update users upon Family creation
 
+	Parse.Cloud.afterSave("Family", function(request) {	
+
+		var familyId = request.object.id;
+
+		console.log("entra family");
+
+		var schoolQuery = request.object.relation("school").query();
+		schoolQuery.first({useMasterKey:true}).then(function(schoolPF){
+
+			var schoolId = schoolPF.id;
+
+			var levelQuery = request.object.relation("level").query();
+			levelQuery.first({useMasterKey:true}).then(function(levelPF){
+
+				var levelId = levelPF.id;
+
+				console.log("familyId: " + familyId);
+				console.log("schoolId: " + schoolId);
+				console.log("levelId: " + levelId);
+
+				var usersQuery = request.object.relation("members").query();
+				usersQuery.find({useMasterKey:true}).then(function(usersPF){
+
+					for (var i = 0; i < usersPF.length; ++i) 
+					{
+						usersPF[i].set("schoolId", schoolId);
+						usersPF[i].set("familyId", familyId);
+						usersPF[i].set("levelId", levelId);
+						usersPF[i].save(null, {useMasterKey: true});
+					}
+
+				});
+
+			});
+		});	
+	});
 
