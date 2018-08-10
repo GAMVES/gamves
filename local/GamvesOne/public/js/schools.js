@@ -23,7 +23,7 @@
     var parseFileThumbanil, parseFileIso;     
 
     var schoolIdArray = [];
-    var _sId, _schoolId_for_grade;
+    var _sId, _schoolId_for_grade;   
 
     function loadschools()
     {
@@ -76,7 +76,8 @@
                             return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>&nbsp;" + 
                                    "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;";                                    
                         },
-                        "grades": function(column, row) {                                                        
+                        "grades": function(column, row) {
+                            //                                                        
                             return "<button type=\"button\ data-school-id=\"" + row.objectId + "\" class=\"btn btn-xs btn-default command-grades\" data-row-id=\"" + row.id + "\">Grades</button>&nbsp;";                                       
                         }                    
                       }  
@@ -102,10 +103,13 @@
                       selected = rowIds.join(",");
                       selectedItem.push(selected);   
 
+                      //Categories
                       var event = new CustomEvent("LoadCategories", { detail: [schoolId,short] });
-                      document.dispatchEvent(event);                                                              
-
-                     //alert("Select: " + rowIds.join(","));
+                      document.dispatchEvent(event);
+                      
+                      //Categories
+                      var event = new CustomEvent("LoadGifts", { detail: [schoolId,short] });
+                      document.dispatchEvent(event);                     
 
                   }).on("deselected.rs.jquery.bootgrid", function(e, rows)
                   {

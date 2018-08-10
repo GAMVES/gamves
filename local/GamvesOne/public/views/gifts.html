@@ -1,0 +1,72 @@
+ 
+  <div class="container_gift">         
+  <h3>GIFTS</h3><br>
+    <table id="gridGift" class="table table-condensed table-hover table-striped">
+      <thead>
+        <tr>
+          <th data-column-id="id" data-type="numeric" data-identifier="true">ID</th>
+          <th data-column-id="objectId">ObjectId</th>
+          <th data-column-id="thumbnail" data-formatter="thumbnail">Thumbnail</th>
+          <th data-column-id="order">Order</th>
+          <th data-column-id="description">Description</th>
+          <th data-column-id="backImage" data-formatter="backImage">BackImage</th>   
+          <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>       
+        </tr>
+      </thead>
+    </table>    
+    </div>
+    <div id="edit_model_gift" class="modal fade">
+    <div class="modal-dialog" >
+        <div class="modal-content">            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 id="gift_title" class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                
+                <form method="post" id="frm_gift_edit">                  
+                  
+                  <div class="form-group">                   
+                   
+                   <div class="form-group">
+                      <label for="frm_gift_edit" class="control-label">Title:</label>
+                      <input type="text" class="form-control" id="edit_title" name="edit_title"/>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="frm_gift_edit" class="control-label">Description:</label>
+                      <input type="text" class="form-control" id="edit_gift_description" name="edit_gift_description"/>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="frm_gift_edit" class="control-label">Price:</label>
+                      <input type="text" class="form-control" id="edit_price" name="edit_price"/>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="frm_gift_edit" class="control-label">Points:</label>
+                      <input type="text" class="form-control" id="edit_points" name="edit_points"/>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="frm_gift_edit" class="control-label">Thumbnail:</label><br>                                        
+                      <img id="img_thumbnail_gift" height="60" width="60"/>                 
+                      <input id="input_gift_thumb_image" type="file"></input>
+                    </div>                         
+
+                    <div class="form-group">
+                      <label for="frm_gift_edit" class="control-label">Also apply to:</label>      
+                      <div id="schools_viewed_gifts"></div>                                    
+                    </div>
+                  
+                  </div>
+
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="button" id="btn_save_gift" class="btn btn-primary">Save</button>
+                  </div>
+              </form>
+        </div>
+      </div>
+    </div>
+  </div>
