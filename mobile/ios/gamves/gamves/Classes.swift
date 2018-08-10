@@ -3,12 +3,22 @@
 //  gamves
 //
 //  Created by Jose Vigil on 11/5/17.
-//  Copyright © 2017 letsbuildthatapp. All rights reserved.
 //
 
 import Foundation
 import UIKit
 import Parse
+
+class GamvesGift {
+
+    var objectId = String()       
+    var title = String()                   
+    var description = String()                   
+    var price = Int()
+    var points = Int()
+    var thumbnail:UIImage?  
+    var isChecked = Bool()
+}
 
 class GamvesConsole {
 

@@ -109,7 +109,9 @@
 		C92BCA8220F44F8200BD37F0 /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */; };
 		C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */; };
 		C92CDDBC21064FCD001B5978 /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92CDDBB21064FCD001B5978 /* FriendCell.swift */; };
+		C92D8A49211CEF460051F414 /* GiftViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92D8A48211CEF460051F414 /* GiftViewCell.swift */; };
 		C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */; };
+		C92F5D04211CE1360056E482 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92F5D03211CE1360056E482 /* NotificationViewController.swift */; };
 		C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */; };
 		C9383D62210593CB008E54D5 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9383D61210593CB008E54D5 /* FriendsViewController.swift */; };
 		C98FD87F2106131200631D78 /* FriendEmptyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */; };
@@ -224,7 +226,9 @@
 		C92BCA8120F44F8200BD37F0 /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = "<group>"; };
 		C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
 		C92CDDBB21064FCD001B5978 /* FriendCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
+		C92D8A48211CEF460051F414 /* GiftViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftViewCell.swift; sourceTree = "<group>"; };
 		C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
+		C92F5D03211CE1360056E482 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
 		C9383D61210593CB008E54D5 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendEmptyCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -536,6 +540,7 @@
 		C77B55531D02346C00FF375C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				C92D8A47211CEF140051F414 /* cells */,
 				82FFF5282022CF12005F45AA /* Components */,
 				82E1AC231FF422D400209AEF /* NewFanpageController.swift */,
 				825C6CA41FDA4CC1005A762F /* media */,
@@ -551,8 +556,17 @@
 				C9A0011B20F3CEE900906F33 /* NewFriendController.swift */,
 				C9383D61210593CB008E54D5 /* FriendsViewController.swift */,
 				C9253A8E211274C9001B4A73 /* GiftViewController.swift */,
+				C92F5D03211CE1360056E482 /* NotificationViewController.swift */,
 			);
 			name = Controller;
+			sourceTree = "<group>";
+		};
+		C92D8A47211CEF140051F414 /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				C92D8A48211CEF460051F414 /* GiftViewCell.swift */,
+			);
+			name = cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -745,6 +759,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C92F5D04211CE1360056E482 /* NotificationViewController.swift in Sources */,
 				826D58341F8D98C50014A2C8 /* ProfileCell.swift in Sources */,
 				82418F3D1EF86FBC00D7E6BC /* FanpagePage.swift in Sources */,
 				8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */,
@@ -788,6 +803,7 @@
 				82BD5EF91F915D1E00BD8760 /* ChatViewController.swift in Sources */,
 				828DB5DF1EFE408500403C66 /* Gradients.swift in Sources */,
 				825568D91FA3FA2F0074C49C /* Array+Extension.swift in Sources */,
+				C92D8A49211CEF460051F414 /* GiftViewCell.swift in Sources */,
 				82E1AC2B1FF6B5AA00209AEF /* SearchGridImageCell.swift in Sources */,
 				C98FD8812106133F00631D78 /* FriendCollectionViewCell.swift in Sources */,
 				822D620F1FD650910025481E /* UISearch+Extension.swift in Sources */,

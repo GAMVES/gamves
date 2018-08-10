@@ -98,7 +98,7 @@ UICollectionViewDelegateFlowLayout {
             
             if self.homeController != nil
             {
-                self.homeController?.addNewFanpage(edit:false)
+                self.homeController?.showGiftViewcontroller()
             }
 
         }
@@ -263,7 +263,18 @@ UICollectionViewDelegateFlowLayout {
 
             cell.iconView.backgroundColor = UIColor.magenta
             
+        } else if notification.type == 4 { //notification
+
+            cell.thumbnailImageView.isHidden = true
+
+            cell.iconImageView.image = UIImage(named: "notification")?.withRenderingMode(.alwaysTemplate)                         
+
+            posterdesc = notification.title
+
+            cell.iconView.backgroundColor = UIColor.gamvesLightBlueColor
+
         }
+
 
         let b = Style("b").font(.boldSystemFont(ofSize: 18))
 
