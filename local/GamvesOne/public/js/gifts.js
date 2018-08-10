@@ -239,8 +239,8 @@ document.addEventListener("LoadGifts", function(event){
           var description = $("#edit_gift_description").val();
           gift.set("description", description);
 
-          gift.set("price", $("#edit_price").val());    
-          gift.set("points", $("#edit_points").val());              
+          gift.set("price", parseInt($("#edit_price").val()));    
+          gift.set("points", parseInt($("#edit_points").val()));              
             
           gift.set("thumbnail", parseFileThumbanil);
           gift.set("target", window.checkChecked("frm_gift_edit", short));
