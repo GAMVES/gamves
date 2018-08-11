@@ -18,6 +18,7 @@ class GamvesGift {
     var points = Int()
     var thumbnail:UIImage?  
     var isChecked = Bool()
+    var giftOBj:PFObject!    
 }
 
 class GamvesConsole {

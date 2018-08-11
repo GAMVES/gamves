@@ -194,10 +194,7 @@ FriendApprovalProtocol
             cella.profileImageView.image    = friend.avatar
             cella.nameLabel.text            = friend.name
             cella.schoolLabel.text          = friend.school.schoolName
-            cella.gradeLabel.text           = friend.level.description          
-            
-
-
+            cella.gradeLabel.text           = friend.level.description 
             
             /*if friends.approved == 0 || friends.approved == 2 || friends.approved == -1 { // NOT
                 

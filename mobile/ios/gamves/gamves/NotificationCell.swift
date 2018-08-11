@@ -77,7 +77,7 @@ UICollectionViewDelegateFlowLayout {
         self.floaty.paddingX = 20                    
         self.floaty.itemSpace = 30
         self.floaty.shadowRadius = 20
-        self.floaty.buttonColor = UIColor.gamvesCyanColor
+        self.floaty.buttonColor = UIColor.gamvesTurquezeColor
         var addImage = UIImage(named: "add_symbol")
         addImage = addImage?.maskWithColor(color: UIColor.white)
         addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
@@ -90,7 +90,7 @@ UICollectionViewDelegateFlowLayout {
         var giftImage = UIImage(named: "gift")
         giftImage = giftImage?.maskWithColor(color: UIColor.white)
         itemGift.icon = giftImage                   
-        itemGift.buttonColor = UIColor.gamvesCyanColor
+        itemGift.buttonColor = UIColor.gamvesTurquezeColor
         itemGift.titleLabelPosition = .left
         itemGift.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemGift.title = "GIFTS"

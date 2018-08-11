@@ -30,11 +30,77 @@ UICollectionViewDelegateFlowLayout   {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Select the gift you want"
-        label.textColor = UIColor.gray                
+        label.textColor = UIColor.gamvesTurquezeDarkColor                
         label.font = UIFont.boldSystemFont(ofSize: 25)
+        label.textAlignment = .center   
+        label.numberOfLines = 2     
+        return label
+    }()
+
+    let explanationLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Click on one gift you want to subscribe and start counting points"
+        label.textColor = UIColor.gamvesTurquezeDarkColor                
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.numberOfLines = 2 
         label.textAlignment = .center        
         return label
     }()
+
+    //- Scores
+
+    let scoresView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false        
+        return view
+    }()
+
+    let yourScoreLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Points"
+        label.textColor = UIColor.black 
+        //label.backgroundColor = UIColor.green               
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textAlignment = .center           
+        return label
+    }()
+
+    let scoreLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false    
+        label.textColor = UIColor.blue  
+        //label.backgroundColor = UIColor.cyan              
+        label.font = UIFont.boldSystemFont(ofSize: 30)
+        label.text = "200"
+        label.textAlignment = .center           
+        return label
+    }()    
+
+    let yourMissingLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Missing"
+        label.textColor = UIColor.black   
+        //label.backgroundColor = UIColor.blue             
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textAlignment = .center           
+        return label
+    }()
+
+    let missingLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false       
+        label.textColor = UIColor.red                
+        label.font = UIFont.boldSystemFont(ofSize: 30)
+        label.text = "120"
+        //label.backgroundColor = UIColor.red
+        label.textAlignment = .center             
+        return label
+    }()
+
+    //-- Line
 
     let lineView: UIView = {
         let view = UIView()
@@ -47,7 +113,8 @@ UICollectionViewDelegateFlowLayout   {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)   
+        cv.backgroundColor = UIColor.gamvesTurquezeColor     
         cv.dataSource = self
         cv.delegate = self
         return cv
@@ -55,9 +122,10 @@ UICollectionViewDelegateFlowLayout   {
 
     var cellGiftCollectionId = "cellGiftCollectionId"
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.view.backgroundColor = UIColor.gamvesTurquezeColor
 
         self.view.addSubview(self.titleView)
         self.view.addSubview(self.lineView)
@@ -67,14 +135,46 @@ UICollectionViewDelegateFlowLayout   {
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
 
-        self.view.addConstraintsWithFormat("V:|[v0(240)][v1(1)][v2]|", views: 
+        self.view.addConstraintsWithFormat("V:|[v0(150)][v1(1)][v2]|", views: 
             self.titleView, 
             self.lineView, 
             self.collectionView)   
 
-		self.lineView.addSubview(self.titleLabel)
-		self.lineView.addConstraintsWithFormat("H:|[v0]|", views: self.titleLabel)
-        self.lineView.addConstraintsWithFormat("V:|[v0]|", views: self.titleLabel)       
+		self.titleView.addSubview(self.titleLabel)
+		self.titleView.addSubview(self.explanationLabel)
+		self.titleView.addSubview(self.scoresView)		
+		
+		self.titleView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.titleLabel)
+		self.titleView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.explanationLabel)
+		self.titleView.addConstraintsWithFormat("H:|-20-[v0]-20-|", views: self.scoresView)
+
+        self.titleView.addConstraintsWithFormat("V:|-5-[v0(40)][v1(40)][v2]|", views: 
+        	self.titleLabel, 
+        	self.explanationLabel,
+        	self.scoresView)
+
+		self.scoresView.addSubview(self.yourScoreLabel)
+		self.scoresView.addSubview(self.scoreLabel)
+		self.scoresView.addSubview(self.yourMissingLabel)
+		self.scoresView.addSubview(self.missingLabel)
+
+		self.scoresView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.yourScoreLabel)
+		self.scoresView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.scoreLabel)
+		self.scoresView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.yourMissingLabel)
+		self.scoresView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.missingLabel)
+
+		let width = self.view.frame.width
+
+		let padding = ( width - 340 ) / 3
+
+		let paddingMetrics = ["padding":padding]
+
+		self.scoresView.addConstraintsWithFormat("H:|-10-[v0(70)][v1(100)]-10-[v2(70)][v3(100)]-10-|", views: 
+        	self.yourScoreLabel, 
+        	self.scoreLabel,
+        	self.yourMissingLabel,
+        	self.missingLabel,
+        	metrics: paddingMetrics)
 
         self.collectionView.register(GiftViewCell.self, forCellWithReuseIdentifier: self.cellGiftCollectionId)       
 
@@ -116,7 +216,7 @@ UICollectionViewDelegateFlowLayout   {
         }            
         
         cellVideo.titleLabel.text = self.gifts[indexPath.row].title
-        cellVideo.descriptionTextView.text = self.gifts[indexPath.row].description
+        cellVideo.descriptionLabel.text = self.gifts[indexPath.row].description
 
         cellVideo.priceLabel.text = "\(self.gifts[indexPath.row].price)"
         cellVideo.pointsLabel.text = "\(self.gifts[indexPath.row].points)"        
@@ -129,11 +229,11 @@ UICollectionViewDelegateFlowLayout   {
         
         var size = CGSize()      
        
-        let height = (self.view.frame.width - 16 - 16) * 9 / 16
+        let height = (self.view.frame.width - 100 ) * 9 / 16
            
         size = CGSize(width: self.view.frame.width, height: height + 16 + 88)      
         
-        return size 
+        return size  
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -146,33 +246,41 @@ UICollectionViewDelegateFlowLayout   {
    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        /*if !self.editProfile || self.profileSaveType == ProfileSaveType.chat {
-            
-            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
-
-            let videoLauncher = VideoLauncher()
-            
-            let video = videosGamves[indexPath.row]
+          if self.gifts[indexPath.row].isChecked {
         
-            videoLauncher.showVideoPlayer(videoGamves: video)
+            self.gifts[indexPath.row].isChecked = false
+
+            //subsRelation.remove(Global.userPF)
             
         } else {
             
+            self.gifts[indexPath.row].isChecked = true
             
-            let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell
-            
-            if videosGamves[indexPath.row].checked {
-            
-                videosGamves[indexPath.row].checked = false
+            DispatchQueue.main.async(execute: {
+
+                (self.gifts[indexPath.row].giftOBj["subscriptors"] as AnyObject).add(Global.userPF)
                 
-            } else {
+                self.gifts[indexPath.row].giftOBj.saveEventually()
                 
-                videosGamves[indexPath.row].checked = true
-            }
+            })
             
-            self.collectionView.reloadData()
-            
-        }*/
+        }
+        
+
+        for gift in self.gifts {
+
+        	if gift !== self.gifts[indexPath.row] {
+
+	    		gift.isChecked = false
+
+                let subsLastRelation = gift.giftOBj["subscriptors"] as! PFRelation
+
+                //subsRelation.remove(PFUser.current()!)
+	    	}
+    	}
+    	       
+        self.collectionView.reloadData()            
+    
     }
 
     func fetchGifts()
@@ -196,6 +304,8 @@ UICollectionViewDelegateFlowLayout   {
                     for giftPF in giftsPF! {
                    
                         let gift = GamvesGift()
+                        
+                        gift.giftOBj = giftPF
 
                         gift.objectId = (giftPF.objectId as? String)!
 
@@ -205,47 +315,48 @@ UICollectionViewDelegateFlowLayout   {
                         gift.price = (giftPF["price"] as? Int!)!
                         gift.points = (giftPF["points"] as? Int!)!
 
-                        if giftPF["subscriptors"] != nil {
+                        let relationSubscriptors = giftPF["subscriptors"] as! PFRelation
 
-	                        if let userId = PFUser.current()?.objectId {
+                        let queryRelation = relationSubscriptors.query()
+                        queryRelation.whereKey("_User", containedIn: [PFUser.current()])
 
-	                            let subscriptors:[String] = (giftPF["subscriptors"] as? [String])!
+                        queryRelation.getFirstObjectInBackground { (usersPF, error) in 
 
-	        					if subscriptors.contains(userId) {
+                        	if error == nil {
 
-	        						gift.isChecked = true
+                        		gift.isChecked = true
+                        	
+                        	} else {
 
-	        					}      				
-	        				}
-        				} else {
+								gift.isChecked = false
+                        	}
 
-        					gift.isChecked = false
+                        	let thumbnail = giftPF["thumbnail"] as! PFFile
 
-        				}
+	                        thumbnail.getDataInBackground(block: { (imageThumbnail, error) in
+	                
+	                            if error == nil {
 
-                        let thumbnail = giftPF["thumbnail"] as! PFFile
+	                                if let imageAvatarData = imageThumbnail {
 
-                        thumbnail.getDataInBackground(block: { (imageThumbnail, error) in
-                
-                            if error == nil {
+	                                    gift.thumbnail = UIImage(data:imageAvatarData)     
 
-                                if let imageAvatarData = imageThumbnail {
+	                                    self.gifts.append(gift)
 
-                                    gift.thumbnail = UIImage(data:imageAvatarData)     
+	                                    if (giftCount! - 1) == count {
 
-                                    self.gifts.append(gift)
+	                                    	self.collectionView.reloadData()
 
-                                    if (giftCount! - 1) == count {
+	                                    	self.activityView.stopAnimating()
+	                                    	
+	                                    }
 
-                                    	self.collectionView.reloadData()
+										count = count + 1
 
-                                    	count = count + 1
-                                    }
-
-
-                                }
-                            }
-                        })
+	                                }
+	                            }
+	                        })
+                        }
                     }
                     
                 } else

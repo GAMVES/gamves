@@ -14,7 +14,8 @@ import PopupDialog
 class Global: NSObject
 {
     
-    static var userId = String()  
+    static var userId = String()
+    static var userPF:PFUser!
     static var levelDescription = String()
     static var schoolShort = String()
 
@@ -640,7 +641,8 @@ class Global: NSObject
             {
                 if let userId = userPF?.objectId {
 
-                    Global.userId = userId  
+                    Global.userId = userId
+                    Global.userPF = userPF as! PFUser
 
                     let levelId  = userPF!["levelId"] as! String                    
 
