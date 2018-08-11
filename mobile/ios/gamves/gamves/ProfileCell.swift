@@ -761,9 +761,12 @@ class ProfileCell: BaseCell,
         self.loadProfileInfo()
 
          // Floaty
-        self.createFloaty()
+        self.createFloaty()        
 
-        self.queryPoints()
+        Global.queryPoints(completionHandler: { ( result:Int ) -> () in
+
+            self.pointsLabel.text = "\(result)"
+        })
     }
      
 
@@ -999,7 +1002,7 @@ class ProfileCell: BaseCell,
         }
     }
 
-    func queryPoints() {
+    /*func queryPoints() {
 
         let userId = Global.profileUser.userId 
 
@@ -1032,7 +1035,7 @@ class ProfileCell: BaseCell,
                 }            
             }
         })
-    }
+    }*/
 
     func changeSingleUserStatus(onlineMessage:PFObject)
     {

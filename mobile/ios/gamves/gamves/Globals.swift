@@ -1554,6 +1554,42 @@ class Global: NSObject
             }
         }
     }
+
+    static func queryPoints(completionHandler : @escaping (_ resutl:Int) -> ()) {
+
+        let userId = Global.profileUser.userId 
+
+        let queryPoints = PFQuery(className:"Points")
+        queryPoints.whereKey("userId", equalTo: userId)
+        queryPoints.findObjectsInBackground(block: { (pointsPF, error) in
+            
+            if error != nil
+            {
+                print("error")
+
+            } else {
+
+                let countPoints:Int = (pointsPF?.count)!
+
+                if countPoints > 0 {
+
+                    var countPoints = Int()
+
+                    for pointPF in pointsPF! {
+
+                        let point = pointPF["points"] as! Int
+
+                        countPoints = countPoints + point
+
+                    }
+
+                    completionHandler(countPoints)
+                    //self.pointsLabel.text = "\(countPoints)"
+
+                }            
+            }
+        })
+    }
     
     static func updateTimeOnline(status : Int) {
         

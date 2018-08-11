@@ -89,7 +89,7 @@ UICollectionViewDelegateFlowLayout   {
         return label
     }()
 
-    let missingLabel: UILabel = {
+    var missingLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false       
         label.textColor = UIColor.red                
@@ -121,6 +121,8 @@ UICollectionViewDelegateFlowLayout   {
     }()
 
     var cellGiftCollectionId = "cellGiftCollectionId"
+
+    var points = Int()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -181,6 +183,13 @@ UICollectionViewDelegateFlowLayout   {
         self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
 
         self.fetchGifts()
+
+        Global.queryPoints(completionHandler: { ( result:Int ) -> () in 
+
+            self.points = result
+
+            self.scoreLabel.text = "\(result)"
+        })
 
     }
 
@@ -245,26 +254,34 @@ UICollectionViewDelegateFlowLayout   {
     
    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        let giftPoints = self.gifts[indexPath.row].points
+
+        let subsRelation = self.gifts[indexPath.row].giftOBj.relation(forKey: "subscriptors")
         
           if self.gifts[indexPath.row].isChecked {
         
             self.gifts[indexPath.row].isChecked = false
 
-            //subsRelation.remove(Global.userPF)
+            subsRelation.remove(Global.userPF)
+
+            let missing = giftPoints - self.points                     
+
+            self.missingLabel.text = "\(missing)"
             
         } else {
             
             self.gifts[indexPath.row].isChecked = true
-            
-            DispatchQueue.main.async(execute: {
 
-                (self.gifts[indexPath.row].giftOBj["subscriptors"] as AnyObject).add(Global.userPF)
-                
-                self.gifts[indexPath.row].giftOBj.saveEventually()
-                
-            })
+            subsRelation.add(Global.userPF) 
+
+            let missing = giftPoints - self.points                     
+
+            self.missingLabel.text = "\(missing)"
             
         }
+
+        self.gifts[indexPath.row].giftOBj.saveEventually()           
         
 
         for gift in self.gifts {
@@ -273,9 +290,9 @@ UICollectionViewDelegateFlowLayout   {
 
 	    		gift.isChecked = false
 
-                let subsLastRelation = gift.giftOBj["subscriptors"] as! PFRelation
+                let subsLastRelation = gift.giftOBj.relation(forKey: "subscriptors")
 
-                //subsRelation.remove(PFUser.current()!)
+                subsLastRelation.remove(PFUser.current()!)
 	    	}
     	}
     	       
@@ -315,11 +332,11 @@ UICollectionViewDelegateFlowLayout   {
                         gift.price = (giftPF["price"] as? Int!)!
                         gift.points = (giftPF["points"] as? Int!)!
 
-                        let relationSubscriptors = giftPF["subscriptors"] as! PFRelation
+                        let relationSubscriptors = giftPF.relation(forKey: "subscriptors")
 
                         let queryRelation = relationSubscriptors.query()
-                        queryRelation.whereKey("_User", containedIn: [PFUser.current()])
-
+                        queryRelation.whereKey("objectId", containedIn: [PFUser.current()?.objectId])
+                        
                         queryRelation.getFirstObjectInBackground { (usersPF, error) in 
 
                         	if error == nil {
