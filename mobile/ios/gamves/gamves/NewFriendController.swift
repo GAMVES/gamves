@@ -18,6 +18,7 @@ class NewFriendController: UIViewController,
  {   
 
     var homeController: HomeController?
+
     
     var selectedUsers = [GamvesUser]()
     
@@ -30,7 +31,7 @@ class NewFriendController: UIViewController,
         label.textColor = UIColor.white
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.backgroundColor = UIColor.gamvesGreenColor
+        label.backgroundColor = UIColor.gamvesColor
         return label
     }()
 
@@ -89,18 +90,13 @@ class NewFriendController: UIViewController,
     
     let cellIdCollectionView = "friendsCellIdCollectionView"
     let cellIdTableView = "friendsCellIdTableView"
-    let sectionHeaderId = "friendSectionHeader"
-
-    var allUsers = Dictionary<String, GamvesUser>()
-
-    var schools = Dictionary<String, GamvesSchools>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = "ADD FRIENDS"
 
-        self.view.backgroundColor = UIColor.gamvesGreenColor
+        self.view.backgroundColor = UIColor.gamvesColor
 
         self.view.addSubview(self.info)
         self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.info)        
@@ -136,27 +132,17 @@ class NewFriendController: UIViewController,
 
         self.activityIndicatorView?.startAnimating()
 
-        //Global.getAllSchools(completionHandler: { ( schools ) -> () in        
-
         Global.fetchUsers(completionHandler: { (resutl) in
 
             if resutl {
-
-                for gamvesUser:GamvesUser in Global.gamvesAllUsers {
-                    
-                    let schoolId:String = gamvesUser.schoolId
-
-                    self.allUsers[schoolId] = gamvesUser
-                }                   
 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                     self.activityIndicatorView?.stopAnimating()
                 }
             }
-        })
 
-        //})        
+        })
 
         self.disableAddButton()
     }   
@@ -193,7 +179,9 @@ class NewFriendController: UIViewController,
             Global.gamvesAllUsers[indexOfUser!].isChecked = false
 
         }
-    }   
+
+    }
+   
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -201,9 +189,7 @@ class NewFriendController: UIViewController,
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        let count = Global.schools.count
-        print(count)
-        return count
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -211,35 +197,10 @@ class NewFriendController: UIViewController,
         print(count)
         return count
     }
-
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-                
-        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! AddFeedSectionHeader
-        
-        sectionHeaderView.backgroundColor = UIColor.gray
-
-        let section = indexPath.section
-
-        let index = section
-        let skeys = Array(Global.schools)        
-        let schoolId = skeys[section].key
-        let schoolName = Global.schools[schoolId]?.schoolName 
-
-        sectionHeaderView.nameLabel.text = schoolName
-
-        sectionHeaderView.schoolIconImageView.image = Global.schools[schoolId]?.icon
-
-        return sectionHeaderView
-        
-    }
-
-    /*
-    
-    */
-
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let size = CGSize(width: self.view.frame.width, height: 130)
+        
+        let size = CGSize(width: 130, height: 130)
         return size
     }
     
@@ -247,14 +208,11 @@ class NewFriendController: UIViewController,
         
         var cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellIdCollectionView, for: indexPath) as! CatFanSelectorViewCell        
         
-        let index = indexPath.item          
+        let index = indexPath.item
+        let user:GamvesUser = self.selectedUsers[index]
 
-        let skeys = Array(Global.schools)        
-        let schoolId = skeys[indexPath.section].key
-        let user = self.allUsers[schoolId]       
-
-        cell.avatarImage.image = user?.avatar
-        cell.nameLabel.text = user?.name       
+        cell.avatarImage.image = user.avatar
+        cell.nameLabel.text = user.name       
    
         return cell
     }
