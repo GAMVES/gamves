@@ -461,12 +461,10 @@ class Global: NSObject
 
                                         count = count + 1
                                     }
-                                }
-                            
-                            }
-                        
+                                }                            
+                            }                        
                         }                        
-                    }           
+                    }          
                     
                 })   
 
@@ -476,10 +474,8 @@ class Global: NSObject
                 completionHandler(0)   
             }
         })
-
-
     }
-    
+
     static func adduserToFamilyFromGlobal(gamvesUser : GamvesUser){
         
         if let myId = PFUser.current()?.objectId {
@@ -580,7 +576,7 @@ class Global: NSObject
     static func fetchUsers(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
         let userQuery = PFQuery(className:"_User")        
-        userQuery.whereKey("iDUserType", equalTo: 2)
+        userQuery.whereKey("iDUserType", containedIn: [2,3])
 
         if let userId = PFUser.current() {
             userQuery.whereKey("objectId", notEqualTo: userId)

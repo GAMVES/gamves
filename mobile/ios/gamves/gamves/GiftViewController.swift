@@ -251,8 +251,8 @@ UICollectionViewDelegateFlowLayout   {
         var spacing = CGFloat()        
         spacing = 0       
         return spacing
-    }
-      
+        
+    }      
     
    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
