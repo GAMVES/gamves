@@ -6,7 +6,31 @@
 
 	Parse.Cloud.define("gimmeDate", function (request, response) {
 
-		let user_birthday = request.params.user_birthday;		
+		var userQuery = new Parse.Query(Parse.User);
+		userQuery.containedIn("iDUserType", [2,3]);
+
+		userQuery.find().then(function(usersPF) {
+
+			let count = usersPF.length;	
+			
+			for (let i=0; i<count; i++) {
+
+
+				let userPF = usersPF[i];
+
+				let birthday = userPF["birthday"];
+
+				if (checkIsToday(birthday)) {
+
+				}
+
+			}
+		});
+
+	});
+	
+
+	function checkIsToday(user_birthday) {		
 
 		var today = new Date();
 		var dd = today.getDate();
@@ -36,9 +60,8 @@
 			equal = false;
 		}	
 
-		response.success("todayCompare: " + todayCompare + " equal:  " + equal);		
-		
-	});
+		return equal;
+	}
 
 
 
