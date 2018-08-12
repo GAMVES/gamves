@@ -48,7 +48,7 @@ class GiftViewCell: BaseCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false                
         label.textColor = UIColor.lightGray
-        label.font = UIFont.systemFont(ofSize: 20)
+        label.font = UIFont.systemFont(ofSize: 15)
         //label.backgroundColor = UIColor.cyan
         label.numberOfLines = 4
         return label
@@ -171,7 +171,7 @@ class GiftViewCell: BaseCell {
        self.rowView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.descriptionLabel)    
        self.rowView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.bottomView)
 
-       self.rowView.addConstraintsWithFormat("V:|-15-[v0(50)]-10-[v1]-10-[v2(100)]-40-|", 
+       self.rowView.addConstraintsWithFormat("V:|-15-[v0(50)]-10-[v1]-10-[v2(100)]-10-|", 
             views: self.titleLabel, self.descriptionLabel, self.bottomView)
 
         self.bottomView.addSubview(self.numbersView)
@@ -213,8 +213,8 @@ class GiftViewCell: BaseCell {
         let cw = self.frame.width
         let ch = cw * 9 / 16
         
-        let pr = cw - 110
-        let pt = ch - 60
+        let pr = cw - 100
+        let pt = ch - 90
         
         let paddingMetrics = ["pr":pr,"pt":pt]
         

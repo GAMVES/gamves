@@ -62,7 +62,7 @@ UICollectionViewDelegateFlowLayout   {
         label.text = "Points"
         label.textColor = UIColor.black 
         //label.backgroundColor = UIColor.green               
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 15)
         label.textAlignment = .center           
         return label
     }()
@@ -70,10 +70,10 @@ UICollectionViewDelegateFlowLayout   {
     let scoreLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false    
-        label.textColor = UIColor.blue  
+        label.textColor = UIColor.cyan  
         //label.backgroundColor = UIColor.cyan              
         label.font = UIFont.boldSystemFont(ofSize: 30)
-        label.text = "200"
+        //label.text = "200"
         label.textAlignment = .center           
         return label
     }()    
@@ -84,7 +84,7 @@ UICollectionViewDelegateFlowLayout   {
         label.text = "Missing"
         label.textColor = UIColor.black   
         //label.backgroundColor = UIColor.blue             
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 15)
         label.textAlignment = .center           
         return label
     }()
@@ -92,9 +92,9 @@ UICollectionViewDelegateFlowLayout   {
     var missingLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false       
-        label.textColor = UIColor.red                
+        label.textColor = UIColor.white                
         label.font = UIFont.boldSystemFont(ofSize: 30)
-        label.text = "120"
+        //label.text = "120"
         //label.backgroundColor = UIColor.red
         label.textAlignment = .center             
         return label
@@ -105,14 +105,14 @@ UICollectionViewDelegateFlowLayout   {
     let lineView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.gray
+        view.backgroundColor = UIColor.gamvesTurquezeColor
         return view
     }()
 
 	lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
+        //layout.minimumInteritemSpacing = 30
+        layout.minimumLineSpacing = 1        
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)   
         cv.backgroundColor = UIColor.gamvesTurquezeColor     
         cv.dataSource = self
@@ -137,7 +137,7 @@ UICollectionViewDelegateFlowLayout   {
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
 
-        self.view.addConstraintsWithFormat("V:|[v0(150)][v1(1)][v2]|", views: 
+        self.view.addConstraintsWithFormat("V:|[v0(150)][v1(5)][v2]|", views: 
             self.titleView, 
             self.lineView, 
             self.collectionView)   
@@ -180,15 +180,16 @@ UICollectionViewDelegateFlowLayout   {
 
         self.collectionView.register(GiftViewCell.self, forCellWithReuseIdentifier: self.cellGiftCollectionId)       
 
-        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
-
-        self.fetchGifts()
+        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)        
 
         Global.queryPoints(completionHandler: { ( result:Int ) -> () in 
 
             self.points = result
 
             self.scoreLabel.text = "\(result)"
+
+            self.fetchGifts()
+
         })
 
     }
@@ -238,9 +239,9 @@ UICollectionViewDelegateFlowLayout   {
         
         var size = CGSize()      
        
-        let height = (self.view.frame.width - 100 ) * 9 / 16
+        let height = (self.view.frame.width) * 9 / 16
            
-        size = CGSize(width: self.view.frame.width, height: height + 16 + 88)      
+        size = CGSize(width: self.view.frame.width, height: 250) //height: height + 16 + 88)      
         
         return size  
     }
@@ -251,6 +252,7 @@ UICollectionViewDelegateFlowLayout   {
         spacing = 0       
         return spacing
     }
+      
     
    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -263,26 +265,23 @@ UICollectionViewDelegateFlowLayout   {
         
             self.gifts[indexPath.row].isChecked = false
 
-            subsRelation.remove(Global.userPF)
+            subsRelation.remove(Global.userPF)  
 
-            let missing = giftPoints - self.points                     
-
-            self.missingLabel.text = "\(missing)"
+            self.missingLabel.text = ""   
             
         } else {
             
             self.gifts[indexPath.row].isChecked = true
 
-            subsRelation.add(Global.userPF) 
+            subsRelation.add(Global.userPF)  
 
             let missing = giftPoints - self.points                     
 
-            self.missingLabel.text = "\(missing)"
+            self.missingLabel.text = "\(missing)"      
             
-        }
+        }               
 
-        self.gifts[indexPath.row].giftOBj.saveEventually()           
-        
+        self.gifts[indexPath.row].giftOBj.saveEventually()  
 
         for gift in self.gifts {
 
@@ -342,6 +341,14 @@ UICollectionViewDelegateFlowLayout   {
                         	if error == nil {
 
                         		gift.isChecked = true
+
+                                print(self.points )
+
+                                print(gift.points)
+
+                                let missing = gift.points - self.points
+
+                                self.missingLabel.text = "\(missing)"   
                         	
                         	} else {
 
