@@ -17,9 +17,7 @@ class Global: NSObject
     static var userId = String()
     static var userPF:PFUser!
     static var levelDescription = String()
-    static var schoolShort = String()
-
-    static var gamvesAllUsers = [GamvesUser]()
+    static var schoolShort = String()       
 
     static var trends_stored = [GamvesTrendCategory]()
 
@@ -123,6 +121,8 @@ class Global: NSObject
     static var keySonSmall      = String()
     
     static var badgeNumber = Bool()
+
+    static var gamvesAllUsers = Dictionary<String, GamvesUser>()
     
     static var userDictionary = Dictionary<String, GamvesUser>()
 
@@ -599,7 +599,7 @@ class Global: NSObject
 
                         Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { (gamvedUser) in
 
-                            Global.gamvesAllUsers.append(gamvedUser)                           
+                            Global.gamvesAllUsers[gamvedUser.userId] = gamvedUser //.append(gamvedUser)                           
 
                             if (usersCount! - 1) == count
                             {
@@ -612,7 +612,9 @@ class Global: NSObject
 
                     } else {
 
-                        Global.gamvesAllUsers.append(Global.userDictionary[userId!]!)                        
+                        Global.gamvesAllUsers[userId!] = Global.userDictionary[userId!]
+
+                        //Global.gamvesAllUsers.append(Global.userDictionary[userId!]!)                        
 
                         if (usersCount! - 1) == count
                         {

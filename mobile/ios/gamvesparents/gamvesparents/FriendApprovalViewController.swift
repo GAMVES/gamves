@@ -101,8 +101,10 @@ FriendApprovalProtocol
             Global.getFriendsAmount(posterId: userId, completionHandler: { ( count ) -> () in
 
                 DispatchQueue.main.async {
+
                     self.collectionView.reloadData()
                     self.activityIndicatorView?.stopAnimating()    
+                
                 }
 
             })                                    

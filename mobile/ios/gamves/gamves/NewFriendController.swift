@@ -90,6 +90,11 @@ class NewFriendController: UIViewController,
     
     let cellIdCollectionView = "friendsCellIdCollectionView"
     let cellIdTableView = "friendsCellIdTableView"
+    let sectionHeaderId = "friendSectionHeader"
+
+    var allUsers = Dictionary<String, GamvesUser>()
+    var schools = Dictionary<String, GamvesSchools>()
+    var countUsersInSchool = Dictionary<String, Int>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -136,15 +141,41 @@ class NewFriendController: UIViewController,
 
             if resutl {
 
+                let ukeys = Array(Global.gamvesAllUsers)        
+               
+                for key in ukeys {
+
+                    let gamvesUser = Global.gamvesAllUsers[key.key]
+
+                    let schoolId:String = gamvesUser!.schoolId                  
+
+                    //Not friend filter
+
+                    if  Global.friends[(gamvesUser?.userId)!] == nil {
+
+                        self.allUsers[schoolId] = gamvesUser
+
+                        let current = self.countUsersInSchool[schoolId]
+
+                    let next = current! + 1
+
+                        self.countUsersInSchool[schoolId] = next
+                   }   
+                }
+              
                 DispatchQueue.main.async {
+
                     self.tableView.reloadData()
                     self.activityIndicatorView?.stopAnimating()
+
                 }
             }
-
         })
 
         self.disableAddButton()
+
+        self.tableView.register(AddFeedSectionHeader.self, forHeaderFooterViewReuseIdentifier: self.sectionHeaderId)
+
     }   
 
     
@@ -174,10 +205,7 @@ class NewFriendController: UIViewController,
 
         for user in self.selectedUsers {
 
-            let indexOfUser = Global.gamvesAllUsers.index{$0 === user}
-
-            Global.gamvesAllUsers[indexOfUser!].isChecked = false
-
+            Global.gamvesAllUsers[user.userId]?.isChecked = false
         }
 
     }
@@ -229,25 +257,64 @@ class NewFriendController: UIViewController,
         
     }
 
+    ////////////////
+    // TABLE VIEW //
     //////////////
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        let count = Global.schools.count
+        print(count)
+        return count
     }   
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let countItems = Int(Global.gamvesAllUsers.count)
-        print(countItems)
-        return countItems
-    }  
         
+        let skeys = Array(Global.schools)        
+        let schoolId = skeys[section].key
+
+        let count = self.countUsersInSchool[schoolId]
+
+        return count!
+    } 
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        var height = CGFloat()
+
+        height = 100
+
+        return height    
+    }         
+
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: self.sectionHeaderId) as? AddFeedSectionHeader else {
+            return nil
+        }
+
+        //header.customLabel.text = "Section \(section + 1)"
+
+        let skeys = Array(Global.schools)        
+        let schoolId = skeys[section].key
+
+        let school = Global.schools[schoolId]
+
+        header.schoolIconImageView.image = school?.icon
+        
+        header.nameLabel.text = school?.schoolName
+        
+        return header
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdTableView, for: indexPath) as! FriendsTableViewCell       
-        
-        let index = indexPath.item
-        let user:GamvesUser = Global.gamvesAllUsers[index]
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdTableView, for: indexPath) as! FriendsTableViewCell
+
+        let skeys = Array(Global.schools)        
+        let schoolId = skeys[indexPath.section]
+
+        let user:GamvesUser =   self.allUsers[schoolId.key]!
 
         cell.nameLabel.text = user.name
         print(user.name)
@@ -269,15 +336,20 @@ class NewFriendController: UIViewController,
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {  
         
-        print(indexPath.row)       
+        print(indexPath.row)        
 
-        let user = Global.gamvesAllUsers[indexPath.row] as GamvesUser
+        //let user = Global.gamvesAllUsers[indexPath.row] as GamvesUser
+
+        let skeys = Array(Global.schools)        
+        let schoolId = skeys[indexPath.section]
+
+        let user:GamvesUser = self.allUsers[schoolId.key]!
 
         let checked = user.isChecked
             
         if !checked
         {
-            Global.gamvesAllUsers[indexPath.item].isChecked  = true
+            user.isChecked  = true
 
             if !self.selectedUsers.contains(where: { $0.name == user.name }) {
             
@@ -288,7 +360,7 @@ class NewFriendController: UIViewController,
             
         } else
         {
-            Global.gamvesAllUsers[indexPath.item].isChecked = false
+            user.isChecked = false
 
             let indexOfUser = selectedUsers.index{$0 === user}
             
@@ -307,17 +379,7 @@ class NewFriendController: UIViewController,
 
         }        
         
-    } 
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        var height = CGFloat()
-
-        height = 100
-
-        return height
-    
-    }
+    }     
 
     func enableAddButton() {
 
@@ -379,9 +441,11 @@ class NewFriendController: UIViewController,
                             
                             DispatchQueue.main.async {
 
-                                let indexOfUser = Global.gamvesAllUsers.index{$0 === user}
+                                //let indexOfUser = Global.gamvesAllUsers.index{$0 === user}
 
-                                Global.gamvesAllUsers[indexOfUser!].isChecked = false
+                                Global.gamvesAllUsers[user.userId]?.isChecked = true
+                                
+                                //Global.gamvesAllUsers[indexOfUser!].isChecked = false
 
                                 self.tableView.reloadData()
                             }            

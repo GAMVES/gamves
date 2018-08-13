@@ -92,6 +92,7 @@ class GamvesSchools
     var thumbnail:UIImage?
     var schoolName = String()    
     var schoolOBj:PFObject!
+    var userCount = Int()
 }
 
 class GamvesUser {
