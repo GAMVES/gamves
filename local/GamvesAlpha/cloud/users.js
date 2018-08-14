@@ -63,9 +63,7 @@
 
 		}).then(function(profileObj) {	        
 
-			profile = profileObj;
-			
-	        console.log("3) profileObj: " + profileObj.id);	        
+			profile = profileObj;               
 
 	        var user_name = request.params.user_name;	        
 	        var user_email = request.params.user_email;
@@ -296,33 +294,41 @@
 
 	    	}
 
-    	}).then(function(fanpageReSaved) {		    	    	
+    	}).then(function(fanpageReSaved) {	 
+
+    		console.log("LLEGA");   		
 
     		var Notification = Parse.Object.extend("Notifications");         
-	        var notification = new Notific4ation();		        						
+	        var notification = new Notification();		        						
 
 		    notification.set("posterName", resutlUser.get("Name"));
-		    notification.set("posterAvatar", resutlUser.get("picture"));		    	
+		    notification.set("posterAvatar", resutlUser.get("picture"));		    		    	    	
 
 			var ftitle = "Welcome " + resutlUser.get("Name") + " !!";
-
 		    notification.set("title", ftitle);
-    		notification.set("description", fanpageReSaved.get("pageAbout"));
+
+		    let description = "Welcome to Gamves " + resutlUser.get("Name") + " open this notification to find out the amazing thins you can do"; 
+		    notification.set("description", description);
+
+    		//notification.set("description", fanpageReSaved.get("pageAbout"));
+
+    		notification.set("target", [resutlUser.id]);  
+
     		notification.set("cover", fanpageReSaved.get("pageCover"));	    		
     		notification.set("referenceId", fanpageReSaved.get("fanpageId"));
     		notification.set("date", fanpageReSaved.get("createdAt"));
     		notification.set("fanpage", fanpageReSaved); 
-			notification.set("posterId", adminUser.id); 	
+			notification.set("posterId", adminUser.id); 				
 
-    		notification.set("type", 2);
+    		notification.set("type", 4);
+
+    		console.log("SALE");
 
     		return notification.save(null, {useMasterKey: true});
 
-		}).then(function(object) {
+		}).then(function(object) {		
 
-    		if ( iDUserType==2 || iDUserType==3 ) {	
-    	
-	    		console.log("12) object: " + object);	    
+    		if ( iDUserType==2 || iDUserType==3 ) {	    		
 
     			response.success(resutlUser); 
     		}
