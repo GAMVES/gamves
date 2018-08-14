@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "GamvesAlpha": {
+      "applicationId": "45cgsAjYqwQQRctQTluoUpVvKsHqrjCmvh72UGBx"
+    },
+    "_default": {
+      "link": "GamvesAlpha"
+    }
+  }
+}

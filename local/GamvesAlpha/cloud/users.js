@@ -171,7 +171,7 @@
 
 		}).then(function(fanpagesFound) {
 
-			if ( iDUserType==2 || iDUserType==3 ) {			
+			if ( iDUserType==2 || iDUserType==3 ) {		
 	        	
 
 				var count = 0;
@@ -182,9 +182,7 @@
 
 				if (count > 0) {
 					count++;
-				}
-
-				//var category = categorySaved;					                				
+				}					                				
 
 	        	var Fanpages = Parse.Object.extend("Fanpages");
 		    	var fanpage = new Fanpages();
@@ -298,12 +296,10 @@
 
 	    	}
 
-    	}).then(function(fanpageReSaved) {	
-
-	    	console.log("11) fanpageReSaved: " + fanpageReSaved);	    	
+    	}).then(function(fanpageReSaved) {		    	    	
 
     		var Notification = Parse.Object.extend("Notifications");         
-	        var notification = new Notification();		        						
+	        var notification = new Notific4ation();		        						
 
 		    notification.set("posterName", resutlUser.get("Name"));
 		    notification.set("posterAvatar", resutlUser.get("picture"));		    	
