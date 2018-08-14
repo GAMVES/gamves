@@ -63,7 +63,7 @@ class Global: NSObject
 
     static var serverUrl = "https://parseapi.back4app.com/"   
     
-    static var localWs = "wss://gamvesone.back4app.io" 
+    static var localWs = "wss://gamvesalpha.back4app.io" 
     
     static var defaults = UserDefaults.standard
     

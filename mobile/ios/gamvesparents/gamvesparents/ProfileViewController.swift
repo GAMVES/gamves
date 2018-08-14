@@ -2063,9 +2063,7 @@ class ProfileViewController: UIViewController,
 
         //SAVE SPOSE ADMIN
         
-        queue.tasks +=~ {
-
-            print("FINISH")            
+        queue.tasks +=~ { resutl, next in          
             
             var spouseAdmin = [GamvesUser]()
             
@@ -2076,16 +2074,41 @@ class ProfileViewController: UIViewController,
                 
                 print("done spouseAdmin")
                 print(resutl)
-                if resutl {
-                    completionHandlerChatGroups(true)
-                }
+                if (resutl != nil) {
+                    next(nil)
+                }               
                 
             })
         }
-        queue.run()                       
+
+        //Remove User
+        
+        queue.tasks +=~ {
+
+            print("FINISH")                     
+
+            let userVerifiedQuery = PFQuery(className:"UserVerified")  
+            let contained = [self.youGamves.userId, self.sonGamves.userId, self.spouseGamves.userId] 
+            userVerifiedQuery.whereKey("userId", containedIn: contained)      
+            userVerifiedQuery.findObjectsInBackground { (userVerifiedsPF, error) in
+            
+                if error == nil
+                {
+                    for userVerified in userVerifiedsPF! {
+                        do {
+                           try userVerified.delete()
+                        } catch {
+                            print("error deleting")
+                        }
+                    }
+                    print("done deleting userVerified")
+                    completionHandlerChatGroups(true)
+                }
+            }
+        }
+        queue.run()
 
     }
-
    
     @objc func handlePhotoImageView(sender: UITapGestureRecognizer)
     {
