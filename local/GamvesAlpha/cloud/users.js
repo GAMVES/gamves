@@ -294,9 +294,7 @@
 
 	    	}
 
-    	}).then(function(fanpageReSaved) {	 
-
-    		console.log("LLEGA");   		
+    	}).then(function(fanpageReSaved) {	     		
 
     		var Notification = Parse.Object.extend("Notifications");         
 	        var notification = new Notification();		        						
@@ -320,9 +318,7 @@
     		notification.set("fanpage", fanpageReSaved); 
 			notification.set("posterId", adminUser.id); 				
 
-    		notification.set("type", 4);
-
-    		console.log("SALE");
+    		notification.set("type", 5);
 
     		return notification.save(null, {useMasterKey: true});
 
