@@ -142,10 +142,9 @@ class NotificationFeedCell: BaseCell {
         self.addConstraintsWithFormat("H:|[v0]|", views: self.separatorView)
         
         self.addConstraintsWithFormat("V:|-16-[v0]-8-[v1(100)]-8-[v2(1)]|",
-                                 views: self.thumbnailImageView, self.rowView, self.separatorView)
+                                 views: self.thumbnailImageView, self.rowView, self.separatorView)        
 
         //Row View
-
         self.rowView.addSubview(self.userView)
         self.rowView.addSubview(self.dataView)
         

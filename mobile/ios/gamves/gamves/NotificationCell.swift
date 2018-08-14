@@ -40,7 +40,7 @@ UICollectionViewDelegateFlowLayout {
     let cellId = "cellId"
     let sectionHeaderId = "notificationSectionHeader"
 
-    let rowHeight = CGFloat(110)
+    let rowHeight = CGFloat(130)
 
     var floaty = Floaty(size: 80)   
 
@@ -113,7 +113,12 @@ UICollectionViewDelegateFlowLayout {
         
         if let userId = PFUser.current()?.objectId {
         
-            queryNotification.whereKey("target", contains: userId)
+            let filterTarget = [
+                Global.schoolShort,
+                Global.levelDescription.lowercased(),
+                Global.userId] as [String]
+
+            queryNotification.whereKey("target", containedIn: filterTarget)
         }
         
         self.subscription = liveQueryClientFeed.subscribe(queryNotification).handle(Event.created) { _, notification in            
@@ -127,7 +132,29 @@ UICollectionViewDelegateFlowLayout {
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+
+        var count = 0
+        
+        if notificationLoaded {
+            
+            var countNewst = Global.notificationsNew.count
+
+            var countNot = Global.notifications.count
+
+            if countNewst > 0 {
+
+                count = count + 1
+            }
+            
+            if countNot > 0 {
+
+                count = count + 1
+            }
+            
+            print(count)
+        }
+        
+        return count
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -172,20 +199,17 @@ UICollectionViewDelegateFlowLayout {
                 countItems = Global.notificationsNew.count
                 
             } else if section == 1 {
-                
-                countItems = Global.notifications.count
-                
-                if countItems == 0
-                {
-                    countItems = 1
-                    
-                }
+
+                countItems = Global.notifications.count               
             }
         }
+        
+        print(countItems)
 
         return countItems
 
     }
+
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
@@ -195,11 +219,17 @@ UICollectionViewDelegateFlowLayout {
         let index = indexPath.item
         var notification = GamvesNotification()
         
+        print(indexPath.section)
+        
         if indexPath.section == 0 {
+            
             notification = Global.notificationsNew[index]
+            
         } else if indexPath.section == 1 {
+            
             notification = Global.notifications[index]
-        }        
+            
+        }
 
         if notification.type == 2 {
             cell.setThumbnailSize()
@@ -263,7 +293,7 @@ UICollectionViewDelegateFlowLayout {
 
             cell.iconView.backgroundColor = UIColor.magenta
             
-        } else if notification.type == 4 { //notification
+        } else if notification.type == 5 { //notification
 
             cell.thumbnailImageView.isHidden = true
 
@@ -318,7 +348,17 @@ UICollectionViewDelegateFlowLayout {
         var height = CGFloat()
 
         let index = indexPath.item
-        let notification:GamvesNotification = Global.notifications[index]
+
+        var notification:GamvesNotification!
+
+        if indexPath.section == 0 {
+                
+            notification = Global.notificationsNew[index]
+            
+        } else if indexPath.section == 1 {
+            
+            notification = Global.notifications[index]
+        }        
 
         if notification.type == 1 { //video
 
@@ -326,7 +366,7 @@ UICollectionViewDelegateFlowLayout {
             
             size = CGSize(width: self.frame.width, height: height + 16 + 100)        
 
-        } else if notification.type == 2 { //fanpage
+        } else { //if notification.type == 2 { //fanpage
 
             height = self.rowHeight
             

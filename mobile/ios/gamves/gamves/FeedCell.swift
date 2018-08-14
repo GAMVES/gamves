@@ -362,7 +362,6 @@ FeedDelegate {
                 let key: Int = Array(ChatFeedMethods.chatFeedVideos)[index].key
                 chatfeed = ChatFeedMethods.chatFeedVideos[key]!   
             }
-
         }        
         
         cell.nameLabel.text = chatfeed.room
