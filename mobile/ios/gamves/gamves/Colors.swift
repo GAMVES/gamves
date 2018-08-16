@@ -24,7 +24,10 @@ extension UIColor
 
     static let gamvesCyanColor = UIColor.rgb(0, green: 175, blue: 239)    
     static let gamvesYellowColor = UIColor.rgb(255, green: 204, blue: 41)    
+    
     static let gamvesGreenColor = UIColor.rgb(168, green: 207, blue: 69)
+    static let gamvesGreenDarkColor = UIColor.rgb(78, green: 97, blue: 31)
+
     static let gamvesFucsiaColor = UIColor.rgb(255, green: 41, blue: 192)
 
     static let gamvesLightBlueColor = UIColor.rgb(93, green: 182, blue: 255)

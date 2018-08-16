@@ -7,8 +7,14 @@
 
 import UIKit
 
-class AddFeedSectionHeader: UICollectionViewCell {
+class AddFriendSectionHeader: UITableViewHeaderFooterView {
 
+
+    let containerView: UIView = {
+        let view = UIView()        
+        view.backgroundColor = UIColor.black
+        return view
+    }()    
 
 	let schoolIconImageView: UIImageView = {
         let imageView = UIImageView()
@@ -31,10 +37,11 @@ class AddFeedSectionHeader: UICollectionViewCell {
         return view
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        self.setupViews()
     }
+    
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -42,21 +49,21 @@ class AddFeedSectionHeader: UICollectionViewCell {
     
     func setupViews() {
 
-    	self.addSubview(self.schoolIconImageView)     
-        self.addConstraintsWithFormat("H:|-10-[v0(28)]|", views: self.schoolIconImageView)
-        self.addConstraintsWithFormat("V:|-10-[v0(28)]|", views: self.schoolIconImageView)
+        self.addSubview(self.containerView) 
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.containerView)
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.containerView)
 
-        self.addSubview(self.nameLabel)     
-        self.addConstraintsWithFormat("H:|-60-[v0]|", views: self.nameLabel)
-        self.addConstraintsWithFormat("V:|-5-[v0(40)]|", views: self.nameLabel)       
+    	self.containerView.addSubview(self.schoolIconImageView)     
+        self.containerView.addConstraintsWithFormat("H:|-10-[v0(28)]|", views: self.schoolIconImageView)
+        self.containerView.addConstraintsWithFormat("V:|-10-[v0(28)]|", views: self.schoolIconImageView)
 
-        self.addSubview(self.dividerLineView)
-        self.addConstraintsWithFormat("H:|[v0]|", views: dividerLineView)
-        self.addConstraintsWithFormat("V:[v0(0.3)]|", views: dividerLineView)
+        self.containerView.addSubview(self.nameLabel)     
+        self.containerView.addConstraintsWithFormat("H:|-60-[v0]|", views: self.nameLabel)
+        self.containerView.addConstraintsWithFormat("V:|-5-[v0(40)]|", views: self.nameLabel)       
 
-        //self.schoolIconImageView.alpha    = 0.5
-        //self.nameLabel.alpha        = 0.5
-        //self.dividerLineView.alpha  = 0.5 
+        self.containerView.addSubview(self.dividerLineView)
+        self.containerView.addConstraintsWithFormat("H:|[v0]|", views: dividerLineView)
+        self.containerView.addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)      
 
     }
 }

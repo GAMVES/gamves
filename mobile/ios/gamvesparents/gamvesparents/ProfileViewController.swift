@@ -2139,7 +2139,6 @@ class ProfileViewController: UIViewController,
         let popover = actionSheet.popoverPresentationController        
         popover?.permittedArrowDirections = UIPopoverArrowDirection.any
 
-
         // iPad spport
         if Global.device.lowercased().range(of:"ipad") != nil {
             

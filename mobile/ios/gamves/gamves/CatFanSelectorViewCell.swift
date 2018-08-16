@@ -14,15 +14,15 @@ class CatFanSelectorViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = UIColor.gambesDarkColor
+        //imageView.backgroundColor = UIColor.gambesDarkColor
         imageView.isUserInteractionEnabled = true
-        imageView.layer.cornerRadius = 5
+        imageView.layer.cornerRadius = 10
         return imageView
     }()
     
     let separatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gray
+        //view.backgroundColor = UIColor.gray
         //view.backgroundColor = UIColor.gambesDarkColor
         return view
     }()

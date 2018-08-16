@@ -18,20 +18,25 @@ class NewFriendController: UIViewController,
  {   
 
     var homeController: HomeController?
-
     
     var selectedUsers = [GamvesUser]()
     
     var activityIndicatorView:NVActivityIndicatorView?
 
+     let infoView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesGreenColor
+        return view
+    }()
+
     let info: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Select the people you may know below and add them as friends"
-        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.font = UIFont.systemFont(ofSize: 18)
         label.textColor = UIColor.white
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.backgroundColor = UIColor.gamvesColor
+        //label.backgroundColor = UIColor.gamvesGreenColor
         return label
     }()
 
@@ -41,7 +46,7 @@ class NewFriendController: UIViewController,
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textColor = UIColor.white
         label.textAlignment = .center
-        label.backgroundColor = UIColor.gambesDarkColor
+        label.backgroundColor = UIColor.gamvesGreenDarkColor
         return label
     }()    
    
@@ -50,19 +55,18 @@ class NewFriendController: UIViewController,
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.gamvesBlackColor
+        cv.backgroundColor = UIColor.gamvesGreenColor
         cv.dataSource = self
         cv.delegate = self
         return cv
     }()
-
 
     let friendsAvailable: PaddingLabel = {
         let label = PaddingLabel()
         label.text = "Friends list"
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textColor = UIColor.white
-        label.backgroundColor = UIColor.gambesDarkColor
+        label.backgroundColor = UIColor.gamvesGreenDarkColor
         label.textAlignment = .center
         return label
     }()
@@ -71,10 +75,16 @@ class NewFriendController: UIViewController,
         let rect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         let tv = UITableView(frame: rect)
         tv.translatesAutoresizingMaskIntoConstraints = false
-        tv.backgroundColor = UIColor.green
+        tv.backgroundColor = UIColor.gamvesGreenColor
         tv.dataSource = self
         tv.delegate = self
         return tv
+    }()
+
+    let buttonView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.gamvesGreenColor
+        return view
     }()
 
     var addButton: UIButton = {
@@ -82,9 +92,10 @@ class NewFriendController: UIViewController,
         button.translatesAutoresizingMaskIntoConstraints = false        
         button.isUserInteractionEnabled = true
         button.setTitle("Invite friends", for: UIControlState())
+        button.titleLabel?.font =  UIFont.boldSystemFont(ofSize: 20)
         button.addTarget(self, action: #selector(handleAdd), for: .touchUpInside)
         button.layer.cornerRadius = 5              
-        button.backgroundColor = UIColor.gamvesBlackColor
+        button.backgroundColor = UIColor.gamvesGreenDarkColor
         return button
     }()
     
@@ -100,14 +111,13 @@ class NewFriendController: UIViewController,
         super.viewDidLoad()
 
         self.title = "ADD FRIENDS"
-
-        self.view.backgroundColor = UIColor.gamvesColor
-
-        self.view.addSubview(self.info)
-        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.info)        
-
+        self.view.backgroundColor = UIColor.gamvesGreenColor
+    
         self.view.addSubview(self.friendsSelected)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.friendsSelected)
+
+        self.view.addSubview(self.infoView)  
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.infoView)
 
         self.view.addSubview(self.collectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
@@ -117,24 +127,33 @@ class NewFriendController: UIViewController,
         
         self.view.addSubview(self.tableView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.tableView)
-        
-        self.view.addSubview(self.addButton)
-        self.view.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.addButton)     
 
-        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(40)][v2(150)][v3(40)][v4][v5(60)]-10-|", views: 
-            self.info,
+        self.view.addSubview(self.buttonView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.buttonView)          
+
+        self.view.addConstraintsWithFormat("V:|[v0(40)][v1(150)][v2(40)][v3][v4(80)]|", views:             
             self.friendsSelected,
-            self.collectionView, 
+            self.infoView, 
             self.friendsAvailable,
             self.tableView,
-            self.addButton)        
+            self.buttonView)  
+
+        self.infoView.addSubview(self.collectionView)
+        self.infoView.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
+        self.infoView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
+
+        self.infoView.addSubview(self.info)                 
+        self.infoView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.info)
+        self.infoView.addConstraintsWithFormat("V:|[v0]|", views: self.info)
+
+        self.buttonView.addSubview(self.addButton)
+        self.buttonView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.addButton)    
+        self.buttonView.addConstraintsWithFormat("V:|-5-[v0]-10-|", views: self.addButton)
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
 
-        self.tableView.register(FriendsTableViewCell.self, forCellReuseIdentifier: self.cellIdTableView)        
-        
+        self.tableView.register(FriendsTableViewCell.self, forCellReuseIdentifier: self.cellIdTableView)                
         self.collectionView.register(CatFanSelectorViewCell.self, forCellWithReuseIdentifier: cellIdCollectionView)
-
         self.activityIndicatorView?.startAnimating()
 
         Global.fetchUsers(completionHandler: { (resutl) in
@@ -150,17 +169,30 @@ class NewFriendController: UIViewController,
                     let schoolId:String = gamvesUser!.schoolId                  
 
                     //Not friend filter
+                    if let userId = PFUser.current()?.objectId {
 
-                    if  Global.friends[(gamvesUser?.userId)!] == nil {
+                        if let gUserId = gamvesUser?.userId {
 
-                        self.allUsers[schoolId] = gamvesUser
+                            if gUserId != userId {
 
-                        let current = self.countUsersInSchool[schoolId]
+                                if  Global.friends[(gamvesUser?.userId)!] == nil {
 
-                    let next = current! + 1
+                                    self.allUsers[schoolId] = gamvesUser
+                                    
+                                    var current = Int()                        
+                                    if self.countUsersInSchool[schoolId] != nil {
+                                        current = self.countUsersInSchool[schoolId]!
+                                    } else {
+                                        current = 0
+                                    }
 
-                        self.countUsersInSchool[schoolId] = next
-                   }   
+                                    let next = current + 1
+
+                                    self.countUsersInSchool[schoolId] = next
+                               }
+                            }
+                        }
+                    }   
                 }
               
                 DispatchQueue.main.async {
@@ -174,11 +206,10 @@ class NewFriendController: UIViewController,
 
         self.disableAddButton()
 
-        self.tableView.register(AddFeedSectionHeader.self, forHeaderFooterViewReuseIdentifier: self.sectionHeaderId)
+        self.tableView.register(AddFriendSectionHeader.self, forHeaderFooterViewReuseIdentifier: self.sectionHeaderId)
 
-    }   
+    }
 
-    
     override func viewWillAppear(_ animated: Bool) {
         
         if Global.gamvesAllUsers.count > 0 {
@@ -253,8 +284,7 @@ class NewFriendController: UIViewController,
         
         print("index : \(indexPath)")
         
-        //let cell = self.collectionView.cellForItem(at: indexPath) as! CatFanSelectorViewCell
-        
+        //let cell = self.collectionView.cellForItem(at: indexPath) as! CatFanSelectorViewCell        
     }
 
     ////////////////
@@ -262,20 +292,36 @@ class NewFriendController: UIViewController,
     //////////////
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        let count = Global.schools.count
+        
+        var count = Int()
+            
+        if self.countUsersInSchool.count > 0 {
+            
+            count = Global.schools.count
+        }
+        
         print(count)
+        
         return count
     }   
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        let skeys = Array(Global.schools)        
+        var count = Int()
+        
+        let skeys = Array(Global.schools)
         let schoolId = skeys[section].key
+        
+        if self.countUsersInSchool.count > 0 && self.countUsersInSchool[schoolId] != nil {
+        
+            count = self.countUsersInSchool[schoolId]!
+            
+        }
+        
+        print(count)
 
-        let count = self.countUsersInSchool[schoolId]
-
-        return count!
-    } 
+        return count
+    }     
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
@@ -286,10 +332,13 @@ class NewFriendController: UIViewController,
         return height    
     }         
 
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: self.sectionHeaderId) as? AddFeedSectionHeader else {
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: self.sectionHeaderId) as? AddFriendSectionHeader else {
             return nil
         }
 
@@ -301,8 +350,12 @@ class NewFriendController: UIViewController,
         let school = Global.schools[schoolId]
 
         header.schoolIconImageView.image = school?.icon
+
+        print(school?.schoolName)
         
         header.nameLabel.text = school?.schoolName
+        
+        //header.backgroundView?.backgroundColor = UIColor.black
         
         return header
     }
@@ -320,23 +373,25 @@ class NewFriendController: UIViewController,
         print(user.name)
         cell.profileImageView.image = user.avatar            
             
-        if user.isChecked
-        {
+        if user.isChecked {
+
             cell.checkLabel.isHidden = false
             
-        } else
-        {
-            cell.checkLabel.isHidden = true
-            
+        } else {
+
+            cell.checkLabel.isHidden = true            
         }
 
         return cell 
     } 
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-    {  
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {  
         
-        print(indexPath.row)        
+        print(indexPath.row)
+
+        self.info.isHidden = true
+        
+        tableView.deselectRow(at: indexPath, animated: false)
 
         //let user = Global.gamvesAllUsers[indexPath.row] as GamvesUser
 
@@ -347,8 +402,8 @@ class NewFriendController: UIViewController,
 
         let checked = user.isChecked
             
-        if !checked
-        {
+        if !checked {
+
             user.isChecked  = true
 
             if !self.selectedUsers.contains(where: { $0.name == user.name }) {

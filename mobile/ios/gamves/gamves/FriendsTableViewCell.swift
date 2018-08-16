@@ -27,6 +27,7 @@ class FriendsTableViewCell: UITableViewCell {
     let containerView: UIView = {
         let view = UIView()
         //view.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
+        view.backgroundColor = UIColor.white
         return view
     }()
     
@@ -63,49 +64,49 @@ class FriendsTableViewCell: UITableViewCell {
 
     func setupViews() { 
 
-        self.backgroundColor = UIColor.cyan
+        self.backgroundColor = UIColor.white
         
-        addSubview(profileImageView)
-        addSubview(dividerLineView)
+        self.addSubview(profileImageView)
+        self.addSubview(dividerLineView)
 
-        addConstraintsWithFormat("H:|-12-[v0(68)]", views: profileImageView)
-        addConstraintsWithFormat("V:[v0(68)]", views: profileImageView)
+        self.addConstraintsWithFormat("H:|-12-[v0(68)]", views: profileImageView)
+        self.addConstraintsWithFormat("V:[v0(68)]", views: profileImageView)
         
-        addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: profileImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
-        addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
+        self.addConstraintsWithFormat("H:|-82-[v0]|", views: dividerLineView)
+        self.addConstraintsWithFormat("V:[v0(1)]|", views: dividerLineView)
         
-        checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 24.0, borderWidth: 3.0, color: UIColor.gamvesColor)
-        addSubview(checkLabel)           
+        self.checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 24.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+        self.addSubview(checkLabel)           
 
-        addSubview(containerView)
+        self.addSubview(containerView)
         
-        addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
-        addConstraintsWithFormat("V:[v0(50)]", views: containerView)
+        self.addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
+        self.addConstraintsWithFormat("V:[v0(50)]", views: containerView)
         
-        addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        containerView.addSubview(nameLabel)
-        containerView.addSubview(statusLabel)
+        self.containerView.addSubview(nameLabel)
+        self.containerView.addSubview(statusLabel)
         
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: nameLabel)
+        self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: nameLabel)
         
-        containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, statusLabel)
+        self.containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, statusLabel)
         
-        containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: statusLabel)       
+        self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: statusLabel)       
         
         
-        addConstraintsWithFormat("H:|-60-[v0(30)]", views: checkLabel)
-        addConstraintsWithFormat("V:|-60-[v0(30)]", views: checkLabel)
+        self.addConstraintsWithFormat("H:|-60-[v0(30)]", views: checkLabel)
+        self.addConstraintsWithFormat("V:|-60-[v0(30)]", views: checkLabel)
         
     }   
     
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
+    /*override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
-    }
+    }*/
 
 }
