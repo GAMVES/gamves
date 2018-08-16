@@ -293,11 +293,11 @@ class NewFriendController: UIViewController,
 
     func numberOfSections(in tableView: UITableView) -> Int {
         
-        var count = Int()
+        var count = Int()       
+        
+        if self.countUsersInSchool.count > 0 {        
             
-        if self.countUsersInSchool.count > 0 {
-            
-            count = Global.schools.count
+            count = self.countUsersInSchool.count
         }
         
         print(count)
