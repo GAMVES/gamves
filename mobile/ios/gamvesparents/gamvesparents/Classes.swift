@@ -317,7 +317,8 @@ class UserStatistics
     var data = String()
     var icon = UIImage()
     var second_icon = UIImage()
-    var approval = Int()
+    //var approval = Int()
+    var updated = Bool()
 }
 
 class AccountButton

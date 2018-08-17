@@ -234,7 +234,7 @@ class ButtonsFriendApprovalView: UIView {
         })  
     }
 
-    func addFriend() {
+    /*func addFriend() {
 
         self.activityIndicatorView?.startAnimating()
 
@@ -247,12 +247,10 @@ class ButtonsFriendApprovalView: UIView {
             var posterId = self.friendApproval.posterId           
             let friendId = self.friendApproval.friendId
 
-            let friendPF =  Global.userDictionary[friendId]?.userObj
+            //let friendPF =  Global.userDictionary[friendId]?.userObj
+
             let posterObj: PFObject = PFObject(className: "Friends")
-            posterObj["userId"] = posterId
-            
-            //let relationFriends = posterObj.relation(forKey: "friends")
-            //relationFriends.add(friendPF!)
+            posterObj["userId"] = posterId            
             
             var frindsPosterArray = posterObj["friends"] as! [String]
             frindsPosterArray.append(friendId)
@@ -298,8 +296,83 @@ class ButtonsFriendApprovalView: UIView {
             
         })           
 
+    }*/
+
+    func addFriend() {
+
+        self.activityIndicatorView?.startAnimating()
+
+        let friendApprovalPF = self.friendApproval.objectPF
+
+        friendApprovalPF?["approved"] = 2
+        
+        friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
+           
+            var posterId = self.friendApproval.posterId           
+            let friendId = self.friendApproval.friendId            
+
+            self.getFriendIfnotExist(userId: friendId, friendId: posterId, completionHandler: { ( posterObj ) -> () in
+
+                posterObj.saveInBackground(block: { (friendSPF, error) in
+                
+                    if error == nil {
+                        
+                        self.getFriendIfnotExist(userId: posterId, friendId: friendId, completionHandler: { ( friendObj ) -> () in                                           
+
+                            if error == nil {
+                            
+                                let posterName =  Global.userDictionary[posterId]?.name
+                                let friendName =  Global.userDictionary[friendId]?.name
+                                
+                                self.activityIndicatorView?.stopAnimating()
+                                self.delegate.usersAdded(friendName: friendName!, posterName: posterName!)
+                                self.closeApprovalWindow()
+                            
+                            } else {
+                                
+                                print(error)
+                            }
+                            
+                        })
+                        
+                    } else {
+                        
+                        print(error)
+                    }
+ 
+                })
+                    
+            })
+
+        })
     }
+
+    func getFriendIfnotExist(userId: String, friendId: String, completionHandler : @escaping (_ friendPF: PFObject) -> ()) {
+
+
+        let userQuery = PFQuery(className:"Friends")
+        userQuery.whereKey("userId", equalTo: userId)
+        userQuery.getFirstObjectInBackground(block: { (friendObject, error) in           
     
+            if friendObject != nil
+            {
+
+                var frindsPosterArray = friendObject!["friends"] as! [String]
+                frindsPosterArray.append(friendId)
+
+                completionHandler(friendObject!)
+
+            } else {               
+
+                let friendObj: PFObject = PFObject(className: "Friends")
+                friendObj["userId"] = userId
+                friendObj["friends"] = [friendId]
+
+                completionHandler(friendObj) 
+            }        
+        })
+
+    }    
    
 
 }

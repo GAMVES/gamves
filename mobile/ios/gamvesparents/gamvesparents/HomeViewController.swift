@@ -321,8 +321,10 @@ class HomeViewController: UIViewController,
     var _status_time = String()
 
     var _friends_data = "04:50 hs"
+    var _friends_desc = "Friends"
 
-    var _approval_approval = Int()
+    var _approval_approval = Bool()
+    var _friend_approval = Bool()
     
     func loadStatistics() {
 
@@ -341,16 +343,17 @@ class HomeViewController: UIViewController,
         _location.icon = UIImage(named: "map")!
         self.userStatistics.append(_location)
     
-        _friends.desc = "Friends" 
+        _friends.desc = _friends_desc 
         _friends.data = _friends_data
         _friends.id = 2
         _friends.icon = UIImage(named: "add_friend")!
+        _friends.updated = self._friend_approval
         self.userStatistics.append(_friends)
 
         _approval.desc = "Approvals"
         _approval.id = 3
         _approval.icon = UIImage(named: "check_circle")!
-        _approval.approval = _approval_approval
+        _approval.updated = self._approval_approval
         self.userStatistics.append(_approval)
     
         _activity.desc = "Activity"
@@ -613,7 +616,7 @@ class HomeViewController: UIViewController,
         
         Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in                      
 		
-            self._approval_approval = count as Int            
+            //self._approval_approval = count as Boool
 
             self.loadStatistics()
             
@@ -650,20 +653,9 @@ class HomeViewController: UIViewController,
 
             self.friendCount = countFriends
 
-            Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( countApprovals ) -> () in
+            Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( invites, invited, updated ) -> () in
                 
-                print(countApprovals)
-
-                let friendData = "\(countApprovals)   \(self.friendCount)"
-                
-                self._friends_data = friendData
-
-                self.loadStatistics()
-
-                DispatchQueue.main.async {
-                    
-                    self.collectionView.reloadData()
-                }
+                self.updateFriendView(invites: invites, invited: invited, updated: updated)
                 
             })
         })
@@ -808,12 +800,11 @@ class HomeViewController: UIViewController,
         
         var stats = self.userStatistics[id]
         
-        cell.descLabel.text = stats.desc
-        
+        cell.descLabel.text = stats.desc        
         cell.dataLabel.text = stats.data
         
         print(stats.desc)
-        print(stats.approval)
+        print(stats.updated)
         print(id)
         
         if id == 0
@@ -829,25 +820,21 @@ class HomeViewController: UIViewController,
                 cell.descLabel.text = "Offline"                
                 cell.dataLabel.text = stats.data
 
-            }              
+            }         
             
         } 
         
-        if stats.approval > 0 {
+        if stats.updated {
             
             stats.icon = UIImage(named: "check_circle_white")!
             
             cell.descLabel.textColor = UIColor.white
-            cell.dataLabel.textColor = UIColor.white
-            
-            cell.dataLabel.text = String(stats.approval)
+            cell.dataLabel.textColor = UIColor.white                      
         
-            cell.backView.backgroundColor = UIColor.gamvesColor
+            cell.backView.backgroundColor = UIColor.gamvesColor            
             
-            
-            cell.layer.cornerRadius = 10
-            
-        }        
+            cell.layer.cornerRadius = 10            
+        }      
         
    
         cell.iconImageView.image = stats.icon
@@ -946,6 +933,7 @@ class HomeViewController: UIViewController,
     
     func initializeOnlineSubcritpion()
     {
+        
         if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_object_id") {
         
             let sonId = Global.defaults.object(forKey: "\(self.puserId)_son_object_id") as! String
@@ -962,8 +950,7 @@ class HomeViewController: UIViewController,
                     
                 }
                 
-                self.loadUserStatus()                        
-               
+                self.loadUserStatus()           
             }
             
             if Global.gamvesFamily != nil
@@ -977,10 +964,15 @@ class HomeViewController: UIViewController,
                     
                     Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in                        
 
-                            self._approval_approval = count as Int
+                        //self._approval_approval = count as Int
 
-                            self.loadStatistics()
-                        
+                        self.loadStatistics()
+
+                         DispatchQueue.main.async {
+                    
+                            self.collectionView.reloadData()
+                            
+                        }                        
                     })
                 }
                 
@@ -988,22 +980,35 @@ class HomeViewController: UIViewController,
                 
                 self.friendApprovalSubscription = liveQueryClientApproval.subscribe(friendsApprovalQuery).handle(Event.updated) { _, approvals in
                     
-                    Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in       
-                            
+                    Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( invites, invited, updated ) -> () in                             
 
-                            let friendData = "\(count)   \(self.friendCount)"
-            
-                            //self.userStatistics[2].data = friendData
-
-                            self._friends_data = friendData
-
-                            self.loadStatistics()
+                        self.updateFriendView(invites: invites, invited: invited, updated: updated)
                         
                     })
                 }
             }
         }
-    }  
+    }
+    
+    func updateFriendView(invites: Int, invited: Int, updated: Bool) {
+        
+        self._friend_approval = updated
+        
+        self._friends_desc = "Friends   \(self.friendCount)"
+        
+        let friendData = "Invites:   \(invites)   \(invited)"
+        
+        self._friends_data = friendData
+        
+        self.loadStatistics()
+        
+        DispatchQueue.main.async {
+            
+            self.collectionView.reloadData()
+            
+        }
+        
+    }
 
 
     func loadUserStatus() {

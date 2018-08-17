@@ -21,7 +21,7 @@ class HomeCollectionViewCell: BaseCell {
     
     var descLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textAlignment = .left        
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
@@ -39,8 +39,8 @@ class HomeCollectionViewCell: BaseCell {
     
     var dataLabel: PaddingLabel = {
         let label = PaddingLabel()
-        label.font = UIFont.systemFont(ofSize: 16)                
-        label.textColor = UIColor.lightGray
+        label.font = UIFont.boldSystemFont(ofSize: 16)                
+        label.textColor = UIColor.darkGray
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .left
         label.numberOfLines = 2
@@ -74,14 +74,11 @@ class HomeCollectionViewCell: BaseCell {
         self.backView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.secondIconImageView)
         self.backView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.dataLabel)
         
-        self.backView.addConstraintsWithFormat("H:|-15-[v0(30)]-10-[v1][v2(30)][v3(100)]|", views: 
+        self.backView.addConstraintsWithFormat("H:|-15-[v0(30)]-10-[v1][v2(30)][v3(120)]|", views: 
             self.iconImageView, 
             self.descLabel, 
             self.secondIconImageView,
             self.dataLabel)
-
-        //secondIconImageView.backgroundColor = UIColor.red
-        //dataLabel.backgroundColor = UIColor.cyan
         
     }
 

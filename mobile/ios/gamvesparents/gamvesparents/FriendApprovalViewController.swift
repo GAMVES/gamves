@@ -195,11 +195,11 @@ FriendApprovalProtocol
 
             var title = String()
             
-            print(friendApproval.title )
+            print(friendApproval.title)
 
             cella.nameLabel.text = friendApproval.title            
             
-            if friendApproval.approved == 0 || friendApproval.approved == 2 || friendApproval.approved == -1 { // NOT
+            if friendApproval.approved == 0 || friendApproval.approved == 3 || friendApproval.approved == -1 { // NOT
                 
                 if friendApproval.approved == -1 {
                     
@@ -216,13 +216,21 @@ FriendApprovalProtocol
                 
                 cella.checkLabel.isHidden = false
                 
-            } else if friendApproval.approved == 1 { //APPROVED
+            } else if friendApproval.approved == 1 { //SENT
+            
+                cella.statusLabel.text = "SENT"
+                cella.checkLabel.isHidden = true
+
+                cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: ">" )
+            
+            }   else if friendApproval.approved == 2 { //APPROVED
             
                 cella.statusLabel.text = "APPROVED"
                 cella.checkLabel.isHidden = true
 
                 cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: "✓" )
-            }       
+            
+            }    
             
             cella.profileImageView.image = friendApproval.user.avatar
 
@@ -307,9 +315,7 @@ FriendApprovalProtocol
 
             print("user: \(friend.name)")
 
-        } 
-
-        
+        }        
        
     }   
 
