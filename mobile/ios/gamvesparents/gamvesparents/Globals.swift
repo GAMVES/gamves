@@ -1165,8 +1165,7 @@ class Global: NSObject
                             let friendApproval = FriendApproval()  
 
                             let type = friendApprovalObj["type"] as! Int
-                            let approved = friendApprovalObj["approved"] as! Int                        
-                            
+                            let approved = friendApprovalObj["approved"] as! Int
 
                             if type == 1 {
 

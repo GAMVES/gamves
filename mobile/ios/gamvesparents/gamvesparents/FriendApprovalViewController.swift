@@ -197,9 +197,13 @@ FriendApprovalProtocol
             
             print(friendApproval.title)
 
-            cella.nameLabel.text = friendApproval.title            
-            
-            if friendApproval.approved == 0 || friendApproval.approved == 3 || friendApproval.approved == -1 { // NOT
+            cella.nameLabel.text = friendApproval.title    
+
+            let type =  friendApproval.type
+            let approved = friendApproval.approved       
+
+
+            if approved == 0  || approved == -1 { // NOT
                 
                 if friendApproval.approved == -1 {
                     
@@ -207,7 +211,7 @@ FriendApprovalProtocol
 
                     cella.setCheckLabel(color: UIColor.red, symbol: "-")               
                     
-                } else  {
+                } else {
                     
                    cella.statusLabel.text = "NOT APPROVED"
 
@@ -216,37 +220,47 @@ FriendApprovalProtocol
                 
                 cella.checkLabel.isHidden = false
                 
-            } else if friendApproval.approved == 1 { //SENT
-            
-                cella.statusLabel.text = "SENT"
-                cella.checkLabel.isHidden = true
+            }
 
-                cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: ">" )
+            if type == 1 {
+
+                if approved == 1 { //SENT
             
-            }   else if friendApproval.approved == 2 { //APPROVED
-            
+                    cella.statusLabel.text = "SENT"
+                    cella.checkLabel.isHidden = true
+
+                    cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: ">" )
+                
+                }  
+
+                cella.typeLabel.text = "INVITED\nFRIEND"
+                cella.typeLabel.backgroundColor = UIColor.gamvesLightBlueColor
+
+
+            } else if type == 2 {                
+
+                cella.typeLabel.text = "FRIEND\nINVITATION"
+                cella.typeLabel.backgroundColor = UIColor.gamvesTurquezeColor
+
+            }   
+
+            if approved == 2 { //APPROVED
+                
                 cella.statusLabel.text = "APPROVED"
                 cella.checkLabel.isHidden = true
 
                 cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: "✓" )
             
-            }    
+            }
+             
             
             cella.profileImageView.image = friendApproval.user.avatar
 
-            if friendApproval.type == 1 {                       
-
-                cella.typeLabel.text = "INVITED\nFRIEND"
-                cella.typeLabel.backgroundColor = UIColor.gamvesLightBlueColor
-
-            } else if friendApproval.type == 2 {                
-
-                cella.typeLabel.text = "FRIEND\nINVITATION"
-                cella.typeLabel.backgroundColor = UIColor.gamvesTurquezeColor
-            }
 
             return cella
             
+
+
         } else if indexPath.section == 1 {
 
             let countItems = Global.friends.count
@@ -340,7 +354,7 @@ FriendApprovalProtocol
      func usersAdded(friendName:String, posterName:String)   {
 
         let title   = "Congratulations!"
-        let message = "\(friendName) and \(friendName) are now friends"
+        let message = "\(posterName) and \(friendName) are now friends"
         
         let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
         

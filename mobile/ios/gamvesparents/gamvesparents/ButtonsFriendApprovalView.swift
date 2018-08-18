@@ -306,7 +306,7 @@ class ButtonsFriendApprovalView: UIView {
 
         let friendApprovalPF = self.friendApproval.objectPF
 
-        friendApprovalPF?["approved"] = 3
+        friendApprovalPF?["approved"] = 2
         
         friendApprovalPF?.saveInBackground(block: { (resutlFA, error) in            
            
