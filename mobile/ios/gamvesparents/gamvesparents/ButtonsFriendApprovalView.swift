@@ -206,6 +206,8 @@ class ButtonsFriendApprovalView: UIView {
 
             friendsRegisterApproval["posterId"] = posterId
 
+            friendsRegisterApproval["friendApprovalId"] = friendApprovalPF?.objectId
+
             let friendId = self.friendApproval.friendId  
 
             var friend = Global.userDictionary[friendId]
