@@ -1074,48 +1074,70 @@
 		savePointByUserId(posterId, 5);
 
 		var friendId = request.object.get("friendId");
+
 		var type = request.object.get("type");
 
-		if ( type == 2 ) {
+		var approved = request.object.get("approved");
 
-			var posterPF;
+		console.log("type: " + type);
 
-			var posterQuery = new Parse.Query(Parse.User);		
-			posterQuery.equalTo("objectId", posterId);
+		if ( type == 2 && approved == 2 ) {
+
+			var posterPF;			
+
+			//- Save Initial Invite FriendApprovalInvite				
+
+			var friendApprovalId = request.object.get("friendApprovalId");				
+
+			var friendApprovalQuery = new Parse.Query("FriendsApproval");		
+			friendApprovalQuery.equalTo("objectId", friendApprovalId);
 			
-		    return posterQuery.first().then(function(restulPosterPF) {
+		    return friendApprovalQuery.first({useMasterKey:true}).then(function(friendApprovalPF) {
+
+		    	console.log("entra posterId: " + friendApprovalPF.get("posterId"));
+
+		    	friendApprovalPF.set("approved", 2);
+
+		    	return friendApprovalPF.save(null, {useMasterKey: true});
+
+		    }).then(function(obj) {  
+		    
+				var posterQuery = new Parse.Query(Parse.User);		
+				posterQuery.equalTo("objectId", posterId);
+				
+			    return posterQuery.first({useMasterKey:true});
+
+			}).then(function(restulPosterPF) {  			    	    
 
 		    	posterPF = restulPosterPF;
 
 		    	var friendQuery = new Parse.Query(Parse.User);
 		    	friendQuery.equalTo("objectId", friendId);
 
-		    	return friendQuery.first();
+		    	return friendQuery.first({useMasterKey:true});
 
 		    }).then(function(friendPF) {   		    	
 
-		    	let Notifications = Parse.Object.extend("Notifications");
-
-		    	let posterImage = posterPF.get("pictureSmall");
-		    	let posterName = posterPF.get("Name");
-
-				let friendImage = friendPF.get("pictureSmall");
-				let friendName = friendPF.get("Name");
+		    	let Notifications = Parse.Object.extend("Notifications");	    				
 
 				//- Poster notification								
+				
+				let friendName = friendPF.get("Name");
+				let friendImage = friendPF.get("pictureSmall");
 
 				let notificationPoster = new Notifications();
 				let titlePoster = friendName + " has accepter your freind's request"; 
-				let dataPoster  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 
+				let descPoster  = "Start interacting with " + friendName + " , check out the profile and start chatting!"; 
 
 				notificationPoster.set("posterAvatar", friendImage);
-				notificationPoster.set("title", titlePoster);			
-				notificationPoster.set("type", 3);					
+				notificationPoster.set("title", titlePoster);	
+				notificationFriend.set("description", descPoster);			
+				notificationPoster.set("type", 3);											
 
 				notificationPoster.save(null, {useMasterKey: true}, {
                     success: function(result) {
 						notificationPoster.add("target", posterId);
-                    	notificationPoster.save();                        
+                    	notificationPoster.save(null, {useMasterKey: true});                        
                     },
                     error: function(error) {
                         console.log(error);
@@ -1130,20 +1152,24 @@
 		    	};
 		    	sendPushToUser(objPoster);
 
-		    	//- Friend notification								
+		    	//- Friend notification		
+
+		    	let posterName = posterPF.get("Name");						
+		    	let posterImage = posterPF.get("pictureSmall");
 
 				let notificationFriend = new Notifications();
 				let titleFriend = "You and " + posterName + " are friends!"; 
-				let dataFriend  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 
+				let descFriend  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 
 
 				notificationFriend.set("posterAvatar", posterImage);
 				notificationFriend.set("title", titleFriend);			
+				notificationFriend.set("description", descFriend);			
 				notificationFriend.set("type", 3);					
 
 				notificationFriend.save(null, {useMasterKey: true}, {
                     success: function(result) {
 						notificationFriend.add("target", friendId);
-                    	notificationFriend.save();                        
+                    	notificationFriend.save(null, {useMasterKey: true});                        
                     },
                     error: function(error) {
                         console.log(error);
@@ -1156,12 +1182,11 @@
 		    		user:friendPF,		    		
 		    		data:dataFriend
 		    	};
-		    	sendPushToUser(objFriend);
+		    	sendPushToUser(objFriend);		    	
 
 			});
 
-
-			//- Fanpage Targets
+			//- Fanpage Targets // Only when there is data
 
 			let posterFanpageQuery = new Parse.Query("Fanpages");		
 			posterFanpageQuery.equalTo("posterId", posterId);			
@@ -1170,7 +1195,7 @@
 				for (let i=0; i<count; i++) {
 					let fanpagePF = posterFanpagesPF[i];
 					fanpagePF.get("target").add(friendId);
-					fanpagePF.save();
+					fanpagePF.save(null, {useMasterKey: true});
 				}
 		    });
 
@@ -1181,7 +1206,7 @@
 				for (let i=0; i<count; i++) {
 					let fanpagePF = friendFanpagesPF[i];
 					fanpagePF.get("target").add(posterId);
-					fanpagePF.save();
+					fanpagePF.save(null, {useMasterKey: true});
 				}
 		    });
 
@@ -1194,7 +1219,7 @@
 				for (let i=0; i<count; i++) {
 					let videoPF = posterVideosPF[i];
 					videoPF.get("target").add(friendId);
-					videoPF.save();
+					videoPF.save(null, {useMasterKey: true});
 				}
 		    });
 
@@ -1205,11 +1230,10 @@
 				for (let i=0; i<count; i++) {
 					let videoPF = friendVideosPF[i];
 					videoPF.get("target").add(posterId);
-					videoPF.save();
+					videoPF.save(null, {useMasterKey: true});
 				}
-		    });
+		    });		    
 		}
-
 	});
 
 	// --
