@@ -1068,33 +1068,26 @@
 
 	Parse.Cloud.afterSave("FriendsApproval", function(request) {
 
-		var posterId = request.object.get("posterId");		
-
 		//Save Points
+		var posterId = request.object.get("posterId");				
 		savePointByUserId(posterId, 5);
 
 		var friendId = request.object.get("friendId");
-
 		var type = request.object.get("type");
-
 		var approved = request.object.get("approved");
-
-		console.log("type: " + type);
 
 		if ( type == 2 && approved == 2 ) {
 
-			var posterPF;			
+			var posterPF, friendPF;			
 
 			//- Save Initial Invite FriendApprovalInvite				
 
 			var friendApprovalId = request.object.get("friendApprovalId");				
 
-			var friendApprovalQuery = new Parse.Query("FriendsApproval");		
+			var friendApprovalQuery = new Parse.Query("FriendsApproval");					
 			friendApprovalQuery.equalTo("objectId", friendApprovalId);
 			
-		    return friendApprovalQuery.first({useMasterKey:true}).then(function(friendApprovalPF) {
-
-		    	console.log("entra posterId: " + friendApprovalPF.get("posterId"));
+		    return friendApprovalQuery.first({useMasterKey:true}).then(function(friendApprovalPF) {		    	
 
 		    	friendApprovalPF.set("approved", 2);
 
@@ -1116,71 +1109,98 @@
 
 		    	return friendQuery.first({useMasterKey:true});
 
-		    }).then(function(friendPF) {   		    	
+		    }).then(function(restulFriendPF) {   	
+
+				friendPF = restulFriendPF;
+
+				var queryFanpage = new Parse.Query("Fanpages");
+				queryFanpage.equalTo('categoryName', 'PERSONAL');
+				queryFanpage.containedIn("posterId", [posterId, friendId]);    			
+				return queryFanpage.find({useMasterKey:true});
+
+			}).then(function(restulFanpagesPF) {
+			
+				let count = restulFanpagesPF.length;   
+
+				console.log("count:::::: " + count);
+
+				let coverFriend, coverPoster;     		
+
+		    	for (var i=0; i < count; i++) {
+			        					                
+			        var id = restulFanpagesPF[i].get("posterId");
+
+			        if (id == friendId) {
+			        	coverFriend = restulFanpagesPF[i].get("pageCover");
+			        } else if (id == posterId) {
+			        	coverPoster = restulFanpagesPF[i].get("pageCover");
+			        }
+			    }
 
 		    	let Notifications = Parse.Object.extend("Notifications");	    				
 
-				//- Poster notification								
+		    	let posterName = posterPF.get("Name");		
+		    	let friendName = friendPF.get("Name");
+
+				//- Poster notification											
 				
-				let friendName = friendPF.get("Name");
 				let friendImage = friendPF.get("pictureSmall");
 
 				let notificationPoster = new Notifications();
+				
 				let titlePoster = friendName + " has accepter your freind's request"; 
 				let descPoster  = "Start interacting with " + friendName + " , check out the profile and start chatting!"; 
 
 				notificationPoster.set("posterAvatar", friendImage);
 				notificationPoster.set("title", titlePoster);	
-				notificationFriend.set("description", descPoster);			
-				notificationPoster.set("type", 3);											
+				notificationPoster.set("description", descPoster);	
+				notificationPoster.set("posterName", posterName);
+				notificationPoster.set("cover", coverPoster);
+				notificationPoster.set("posterId", friendPF.id);					
+				
+				notificationPoster.set("type", 3);							
+				notificationPoster.save(null, {useMasterKey: true}); 	
 
-				notificationPoster.save(null, {useMasterKey: true}, {
-                    success: function(result) {
-						notificationPoster.add("target", posterId);
-                    	notificationPoster.save(null, {useMasterKey: true});                        
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }                    
-                });								
-
+				notificationPoster.add("target", posterId);				
+				notificationPoster.set("date", request.object.get("createdAt"));	
+				notificationPoster.save(null, {useMasterKey: true}); 						
+			
 				let objPoster = {
 		    		title:titlePoster,
 		    		alert:"You have a new friend!",
-		    		user:dataPoster,		    		
-		    		data:""
+		    		user:posterPF,		    		
+		    		data:descPoster
 		    	};
 		    	sendPushToUser(objPoster);
 
 		    	//- Friend notification		
-
-		    	let posterName = posterPF.get("Name");						
-		    	let posterImage = posterPF.get("pictureSmall");
+		    					
+		    	let posterImage = posterPF.get("pictureSmall");		    	
 
 				let notificationFriend = new Notifications();
+				
 				let titleFriend = "You and " + posterName + " are friends!"; 
 				let descFriend  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 
 
 				notificationFriend.set("posterAvatar", posterImage);
 				notificationFriend.set("title", titleFriend);			
-				notificationFriend.set("description", descFriend);			
-				notificationFriend.set("type", 3);					
+				notificationFriend.set("description", descFriend);	
+				notificationFriend.set("posterName", friendName);
+				notificationFriend.set("cover", coverFriend);
+				notificationFriend.set("posterId", posterPF.id);	
+				
+				notificationFriend.set("type", 3);	
+				notificationFriend.save(null, {useMasterKey: true}); 	
 
-				notificationFriend.save(null, {useMasterKey: true}, {
-                    success: function(result) {
-						notificationFriend.add("target", friendId);
-                    	notificationFriend.save(null, {useMasterKey: true});                        
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }                    
-                });								
+				notificationFriend.add("target", friendId);	
+				notificationFriend.set("date", request.object.get("createdAt"));			
+				notificationFriend.save(null, {useMasterKey: true}); 						
 
 				let objFriend = {
 		    		title:titleFriend,
 		    		alert:"You have a new friend!",
 		    		user:friendPF,		    		
-		    		data:dataFriend
+		    		data:descFriend
 		    	};
 		    	sendPushToUser(objFriend);		    	
 

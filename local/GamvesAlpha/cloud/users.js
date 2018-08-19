@@ -169,7 +169,8 @@
 
 		}).then(function(fanpagesFound) {
 
-			if ( iDUserType==2 || iDUserType==3 ) {			        	
+			if ( iDUserType==2 || iDUserType==3 ) {		
+	        	
 
 				var count = 0;
 				
