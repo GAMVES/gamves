@@ -1161,7 +1161,6 @@ class Global: NSObject
 
                         for friendApprovalObj in friendApprovalObjects
                         {
-
                             let friendApproval = FriendApproval()  
 
                             let type = friendApprovalObj["type"] as! Int

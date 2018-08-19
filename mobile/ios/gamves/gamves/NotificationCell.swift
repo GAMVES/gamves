@@ -456,7 +456,6 @@ UICollectionViewDelegateFlowLayout {
                         if notificationPF["referenceId"] != nil {
                             notification.referenceId = (notificationPF["referenceId"] as? Int)!
                         }
-                        
                         notification.description = (notificationPF["description"] as? String)!
                         notification.posterName = (notificationPF["posterName"] as? String)!
                         notification.date = (notificationPF["date"] as? Date!)!
