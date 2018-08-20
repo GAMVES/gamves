@@ -404,69 +404,70 @@ class Global: NSObject
 
     static func getFriendsAmount(posterId:String, completionHandler : @escaping (_ amount: Int) -> ()) {
 
-        let userQuery = PFQuery(className:"Friends")
-        userQuery.whereKey("userId", equalTo: posterId)
-        userQuery.getFirstObjectInBackground(block: { (friendObject, error) in
+        let friendQuery = PFQuery(className:"Friends")
+        friendQuery.whereKey("userId", equalTo: posterId)
+        friendQuery.getFirstObjectInBackground(block: { (friendObject, error) in
         
             if error == nil
-            {
+            {          
 
-                let friendsRelation = friendObject?.relation(forKey: "friends")
-                let queryRelation = friendsRelation?.query()
-                queryRelation?.findObjectsInBackground(block: { (usersPf, error) in
-                    
-                    if error == nil {
-                        
-                        let countFriends = usersPf?.count
-                        
-                        if countFriends == 0 {
-                            
-                            completionHandler(0)
-                            
-                        } else {
-                            
-                            var count = 0
-                            
-                            for userPF in usersPf! {
+                let friendsIds = friendObject!["friends"] as! [String]
+
+                let countFriends = friendsIds.count
+
+                if countFriends == 0 {
                                 
-                                if self.userDictionary[(userPF.objectId!)] == nil
-                                {
-                                    
-                                    Global.addUserToDictionary(user: userPF as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
-                                        
-                                        if let objectId = userPF.objectId {
-                                            
-                                            self.friends[gamvesUser.userId] = gamvesUser                                   
-                                            
-                                            if count == (countFriends! - 1) {
-                                                completionHandler(countFriends!)
-                                            }
+                    completionHandler(0)
+                }
 
-                                            count = count + 1
-                                            
-                                        }
-                                    })
+                var count = Int()
+
+                for friendId in friendsIds {
+
+                    let userQuery = PFQuery(className:"_User")
+                    userQuery.whereKey("objectId", equalTo: friendId)
+                    userQuery.getFirstObjectInBackground(block: { (userPF, error) in
+        
+                        if error == nil
+                        {                    
+                            
+                            if self.userDictionary[(userPF?.objectId)!] == nil
+                            {
+                                
+                                Global.addUserToDictionary(user: userPF as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
                                     
-                                }  else {
-                                    
-                                    if let userId = userPF.objectId {
+                                    if let objectId = userPF?.objectId {
                                         
-                                        let user = self.userDictionary[userId]
+                                        self.friends[gamvesUser.userId] = gamvesUser                                   
                                         
-                                        self.friends[userId] = user                               
-                                        
-                                        if count == (countFriends! - 1) {
-                                            completionHandler(countFriends!)
+                                        if count == (countFriends - 1) {
+                                            completionHandler(countFriends)
                                         }
 
                                         count = count + 1
+                                        
                                     }
-                                }                            
-                            }                        
-                        }                        
-                    }          
-                    
-                })   
+                                })
+                                
+                            }  else {
+                                
+                                if let userId = userPF?.objectId {
+                                    
+                                    let user = self.userDictionary[userId]
+                                    
+                                    self.friends[userId] = user                               
+                                    
+                                    if count == (countFriends - 1) {
+                                        completionHandler(countFriends)
+                                    }
+
+                                    count = count + 1
+                                }
+                            }                            
+                        }                                              
+                        
+                    })                
+                }
 
 
             } else {

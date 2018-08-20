@@ -116,7 +116,7 @@ UICollectionViewDelegateFlowLayout {
             let filterTarget = [
                 Global.schoolShort,
                 Global.levelDescription.lowercased(),
-                Global.userId] as [String]
+                userId] as [String]
 
             queryNotification.whereKey("target", containedIn: filterTarget)
         }
@@ -137,7 +137,7 @@ UICollectionViewDelegateFlowLayout {
         
         if notificationLoaded {
             
-            var countNewst = Global.notificationsNew.count
+            /*var countNewst = Global.notificationsNew.count
 
             var countNot = Global.notifications.count
 
@@ -151,7 +151,9 @@ UICollectionViewDelegateFlowLayout {
                 count = count + 1
             }
             
-            print(count)
+            print(count)*/
+            
+            count = 2
         }
         
         return count
@@ -251,7 +253,7 @@ UICollectionViewDelegateFlowLayout {
         
         cell.userProfileImageView.image = notification.avatar
 
-        var posterdesc = String()
+        //var posterdesc = String()
 
         if notification.type == 1 { //video
 
@@ -259,7 +261,7 @@ UICollectionViewDelegateFlowLayout {
 
             cell.iconImageView.image = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
             
-            posterdesc = "shared a new video"
+            //posterdesc = "shared a new video"
 
             cell.iconView.backgroundColor = UIColor.blue     
 
@@ -269,7 +271,7 @@ UICollectionViewDelegateFlowLayout {
 
             cell.iconImageView.image = UIImage(named: "like")?.withRenderingMode(.alwaysTemplate)                         
 
-            posterdesc = "shared a new fanpage"  
+            //posterdesc = "shared a new fanpage"  
 
             cell.iconView.backgroundColor = UIColor.red
 
@@ -279,7 +281,7 @@ UICollectionViewDelegateFlowLayout {
 
             cell.iconImageView.image = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate)                         
 
-            posterdesc = notification.title
+            //posterdesc = notification.title
 
             cell.iconView.backgroundColor = UIColor.green
             
@@ -289,7 +291,7 @@ UICollectionViewDelegateFlowLayout {
 
             cell.iconImageView.image = UIImage(named: "birthday")?.withRenderingMode(.alwaysTemplate)                         
 
-            posterdesc = notification.title
+            //posterdesc = notification.title
 
             cell.iconView.backgroundColor = UIColor.magenta
             
@@ -299,7 +301,7 @@ UICollectionViewDelegateFlowLayout {
 
             cell.iconImageView.image = UIImage(named: "notification")?.withRenderingMode(.alwaysTemplate)                         
 
-            posterdesc = notification.title
+            //posterdesc = notification.title
 
             cell.iconView.backgroundColor = UIColor.gamvesLightBlueColor
 
@@ -308,9 +310,11 @@ UICollectionViewDelegateFlowLayout {
 
         let b = Style("b").font(.boldSystemFont(ofSize: 18))
 
-        cell.posterLabel.attributedText = "<b>\(notification.posterName)</b> \(posterdesc)".style(tags: b).attributedString
+        //cell.posterLabel.attributedText = "<b>\(notification.posterName)</b> \(posterdesc)".style(tags: b).attributedString
+
+        cell.posterLabel.attributedText = notification.title.style(tags: b).attributedString
         
-        cell.descriptionTextView.text = notification.title
+        cell.descriptionTextView.text = notification.description
         
         var image = String()
         
@@ -387,13 +391,25 @@ UICollectionViewDelegateFlowLayout {
         let layout = UICollectionViewFlowLayout()
 
         let index = indexPath.item
-        let notification:GamvesNotification = Global.notifications[index]
-
+        var notification = GamvesNotification()
+        
+        print(indexPath.section)
+        
+        if indexPath.section == 0 {
+            
+            notification = Global.notificationsNew[index]
+            
+        } else if indexPath.section == 1 {
+            
+            notification = Global.notifications[index]
+            
+        }
+        
         //Everything here is wrong 
 
         if notification.posterId != PFUser.current()?.objectId {
 
-            if notification.type == 1 {
+            if notification.type == 1 { //video
 
                 let videoPF:PFObject = notification.video.videoObj as! PFObject
                 
@@ -413,7 +429,7 @@ UICollectionViewDelegateFlowLayout {
 
                 })          
 
-            } else if notification.type == 2 {
+            } else if notification.type == 2 { //fanpage
 
                 let fanpage = notification.fanpage
 
@@ -426,7 +442,22 @@ UICollectionViewDelegateFlowLayout {
                 print(fanpage.fanpageObj?.objectId)
                 self.homeController?.setCurrentPage(current: 2, direction: 1, data: fanpage)*/
 
-            }           
+            } else if notification.type == 3 || notification.type == 4 { //friend && birthday  
+
+                let posterId = notification.posterId
+
+                let gamvesUserPoster = Global.userDictionary[posterId] as! GamvesUser
+
+                let profileLauncher = PublicProfileLauncher()
+                profileLauncher.showProfileView(gamvesUser: gamvesUserPoster) 
+
+            } else if notification.type == 5 { //notification
+
+
+
+            
+            }
+
         }        
     }
 

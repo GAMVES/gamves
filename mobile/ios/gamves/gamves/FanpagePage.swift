@@ -785,7 +785,7 @@ class FanpagePage: UIViewController,
     }
     
 
-     func handleViewProfile(recognizer:UITapGestureRecognizer) {
+    func handleViewProfile(recognizer:UITapGestureRecognizer) {
         
         let v = recognizer.view!
         let index = v.tag
