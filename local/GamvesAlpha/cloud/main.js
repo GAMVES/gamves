@@ -877,6 +877,8 @@
 
 		if ( (approved==0 || approved==1) && !notified) { 
 
+			var userPF; 
+
 			var Notification = Parse.Object.extend("Notifications");         
 	        var notification = new Notification();	
 
@@ -886,10 +888,11 @@
 			userQuery.equalTo("objectId", posterId);
 		    userQuery.first().then(function(user) {
 
+		    	userPF = user;
+
 		    	notification.set("posterName", user.get("Name"));
 		    	notification.set("posterAvatar", user.get("picture"));
 		    	notification.set("posterId", posterId);
-
 
 		    	if (type == 1) {
 
@@ -912,10 +915,13 @@
 
 		    }).then(function(object) {
 
+		    	var name = userPF.get("Name");
+		    	var title = "<b>" + name + "</b> has shared a ";
+
 		    	if (type == 1) { //Video
 
-					notification.set("title", object.get("title"));
-		    		notification.set("description", object.get("description"));	    		
+					notification.set("title", title + " video"); //object.get("title"));
+		    		notification.set("description", object.get("title")); //object.get("description"));	    		
 		    		notification.set("cover", object.get("thumbnail"));
 		    		notification.set("referenceId", object.get("videoId"));
 		    		notification.set("date", object.get("createdAt"));
@@ -923,8 +929,8 @@
 
 		    	} else if (type == 2) { //Fanpage
 
-		    		notification.set("title", object.get("pageName"));
-		    		notification.set("description", object.get("pageAbout"));
+		    		notification.set("title", title + " fanpage"); //object.get("pageName"));
+		    		notification.set("description", object.get("pageName")); //object.get("pageAbout"));
 		    		notification.set("cover", object.get("pageCover"));	    		
 		    		notification.set("referenceId", object.get("fanpageId"));
 		    		notification.set("date", object.get("createdAt"));
