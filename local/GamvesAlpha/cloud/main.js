@@ -1146,7 +1146,7 @@
 
 				let notificationPoster = new Notifications();
 				
-				let titlePoster = friendName + " has accepter your freind's request"; 
+				let titlePoster = "<b>" + friendName + "</b> accepted your freind's request"; 
 				let descPoster  = "Start interacting with " + friendName + " , check out the profile and start chatting!"; 
 
 				notificationPoster.set("posterAvatar", friendImage);
@@ -1177,7 +1177,7 @@
 
 				let notificationFriend = new Notifications();
 				
-				let titleFriend = "You and " + posterName + " are friends!"; 
+				let titleFriend = "<b>" + posterName + "</b> and you are friends!"; 
 				let descFriend  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 
 
 				notificationFriend.set("posterAvatar", posterImage);

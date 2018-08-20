@@ -94,7 +94,7 @@
 
 				let notificationBirthday = new Notifications();
 				
-				let titlePoster = "Happy birthday " + userName + " !!"; 
+				let titlePoster = "<b>Happy birthday </b>" + userName + " !!"; 
 				let descUser  = "Say hello to " + userName + " in a very special day!"; 
 
 				notificationBirthday.set("posterAvatar", friendImage);
@@ -103,7 +103,7 @@
 
 				let posterName = adminUser.get("Name");				
 				notificationBirthday.set("posterName", posterName);				
-				notificationBirthday.set("posterId", adminUser.id);
+				notificationBirthday.set("posterId", userPF.id);
 
 				notificationBirthday.set("cover", cover);						
 				
