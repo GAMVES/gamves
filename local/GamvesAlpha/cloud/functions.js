@@ -2,69 +2,6 @@
 	* Cloud Code 
 	*/
 
-	//var moment = require('moment');
-
-	Parse.Cloud.define("gimmeDate", function (request, response) {
-
-		var userQuery = new Parse.Query(Parse.User);
-		userQuery.containedIn("iDUserType", [2,3]);
-
-		userQuery.find().then(function(usersPF) {
-
-			let count = usersPF.length;	
-			
-			for (let i=0; i<count; i++) {
-
-
-				let userPF = usersPF[i];
-
-				let birthday = userPF["birthday"];
-
-				if (checkIsToday(birthday)) {
-
-				}
-
-			}
-		});
-
-	});
-	
-
-	function checkIsToday(user_birthday) {		
-
-		var today = new Date();
-		var dd = today.getDate();
-		var mm = today.getMonth()+1; 
-		var yyyy = today.getFullYear();
-
-		if(dd<10) 
-		{
-		    dd='0'+dd;
-		} 
-
-		if(mm<10) 
-		{
-		    mm='0'+mm;
-		} 	
-
-		let todayCompare = yyyy + '-' + mm + '-' + dd;
-
-		var a = new Date(user_birthday);
-		var b = new Date(todayCompare);
-
-		let equal;
-
-		if (a == b) {
-			equal = true;
-		} else {
-			equal = false;
-		}	
-
-		return equal;
-	}
-
-
-
 	// -- Send push notification.
 
 	Parse.Cloud.define("push", function (request, response) {

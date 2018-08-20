@@ -9,15 +9,21 @@
 			userQuery.containedIn("iDUserType", [2,3]);
 			userQuery.find().then(function(usersPF) {
 
-				let count = usersPF.length;					
+				let count = usersPF.length;	
+
 				for (let i=0; i<count; i++) {
 
 					let userPF = usersPF[i];
-					let birthday = userPF["birthday"];
-					if (checkIsToday(birthday)) {
+					let birthday = userPF.get("birthday");				
+
+					let isToday = checkIsToday(birthday);					
+
+					if (isToday) {					
+
 						createBirdayNotifications(userPF);
 					}
 				}
+
 			});
 		});		
 
@@ -39,8 +45,10 @@
 			let todayCompare = yyyy + '-' + mm + '-' + dd;
 			var a = new Date(user_birthday);
 			var b = new Date(todayCompare);
+
 			let equal;
-			if (a == b) {
+
+			if (a.getTime() == b.getTime()) {
 				equal = true;
 			} else {
 				equal = false;
@@ -50,16 +58,80 @@
 
 		function createBirdayNotifications(userPF) {
 
-			var friendslQuery = new Parse.Query("Friends");
-			friendslQuery.equalTo("userId", posterId);
-			userQuery.find().then(function(friendsPF) {
+			var cover;
+			var adminUser;
 
-				let count = friendsPF.length;					
+			var userQuery = new Parse.Query(Parse.User);
+			userQuery.equalTo("username", "gamvesadmin");
+			
+		    return userQuery.first().then(function(admin) {
+
+		    	adminUser = admin;
+
+				var queryFanpage = new Parse.Query("Fanpages");
+				queryFanpage.equalTo('categoryName', 'PERSONAL');
+				queryFanpage.equalTo("posterId", userPF.id);    						
+
+				return queryFanpage.first({useMasterKey:true});
+
+			}).then(function(restulFanpagesPF) {		
+
+				cover = restulFanpagesPF.get("pageCover");
+
+				var friendslQuery = new Parse.Query("Friends");
+				friendslQuery.equalTo("userId", userPF.id);
+				return friendslQuery.find({useMasterKey:true});
+
+			}).then(function(restulFriendsPF) {		
+
+				let Notifications = Parse.Object.extend("Notifications");	    				
+		    	
+		    	let userName = userPF.get("Name");
+
+				//- Poster notification											
+				
+				let friendImage = userPF.get("pictureSmall");
+
+				let notificationBirthday = new Notifications();
+				
+				let titlePoster = "Happy birthday " + userName + " !!"; 
+				let descUser  = "Say hello to " + userName + " in a very special day!"; 
+
+				notificationBirthday.set("posterAvatar", friendImage);
+				notificationBirthday.set("title", titlePoster);	
+				notificationBirthday.set("description", descUser);	
+
+				let posterName = adminUser.get("Name");				
+				notificationBirthday.set("posterName", posterName);				
+				notificationBirthday.set("posterId", adminUser.id);
+
+				notificationBirthday.set("cover", cover);						
+				
+				notificationBirthday.set("type", 4);							
+				notificationBirthday.save(null, {useMasterKey: true}); 						
+
+				let count = restulFriendsPF.length;				
+
 				for (let i=0; i<count; i++) {
+					
+					let friendsArray = restulFriendsPF[i].get("friends");
 
-					//TODO send invitations. Pushing.					
+					let countFriends = friendsArray.length;
+
+					console.log("countFriends::: " + countFriends);					
+
+					for (let j=0; j<countFriends; j++){
+
+						let friendId = friendsArray[j];						
+						notificationBirthday.add("target", friendId);
+					}					
 
 				}
+
+				var today = new Date();
+								
+				notificationBirthday.set("date", today);	
+				notificationBirthday.save(null, {useMasterKey: true}); 
 
 			});
 		}				

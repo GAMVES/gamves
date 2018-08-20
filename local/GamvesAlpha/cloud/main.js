@@ -1120,9 +1120,7 @@
 
 			}).then(function(restulFanpagesPF) {
 			
-				let count = restulFanpagesPF.length;   
-
-				console.log("count:::::: " + count);
+				let count = restulFanpagesPF.length;   				
 
 				let coverFriend, coverPoster;     		
 
