@@ -63,7 +63,7 @@ class NewFriendController: UIViewController,
 
     let friendsAvailable: PaddingLabel = {
         let label = PaddingLabel()
-        label.text = "Friends list"
+        label.text = "Users list"
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textColor = UIColor.white
         label.backgroundColor = UIColor.gamvesGreenDarkColor
