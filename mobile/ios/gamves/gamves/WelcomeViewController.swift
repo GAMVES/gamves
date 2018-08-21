@@ -6,10 +6,16 @@
 //
 
 import UIKit
-
-private let reuseIdentifier = "Cell"
+import Parse
+import NVActivityIndicatorView
 
 class WelcomeViewController: UICollectionViewController {
+
+    var welcomes = [GamvesWelcome]()
+
+    private let reuseIdentifier = "Cell"
+
+    var activityView: NVActivityIndicatorView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +27,10 @@ class WelcomeViewController: UICollectionViewController {
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
+
+        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)        
+
+        self.fetchWelcomes()
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,18 +38,7 @@ class WelcomeViewController: UICollectionViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-    // MARK: UICollectionViewDataSource
-
+  
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
@@ -48,15 +47,25 @@ class WelcomeViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 0
+        return self.welcomes.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
-        // Configure the cell
-    
+
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.reuseIdentifier, for: indexPath) as! VideoCollectionViewCell
+            
+        cell.thumbnailImageView.image = self.welcomes[indexPath.row].thumbnail
+        
+        cell.videoName.text = self.welcomes[indexPath.row].title   
+
+        let recognizer = UITapGestureRecognizer(target: self, action:#selector(handleViewWelcome(recognizer:)))
+        
+        cell.rowView.tag = indexPath.row
+
+        cell.rowView.addGestureRecognizer(recognizer)
+
         return cell
+     
     }
 
     // MARK: UICollectionViewDelegate
@@ -90,4 +99,79 @@ class WelcomeViewController: UICollectionViewController {
     }
     */
 
-}
+    func handleViewWelcome(recognizer:UITapGestureRecognizer) {
+
+
+    }
+    
+    func fetchWelcomes()
+    {
+    
+        self.activityView.startAnimating()
+
+         let queryWelcome = PFQuery(className:"Welcomes")
+        queryWelcome.findObjectsInBackground { (welcomesPF, error) in
+            
+            if error == nil
+            {
+                if let welcomesPF = welcomesPF
+                {
+                    
+                    let welcomeCount = welcomesPF.count
+                    if welcomeCount > 0
+                    {
+
+                        var count = 0
+                        
+                        for welcomePF in welcomesPF {
+                       
+                            let welcome = GamvesWelcome()
+                            
+                            welcome.welcomeOBj = welcomePF
+
+                            welcome.objectId = (welcomePF.objectId as? String)!
+
+                            welcome.description = (welcomePF["description"] as? String!)!
+                            welcome.title = (welcomePF["title"] as? String!)!
+                           
+                            let thumbnail = welcomePF["thumbnail"] as! PFFile
+
+                            thumbnail.getDataInBackground(block: { (imageThumbnail, error) in
+                    
+                                if error == nil {
+
+                                    if let imageAvatarData = imageThumbnail {
+
+                                        welcome.thumbnail = UIImage(data:imageAvatarData)     
+
+                                        self.welcomes.append(welcome)
+
+                                        if (welcomeCount - 1) == count {
+
+                                            self.collectionView?.reloadData()
+
+                                            self.activityView.stopAnimating()
+                                            
+                                        }
+
+                                        count = count + 1
+
+                                    }
+                                }
+                            })                           
+
+                        }
+                        
+                    } else
+                    {
+                        self.activityView.stopAnimating()
+                    }
+                }
+            }
+        }
+    
+    }
+
+} 
+
+

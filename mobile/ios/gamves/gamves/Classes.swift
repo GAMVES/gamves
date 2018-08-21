@@ -9,6 +9,15 @@ import Foundation
 import UIKit
 import Parse
 
+class GamvesWelcome {
+
+    var objectId = String()       
+    var title = String()                   
+    var description = String()                       
+    var thumbnail:UIImage?      
+    var welcomeOBj:PFObject!    
+}
+
 class GamvesGift {
 
     var objectId = String()       
