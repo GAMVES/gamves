@@ -192,7 +192,8 @@
 			"https://s3.amazonaws.com/gamves/images/image_1.jpg",
 			"https://s3.amazonaws.com/gamves/images/image_2.jpg",
 			"https://s3.amazonaws.com/gamves/images/image_3.jpg",
-			"https://s3.amazonaws.com/gamves/images/image_4.jpg"
+			"https://s3.amazonaws.com/gamves/images/image_4.jpg",
+			"https://s3.amazonaws.com/gamves/images/welcome.png"
 		];
 
 		var count = files.length;
@@ -222,17 +223,6 @@
 
 				var name;               
 
-				/*var image_0 = 'b095b76aa6ea61c6f47f7e287b3be47a';
-				var image_1 = 'f8c5f0c6fa6f8a8768b8424da17d7d73';
-				var image_2 = 'd5daf2d0f3f511077d91f0e760e2306d';
-				var image_3 = '5dda529539e9809b9c1ed77c19917b76';
-				var image_4 = '34f9a215693a50656ac7828d804bb8d0';
-				var personal = '2a05a8c7c83314a78f5d1b5ffd93a9fd';
-				var personal_background = '7d24bcd5baa229c759587526ffc00551';
-				var trending = 'de45444c2e8a6127a36111e765fbbef9';
-				var trending_background = 'c827df1e0148aa260631f6a3699aa25d';
-				var universe = '168a0ce67bfda7963843b3a43601b886';*/
-
 				var image_0 			= 'a6ea61c6f47f7e287';
 				var image_1 			= 'fa6f8a8768b8424da';
 				var image_2 			= 'f3f511077d91f0e76';
@@ -243,8 +233,8 @@
 				var trending 			= '2e8a6127a36111e76';
 				var trending_background = '0148aa260631f6a36';
 				var universe 			= '7bfda7963843b3a43';
-
-
+				var welcome 			= '7006b25a20ab9b934';
+				
 				if (etag.indexOf(image_0) >= 0) {
 
 					name = 'image_0';
@@ -277,6 +267,9 @@
 					name = 'universe';  
 
 					hasUniverse = true;
+				} else if (etag.indexOf(welcome) >= 0) {
+
+					name = 'welcome'; 
 				}
 
 

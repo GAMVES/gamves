@@ -15,6 +15,7 @@
 		var profile;
 		var categorySaved;
 		var adminUser;
+		var notificationSaved;
 		
 		var iDUserType = request.params.iDUserType;
 
@@ -302,27 +303,43 @@
 		    notification.set("posterName", resutlUser.get("Name"));
 		    notification.set("posterAvatar", resutlUser.get("picture"));		    		    	    	
 
-			var ftitle = "Welcome " + resutlUser.get("Name") + " !!";
+			var ftitle = "<b>Welcome </b>" + resutlUser.get("Name") + " !!";
 		    notification.set("title", ftitle);
 
-		    let description = "Welcome to Gamves " + resutlUser.get("Name") + " open this notification to find out the amazing thins you can do"; 
+		    let description = "Welcome to Gamves check out the amazing thins you can do"; 
 		    notification.set("description", description);
 
     		//notification.set("description", fanpageReSaved.get("pageAbout"));
 
     		notification.set("target", [resutlUser.id]);  
 
-    		notification.set("cover", fanpageReSaved.get("pageCover"));	    		
+    		//notification.set("cover", fanpageReSaved.get("pageCover"));	    		
     		notification.set("referenceId", fanpageReSaved.get("fanpageId"));
     		notification.set("date", fanpageReSaved.get("createdAt"));
     		notification.set("fanpage", fanpageReSaved); 
 			notification.set("posterId", adminUser.id); 				
 
-    		notification.set("type", 5);
+    		notification.set("type", 6);
 
     		return notification.save(null, {useMasterKey: true});
 
-		}).then(function(object) {		
+		}).then(function(notificationSavedPF) {		
+
+			notificationSaved = notificationSavedPF;        
+
+	        var imagesQuery = new Parse.Query("Images");
+	        imagesQuery.equalTo("name", "welcome");
+	        return imagesQuery.first();
+
+	    }).then(function(imagePF) {	
+
+			let image = imagePF.get("image");
+
+			notificationSaved.set("cover", image);	
+
+			return notificationSaved.save(null, {useMasterKey: true});
+
+		}).then(function(obj) {	
 
     		if ( iDUserType==2 || iDUserType==3 ) {	    		
 
