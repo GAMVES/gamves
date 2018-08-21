@@ -251,67 +251,47 @@ UICollectionViewDelegateFlowLayout {
 
         cell.descriptionTextView.text = message
         
-        cell.userProfileImageView.image = notification.avatar
-
-        //var posterdesc = String()
+        cell.userProfileImageView.image = notification.avatar       
 
         if notification.type == 1 { //video
 
             cell.thumbnailImageView.image = notification.cover
-
             cell.iconImageView.image = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
-            
-            //posterdesc = "shared a new video"
-
             cell.iconView.backgroundColor = UIColor.blue     
 
         } else if notification.type == 2 { //fanpage
 
             cell.thumbnailImageView.isHidden = true
-
-            cell.iconImageView.image = UIImage(named: "like")?.withRenderingMode(.alwaysTemplate)                         
-
-            //posterdesc = "shared a new fanpage"  
-
+            cell.iconImageView.image = UIImage(named: "like")?.withRenderingMode(.alwaysTemplate)
             cell.iconView.backgroundColor = UIColor.red
 
         } else if notification.type == 3 { //friend
 
             cell.thumbnailImageView.isHidden = true
-
-            cell.iconImageView.image = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate)                         
-
-            //posterdesc = notification.title
-
+            cell.iconImageView.image = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate)                                    
             cell.iconView.backgroundColor = UIColor.green
             
         } else if notification.type == 4 { //birthday
 
-            cell.thumbnailImageView.isHidden = true
-
-            cell.iconImageView.image = UIImage(named: "birthday")?.withRenderingMode(.alwaysTemplate)                         
-
-            //posterdesc = notification.title
-
+            cell.thumbnailImageView.isHidden = true           
+            cell.iconImageView.image = UIImage(named: "birthday")?.withRenderingMode(.alwaysTemplate)                                     
             cell.iconView.backgroundColor = UIColor.magenta
             
         } else if notification.type == 5 { //notification
 
             cell.thumbnailImageView.isHidden = true
+            cell.iconImageView.image = UIImage(named: "notification")?.withRenderingMode(.alwaysTemplate)                                    
+            cell.iconView.backgroundColor = UIColor.gamvesLightBlueColor
 
-            cell.iconImageView.image = UIImage(named: "notification")?.withRenderingMode(.alwaysTemplate)                         
+        } else if notification.type == 6 { //welcome
 
-            //posterdesc = notification.title
-
+            cell.thumbnailImageView.image = notification.cover
+            cell.iconImageView.image = UIImage(named: "smile")?.withRenderingMode(.alwaysTemplate)                                     
             cell.iconView.backgroundColor = UIColor.gamvesLightBlueColor
 
         }
 
-
-        let b = Style("b").font(.boldSystemFont(ofSize: 18))
-
-        //cell.posterLabel.attributedText = "<b>\(notification.posterName)</b> \(posterdesc)".style(tags: b).attributedString
-
+        let b = Style("b").font(.boldSystemFont(ofSize: 18))       
         cell.posterLabel.attributedText = notification.title.style(tags: b).attributedString
         
         cell.descriptionTextView.text = notification.description
@@ -330,8 +310,6 @@ UICollectionViewDelegateFlowLayout {
         } else if elapsedTimeInSeconds > secondInDays {
             dateFormatter.dateFormat = "EEE"
         }
-        
-        //cell.notficationDatePublish.text = dateFormatter.string(from: notification.date)
 
         cell.timeLabel.text = notification.date.elapsedTime       
 
@@ -364,7 +342,7 @@ UICollectionViewDelegateFlowLayout {
             notification = Global.notifications[index]
         }        
 
-        if notification.type == 1 { //video
+        if notification.type == 1 || notification.type == 6 { //video || welcome
 
             height = (self.frame.width - 16 - 16) * 9 / 16
             
