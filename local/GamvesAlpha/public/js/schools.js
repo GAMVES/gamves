@@ -3,8 +3,8 @@
    
     //Back4app
     Parse.serverURL = "https://parseapi.back4app.com";
-    Parse.initialize("tmceYyffdci7gVbqcSJsSQ5JlsKNwkVGKU9hogED");     
-    Parse.javaScriptKey = "0dCzh2emIYzHwnZrOnEyOwpSNEIgVOndfF8c2bQI";    
+    Parse.initialize("45cgsAjYqwQQRctQTluoUpVvKsHqrjCmvh72UGBx");     
+    Parse.javaScriptKey = "Xkg4PiKyxFJPPA2GncRCxdzaOmblseMbr8050vGb";    
 
     var currentUser = Parse.User.current();
     if (!currentUser) {
@@ -107,8 +107,12 @@
                       var event = new CustomEvent("LoadCategories", { detail: [schoolId,short] });
                       document.dispatchEvent(event);
                       
-                      //Categories
+                      //Gifts
                       var event = new CustomEvent("LoadGifts", { detail: [schoolId,short] });
+                      document.dispatchEvent(event); 
+                      
+                      //Welcomes
+                      var event = new CustomEvent("LoadWelcomes", { detail: [schoolId,short] });
                       document.dispatchEvent(event);                     
 
                   }).on("deselected.rs.jquery.bootgrid", function(e, rows)
