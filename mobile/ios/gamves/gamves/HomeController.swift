@@ -65,6 +65,12 @@ CLLocationManagerDelegate {
         return giftController
     }()
 
+    lazy var welcomeViewController: WelcomeViewController = {
+        let welcomeController = WelcomeViewController()
+        welcomeController.homeController = self
+        return welcomeController
+    }()
+
     //- Launchers
 
     lazy var settingsLauncher: SettingsLauncher = {
@@ -420,6 +426,12 @@ CLLocationManagerDelegate {
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(giftViewController, animated: true)
+    }
+
+     func showWelcomeViewcontroller() {               
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(welcomeViewController, animated: true)
     }
 
     func clearNewFanpage() {

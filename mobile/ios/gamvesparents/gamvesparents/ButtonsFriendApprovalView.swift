@@ -235,71 +235,7 @@ class ButtonsFriendApprovalView: UIView {
             }
         })  
     }
-
-    /*func addFriend() {
-
-        self.activityIndicatorView?.startAnimating()
-
-        let friendApprovalPF = self.friendApproval.objectPF
-
-        friendApprovalPF?["approved"] = 1
-        
-        friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
-           
-            var posterId = self.friendApproval.posterId           
-            let friendId = self.friendApproval.friendId
-
-            //let friendPF =  Global.userDictionary[friendId]?.userObj
-
-            let posterObj: PFObject = PFObject(className: "Friends")
-            posterObj["userId"] = posterId            
-            
-            var frindsPosterArray = posterObj["friends"] as! [String]
-            frindsPosterArray.append(friendId)
-            
-            posterObj.saveInBackground(block: { (friendSPF, error) in
-                
-                if error == nil {
-                    
-                    let posterPF =  Global.userDictionary[posterId]?.userObj
-                    let friendObj: PFObject = PFObject(className: "Friends")
-                    friendObj["userId"] = friendId
-                    
-                    //let relationPoster = friendObj.relation(forKey: "friends")
-                    //relationPoster.add(posterPF!)
-                    
-                    var frindsFriendArray = friendObj["friends"] as! [String]
-                    frindsFriendArray.append(posterId)
-                    
-                    friendObj.saveInBackground(block: { (posterSPF, error) in
-                        
-                        if error == nil {
-                            
-                            let posterName =  Global.userDictionary[posterId]?.name
-                            let friendName =  Global.userDictionary[friendId]?.name
-                            
-                            self.activityIndicatorView?.stopAnimating()
-                            self.delegate.usersAdded(friendName: friendName!, posterName: posterName!)
-                            self.closeApprovalWindow()
-                            
-                        } else {
-                            
-                            print(error)
-                        }
-                        
-                    })
-                    
-                    
-                } else {
-                    
-                    print(error)
-                }
-            })
-            
-        })           
-
-    }*/
-
+    
     func addFriend() {
 
         self.activityIndicatorView?.startAnimating()

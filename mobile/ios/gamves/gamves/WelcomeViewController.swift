@@ -9,22 +9,41 @@ import UIKit
 import Parse
 import NVActivityIndicatorView
 
-class WelcomeViewController: UICollectionViewController {
+class WelcomeViewController: UIViewController, 
+UICollectionViewDataSource, 
+UICollectionViewDelegate, 
+UICollectionViewDelegateFlowLayout {
+
+    var homeController: HomeController?    
 
     var welcomes = [GamvesWelcome]()
 
-    private let reuseIdentifier = "Cell"
+    var welcomeIdentifier = "Cell"
 
     var activityView: NVActivityIndicatorView!
 
+    lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = UIColor.white
+        cv.dataSource = self
+        cv.delegate = self
+        return cv
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.view.addSubview(self.collectionView)
+
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
+        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView.register(WelcomeCollectionViewCell.self, forCellWithReuseIdentifier: welcomeIdentifier)
 
         // Do any additional setup after loading the view.
 
@@ -33,30 +52,43 @@ class WelcomeViewController: UICollectionViewController {
         self.fetchWelcomes()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
+    
   
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
 
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return self.welcomes.count
+        
+        let count = self.welcomes.count
+        
+        return count
     }
 
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout:
+        UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        var size = CGSize()      
+       
+        let height = (self.view.frame.width) * 9 / 16
+           
+        size = CGSize(width: self.view.frame.width, height: 250) //height: height + 16 + 88)      
+        
+        return size  
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.reuseIdentifier, for: indexPath) as! VideoCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.welcomeIdentifier, for: indexPath) as! WelcomeCollectionViewCell
             
         cell.thumbnailImageView.image = self.welcomes[indexPath.row].thumbnail
         
-        cell.videoName.text = self.welcomes[indexPath.row].title   
+        cell.welcomeTitleLabel.text = self.welcomes[indexPath.row].title
+        
+        cell.welcomeDescLabel.text = self.welcomes[indexPath.row].description
 
         let recognizer = UITapGestureRecognizer(target: self, action:#selector(handleViewWelcome(recognizer:)))
         
@@ -148,7 +180,7 @@ class WelcomeViewController: UICollectionViewController {
 
                                         if (welcomeCount - 1) == count {
 
-                                            self.collectionView?.reloadData()
+                                            self.collectionView.reloadData()
 
                                             self.activityView.stopAnimating()
                                             

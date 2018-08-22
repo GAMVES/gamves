@@ -103,6 +103,7 @@
 		C9253A91211277F4001B4A73 /* FeedSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9253A90211277F4001B4A73 /* FeedSectionHeader.swift */; };
 		C925F9AF20E1EAE000E9B1E9 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */; };
 		C926096921015EC5000CFF84 /* PublicProfileLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */; };
+		C927192C212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C927192B212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift */; };
 		C9273DA7212BDDE800AC067F /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9273DA6212BDDE800AC067F /* WelcomeViewController.swift */; };
 		C92ABB9B210E5505009CC646 /* NotificationSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92ABB9A210E5505009CC646 /* NotificationSectionHeader.swift */; };
 		C92B3D3F20EC7EAC00700BA4 /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */; };
@@ -222,6 +223,7 @@
 		C9253A90211277F4001B4A73 /* FeedSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedSectionHeader.swift; sourceTree = "<group>"; };
 		C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
 		C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileLauncher.swift; sourceTree = "<group>"; };
+		C927192B212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		C9273DA6212BDDE800AC067F /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		C92ABB9A210E5505009CC646 /* NotificationSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationSectionHeader.swift; sourceTree = "<group>"; };
 		C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
@@ -570,6 +572,7 @@
 		C92D8A47211CEF140051F414 /* cells */ = {
 			isa = PBXGroup;
 			children = (
+				C927192B212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift */,
 				C92D8A48211CEF460051F414 /* GiftViewCell.swift */,
 			);
 			name = cells;
@@ -820,6 +823,7 @@
 				8294F9D01FDA4EF40082D99D /* PlayVideoViewController.swift in Sources */,
 				82C9084B1FA0FD790059FAB8 /* Downloader.swift in Sources */,
 				C92CDDBC21064FCD001B5978 /* FriendCell.swift in Sources */,
+				C927192C212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift in Sources */,
 				C9378DC42120D94000BF1547 /* AddFriendSectionHeader.swift in Sources */,
 				82E372291FAFD5CF000AD7EB /* Classes.swift in Sources */,
 				8272C9531EFF755B005D1C9A /* CategoryTableViewSectionCell.swift in Sources */,

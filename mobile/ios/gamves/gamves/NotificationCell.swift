@@ -431,8 +431,14 @@ UICollectionViewDelegateFlowLayout {
 
             } else if notification.type == 5 { //notification
 
+                
 
+            } else if notification.type == 6 { //welcome
 
+                if self.homeController != nil
+                {
+                    self.homeController?.showWelcomeViewcontroller()
+                }
             
             }
 
