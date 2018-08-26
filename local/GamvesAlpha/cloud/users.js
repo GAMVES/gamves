@@ -223,11 +223,15 @@
 		    	return fanpage.save(null, {useMasterKey: true}); 	
 		    }			    	            		
 
-		}).then(function(fanpage) {	
+		}).then(function(fanpagePF) {	
+			
 
 			if ( iDUserType==2 || iDUserType==3 ) {	        	     	
 
-				fanpageSaved = fanpage;
+				fanpageSaved = fanpagePF;
+
+				fanpageSaved.add("target", resutlUser.id);
+				fanpageSaved.save(null, {useMasterKey: true});
 
 				var queryConfig = new Parse.Query("Config");
 				return queryConfig.first({useMasterKey:true});
