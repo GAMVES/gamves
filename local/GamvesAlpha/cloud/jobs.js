@@ -454,7 +454,7 @@
 		// --
 	  	// Fornite API 	  		  	
 
-	  	function getForniteApiUpcoming(callback) {			  	
+	  	function getForniteApiUpcoming(callback) {
 
 	  		var urlApi = "https://fortnite-public-api.theapinetwork.com/prod09/upcoming/get";
 
@@ -484,110 +484,139 @@
 
 		function parseFortniteUpcoming(json, callbackUpcoming) {			
 
-			let rows = json.rows;		
+			var queryFanpage = new Parse.Query("Fanpages");
+			queryFanpage.equalTo("pageName", "Fortnite");				
+			queryFanpage.first({
 
-			var count = 0;			
+				success: function(fanpagePF) {
 
-			var ids = [];
+					var fanpageId = fanpagePF.get("fanpageId");
 
-			for (var i = 0; i < rows; i++) {				
+					console.log("fanpageId: " + fanpageId);
 
-				let item = json.items[i];
-				let name = item.name;
-				let imageUrl = item.item.image;			
+					let rows = json.rows;		
 
-				var fileComplete = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
-				var filenameText = fileComplete.replace(/\.[^/.]+$/, "");				
+					var count = 0;			
 
-				ids.push(filenameText);				
+					var ids = [];
 
-				var queryFortniteUpcoming = new Parse.Query("FortniteUpcoming");
-				queryFortniteUpcoming.equalTo("imageId", filenameText);				
+					for (var i = 0; i < rows; i++) {				
 
-				queryFortniteUpcoming.first({
+						let item = json.items[i];
+						let name = item.name;
+						let imageUrl = item.item.image;			
 
-					success: function(result) {
+						var fileComplete = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
+						var filenameText = fileComplete.replace(/\.[^/.]+$/, "");				
 
-						if( result == null || result.length == 0 ) {
+						ids.push(filenameText);				
 
-							Parse.Cloud.httpRequest({url: imageUrl}).then(function(httpResponse) {							
+						var queryAlbum = new Parse.Query("Albums");
+						queryAlbum.equalTo("referenceId", fanpageId);
+						queryAlbum.equalTo("imageId", filenameText);				
 
-								var fileNameWithExt = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
-								var id = fileNameWithExt.replace(/\.[^/.]+$/, "");									
+						queryAlbum.first({
 
-			                   	var imageBuffer = httpResponse.buffer;
-			                   	var base64 = imageBuffer.toString("base64");
+							success: function(result) {
 
-			                   	let filename = id + ".png";                  	
+								if( result == null || result.length == 0 ) {
 
-			                   	var imageFile = new Parse.File(filename, { base64: base64 });                                       
+									Parse.Cloud.httpRequest({url: imageUrl}).then(function(httpResponse) {							
 
-			                   	var FortniteUpcoming = Parse.Object.extend("FortniteUpcoming");
-						    	var fortniteUpcoming = new FortniteUpcoming();
+										var fileNameWithExt = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
+										var id = fileNameWithExt.replace(/\.[^/.]+$/, "");									
 
-						    	fortniteUpcoming.set("name", name);
-						    	fortniteUpcoming.set("imageId", id);	
-			                   	fortniteUpcoming.set("image", imageFile); 								
+					                   	var imageBuffer = httpResponse.buffer;
+					                   	var base64 = imageBuffer.toString("base64");
 
-			                   	fortniteUpcoming.save(null, { useMasterKey: true,										
-									success: function (response) {	 									
+					                   	let filename = id + ".png";                  	
 
-										if (count == (rows-1)) {
+					                   	var imageFile = new Parse.File(filename, { base64: base64 });                                       
 
-											removeIfNotExist(ids, function(resutl){
+					                   	var Albums = Parse.Object.extend("Albums");
+								    	var album = new Albums();
 
-												callbackUpcoming({"error":false});
+								    	album.set("name", name);
+								    	album.set("imageId", id);
+								    	album.set("referenceId", fanpageId);	
+					                   	album.set("cover", imageFile); 
+					                   	album.set("type", "Upcoming"); 								
 
-											});
-									   	}
-									   	count++;
-					    			},
-									error: function (response, error) {		
+					                   	album.save(null, { useMasterKey: true,	
 
-										console.log("error: " + error);						
-									    
-									    callbackUpcoming({"error":true,"message":error});
-									}
-								});             
-			                                                        
-			              		}, function(error) {                    
+											success: function (albumSaved) {
+												
+												var albumRelation = fanpagePF.relation("albums");
+					        					albumRelation.add(albumSaved);	 										
 
-			              			callbackUpcoming({"error":true,"message":error});            	
+												if (count == (rows-1)) {
 
-			              		});
+													fanpagePF.save(null, {useMasterKey: true});
 
-						
-						} else {
+													removeIfNotExist(ids, fanpageId, function(resutl){
 
-							//console.log("count: " + count + " rows: " + rows);
+														callbackUpcoming({"error":false});
 
-							if (count == (rows-1)) {
+													});
+											   	}
+											   	count++;
+							    			},
+											error: function (response, error) {		
 
-								//console.log("COMPLETED");								
+												console.log("error: " + error);						
+											    
+											    callbackUpcoming({"error":true,"message":error});
+											}
+										});             
+					                                                        
+					              		}, function(error) {                    
 
-		                   		removeIfNotExist(ids, function(resutl) {
+					              			callbackUpcoming({"error":true,"message":error});            	
 
-									callbackUpcoming({"error":false});
+					              		});
 
-								});
-						   	}
-							count++;
-						}						
-					},
-					error: function(error) {					
+								
+								} else {
 
+									//console.log("count: " + count + " rows: " + rows);
+
+									if (count == (rows-1)) {
+
+										//console.log("COMPLETED");								
+
+				                   		removeIfNotExist(ids, fanpageId, function(resutl) {
+
+											callbackUpcoming({"error":false});
+
+										});
+								   	}
+									count++;
+								}						
+							},
+							error: function(error) {					
+
+							}
+						});
 					}
-				});
-			}
+
+				},
+				error: function(error) {					
+
+				}
+			});
+
+
+			
 		}
 
-		function removeIfNotExist(ids, callback){
+		function removeIfNotExist(ids, fanpageId, callback){
 
 			//console.log("ids: " + ids.length);
 
-			var queryNotUpcoming = new Parse.Query("FortniteUpcoming");			
-			queryNotUpcoming.notContainedIn("imageId", ids);
-			queryNotUpcoming.find({
+			var queryAlbum = new Parse.Query("Albums");	
+			queryAlbum.equalTo("referenceId", fanpageId);		
+			queryAlbum.notContainedIn("imageId", ids);
+			queryAlbum.find({
 
 				success: function(results) {
 
