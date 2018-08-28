@@ -149,8 +149,11 @@ class FanpagePage: UIViewController,
 
     var fanpageGamves  = GamvesFanpage()
     var videosGamves  = [GamvesVideo]()
-    var fanpageImages = [GamvesFanpageImage]()     
+    //var albums = Dictionary<String, [GamvesAlbum]>()
+    //var fanpageImages = [GamvesFanpageImage]()     
     
+    var groupAlbums = [[GamvesAlbum]]()
+
     weak var delegate:CellDelegate?       
     
     var activityVideoView: NVActivityIndicatorView!
@@ -170,6 +173,7 @@ class FanpagePage: UIViewController,
 
     var posterId = String()  
     
+    var isFortnite = Bool()
     
     override func viewDidLoad() {
 
@@ -259,7 +263,7 @@ class FanpagePage: UIViewController,
 
         self.labelEmptyMessage.isHidden = true
 
-        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: 0, repeats: true)
         
     }
 
@@ -271,7 +275,7 @@ class FanpagePage: UIViewController,
         self.favoriteButton.tintColor = UIColor.white
     }
 
-    func setFanpageGamvesData(data: GamvesFanpage) {              
+    func setFanpageGamvesData(data: GamvesFanpage) {        
         
         self.checkFavorite()    
 
@@ -299,20 +303,49 @@ class FanpagePage: UIViewController,
         
         if Downloader.fanpageImagesDictionary[fanpageId] != nil {
 
-            self.fanpageImages =  Downloader.fanpageImagesDictionary[fanpageId] as! [GamvesFanpageImage]
+            let allAbums =  Downloader.fanpageImagesDictionary[fanpageId] as! [GamvesAlbum]
+
+            let groupDictionary = Dictionary(grouping: allAbums) { (album) -> String in
+                return album.type
+            }            
+
+            let keys = groupDictionary.keys.sorted()
+            keys.forEach{ (key) in
+                groupAlbums.append(groupDictionary[key]!)
+            }
             
-            self.fanpageImages.shuffled
+            groupAlbums.forEach({
+                $0.forEach({print($0)})
+                print("-----------------------")
+            })
             
-            print(self.fanpageImages.count)
             
-            var titleImageArray = [String]()
-            var sourceArray = [String]()
+            /*var albumsType:[GamvesAlbum]!
+
+            for album in allAbums {
+
+                let type = album.type
+
+                if self.albums[type] == nil {      
+
+                    albumsType = [GamvesAlbum]()
+
+                    albumsType.append(album)
+                }
+            }*/
             
-            for gamvesImage in self.fanpageImages {
+            //self.fanpageImages.shuffled
+            
+            //print(self.albums.count)
+            
+            //var titleImageArray = [String]()
+            //var sourceArray = [String]()
+            
+            /*for gamvesImage in self.albums {
                 
                 titleImageArray.append(gamvesImage.name)
                 sourceArray.append(gamvesImage.source)
-            }
+            }*/
                             
             self.imageCollectionView.reloadData()
 
@@ -340,11 +373,13 @@ class FanpagePage: UIViewController,
             
     }
 
-    func scrollAutomatically(_ timer1: Timer) {        
+    func scrollAutomatically(_ sender: Timer) {
+        
+        var section = sender.userInfo as! Int
         
         for cell in self.imageCollectionView.visibleCells {
             let indexPath: IndexPath? = self.imageCollectionView.indexPath(for: cell)
-            if ((indexPath?.row)!  < self.fanpageImages.count - 1){
+            if ((indexPath?.row)!  < self.groupAlbums[section].count - 1){
                 let indexPath1: IndexPath?
                 indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)
                 
@@ -713,13 +748,12 @@ class FanpagePage: UIViewController,
 
     }
 
-
-     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         var count = 0
         if collectionView == self.imageCollectionView
         {
-            count = self.fanpageImages.count
+            count = self.groupAlbums[section].count
             
         } else if collectionView == self.collectionView
         {
@@ -729,7 +763,7 @@ class FanpagePage: UIViewController,
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return self.groupAlbums.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -740,7 +774,16 @@ class FanpagePage: UIViewController,
         {
             let cellImage = collectionView.dequeueReusableCell(withReuseIdentifier: cellImageCollectionId, for: indexPath) as! ImagesCollectionViewCell
             
-            cellImage.imageView.image = self.fanpageImages[indexPath.row].cover_image
+            /*let keys = Array(self.albums.keys)
+            let key = keys[indexPath.section] as String
+            let albs = self.albums[key] as! [GamvesAlbum]
+            let alb = albs[indexPath.row]*/
+            
+            let alb = self.groupAlbums[indexPath.section][indexPath.row]
+            
+            cellImage.imageView.image = alb.cover_image
+
+            //cellImage.imageView.image = self.albums[indexPath.row].cover_image
             
             return cellImage
             
@@ -904,11 +947,21 @@ class FanpagePage: UIViewController,
    
     
     func numberOfImagesInGallery(gallery: SwiftPhotoGallery) -> Int {
-        return self.fanpageImages.count
+        var count = Int()
+        if self.groupAlbums.count > 0 {
+            count = self.groupAlbums[0].count
+        }
+        return count
     }
     
     func imageInGallery(gallery: SwiftPhotoGallery, forIndex: Int) -> UIImage? {
-        return self.fanpageImages[forIndex].cover_image
+        //return self.groupAlbums[0][0].cover_image
+        var image = UIImage()
+        if self.groupAlbums[0][0] != nil {
+            image = self.groupAlbums[0][forIndex].cover_image
+        }
+        return image
+
     }
 
 

@@ -17,6 +17,7 @@ import AVFoundation
 import MobileCoreServices
 import AWSS3
 import AWSCore
+import SwiftHash
 
 class PaddedTextField: UITextField {
     
@@ -645,7 +646,7 @@ ChooseAvatarProtocol
                             
                             if Downloader.fanpageImagesDictionary[fpId] != nil {
                             
-                                let imagesArray = Downloader.fanpageImagesDictionary[fpId] as! [GamvesFanpageImage]
+                                let imagesArray = Downloader.fanpageImagesDictionary[fpId] as! [GamvesAlbum]
                                 
                                 print(imagesArray.count)
                                 
@@ -1101,13 +1102,18 @@ ChooseAvatarProtocol
                     for image in self.imagesArray {
                     
                         let albumPF: PFObject = PFObject(className: "Albums")
-                        
-                        let filename = "\(Global.generateFileName()).png"
+
+                        let random = Global.generateFileName()
+                        let md5Data = MD5(random)
+
+                        let filename = "\(md5Data).png"
                         
                         let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
                         
                         albumPF["cover"] = imageFile
-                        
+                        albumPF["imageId"] = md5Data
+                        albumPF["type"] = "Images"                        
+
                         albumPF["name"] = "\(count)"
                         
                         do {
@@ -1282,7 +1288,7 @@ ChooseAvatarProtocol
         
             if Downloader.fanpageImagesDictionary[fpId] != nil {
                 
-                let imagesArrayDownloaded = Downloader.fanpageImagesDictionary[fpId] as! [GamvesFanpageImage]
+                let imagesArrayDownloaded = Downloader.fanpageImagesDictionary[fpId] as! [GamvesAlbum]
              
                 for dImage in imagesArrayDownloaded {           
 

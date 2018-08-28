@@ -13,7 +13,7 @@ import Parse
 class Downloader: NSObject
 {
     
-    static var fanpageImagesDictionary = Dictionary<Int, [GamvesFanpageImage]>()
+    static var fanpageImagesDictionary = Dictionary<Int, [GamvesAlbum]>()
     
     static var quenedImages = Dictionary<Int, Bool>()
     
@@ -46,7 +46,7 @@ class Downloader: NSObject
                         if (fanpageAlbums?.count)! > 0
                         {
                             
-                            var images = [GamvesFanpageImage]()
+                            var images = [GamvesAlbum]()
                             
                             let countFanpageAlbums = fanpageAlbums?.count
                             
@@ -58,19 +58,21 @@ class Downloader: NSObject
                             {
                                 //print(fanpageAlbum["name"])
                                 
-                                let image = GamvesFanpageImage()
+                                let album = GamvesAlbum()
                                 
-                                image.albumPF = fanpageAlbum
+                                album.albumPF = fanpageAlbum
                                 
                                 let id = fanpageAlbum.objectId as! String
-                                image.objectId = id
+                                album.objectId = id
                                 
                                 let name = fanpageAlbum["name"] as! String
-                                image.name = name
+                                album.name = name
+                                
+                                album.type = fanpageAlbum["type"] as! String
                                 
                                 let coverFile = fanpageAlbum["cover"] as! PFFile
                                 
-                                image.source = coverFile.url!
+                                album.source = coverFile.url!
                                 
                                 let catPictureURL = URL(string: coverFile.url!)!
                                 
@@ -96,9 +98,9 @@ class Downloader: NSObject
                                     if ((uiimage) != nil)
                                     {
                                         
-                                        image.cover_image = uiimage!
+                                        album.cover_image = uiimage!
                                         
-                                        images.append(image)
+                                        images.append(album)
                                         
                                         if (countFanpageAlbums!-1) == count
                                         {
@@ -119,7 +121,6 @@ class Downloader: NSObject
                 })
             }
         }
-    }
-    
+    }    
     
 }

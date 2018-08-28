@@ -425,6 +425,11 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                 let icon  = fpObj["pageIcon"] as! PFFile
                                 let about  = fpObj["pageAbout"] as! String
                                 
+                                
+                                if name == "Fortnite" {
+                                    fan.isFortnite = true
+                                }                       
+                                
                                 let posterId = fpObj["posterId"] as! String
                                 
                                 let authorRelation = fpObj["author"] as! PFRelation

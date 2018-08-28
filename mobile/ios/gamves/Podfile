@@ -47,4 +47,6 @@ target 'gamves' do
 
   pod 'Atributika', :git => 'https://github.com/psharanda/Atributika.git', :tag => 'swift-3.2'
   
+  pod 'SwiftHash'
+  
 end

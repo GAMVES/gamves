@@ -10,6 +10,8 @@ import UIKit
 import Parse
 import NVActivityIndicatorView
 import PopupDialog
+import Foundation
+
 
 class Global: NSObject
 {
@@ -1794,5 +1796,8 @@ class Global: NSObject
 
         return newImage!
     }
+
+    
+
 
 }

@@ -71,7 +71,7 @@ class GamvesNotification {
     var user = GamvesUser()
     var type = Int()
     var posterId = String()
-    var isNew = Bool()
+    var isNew = Bool()    
 }
 
 class ChatFeed {
@@ -240,19 +240,23 @@ class GamvesFanpage {
     var categoryObj:PFObject?
     var categoryName = String()
     
-    var fanpage_images  = [GamvesFanpageImage]()
+    var fanpage_images  = [GamvesAlbum]()
     
     var isFavorite = Bool()
     var favoritePF:PFObject?
+
+    var isFortnite = Bool()
+    
 }
 
-class GamvesFanpageImage {
+class GamvesAlbum {
 
     var albumPF:PFObject!
     var objectId = String()
     var source = String()
     var name = String()
     var cover_image = UIImage()
+    var type = String()
 }
 
 struct Page {
