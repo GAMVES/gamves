@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '9.0'
+platform :ios, '8.0'
 
 use_frameworks!
 
@@ -33,8 +33,7 @@ target 'gamves' do
   
   pod 'KenBurns'
   
-  #pod 'M13Checkbox' 
-
+  #pod 'M13Checkbox'
   #, :git => 'https://github.com/Marxon13/M13Checkbox.git', :branch => 'swift_4_2'
 
   pod 'IGColorPicker' 
@@ -49,7 +48,7 @@ target 'gamves' do
   
   pod 'RSKImageCropper'
 
-  pod 'SwiftPhotoGallery'
+  #pod 'SwiftPhotoGallery'
 
   pod 'PopupDialog'
 
@@ -59,8 +58,10 @@ target 'gamves' do
   
   pod 'SwiftHash'
 
-  pod 'AXPhotoViewer'  
+  #pod 'FLAnimatedImage', :git => 'https://github.com/Flipboard/FLAnimatedImage.git', :tag => '1.0.14'
 
-  #, :git => 'https://github.com/alexhillc/AXPhotoViewer.git', :tag => 'v1.4.0'
+  pod 'AXPhotoViewer'
+
+  #, :git => 'https://github.com/alexhillc/AXPhotoViewer.git', :tag => 'v1.4.3'
   
 end

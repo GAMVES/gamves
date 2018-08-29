@@ -44,7 +44,6 @@ PODS:
   - SDWebImage/Core (3.8.2)
   - Starscream (2.1.1)
   - SwiftHash (2.0.1)
-  - SwiftPhotoGallery (3.3.1)
   - SwiftyJSON (3.1.4)
   - UITextView+Placeholder (1.2.0)
   - YouTubePlayer (0.4.0)
@@ -62,14 +61,12 @@ DEPENDENCIES:
   - IGColorPicker
   - ISEmojiView
   - KenBurns
-  - M13Checkbox
   - NVActivityIndicatorView
   - ParseLiveQuery
   - PopupDialog
   - PulsingHalo
   - RSKImageCropper
   - SwiftHash
-  - SwiftPhotoGallery
   - SwiftyJSON
   - UITextView+Placeholder (~> 1.2)
   - YouTubePlayer
@@ -117,11 +114,10 @@ SPEC CHECKSUMS:
   SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   SwiftHash: c805de5a434eacfa0dac7210745a50c55d7fe33d
-  SwiftPhotoGallery: 4b8eb285d41268bee6d49a37759cd07e5d1d3183
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   UITextView+Placeholder: 77680995fcdd07c3f52ec92fe1150874a2ac89ff
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: fe1258834ca043d0619e06676c2eeb78e819f5cd
+PODFILE CHECKSUM: fca2f4e672881b54de8a625c368f60d7a052404b
 
 COCOAPODS: 1.4.0
