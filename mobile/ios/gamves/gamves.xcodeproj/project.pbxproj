@@ -105,6 +105,7 @@
 		C926096921015EC5000CFF84 /* PublicProfileLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */; };
 		C927192C212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C927192B212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift */; };
 		C9273DA7212BDDE800AC067F /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9273DA6212BDDE800AC067F /* WelcomeViewController.swift */; };
+		C92816F82135B55600FB3E52 /* FanpageSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92816F72135B55600FB3E52 /* FanpageSectionHeader.swift */; };
 		C92ABB9B210E5505009CC646 /* NotificationSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92ABB9A210E5505009CC646 /* NotificationSectionHeader.swift */; };
 		C92B3D3F20EC7EAC00700BA4 /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */; };
 		C92BC7C82085AFB200EDEBCD /* GradientMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */; };
@@ -225,6 +226,7 @@
 		C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileLauncher.swift; sourceTree = "<group>"; };
 		C927192B212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		C9273DA6212BDDE800AC067F /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
+		C92816F72135B55600FB3E52 /* FanpageSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FanpageSectionHeader.swift; sourceTree = "<group>"; };
 		C92ABB9A210E5505009CC646 /* NotificationSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationSectionHeader.swift; sourceTree = "<group>"; };
 		C92B3D3E20EC7EAC00700BA4 /* CustomHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
 		C92BC7C72085AFB200EDEBCD /* GradientMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientMaskView.swift; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 		82FFF52B2022D350005F45AA /* cells */ = {
 			isa = PBXGroup;
 			children = (
+				C92816F72135B55600FB3E52 /* FanpageSectionHeader.swift */,
 				C9378DC32120D94000BF1547 /* AddFriendSectionHeader.swift */,
 				C9253A90211277F4001B4A73 /* FeedSectionHeader.swift */,
 				C92ABB9A210E5505009CC646 /* NotificationSectionHeader.swift */,
@@ -852,6 +855,7 @@
 				8294F9D41FDA4EFC0082D99D /* MergeVideoViewController.swift in Sources */,
 				82557C5D2016EE1200752301 /* ChatFeedMethods.swift in Sources */,
 				8268445A1FF2950E008BA13B /* NewVideoController+Extensions.swift in Sources */,
+				C92816F82135B55600FB3E52 /* FanpageSectionHeader.swift in Sources */,
 				C92BC7C82085AFB200EDEBCD /* GradientMaskView.swift in Sources */,
 				82C62C471F044950005A308E /* CategoryCollectionViewCell.swift in Sources */,
 				82DD00341F9D021C00CD19D7 /* UINavigationBar+Extension.swift in Sources */,

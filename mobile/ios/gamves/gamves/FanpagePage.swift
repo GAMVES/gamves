@@ -98,12 +98,26 @@ class FanpagePage: UIViewController,
     //- Images Collection
 
     lazy var imageCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
+        //let layout = UICollectionViewFlowLayout()
+        //layout.scrollDirection = .vertical
+        //layout.sectionHeadersPinToVisibleBounds = true
+
+         let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 50, height: 50)
+        layout.minimumInteritemSpacing = 8
+        layout.minimumLineSpacing = 8
+        layout.headerReferenceSize = CGSize(width: 0, height: 40)
+        layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        layout.scrollDirection = .vertical
+
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = UIColor.white
         cv.dataSource = self
         cv.delegate = self
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.alwaysBounceHorizontal = true
+        cv.showsHorizontalScrollIndicator = false
+        cv.isPrefetchingEnabled = false        
         return cv
     }()   
 
@@ -153,6 +167,7 @@ class FanpagePage: UIViewController,
     //var fanpageImages = [GamvesFanpageImage]()     
     
     var groupAlbums = [[GamvesAlbum]]()
+    var albumSections = [String]()
 
     weak var delegate:CellDelegate?       
     
@@ -168,6 +183,8 @@ class FanpagePage: UIViewController,
 
     let cellVideoCollectionId = "cellVideoCollectionId"
     let cellImageCollectionId = "cellImageCollectionId"
+
+    let sectionHeaderId = "fanpgageSectionHeader"
 
     var categoryName = String()   
 
@@ -223,7 +240,7 @@ class FanpagePage: UIViewController,
         
         self.imageCollectionView.backgroundColor = UIColor.gamvesBlackColor
 
-        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(80)][v2]|", views: 
+        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(200)][v2]|", views: 
             self.coverContainerView,
             self.imageCollectionView, 
             self.collectionContainerView)
@@ -233,6 +250,7 @@ class FanpagePage: UIViewController,
         self.coverContainerView.addConstraintsWithFormat("V:|-77-[v0(3)]|", views: self.bottomLineContainerView)
         
         self.imageCollectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
+        self.imageCollectionView.register(FanpageSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: self.sectionHeaderId)
         
         self.activityVideoView = Global.setActivityIndicator(container: self.collectionContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
         
@@ -263,7 +281,7 @@ class FanpagePage: UIViewController,
 
         self.labelEmptyMessage.isHidden = true
 
-        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: 0, repeats: true)
+        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: 0, repeats: true)        
         
     }
 
@@ -309,43 +327,20 @@ class FanpagePage: UIViewController,
                 return album.type
             }            
 
+            //self.albumSections = groupDictionary.keys
+
             let keys = groupDictionary.keys.sorted()
             keys.forEach{ (key) in
+                print(key)
+                self.albumSections.append(key)
                 groupAlbums.append(groupDictionary[key]!)
             }
             
             groupAlbums.forEach({
                 $0.forEach({print($0)})
                 print("-----------------------")
-            })
+            })         
             
-            
-            /*var albumsType:[GamvesAlbum]!
-
-            for album in allAbums {
-
-                let type = album.type
-
-                if self.albums[type] == nil {      
-
-                    albumsType = [GamvesAlbum]()
-
-                    albumsType.append(album)
-                }
-            }*/
-            
-            //self.fanpageImages.shuffled
-            
-            //print(self.albums.count)
-            
-            //var titleImageArray = [String]()
-            //var sourceArray = [String]()
-            
-            /*for gamvesImage in self.albums {
-                
-                titleImageArray.append(gamvesImage.name)
-                sourceArray.append(gamvesImage.source)
-            }*/
                             
             self.imageCollectionView.reloadData()
 
@@ -742,10 +737,52 @@ class FanpagePage: UIViewController,
     } 
 
     func showEmptyMessage() {
-
         self.activityVideoView.stopAnimating()
         self.labelEmptyMessage.isHidden = false
+    }
 
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        var count = Int()
+        if collectionView == self.imageCollectionView {
+            count = self.groupAlbums.count
+        }
+        return count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+       
+        var reuseHeaderView: UICollectionReusableView? = nil
+
+        if kind == UICollectionElementKindSectionHeader {
+               
+            var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! FanpageSectionHeader
+    
+            /*var headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "header", for: indexPath)
+
+            headerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 100)
+            let momentLabel = UILabel()
+            momentLabel.translatesAutoresizingMaskIntoConstraints = false
+            momentLabel.text = "Top Tags"
+            momentLabel.font = UIFont(name: "Ubuntu-MediumItalic", size: 13)
+            momentLabel.textColor = UIColor.red
+            headerView.addSubview(momentLabel)
+            momentLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 5).isActive = true
+            momentLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 5).isActive = true*/
+
+        
+            let name = self.albumSections[indexPath.section]        
+            sectionHeaderView.nameLabel.text = name                        
+            sectionHeaderView.backgroundColor = UIColor.black
+            //sectionHeaderView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 2)                        
+
+            return sectionHeaderView
+        } 
+        return reuseHeaderView!      
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {       
+        //return CGSize(width: self.imageCollectionView.frame.size.width, height: 50)
+        return CGSize(width: self.imageCollectionView.frame.width, height: 30)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -760,11 +797,7 @@ class FanpagePage: UIViewController,
             count = self.videosGamves.count
         }
         return count
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return self.groupAlbums.count
-    }
+    }  
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -773,17 +806,9 @@ class FanpagePage: UIViewController,
         if collectionView == self.imageCollectionView
         {
             let cellImage = collectionView.dequeueReusableCell(withReuseIdentifier: cellImageCollectionId, for: indexPath) as! ImagesCollectionViewCell
-            
-            /*let keys = Array(self.albums.keys)
-            let key = keys[indexPath.section] as String
-            let albs = self.albums[key] as! [GamvesAlbum]
-            let alb = albs[indexPath.row]*/
-            
             let alb = self.groupAlbums[indexPath.section][indexPath.row]
             
             cellImage.imageView.image = alb.cover_image
-
-            //cellImage.imageView.image = self.albums[indexPath.row].cover_image
             
             return cellImage
             
@@ -881,7 +906,7 @@ class FanpagePage: UIViewController,
         if collectionView == self.imageCollectionView
         {
             
-            size = CGSize(width: 160, height: 80)
+            size = CGSize(width: 50, height: 50)
             
         } else if collectionView == self.collectionView
         {
@@ -970,3 +995,7 @@ class FanpagePage: UIViewController,
     }
 
 }
+
+
+
+

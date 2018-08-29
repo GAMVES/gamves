@@ -20,8 +20,14 @@ class ImagesCollectionViewCell: BaseCell {
     override func setupViews()
     {
         addSubview(self.imageView)
-        self.addConstraintsWithFormat("H:|[v0(142)]|", views: self.imageView)
-        self.addConstraintsWithFormat("V:|[v0(80)]|", views: self.imageView)
+        //self.addConstraintsWithFormat("H:|[v0(142)]|", views: self.imageView)
+        //self.addConstraintsWithFormat("V:|[v0(80)]|", views: self.imageView)
+
+        
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.imageView)
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.imageView)
+        
+
     }
     
 }
