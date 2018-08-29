@@ -9,18 +9,19 @@ import UIKit
 import Parse
 import NVActivityIndicatorView
 import KenBurns
-import AACarousel
-import SwiftPhotoGallery
+import AXPhotoViewer
+import FLAnimatedImage
+import PINRemoteImage
+
+//import AACarousel
+//import SwiftPhotoGallery
 
 class FanpagePage: UIViewController,
     UICollectionViewDataSource, 
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout,    
-    SwiftPhotoGalleryDataSource, 
-    SwiftPhotoGalleryDelegate
-{    
-
-    //-  UI & COMPONENTS   
+    UICollectionViewDelegateFlowLayout,
+    AXPhotosViewControllerDelegate        
+{  
 
     //- All page view
 
@@ -191,6 +192,9 @@ class FanpagePage: UIViewController,
     var posterId = String()  
     
     var isFortnite = Bool()
+
+    var photosViewController: AXPhotosViewController?
+    var photos = []
     
     override func viewDidLoad() {
 
@@ -940,8 +944,50 @@ class FanpagePage: UIViewController,
     
         if collectionView == self.imageCollectionView {           
 
-            gallery?.modalPresentationStyle = .overCurrentContext
-            present(self.gallery!, animated: true, completion: nil)
+            //self.gallery?.modalPresentationStyle = .overCurrentContext
+            //present(self.gallery!, animated: true, completion: nil)
+
+            let selectedAlbums = self.groupAlbums[indexPath.section] as [GamvesAlbum]
+
+            for album in selectedAlbums {
+
+               let photo = AXPhoto(attributedTitle: NSAttributedString(string: album.name),
+                image: UIImage(named: album.cover_image))
+
+               self.phootos.append(photo)
+            }
+
+            let dataSource = AXPhotosDataSource(photos: self.photos, initialPhotoIndex: indexPath.row)
+            let pagingConfig = AXPagingConfig(loadingViewClass: CustomLoadingView.self)
+            let photosViewController = AXPhotosViewController(dataSource: dataSource, pagingConfig: pagingConfig, transitionInfo: transitionInfo)
+            //photosViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            photosViewController.delegate = self
+            
+            let flex = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            let bottomView = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: 320, height: 44)))
+            let customView = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 80, height: 20)))
+            customView.text = "\(photosViewController.currentPhotoIndex + 1)"
+            customView.textColor = .white
+            customView.sizeToFit()
+            bottomView.items = [
+                UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil),
+                flex,
+                UIBarButtonItem(customView: customView),
+                flex,
+                UIBarButtonItem(barButtonSystemItem: .trash, target: nil, action: nil),
+            ]
+            bottomView.backgroundColor = .clear
+            bottomView.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
+            photosViewController.overlayView.bottomStackContainer.insertSubview(bottomView, at: 0) // insert custom
+            
+            self.customView = customView
+            
+            //container.addChildViewController(photosViewController)
+            //container.view.addSubview(photosViewController.view)
+            //photosViewController.didMove(toParentViewController: container)
+            
+            self.present(photosViewController, animated: true)
+            self.photosViewController = photosViewController
             
         } else if collectionView == self.collectionView
         {
@@ -956,20 +1002,128 @@ class FanpagePage: UIViewController,
             videoLauncher.showVideoPlayer(videoGamves: video)            
         }        
     }
-    
-    func downloadImages(_ url:String, _ index:Int) {       
-       
+
+
+    // MARK: - AXPhotosViewControllerDelegate
+    func photosViewController(_ photosViewController: AXPhotosViewController,
+                              willUpdate overlayView: AXOverlayView,
+                              for photo: AXPhotoProtocol,
+                              at index: Int,
+                              totalNumberOfPhotos: Int) {
         
+        self.customView?.text = "\(index + 1)"
+        self.customView?.sizeToFit()
     }
     
-    func didSelectCarouselView(_ view:AACarousel, _ index:Int) {
+    // MARK: - Loading
+    func loadContent(at indexPath: IndexPath, into imageView: FLAnimatedImageView) {
+        func onBackgroundThread(_ block: @escaping () -> Void) {
+            if Thread.isMainThread {
+                DispatchQueue.global().async {
+                    block()
+                }
+            } else {
+                block()
+            }
+        }
+        
+        func onMainThread(_ block: @escaping () -> Void) {
+            if Thread.isMainThread {
+                block()
+            } else {
+                DispatchQueue.main.async {
+                    block()
+                }
+            }
+        }
+        
+        func layoutImageView(with result: Any?) {
+            let maxSize: CGFloat = 280
+            var imageViewSize: CGSize
+            if let animatedImage = result as? FLAnimatedImage {
+                imageViewSize = (animatedImage.size.width > animatedImage.size.height) ?
+                    CGSize(width: maxSize,height: (maxSize * animatedImage.size.height / animatedImage.size.width)) :
+                    CGSize(width: maxSize * animatedImage.size.width / animatedImage.size.height, height: maxSize)
+                
+                onMainThread {
+                    imageView.frame.size = imageViewSize
+                    if let superview = imageView.superview {
+                        imageView.center = superview.center
+                    }
+                }
+            } else if let image = result as? UIImage {
+                imageViewSize = (image.size.width > image.size.height) ?
+                    CGSize(width: maxSize, height: (maxSize * image.size.height / image.size.width)) :
+                    CGSize(width: maxSize * image.size.width / image.size.height, height: maxSize)
+                
+                onMainThread {
+                    imageView.frame.size = imageViewSize
+                    if let superview = imageView.superview {
+                        imageView.center = superview.center
+                    }
+                }
+            }
+        }
+        
+        if let imageData = self.photos[indexPath.row].imageData {
+            onBackgroundThread {
+                let image = FLAnimatedImage(animatedGIFData: imageData)
+                onMainThread {
+                    imageView.animatedImage = image
+                    layoutImageView(with: image)
+                }
+            }
+        } else if let image = self.photos[indexPath.row].image {
+            onMainThread {
+                imageView.image = image
+                layoutImageView(with: image)
+            }
+        } else if let url = self.photos[indexPath.row].url {
+            imageView.pin_setImage(from: url, placeholderImage: nil) { (result) in
+                layoutImageView(with: result.alternativeRepresentation ?? result.image)
+            }
+        }
+    }
+    
+    func cancelLoad(at indexPath: IndexPath, for imageView: FLAnimatedImageView) {
+        imageView.pin_cancelImageDownload()
+        imageView.animatedImage = nil
+        imageView.image = nil
+    }
+    
+    // MARK: - UIViewControllerPreviewingDelegate
+    @available(iOS 9.0, *)
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard let indexPath = self.tableView.indexPathForRow(at: location),
+            let cell = self.tableView.cellForRow(at: indexPath),
+            let imageView = cell.contentView.viewWithTag(666) as? FLAnimatedImageView else {
+            return nil
+        }
+        
+        previewingContext.sourceRect = self.tableView.convert(imageView.frame, from: imageView.superview)
+        
+        let dataSource = AXPhotosDataSource(photos: self.photos, initialPhotoIndex: indexPath.row)
+        let previewingPhotosViewController = AXPreviewingPhotosViewController(dataSource: dataSource)
+        
+        return previewingPhotosViewController
+    }
+    
+    @available(iOS 9.0, *)
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        if let previewingPhotosViewController = viewControllerToCommit as? AXPreviewingPhotosViewController {
+            self.present(AXPhotosViewController(from: previewingPhotosViewController), animated: false)
+        }
+    }
+    
+    /*
+
+    func downloadImages(_ url:String, _ index:Int) {
         
     }
     
     func callBackFirstDisplayView(_ imageView:UIImageView, _ url:[String], _ index:Int){
-        
-    }
-   
+       
+    }   
     
     func numberOfImagesInGallery(gallery: SwiftPhotoGallery) -> Int {
         var count = Int()
@@ -994,6 +1148,7 @@ class FanpagePage: UIViewController,
         dismiss(animated: true, completion: nil)
     }
 
+    */
 }
 
 

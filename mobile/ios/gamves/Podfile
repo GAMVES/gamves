@@ -8,6 +8,8 @@ target 'gamves' do
   pod 'ParseLiveQuery'
 
   pod 'DeviceKit'
+
+  pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift.git' 
   
   pod 'Floaty', :git => 'https://github.com/kciter/Floaty.git', :tag => '4.0.1'
   
@@ -31,7 +33,13 @@ target 'gamves' do
   
   pod 'KenBurns'
   
-  pod 'IGColorPicker'
+  #pod 'M13Checkbox' 
+
+  #, :git => 'https://github.com/Marxon13/M13Checkbox.git', :branch => 'swift_4_2'
+
+  pod 'IGColorPicker' 
+
+  #, :git => 'https://github.com/iGenius-Srl/IGColorPicker.git', :branch => 'swift-4'
   
   pod 'PulsingHalo'
 
@@ -45,8 +53,14 @@ target 'gamves' do
 
   pod 'PopupDialog'
 
-  pod 'Atributika', :git => 'https://github.com/psharanda/Atributika.git', :tag => 'swift-3.2'
+  pod 'Atributika'
+
+  #, :git => 'https://github.com/psharanda/Atributika.git', :tag => 'swift-3.2'
   
   pod 'SwiftHash'
+
+  pod 'AXPhotoViewer'  
+
+  #, :git => 'https://github.com/alexhillc/AXPhotoViewer.git', :tag => 'v1.4.0'
   
 end
