@@ -128,7 +128,7 @@ class MergeVideoViewController: UIViewController {
   
   func videoCompositionInstructionForTrack(_ track: AVCompositionTrack, asset: AVAsset) -> AVMutableVideoCompositionLayerInstruction {
     let instruction = AVMutableVideoCompositionLayerInstruction(assetTrack: track)
-    let assetTrack = asset.tracks(withMediaType: AVMediaTypeVideo)[0]
+    let assetTrack = asset.tracks(withMediaType: AVMediaType.video)[0]
     
     let transform = assetTrack.preferredTransform
     let assetInfo = orientationFromTransform(transform)
@@ -164,16 +164,16 @@ class MergeVideoViewController: UIViewController {
       let mixComposition = AVMutableComposition()
       
       // 2 - Create two video tracks
-      let firstTrack = mixComposition.addMutableTrack(withMediaType: AVMediaTypeVideo, preferredTrackID: Int32(kCMPersistentTrackID_Invalid))
+        let firstTrack = mixComposition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: Int32(kCMPersistentTrackID_Invalid))
       do {
-        try firstTrack.insertTimeRange(CMTimeRangeMake(kCMTimeZero, firstAsset.duration), of: firstAsset.tracks(withMediaType: AVMediaTypeVideo)[0], at: kCMTimeZero)
+        try firstTrack?.insertTimeRange(CMTimeRangeMake(kCMTimeZero, firstAsset.duration), of: firstAsset.tracks(withMediaType: AVMediaType.video)[0], at: kCMTimeZero)
       } catch _ {
         print("Failed to load first track")
       }
       
-      let secondTrack = mixComposition.addMutableTrack(withMediaType: AVMediaTypeVideo, preferredTrackID: Int32(kCMPersistentTrackID_Invalid))
+        let secondTrack = mixComposition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: Int32(kCMPersistentTrackID_Invalid))
       do {
-        try secondTrack.insertTimeRange(CMTimeRangeMake(kCMTimeZero, secondAsset.duration), of: secondAsset.tracks(withMediaType: AVMediaTypeVideo)[0], at: firstAsset.duration)
+        try secondTrack?.insertTimeRange(CMTimeRangeMake(kCMTimeZero, secondAsset.duration), of: secondAsset.tracks(withMediaType: AVMediaType.video)[0], at: firstAsset.duration)
       } catch _ {
         print("Failed to load second track")
       }
@@ -183,9 +183,9 @@ class MergeVideoViewController: UIViewController {
       mainInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeAdd(firstAsset.duration, secondAsset.duration))
       
       // 2.2
-      let firstInstruction = videoCompositionInstructionForTrack(firstTrack, asset: firstAsset)
+        let firstInstruction = videoCompositionInstructionForTrack(firstTrack!, asset: firstAsset)
       firstInstruction.setOpacity(0.0, at: firstAsset.duration)
-      let secondInstruction = videoCompositionInstructionForTrack(secondTrack, asset: secondAsset)
+        let secondInstruction = videoCompositionInstructionForTrack(secondTrack!, asset: secondAsset)
       
       // 2.3
       mainInstruction.layerInstructions = [firstInstruction, secondInstruction]
@@ -196,10 +196,10 @@ class MergeVideoViewController: UIViewController {
       
       // 3 - Audio track
       if let loadedAudioAsset = audioAsset {
-        let audioTrack = mixComposition.addMutableTrack(withMediaType: AVMediaTypeAudio, preferredTrackID: 0)
+        let audioTrack = mixComposition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: 0)
         do {
-          try audioTrack.insertTimeRange(CMTimeRangeMake(kCMTimeZero, CMTimeAdd(firstAsset.duration, secondAsset.duration)),
-                                         of: loadedAudioAsset.tracks(withMediaType: AVMediaTypeAudio)[0] ,
+            try audioTrack?.insertTimeRange(CMTimeRangeMake(kCMTimeZero, CMTimeAdd(firstAsset.duration, secondAsset.duration)),
+                                             of: loadedAudioAsset.tracks(withMediaType: AVMediaType.audio)[0] ,
                                          at: kCMTimeZero)
         } catch _ {
           print("Failed to load Audio track")
@@ -218,13 +218,13 @@ class MergeVideoViewController: UIViewController {
       // 5 - Create Exporter
       guard let exporter = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetHighestQuality) else { return }
       exporter.outputURL = url
-      exporter.outputFileType = AVFileTypeQuickTimeMovie
+        exporter.outputFileType = kUTTypeQuickTimeMovie as AVFileType
       exporter.shouldOptimizeForNetworkUse = true
       exporter.videoComposition = mainComposition
       
       // 6 - Perform the Export
       exporter.exportAsynchronously() {
-        DispatchQueue.main.async { _ in
+        DispatchQueue.main.async {
           self.exportDidFinish(exporter)
         }
       }

@@ -449,7 +449,7 @@ class NewFriendController: UIViewController,
     }       
 
 
-    func handleAdd() {  
+    @objc func handleAdd() {  
 
         self.activityIndicatorView?.startAnimating()  
 

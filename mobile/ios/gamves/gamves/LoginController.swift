@@ -158,7 +158,7 @@ class LoginController: UIViewController {
 
     }
     
-    func handleLoginRegisterChange()
+    @objc func handleLoginRegisterChange()
     {
         
         self.view.endEditing(true)
@@ -182,7 +182,7 @@ class LoginController: UIViewController {
         
     }
     
-    func handleLoginRegister()
+    @objc func handleLoginRegister()
     {
         
         if loginRegisterSegmentedControl.selectedSegmentIndex == 0

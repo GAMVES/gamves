@@ -173,7 +173,7 @@ extension NewVideoController : UITextFieldDelegate, UITextViewDelegate {
         return false
     }*/
     
-    func doBtnPrev(_ sender: Any) {
+    @objc func doBtnPrev(_ sender: Any) {
         
         //if (self.current?.isKind(of: UITextField()))! {
         
@@ -185,7 +185,7 @@ extension NewVideoController : UITextFieldDelegate, UITextViewDelegate {
         
     }
     
-    func doBtnNext(_ sender: Any) {
+    @objc func doBtnNext(_ sender: Any) {
         
        if (self.current === titleTextField) {
             
@@ -194,7 +194,7 @@ extension NewVideoController : UITextFieldDelegate, UITextViewDelegate {
     }
     
     
-    func doBtnFinish(_ sender: Any) {
+    @objc func doBtnFinish(_ sender: Any) {
         submitForm()
     }
     
@@ -207,7 +207,7 @@ extension NewVideoController : UITextFieldDelegate, UITextViewDelegate {
         return false
     }
     
-    func doBtnClose(_ sender: Any) {        
+    @objc func doBtnClose(_ sender: Any) {
         scrollView.setContentOffset(CGPoint(x:0, y:0), animated: false)
         submitForm()
     }

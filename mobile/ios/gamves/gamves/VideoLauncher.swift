@@ -96,7 +96,7 @@ class VideoPlayerView: UIView {
         self.keyWindow = view
     }   
 
-    func handleDownButton() {
+    @objc func handleDownButton() {
 
         self.hideShowControllers(status: true)
 
@@ -114,7 +114,7 @@ class VideoPlayerView: UIView {
     }
 
     
-    func handleSliderChange() {
+    @objc func handleSliderChange() {
 
         print("value: \(videoSlider.value)")
         
@@ -131,7 +131,7 @@ class VideoPlayerView: UIView {
     }        
     
 
-    func handlePause() {
+    @objc func handlePause() {
         if isPlaying {
             player?.pause()
             pausePlayButton.setImage(UIImage(named: "play"), for: UIControlState())
@@ -214,7 +214,7 @@ class VideoPlayerView: UIView {
             var limitReached = Bool()        
             
             self.playerLayer = AVPlayerLayer(player: self.player)
-            self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect
+            self.playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
             self.layer.addSublayer(self.playerLayer)
             self.playerLayer.frame = self.frame
             
@@ -315,7 +315,7 @@ class VideoPlayerView: UIView {
     }
     
     
-    func closeVideo()
+    @objc func closeVideo()
     {
         //REMOVE IF EXISTS VIDEO RUNNING
         for subview in (UIApplication.shared.keyWindow?.subviews)! {
@@ -432,7 +432,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
         }
     }    
 
-    func handlePanGesture(sender: UIPanGestureRecognizer) {        
+    @objc func handlePanGesture(sender: UIPanGestureRecognizer) {        
 
         let touchPoint = sender.location(in: self.view?.window)
 
@@ -484,7 +484,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
 
     } 
 
-    func reopenVideo(sender: UITapGestureRecognizer)
+    @objc func reopenVideo(sender: UITapGestureRecognizer)
     {
         if self.videoPlayerView.isVideoDown
         {

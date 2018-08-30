@@ -345,7 +345,7 @@ class SearchController: UIViewController,
     }
 
 
-    func handleRemove() {
+    @objc func handleRemove() {
     
         var finalImages = [UIImage]()
         var removedImages = [UIImage]()      
@@ -369,7 +369,7 @@ class SearchController: UIViewController,
 
     }
 
-    func handleClear() {
+    @objc func handleClear() {
 
         for image in searchImages {
 
@@ -380,13 +380,13 @@ class SearchController: UIViewController,
 
     }
 
-    func handleCancel() {
+    @objc func handleCancel() {
 
         self.goBack()
     }
 
     
-    func goBack()
+    @objc func goBack()
     {
         self.isInitial = true
         print("back")
@@ -587,7 +587,7 @@ class SearchController: UIViewController,
 
     // https://github.com/Orderella/PopupDialog
 
-    func openHelp() { 
+    @objc func openHelp() { 
         
         // Prepare the popup assets
         let title = "THIS IS THE DIALOG TITLE"
@@ -816,7 +816,7 @@ class SearchController: UIViewController,
     }
 
 
-     func playPause(button: UIButton) {  
+    @objc func playPause(button: UIButton) {  
     
         let index = button.tag
 
@@ -881,7 +881,7 @@ class SearchController: UIViewController,
         }
     }
     
-    func handleSaveImages() {
+    @objc func handleSaveImages() {
         
         let titles = self.imagesSelected.keys
         

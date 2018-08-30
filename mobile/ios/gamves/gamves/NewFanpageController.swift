@@ -735,7 +735,7 @@ ChooseAvatarProtocol
     
     func reoadFanpageCollection() {}
     
-    func backButtonPressed(sender: UIBarButtonItem) {
+    @objc func backButtonPressed(sender: UIBarButtonItem) {
         //self.delegateFeed.uploadData()
         //self.navigationController?.popViewController(animated: true)
         self.navigationController?.popToRootViewController(animated: true)
@@ -867,7 +867,7 @@ ChooseAvatarProtocol
         self.type = UploadType.youtube
     }
 
-    func handleCover() {
+    @objc func handleCover() {
         self.touchedButton = TouchedButton.coverImage
         let media = MediaController()
         media.isImageMultiSelection = false
@@ -893,7 +893,7 @@ ChooseAvatarProtocol
         navigationController?.pushViewController(media, animated: true)
     }
     
-    func handleAddImages() {
+    @objc func handleAddImages() {
         self.touchedButton = TouchedButton.addButton
         let media = MediaController()
         media.delegate = self
@@ -905,7 +905,7 @@ ChooseAvatarProtocol
         navigationController?.pushViewController(media, animated: true)
     }
 
-    func handleDeleteImage() {
+    @objc func handleDeleteImage() {
 
         let searchController = SearchController()
         searchController.type = SearchType.isSingleImageDelete
@@ -936,7 +936,7 @@ ChooseAvatarProtocol
         
         searchController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(searchController, animated: true)
     }
 
@@ -1073,7 +1073,7 @@ ChooseAvatarProtocol
     
     }
     
-    func handleSave(sender : UIButton) {
+    @objc func handleSave(sender : UIButton) {
 
         sender.isEnabled = false
         

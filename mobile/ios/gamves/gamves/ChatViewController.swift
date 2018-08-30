@@ -78,7 +78,7 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
         
     }
     
-    func backButtonPressed(sender: UIBarButtonItem)
+    @objc func backButtonPressed(sender: UIBarButtonItem)
     {
         
         NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadPageFanpage), object: self)

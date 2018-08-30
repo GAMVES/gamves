@@ -196,7 +196,7 @@ extension NewFanpageController : UITextFieldDelegate, UITextViewDelegate {
         return false
     }*/
     
-    func doBtnPrev(_ sender: Any) {
+    @objc func doBtnPrev(_ sender: Any) {
         
         //if (self.current?.isKind(of: UITextField()))! {
         
@@ -212,7 +212,7 @@ extension NewFanpageController : UITextFieldDelegate, UITextViewDelegate {
         
     }
     
-    func doBtnNext(_ sender: Any) {
+    @objc func doBtnNext(_ sender: Any) {
         
         if (self.current === aboutTextField) {
             
@@ -225,7 +225,7 @@ extension NewFanpageController : UITextFieldDelegate, UITextViewDelegate {
     }
     
     
-    func doBtnFinish(_ sender: Any) {
+    @objc func doBtnFinish(_ sender: Any) {
         submitForm()
     }
     

@@ -115,7 +115,7 @@ extension CategoryTableCollCell {
         collectionView.reloadData()
     }
     
-    func scrollAutomatically(_ timer1: Timer) {
+    @objc func scrollAutomatically(_ timer1: Timer) {
         
         for cell in collectionView.visibleCells {
             let indexPath: IndexPath? = collectionView.indexPath(for: cell)

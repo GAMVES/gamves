@@ -77,7 +77,7 @@ extension LoginController : UITextFieldDelegate {
                                             target: nil, action: nil)
             
             let bbiSubmit = UIBarButtonItem.init(title: "Close", style: .plain,
-                                                 target: self, action: #selector(NewVideoController.doBtnClose))
+                                                 target: self, action:#selector(NewVideoController.doBtnClose))
             
             tbKeyboardLogin?.items = [bbiPrev, bbiNext, bbiSpacer, bbiSubmit]
             
@@ -140,11 +140,11 @@ extension LoginController : UITextFieldDelegate {
         return false
     }
     
-    func doBtnPrev(_ sender: Any) {
+    @objc func doBtnPrev(_ sender: Any) {
         let _ = makeTFFirstResponder(next: false)
     }
     
-    func doBtnNext(_ sender: Any) {
+    @objc func doBtnNext(_ sender: Any) {
         let _ = makeTFFirstResponder(next: true)
     }
     
@@ -170,6 +170,4 @@ extension LoginController : UITextFieldDelegate {
     }
     
 } 
-
-
 

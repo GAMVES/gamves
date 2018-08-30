@@ -131,7 +131,7 @@ UICollectionViewDelegateFlowLayout {
     }
     */
 
-    func handleViewWelcome(recognizer:UITapGestureRecognizer) {
+    @objc func handleViewWelcome(recognizer:UITapGestureRecognizer) {
 
 
     }

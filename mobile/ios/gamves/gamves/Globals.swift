@@ -1239,7 +1239,7 @@ class Global: NSObject
 
     }
     
-    func handleLogin() {
+    @objc func handleLogin() {
         Global.loadChatChannels()
     }
 

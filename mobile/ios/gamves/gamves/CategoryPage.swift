@@ -185,7 +185,7 @@ UICollectionViewDelegateFlowLayout {
 
     }
 
-    func handleBackButton() 
+    @objc func handleBackButton()
     {
         print("hola") 
         if ( delegate != nil )
@@ -194,7 +194,7 @@ UICollectionViewDelegateFlowLayout {
         }  
     }
 
-    func handleFavoriteButton() {
+    @objc func handleFavoriteButton() {
 
         if !self.isFavorite {
 

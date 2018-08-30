@@ -149,7 +149,7 @@ CLLocationManagerDelegate {
         
     }
 
-    func familyLoaded() {
+    @objc func familyLoaded() {
 
       if let userId = PFUser.current()?.objectId {            
 
@@ -160,7 +160,7 @@ CLLocationManagerDelegate {
     }
     
    
-    func openChatFromUser(_ notification: NSNotification) {
+    @objc func openChatFromUser(_ notification: NSNotification) {
 
         if let user = notification.userInfo?["gamvesUser"] as? GamvesUser {    
 
@@ -204,7 +204,7 @@ CLLocationManagerDelegate {
     }
     
     
-    func handleMore() {
+    @objc func handleMore() {
         //show menu
         settingsLauncher.showSettings()
     }
@@ -214,7 +214,7 @@ CLLocationManagerDelegate {
         dummySettingsViewController.view.backgroundColor = UIColor.white
         dummySettingsViewController.navigationItem.title = setting.name.rawValue
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
     }
     
@@ -229,7 +229,7 @@ CLLocationManagerDelegate {
         navigationController?.pushViewController(media, animated: true)
     } 
 
-    func showProfileController(_ notification: NSNotification) {
+    @objc func showProfileController(_ notification: NSNotification) {
         
         if let user = notification.userInfo?["gamvesUser"] as? GamvesUser {  
 
@@ -252,7 +252,7 @@ CLLocationManagerDelegate {
         return cellHome
     }
     
-    func handleSearch() {
+    @objc func handleSearch() {
         scrollToMenuIndex(2)
     }
     
@@ -339,6 +339,7 @@ CLLocationManagerDelegate {
             
             cellHome = cell as! HomeCell
             cellHome.homeController = self
+            cellHome.setFanpageHomeController(homeController: self)
             
         } else if indexPath.item == 1 {
             
@@ -374,7 +375,7 @@ CLLocationManagerDelegate {
         self.chatViewController.room = room
         chatViewController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(self.chatViewController, animated: true)
     } 
 
@@ -384,14 +385,14 @@ CLLocationManagerDelegate {
         selectContactViewController.isGroup = group
         selectContactViewController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(selectContactViewController, animated: true)
     }  
 
     func addFriend() {        
         newFriendController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(newFriendController, animated: true)
     }  
     
@@ -399,14 +400,14 @@ CLLocationManagerDelegate {
     func addNewVideo() {        
         newVideoController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(newVideoController, animated: true)
     }
 
     func showFriends() {        
         friendsViewController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(friendsViewController, animated: true)
     }    
     
@@ -418,21 +419,21 @@ CLLocationManagerDelegate {
         }
         newFanpageController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(newFanpageController, animated: true)
     }
 
     func showGiftViewcontroller() {               
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(giftViewController, animated: true)
     }
 
      func showWelcomeViewcontroller() {               
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(welcomeViewController, animated: true)
-    }
+    }    
 
     func clearNewFanpage() {
         self.newFanpageController = NewFanpageController()
@@ -448,9 +449,15 @@ CLLocationManagerDelegate {
         self.newGroupNameViewController.view.backgroundColor = UIColor.white
         self.newGroupNameViewController.gamvesUsers = users
         self.navigationController?.navigationBar.tintColor = UIColor.white
-        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         self.navigationController?.pushViewController(newGroupNameViewController, animated: true)
     }
+
+    /*func showAXPhotoViewer(photosViewController:AXPhotosViewController) {
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
+        navigationController?.pushViewController(photosViewController, animated: true)
+    }*/
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         

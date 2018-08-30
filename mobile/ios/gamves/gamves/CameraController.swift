@@ -25,10 +25,10 @@ class CameraController: NSObject {
     
     var previewLayer: AVCaptureVideoPreviewLayer?
     
-    var session:AVCaptureDeviceDiscoverySession?
+    var session:AVCaptureDevice.DiscoverySession?
     var settings:AVCapturePhotoSettings?
     
-    var flashMode = AVCaptureFlashMode.off
+    var flashMode = AVCaptureDevice.FlashMode.off
     var photoCaptureCompletionBlock: ((UIImage?, Error?) -> Void)?
 }
 
@@ -42,7 +42,7 @@ extension CameraController {
         
         func configureCaptureDevices() throws {
             if #available(iOS 10.0, *) {
-                session = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified)
+                session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .unspecified)
             } else {
                 // Fallback on earlier versions
             }
@@ -93,7 +93,7 @@ extension CameraController {
             self.photoOutput = AVCapturePhotoOutput()
             self.photoOutput!.setPreparedPhotoSettingsArray([AVCapturePhotoSettings(format: [AVVideoCodecKey : AVVideoCodecJPEG])], completionHandler: nil)
             
-            if captureSession.canAddOutput(self.photoOutput) { captureSession.addOutput(self.photoOutput) }
+            if captureSession.canAddOutput(self.photoOutput!) { captureSession.addOutput(self.photoOutput!) }
             captureSession.startRunning()
         }
         
@@ -123,7 +123,7 @@ extension CameraController {
         guard let captureSession = self.captureSession, captureSession.isRunning else { throw CameraControllerError.captureSessionIsMissing }
         
         self.previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        self.previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+        self.previewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         self.previewLayer?.connection?.videoOrientation = .portrait
         
         view.layer.insertSublayer(self.previewLayer!, at: 0)
@@ -201,7 +201,7 @@ extension CameraController {
 @available(iOS 10.0, *)
 extension CameraController: AVCapturePhotoCaptureDelegate {
     @available(iOS 10.0, *)
-    public func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?,
+    public func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?,
                         resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Swift.Error?) {
         if let error = error { self.photoCaptureCompletionBlock?(nil, error) }
             

@@ -75,19 +75,19 @@ class SearchGridImageCell: UITableViewCell {
         
     }
     
-    func FisrtButtonClick(_ sender: UIButton)  {
+    @objc func FisrtButtonClick(_ sender: UIButton)  {
         
         delegate?.button_1_tapped(self)
     
     }
     
-    func SecondButtonClick(_ sender: UIButton)  {
+    @objc func SecondButtonClick(_ sender: UIButton)  {
         
         delegate?.button_2_tapped(self)
     
     }
     
-    func ThirdButtonClick(_ sender: UIButton)  {
+    @objc func ThirdButtonClick(_ sender: UIButton)  {
         
         delegate?.button_3_tapped(self)
         

@@ -311,13 +311,13 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     }
     
     
-    func handleCrop() {
+    @objc func handleCrop() {
         let start = Float(startTimeText.text!)
         let end   = Float(endTimeText.text!)
         self.cropVideo(sourceURL1: self.urlRecorded as! NSURL, startTime: start!, endTime: end!)
     }
     
-    func handleSave() {
+    @objc func handleSave() {
         
         self.videoData = try! Data(contentsOf: self.urlRecorded, options: [])
         self.thumbnail = self.urlRecorded.generateThumbnail()
@@ -591,7 +591,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         
         playerLayer.frame     = videoLayer.bounds
         
-        playerLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         
         player.actionAtItemEnd   = AVPlayerActionAtItemEnd.none
         
@@ -605,7 +605,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     }
     
     //Tap action on video player
-    func tapOnVideoLayer(tap: UITapGestureRecognizer) {
+    @objc func tapOnVideoLayer(tap: UITapGestureRecognizer) {
         
         if isPlaying {
             self.player.play()
@@ -727,7 +727,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     }
     
     //MARK: rangeSlider Delegate
-    func rangeSliderValueChanged(_ rangeSlider: RangeSlider) {
+    @objc func rangeSliderValueChanged(_ rangeSlider: RangeSlider) {
         
         self.player.pause()
         
@@ -807,7 +807,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
             
             guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality) else {return}
             exportSession.outputURL = outputURL
-            exportSession.outputFileType = AVFileTypeMPEG4
+            exportSession.outputFileType = AVFileType.mp4
             
             let startTime = CMTime(seconds: Double(start ), preferredTimescale: 1000)
             let endTime = CMTime(seconds: Double(end ), preferredTimescale: 1000)
@@ -912,7 +912,7 @@ private extension MediaController {
                     self.searchController.delegateSearch = self.delegateSearch
                     self.searchController.view.backgroundColor = UIColor.white
                     self.navigationController?.navigationBar.tintColor = UIColor.white
-                    self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+                    self.navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
                     self.navigationController?.pushViewController(self.searchController, animated: true)
                     
                 }
@@ -982,7 +982,7 @@ private extension MediaController {
 
             self.searchController.view.backgroundColor = UIColor.white
             self.navigationController?.navigationBar.tintColor = UIColor.white
-            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            self.navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
             self.navigationController?.pushViewController(self.searchController, animated: true)
             
         }

@@ -88,7 +88,7 @@ class ChooseAvatarView: UIView {
         
     }
     
-    func handleIcon() {
+    @objc func handleIcon() {
         self.delegateChooseAvatar.handleIcon()
     }
     

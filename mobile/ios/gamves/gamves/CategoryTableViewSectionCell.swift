@@ -78,7 +78,7 @@ class CategoryTableViewSectionCell: UITableViewCell {
 
     }
     
-    func handleFordButton()
+    @objc func handleFordButton()
     {
         
     }

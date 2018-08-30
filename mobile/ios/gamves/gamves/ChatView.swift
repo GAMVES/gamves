@@ -95,10 +95,13 @@
         UICollectionViewDelegateFlowLayout,
         UITextFieldDelegate,
         AVAudioRecorderDelegate,
-        ISEmojiViewDelegate,
+        EmojiViewDelegate,
         TimerDelegate,
         MediaDelegate
     {
+        
+        
+        
         
         var activityView: NVActivityIndicatorView!
         
@@ -258,7 +261,7 @@
             return imageView
         }()
         
-        let emojiView = ISEmojiView()
+        let emojiView = EmojiView()
         
         enum RecordStatus {
             case isRecording
@@ -2250,14 +2253,14 @@
             self.setSendToRect()
             
             return true
-        }
+        }      
         
-        func emojiViewDidSelectEmoji(emojiView: ISEmojiView, emoji: String) {
+        func emojiViewDidSelectEmoji(_ emoji: String, emojiView: EmojiView) {
             self.inputTextField.insertText(emoji)
             self.setSendToText()
         }
         
-        func emojiViewDidPressDeleteButton(emojiView: ISEmojiView) {
+        func emojiViewDidPressDeleteButton(emojiView: EmojiView) {
             self.inputTextField.deleteBackward()
             self.setSendToRect()
         }
@@ -2506,7 +2509,7 @@
             
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let eFrame = NSString(string: messageText!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+            let eFrame = NSString(string: messageText!).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 18)], context: nil)
             
             if  Global.isAudio(type: message.type) && eFrame.width < 60 {
                 
@@ -3041,13 +3044,13 @@
 
         }
         
-        func showImage(button: UIButton) {
+        @objc func showImage(button: UIButton) {
             
             let image = self.gamvesPicture
             
         }
         
-        func playPause(button: UIButton) {
+        @objc func playPause(button: UIButton) {
             
             if self.playerStatus == PayerStatus.isPlaying {
                 
@@ -3155,7 +3158,7 @@
             print(player.debugDescription)
         }
         
-        func sliderValueDidChange(sender: AnyObject) {
+        @objc func sliderValueDidChange(sender: AnyObject) {
             
         }
         
@@ -3188,7 +3191,7 @@
             
             if !self.timerIsOn && self.timer == nil {
                 self.startTime = Date().timeIntervalSinceReferenceDate
-                self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self,      selector: #selector(timerRunning), userInfo: nil, repeats: true)
+                self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector:#selector(timerRunning), userInfo: nil, repeats: true)
                 self.timerIsOn = true
             }
         }
@@ -3207,7 +3210,7 @@
             }
         }
         
-        func timerRunning() {
+        @objc func timerRunning() {
             
             time = Date().timeIntervalSinceReferenceDate - startTime
             

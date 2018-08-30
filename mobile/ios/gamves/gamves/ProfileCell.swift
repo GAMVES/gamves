@@ -975,7 +975,7 @@ class ProfileCell: BaseCell,
 
     }
 
-    func showFriends() {       
+    @objc func showFriends() {       
 
         self.homeController?.showFriends()
     }
@@ -1434,7 +1434,7 @@ class ProfileCell: BaseCell,
 
 
     
-    func handleSaveProfile() {
+    @objc func handleSaveProfile() {
 
         if self.profileSaveType == ProfileSaveType.profile {
 
@@ -1517,7 +1517,7 @@ class ProfileCell: BaseCell,
         self.homeController?.present(alert, animated: true)
     }
 
-    func handleCancelProfile() {
+    @objc func handleCancelProfile() {
 
         self.footerView.isHidden = true
         
@@ -1575,7 +1575,7 @@ class ProfileCell: BaseCell,
         self.profileSaveType = ProfileSaveType.profile        
     } 
 
-    func handleHideColor() {
+    @objc func handleHideColor() {
 
         self.colorView.isHidden = true
         self.footerView.isHidden = false   
@@ -1588,7 +1588,7 @@ class ProfileCell: BaseCell,
         })*/
     }   
 
-    func handleChangeColor(sender : UIButton) {
+    @objc func handleChangeColor(sender : UIButton) {
 
         if sender == self.editColorButton {
 
@@ -1620,7 +1620,7 @@ class ProfileCell: BaseCell,
         
     }
     
-    func handleChangeBackgoundImage(sender : UIButton) {        
+    @objc func handleChangeBackgoundImage(sender : UIButton) {        
         self.selectedImage = SelectedImage.background        
         let media = MediaController()
         media.isImageMultiSelection = false
@@ -1632,7 +1632,7 @@ class ProfileCell: BaseCell,
     }    
    
     
-    func handleChangeAvatarImage(sender : UIButton) {        
+    @objc func handleChangeAvatarImage(sender : UIButton) {        
 
         self.selectedImage = SelectedImage.avatar
        let media = MediaController()
@@ -1687,7 +1687,7 @@ class ProfileCell: BaseCell,
     }     
 
     
-    func handleChangeBio(sender : UIButton) {
+    @objc func handleChangeBio(sender : UIButton) {
         
         var alertController = UIAlertController(title: "Slogan ", message: "Enter your slogan", preferredStyle: .alert)
         

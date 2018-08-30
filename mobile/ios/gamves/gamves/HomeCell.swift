@@ -111,7 +111,10 @@ import Floaty
         
         Global.pagesPageView = self.pages        
     }
-   
+        
+    func setFanpageHomeController(homeController: HomeController) {
+        self.fanpagePage.homeController = homeController
+    }
 
     func removeSwipeGesture() {
 
@@ -199,7 +202,7 @@ import Floaty
     
     
 
-    func setLastFanpage() {       
+        @objc func setLastFanpage() {       
         
         self.pageController?.setViewControllers([self.pages[0]], direction: .forward, animated: true, completion: nil)
     }

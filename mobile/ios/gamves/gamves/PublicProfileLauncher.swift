@@ -106,7 +106,7 @@ class PublicProfileView: UIView,
     }
     
     
-    func closeProfile(completionHandler : @escaping (_ resutl:Bool) -> ()) {
+    @objc func closeProfile(completionHandler : @escaping (_ resutl:Bool) -> ()) {
         
         for subview in (UIApplication.shared.keyWindow?.subviews)! {
             if (subview.tag == 1)
@@ -196,7 +196,7 @@ class PublicProfileLauncher: UIView {
         }
     }    
 
-    func handlePanGesture(sender: UIPanGestureRecognizer) {        
+    @objc func handlePanGesture(sender: UIPanGestureRecognizer) {        
 
         let touchPoint = sender.location(in: self.view?.window)
 

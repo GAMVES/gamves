@@ -434,7 +434,7 @@ SelectorProtocol {
         self.selectorFanpageView.collectionView.reloadData()
     }
     
-    func backButtonPressed(sender: UIBarButtonItem) {
+    @objc func backButtonPressed(sender: UIBarButtonItem) {
         self.navigationController?.popToRootViewController(animated: true)
     }
       
@@ -559,7 +559,7 @@ SelectorProtocol {
 
 	}
     
-    func handleVideo() {
+    @objc func handleVideo() {
         self.type = UploadType.local
         let media = MediaController()
         media.delegate = self
@@ -577,11 +577,11 @@ SelectorProtocol {
         //searchController.termToSearch = self.fanpage.name
         searchController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(searchController, animated: true)
     }
 
-  
+    @objc
     func handleCameraImage() {
         let media = MediaController()
         media.delegate = self
@@ -643,7 +643,7 @@ SelectorProtocol {
     func setVideoSearchType(type: UploadType) {
         self.type = type
     }
-    
+    @objc
     func handleSave(sender : UIButton) {
 
         sender.isEnabled = false

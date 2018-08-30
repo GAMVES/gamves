@@ -72,7 +72,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         tableView.addSubview(refreshControl) // not required when using UITableViewController
     }
     
-    func yourDataLoaded() {
+    @objc func yourDataLoaded() {
         self.loadCategories()
     }
     
@@ -202,7 +202,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     }
     
     
-    func clickSection(_ sender:UIPanGestureRecognizer)
+    @objc func clickSection(_ sender:UIPanGestureRecognizer)
     {
         self.selectSection(section: (sender.view?.tag)!)
     }
@@ -232,7 +232,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     }
     
     
-    func loadCategories()
+    @objc func loadCategories()
     {
         
         let queryCategories = PFQuery(className:"Categories")
@@ -508,7 +508,9 @@ protocol CellDelegate : class
     func setCurrentPage(current: Int, direction: Int, data:AnyObject?)
 }
 
-extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource {
+extension CategoryHomePage: UICollectionViewDelegate, 
+UICollectionViewDataSource,
+UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
              
@@ -529,11 +531,13 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
         let row = indexPath.row
         
-        print(Global.categories_gamves[id]?.name)
+        let name  = Global.categories_gamves[id]?.name
+        
+        print(name)
         
         let fanpage = Global.categories_gamves[id]?.fanpages[row]
         
-        if Global.categories_gamves[id]?.name == "TRENDING" {
+        if name == "TRENDING" {
             
             var tcell = collectionView.dequeueReusableCell(withReuseIdentifier: fanpageTrendingCell, for: indexPath) as! FanpageCollectionViewCell
             
@@ -591,7 +595,7 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize 
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
       //return CGSize(width: 100, height: 150)
         
@@ -609,7 +613,9 @@ extension CategoryHomePage: UICollectionViewDelegate, UICollectionViewDataSource
         }
         
         return size
-    }    
+    }
+    
+    
     
 }
 

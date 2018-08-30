@@ -14,7 +14,7 @@ extension Array {
         for i in 0..<self.count {
             let j = Int(arc4random_uniform(UInt32(self.indices.last!)))
             if i != j {
-                swap(&self[i], &self[j])
+                self.swapAt(i, j)
             }
         }
     }

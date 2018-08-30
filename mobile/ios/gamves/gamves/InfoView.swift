@@ -237,7 +237,7 @@ class InfoView: UIView {
 
  
 
-    func handleLikeButton(sender: UIButton) {      
+    @objc func handleLikeButton(sender: UIButton) {      
 
         if !self.existLike {
 

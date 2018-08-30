@@ -9,18 +9,12 @@ import UIKit
 import Parse
 import NVActivityIndicatorView
 import KenBurns
-import AXPhotoViewer
-import FLAnimatedImage
-import PINRemoteImage
-
-//import AACarousel
-//import SwiftPhotoGallery
+import SKPhotoBrowser
 
 class FanpagePage: UIViewController,
     UICollectionViewDataSource, 
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout,
-    AXPhotosViewControllerDelegate        
+    UICollectionViewDelegateFlowLayout
 {  
 
     //- All page view
@@ -159,6 +153,7 @@ class FanpagePage: UIViewController,
         return label
     }()
 
+    var homeController:HomeController!
 
     //- VARIABLES & OBJCETS    
 
@@ -176,7 +171,7 @@ class FanpagePage: UIViewController,
     
     var timer:Timer? = nil
 
-    var gallery:SwiftPhotoGallery?    
+    //var gallery:SwiftPhotoGallery?
 
      var isFavorite = Bool()
 
@@ -191,10 +186,9 @@ class FanpagePage: UIViewController,
 
     var posterId = String()  
     
-    var isFortnite = Bool()
+    var isFortnite = Bool() 
 
-    var photosViewController: AXPhotosViewController?
-    var photos = []
+    var customView: UILabel?
     
     override func viewDidLoad() {
 
@@ -270,12 +264,12 @@ class FanpagePage: UIViewController,
         ]       
    
 
-        self.gallery = SwiftPhotoGallery(delegate: self, dataSource: self)
+        /*self.gallery = SwiftPhotoGallery(delegate: self, dataSource: self)
 
         self.gallery?.backgroundColor = UIColor.black
         self.gallery?.pageIndicatorTintColor = UIColor.gray.withAlphaComponent(0.5)
         self.gallery?.currentPageIndicatorTintColor = UIColor.white
-        self.gallery?.hidePageControl = false
+        self.gallery?.hidePageControl = false*/
         
         self.activityVideoView.startAnimating()          
 
@@ -358,7 +352,7 @@ class FanpagePage: UIViewController,
         self.view.isHidden = false
     }
 
-    func avatarTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func avatarTapped(tapGestureRecognizer: UITapGestureRecognizer) {
 
         self.posterId = self.fanpageGamves.posterId
 
@@ -372,7 +366,7 @@ class FanpagePage: UIViewController,
             
     }
 
-    func scrollAutomatically(_ sender: Timer) {
+    @objc func scrollAutomatically(_ sender: Timer) {
         
         var section = sender.userInfo as! Int
         
@@ -446,7 +440,7 @@ class FanpagePage: UIViewController,
 
     }
 
-    func handleFavoriteButton() {
+    @objc func handleFavoriteButton() {
 
         if !self.isFavorite {
 
@@ -491,7 +485,7 @@ class FanpagePage: UIViewController,
     }
 
 
-    func handleBackButton()  {
+    @objc func handleBackButton()  {
         
         if ( delegate != nil ) {
 
@@ -565,7 +559,7 @@ class FanpagePage: UIViewController,
         self.getFanpageVideos(fan: fanpageGamves)        
     }
 
-     func autoScrollImageSlider() {
+    @objc func autoScrollImageSlider() {
 
      }
 
@@ -857,7 +851,7 @@ class FanpagePage: UIViewController,
     }
     
 
-    func handleViewProfile(recognizer:UITapGestureRecognizer) {
+    @objc func handleViewProfile(recognizer:UITapGestureRecognizer) {
         
         let v = recognizer.view!
         let index = v.tag
@@ -942,53 +936,24 @@ class FanpagePage: UIViewController,
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
     
-        if collectionView == self.imageCollectionView {           
-
-            //self.gallery?.modalPresentationStyle = .overCurrentContext
-            //present(self.gallery!, animated: true, completion: nil)
-
+        if collectionView == self.imageCollectionView {
+            
             let selectedAlbums = self.groupAlbums[indexPath.section] as [GamvesAlbum]
 
+            var images = [SKPhoto]()
+            
             for album in selectedAlbums {
-
-               let photo = AXPhoto(attributedTitle: NSAttributedString(string: album.name),
-                image: UIImage(named: album.cover_image))
-
-               self.phootos.append(photo)
+                
+                let image = SKPhoto.photoWithImage(album.cover_image)
+                image.caption = album.name
+                
+                images.append(image)
             }
+            
+            let browser = SKPhotoBrowser(photos: images)
+            browser.initializePageIndex(0)
+            present(browser, animated: true, completion: {})
 
-            let dataSource = AXPhotosDataSource(photos: self.photos, initialPhotoIndex: indexPath.row)
-            let pagingConfig = AXPagingConfig(loadingViewClass: CustomLoadingView.self)
-            let photosViewController = AXPhotosViewController(dataSource: dataSource, pagingConfig: pagingConfig, transitionInfo: transitionInfo)
-            //photosViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            photosViewController.delegate = self
-            
-            let flex = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-            let bottomView = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: 320, height: 44)))
-            let customView = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 80, height: 20)))
-            customView.text = "\(photosViewController.currentPhotoIndex + 1)"
-            customView.textColor = .white
-            customView.sizeToFit()
-            bottomView.items = [
-                UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil),
-                flex,
-                UIBarButtonItem(customView: customView),
-                flex,
-                UIBarButtonItem(barButtonSystemItem: .trash, target: nil, action: nil),
-            ]
-            bottomView.backgroundColor = .clear
-            bottomView.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
-            photosViewController.overlayView.bottomStackContainer.insertSubview(bottomView, at: 0) // insert custom
-            
-            self.customView = customView
-            
-            //container.addChildViewController(photosViewController)
-            //container.view.addSubview(photosViewController.view)
-            //photosViewController.didMove(toParentViewController: container)
-            
-            self.present(photosViewController, animated: true)
-            self.photosViewController = photosViewController
-            
         } else if collectionView == self.collectionView
         {
             
@@ -1005,7 +970,7 @@ class FanpagePage: UIViewController,
 
 
     // MARK: - AXPhotosViewControllerDelegate
-    func photosViewController(_ photosViewController: AXPhotosViewController,
+    /*func photosViewController(_ photosViewController: AXPhotosViewController,
                               willUpdate overlayView: AXOverlayView,
                               for photo: AXPhotoProtocol,
                               at index: Int,
@@ -1078,13 +1043,10 @@ class FanpagePage: UIViewController,
                 imageView.image = image
                 layoutImageView(with: image)
             }
-        } else if let url = self.photos[indexPath.row].url {
-            imageView.pin_setImage(from: url, placeholderImage: nil) { (result) in
-                layoutImageView(with: result.alternativeRepresentation ?? result.image)
-            }
         }
-    }
-    
+    }*/
+ 
+    /*
     func cancelLoad(at indexPath: IndexPath, for imageView: FLAnimatedImageView) {
         imageView.pin_cancelImageDownload()
         imageView.animatedImage = nil
@@ -1094,11 +1056,7 @@ class FanpagePage: UIViewController,
     // MARK: - UIViewControllerPreviewingDelegate
     @available(iOS 9.0, *)
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        guard let indexPath = self.tableView.indexPathForRow(at: location),
-            let cell = self.tableView.cellForRow(at: indexPath),
-            let imageView = cell.contentView.viewWithTag(666) as? FLAnimatedImageView else {
-            return nil
-        }
+        
         
         previewingContext.sourceRect = self.tableView.convert(imageView.frame, from: imageView.superview)
         
@@ -1113,7 +1071,9 @@ class FanpagePage: UIViewController,
         if let previewingPhotosViewController = viewControllerToCommit as? AXPreviewingPhotosViewController {
             self.present(AXPhotosViewController(from: previewingPhotosViewController), animated: false)
         }
-    }
+    }*/
+    
+    
     
     /*
 
@@ -1150,7 +1110,4 @@ class FanpagePage: UIViewController,
 
     */
 }
-
-
-
 

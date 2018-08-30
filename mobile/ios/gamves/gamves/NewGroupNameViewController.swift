@@ -182,7 +182,7 @@ class NewGroupNameViewController: UIViewController,
         return false
     }
     
-    func saveGroup(sender: UITapGestureRecognizer)
+    @objc func saveGroup(sender: UITapGestureRecognizer)
     {
         
         self.activityView.startAnimating()
@@ -273,12 +273,12 @@ class NewGroupNameViewController: UIViewController,
     }
 
     
-    func clickImageFromBackground(sender: UITapGestureRecognizer)
+    @objc func clickImageFromBackground(sender: UITapGestureRecognizer)
     {
         handleYourPhotoImageView(sender: sender)
     }
     
-    func clickImageFromImage(sender: UITapGestureRecognizer)
+    @objc func clickImageFromImage(sender: UITapGestureRecognizer)
     {
         handleYourPhotoImageView(sender: sender)
     }
