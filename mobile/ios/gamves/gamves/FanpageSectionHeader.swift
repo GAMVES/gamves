@@ -27,8 +27,6 @@ class FanpageSectionHeader: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
-
-
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -45,24 +43,13 @@ class FanpageSectionHeader: UICollectionReusableView {
         self.addGestureRecognizer(tapRecognizer)       
         
    }
-
-
-}
-
-
-private typealias CustomHeaderViewPrivate = FanpageSectionHeader
-private extension CustomHeaderViewPrivate {
-    func activateTextLabelConstraints(view: UIView, anchorView: UIView) {
-        NSLayoutConstraint.activate([
-            view.centerXAnchor.constraint(equalTo: anchorView.centerXAnchor),
-            view.centerYAnchor.constraint(equalTo: anchorView.centerYAnchor)
-            ])
-    }
     
     @objc func tapOnView(sender: UIGestureRecognizer) {
-        guard let section = self.section else {
-            return
-        }
-        self.delegate?.selectSection(section: section)
+       
+        self.delegate?.selectSection(section: self.section!)
     }
+
+
 }
+
+

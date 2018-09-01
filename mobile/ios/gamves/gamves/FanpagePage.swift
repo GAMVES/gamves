@@ -786,6 +786,10 @@ class FanpagePage: UIViewController,
                
             var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! FanpageSectionHeader
     
+            sectionHeaderView.delegate = self
+
+            sectionHeaderView.section = indexPath.section
+
             /*var headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "header", for: indexPath)
 
             headerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 100)
