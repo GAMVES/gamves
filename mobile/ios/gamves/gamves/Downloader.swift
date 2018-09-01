@@ -65,8 +65,15 @@ class Downloader: NSObject
                                 let id = fanpageAlbum.objectId as! String
                                 album.objectId = id
                                 
-                                let name = fanpageAlbum["name"] as! String
+                                var name = fanpageAlbum["name"] as! String
                                 album.name = name
+
+                                if fanpageAlbum["description"] != nil {
+                                    let desc = fanpageAlbum["description"] as! String
+                                    album.description = desc 
+                                    name = "\(name)\n\(desc)"
+                                    album.name = name
+                                }
                                 
                                 album.type = fanpageAlbum["type"] as! String
                                 

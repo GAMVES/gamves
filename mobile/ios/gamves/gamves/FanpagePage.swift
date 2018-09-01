@@ -10,11 +10,13 @@ import Parse
 import NVActivityIndicatorView
 import KenBurns
 import SKPhotoBrowser
+import CampcotCollectionView
 
 class FanpagePage: UIViewController,
     UICollectionViewDataSource, 
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout
+    UICollectionViewDelegateFlowLayout,
+    CustomHeaderViewDelegate
 {  
 
     //- All page view
@@ -92,13 +94,21 @@ class FanpagePage: UIViewController,
 
     //- Images Collection
 
-    lazy var imageCollectionView: UICollectionView = {
+    var imageCollectionView = CampcotCollectionView()
+    
+
+    let interitemSpacing: CGFloat = 10
+    let lineSpacing: CGFloat = 10
+    let sectionInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+
+    /*lazy var imageCollectionView: UICollectionView = {
         //let layout = UICollectionViewFlowLayout()
         //layout.scrollDirection = .vertical
         //layout.sectionHeadersPinToVisibleBounds = true
 
          let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 50, height: 50)
+        //layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 8
         layout.minimumLineSpacing = 8
         layout.headerReferenceSize = CGSize(width: 0, height: 40)
@@ -114,7 +124,7 @@ class FanpagePage: UIViewController,
         cv.showsHorizontalScrollIndicator = false
         cv.isPrefetchingEnabled = false        
         return cv
-    }()   
+    }()*/  
 
     //- Fanpage Collection
 
@@ -231,14 +241,35 @@ class FanpagePage: UIViewController,
         
         self.collectionContainerView.addSubview(self.collectionView)
         self.collectionContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
-        self.collectionContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)       
+        self.collectionContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)  
+
+        //self.imageCollectionView.backgroundColor = backgroundColor
+        self.imageCollectionView.clipsToBounds = true
+        self.imageCollectionView.sectionInset = sectionInsets
+        self.imageCollectionView.minimumSectionSpacing = 1
+        self.imageCollectionView.minimumInteritemSpacing = interitemSpacing
+        self.imageCollectionView.minimumLineSpacing = lineSpacing
+        self.imageCollectionView.sectionHeadersPinToVisibleBounds = true
+        /*self.collectionView.register(
+            CustomCollectionViewCell.self,
+            forCellWithReuseIdentifier: CustomCollectionViewCell.reuseIdentifier
+        )
+        self.collectionView.register(
+            CustomHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+            withReuseIdentifier: CustomHeaderView.reuseIdentifier
+        )*/
+        self.imageCollectionView.delegate = self
+        self.imageCollectionView.dataSource = self
+        self.imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
+       
         
         self.view.addSubview(self.imageCollectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.imageCollectionView)
         
         self.imageCollectionView.backgroundColor = UIColor.gamvesBlackColor
 
-        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(200)][v2]|", views: 
+        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(500)][v2]|", views: 
             self.coverContainerView,
             self.imageCollectionView, 
             self.collectionContainerView)
@@ -368,7 +399,7 @@ class FanpagePage: UIViewController,
 
     @objc func scrollAutomatically(_ sender: Timer) {
         
-        var section = sender.userInfo as! Int
+        /*var section = sender.userInfo as! Int
         
         for cell in self.imageCollectionView.visibleCells {
             let indexPath: IndexPath? = self.imageCollectionView.indexPath(for: cell)
@@ -383,7 +414,7 @@ class FanpagePage: UIViewController,
                 indexPath1 = IndexPath.init(row: 0, section: (indexPath?.section)!)
                 self.imageCollectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
             }            
-        }  
+        } */
     
     }
 
@@ -780,7 +811,7 @@ class FanpagePage: UIViewController,
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {       
         //return CGSize(width: self.imageCollectionView.frame.size.width, height: 50)
-        return CGSize(width: self.imageCollectionView.frame.width, height: 30)
+        return CGSize(width: self.imageCollectionView.frame.width, height: 60)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -904,7 +935,7 @@ class FanpagePage: UIViewController,
         if collectionView == self.imageCollectionView
         {
             
-            size = CGSize(width: 50, height: 50)
+            size = CGSize(width: 60, height: 60)
             
         } else if collectionView == self.collectionView
         {
@@ -969,145 +1000,12 @@ class FanpagePage: UIViewController,
     }
 
 
-    // MARK: - AXPhotosViewControllerDelegate
-    /*func photosViewController(_ photosViewController: AXPhotosViewController,
-                              willUpdate overlayView: AXOverlayView,
-                              for photo: AXPhotoProtocol,
-                              at index: Int,
-                              totalNumberOfPhotos: Int) {
-        
-        self.customView?.text = "\(index + 1)"
-        self.customView?.sizeToFit()
+    func selectSection(section: Int) {
+        self.imageCollectionView.toggle(to: section, animated: true)
     }
     
-    // MARK: - Loading
-    func loadContent(at indexPath: IndexPath, into imageView: FLAnimatedImageView) {
-        func onBackgroundThread(_ block: @escaping () -> Void) {
-            if Thread.isMainThread {
-                DispatchQueue.global().async {
-                    block()
-                }
-            } else {
-                block()
-            }
-        }
-        
-        func onMainThread(_ block: @escaping () -> Void) {
-            if Thread.isMainThread {
-                block()
-            } else {
-                DispatchQueue.main.async {
-                    block()
-                }
-            }
-        }
-        
-        func layoutImageView(with result: Any?) {
-            let maxSize: CGFloat = 280
-            var imageViewSize: CGSize
-            if let animatedImage = result as? FLAnimatedImage {
-                imageViewSize = (animatedImage.size.width > animatedImage.size.height) ?
-                    CGSize(width: maxSize,height: (maxSize * animatedImage.size.height / animatedImage.size.width)) :
-                    CGSize(width: maxSize * animatedImage.size.width / animatedImage.size.height, height: maxSize)
-                
-                onMainThread {
-                    imageView.frame.size = imageViewSize
-                    if let superview = imageView.superview {
-                        imageView.center = superview.center
-                    }
-                }
-            } else if let image = result as? UIImage {
-                imageViewSize = (image.size.width > image.size.height) ?
-                    CGSize(width: maxSize, height: (maxSize * image.size.height / image.size.width)) :
-                    CGSize(width: maxSize * image.size.width / image.size.height, height: maxSize)
-                
-                onMainThread {
-                    imageView.frame.size = imageViewSize
-                    if let superview = imageView.superview {
-                        imageView.center = superview.center
-                    }
-                }
-            }
-        }
-        
-        if let imageData = self.photos[indexPath.row].imageData {
-            onBackgroundThread {
-                let image = FLAnimatedImage(animatedGIFData: imageData)
-                onMainThread {
-                    imageView.animatedImage = image
-                    layoutImageView(with: image)
-                }
-            }
-        } else if let image = self.photos[indexPath.row].image {
-            onMainThread {
-                imageView.image = image
-                layoutImageView(with: image)
-            }
-        }
-    }*/
- 
-    /*
-    func cancelLoad(at indexPath: IndexPath, for imageView: FLAnimatedImageView) {
-        imageView.pin_cancelImageDownload()
-        imageView.animatedImage = nil
-        imageView.image = nil
-    }
-    
-    // MARK: - UIViewControllerPreviewingDelegate
-    @available(iOS 9.0, *)
-    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        
-        
-        previewingContext.sourceRect = self.tableView.convert(imageView.frame, from: imageView.superview)
-        
-        let dataSource = AXPhotosDataSource(photos: self.photos, initialPhotoIndex: indexPath.row)
-        let previewingPhotosViewController = AXPreviewingPhotosViewController(dataSource: dataSource)
-        
-        return previewingPhotosViewController
-    }
-    
-    @available(iOS 9.0, *)
-    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-        if let previewingPhotosViewController = viewControllerToCommit as? AXPreviewingPhotosViewController {
-            self.present(AXPhotosViewController(from: previewingPhotosViewController), animated: false)
-        }
-    }*/
-    
-    
-    
-    /*
 
-    func downloadImages(_ url:String, _ index:Int) {
-        
-    }
-    
-    func callBackFirstDisplayView(_ imageView:UIImageView, _ url:[String], _ index:Int){
-       
-    }   
-    
-    func numberOfImagesInGallery(gallery: SwiftPhotoGallery) -> Int {
-        var count = Int()
-        if self.groupAlbums.count > 0 {
-            count = self.groupAlbums[0].count
-        }
-        return count
-    }
-    
-    func imageInGallery(gallery: SwiftPhotoGallery, forIndex: Int) -> UIImage? {
-        //return self.groupAlbums[0][0].cover_image
-        var image = UIImage()
-        if self.groupAlbums[0][0] != nil {
-            image = self.groupAlbums[0][forIndex].cover_image
-        }
-        return image
-
-    }
-
-
-    func galleryDidTapToClose(gallery: SwiftPhotoGallery) {        
-        dismiss(animated: true, completion: nil)
-    }
-
-    */
 }
+
+
 

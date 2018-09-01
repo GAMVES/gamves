@@ -7,7 +7,14 @@
 
 import UIKit
 
+protocol CustomHeaderViewDelegate: class {
+    func selectSection(section: Int)
+}
+
 class FanpageSectionHeader: UICollectionReusableView {
+
+    weak var delegate: CustomHeaderViewDelegate?
+    var section: Int?
     
     var nameLabel: UILabel = {
         let label = UILabel()        
@@ -20,6 +27,8 @@ class FanpageSectionHeader: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
+
+
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -30,7 +39,30 @@ class FanpageSectionHeader: UICollectionReusableView {
 
         self.addSubview(self.nameLabel)     
         self.addConstraintsWithFormat("H:|-20-[v0]|", views: self.nameLabel)
-        self.addConstraintsWithFormat("V:|[v0]|", views: self.nameLabel)       
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.nameLabel)
+
+         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapOnView(sender:)))
+        self.addGestureRecognizer(tapRecognizer)       
         
    }
+
+
+}
+
+
+private typealias CustomHeaderViewPrivate = FanpageSectionHeader
+private extension CustomHeaderViewPrivate {
+    func activateTextLabelConstraints(view: UIView, anchorView: UIView) {
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: anchorView.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: anchorView.centerYAnchor)
+            ])
+    }
+    
+    @objc func tapOnView(sender: UIGestureRecognizer) {
+        guard let section = self.section else {
+            return
+        }
+        self.delegate?.selectSection(section: section)
+    }
 }

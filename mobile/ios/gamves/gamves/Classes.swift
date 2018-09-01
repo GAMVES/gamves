@@ -255,6 +255,7 @@ class GamvesAlbum {
     var objectId = String()
     var source = String()
     var name = String()
+    var description = String()
     var cover_image = UIImage()
     var type = String()
 }

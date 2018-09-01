@@ -75,5 +75,7 @@ target 'gamves' do
   #, :git => 'https://github.com/alexhillc/AXPhotoViewer.git', :tag => 'v1.4.3'
 
   pod 'DRPLoadingSpinner'
+
+  pod 'CampcotCollectionView'
   
 end
