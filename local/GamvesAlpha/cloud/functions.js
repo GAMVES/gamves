@@ -141,7 +141,7 @@
 					installations[i].addUnique("channels", channelName);
 				}
 
-				// Save all the installations
+				  // Save all the installations
 				  Parse.Object.saveAll(installations, {
 				    success: function(installations) {
 				      // All the installations were saved.
