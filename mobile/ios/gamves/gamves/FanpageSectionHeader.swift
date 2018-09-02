@@ -39,8 +39,8 @@ class FanpageSectionHeader: UICollectionReusableView {
         self.addConstraintsWithFormat("H:|-20-[v0]|", views: self.nameLabel)
         self.addConstraintsWithFormat("V:|[v0]|", views: self.nameLabel)
 
-         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapOnView(sender:)))
-        self.addGestureRecognizer(tapRecognizer)       
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapOnView(sender:)))        
+        self.addGestureRecognizer(tapRecognizer)
         
    }
     

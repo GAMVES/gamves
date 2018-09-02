@@ -226,15 +226,15 @@ class FanpagePage: UIViewController,
     
         self.coverContainerView.addSubview(self.separatorCenterView)        
         self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.separatorCenterView)           
-        self.coverContainerView.addConstraintsWithFormat("V:|-60-[v0(50)]|", views: self.separatorCenterView)                                  
+        self.coverContainerView.addConstraintsWithFormat("V:|-60-[v0(50)]|", views: self.separatorCenterView)   
+
+        self.coverContainerView.addSubview(self.bottomLineContainerView)
+        self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomLineContainerView)
+        self.coverContainerView.addConstraintsWithFormat("V:|-77-[v0(3)]|", views: self.bottomLineContainerView)                               
 
         self.separatorButtonsView.addSubview(self.fanpageName)
         self.separatorButtonsView.addConstraintsWithFormat("H:|[v0]|", views: self.fanpageName)
-        self.separatorButtonsView.addConstraintsWithFormat("V:|[v0]|", views: self.fanpageName)
-
-        self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)
-       
-        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
+        self.separatorButtonsView.addConstraintsWithFormat("V:|[v0]|", views: self.fanpageName)       
         
         self.view.addSubview(self.collectionContainerView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionContainerView)
@@ -242,77 +242,84 @@ class FanpagePage: UIViewController,
         self.collectionContainerView.addSubview(self.collectionView)
         self.collectionContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
         self.collectionContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)  
-
-        //self.imageCollectionView.backgroundColor = backgroundColor
+       
         self.imageCollectionView.clipsToBounds = true
         self.imageCollectionView.sectionInset = sectionInsets
         self.imageCollectionView.minimumSectionSpacing = 1
         self.imageCollectionView.minimumInteritemSpacing = interitemSpacing
         self.imageCollectionView.minimumLineSpacing = lineSpacing
         self.imageCollectionView.sectionHeadersPinToVisibleBounds = true
-        /*self.collectionView.register(
-            CustomCollectionViewCell.self,
-            forCellWithReuseIdentifier: CustomCollectionViewCell.reuseIdentifier
-        )
-        self.collectionView.register(
-            CustomHeaderView.self,
-            forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
-            withReuseIdentifier: CustomHeaderView.reuseIdentifier
-        )*/
         self.imageCollectionView.delegate = self
         self.imageCollectionView.dataSource = self
-        self.imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
-       
-        
+        self.imageCollectionView.translatesAutoresizingMaskIntoConstraints = false      
+                
         self.view.addSubview(self.imageCollectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.imageCollectionView)
         
-        self.imageCollectionView.backgroundColor = UIColor.gamvesBlackColor
-
-        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(500)][v2]|", views: 
-            self.coverContainerView,
-            self.imageCollectionView, 
-            self.collectionContainerView)
-        
-        self.coverContainerView.addSubview(self.bottomLineContainerView)
-        self.coverContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomLineContainerView)
-        self.coverContainerView.addConstraintsWithFormat("V:|-77-[v0(3)]|", views: self.bottomLineContainerView)
+        self.imageCollectionView.backgroundColor = UIColor.gamvesBlackColor             
         
         self.imageCollectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
-        self.imageCollectionView.register(FanpageSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: self.sectionHeaderId)
-        
-        self.activityVideoView = Global.setActivityIndicator(container: self.collectionContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
-        
-        let widthImages = view.frame.width
-        let heightImages = (view.frame.width - 16 - 16) * 9 / 16
-        
-        let padding = (view.frame.height - heightImages) / 2
-        
-        let metricsImages = [
-            "widthImages":widthImages,
-            "heightImages":heightImages,
-            "padding" : padding
-        ]       
-   
+        self.imageCollectionView.register(FanpageSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: self.sectionHeaderId)       
 
-        /*self.gallery = SwiftPhotoGallery(delegate: self, dataSource: self)
+        self.imageCollectionView.toggle(to: 0, animated: true)
 
-        self.gallery?.backgroundColor = UIColor.black
-        self.gallery?.pageIndicatorTintColor = UIColor.gray.withAlphaComponent(0.5)
-        self.gallery?.currentPageIndicatorTintColor = UIColor.white
-        self.gallery?.hidePageControl = false*/
+        self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
+        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
         
+        self.activityVideoView = Global.setActivityIndicator(container: self.collectionContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)      
+           
         self.activityVideoView.startAnimating()          
 
         self.view.addSubview(self.labelEmptyMessage)
         self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
-
-        self.labelEmptyMessage.isHidden = true
+        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)        
 
         Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: 0, repeats: true)        
         
-    }
+    }    
+
+    override func viewDidLayoutSubviews() {       
+     
+        self.setVerticalLayout(height:120)   
+     
+    }    
+
+    func setVerticalLayout(height: CGFloat) {       
+        
+        let vieweHeight = self.view.frame.height
+        let vieweWidth = self.view.frame.width
+        
+        let collHeight = vieweHeight - (80 + height)
+        let metricsHeight = ["height":height, "collHeight":collHeight]
+        
+        //self.imageCollectionView.invalidateIntrinsicContentSize()
+        
+        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(height)][v2(collHeight)]|", views:
+            self.coverContainerView,
+            self.imageCollectionView, 
+            self.collectionContainerView, 
+            metrics: metricsHeight)
+
+        let imageCollFrame = CGRect(x:0, y:80, width:vieweWidth, height:height)
+        self.imageCollectionView.frame = imageCollFrame
+
+        if let layoutImageCollectionView =  self.imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout{
+            layoutImageCollectionView.itemSize = CGSize(width: vieweWidth, height: height)
+        }
+        
+        
+
+        //let y = self.imageCollectionView.frame.maxY
+        //let collFrame = CGRect(x:0, y:y, width:vieweWidth, height:collHeight)
+        //self.collectionView.frame = collFrame
+
+        //if let layoutCollectionView =  self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout{
+        //    layoutCollectionView.itemSize = CGSize(width: vieweWidth, height: collHeight)
+        //} 
+
+        
+       
+    }      
 
     override func viewWillAppear(_ animated: Bool) {
         self.view.isHidden = true
@@ -815,7 +822,7 @@ class FanpagePage: UIViewController,
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {       
         //return CGSize(width: self.imageCollectionView.frame.size.width, height: 50)
-        return CGSize(width: self.imageCollectionView.frame.width, height: 60)
+        return CGSize(width: self.imageCollectionView.frame.width, height: 40)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -938,8 +945,9 @@ class FanpagePage: UIViewController,
         
         if collectionView == self.imageCollectionView
         {
+            let module = view.frame.width / 5
             
-            size = CGSize(width: 60, height: 60)
+            size = CGSize(width: module, height: module)
             
         } else if collectionView == self.collectionView
         {
@@ -957,7 +965,7 @@ class FanpagePage: UIViewController,
         
         if collectionView == self.imageCollectionView
         {
-            spacing = 5
+            spacing = 2
             
         } else if collectionView == self.collectionView
         {
@@ -1003,12 +1011,50 @@ class FanpagePage: UIViewController,
         }        
     }
 
+    var expanded = Bool()
 
     func selectSection(section: Int) {
-        self.imageCollectionView.toggle(to: section, animated: true)
-    }
-    
 
+        self.labelEmptyMessage.isHidden = true
+        
+        self.expanded = self.imageCollectionView.isExpanded
+        
+        var height = CFloat()
+
+        if self.expanded {
+
+            //Achicar
+
+            print("expanded")
+
+            //self.setVerticalLayout(height:120)
+            
+            height = 120
+
+        } else {
+
+            //Agrandar
+
+            print("collapsed")
+
+            //self.setVerticalLayout(height:300)
+            
+            height = 300
+
+        }
+        
+        //UIView.animate(withDuration: 0.3){
+        //self.view.updateConstraints()
+        
+        self.setVerticalLayout(height:CGFloat(height))
+        
+        //}
+        
+        self.imageCollectionView.toggle(to: section, animated: true)
+    }   
+    
+    
+  
 }
 
 
