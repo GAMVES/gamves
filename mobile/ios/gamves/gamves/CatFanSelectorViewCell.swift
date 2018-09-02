@@ -3,7 +3,6 @@
 //  gamves
 //
 //  Created by Jose Vigil on 01/02/2018.
-//  Copyright © 2018 letsbuildthatapp. All rights reserved.
 //
 
 import UIKit
@@ -13,25 +12,20 @@ class CatFanSelectorViewCell: UICollectionViewCell {
     var avatarImage: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
-        //imageView.backgroundColor = UIColor.gambesDarkColor
+        imageView.contentMode = .scaleAspectFit        
         imageView.isUserInteractionEnabled = true
         imageView.layer.cornerRadius = 10
         return imageView
     }()
     
     let separatorView: UIView = {
-        let view = UIView()
-        //view.backgroundColor = UIColor.gray
-        //view.backgroundColor = UIColor.gambesDarkColor
+        let view = UIView()  
         return view
     }()
     
     let nameLabel: PaddingLabel = {
-        let label = PaddingLabel()
-        //label.text = "Fanpage images list"
-        label.font = UIFont.boldSystemFont(ofSize: 15)
-        //label.backgroundColor = UIColor.white
+        let label = PaddingLabel()        
+        label.font = UIFont.boldSystemFont(ofSize: 15)        
         label.numberOfLines = 2
         label.textColor = UIColor.white
         label.textAlignment = .center

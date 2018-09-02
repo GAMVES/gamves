@@ -305,8 +305,7 @@ class FanpagePage: UIViewController,
 
         if let layoutImageCollectionView =  self.imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout{
             layoutImageCollectionView.itemSize = CGSize(width: vieweWidth, height: height)
-        }
-        
+        }       
         
 
         //let y = self.imageCollectionView.frame.maxY

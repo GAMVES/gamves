@@ -103,9 +103,12 @@ class NewFriendController: UIViewController,
     let cellIdTableView = "friendsCellIdTableView"
     let sectionHeaderId = "friendSectionHeader"
 
-    var allUsers = Dictionary<String, GamvesUser>()
-    var schools = Dictionary<String, GamvesSchools>()
-    var countUsersInSchool = Dictionary<String, Int>()
+    var groupUsers = [[GamvesUser]]()
+    var schoolSections = [GamvesSchools]()
+
+    //var allUsers = Dictionary<String, GamvesUser>()
+    //var schools = Dictionary<String, GamvesSchools>()
+    //var countUsersInSchool = Dictionary<String, Int>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -160,48 +163,59 @@ class NewFriendController: UIViewController,
 
             if resutl {
 
-                let ukeys = Array(Global.gamvesAllUsers)        
+                var alUsers = [GamvesUser]()
+
+                let ukeys = Array(Global.gamvesAllUsers.keys)
                
                 for key in ukeys {
+                    
+                    let user = Global.gamvesAllUsers[key]
 
-                    let gamvesUser = Global.gamvesAllUsers[key.key]
-
-                    let schoolId:String = gamvesUser!.schoolId                  
-
-                    //Not friend filter
                     if let userId = PFUser.current()?.objectId {
 
-                        if let gUserId = gamvesUser?.userId {
+                        if let gUserId = user?.userId {
 
                             if gUserId != userId {
 
-                                if  Global.friends[(gamvesUser?.userId)!] == nil {
-
-                                    self.allUsers[schoolId] = gamvesUser
-                                    
-                                    var current = Int()                        
-                                    if self.countUsersInSchool[schoolId] != nil {
-                                        current = self.countUsersInSchool[schoolId]!
-                                    } else {
-                                        current = 0
-                                    }
-
-                                    let next = current + 1
-
-                                    self.countUsersInSchool[schoolId] = next
-                               }
+                                alUsers.append(user!)
                             }
                         }
-                    }   
+                    }                    
+                }                
+
+                let groupDictionary = Dictionary(grouping: alUsers) { (user) -> String in
+                    return user.schoolId
+                }                            
+
+                let keys = groupDictionary.keys.sorted()
+
+                keys.forEach { (key) in
+                    
+                    print(key)
+
+                    if Global.schools[key] != nil {
+
+                        let school = Global.schools[key]
+                        self.schoolSections.append(school!)
+                        let user = groupDictionary[key]
+                        self.groupUsers.append(user!)
+
+                    }                    
                 }
-              
+                
+                self.groupUsers.forEach({
+                    $0.forEach({print($0)})
+                    print("-----------------------")
+                })  
+
                 DispatchQueue.main.async {
 
                     self.tableView.reloadData()
                     self.activityIndicatorView?.stopAnimating()
 
-                }
+                }               
             }
+
         })
 
         self.disableAddButton()
@@ -291,35 +305,19 @@ class NewFriendController: UIViewController,
     // TABLE VIEW //
     //////////////
 
-    func numberOfSections(in tableView: UITableView) -> Int {
-        
-        var count = Int()       
-        
-        if self.countUsersInSchool.count > 0 {        
-            
-            count = self.countUsersInSchool.count
-        }
-        
-        print(count)
-        
+    func numberOfSections(in tableView: UITableView) -> Int {      
+
+        var count = Int()        
+        count = self.groupUsers.count
+
         return count
     }   
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        var count = Int()
+        var count = Int()   
+        count = self.groupUsers[section].count        
         
-        let skeys = Array(Global.schools)
-        let schoolId = skeys[section].key
-        
-        if self.countUsersInSchool.count > 0 && self.countUsersInSchool[schoolId] != nil {
-        
-            count = self.countUsersInSchool[schoolId]!
-            
-        }
-        
-        print(count)
-
         return count
     }     
 
@@ -342,21 +340,12 @@ class NewFriendController: UIViewController,
             return nil
         }
 
-        //header.customLabel.text = "Section \(section + 1)"
+        let school = self.schoolSections[section] as GamvesSchools
 
-        let skeys = Array(Global.schools)        
-        let schoolId = skeys[section].key
+        header.schoolIconImageView.image = school.icon
 
-        let school = Global.schools[schoolId]
-
-        header.schoolIconImageView.image = school?.icon
-
-        print(school?.schoolName)
-        
-        header.nameLabel.text = school?.schoolName
-        
-        //header.backgroundView?.backgroundColor = UIColor.black
-        
+        header.nameLabel.text = school.schoolName        
+                
         return header
     }
     
@@ -364,14 +353,15 @@ class NewFriendController: UIViewController,
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdTableView, for: indexPath) as! FriendsTableViewCell
 
-        let skeys = Array(Global.schools)        
-        let schoolId = skeys[indexPath.section]
-
-        let user:GamvesUser =   self.allUsers[schoolId.key]!
-
+        let user = self.groupUsers[indexPath.section][indexPath.row]
+        
         cell.nameLabel.text = user.name
-        print(user.name)
-        cell.profileImageView.image = user.avatar            
+
+        let status = "\(user.level.grade) - \(user.level.description)"
+
+        cell.statusLabel.text = status
+
+        cell.profileImageView.image = user.avatar
             
         if user.isChecked {
 
@@ -391,14 +381,9 @@ class NewFriendController: UIViewController,
 
         self.info.isHidden = true
         
-        tableView.deselectRow(at: indexPath, animated: false)
-
-        //let user = Global.gamvesAllUsers[indexPath.row] as GamvesUser
-
-        let skeys = Array(Global.schools)        
-        let schoolId = skeys[indexPath.section]
-
-        let user:GamvesUser = self.allUsers[schoolId.key]!
+        tableView.deselectRow(at: indexPath, animated: false)     
+        
+        let user =  self.groupUsers[indexPath.section][indexPath.row]
 
         let checked = user.isChecked
             
