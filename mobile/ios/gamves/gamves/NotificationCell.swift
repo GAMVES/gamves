@@ -471,6 +471,7 @@ UICollectionViewDelegateFlowLayout {
                         if notificationPF["referenceId"] != nil {
                             notification.referenceId = (notificationPF["referenceId"] as? Int)!
                         }
+
                         notification.description = (notificationPF["description"] as? String)!
                         notification.posterName = (notificationPF["posterName"] as? String)!
                         notification.date = (notificationPF["date"] as? Date!)!
@@ -511,7 +512,27 @@ UICollectionViewDelegateFlowLayout {
 
                             fanpageGamves.fanpageObj = fanpageObj
                             notification.fanpage = fanpageGamves
+                        
+                        } else if type == 3 { //Friend
+
+                            //Load friends again    
+                            if let userId = PFUser.current()?.objectId {    
+
+                                Global.getFriendsAmount(posterId: userId, completionHandler: { ( countFriends ) -> () in  })
+
+                            }
+
+                        } else if notification.type == 4 { //Birthday
+
+
+                        } else if notification.type == 5 { //Notification    
+
+
+                        } else if notification.type == 6 { //Welcome
+
+
                         }
+
  
                         if let objectId:String = notificationPF.objectId {
                             notification.objectId = objectId   

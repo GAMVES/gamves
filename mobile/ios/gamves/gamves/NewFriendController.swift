@@ -177,7 +177,10 @@ class NewFriendController: UIViewController,
 
                             if gUserId != userId {
 
-                                alUsers.append(user!)
+                                if Global.friends[gUserId] == nil {
+
+                                    alUsers.append(user!)    
+                                }                                
                             }
                         }
                     }                    

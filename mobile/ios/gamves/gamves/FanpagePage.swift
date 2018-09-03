@@ -305,19 +305,7 @@ class FanpagePage: UIViewController,
 
         if let layoutImageCollectionView =  self.imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout{
             layoutImageCollectionView.itemSize = CGSize(width: vieweWidth, height: height)
-        }       
-        
-
-        //let y = self.imageCollectionView.frame.maxY
-        //let collFrame = CGRect(x:0, y:y, width:vieweWidth, height:collHeight)
-        //self.collectionView.frame = collFrame
-
-        //if let layoutCollectionView =  self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout{
-        //    layoutCollectionView.itemSize = CGSize(width: vieweWidth, height: collHeight)
-        //} 
-
-        
-       
+        }            
     }      
 
     override func viewWillAppear(_ animated: Bool) {

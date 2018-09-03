@@ -466,7 +466,7 @@ class Global: NSObject
                                     count = count + 1
                                 }
                             }                            
-                        }                                              
+                        }                                         
                         
                     })                
                 }
@@ -1236,7 +1236,6 @@ class Global: NSObject
 
 
         Global.loadLevels(completionHandler: { ( result:Bool ) -> () in })
-
     }
     
     @objc func handleLogin() {
