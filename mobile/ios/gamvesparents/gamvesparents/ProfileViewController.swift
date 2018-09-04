@@ -415,7 +415,14 @@ class ProfileViewController: UIViewController,
     var photoEditTextHeight = Int()
     
     override func viewDidLoad() {        
-        super.viewDidLoad()        
+        super.viewDidLoad() 
+       
+        let buttonIcon = UIImage(named: "arrow_back_white")        
+        let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
+        leftBarButton.image = buttonIcon        
+        self.navigationItem.leftBarButtonItem = leftBarButton   
+
+        self.navigationItem.title = "Profile"
         
         self.loadAdminRole()
         
@@ -555,6 +562,13 @@ class ProfileViewController: UIViewController,
 
         self.boyConstraints()
 
+    }
+
+    func backButton(sender: UIBarButtonItem) {
+
+        self.hideShowTabBar(hidden:false)
+
+        self.navigationController?.popViewController(animated: true)
     }
 
     func showDatePicker(){

@@ -3,7 +3,6 @@
 //  gamvesparents
 //
 //  Created by Jose Vigil on 24/01/2018.
-//  Copyright © 2018 Lets Build That App. All rights reserved.
 //
 
 import UIKit
@@ -26,8 +25,7 @@ class AccountViewController: UIViewController,
 
     let scrollView: UIScrollView = {
         let v = UIScrollView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        //v.backgroundColor = UIColor.white
+        v.translatesAutoresizingMaskIntoConstraints = false        
         return v
     }()
 
@@ -122,7 +120,7 @@ class AccountViewController: UIViewController,
 
     var _profile = AccountButton()
     var _payment = AccountButton()
-    var _school = AccountButton()
+    var _account = AccountButton()
     var _admin = AccountButton()
     
    func initilizeObservers() {
@@ -229,10 +227,10 @@ class AccountViewController: UIViewController,
         _payment.id = 1
         self.accountButton.append(_payment)
 
-        _school.desc = "School"
-        _school.icon = UIImage(named: "school")!
-        _school.id = 2
-        self.accountButton.append(_school)
+        _account.desc = "Accounts"
+        _account.icon = UIImage(named: "account")!
+        _account.id = 2
+        self.accountButton.append(_account)
 
         _admin.desc = "Administrator"
         _admin.icon = UIImage(named: "admin")!
@@ -290,7 +288,7 @@ class AccountViewController: UIViewController,
       
     }
 
-     func hideShowTabBar(status: Bool)
+    func hideShowTabBar(status: Bool)
     {
         self.tabBarController?.tabBar.isHidden = status
         
@@ -428,10 +426,14 @@ class AccountViewController: UIViewController,
     func openProfile() {
         
         profileViewController = ProfileViewController()
-        profileViewController.accountViewController = self
+        profileViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        navigationController?.pushViewController(profileViewController, animated: true)
+        navigationController?.pushViewController(profileViewController, animated: true, completion: { (reult) in
+            
+            self.profileViewController.hideShowTabBar(hidden:true)
+        })
+        
         
     }
     
