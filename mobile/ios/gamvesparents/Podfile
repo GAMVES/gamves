@@ -21,7 +21,9 @@ target 'gamvesparents' do
 
   pod 'RSKImageCropper'
   
-  pod 'Floaty', :git => 'https://github.com/kciter/Floaty.git', :tag => '4.0.0'
+  #pod 'Floaty', :git => 'https://github.com/kciter/Floaty.git', :tag => '4.0.0'
+
+  pod 'Floaty'
 
   pod 'PopupDialog'
 

@@ -399,18 +399,20 @@ class AccountViewController: UIViewController,
         
         switch (button.id) {
             
-            case 0:
+            case 0: //Profile
                 
                 self.openProfile()
                 
                 break
             
-            case 1:
+            case 1: //Payments
                 
                 break
             
-            case 2:
+            case 2: //Accounts
                 
+                self.openAccounts()
+
                 break
             
             case 3:
@@ -425,15 +427,24 @@ class AccountViewController: UIViewController,
     
     func openProfile() {
         
-        profileViewController = ProfileViewController()
+        let profileViewController = ProfileViewController()
         profileViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(profileViewController, animated: true, completion: { (reult) in
             
             self.profileViewController.hideShowTabBar(hidden:true)
-        })
+        })        
         
+    }
+
+    func openAccounts() {
+        
+        let otherAccountsViewController = OtherAccountsViewController()
+        otherAccountsViewController.tabBarController?.tabBar.isHidden = true                
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(otherAccountsViewController, animated: true)
         
     }
     

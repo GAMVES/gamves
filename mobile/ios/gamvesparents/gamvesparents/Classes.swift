@@ -10,6 +10,27 @@ import Foundation
 import UIKit
 import Parse
 
+class GamvesVendor
+{
+    var objectId = String()       
+    var objectPF:PFObject!   
+
+    var type = Int()
+    var name = String()    
+    var username = String()
+    var password = String()
+}
+
+class GamvesOtherAccount
+{
+    var objectId = String()       
+    var objectPF:PFObject!     
+
+    var userId = String()       
+
+    var vendors = [GamvesVendor]()    
+}
+
 class FriendApproval
 {
     var objectId = String()       

@@ -111,8 +111,7 @@ FeedDelegate {
             }    
 
         }
-
-
+        
         let itemAddFriend = FloatyItem()
         var addFriendImage = UIImage(named: "friend_add")
         addFriendImage = addFriendImage?.maskWithColor(color: UIColor.white)

@@ -44,6 +44,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         return groupName
     }()
     
+    var floaty = Floaty(size: 80)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -52,18 +54,56 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         self.collectionView?.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
         
         self.registerLiveQuery()
+
+        self.floaty.paddingY = 35
+        self.floaty.paddingX = 20                    
+        self.floaty.itemSpace = 30
         
-        let floaty = Floaty()
+        self.floaty.hasShadow = true
+        self.floaty.buttonColor = UIColor.gamvesGreenColor
+        var addImage = UIImage(named: "add_symbol")
+        addImage = addImage?.maskWithColor(color: UIColor.white)
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
+        self.floaty.buttonImage = addImage
+        self.floaty.sizeToFit()
+
+        let itemNewGroup = FloatyItem()
+        var groupAddImage = UIImage(named: "group_add")
+        groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
+        itemNewGroup.icon = groupAddImage
+        itemNewGroup.buttonColor = UIColor.gamvesGreenColor
+        itemNewGroup.titleLabelPosition = .left
+        itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemNewGroup.title = "NEW GROUP"
+        itemNewGroup.handler = { item in
+            
+            self.selectContact(group: true)
+        }
+
+        let itemSelectGroup = FloatyItem()
+        var groupContactImage = UIImage(named: "account")
+        groupContactImage = groupContactImage?.maskWithColor(color: UIColor.white)
+        itemSelectGroup.icon = groupContactImage
+        itemSelectGroup.buttonColor = UIColor.gamvesGreenColor
+        itemSelectGroup.titleLabelPosition = .left
+        itemSelectGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemSelectGroup.title = "SELECT CONTACT"
+        itemSelectGroup.handler = { item in
+            
+            self.selectContact(group: false)
+        }   
+
+        /*let floaty = Floaty()
         floaty.addItem(title: "New Group", handler: { item in
         
             self.selectContact(group: true)
-        })
+        })*/
         
-        floaty.addItem(title: "Select Contact", handler: { item in
+        /*floaty.addItem(title: "Select Contact", handler: { item in
             
             self.selectContact(group: false)
             
-        })
+        })*/
         
         floaty.paddingY = 110
         

@@ -83,6 +83,8 @@
 		C9263DFE20D8B9BE0029DBAE /* Artwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9263DFD20D8B9BE0029DBAE /* Artwork.swift */; };
 		C927D0C120D2B4E7006E217F /* VideoLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C927D0C020D2B4E6006E217F /* VideoLauncher.swift */; };
 		C92A549B20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92A549A20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift */; };
+		C92DCABB213ED5DA00A2C2EE /* OtherAccountsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DCABA213ED5DA00A2C2EE /* OtherAccountsViewController.swift */; };
+		C92DCABD213F03CE00A2C2EE /* OtherAccountViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */; };
 		C9300F7320C9050F0027845F /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9300F7220C9050F0027845F /* Util.swift */; };
 		C9381D6A213D7DF700352550 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381D69213D7DF700352550 /* UINavigationController+Extension.swift */; };
 		C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9389278206AC83900DE72AA /* UserNotifications.framework */; };
@@ -183,6 +185,8 @@
 		C9263DFD20D8B9BE0029DBAE /* Artwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artwork.swift; sourceTree = "<group>"; };
 		C927D0C020D2B4E6006E217F /* VideoLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoLauncher.swift; sourceTree = "<group>"; };
 		C92A549A20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendEmptyCollectionViewCell.swift; sourceTree = "<group>"; };
+		C92DCABA213ED5DA00A2C2EE /* OtherAccountsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherAccountsViewController.swift; sourceTree = "<group>"; };
+		C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherAccountViewCell.swift; sourceTree = "<group>"; };
 		C9300F7220C9050F0027845F /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		C9381D69213D7DF700352550 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
 		C9389278206AC83900DE72AA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -351,6 +355,7 @@
 				C98F266520B26AE300755733 /* ImagePickerViewController.swift */,
 				C9709B4020F6899A0098B061 /* FriendApprovalViewController.swift */,
 				C969A4F12101DA0A00DD4AA5 /* FortniteViewController.swift */,
+				C92DCABA213ED5DA00A2C2EE /* OtherAccountsViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -479,6 +484,7 @@
 				C9BBCCED20FBAE170042D4B8 /* FriendCollectionViewCell.swift */,
 				C97D24D020FC05380030A2FD /* FriendSectionHeader.swift */,
 				C92A549A20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift */,
+				C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */,
 			);
 			name = cells;
 			sourceTree = "<group>";
@@ -681,12 +687,14 @@
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
 				C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */,
 				8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */,
+				C92DCABB213ED5DA00A2C2EE /* OtherAccountsViewController.swift in Sources */,
 				C7B402011D78C167001D8ED4 /* TutorialController.swift in Sources */,
 				82E372411FB169A3000AD7EB /* Video.swift in Sources */,
 				82E372301FB1637C000AD7EB /* MessageCell.swift in Sources */,
 				8212D71E1F7AC16E00F2A121 /* ChatFeedViewController.swift in Sources */,
 				C95A487620F7D4D700E2D522 /* FriendApprovalCell.swift in Sources */,
 				82E3722B1FAFD698000AD7EB /* Classes.swift in Sources */,
+				C92DCABD213F03CE00A2C2EE /* OtherAccountViewCell.swift in Sources */,
 				8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */,
 				827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */,
 				82E372481FB16C32000AD7EB /* InfoView.swift in Sources */,

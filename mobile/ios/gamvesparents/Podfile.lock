@@ -7,7 +7,7 @@ PODS:
   - Bolts/Tasks (1.8.4)
   - DeviceKit (1.2.3)
   - DownPicker (0.1.34)
-  - Floaty (4.0.0)
+  - Floaty (4.0.1)
   - ImageSlideshow (1.4.1):
     - ImageSlideshow/Core (= 1.4.1)
   - ImageSlideshow/Core (1.4.1)
@@ -34,7 +34,7 @@ DEPENDENCIES:
   - BEMCheckBox
   - DeviceKit
   - DownPicker
-  - Floaty (from `https://github.com/kciter/Floaty.git`, tag `4.0.0`)
+  - Floaty
   - ImageSlideshow (~> 1.4)
   - ISEmojiView
   - NVActivityIndicatorView
@@ -47,9 +47,6 @@ DEPENDENCIES:
   - youtube-ios-player-helper (~> 0.1.4)
 
 EXTERNAL SOURCES:
-  Floaty:
-    :git: https://github.com/kciter/Floaty.git
-    :tag: 4.0.0
   ParseLiveQuery:
     :branch: master
     :git: https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git
@@ -58,9 +55,6 @@ EXTERNAL SOURCES:
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 CHECKOUT OPTIONS:
-  Floaty:
-    :git: https://github.com/kciter/Floaty.git
-    :tag: 4.0.0
   ParseLiveQuery:
     :commit: cc1f520390edb94dfb8e92c0d2d5229b0485fd6d
     :git: https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git
@@ -76,7 +70,7 @@ SPEC CHECKSUMS:
   Bolts-Swift: fa98d1b59fc1acea9b21a21306dcdca1c85e3737
   DeviceKit: f33cbc6e67d9bb416e42dedc647557c7c2f6d3d7
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
-  Floaty: df27b72d9ed1e58d48aa3717327ffdb857268c63
+  Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
   ImageSlideshow: 1bb0e610e28a71e8936d57265d882f61714a470b
   ISEmojiView: 2ab7c5ad9c58a318cefcf407af374464ccc56f1d
   NVActivityIndicatorView: d3738df7e2e476aca0ba6bf32a8c9fbcfc33d64b
@@ -90,6 +84,6 @@ SPEC CHECKSUMS:
   TaskQueue: c1c02deebf2665b8e625fc46dd37a29b1de8056e
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
 
-PODFILE CHECKSUM: f227b6c0195023ba8fe26124af9d939a1b1fbe2d
+PODFILE CHECKSUM: 4d46f4c3280edab64f33ecbb67e5e52f8959f6f6
 
 COCOAPODS: 1.4.0

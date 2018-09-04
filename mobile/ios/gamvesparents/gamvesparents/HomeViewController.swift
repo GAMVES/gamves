@@ -408,7 +408,7 @@ class HomeViewController: UIViewController,
         
         tabBarController?.tabBar.isHidden = false
 
-        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_fortnite_completed") {            
+        /*if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_fortnite_completed") {
 
             let is_fortnite_completed = Global.defaults.object(forKey: "\(self.puserId)_fortnite_completed") as! Bool
 
@@ -422,7 +422,7 @@ class HomeViewController: UIViewController,
                 self.navigationController?.pushViewController(fortniteViewController, animated: true)
 
             } 
-        }
+        }*/
     }
 
     func hideShowTabBar(status: Bool)

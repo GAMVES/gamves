@@ -1311,8 +1311,7 @@ class ProfileViewController: UIViewController,
 
                                                     self.tabBarViewController?.selectedIndex = 0
                                                     
-                                                    Global.defaults.set(true, forKey: "\(self.puserId)_profile_completed")  
-
+                                                    //Global.defaults.set(true, forKey: "\(self.puserId)_profile_completed")  
                                                     
                                                     Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
                                                         
@@ -1326,9 +1325,9 @@ class ProfileViewController: UIViewController,
                                                             let title = "Congratulations Registration Completed!"
                                                             var message = "\n\nThanks very much for registering to Gamves. You can share the app with your family! \n\n"
                                                             
-                                                            message = message + "Fortnite users\n\n" 
+                                                            //message = message + "Fortnite users\n\n" 
 
-                                                            message = message +  "Before you start using Gamves please provide one las optional information about Fortnite, otherwise you can complete it later."
+                                                            //message = message +  "Before you start using Gamves please provide one las optional information about Fortnite, otherwise you can complete it later."
                                                             
                                                             let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                                                             
@@ -1341,14 +1340,13 @@ class ProfileViewController: UIViewController,
                                                                 
                                                             }))
 
-                                                            alert.addAction(UIAlertAction(title: "Fornite", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                                      
-                                                                
+                                                            /*alert.addAction(UIAlertAction(title: "Fornite", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                                                                                                      
                                                                 
                                                                 let fortniteViewController = FortniteViewController()
                                                                 fortniteViewController.isRegistering = true
                                                                 self.navigationController?.pushViewController(fortniteViewController, animated: true)
                                                                 
-                                                            }))
+                                                            }))*/
                                                             
                                                             self.present(alert, animated: true)                                                     
                                                             

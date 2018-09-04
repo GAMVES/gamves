@@ -260,31 +260,62 @@ class FortniteViewController: UIViewController
             self.checkUserExist(completionHandler: { ( result ) -> () in
 
 
-                if result {
+                if result {                  
 
-                    let vendors: PFObject = PFObject(className: "Vendors")
-
-                    if let userId = PFUser.current()?.objectId
-                    {                
-                        let son_userId = Global.defaults.string(forKey: "\(userId)_son_userId")                                            
-                        vendors["userId"] = son_userId
+                    var vendors: PFObject = PFObject(className: "Vendors")                    
+                    
+                    var son_userId = String()
+                    
+                    if var userId = PFUser.current()?.objectId {                
+                        son_userId = Global.defaults.string(forKey: "\(userId)_son_userId")!
+                        vendors["userId"] = son_userId                       
                     }
 
-                    vendors["type"] = 1                        
+                    vendors["type"] = 1   
+                    vendors["name"] = "Fortnite"                        
                     vendors["username"] = self.userTextField.text
                     vendors["password"] = self.passTextField.text
 
                     vendors.saveInBackground { (resutl, error) in
                         
                         if error == nil {
+                            
+                             let otherQuery = PFQuery(className:"OtherAccounts")   
+                             otherQuery.whereKey("userId", equalTo:son_userId)                         
+                             otherQuery.getFirstObjectInBackground(block: { (otherAccountsPF, error) in
+                            
+                                if error == nil
+                                {   
 
-                            self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in                                                               
+                                    let vendorsRelation = otherAccountsPF!["vendors"] as! PFRelation
+                                    vendorsRelation.add(vendors)
+                                    
+                                    otherAccountsPF?.saveEventually()
 
-                                self.popController()
+                                    self.showSavedAlert()
 
-                                Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_completed")                                   
+                                } else {
 
-                            })                    
+                                    var otherAccounts: PFObject = PFObject(className: "OtherAccounts") 
+
+                                    otherAccounts["userId"] = son_userId  
+
+                                    otherAccounts.saveInBackground { (resutl, error) in
+
+                                        if error == nil {
+
+                                            let vendorsRelation = otherAccounts["vendors"] as! PFRelation
+                                            vendorsRelation.add(vendors)
+
+                                            otherAccounts.saveEventually()
+
+                                            self.showSavedAlert()
+
+                                        }
+                                    }
+                                }
+                            })
+                                              
                         }
                     }
 
@@ -300,6 +331,17 @@ class FortniteViewController: UIViewController
                 }
             })
         }
+    }
+
+    func showSavedAlert() {
+
+        self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in                                                               
+
+            self.popController()
+
+            Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_completed")                                   
+
+        })
     }
 
     func checkUserExist(completionHandler : @escaping (_ resutl:Bool) -> ()) {
