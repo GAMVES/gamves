@@ -17,25 +17,26 @@ UICollectionViewDelegateFlowLayout {
 
     var gamvesVendors = [GamvesVendor]()
 
-    let infoContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.white
-        view.translatesAutoresizingMaskIntoConstraints = false
+     let infoView: UIView = {
+        let view = UIView()        
         return view
     }()
 
-    var infoLabel: UILabel = {
-        let label = UILabel()
+    let info: PaddingLabel = {
+        let label = PaddingLabel()
         label.text = "Click the + button below and add a new account. If the accout is not availabe contact Gamves official"
         label.font = UIFont.systemFont(ofSize: 18)
+        label.textColor = UIColor.gamvesColor
         label.numberOfLines = 3
+        label.textAlignment = .center     
+        //label.backgroundColor = UIColor.green   
         return label
-    }()
+    }()    
 
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.lightGray
+        cv.backgroundColor = UIColor.white
         cv.dataSource = self
         cv.delegate = self
         return cv
@@ -44,11 +45,26 @@ UICollectionViewDelegateFlowLayout {
     var floaty = Floaty(size: 80)   
 
     var cellId = "cellId"
+    let sectionHeaderId = "feedSectionHeader"
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view.backgroundColor = UIColor.white
+
+        self.view.addSubview(self.infoView)  
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.infoView)
+
+        self.view.addSubview(self.collectionView)  
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
+
+        self.view.addConstraintsWithFormat("V:|-100-[v0(100)][v1]|", views:                         
+            self.infoView,             
+            self.collectionView) 
+
+        self.infoView.addSubview(self.info)  
+        self.infoView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: self.info)
+        self.infoView.addConstraintsWithFormat("V:|[v0]|", views: self.info)
 
         let buttonIcon = UIImage(named: "arrow_back_white")        
         let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
@@ -62,7 +78,7 @@ UICollectionViewDelegateFlowLayout {
         self.floaty.itemSpace = 30
         
         self.floaty.hasShadow = true
-        self.floaty.buttonColor = UIColor.gamvesGreenColor
+        self.floaty.buttonColor = UIColor.gamvesColor
         var addImage = UIImage(named: "add_symbol")
         addImage = addImage?.maskWithColor(color: UIColor.white)
         addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
@@ -73,20 +89,23 @@ UICollectionViewDelegateFlowLayout {
         var groupAddImage = UIImage(named: "fortnite_black")
         groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
         itemNewFortnite.icon = groupAddImage
-        itemNewFortnite.buttonColor = UIColor.gamvesGreenColor
+        itemNewFortnite.buttonColor = UIColor.gamvesColor
         itemNewFortnite.titleLabelPosition = .left
         itemNewFortnite.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewFortnite.title = "Fortnite"
         itemNewFortnite.handler = { item in           
 
             let fortniteViewController = FortniteViewController()
-            fortniteViewController.isRegistering = true
+            //fortniteViewController.isRegistering = true
             self.navigationController?.pushViewController(fortniteViewController, animated: true)
                                                             
         }  
 
         self.floaty.addItem(item: itemNewFortnite)          
         self.view.addSubview(self.floaty)
+
+        self.collectionView.register(OtherAccountViewCell.self, forCellWithReuseIdentifier: self.cellId)
+        self.collectionView.register(OtherAccountSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
 
         self.loadOtherAccountVendors()      
     }
@@ -134,6 +153,7 @@ UICollectionViewDelegateFlowLayout {
 
                             let vendor = GamvesVendor()
                             vendor.objectId = vendorPF.objectId!
+                            vendor.name = vendorPF["name"] as! String
                             vendor.type = vendorPF["type"] as! Int
                             vendor.username = vendorPF["username"] as! String
                             vendor.password = vendorPF["password"] as! String
@@ -157,6 +177,32 @@ UICollectionViewDelegateFlowLayout {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
        
+    }
+
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {        
+        return 1
+    }
+
+
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+
+        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! OtherAccountSectionHeader
+
+        sectionHeaderView.backgroundColor = UIColor.black
+
+        var image  = UIImage(named: "games")?.withRenderingMode(.alwaysTemplate)
+        image = image?.maskWithColor(color: UIColor.white)            
+        sectionHeaderView.iconImageView.image = image
+        
+        sectionHeaderView.nameLabel.text = "Games" 
+
+        return sectionHeaderView
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        return CGSize(width: collectionView.frame.size.width, height: 50)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
@@ -187,11 +233,26 @@ UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
-        
+    {        
         return CGSize(width: self.view.frame.width, height: 100)
     }
 
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        let vendor = self.gamvesVendors[indexPath.item]
+
+        if vendor.type == 1 {
+
+            let fortniteViewController = FortniteViewController()
+            fortniteViewController.userTextField.text = vendor.username
+            fortniteViewController.passTextField.text = vendor.password
+            //fortniteViewController.isRegistering = false
+            self.navigationController?.pushViewController(fortniteViewController, animated: true)
+        }
+    }
+
+
+    //Move this to Global
     func hideShowTabBar(hidden: Bool)
     {
         self.tabBarController?.tabBar.isHidden = hidden

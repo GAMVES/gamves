@@ -16,6 +16,7 @@ class AccountViewController: UIViewController,
     var imagePickerViewController = ImagePickerViewController()
     
     var profileViewController:ProfileViewController!
+    var otherAccountsViewController:OtherAccountsViewController!
     
     var homeViewController:HomeViewController?
     
@@ -227,7 +228,7 @@ class AccountViewController: UIViewController,
         _payment.id = 1
         self.accountButton.append(_payment)
 
-        _account.desc = "Accounts"
+        _account.desc = "Other Accounts"
         _account.icon = UIImage(named: "account")!
         _account.id = 2
         self.accountButton.append(_account)
@@ -380,10 +381,12 @@ class AccountViewController: UIViewController,
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {        
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AccountCollectionViewCell
+        
         let id = indexPath.row        
         var accountButon = self.accountButton[id]
         cell.descLabel.text = accountButon.desc        
         cell.iconImageView.image = accountButon.icon
+
         return cell
     }
     
@@ -427,7 +430,7 @@ class AccountViewController: UIViewController,
     
     func openProfile() {
         
-        let profileViewController = ProfileViewController()
+        profileViewController = ProfileViewController()
         profileViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
@@ -440,7 +443,7 @@ class AccountViewController: UIViewController,
 
     func openAccounts() {
         
-        let otherAccountsViewController = OtherAccountsViewController()
+        otherAccountsViewController = OtherAccountsViewController()
         otherAccountsViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]

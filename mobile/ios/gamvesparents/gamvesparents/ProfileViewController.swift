@@ -1317,10 +1317,7 @@ class ProfileViewController: UIViewController,
                                                         
                                                         ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in                                                 
                                                             
-                                                            // REGISTRATION COMPLETED
-
-                                                            Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_completed") 
-                                                            Global.defaults.set(false, forKey: "\(self.puserId)_fortnite_skipped")
+                                                            // REGISTRATION COMPLETED                                                          
 
                                                             let title = "Congratulations Registration Completed!"
                                                             var message = "\n\nThanks very much for registering to Gamves. You can share the app with your family! \n\n"

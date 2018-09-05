@@ -406,23 +406,7 @@ class HomeViewController: UIViewController,
     
     override func viewWillAppear(_ animated: Bool) {
         
-        tabBarController?.tabBar.isHidden = false
-
-        /*if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_fortnite_completed") {
-
-            let is_fortnite_completed = Global.defaults.object(forKey: "\(self.puserId)_fortnite_completed") as! Bool
-
-            let is_fortnite_skipped = Global.defaults.object(forKey: "\(self.puserId)_fortnite_skipped") as! Bool
-
-            if !is_fortnite_completed && !is_fortnite_skipped {
-                
-                self.hideShowTabBar(status: true)
-
-                let fortniteViewController = FortniteViewController()                                                        
-                self.navigationController?.pushViewController(fortniteViewController, animated: true)
-
-            } 
-        }*/
+        tabBarController?.tabBar.isHidden = false      
     }
 
     func hideShowTabBar(status: Bool)

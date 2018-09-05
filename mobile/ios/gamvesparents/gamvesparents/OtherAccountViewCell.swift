@@ -12,19 +12,16 @@ class OtherAccountViewCell: BaseCell {
     
     var vendorImageView: UIImageView = {
         let profileImageView = UIImageView()
-        profileImageView.contentMode = .scaleAspectFill //.scaleFill
+        profileImageView.contentMode = .scaleAspectFill 
         profileImageView.clipsToBounds = true
         profileImageView.backgroundColor = UIColor.red
         return profileImageView
     }()
     
     let nameLabel: UILabel = {
-        let label = UILabel()
-        //label.text = "Setting"
-        label.font = UIFont.systemFont(ofSize: 13)
-        label.textAlignment = .center
-        //label.backgroundColor = UIColor.cyan
-        label.lineBreakMode = .byWordWrapping
+        let label = UILabel()                
+        label.font = UIFont.boldSystemFont(ofSize: 28)
+        label.textAlignment = .left                        
         label.numberOfLines = 2
         return label
     }()
@@ -32,14 +29,13 @@ class OtherAccountViewCell: BaseCell {
     override func setupViews() {
         super.setupViews()
         
-        contentView.addSubview(vendorImageView)
-        contentView.addSubview(nameLabel)
+        self.addSubview(vendorImageView)
+        self.addSubview(nameLabel)           
         
-        contentView.addConstraintsWithFormat("H:|-10-[v0(80)]-10-|", views: vendorImageView)
-        contentView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: nameLabel)
-        
-        //vertical constraints
-        contentView.addConstraintsWithFormat("V:|-10-[v0(80)][v1]|", views: vendorImageView, nameLabel)
+        self.addConstraintsWithFormat("H:|-20-[v0(80)]-20-[v1]|", views: self.vendorImageView, self.nameLabel)
+
+        self.addConstraintsWithFormat("V:|-10-[v0(80)]-10-|", views: self.vendorImageView)
+        self.addConstraintsWithFormat("V:|-10-[v0(80)]-10-|", views: self.nameLabel)
         
     }
     

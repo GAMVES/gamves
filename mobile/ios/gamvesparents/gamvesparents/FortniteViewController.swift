@@ -5,13 +5,13 @@
 //  Created by XCodeClub on 2018-07-20.
 //
 
-
 import UIKit
 import RSKImageCropper
 import Parse
 
 class FortniteViewController: UIViewController
 {
+
     let topView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false        
@@ -90,26 +90,24 @@ class FortniteViewController: UIViewController
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.gamvesFortniteDarkColor
         button.tintColor = .white
-        button.layer.cornerRadius = 5
-        //button.isEnabled = false
+        button.layer.cornerRadius = 5        
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)
         return button
     }()
 
-    lazy var skipButton: UIButton = {
+    lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        let image = UIImage(named: "skip")        
+        let image = UIImage(named: "close_white")        
         button.setImage(image, for: .normal)                 
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.gamvesFortniteDarkColor
         button.tintColor = .white
-        button.layer.cornerRadius = 5
-        //button.isEnabled = false
+        button.layer.cornerRadius = 5        
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        button.addTarget(self, action: #selector(handleSkip), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
         return button
     }()
 
@@ -126,12 +124,17 @@ class FortniteViewController: UIViewController
 
     var croppedImage = UIImage()
 
-    var puserId = String()
-
-    var isRegistering = Bool()
+    var puserId = String()   
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let buttonIcon = UIImage(named: "arrow_back_white")        
+        let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
+        leftBarButton.image = buttonIcon        
+        self.navigationItem.leftBarButtonItem = leftBarButton   
+
+        self.navigationItem.title = "Account"
 
         self.navigationController?.navigationBar.barTintColor = UIColor.gamvesFortniteColor
         
@@ -166,8 +169,8 @@ class FortniteViewController: UIViewController
         
         let padding = (height - (photoSize + 300)) / 2
 
-        metricsPicker["photoSize"]             =  photoSize
-        metricsPicker["padding"]               =  padding
+        metricsPicker["photoSize"] = photoSize
+        metricsPicker["padding"]   = padding
 
         self.view.addConstraintsWithFormat("V:|[v0(150)][v1(150)][v2(100)]-20-[v3(60)]-20-[v4(60)]-40-[v5(60)]-30-[v6]|", views: 
             topView,
@@ -179,33 +182,40 @@ class FortniteViewController: UIViewController
             bottomView,
             metrics: metricsPicker)
 
-        photoContainerView.addSubview(pictureImageView)
-        photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: pictureImageView)
-        photoContainerView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: pictureImageView, metrics: metricsPicker)                     
+        self.photoContainerView.addSubview(self.pictureImageView)
+        self.photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.pictureImageView)
+        self.photoContainerView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.pictureImageView, metrics: metricsPicker)                     
 
         self.buttonsView.addSubview(saveButton)
-        self.buttonsView.addSubview(skipButton)
+        self.buttonsView.addSubview(cancelButton)
 
         self.buttonsView.addConstraintsWithFormat("V:|[v0]|", views: saveButton)      
-        self.buttonsView.addConstraintsWithFormat("V:|[v0]|", views: skipButton)      
+        self.buttonsView.addConstraintsWithFormat("V:|[v0]|", views: cancelButton)      
 
-        self.buttonsView.addConstraintsWithFormat("H:|-30-[v0]-30-[v1(100)]-30-|", views: saveButton, skipButton)      
+        self.buttonsView.addConstraintsWithFormat("H:|-20-[v0]-10-[v1(150)]-20-|", views: saveButton, cancelButton)      
 
         var metricsTitle = [String:Int]()
         let topTitle = padding / 2
 
-        metricsTitle["topTitle"]             =  topTitle
+        metricsTitle["topTitle"] = topTitle - 30
 
-        topView.addSubview(titleLabel)        
-        topView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: titleLabel)
-        topView.addConstraintsWithFormat("V:|-topTitle-[v0(100)]|", views: titleLabel, metrics: metricsTitle)
+        self.topView.addSubview(self.titleLabel)        
+        self.topView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: self.titleLabel)
+        self.topView.addConstraintsWithFormat("V:|-topTitle-[v0(100)]|", views: self.titleLabel, metrics: metricsTitle)
 
         self.setScreenByType()   
 
-        if let userId = PFUser.current()?.objectId
-        {
+        if let userId = PFUser.current()?.objectId {
             self.puserId = userId
         }	
+    }
+
+    func backButton(sender: UIBarButtonItem) {
+
+        self.hideShowTabBar(hidden:false)
+
+        self.navigationController?.popViewController(animated: true)
+
     }
 
     override func viewWillDisappear(_ animated : Bool) {
@@ -225,8 +235,8 @@ class FortniteViewController: UIViewController
         var buttonTitle = String()
         var imageName = String()
         
-        title = "Registration completed. Please add Fortnite user name and password"
-        message = "Provide your son/daughter Fortnite username and password. With Gamves he/she will be able to win gifts for the game"
+        title = "Fortnite" //"Registration completed. Please add Fortnite user name and password"
+        message = "Provide your son/daughter Fortnite username and password"
         buttonTitle = "  Select child Image"
         imageName = "son_photo"
         
@@ -235,9 +245,9 @@ class FortniteViewController: UIViewController
         self.pictureImageView.image = UIImage(named: "fortnite")
         self.messageLabel.text = message
 
-        self.saveButton.setTitle("   SAVE", for: .normal)
-        self.skipButton.setTitle("   SKIP", for: .normal)
-    }   
+        self.saveButton.setTitle("    SAVE", for: .normal)
+        self.cancelButton.setTitle(" CANCEL", for: .normal)
+    }  
     
 
     override func didReceiveMemoryWarning() {
@@ -251,73 +261,73 @@ class FortniteViewController: UIViewController
             self.showAlert(title: "Empty field", message: "Please provide username and password", completionHandler: { (gamvesUser) in
 
                 print("")
-
             })
         
         } else {
 
-
             self.checkUserExist(completionHandler: { ( result ) -> () in
 
+                if result { 
 
-                if result {                  
-
-                    var vendors: PFObject = PFObject(className: "Vendors")                    
-                    
                     var son_userId = String()
-                    
+                            
                     if var userId = PFUser.current()?.objectId {                
-                        son_userId = Global.defaults.string(forKey: "\(userId)_son_userId")!
-                        vendors["userId"] = son_userId                       
+                        son_userId = Global.defaults.string(forKey: "\(userId)_son_userId")!                                     
                     }
+                    
+                    var vendors:PFObject!
 
-                    vendors["type"] = 1   
-                    vendors["name"] = "Fortnite"                        
-                    vendors["username"] = self.userTextField.text
-                    vendors["password"] = self.passTextField.text
+                    let vendorQuery = PFQuery(className:"Vendors")   
+                    vendorQuery.whereKey("userId", equalTo:son_userId)                         
+                    vendorQuery.whereKey("type", equalTo:1)                         
+                    vendorQuery.getFirstObjectInBackground(block: { (vendorPF, error) in
 
-                    vendors.saveInBackground { (resutl, error) in
+                        if error != nil
+                        {
+                            vendors = PFObject(className: "Vendors")                                         
+                            vendors["userId"] = son_userId  
+                            vendors["type"] = 1   
+                            vendors["name"] = "Fortnite"                                           
+
+                        } else {
                         
-                        if error == nil {
-                            
-                             let otherQuery = PFQuery(className:"OtherAccounts")   
-                             otherQuery.whereKey("userId", equalTo:son_userId)                         
-                             otherQuery.getFirstObjectInBackground(block: { (otherAccountsPF, error) in
-                            
-                                if error == nil
-                                {   
+                            vendors = vendorPF
+                        }   
 
-                                    let vendorsRelation = otherAccountsPF!["vendors"] as! PFRelation
-                                    vendorsRelation.add(vendors)
-                                    
-                                    otherAccountsPF?.saveEventually()
+                        vendors["username"] = self.userTextField.text
+                        vendors["password"] = self.passTextField.text 
 
-                                    self.showSavedAlert()
+                        vendors.saveInBackground { (resutl, error) in
+                        
+                            if error == nil {
+                                
+                                 let otherQuery = PFQuery(className:"OtherAccounts")   
+                                 otherQuery.whereKey("userId", equalTo:son_userId)                         
+                                 otherQuery.getFirstObjectInBackground(block: { (otherAccountsPF, error) in
+                                
+                                    if error != nil
+                                    {
 
-                                } else {
+                                        var otherAccounts: PFObject = PFObject(className: "OtherAccounts") 
 
-                                    var otherAccounts: PFObject = PFObject(className: "OtherAccounts") 
+                                        otherAccounts["userId"] = son_userId  
 
-                                    otherAccounts["userId"] = son_userId  
+                                        let vendorsRelation: PFRelation = otherAccounts.relation(forKey: "vendors")
+                                        vendorsRelation.add(vendors)                                   
 
-                                    otherAccounts.saveInBackground { (resutl, error) in
-
-                                        if error == nil {
-
-                                            let vendorsRelation = otherAccounts["vendors"] as! PFRelation
-                                            vendorsRelation.add(vendors)
-
-                                            otherAccounts.saveEventually()
-
+                                        otherAccounts.saveInBackground(block: { (resutl, error) in
+                                          
                                             self.showSavedAlert()
-
-                                        }
+                                            
+                                        })
+                                    } else {
+                                        
+                                        self.showSavedAlert()
                                     }
-                                }
-                            })
-                                              
+                                })                                              
+                            }
                         }
-                    }
+                    })                    
 
                 } else {
 
@@ -333,21 +343,20 @@ class FortniteViewController: UIViewController
         }
     }
 
+
+
     func showSavedAlert() {
 
-        self.showAlert(title: "Username saved", message: "Please provide a valid Play Station user name", completionHandler: { (gamvesUser) in                                                               
+        self.showAlert(title: "Fornite credentials saved", message: "Your Fortnite account has been stored correctly", completionHandler: { (gamvesUser) in                                                               
 
             self.popController()
-
-            Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_completed")                                   
 
         })
     }
 
     func checkUserExist(completionHandler : @escaping (_ resutl:Bool) -> ()) {
 
-        // Sam API here
-        
+        // Sam API here        
         var result = Bool()
         result = true
 
@@ -355,15 +364,12 @@ class FortniteViewController: UIViewController
     }
 
 
-    func handleSkip() {
+    func handleCancel() {
 
-        self.showAlert(title: "Skip Fortnite credentials", message: "You will be able to provide your username later", completionHandler: { (gamvesUser) in
-
-            print("")
+        self.showAlert(title: "Cancel Fortnite credentials", message: "You will be able to provide your username later", completionHandler: { (gamvesUser) in            
 
             self.self.popController()
-
-            Global.defaults.set(true, forKey: "\(self.puserId)_fortnite_skipped")
+            
        })
     }
 
@@ -374,8 +380,7 @@ class FortniteViewController: UIViewController
         let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
         
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in          
-            
-            
+                        
             completionHandler(true)
 
         }))
@@ -388,15 +393,27 @@ class FortniteViewController: UIViewController
 
         UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
 
-        if self.isRegistering {
+        //if self.isRegistering {
                                 
-            let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
-            self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)                                   
+            //let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
+            //self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)                                   
 
-        } else {
+        //} else {
 
             self.navigationController?.popViewController(animated: true)
-        }
+        //}
+
+    }
+
+    //Move this to Global
+    func hideShowTabBar(hidden: Bool)
+    {
+        self.tabBarController?.tabBar.isHidden = hidden
+        
+        if hidden
+        {
+            navigationController?.navigationBar.tintColor = UIColor.white
+        } 
     }
 
 }

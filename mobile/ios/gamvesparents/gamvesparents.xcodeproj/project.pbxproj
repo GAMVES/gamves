@@ -86,6 +86,7 @@
 		C92DCABB213ED5DA00A2C2EE /* OtherAccountsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DCABA213ED5DA00A2C2EE /* OtherAccountsViewController.swift */; };
 		C92DCABD213F03CE00A2C2EE /* OtherAccountViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */; };
 		C9300F7320C9050F0027845F /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9300F7220C9050F0027845F /* Util.swift */; };
+		C935EBFD213F600500BCB206 /* OtherAccountSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C935EBFC213F600500BCB206 /* OtherAccountSectionHeader.swift */; };
 		C9381D6A213D7DF700352550 /* UINavigationController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381D69213D7DF700352550 /* UINavigationController+Extension.swift */; };
 		C9389279206AC83900DE72AA /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9389278206AC83900DE72AA /* UserNotifications.framework */; };
 		C93BF39B20954A66006A0551 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93BF39A20954A66006A0551 /* Int+Extension.swift */; };
@@ -188,6 +189,7 @@
 		C92DCABA213ED5DA00A2C2EE /* OtherAccountsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherAccountsViewController.swift; sourceTree = "<group>"; };
 		C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherAccountViewCell.swift; sourceTree = "<group>"; };
 		C9300F7220C9050F0027845F /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		C935EBFC213F600500BCB206 /* OtherAccountSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherAccountSectionHeader.swift; sourceTree = "<group>"; };
 		C9381D69213D7DF700352550 /* UINavigationController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Extension.swift"; sourceTree = "<group>"; };
 		C9389278206AC83900DE72AA /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		C93BF39A20954A66006A0551 /* Int+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
@@ -485,6 +487,7 @@
 				C97D24D020FC05380030A2FD /* FriendSectionHeader.swift */,
 				C92A549A20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift */,
 				C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */,
+				C935EBFC213F600500BCB206 /* OtherAccountSectionHeader.swift */,
 			);
 			name = cells;
 			sourceTree = "<group>";
@@ -677,6 +680,7 @@
 				829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */,
 				C9709B4120F6899A0098B061 /* FriendApprovalViewController.swift in Sources */,
 				C927D0C120D2B4E7006E217F /* VideoLauncher.swift in Sources */,
+				C935EBFD213F600500BCB206 /* OtherAccountSectionHeader.swift in Sources */,
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
 				C93D611E20A3E58A00245CC7 /* SettingCell.swift in Sources */,
 				82557C4F2016CED100752301 /* HistroyCell.swift in Sources */,
