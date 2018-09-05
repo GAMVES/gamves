@@ -2,12 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "baseline_close_white_18dp.png",
+      "filename" : "baseline_group_add_black_18dp.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "close.png",
+      "filename" : "baseline_group_add_black_18dp-1.png",
       "scale" : "2x"
     },
     {

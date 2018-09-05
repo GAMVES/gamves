@@ -106,6 +106,8 @@ class ChatFeed
     var imagesLoaded:Bool?
     var badgeIsActive:Bool?
     var badgeNumber:Int?
+    var key:Int?
+    var type:Int?
 }
 
 class Approvals

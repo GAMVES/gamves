@@ -3,7 +3,6 @@
 //  gamvescommunity
 //
 //  Created by Jose Vigil on 5/30/17.
-//  Copyright © 2017 Jose Vigil. All rights reserved.
 //
 
 import UIKit

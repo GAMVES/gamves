@@ -2,12 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "baseline_close_white_18dp.png",
+      "filename" : "icons8-family-26.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "close.png",
+      "filename" : "icons8-family-52.png",
       "scale" : "2x"
     },
     {

@@ -3,7 +3,6 @@
 //  gamvesparents
 //
 //  Created by Jose Vigil on 11/16/17.
-//  Copyright © 2017 Lets Build That App. All rights reserved.
 //
 
 
@@ -99,33 +98,9 @@ class ChatFeedMethods: NSObject {
             sortedChatFeeds[sorted.key] = sorted.value
         }
         
-        return sortedChatFeeds
-        
-        /*
-        var feeds = [ChatFeed]()
-        
-        for feed in self.chatFeeds {
-            feeds.append(feed.value)
-        }
-        
-        var sortedFeeds = feeds.sorted(by: {
-            $0.date?.compare($1.date!) == .orderedAscending
-        })       
-        
-        self.chatFeeds = Dictionary<Int, ChatFeed>()
-        
-        for sorted in sortedFeeds {
-            print(sorted.date)
-            self.chatFeeds[sorted.key!] = sorted
-        }*/
+        return sortedChatFeeds    
     }
-    
-    func before(value1: String, value2: String) -> Bool {
-        // One string is alphabetically first.
-        // ... True means value1 precedes value2.
-        return value1 < value2;
-    }
-    
+
     static func queryFeed(chatId:Int?, completionHandlerChatId : @escaping (_ chatId:Int) -> ()?)
     {
 

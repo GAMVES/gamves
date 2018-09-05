@@ -14,19 +14,91 @@ class ChatFeedMethods: NSObject {
     
     static var chatFeeds = Dictionary<Int, ChatFeed>()
 
-    static func sortFeedByDate() {
+    static var chatFeedFamily   = Dictionary<Int, ChatFeed>()
+    static var chatFeedAdmin    = Dictionary<Int, ChatFeed>()
+    static var chatFeedFriends  = Dictionary<Int, ChatFeed>()
+    static var chatFeedVideos   = Dictionary<Int, ChatFeed>()
+
+    static var numChatFeedSections = Int()
+
+    static func splitFeedSection() {
+
+        let keys = Array(self.chatFeeds.keys)
         
-        var sortedFeeds = self.chatFeeds.sorted(by: {
-            $0.value.date?.compare($1.value.date!) == .orderedAscending
+        for i in keys {
+
+            let chatFeed = self.chatFeeds[i] as! ChatFeed
+            let chatId = chatFeed.chatId         
+
+            let type = chatFeed.type as! Int
+            
+            switch type {
+                case 1:
+                    self.chatFeedFamily[chatId!] = chatFeed
+                    break
+
+                case 2:
+                    self.chatFeedAdmin[chatId!] = chatFeed
+                    break
+
+                case 3:
+                    self.chatFeedFriends[chatId!] = chatFeed
+                    break
+
+                case 4:
+                    self.chatFeedVideos[chatId!] = chatFeed
+                    break
+                
+                default: break
+            }
+        }
+        self.sortAllFeeds()   
+    }
+
+   static func sortAllFeeds() {
+
+        var count = 0
+
+         if self.chatFeedFamily.count > 0 {
+            self.chatFeedFamily = self.sortFeedByDate(chatFeedDict: self.chatFeedFamily)
+            count = count + 1
+        }
+
+        if self.chatFeedAdmin.count > 0 {
+            self.chatFeedAdmin = self.sortFeedByDate(chatFeedDict: self.chatFeedAdmin)
+            count = count + 1
+        }
+
+        if self.chatFeedFriends.count > 0 {
+            self.chatFeedFriends = self.sortFeedByDate(chatFeedDict: self.chatFeedFriends)
+            count = count + 1
+        }
+
+        if self.chatFeedVideos.count > 0 {
+            self.chatFeedVideos = self.sortFeedByDate(chatFeedDict: self.chatFeedVideos)
+            count = count + 1
+        }
+        self.numChatFeedSections = count
+    }
+
+
+    static func sortFeedByDate(chatFeedDict :Dictionary<Int, ChatFeed>) -> Dictionary<Int, ChatFeed>
+    {
+        
+        let sortedArray = chatFeedDict.sorted(by: {
+            $0.1.date?.compare($1.value.date!) == .orderedAscending
         })
         
-        self.chatFeeds = Dictionary<Int, ChatFeed>()
+        var sortedChatFeeds = Dictionary<Int, ChatFeed>()
         
-        for sorted in sortedFeeds {
-            self.chatFeeds[sorted.key] = sorted.value
+        for sorted in sortedArray {
+            sortedChatFeeds[sorted.key] = sorted.value
         }
+        
+        return sortedChatFeeds    
     }
-    
+
+
     static func queryFeed(chatId:Int?, completionHandlerChatId : @escaping (_ chatId:Int) -> ()?)
     {
 
@@ -88,8 +160,12 @@ class ChatFeedMethods: NSObject {
             chatfeed.lasPoster = chatFeedObj["lastPoster"] as? String
             let isVideoChat = chatFeedObj["isVideoChat"] as! Bool
             chatfeed.isVideoChat = isVideoChat
+
             var chatId = chatFeedObj["chatId"] as! Int
             chatfeed.chatId = chatId
+
+            let type = chatFeedObj["type"] as! Int
+            chatfeed.type = type
             
             let picture = chatFeedObj["thumbnail"] as! PFFile
             picture.getDataInBackground(block: { (imageData, error) in
@@ -133,6 +209,8 @@ class ChatFeedMethods: NSObject {
                             Global.getBadges(chatId : chatId, completionHandler: { ( counter ) -> () in
                                 
                                 chatfeed.badgeNumber = counter
+
+                                chatfeed.key = chatId
                                 
                                 print(chatId)
                                 
@@ -142,7 +220,8 @@ class ChatFeedMethods: NSObject {
                                 
                                 if (chatfeedsCount-1) == fcount
                                 {
-                                    self.sortFeedByDate()
+
+                                    self.splitFeedSection()
                                     
                                     completionHandler(chatId)
                                 }

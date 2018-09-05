@@ -18,16 +18,14 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     
     var tabBarViewController:TabBarViewController?
     
-    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: Global.localWs) // .remoteWs .localWs
-    
-    //"wss://gamves.back4app.io"
-    //"https://pg-app-z97yidopqq2qcec1uhl3fy92cj6zvb.scalabl.cloud/1/"
+    let liveQueryClientFeed: Client = ParseLiveQuery.Client(server: Global.localWs) 
     
     private var subscription: Subscription<PFObject>!
     
     var queryChatFeed:PFQuery<PFObject>!
     
     let cellId = "cellId"
+    let sectionHeaderId = "feedSectionHeader"
 
     lazy var selectContactViewController: SelectContactViewController = {
         let selector = SelectContactViewController()
@@ -52,12 +50,13 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         self.collectionView?.backgroundColor = UIColor.gamvesBackgoundColor
         
         self.collectionView?.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
+        self.collectionView?.register(FeedSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: self.sectionHeaderId)
         
         self.registerLiveQuery()
 
-        self.floaty.paddingY = 35
-        self.floaty.paddingX = 20                    
-        self.floaty.itemSpace = 30
+        self.floaty.paddingY = 15
+        self.floaty.paddingX = 25                    
+        self.floaty.itemSpace = 30        
         
         self.floaty.hasShadow = true
         self.floaty.buttonColor = UIColor.gamvesGreenColor
@@ -91,22 +90,10 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         itemSelectGroup.handler = { item in
             
             self.selectContact(group: false)
-        }   
-
-        /*let floaty = Floaty()
-        floaty.addItem(title: "New Group", handler: { item in
+        }
         
-            self.selectContact(group: true)
-        })*/
-        
-        /*floaty.addItem(title: "Select Contact", handler: { item in
-            
-            self.selectContact(group: false)
-            
-        })*/
-        
-        floaty.paddingY = 110
-        
+        self.floaty.addItem(item: itemNewGroup)  
+        self.floaty.addItem(item: itemSelectGroup)               
         self.view.addSubview(floaty)
         
         NotificationCenter.default.addObserver(self, selector: #selector(loadChatFeed), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
@@ -118,9 +105,23 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     {
         self.collectionView?.reloadData()
     }
+
+    func reloadCollectionView() {
+        
+        ChatFeedMethods.sortAllFeeds()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+
+            self.collectionView?.reloadData()
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         tabBarController?.tabBar.isHidden = false
+    }
+
+    func layoutSubviews() {
+        self.reloadCollectionView()
     }
     
     
@@ -197,31 +198,160 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         self.reloadCollectionView()
     }
     
-    func reloadCollectionView() {
+    /*func reloadCollectionView() {
         
-        ChatFeedMethods.sortFeedByDate()
+        ChatFeedMethods.splitFeedSection()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
         {
             self.collectionView?.reloadData()
         }
+    }*/
+
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        let count = ChatFeedMethods.numChatFeedSections
+        print(count)
+        return count
     }
     
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+                
+        var sectionHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.sectionHeaderId, for: indexPath) as! FeedSectionHeader
+        
+        sectionHeaderView.backgroundColor = UIColor.black
+
+        let sections = ChatFeedMethods.numChatFeedSections
+
+        // Handle what is has and adjust accordingly
+        
+        if indexPath.section == 0 {
+            
+            var image  = UIImage(named: "family_chat")?.withRenderingMode(.alwaysTemplate)
+            image = image?.maskWithColor(color: UIColor.white)            
+            sectionHeaderView.iconImageView.image = image
+            
+            sectionHeaderView.nameLabel.text = "Family"   
+
+        }  else if indexPath.section == 1 {
+            
+            var image  = UIImage(named: "admin_chat")?.withRenderingMode(.alwaysTemplate)
+            image = image?.maskWithColor(color: UIColor.white)            
+            sectionHeaderView.iconImageView.image = image
+            
+            sectionHeaderView.nameLabel.text = "Admin"
+
+        } else {
+
+            let has = hasFriendsAndVideSections(index: indexPath.section)
+            
+            if has == 1 {
+
+                var image  = UIImage(named: "friends")?.withRenderingMode(.alwaysTemplate)
+                image = image?.maskWithColor(color: UIColor.white)            
+                sectionHeaderView.iconImageView.image = image
+                
+                sectionHeaderView.nameLabel.text = "Friends"
+
+            } else if has == 2 {        
+            
+                var image  = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
+                image = image?.maskWithColor(color: UIColor.white)            
+                sectionHeaderView.iconImageView.image = image
+                
+                sectionHeaderView.nameLabel.text = "Videos"
+
+            }
+        }
+        
+        return sectionHeaderView
+        
+    }
+
+    func hasFriendsAndVideSections(index: Int) -> Int
     {
-        print(ChatFeedMethods.chatFeeds.count)
-        return ChatFeedMethods.chatFeeds.count
+        var result = 0
+
+        if index == 2 && ChatFeedMethods.chatFeedFriends.count > 0 {           
+
+            result = 1
+
+        } else if index == 3 && ChatFeedMethods.chatFeedVideos.count > 0 {
+
+            result = 2
+        }
+
+        return result
     }
+
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+         var countItems = Int()
+        
+        if section == 0 {
+            
+            countItems = ChatFeedMethods.chatFeedFamily.count
+            
+        } else if section == 1 {
+            
+            countItems = ChatFeedMethods.chatFeedAdmin.count  
+
+        } else {
+
+            let has = hasFriendsAndVideSections(index: section)
+            
+            if has == 1 {
+
+                countItems = ChatFeedMethods.chatFeedFriends.count
+
+            } else if has == 2 {      
+
+                countItems = ChatFeedMethods.chatFeedVideos.count                
+            }
+
+        }
+
+        print(countItems)
+        
+        return countItems
+    }
+
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
-        
+
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MessageCell
         
         let index = indexPath.item
-        let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
-        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
+
+        let section = indexPath.section
+
+        var chatfeed = ChatFeed()
+
+         if section == 0 {           
+
+            let key: Int = Array(ChatFeedMethods.chatFeedFamily)[index].key
+            chatfeed = ChatFeedMethods.chatFeedFamily[key]!
+            
+        } else if section == 1 {           
+            
+            let key: Int = Array(ChatFeedMethods.chatFeedAdmin)[index].key
+            chatfeed = ChatFeedMethods.chatFeedAdmin[key]!
+
+        } else {
+
+            let has = hasFriendsAndVideSections(index: section)
+            
+            if has == 1 {
+
+                let key: Int = Array(ChatFeedMethods.chatFeedFriends)[index].key
+                chatfeed = ChatFeedMethods.chatFeedFriends[key]!
+
+            } else if has == 2 {      
+
+                let key: Int = Array(ChatFeedMethods.chatFeedVideos)[index].key
+                chatfeed = ChatFeedMethods.chatFeedVideos[key]!   
+            }
+        }    
         
         cell.nameLabel.text = chatfeed.room
 
@@ -341,10 +471,13 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
+        return CGSize(width: collectionView.frame.size.width, height: 50)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {        
         return CGSize(width: self.view.frame.width, height: 100)
     }
     
