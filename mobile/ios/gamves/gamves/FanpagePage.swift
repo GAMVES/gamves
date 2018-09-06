@@ -94,60 +94,16 @@ class FanpagePage: UIViewController,
 
     //- Images Collection
 
-    var imageCollectionView = CampcotCollectionView()
-    
-
+    var collectionView = CampcotCollectionView()
     let interitemSpacing: CGFloat = 10
     let lineSpacing: CGFloat = 10
-    let sectionInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-
-    /*lazy var imageCollectionView: UICollectionView = {
-        //let layout = UICollectionViewFlowLayout()
-        //layout.scrollDirection = .vertical
-        //layout.sectionHeadersPinToVisibleBounds = true
-
-         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 50, height: 50)
-        //layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
-        layout.headerReferenceSize = CGSize(width: 0, height: 40)
-        layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        layout.scrollDirection = .vertical
-
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.white
-        cv.dataSource = self
-        cv.delegate = self
-        cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.alwaysBounceHorizontal = true
-        cv.showsHorizontalScrollIndicator = false
-        cv.isPrefetchingEnabled = false        
-        return cv
-    }()*/  
-
-    //- Fanpage Collection
-
-    let collectionContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.white //UIColor(white: 0, alpha: 1)
-        return view
-    }()
-
-    lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.white
-        cv.dataSource = self
-        cv.delegate = self
-        return cv
-    }()
-
+    let sectionInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)  
+   
     //- Bottom line 
 
     let bottomLineContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.black //UIColor(white: 0, alpha: 1)
+        view.backgroundColor = UIColor.black 
         return view
     }()
 
@@ -169,8 +125,6 @@ class FanpagePage: UIViewController,
 
     var fanpageGamves  = GamvesFanpage()
     var videosGamves  = [GamvesVideo]()
-    //var albums = Dictionary<String, [GamvesAlbum]>()
-    //var fanpageImages = [GamvesFanpageImage]()     
     
     var groupAlbums = [[GamvesAlbum]]()
     var albumSections = [String]()
@@ -188,7 +142,7 @@ class FanpagePage: UIViewController,
     var favorite:PFObject!
 
     let cellVideoCollectionId = "cellVideoCollectionId"
-    let cellImageCollectionId = "cellImageCollectionId"
+    let cellFanpageCollection = "cellFanpageCollection"
 
     let sectionHeaderId = "fanpgageSectionHeader"
 
@@ -234,41 +188,36 @@ class FanpagePage: UIViewController,
 
         self.separatorButtonsView.addSubview(self.fanpageName)
         self.separatorButtonsView.addConstraintsWithFormat("H:|[v0]|", views: self.fanpageName)
-        self.separatorButtonsView.addConstraintsWithFormat("V:|[v0]|", views: self.fanpageName)       
-        
-        self.view.addSubview(self.collectionContainerView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionContainerView)
-        
-        self.collectionContainerView.addSubview(self.collectionView)
-        self.collectionContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
-        self.collectionContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)  
+        self.separatorButtonsView.addConstraintsWithFormat("V:|[v0]|", views: self.fanpageName)           
        
-        self.imageCollectionView.clipsToBounds = true
-        self.imageCollectionView.sectionInset = sectionInsets
-        self.imageCollectionView.minimumSectionSpacing = 1
-        self.imageCollectionView.minimumInteritemSpacing = interitemSpacing
-        self.imageCollectionView.minimumLineSpacing = lineSpacing
-        self.imageCollectionView.sectionHeadersPinToVisibleBounds = true
-        self.imageCollectionView.delegate = self
-        self.imageCollectionView.dataSource = self
-        self.imageCollectionView.translatesAutoresizingMaskIntoConstraints = false      
+        self.collectionView.clipsToBounds = true
+        self.collectionView.sectionInset = sectionInsets
+        self.collectionView.minimumSectionSpacing = 1
+        self.collectionView.minimumInteritemSpacing = interitemSpacing
+        self.collectionView.minimumLineSpacing = lineSpacing
+        self.collectionView.sectionHeadersPinToVisibleBounds = true
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
+        self.collectionView.translatesAutoresizingMaskIntoConstraints = false      
                 
-        self.view.addSubview(self.imageCollectionView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.imageCollectionView)
-        
-        self.imageCollectionView.backgroundColor = UIColor.gamvesBlackColor             
-        
-        self.imageCollectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
-        self.imageCollectionView.register(FanpageSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: self.sectionHeaderId)       
+        self.view.addSubview(self.collectionView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
 
-        self.imageCollectionView.toggle(to: 0, animated: true)
-
-        self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)       
-        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor
+        self.view.addConstraintsWithFormat("V:|[v0(80)][v1]|", views:
+            self.coverContainerView,
+            self.collectionView)
         
-        self.activityVideoView = Global.setActivityIndicator(container: self.collectionContainerView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)      
+        self.collectionView.backgroundColor = UIColor.gamvesBlackColor             
+        
+        self.collectionView.register(FanpageCollectionCell.self, forCellWithReuseIdentifier: self.cellFanpageCollection)
+        
+        self.collectionView.register(FanpageSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: self.sectionHeaderId)       
+
+        self.collectionView.toggle(to: 0, animated: true)
+
+        self.activityVideoView = Global.setActivityIndicator(container: self.collectionView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
            
-        self.activityVideoView.startAnimating()          
+        //self.activityVideoView.startAnimating()          
 
         self.view.addSubview(self.labelEmptyMessage)
         self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
@@ -280,33 +229,9 @@ class FanpagePage: UIViewController,
 
     override func viewDidLayoutSubviews() {       
      
-        self.setVerticalLayout(height:120)   
+        
      
     }    
-
-    func setVerticalLayout(height: CGFloat) {       
-        
-        let vieweHeight = self.view.frame.height
-        let vieweWidth = self.view.frame.width
-        
-        let collHeight = vieweHeight - (80 + height)
-        let metricsHeight = ["height":height, "collHeight":collHeight]
-        
-        //self.imageCollectionView.invalidateIntrinsicContentSize()
-        
-        self.view.addConstraintsWithFormat("V:|[v0(80)][v1(height)][v2(collHeight)]|", views:
-            self.coverContainerView,
-            self.imageCollectionView, 
-            self.collectionContainerView, 
-            metrics: metricsHeight)
-
-        let imageCollFrame = CGRect(x:0, y:80, width:vieweWidth, height:height)
-        self.imageCollectionView.frame = imageCollFrame
-
-        if let layoutImageCollectionView =  self.imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout{
-            layoutImageCollectionView.itemSize = CGSize(width: vieweWidth, height: height)
-        }            
-    }      
 
     override func viewWillAppear(_ animated: Bool) {
         self.view.isHidden = true
@@ -365,7 +290,7 @@ class FanpagePage: UIViewController,
             })         
             
                             
-            self.imageCollectionView.reloadData()
+            self.collectionView.reloadData()
 
             self.startTimer()
         }
@@ -395,18 +320,18 @@ class FanpagePage: UIViewController,
         
         /*var section = sender.userInfo as! Int
         
-        for cell in self.imageCollectionView.visibleCells {
-            let indexPath: IndexPath? = self.imageCollectionView.indexPath(for: cell)
+        for cell in self.collectionView.visibleCells {
+            let indexPath: IndexPath? = self.collectionView.indexPath(for: cell)
             if ((indexPath?.row)!  < self.groupAlbums[section].count - 1){
                 let indexPath1: IndexPath?
                 indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)
                 
-                self.imageCollectionView.scrollToItem(at: indexPath1!, at: .right, animated: true)
+                self.collectionView.scrollToItem(at: indexPath1!, at: .right, animated: true)
             }
             else{
                 let indexPath1: IndexPath?
                 indexPath1 = IndexPath.init(row: 0, section: (indexPath?.section)!)
-                self.imageCollectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
+                self.collectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
             }            
         } */
     
@@ -547,8 +472,8 @@ class FanpagePage: UIViewController,
     func scrollToNextCell() {
 
         let cellSize = CGSize(width:self.coverContainerView.frame.width, height:self.coverContainerView.frame.height)        
-        let contentOffset = self.imageCollectionView.contentOffset               
-        self.imageCollectionView.scrollRectToVisible(CGRect(x:contentOffset.x + cellSize.width, y:contentOffset.y, width:cellSize.width, height:cellSize.height), animated: true)        
+        let contentOffset = self.collectionView.contentOffset               
+        self.collectionView.scrollRectToVisible(CGRect(x:contentOffset.x + cellSize.width, y:contentOffset.y, width:cellSize.width, height:cellSize.height), animated: true)        
     }
     
     func startTimer()
@@ -560,28 +485,28 @@ class FanpagePage: UIViewController,
     
     
     func btnLeftArrowAction() {
-        let collectionBounds = self.imageCollectionView.bounds
-        let contentOffset = CGFloat(floor(self.imageCollectionView.contentOffset.x - collectionBounds.size.width))
+        let collectionBounds = self.collectionView.bounds
+        let contentOffset = CGFloat(floor(self.collectionView.contentOffset.x - collectionBounds.size.width))
         self.moveCollectionToFrame(contentOffset: contentOffset)
     }
     
     func btnRightArrowAction() {
-        let collectionBounds = self.imageCollectionView.bounds
-        let contentOffset = CGFloat(floor(self.imageCollectionView.contentOffset.x + collectionBounds.size.width))
+        let collectionBounds = self.collectionView.bounds
+        let contentOffset = CGFloat(floor(self.collectionView.contentOffset.x + collectionBounds.size.width))
         self.moveCollectionToFrame(contentOffset: contentOffset)
     }
     
     func moveCollectionToFrame(contentOffset : CGFloat) {
-        let frame: CGRect = CGRect(x : contentOffset ,y : self.imageCollectionView.contentOffset.y ,width : self.imageCollectionView.frame.width,height : self.imageCollectionView.frame.height)
-        self.imageCollectionView.scrollRectToVisible(frame, animated: true)
+        let frame: CGRect = CGRect(x : contentOffset ,y : self.collectionView.contentOffset.y ,width : self.collectionView.frame.width,height : self.collectionView.frame.height)
+        self.collectionView.scrollRectToVisible(frame, animated: true)
     }   
     
 
     func setFanpageData() {   
 
         self.videosGamves = [GamvesVideo]()        
-        self.collectionView.reloadData()        
-        self.getFanpageVideos(fan: fanpageGamves)        
+        //self.collectionView.reloadData()
+        //self.getFanpageVideos(fan: fanpageGamves)
     }
 
     @objc func autoScrollImageSlider() {
@@ -593,7 +518,7 @@ class FanpagePage: UIViewController,
         
     }
 
-    func getFanpageVideos(fan:GamvesFanpage)
+    /*func getFanpageVideos(fan:GamvesFanpage)
     {
 
         self.activityVideoView.startAnimating()
@@ -696,7 +621,7 @@ class FanpagePage: UIViewController,
                                                 Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
                                                     
                                                     
-                                                    self.collectionView.reloadData()
+                                                    //self.collectionView.reloadData()
                                                 })
                                             }
                                         }
@@ -739,7 +664,7 @@ class FanpagePage: UIViewController,
                                     {
                                         //self.videosGamves = fan.videos
                                         self.activityVideoView.stopAnimating()
-                                        self.collectionView.reloadData()
+                                        //self.collectionView.reloadData()
                                     }
                                     count = count + 1
                                     
@@ -757,7 +682,7 @@ class FanpagePage: UIViewController,
 
             }
         })
-    } 
+    } */
 
     func showEmptyMessage() {
         self.activityVideoView.stopAnimating()
@@ -766,9 +691,9 @@ class FanpagePage: UIViewController,
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         var count = Int()
-        if collectionView == self.imageCollectionView {
+        //if collectionView == self.collectionView {
             count = self.groupAlbums.count
-        }
+        //}
         return count
     }
 
@@ -782,25 +707,11 @@ class FanpagePage: UIViewController,
     
             sectionHeaderView.delegate = self
 
-            sectionHeaderView.section = indexPath.section
-
-            /*var headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "header", for: indexPath)
-
-            headerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 100)
-            let momentLabel = UILabel()
-            momentLabel.translatesAutoresizingMaskIntoConstraints = false
-            momentLabel.text = "Top Tags"
-            momentLabel.font = UIFont(name: "Ubuntu-MediumItalic", size: 13)
-            momentLabel.textColor = UIColor.red
-            headerView.addSubview(momentLabel)
-            momentLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 5).isActive = true
-            momentLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 5).isActive = true*/
-
+            sectionHeaderView.section = indexPath.section         
         
             let name = self.albumSections[indexPath.section]        
             sectionHeaderView.nameLabel.text = name                        
-            sectionHeaderView.backgroundColor = UIColor.black
-            //sectionHeaderView.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 2)                        
+            sectionHeaderView.backgroundColor = UIColor.black                                 
 
             return sectionHeaderView
         } 
@@ -808,73 +719,25 @@ class FanpagePage: UIViewController,
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {       
-        //return CGSize(width: self.imageCollectionView.frame.size.width, height: 50)
-        return CGSize(width: self.imageCollectionView.frame.width, height: 40)
+        return CGSize(width: self.collectionView.frame.width, height: 40)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        var count = 0
-        if collectionView == self.imageCollectionView
-        {
-            count = self.groupAlbums[section].count
-            
-        } else if collectionView == self.collectionView
-        {
-            count = self.videosGamves.count
-        }
-        return count
+        //var count = 0        
+        //count = self.groupAlbums[section].count        
+        return 1
     }  
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {            
+       
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellFanpageCollection, for: indexPath) as! FanpageCollectionCell
+        let albums = self.groupAlbums[indexPath.section] //[indexPath.row]
         
-        var cell = BaseCell()
-        
-        if collectionView == self.imageCollectionView
-        {
-            let cellImage = collectionView.dequeueReusableCell(withReuseIdentifier: cellImageCollectionId, for: indexPath) as! ImagesCollectionViewCell
-            let alb = self.groupAlbums[indexPath.section][indexPath.row]
-            
-            cellImage.imageView.image = alb.cover_image
-            
-            return cellImage
-            
-        } else if collectionView == self.collectionView
-        {
-            let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: cellVideoCollectionId, for: indexPath) as! VideoCollectionViewCell
-            
-            cellVideo.thumbnailImageView.image = self.videosGamves[indexPath.row].image
-            
-            let posterId = self.videosGamves[indexPath.row].posterId
-            
-            if posterId == Global.gamves_official_id {
-                
-                cellVideo.userProfileImageView.image = UIImage(named:"gamves_icons_white")
-                
-            } else if let imagePoster = Global.userDictionary[posterId] {
-                
-                cellVideo.userProfileImageView.image = imagePoster.avatar
-            }
-            
-            cellVideo.videoName.text = videosGamves[indexPath.row].title
-            
-            let published = String(describing: videosGamves[indexPath.row].published)
-            
-            let shortDate = published.components(separatedBy: " at ")
-            
-            cellVideo.videoDatePublish.text = shortDate[0]       
+        //cell.imageView.image = alb.cover_image  
 
-            cellVideo.checkView.isHidden = true            
-
-            let recognizer = UITapGestureRecognizer(target: self, action:#selector(handleViewProfile(recognizer:)))
-            
-            cellVideo.rowView.tag = indexPath.row
-
-            cellVideo.rowView.addGestureRecognizer(recognizer)
-
-
-            return cellVideo
-        }
+        cell.albums = albums
+        cell.albumCollectionView.reloadData()  
         
         return cell
     }
@@ -928,116 +791,61 @@ class FanpagePage: UIViewController,
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout:
         UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        var size = CGSize()
-        
-        if collectionView == self.imageCollectionView
-        {
-            let module = view.frame.width / 5
-            
-            size = CGSize(width: module, height: module)
-            
-        } else if collectionView == self.collectionView
-        {
-            let height = (view.frame.width - 16 - 16) * 9 / 16
-            
-            size = CGSize(width: view.frame.width, height: height + 16 + 88)
-        }
-        
-        return size //CGSize(width: view.frame.width, height: height + 16 + 88)
+        //var size = CGSize()        
+        //let module = view.frame.width / 5
+        //size = CGSize(width: module, height: module)
+
+        return CGSize(width: view.frame.width, height: 160)
+        //return size 
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         
-        var spacing = CGFloat()
-        
-        if collectionView == self.imageCollectionView
-        {
-            spacing = 2
-            
-        } else if collectionView == self.collectionView
-        {
-            spacing = 0
-        }
-        
+        var spacing = CGFloat()       
+        spacing = 2       
         return spacing        
     }
     
    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-    
-        if collectionView == self.imageCollectionView {
             
-            let selectedAlbums = self.groupAlbums[indexPath.section] as [GamvesAlbum]
+        let selectedAlbums = self.groupAlbums[indexPath.section] as [GamvesAlbum]
 
-            var images = [SKPhoto]()
+        var images = [SKPhoto]()
+        
+        for album in selectedAlbums {
             
-            for album in selectedAlbums {
-                
-                let image = SKPhoto.photoWithImage(album.cover_image)
-                image.caption = album.name
-                
-                images.append(image)
-            }
+            let image = SKPhoto.photoWithImage(album.cover_image)
+            image.caption = album.name
             
-            let browser = SKPhotoBrowser(photos: images)
-            browser.initializePageIndex(0)
-            present(browser, animated: true, completion: {})
+            images.append(image)
+        }
+        
+        let browser = SKPhotoBrowser(photos: images)
+        browser.initializePageIndex(0)
+        present(browser, animated: true, completion: {})
 
-        } else if collectionView == self.collectionView
-        {
-            
-            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
-
-            let videoLauncher = VideoLauncher()
-            
-            let video = self.videosGamves[indexPath.row]
-            video.fanpageId = fanpageGamves.fanpageId
-            
-            videoLauncher.showVideoPlayer(videoGamves: video)            
-        }        
+        
+        
     }
 
     var expanded = Bool()
 
     func selectSection(section: Int) {
 
-        self.labelEmptyMessage.isHidden = true
-        
-        self.expanded = self.imageCollectionView.isExpanded
-        
-        var height = CFloat()
+        self.labelEmptyMessage.isHidden = true        
+        self.expanded = self.collectionView.isExpanded      
 
         if self.expanded {
-
             //Achicar
-
             print("expanded")
-
             //self.setVerticalLayout(height:120)
-            
-            height = 120
-
         } else {
-
             //Agrandar
-
             print("collapsed")
-
-            //self.setVerticalLayout(height:300)
-            
-            height = 300
-
-        }
-        
-        //UIView.animate(withDuration: 0.3){
-        //self.view.updateConstraints()
-        
-        self.setVerticalLayout(height:CGFloat(height))
-        
-        //}
-        
-        self.imageCollectionView.toggle(to: section, animated: true)
+        }        
+        self.collectionView.toggle(to: section, animated: true)
     }   
     
     

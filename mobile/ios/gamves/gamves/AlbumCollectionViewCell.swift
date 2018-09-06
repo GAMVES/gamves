@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ImagesCollectionViewCell: BaseCell {
+class AlbumCollectionViewCell: BaseCell {
     
     let imageView: CustomImageView = {
         let imageView = CustomImageView()
@@ -17,15 +17,22 @@ class ImagesCollectionViewCell: BaseCell {
         return imageView
     }()
 
+    let nameLabel: UILabel = {
+        let label = UILabel()        
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.numberOfLines = 2
+        return label
+    }()
+
     override func setupViews()
     {
-        addSubview(self.imageView)
-        //self.addConstraintsWithFormat("H:|[v0(142)]|", views: self.imageView)
-        //self.addConstraintsWithFormat("V:|[v0(80)]|", views: self.imageView)
+        self.addSubview(self.imageView) 
+        self.addSubview(self.nameLabel)        
 
-        
         self.addConstraintsWithFormat("H:|[v0]|", views: self.imageView)
-        self.addConstraintsWithFormat("V:|[v0]|", views: self.imageView)
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.nameLabel)
+
+        self.addConstraintsWithFormat("V:|[v0][v1]|", views: self.imageView, self.nameLabel)
         
 
     }

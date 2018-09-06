@@ -548,7 +548,7 @@ ChooseAvatarProtocol
         //Looks for single or multiple taps.
         //self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
-        self.collectionView.register(ImagesCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
+        self.collectionView.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: self.cellImageCollectionId)
     
         //self.prepTextFields(inView: [self.youtubeVideoRowView, self.titleDescContainerView])
         
@@ -1460,7 +1460,7 @@ ChooseAvatarProtocol
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cellImage = collectionView.dequeueReusableCell(withReuseIdentifier: cellImageCollectionId, for: indexPath) as! ImagesCollectionViewCell
+        let cellImage = collectionView.dequeueReusableCell(withReuseIdentifier: cellImageCollectionId, for: indexPath) as! AlbumCollectionViewCell
         
         cellImage.imageView.image = self.imagesArray[indexPath.row]        
         
