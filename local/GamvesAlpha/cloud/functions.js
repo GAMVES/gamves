@@ -334,14 +334,10 @@
 
 
 
-
-
 	// --
   	// Fornite API Calls	
 
-	Parse.Cloud.define("ForniteAPICalls", function(request, status) {	
-
-		console.log("LLEGA");
+	Parse.Cloud.define("ForniteAPICalls", function(request, status) {			
 		
 		var fanpageObj;
 
@@ -787,7 +783,7 @@
 
             	parseFortniteStore(fanpagePF, json, function(callbackStore) {
 
-            		console.log("callbackNews");
+            		console.log("callbackStore");
 
 					if (!callbackStore.error) {
 						callback({"error":false});
@@ -804,7 +800,9 @@
 
 	function parseFortniteStore(fanpagePF, json, callbackStore) {	
 
-		let rows = json.rows;			
+		let rows = json.rows;
+
+		console.log("rows: " + rows);					
 
 		var count = 0;			
 
@@ -818,7 +816,7 @@
 			let name = item.name;
 			let imageUrl = item.item.image;			
 
-			console.log("title: " + " body: " + body);
+			console.log("name: " + name);
 
 			var fileComplete = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
 			var filenameText = fileComplete.replace(/\.[^/.]+$/, "");				
@@ -834,9 +832,7 @@
 
 			queryAlbum.first({
 
-				success: function(result) {
-
-					//console.log("result: " + result);
+				success: function(result) {					
 
 					if( result == null || result.length == 0 ) {
 
