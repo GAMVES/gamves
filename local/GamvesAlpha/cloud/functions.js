@@ -332,84 +332,129 @@
 		point.save();  
 	}
 
-
-
 	// --
   	// Fornite API Calls	
 
-	Parse.Cloud.define("ForniteAPICalls", function(request, status) {			
-		
-		var fanpageObj;
+	Parse.Cloud.define("ForniteAPICalls", function(request, status) {				
 
 		var queryFanpage = new Parse.Query("Fanpages");
 		queryFanpage.equalTo("pageName", "Fortnite");
-		queryFanpage.first({useMasterKey:true}).then(function(fanpagePF) {			
-		
-			fanpageObj = fanpagePF;
+		queryFanpage.first({useMasterKey:true}).then(function(fanpagePF) {					
 
-			new Promise(function(resolve, reject) {		
+			let albumRelation = fanpagePF.relation("albums");
+			let queryAlbum = albumRelation.query();
+			queryAlbum.find({
 
-				//- Fornite Api Upcoming
+				success: function(albumsPF) {
 
-				getForniteApiUpcoming(fanpageObj, function(restulUpcoming) {
+					console.log("albumsPF.length: " + albumsPF.length);
 
-					if (!restulUpcoming.error) {						
+					if( albumsPF == null || albumsPF.length == 0 ) {
 
-						resolve();			
+						getFortniteApi(fanpagePF,  function() {
 
-						//status.success(true);
+							status.success(true);
 
-					} else {
-						reject(restulUpcoming.message);
+						});
+
+						//status.error("empty");
+
+					} else {						
+
+						//Parse.Object.destroyAll(albumsPF);
+
+						for (var j = 0; j < albumsPF.length; j++) {
+
+							var albumPF = albumsPF[j];			
+							albumPF.destroy();
+						}
+
+						getFortniteApi(fanpagePF,  function() {
+
+							status.success(true);
+
+						});
+						
 					}
 
-				});
+				},
+				error: function(error) {
 
-			}).then(function() {
-
-				//- Fornite Api News
-
-				getForniteApiNews(fanpageObj, function(restulNews) {
-
-					if (!restulNews.error) {						
-
-						resolve();	
-
-						//status.success(true);
-
-					} else {
-						reject(restulNews.message);
-					}
-
-				});
-
-			}).then(function() {
-
-				//- Fornite Api News
-
-				getForniteApiStore(fanpageObj, function(restulStore) {
-
-					if (!restulStore.error) {											
+					getFortniteApi(fanpagePF,  function() {
 
 						status.success(true);
 
-					} else {
-						reject(restulStore.message);
-					}
+					});
+				}
+			});		
+		});	
+	}); 	
 
-				});	
 
+	function getFortniteApi(fanpageObj, callback) {
 
-			}).catch(function (fromreject) {
+		new Promise(function(resolve, reject) {		
 
-				status.error(fromreject);
+			//- Fornite Api Upcoming
+
+			getForniteApiUpcoming(fanpageObj, function(restulUpcoming) {
+
+				if (!restulUpcoming.error) {						
+
+					resolve();			
+
+					//status.success(true);
+
+				} else {
+					reject(restulUpcoming.message);
+				}
+
+			});
+
+		}).then(function() {
+
+			//- Fornite Api News
+
+			getForniteApiNews(fanpageObj, function(restulNews) {
+
+				if (!restulNews.error) {						
+
+					resolve();	
+
+					//status.success(true);
+
+				} else {
+					reject(restulNews.message);
+				}
+
+			});
+
+		}).then(function() {
+
+			//- Fornite Api News
+
+			getForniteApiStore(fanpageObj, function(restulStore) {
+
+				if (!restulStore.error) {											
+
+					//status.success(true);
+
+					callback();
+
+				} else {
+					reject(restulStore.message);
+				}
 
 			});	
 
+
+		}).catch(function (fromreject) {
+
+			status.error(fromreject);
+
 		});	
-
-	}); 	
-
+		
+	}
 
 	// --
   	// Fornite API Upcoming	  	 	  	
@@ -516,19 +561,23 @@
 									var albumRelation = fanpagePF.relation("albums");
 		        					albumRelation.add(albumSaved);	
 
-		        					console.log("__count: " + count + " rows: " + rows);      										
+		        					//console.log("__count: " + count + " rows: " + rows);      										
 
 									if (count == (rows-1)) {
 
-										fanpagePF.save(null, {useMasterKey: true});
+										fanpagePF.save(null, { useMasterKey: true,	
 
-										callbackUpcoming({"error":false});
+											success: function (fanpagePFSaved) {
 
-										/*removeIfNotExist(ids, fanpageId, function(resutl){
+												callbackUpcoming({"error":false});
 
-											callbackUpcoming({"error":false});
+											},
+											error: function (response, error) {			
 
-										});*/
+												callbackUpcoming({"error":true, "message":error});
+											}
+										});  									
+
 								   	}
 								   	count++;
 				    			},
@@ -670,7 +719,6 @@
 			queryAlbum.equalTo("imageId", filenameText);	
 			queryAlbum.equalTo("type", news);
 
-
 			queryAlbum.first({
 
 				success: function(result) {
@@ -708,19 +756,26 @@
 									var albumRelation = fanpagePF.relation("albums");
 		        					albumRelation.add(albumSaved);	 										
 
+		        					console.log("__countNews: " + count + " rows: " + rows);      										
+
 									if (count == (rows-1)) {
 
-										fanpagePF.save(null, {useMasterKey: true});
+										fanpagePF.save(null, { useMasterKey: true,	
 
-										callbackNews({"error":false});
+											success: function (fanpagePFSaved) {
 
-										/*removeIfNotExist(ids, fanpageId, function(resutl){
+												callbackNews({"error":false});
 
-											callbackNews({"error":false});
+											},
+											error: function (response, error) {			
 
-										});*/
+												callbackNews({"error":true, "message":error});
+											}
+										});  									
+
 								   	}
-								   	count++;
+								   	count++;				
+
 				    			},
 								error: function (response, error) {												
 								    
@@ -740,12 +795,7 @@
 						if (count == (rows-1)) {								
 
 							callbackUpcoming({"error":false});
-
-	                   		/*removeIfNotExist(ids, fanpageId, function(resutl) {
-
-								callbackUpcoming({"error":false});
-
-							});*/
+	                   		
 					   	}
 						count++;
 					}						
@@ -756,8 +806,6 @@
 			});
 		}
 	}
-
-
 
 
 	// --
@@ -865,19 +913,26 @@
 									var albumRelation = fanpagePF.relation("albums");
 		        					albumRelation.add(albumSaved);	 										
 
+		        					console.log("__countStore: " + count + " rows: " + rows);      										
+
 									if (count == (rows-1)) {
 
-										fanpagePF.save(null, {useMasterKey: true});
+										fanpagePF.save(null, { useMasterKey: true,	
 
-										callbackStore({"error":false});
+											success: function (fanpagePFSaved) {
 
-										/*removeIfNotExist(ids, fanpageId, function(resutl){
+												callbackStore({"error":false});
 
-											callbackStore({"error":false});
+											},
+											error: function (response, error) {			
 
-										});*/
+												callbackStore({"error":true, "message":error});
+											}
+										});  									
+
 								   	}
-								   	count++;
+								   	count++;	
+									
 				    			},
 								error: function (response, error) {												
 								    
@@ -897,12 +952,6 @@
 						if (count == (rows-1)) {								
 
 							callbackStore({"error":false});
-
-	                   		/*removeIfNotExist(ids, fanpageId, function(resutl) {
-
-								callbackStore({"error":false});
-
-							});*/
 					   	}
 						count++;
 					}						
