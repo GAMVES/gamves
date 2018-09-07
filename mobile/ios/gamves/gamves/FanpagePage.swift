@@ -153,6 +153,8 @@ class FanpagePage: UIViewController,
     var isFortnite = Bool() 
 
     var customView: UILabel?
+
+    var videosSection = "Videos"
     
     override func viewDidLoad() {
 
@@ -210,7 +212,8 @@ class FanpagePage: UIViewController,
         self.collectionView.backgroundColor = UIColor.gamvesBlackColor             
         
         self.collectionView.register(FanpageCollectionCell.self, forCellWithReuseIdentifier: self.cellFanpageCollection)
-        
+        self.collectionView.register(FanpageVideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellVideoCollectionId)
+
         self.collectionView.register(FanpageSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: self.sectionHeaderId)       
 
         self.collectionView.toggle(to: 0, animated: true)
@@ -221,9 +224,7 @@ class FanpagePage: UIViewController,
 
         self.view.addSubview(self.labelEmptyMessage)
         self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)        
-
-        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: 0, repeats: true)        
+        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)                
         
     }    
 
@@ -287,8 +288,9 @@ class FanpagePage: UIViewController,
             groupAlbums.forEach({
                 $0.forEach({print($0)})
                 print("-----------------------")
-            })         
-            
+            }) 
+
+            self.albumSections.append(self.videosSection)                 
                             
             self.collectionView.reloadData()
 
@@ -316,27 +318,7 @@ class FanpagePage: UIViewController,
             
     }
 
-    @objc func scrollAutomatically(_ sender: Timer) {
-        
-        /*var section = sender.userInfo as! Int
-        
-        for cell in self.collectionView.visibleCells {
-            let indexPath: IndexPath? = self.collectionView.indexPath(for: cell)
-            if ((indexPath?.row)!  < self.groupAlbums[section].count - 1){
-                let indexPath1: IndexPath?
-                indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)
-                
-                self.collectionView.scrollToItem(at: indexPath1!, at: .right, animated: true)
-            }
-            else{
-                let indexPath1: IndexPath?
-                indexPath1 = IndexPath.init(row: 0, section: (indexPath?.section)!)
-                self.collectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
-            }            
-        } */
-    
-    }
-
+   
     func checkFavorite() {
 
 
@@ -504,9 +486,8 @@ class FanpagePage: UIViewController,
 
     func setFanpageData() {   
 
-        self.videosGamves = [GamvesVideo]()        
-        //self.collectionView.reloadData()
-        //self.getFanpageVideos(fan: fanpageGamves)
+        self.videosGamves = [GamvesVideo]()                
+        self.getFanpageVideos(fan: fanpageGamves)
     }
 
     @objc func autoScrollImageSlider() {
@@ -518,7 +499,7 @@ class FanpagePage: UIViewController,
         
     }
 
-    /*func getFanpageVideos(fan:GamvesFanpage)
+    func getFanpageVideos(fan:GamvesFanpage)
     {
 
         self.activityVideoView.startAnimating()
@@ -682,7 +663,7 @@ class FanpagePage: UIViewController,
 
             }
         })
-    } */
+    } 
 
     func showEmptyMessage() {
         self.activityVideoView.stopAnimating()
@@ -692,8 +673,9 @@ class FanpagePage: UIViewController,
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         var count = Int()
         //if collectionView == self.collectionView {
-            count = self.groupAlbums.count
+            //count = self.groupAlbums.count
         //}
+        count = self.albumSections.count
         return count
     }
 
@@ -731,13 +713,28 @@ class FanpagePage: UIViewController,
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {            
        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellFanpageCollection, for: indexPath) as! FanpageCollectionCell
-        let albums = self.groupAlbums[indexPath.section] //[indexPath.row]
+        let cell:UICollectionViewCell!
         
-        //cell.imageView.image = alb.cover_image  
+        let section = self.albumSections[indexPath.section]
+        
+        print(section)
+        
+        if section == self.videosSection {
 
-        cell.albums = albums
-        cell.albumCollectionView.reloadData()  
+            let cellV = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellVideoCollectionId, for: indexPath) as! FanpageVideoCollectionViewCell
+            cellV.videosGamves = self.videosGamves
+            cellV.videoCollectionView.reloadData()
+            
+            return cellV
+
+        } else {
+
+            let cellI = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellFanpageCollection, for: indexPath) as! FanpageCollectionCell
+            let albums = self.groupAlbums[indexPath.section] 
+            cellI.albums = albums
+            cellI.albumCollectionView.reloadData()
+            return cellI
+        }
         
         return cell
     }
@@ -789,14 +786,23 @@ class FanpagePage: UIViewController,
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout:
-        UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        //var size = CGSize()        
-        //let module = view.frame.width / 5
-        //size = CGSize(width: module, height: module)
+        UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {    
 
-        return CGSize(width: view.frame.width, height: 160)
-        //return size 
+        var size = CGSize()
+
+        if self.albumSections[indexPath.section] == self.videosSection {
+
+            let height = (view.frame.width - 16 - 16) * 9 / 16
+            
+            size = CGSize(width: view.frame.width, height: height + 16 + 88)
+
+        } else {
+
+            size = CGSize(width: view.frame.width, height: 100)        
+
+        }
+        
+        return size
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

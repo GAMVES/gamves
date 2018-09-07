@@ -1,0 +1,172 @@
+////  FanpageVideoCollectionViewCell.swift
+//  gamves
+//
+//  Created by XCodeClub on 2018-09-07.
+//  Copyright © 2018 letsbuildthatapp. All rights reserved.
+//
+
+import UIKit
+import Parse
+
+class FanpageVideoCollectionViewCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+
+
+	 var videosGamves  = [GamvesVideo]() 
+
+    fileprivate let cellId = "videoCellId"
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }   
+    
+    let videoCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)        
+        collectionView.backgroundColor = UIColor.clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return collectionView
+    }()    
+    
+    func setupViews() {
+
+        backgroundColor = UIColor.clear
+        
+        addSubview(videoCollectionView)        
+        
+        videoCollectionView.dataSource = self
+        videoCollectionView.delegate = self
+        
+        self.videoCollectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)       
+        
+        self.addConstraintsWithFormat("H:|[v0]|", views: self.videoCollectionView)
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.videoCollectionView)  
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        //if let count = appCategory?.apps?.count {
+        //    return count
+        //}
+
+        return self.videosGamves.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellId, for: indexPath) as! VideoCollectionViewCell
+            
+        cellVideo.thumbnailImageView.image = self.videosGamves[indexPath.row].image
+        
+        let posterId = self.videosGamves[indexPath.row].posterId
+        
+        if posterId == Global.gamves_official_id {
+            
+            cellVideo.userProfileImageView.image = UIImage(named:"gamves_icons_white")
+            
+        } else if let imagePoster = Global.userDictionary[posterId] {
+            
+            cellVideo.userProfileImageView.image = imagePoster.avatar
+        }
+        
+        cellVideo.videoName.text = videosGamves[indexPath.row].title
+        
+        let published = String(describing: videosGamves[indexPath.row].published)
+        
+        let shortDate = published.components(separatedBy: " at ")
+        
+        cellVideo.videoDatePublish.text = shortDate[0]       
+
+        cellVideo.checkView.isHidden = true            
+
+        let recognizer = UITapGestureRecognizer(target: self, action:#selector(handleViewProfile(recognizer:)))
+        
+        cellVideo.rowView.tag = indexPath.row
+
+        cellVideo.rowView.addGestureRecognizer(recognizer)
+
+
+        return cellVideo
+
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+      
+        return CGSize(width: self.frame.width, height: self.frame.height)
+    }
+    
+   /*func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(0, 14, 0, 14)
+    }*/
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        
+		return 0
+	}
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        /*if let app = appCategory?.apps?[indexPath.item] {
+            featuredAppsController?.showAppDetailForApp(app)
+        }*/
+        
+    }     
+
+
+
+    @objc func handleViewProfile(recognizer:UITapGestureRecognizer) {
+        
+        let v = recognizer.view!
+        let index = v.tag
+               
+        let indexPath = IndexPath(item: index, section: 1)
+        
+        let posterId = self.videosGamves[indexPath.item].posterId
+        
+        print(posterId)
+        
+        let gamvesUserPoster = Global.userDictionary[posterId] as! GamvesUser
+
+        if let userId = PFUser.current()?.objectId {
+
+            //Not open my user
+            
+            if gamvesUserPoster.userId != userId {
+
+                if gamvesUserPoster.userName == "gamvesadmin" {
+
+                    var chatId = Int()
+
+                    if gamvesUserPoster.chatId > 0 {
+
+                        chatId = gamvesUserPoster.chatId
+                    } else {
+                        chatId = Global.getRandomInt()
+                    }
+
+                    let userDataDict:[String: AnyObject] = ["gamvesUser": gamvesUserPoster, "chatId": chatId as AnyObject]
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil, userInfo: userDataDict) 
+
+                } else  {
+
+                    let profileLauncher = PublicProfileLauncher()
+                    profileLauncher.showProfileView(gamvesUser: gamvesUserPoster)
+
+                }
+
+            }
+        }     
+    }
+
+    
+}
+
+

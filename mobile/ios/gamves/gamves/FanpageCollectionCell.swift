@@ -43,7 +43,9 @@ class FanpageCollectionCell: UICollectionViewCell, UICollectionViewDataSource, U
         self.albumCollectionView.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: cellId)       
         
         self.addConstraintsWithFormat("H:|[v0]|", views: self.albumCollectionView)
-        self.addConstraintsWithFormat("V:|[v0]|", views: self.albumCollectionView)        
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.albumCollectionView)  
+
+        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: 0, repeats: true)              
         
     }
     
@@ -68,8 +70,20 @@ class FanpageCollectionCell: UICollectionViewCell, UICollectionViewDataSource, U
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        //return CGSize(width: 100, height: frame.height - 32)
-        return CGSize(width: frame.width / 2 + 50, height: frame.height)
+      
+        var width = 100
+
+        let album = self.albums[indexPath.item]        
+
+        if let x:CGFloat = album.cover_image.size.width,
+           let y:CGFloat = album.cover_image.size.height {
+
+            if x > y {
+                width = 200
+            }
+        }
+
+        return CGSize(width: width, height: 100)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -83,6 +97,28 @@ class FanpageCollectionCell: UICollectionViewCell, UICollectionViewDataSource, U
         }*/
         
     }
+
+     @objc func scrollAutomatically(_ sender: Timer) {
+        
+        var section = sender.userInfo as! Int
+        
+        for cell in self.albumCollectionView.visibleCells {
+            let indexPath: IndexPath? = self.albumCollectionView.indexPath(for: cell)
+            if ((indexPath?.row)!  < self.albums.count - 1){
+                let indexPath1: IndexPath?
+                indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)
+                
+                self.albumCollectionView.scrollToItem(at: indexPath1!, at: .right, animated: true)
+            }
+            else{
+                let indexPath1: IndexPath?
+                indexPath1 = IndexPath.init(row: 0, section: (indexPath?.section)!)
+                self.albumCollectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
+            }            
+        }
+    
+    }
+
     
 }
 
