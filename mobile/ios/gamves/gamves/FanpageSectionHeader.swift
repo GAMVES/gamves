@@ -11,7 +11,7 @@ protocol CustomHeaderViewDelegate: class {
     func selectSection(section: Int)
 }
 
-class FanpageSectionHeader: UICollectionReusableView {
+class FanpageSectionHeader: UITableViewCell {
 
     weak var delegate: CustomHeaderViewDelegate?
     var section: Int?
@@ -22,11 +22,11 @@ class FanpageSectionHeader: UICollectionReusableView {
         label.textColor = UIColor.white
         //label.backgroundColor = UIColor.cyan
         return label
-    }()
+    }()    
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.setupViews()
     }
     
     required init?(coder aDecoder: NSCoder) {

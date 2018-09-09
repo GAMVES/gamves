@@ -116,8 +116,8 @@
 		C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */; };
 		C9378DC42120D94000BF1547 /* AddFriendSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9378DC32120D94000BF1547 /* AddFriendSectionHeader.swift */; };
 		C9383D62210593CB008E54D5 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9383D61210593CB008E54D5 /* FriendsViewController.swift */; };
-		C969004621430B5E00F3BFF6 /* FanpageVideoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C969004521430B5E00F3BFF6 /* FanpageVideoCollectionViewCell.swift */; };
-		C978A4B32140F36A0063EBE1 /* FanpageCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C978A4B22140F36A0063EBE1 /* FanpageCollectionCell.swift */; };
+		C969004621430B5E00F3BFF6 /* FanpageVideoTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C969004521430B5E00F3BFF6 /* FanpageVideoTableCell.swift */; };
+		C978A4B32140F36A0063EBE1 /* FanpageTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C978A4B22140F36A0063EBE1 /* FanpageTableCell.swift */; };
 		C98FD87F2106131200631D78 /* FriendEmptyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */; };
 		C98FD8812106133F00631D78 /* FriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */; };
 		C98FD883210613B000631D78 /* FriendSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD882210613B000631D78 /* FriendSectionHeader.swift */; };
@@ -239,8 +239,8 @@
 		C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
 		C9378DC32120D94000BF1547 /* AddFriendSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddFriendSectionHeader.swift; sourceTree = "<group>"; };
 		C9383D61210593CB008E54D5 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
-		C969004521430B5E00F3BFF6 /* FanpageVideoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanpageVideoCollectionViewCell.swift; sourceTree = "<group>"; };
-		C978A4B22140F36A0063EBE1 /* FanpageCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanpageCollectionCell.swift; sourceTree = "<group>"; };
+		C969004521430B5E00F3BFF6 /* FanpageVideoTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanpageVideoTableCell.swift; sourceTree = "<group>"; };
+		C978A4B22140F36A0063EBE1 /* FanpageTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanpageTableCell.swift; sourceTree = "<group>"; };
 		C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendEmptyCollectionViewCell.swift; sourceTree = "<group>"; };
 		C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendCollectionViewCell.swift; sourceTree = "<group>"; };
 		C98FD882210613B000631D78 /* FriendSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendSectionHeader.swift; sourceTree = "<group>"; };
@@ -305,8 +305,8 @@
 				824E67C51F59960E0025096D /* VideoCollectionViewCell.swift */,
 				824E67C31F58D5D00025096D /* FanpageCollectionViewCell.swift */,
 				82C908481FA0B8220059FAB8 /* AlbumCollectionViewCell.swift */,
-				C978A4B22140F36A0063EBE1 /* FanpageCollectionCell.swift */,
-				C969004521430B5E00F3BFF6 /* FanpageVideoCollectionViewCell.swift */,
+				C978A4B22140F36A0063EBE1 /* FanpageTableCell.swift */,
+				C969004521430B5E00F3BFF6 /* FanpageVideoTableCell.swift */,
 			);
 			name = pagesCells;
 			sourceTree = "<group>";
@@ -783,7 +783,7 @@
 				826D58341F8D98C50014A2C8 /* ProfileCell.swift in Sources */,
 				82418F3D1EF86FBC00D7E6BC /* FanpagePage.swift in Sources */,
 				8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */,
-				C978A4B32140F36A0063EBE1 /* FanpageCollectionCell.swift in Sources */,
+				C978A4B32140F36A0063EBE1 /* FanpageTableCell.swift in Sources */,
 				825E24041F984C14009462CD /* Protocols.swift in Sources */,
 				82BD5EFD1F92B58600BD8760 /* Int+Extension.swift in Sources */,
 				C77B55191CFFF3AD00FF375C /* HomeController.swift in Sources */,
@@ -855,7 +855,7 @@
 				82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */,
 				82BD5EFF1F93AC9600BD8760 /* ContactCell.swift in Sources */,
 				82FFF52F2022D795005F45AA /* CatFanSelectorViewCell.swift in Sources */,
-				C969004621430B5E00F3BFF6 /* FanpageVideoCollectionViewCell.swift in Sources */,
+				C969004621430B5E00F3BFF6 /* FanpageVideoTableCell.swift in Sources */,
 				824E67C41F58D5D00025096D /* FanpageCollectionViewCell.swift in Sources */,
 				82418F361EF853E400D7E6BC /* HomeCell.swift in Sources */,
 				82C6F7581F8AA8F50090C725 /* ImageView+Extensions.swift in Sources */,

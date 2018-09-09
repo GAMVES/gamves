@@ -8,14 +8,19 @@
 import UIKit
 import Parse
 
-class FanpageVideoCollectionViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class FanpageVideoTableCell: UITableViewCell,
+UIScrollViewDelegate,
+UICollectionViewDataSource, 
+UICollectionViewDelegate, 
+UICollectionViewDelegateFlowLayout 
+{
 
 	 var videosGamves  = [GamvesVideo]() 
 
     fileprivate let cellId = "videoCellId"
     
-   override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    	super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
     }
     
@@ -122,11 +127,8 @@ class FanpageVideoCollectionViewCell: UITableViewCell, UICollectionViewDataSourc
         
         /*if let app = appCategory?.apps?[indexPath.item] {
             featuredAppsController?.showAppDetailForApp(app)
-        }*/
-        
-    }     
-
-
+        }*/        
+    }  
 
     @objc func handleViewProfile(recognizer:UITapGestureRecognizer) {
         
@@ -174,6 +176,59 @@ class FanpageVideoCollectionViewCell: UITableViewCell, UICollectionViewDataSourc
     }
 
     
+}
+
+
+extension FanpageVideoTableCell {
+    
+   func setCollectionViewDataSourceDelegate<D: UICollectionViewDataSource & UICollectionViewDelegate>(_ dataSourceDelegate: D, forRow row: Int) {
+        
+        if row == 0 {
+            
+            Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: nil, repeats: true)
+            
+        }
+        
+        self.videoCollectionView.delegate = dataSourceDelegate
+        self.videoCollectionView.dataSource = dataSourceDelegate
+        self.videoCollectionView.tag = row
+        self.videoCollectionView.setContentOffset(self.videoCollectionView.contentOffset, animated:false) // Stops collection view if it was scrolling.
+        self.videoCollectionView.backgroundView?.isHidden = true        
+        self.videoCollectionView.reloadData()
+    }
+    
+    @objc func scrollAutomatically(_ timer1: Timer) {
+        
+        for cell in self.videoCollectionView.visibleCells {
+            let indexPath: IndexPath? = self.videoCollectionView.indexPath(for: cell)
+            let count = Global.categories_gamves[self.videoCollectionView.tag]?.fanpages.count
+            
+            if ((indexPath?.row)!  < count! - 1){
+                let indexPath1: IndexPath?
+                indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)
+                
+                self.videoCollectionView.scrollToItem(at: indexPath1!, at: .right, animated: true)
+            }
+            else{
+                let indexPath1: IndexPath?
+                indexPath1 = IndexPath.init(row: 0, section: (indexPath?.section)!)
+                self.videoCollectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
+            }
+            
+        }
+    }
+    
+    var collectionViewOffset: CGFloat
+    {
+        set
+        {
+            self.videoCollectionView.contentOffset.y = newValue
+        }
+        
+        get {
+            return self.videoCollectionView.contentOffset.y
+        }
+    }
 }
 
 

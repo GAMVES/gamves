@@ -7,14 +7,17 @@
 
 import UIKit
 
-class FanpageCollectionCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class FanpageTableCell: UITableViewCell, 
+UICollectionViewDataSource, 
+UICollectionViewDelegate, 
+UICollectionViewDelegateFlowLayout {
     
     var albums = [GamvesAlbum]()   
 
     fileprivate let cellId = "appCellId"
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
     }
     
@@ -25,14 +28,16 @@ class FanpageCollectionCell: UICollectionViewCell, UICollectionViewDataSource, U
     let albumCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)        
-        collectionView.backgroundColor = UIColor.clear
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        
-        return collectionView
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)        
+        cv.backgroundColor = UIColor.clear
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        //cv.dataSource = self
+        //cv.delegate = self
+        return cv
     }()    
     
     func setupViews() {
+        
         backgroundColor = UIColor.clear
         
         addSubview(albumCollectionView)        
@@ -43,9 +48,7 @@ class FanpageCollectionCell: UICollectionViewCell, UICollectionViewDataSource, U
         self.albumCollectionView.register(AlbumCollectionViewCell.self, forCellWithReuseIdentifier: cellId)       
         
         self.addConstraintsWithFormat("H:|[v0]|", views: self.albumCollectionView)
-        self.addConstraintsWithFormat("V:|[v0]|", views: self.albumCollectionView)  
-
-        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: 0, repeats: true)              
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.albumCollectionView)         
         
     }
     
@@ -98,13 +101,36 @@ class FanpageCollectionCell: UICollectionViewCell, UICollectionViewDataSource, U
         
     }
 
-     @objc func scrollAutomatically(_ sender: Timer) {
+}
+
+
+
+extension FanpageTableCell {
+    
+    func setCollectionViewDataSourceDelegate<D: UICollectionViewDataSource & UICollectionViewDelegate>(_ dataSourceDelegate: D, forRow row: Int) {
         
-        var section = sender.userInfo as! Int
+        if row == 0 {
+            
+            Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(self.scrollAutomatically), userInfo: nil, repeats: true)
+            
+        }
+        
+        self.albumCollectionView.delegate = dataSourceDelegate
+        self.albumCollectionView.dataSource = dataSourceDelegate
+        self.albumCollectionView.tag = row
+        
+        self.albumCollectionView.setContentOffset(self.albumCollectionView.contentOffset, animated:false) // Stops collection view if it was scrolling.
+        self.albumCollectionView.backgroundView?.isHidden = true        
+        self.albumCollectionView.reloadData()
+    }
+    
+    @objc func scrollAutomatically(_ timer1: Timer) {
         
         for cell in self.albumCollectionView.visibleCells {
             let indexPath: IndexPath? = self.albumCollectionView.indexPath(for: cell)
-            if ((indexPath?.row)!  < self.albums.count - 1){
+            let count = Global.categories_gamves[self.albumCollectionView.tag]?.fanpages.count
+            
+            if ((indexPath?.row)!  < count! - 1){
                 let indexPath1: IndexPath?
                 indexPath1 = IndexPath.init(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)
                 
@@ -114,12 +140,22 @@ class FanpageCollectionCell: UICollectionViewCell, UICollectionViewDataSource, U
                 let indexPath1: IndexPath?
                 indexPath1 = IndexPath.init(row: 0, section: (indexPath?.section)!)
                 self.albumCollectionView.scrollToItem(at: indexPath1!, at: .left, animated: true)
-            }            
+            }
+            
         }
-    
     }
-
     
+    var collectionViewOffset: CGFloat
+    {
+        set
+        {
+            self.albumCollectionView.contentOffset.x = newValue
+        }
+        
+        get {
+            return self.albumCollectionView.contentOffset.x
+        }
+    }
 }
 
 
