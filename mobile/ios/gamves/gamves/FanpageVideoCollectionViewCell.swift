@@ -1,4 +1,4 @@
-////  FanpageVideoCollectionViewCell.swift
+
 //  gamves
 //
 //  Created by XCodeClub on 2018-09-07.
@@ -38,10 +38,10 @@ class FanpageVideoCollectionViewCell: UICollectionViewCell, UICollectionViewData
 
         backgroundColor = UIColor.clear
         
-        addSubview(videoCollectionView)        
+        self.addSubview(self.videoCollectionView)
         
-        videoCollectionView.dataSource = self
-        videoCollectionView.delegate = self
+        self.videoCollectionView.dataSource = self
+        self.videoCollectionView.delegate = self
         
         self.videoCollectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)       
         
@@ -54,8 +54,10 @@ class FanpageVideoCollectionViewCell: UICollectionViewCell, UICollectionViewData
         //if let count = appCategory?.apps?.count {
         //    return count
         //}
+        
+        let count = self.videosGamves.count
 
-        return self.videosGamves.count
+        return count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -91,15 +93,21 @@ class FanpageVideoCollectionViewCell: UICollectionViewCell, UICollectionViewData
 
         cellVideo.rowView.addGestureRecognizer(recognizer)
 
-
         return cellVideo
-
         
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
       
-        return CGSize(width: self.frame.width, height: self.frame.height)
+        let width = self.frame.width       
+
+        var height = ((width - 16 - 16) * 9 / 16) + 16 + 88
+
+        height = height * CGFloat(self.videosGamves.count)
+            
+       	let size = CGSize(width: width, height: height)
+
+        return size
     }
     
    /*func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
