@@ -15,19 +15,22 @@ UICollectionViewDelegate,
 UICollectionViewDelegateFlowLayout 
 {
 
-	 var videosGamves  = [GamvesVideo]() 
+	var videosGamves  = [GamvesVideo]() 
 
-    fileprivate let cellId = "videoCellId"
+    fileprivate let cellId = "videoCellId"   
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }   
-    
+     //- Empty message
+
+    var labelEmptyMessage: UILabel = {
+        let label = UILabel()
+        label.text = "There are no videos yet loaded for this fanpage"        
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.textColor = UIColor.gray
+        label.numberOfLines = 3
+        label.textAlignment = .center
+        return label
+    }()
+
     let videoCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -37,20 +40,40 @@ UICollectionViewDelegateFlowLayout
         
         return collectionView
     }()    
+
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.setupViews()
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }   
+    
+   
     func setupViews() {
 
         backgroundColor = UIColor.clear
+
+        if self.videosGamves.count > 0 {
         
-        self.addSubview(self.videoCollectionView)
-        
-        self.videoCollectionView.dataSource = self
-        self.videoCollectionView.delegate = self
-        
-        self.videoCollectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)       
-        
-        self.addConstraintsWithFormat("H:|[v0]|", views: self.videoCollectionView)
-        self.addConstraintsWithFormat("V:|[v0]|", views: self.videoCollectionView)  
+            self.addSubview(self.videoCollectionView)
+            
+            self.videoCollectionView.dataSource = self
+            self.videoCollectionView.delegate = self
+            
+            self.videoCollectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)       
+            
+            self.addConstraintsWithFormat("H:|[v0]|", views: self.videoCollectionView)
+            self.addConstraintsWithFormat("V:|[v0]|", views: self.videoCollectionView)  
+
+        } else {
+
+            self.addSubview(self.labelEmptyMessage)
+            self.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
+            self.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)                    
+
+        }
         
     }
     

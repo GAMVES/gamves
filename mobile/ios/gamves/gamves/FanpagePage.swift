@@ -12,6 +12,11 @@ import KenBurns
 import SKPhotoBrowser
 //import CampcotCollectionViewpo
 
+struct AlbumSectionData {
+    var isExpanded = Bool()
+    var title = String()   
+}
+
 class FanpagePage: UIViewController,
     //UICollectionViewDataSource, 
     //UICollectionViewDelegate, 
@@ -107,19 +112,7 @@ class FanpagePage: UIViewController,
         let view = UIView()
         view.backgroundColor = UIColor.black 
         return view
-    }()
-
-    //- Empty message
-
-    var labelEmptyMessage: UILabel = {
-        let label = UILabel()
-        label.text = "There are no videos yet loaded for this fanpage"        
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = UIColor.gray
-        label.numberOfLines = 3
-        label.textAlignment = .center
-        return label
-    }()
+    }()   
 
     // TableView
 
@@ -127,6 +120,7 @@ class FanpagePage: UIViewController,
         let rect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         let tv = UITableView(frame: rect)
         //tv.backgroundColor = UIColor.white
+        tv.alwaysBounceVertical = false
         tv.dataSource = self
         tv.delegate = self
         return tv
@@ -140,7 +134,7 @@ class FanpagePage: UIViewController,
     var videosGamves  = [GamvesVideo]()
     
     var groupAlbums = [[GamvesAlbum]]()
-    var albumSections = [String]()
+    var albumSections = [AlbumSectionData]()
 
     weak var delegate:CellDelegate?       
     
@@ -222,12 +216,7 @@ class FanpagePage: UIViewController,
 
         self.activityVideoView = Global.setActivityIndicator(container: self.tableView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
            
-        //self.activityVideoView.startAnimating()          
-
-        self.view.addSubview(self.labelEmptyMessage)
-        self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)                
-        
+        //self.activityVideoView.startAnimating()                  
     }    
        
 
@@ -271,25 +260,43 @@ class FanpagePage: UIViewController,
 
             let groupDictionary = Dictionary(grouping: allAbums) { (album) -> String in
                 return album.type
-            }            
-
-            //self.albumSections = groupDictionary.keys
-
+            }
+            
             let keys = groupDictionary.keys.sorted()
             keys.forEach{ (key) in
                 print(key)
-                self.albumSections.append(key)
-                groupAlbums.append(groupDictionary[key]!)
+                var albumSection = AlbumSectionData()
+                albumSection.title = key
+                albumSection.isExpanded = false
+                self.albumSections.append(albumSection)
+                self.groupAlbums.append(groupDictionary[key]!)
             }
             
-            groupAlbums.forEach({
+            self.groupAlbums.forEach({
                 $0.forEach({print($0)})
                 print("-----------------------")
             }) 
 
-            self.albumSections.append(self.videosSection)                 
+            var albumSection = AlbumSectionData()
+            albumSection.title = self.videosSection
+            albumSection.isExpanded = false
+            self.albumSections.append(albumSection)            
                             
-            self.tableView.reloadData()
+            //self.tableView.reloadData()
+
+            var expandeds = ["Images", "News", "Videos"]
+
+            //for var albumSection in self.albumSections {
+
+            for i in 0...self.albumSections.count - 1 {
+
+                for expanded in expandeds {
+
+                    if self.albumSections[i].title.contains(expanded) {
+                        self.albumSections[i].isExpanded = true                    
+                    }
+                }
+            }
         }
         
         if self.coverContainerView.tag != 1 {
@@ -421,9 +428,7 @@ class FanpagePage: UIViewController,
             }
             
             delegate?.setCurrentPage(current: 0, direction: -1, data: nil)
-        }  
-
-        self.labelEmptyMessage.isHidden = true
+        }
     }
     
     func newKenBurnsImageView(image: UIImage) {
@@ -499,7 +504,7 @@ class FanpagePage: UIViewController,
                 var countVideos = videoObjects?.count
                 var count = 0
                 
-                print(countVideos)
+                //print(countVideos)
                 
                 if countVideos! > 0
                 {
@@ -564,7 +569,7 @@ class FanpagePage: UIViewController,
                                             {
                                                 Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in                                           
                                                                                                         
-                                                    self.tableView.reloadData()
+                                                    //self.tableView.reloadData()
                                                 })
                                             }
                                         }
@@ -592,6 +597,7 @@ class FanpagePage: UIViewController,
                                         {                                            
                                             self.activityVideoView.stopAnimating()
                                             self.tableView.reloadData()
+                                            
                                         }
                                         count = count + 1
                                     }
@@ -618,26 +624,26 @@ class FanpagePage: UIViewController,
                    
                     self.showEmptyMessage()
                 }
-
             }
         })
     } 
 
     func showEmptyMessage() {
         self.activityVideoView.stopAnimating()
-        self.labelEmptyMessage.isHidden = false
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
         var count = Int()
-        //if collectionView == self.collectionView {
-            //count = self.groupAlbums.count
-        //}
         count = self.albumSections.count
         return count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+        if !self.albumSections[section].isExpanded {
+            return 0
+        }
+        
         return 1
     }
 
@@ -651,9 +657,21 @@ class FanpagePage: UIViewController,
 
         sectionHeaderView.section = section       
     
-        let name = self.albumSections[section]        
+        let albumSelection = self.albumSections[section]
+
+        if albumSelection.isExpanded {
+
+            let image = UIImage(named: "expand_more_white")
+            sectionHeaderView.expandImageView.image = image           
+
+        } else {
+
+            let image = UIImage(named: "expand_less_white")
+            sectionHeaderView.expandImageView.image = image           
+
+        }
         
-        sectionHeaderView.nameLabel.text = name                        
+        sectionHeaderView.nameLabel.text = albumSelection.title
         sectionHeaderView.backgroundColor = UIColor.black                                 
 
         return sectionHeaderView     
@@ -702,15 +720,16 @@ class FanpagePage: UIViewController,
        
         let cell:UITableViewCell!
         
-        let section = self.albumSections[indexPath.section]
+        let albumSelection = self.albumSections[indexPath.section]
         
-        print(section)
+        print(albumSelection.title)
         
-        if section == self.videosSection {
+        if albumSelection.title == self.videosSection {
 
             let cellV = tableView.dequeueReusableCell(withIdentifier: self.cellVideoTableId, for: indexPath) as! FanpageVideoTableCell
             
             cellV.videosGamves = self.videosGamves
+            cellV.setupViews()
             cellV.videoCollectionView.reloadData()
             return cellV
 
@@ -777,7 +796,7 @@ class FanpagePage: UIViewController,
         
         var height = CGFloat()
 
-        if self.albumSections[indexPath.section] == self.videosSection {
+        if self.albumSections[indexPath.section].title == self.videosSection {
 
             height = (view.frame.width - 16 - 16) * 9 / 16
             
@@ -793,9 +812,9 @@ class FanpagePage: UIViewController,
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        
+                
         let selectedAlbums = self.groupAlbums[indexPath.section] as [GamvesAlbum]
-
+        
         var images = [SKPhoto]()
         
         for album in selectedAlbums {
@@ -812,14 +831,14 @@ class FanpagePage: UIViewController,
         
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    /*func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
 
          var size = CGSize()
 
-         let section = self.albumSections[indexPath.section]
+         let albumSelection = self.albumSections[indexPath.section]
 
-        if section == self.videosSection {
+        if albumSelection.title == self.videosSection {
 
             let height = (view.frame.width - 16 - 16) * 9 / 16
             
@@ -834,28 +853,17 @@ class FanpagePage: UIViewController,
         
         return size
 
-    }
+    }*/
 
-    var expanded = Bool()
-
-    func selectSection(section: Int) {
-
-        self.labelEmptyMessage.isHidden = true        
+    func selectSection(section: Int) {   
         
-        //self.expanded = self.collectionView.isExpanded
+        let isExpanded = self.albumSections[section].isExpanded
+        self.albumSections[section].isExpanded = !isExpanded
+        
+        self.tableView.reloadData()       
+       
 
-        if self.expanded {
-            //Achicar
-            print("expanded")
-            //self.setVerticalLayout(height:120)
-        } else {
-            //Agrandar
-            print("collapsed")
-        }        
-        
-        //self.collectionView.toggle(to: section, animated: true)
-        
-    }   
+    }  
     
     
   

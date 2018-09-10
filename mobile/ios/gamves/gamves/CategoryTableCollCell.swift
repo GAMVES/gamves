@@ -18,12 +18,15 @@ class CategoryTableCollCell: UITableViewCell, UIScrollViewDelegate {
 
 	lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        //cv.backgroundColor = UIColor.white
+        //cv.delegate = self
         return cv
     }()
     
     let cellBackgroundView: UIView = {
-        let view = UIView()        
+        let view = UIView()
+        //view.backgroundColor = UIColor.white
         return view
     }()
 
@@ -56,13 +59,8 @@ class CategoryTableCollCell: UITableViewCell, UIScrollViewDelegate {
             self.cellBackgroundView.alpha = 0.8
         }
         
-        collectionView.layer.backgroundColor = UIColor.clear.cgColor       
-        
+        collectionView.layer.backgroundColor = UIColor.clear.cgColor
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }   
     
     func scrollViewDidScroll(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
     
@@ -77,9 +75,19 @@ class CategoryTableCollCell: UITableViewCell, UIScrollViewDelegate {
         let indexPath = IndexPath(item: Int(index), section: 0)
         collectionView.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionViewScrollPosition())
 
-    }  
+    }
+    
 
-     func setCollectionViewDataSourceDelegate<D: UICollectionViewDataSource & UICollectionViewDelegate>(_ dataSourceDelegate: D, forRow row: Int) {
+        
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }    
+
+}
+
+extension CategoryTableCollCell {
+    
+    func setCollectionViewDataSourceDelegate<D: UICollectionViewDataSource & UICollectionViewDelegate>(_ dataSourceDelegate: D, forRow row: Int) {
         
         if row == 0 {
             
@@ -91,7 +99,15 @@ class CategoryTableCollCell: UITableViewCell, UIScrollViewDelegate {
         collectionView.dataSource = dataSourceDelegate
         collectionView.tag = row
         collectionView.setContentOffset(collectionView.contentOffset, animated:false) // Stops collection view if it was scrolling.
-        collectionView.backgroundView?.isHidden = true     
+        
+        //collectionView.delegate = delegate
+        
+        //collectionView.backgroundView?.alpha = 0
+        
+        //collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundView?.isHidden = true
+        
+        
         collectionView.reloadData()
     }
     
@@ -126,8 +142,5 @@ class CategoryTableCollCell: UITableViewCell, UIScrollViewDelegate {
         get {
             return collectionView.contentOffset.x
         }
-    }   
-    
-
+    }
 }
-

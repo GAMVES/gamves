@@ -76,6 +76,6 @@ target 'gamves' do
 
   pod 'DRPLoadingSpinner'
 
-  pod 'CampcotCollectionView'
+  #pod 'CampcotCollectionView'
   
 end
