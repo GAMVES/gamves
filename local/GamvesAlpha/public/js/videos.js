@@ -3,7 +3,7 @@ document.addEventListener("LoadVideo", function(event){
 
       var fanpageId = event.detail.fanpageId;
       var categoryName = event.detail.categoryName;
-      var schoolId = event.detail.schoolId;      
+      var schoolId = event.detail.schoolId;       
 
       var fanpageObj;
       var appIconFile;
@@ -125,6 +125,21 @@ document.addEventListener("LoadVideo", function(event){
                                         $("#edit_order_video").append(($("<option/>", { html: i })));                                     
                                       }    
                                     } 
+
+                                    $('#schools_viewed_videos').empty();                          
+                            
+                                    let count = otherSchools.length;                           
+
+                                    for (var i=0; i<count; i++) {                       
+
+                                        let other = otherSchools[i];
+
+                                        let short = other.short;
+                                        let name = other.name;
+
+                                        $('#schools_viewed_videos').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
+
+                                    }
                                     
 
                               });  
@@ -288,7 +303,9 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("fanpageObjId", fanpageObj.id);                     
                     video.set("poster_name", "Gamves Official");       
                     video.set("target", [schoolId]);
-                    video.set("source_type", 2);  //YOUTUBE     
+                    video.set("source_type", 2);  //YOUTUBE   
+                    
+                    video.set("target", window.checkChecked("frm_edit", schoolShort));
 
                     video.save(null, {
                         success: function (savedVideo) {        
