@@ -18,6 +18,8 @@ UICollectionViewDelegateFlowLayout
 	var videosGamves  = [GamvesVideo]() 
 
     fileprivate let cellId = "videoCellId"   
+
+    var delegate:FanpageCollectionsDelegate!
     
      //- Empty message
 
@@ -43,7 +45,7 @@ UICollectionViewDelegateFlowLayout
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.setupViews()
+        //self.setupViews()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -130,27 +132,20 @@ UICollectionViewDelegateFlowLayout
 
         var height = ((width - 16 - 16) * 9 / 16) + 16 + 88
 
-        height = height * CGFloat(self.videosGamves.count)
-            
        	let size = CGSize(width: width, height: height)
 
         return size
     }
     
-   /*func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(0, 14, 0, 14)
-    }*/
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         
 		return 0
 	}
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        /*if let app = appCategory?.apps?[indexPath.item] {
-            featuredAppsController?.showAppDetailForApp(app)
-        }*/        
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {       
+
+        self.delegate.videoSection(videos: self.videosGamves, index:indexPath.row)
     }  
 
     @objc func handleViewProfile(recognizer:UITapGestureRecognizer) {

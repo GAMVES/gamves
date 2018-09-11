@@ -14,6 +14,8 @@ UICollectionViewDelegateFlowLayout {
     
     var albums = [GamvesAlbum]()   
 
+    var delegate:FanpageCollectionsDelegate!
+
     fileprivate let cellId = "appCellId"
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -94,10 +96,8 @@ UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        /*if let app = appCategory?.apps?[indexPath.item] {
-            featuredAppsController?.showAppDetailForApp(app)
-        }*/
+
+        self.delegate.albumSection(albums: self.albums, index:indexPath.row)
         
     }
 
