@@ -22,9 +22,6 @@ PODS:
   - IGColorPicker (0.4.2):
     - M13Checkbox (~> 3.2.0)
   - ISEmojiView (0.1.0)
-  - KenBurns (0.2.8):
-    - CalmParametricAnimations (~> 1.0.1)
-    - SDWebImage (~> 3.8.2)
   - M13Checkbox (3.2.2)
   - NVActivityIndicatorView (4.3.0):
     - NVActivityIndicatorView/Presenter (= 4.3.0)
@@ -41,9 +38,9 @@ PODS:
     - DynamicBlurView (~> 2.0)
   - PulsingHalo (0.2.8)
   - RSKImageCropper (2.1.0)
-  - SDWebImage (3.8.2):
-    - SDWebImage/Core (= 3.8.2)
-  - SDWebImage/Core (3.8.2)
+  - SDWebImage (4.4.2):
+    - SDWebImage/Core (= 4.4.2)
+  - SDWebImage/Core (4.4.2)
   - SKPhotoBrowser (5.1.0)
   - Starscream (3.0.5)
   - SwiftHash (2.0.2)
@@ -56,19 +53,21 @@ DEPENDENCIES:
   - Atributika
   - AWSS3
   - Bolts
+  - Bolts-Swift
+  - CalmParametricAnimations
   - DeviceKit
   - DownPicker
   - DRPLoadingSpinner
   - Floaty
   - IGColorPicker
   - ISEmojiView
-  - KenBurns
   - NVActivityIndicatorView
   - Parse
   - ParseLiveQuery
   - PopupDialog
   - PulsingHalo
   - RSKImageCropper
+  - SDWebImage
   - SKPhotoBrowser
   - SwiftHash
   - SwiftyJSON
@@ -90,7 +89,6 @@ SPEC CHECKSUMS:
   Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
   IGColorPicker: c6d43aa386a9fdc8f958f3bd4e5ab85905242c8a
   ISEmojiView: 848031d6ce724c38cabe00fdd43fb2da39cada89
-  KenBurns: 9224ab7ac7cda5e7fc6659fa6f2875f73360483c
   M13Checkbox: a8c2491cfbbca10797925fd0b9154a782bf40d89
   NVActivityIndicatorView: 963f62bf9f993fcf23218e55958e5b1761b9504c
   Parse: d3edaf8c7c722cb33cb83ba7821d015ae32d362d
@@ -98,7 +96,7 @@ SPEC CHECKSUMS:
   PopupDialog: 3d4e8e0795c3a614f407d730986c9b9af9781123
   PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
   RSKImageCropper: 0d0c6d8525a2381f03fde32a47c6703817a2feed
-  SDWebImage: 098e97e6176540799c27e804c96653ee0833d13c
+  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   SKPhotoBrowser: c20c1da34d737b4e3e101feead6c8dd92ebf860a
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
   SwiftHash: 6d312abe61c8359bdef8d0093642f3a70b1c17ba
@@ -106,6 +104,6 @@ SPEC CHECKSUMS:
   UITextView+Placeholder: 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 86c84bb505cdf7d502f2449edfc3ea22873e59ea
+PODFILE CHECKSUM: 38accadd0035cefa5918826ca258bcadb0f1f59d
 
 COCOAPODS: 1.4.0

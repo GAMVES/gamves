@@ -8,7 +8,7 @@
 import UIKit
 import Parse
 import NVActivityIndicatorView
-import KenBurns
+//import KenBurns
 import SKPhotoBrowser
 
 protocol FanpageCollectionsDelegate: class {

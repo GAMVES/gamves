@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import KenBurns
+//import KenBurns
 import Parse
 
 class CategoryPage: UIViewController, 

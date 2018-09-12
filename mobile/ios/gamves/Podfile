@@ -11,13 +11,13 @@ target 'gamves' do
 
   pod 'Parse'
 
-  pod 'Bolts'
+  pod 'Bolts-Swift'
 
   #pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift.git', :tag => '1.4.0' 
-  
-  pod 'Floaty'
 
-  #, :git => 'https://github.com/kciter/Floaty.git', :tag => '4.0.1'
+  pod 'Bolts'
+  
+  pod 'Floaty' 
   
   pod 'NVActivityIndicatorView'
   
@@ -39,7 +39,10 @@ target 'gamves' do
   
   #pod 'AACarousel'
   
-  pod 'KenBurns'
+  #pod 'KenBurns'
+
+  pod 'CalmParametricAnimations'
+  pod 'SDWebImage'
   
   #pod 'M13Checkbox'
   #, :git => 'https://github.com/Marxon13/M13Checkbox.git', :branch => 'swift_4_2'

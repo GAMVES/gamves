@@ -11,7 +11,7 @@ import Parse
 import NVActivityIndicatorView
 import IGColorPicker
 import PulsingHalo
-import KenBurns
+//import KenBurns
 import RSKImageCropper
 import Floaty
 

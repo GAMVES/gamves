@@ -114,10 +114,13 @@
 		C92DE081208570B400BC9AA0 /* CGFloat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */; };
 		C92F5D04211CE1360056E482 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92F5D03211CE1360056E482 /* NotificationViewController.swift */; };
 		C92FDB9820E29FBE0056EB40 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */; };
+		C930D4C42148B54400F67DA4 /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C930D4C32148B54400F67DA4 /* Double+Extensions.swift */; };
+		C930D4C62148C18700F67DA4 /* KenBurns+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C930D4C52148C18700F67DA4 /* KenBurns+Helpers.swift */; };
 		C9378DC42120D94000BF1547 /* AddFriendSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9378DC32120D94000BF1547 /* AddFriendSectionHeader.swift */; };
 		C9383D62210593CB008E54D5 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9383D61210593CB008E54D5 /* FriendsViewController.swift */; };
 		C969004621430B5E00F3BFF6 /* FanpageVideoTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C969004521430B5E00F3BFF6 /* FanpageVideoTableCell.swift */; };
 		C978A4B32140F36A0063EBE1 /* FanpageTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C978A4B22140F36A0063EBE1 /* FanpageTableCell.swift */; };
+		C98412D621485B890016CC40 /* KenBurns.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98412D521485B890016CC40 /* KenBurns.swift */; };
 		C98FD87F2106131200631D78 /* FriendEmptyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */; };
 		C98FD8812106133F00631D78 /* FriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */; };
 		C98FD883210613B000631D78 /* FriendSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD882210613B000631D78 /* FriendSectionHeader.swift */; };
@@ -237,10 +240,13 @@
 		C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extension.swift"; sourceTree = "<group>"; };
 		C92F5D03211CE1360056E482 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
+		C930D4C32148B54400F67DA4 /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
+		C930D4C52148C18700F67DA4 /* KenBurns+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "KenBurns+Helpers.swift"; sourceTree = "<group>"; };
 		C9378DC32120D94000BF1547 /* AddFriendSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddFriendSectionHeader.swift; sourceTree = "<group>"; };
 		C9383D61210593CB008E54D5 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		C969004521430B5E00F3BFF6 /* FanpageVideoTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanpageVideoTableCell.swift; sourceTree = "<group>"; };
 		C978A4B22140F36A0063EBE1 /* FanpageTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FanpageTableCell.swift; sourceTree = "<group>"; };
+		C98412D521485B890016CC40 /* KenBurns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KenBurns.swift; sourceTree = "<group>"; };
 		C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendEmptyCollectionViewCell.swift; sourceTree = "<group>"; };
 		C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendCollectionViewCell.swift; sourceTree = "<group>"; };
 		C98FD882210613B000631D78 /* FriendSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendSectionHeader.swift; sourceTree = "<group>"; };
@@ -382,6 +388,7 @@
 		828DB5DB1EFE406700403C66 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				C98412D521485B890016CC40 /* KenBurns.swift */,
 				C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */,
 				C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */,
 				82BAAF2D1EFE453E0021C405 /* Globals.swift */,
@@ -401,6 +408,7 @@
 		82C6F7521F8AA8E80090C725 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C930D4C52148C18700F67DA4 /* KenBurns+Helpers.swift */,
 				C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */,
 				8268445B1FF2A82B008BA13B /* LoginController+Extensions.swift */,
 				822010B51FF96A5A008C9027 /* NewFanpageController+Extensions.swift */,
@@ -418,6 +426,7 @@
 				8274BA7D2028BD5200434839 /* Date+Extensions.swift */,
 				82F3F7CA202B38AC001E3DA5 /* Formatter+Extensions.swift */,
 				C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */,
+				C930D4C32148B54400F67DA4 /* Double+Extensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -717,7 +726,6 @@
 				"${BUILT_PRODUCTS_DIR}/Floaty/Floaty.framework",
 				"${BUILT_PRODUCTS_DIR}/IGColorPicker/IGColorPicker.framework",
 				"${BUILT_PRODUCTS_DIR}/ISEmojiView/ISEmojiView.framework",
-				"${BUILT_PRODUCTS_DIR}/KenBurns/KenBurns.framework",
 				"${BUILT_PRODUCTS_DIR}/M13Checkbox/M13Checkbox.framework",
 				"${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework",
 				"${BUILT_PRODUCTS_DIR}/Parse/Parse.framework",
@@ -749,7 +757,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Floaty.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IGColorPicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ISEmojiView.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KenBurns.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/M13Checkbox.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NVActivityIndicatorView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Parse.framework",
@@ -784,6 +791,9 @@
 				C978A4B32140F36A0063EBE1 /* FanpageTableCell.swift in Sources */,
 				825E24041F984C14009462CD /* Protocols.swift in Sources */,
 				82BD5EFD1F92B58600BD8760 /* Int+Extension.swift in Sources */,
+				C930D4C62148C18700F67DA4 /* KenBurns+Helpers.swift in Sources */,
+				C930D4C42148B54400F67DA4 /* Double+Extensions.swift in Sources */,
+				C98412D621485B890016CC40 /* KenBurns.swift in Sources */,
 				C77B55191CFFF3AD00FF375C /* HomeController.swift in Sources */,
 				82BD5EFB1F91635400BD8760 /* SelectContactViewController.swift in Sources */,
 				82C6F75A1F8AA8F50090C725 /* View+Extensions.swift in Sources */,
