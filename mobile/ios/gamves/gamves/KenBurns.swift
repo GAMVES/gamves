@@ -225,6 +225,7 @@ func ==(lhs: KenBurnsAnimation, rhs: KenBurnsAnimation) -> Bool {
         // Add the elapsed time since pause to startTime, so the progress is caculated from where we left off.
         animations.forEach { $0.startTime += timeSincePause }
         updatesDisplayLink.isPaused = false
+
     }
 
     func startNewAnimation() {
