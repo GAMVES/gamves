@@ -105,7 +105,7 @@ UICollectionViewDelegateFlowLayout {
 
 
 
-extension FanpageTableCell {
+/*extension FanpageTableCell {
     
     func setCollectionViewDataSourceDelegate<D: UICollectionViewDataSource & UICollectionViewDelegate>(_ dataSourceDelegate: D, forRow row: Int) {
         
@@ -156,7 +156,7 @@ extension FanpageTableCell {
             return self.albumCollectionView.contentOffset.x
         }
     }
-}
+}*/
 
 
 

@@ -38,8 +38,7 @@ UICollectionViewDelegateFlowLayout
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)        
         collectionView.backgroundColor = UIColor.clear
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false        
         return collectionView
     }()    
 
@@ -80,10 +79,7 @@ UICollectionViewDelegateFlowLayout
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //if let count = appCategory?.apps?.count {
-        //    return count
-        //}
-        
+      
         let count = self.videosGamves.count
 
         return count
@@ -197,7 +193,7 @@ UICollectionViewDelegateFlowLayout
 }
 
 
-extension FanpageVideoTableCell {
+/*extension FanpageVideoTableCell {
     
    func setCollectionViewDataSourceDelegate<D: UICollectionViewDataSource & UICollectionViewDelegate>(_ dataSourceDelegate: D, forRow row: Int) {
         
@@ -247,6 +243,6 @@ extension FanpageVideoTableCell {
             return self.videoCollectionView.contentOffset.y
         }
     }
-}
+}*/
 
 

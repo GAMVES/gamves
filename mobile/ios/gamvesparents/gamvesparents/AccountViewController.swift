@@ -17,6 +17,7 @@ class AccountViewController: UIViewController,
     
     var profileViewController:ProfileViewController!
     var otherAccountsViewController:OtherAccountsViewController!
+    var tutorialVideoViewController:TutorialVideoViewController!
     
     var homeViewController:HomeViewController?
     
@@ -122,7 +123,7 @@ class AccountViewController: UIViewController,
     var _profile = AccountButton()
     var _payment = AccountButton()
     var _account = AccountButton()
-    var _admin = AccountButton()
+    var _tutorial = AccountButton()
     
    func initilizeObservers() {
     
@@ -233,10 +234,10 @@ class AccountViewController: UIViewController,
         _account.id = 2
         self.accountButton.append(_account)
 
-        _admin.desc = "Administrator"
-        _admin.icon = UIImage(named: "admin")!
-        _admin.id = 3
-        self.accountButton.append(_admin)
+        _tutorial.desc = "Tutorials"
+        _tutorial.icon = UIImage(named: "video")!
+        _tutorial.id = 3
+        self.accountButton.append(_tutorial)
 
         self.buttonsView.addSubview(self.buttonLeftView)
         self.buttonsView.addSubview(self.collectionView)        
@@ -418,7 +419,9 @@ class AccountViewController: UIViewController,
 
                 break
             
-            case 3:
+            case 3: //Tutorials
+
+                self.openTutorials()
                 
                 break
             
@@ -448,6 +451,16 @@ class AccountViewController: UIViewController,
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(otherAccountsViewController, animated: true)
+        
+    }
+
+    func openTutorials() {
+        
+        tutorialVideoViewController = TutorialVideoViewController()
+        tutorialVideoViewController.tabBarController?.tabBar.isHidden = true                
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.pushViewController(tutorialVideoViewController, animated: true)
         
     }
     
