@@ -155,7 +155,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
 
         } else
         {
-            self.selectedIndex = 0
+            self.selectedIndex = 0            
             
         }
 
@@ -163,6 +163,18 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         {
             self.blurVisualEffectView?.removeFromSuperview()
         }        
+    }
+
+    func reloadHomeView() {
+
+        self.homeViewController.loadStatistics()
+            
+        self.homeViewController.renderSon()            
+
+        DispatchQueue.main.async {
+            
+            self.homeViewController.collectionView.reloadData()
+        }
     }
 
     @objc private func loggedOut() {

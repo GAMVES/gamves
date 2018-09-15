@@ -964,7 +964,10 @@ class LoginViewController: UIViewController
                                     
                                     Global.defaults.set(son_school, forKey: "\(self.puserId)_son_school")
                                     
+                                    print(self.puserId)
+                                    
                                     if let son_userId = sonUser.userObj.objectId {
+                                        print(son_userId)
                                         Global.defaults.set(son_userId, forKey: "\(self.puserId)_son_userId")
                                         Global.defaults.set(son_userId, forKey: "\(self.puserId)_son_object_id")
                                     }
@@ -986,7 +989,9 @@ class LoginViewController: UIViewController
                                     
                                     self.activityIndicatorView?.stopAnimating()
                                     self.dismiss(animated: true, completion: nil)
+
                                     self.tabBarViewController?.selectedIndex = 0 //Home
+                                    //self.tabBarViewController?.reloadHomeView()
                                     
                                 })
                                 

@@ -406,7 +406,7 @@ class HomeViewController: UIViewController,
     
     override func viewWillAppear(_ animated: Bool) {
         
-        tabBarController?.tabBar.isHidden = false      
+        tabBarController?.tabBar.isHidden = false     
     }
 
     func hideShowTabBar(status: Bool)
@@ -649,23 +649,32 @@ class HomeViewController: UIViewController,
         
         print(self.puserId)
         
-        if self.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_object_id")
+        if let userId = PFUser.current()?.objectId
         {
+            self.puserId = userId
+        }
+        
+        if self.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {        
             
-            DispatchQueue.main.async {
+            if self.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_object_id")
+            {
                 
-                let sonId = Global.defaults.object(forKey: "\(self.puserId)_son_object_id") as! String
-                if Global.userDictionary[sonId] != nil
-                {
-                    self.sonLabel.text = Global.userDictionary[sonId]?.firstName
+                DispatchQueue.main.async {
                     
-                    self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
+                    let sonId = Global.defaults.object(forKey: "\(self.puserId)_son_object_id") as! String
                     
-                    Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
+                    if Global.userDictionary[sonId] != nil
+                    {
+                        self.sonLabel.text = Global.userDictionary[sonId]?.firstName
+                        
+                        self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
+                        
+                        Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
+                    }
+                    
+                    self.activityIndicatorView?.stopAnimating()
                 }
-                
-                self.activityIndicatorView?.stopAnimating()
-            }
+            }            
         }
     }
     
