@@ -643,8 +643,6 @@ class LoginViewController: UIViewController
     }
 
     
-
-    
     func handleRegister()
     {
         
@@ -653,10 +651,10 @@ class LoginViewController: UIViewController
 
             self.activityIndicatorView?.startAnimating()
 
-            var email = emailTextField.text
-            let name = nameTextField.text
-            var password = passwordTextField.text
-            let relationship = userTypeTextField.text
+            var email = self.emailTextField.text
+            let name = self.nameTextField.text
+            var password = self.passwordTextField.text
+            let relationship = self.userTypeTextField.text
             
             // Defining the user object
             let user = PFUser()
@@ -794,21 +792,41 @@ class LoginViewController: UIViewController
      
         self.activityIndicatorView?.startAnimating()   
         
-        let email = emailTextField.text        
-        let password = passwordTextField.text
+        let email = self.emailTextField.text        
+        let password = self.passwordTextField.text
+        let userType = self.userTypeTextField.text
+        let school = self.sonSchoolTextField.text
+
         
         print("________________")
         print(email)
         print(password)
+        print(userType)
+        print(school)
         print("________________")
         
-        if (email?.isEmpty)!
-        {
+        if (email?.isEmpty)! {
+            self.showMessage(title: "Try again", message: "Error, email is empty. Please provide your email and try again.")            
             return
-        }       
+        } 
+
+        if !Global.isMailValid(email: email!) {
+            self.showMessage(title: "Try again", message: "Error, email is not valid. Please check your email format and try again.")            
+            return
+        }      
         
-        if (password?.isEmpty)!
-        {
+        if (password?.isEmpty)! {
+            self.showMessage(title: "Try again", message: "Error, password is empty. Please provide your passowrd and try again.")            
+            return
+        }
+
+        if (userType?.isEmpty)! {
+            self.showMessage(title: "Try again", message: "Error, relation is empty. Please select a relation and try again.")            
+            return
+        }
+
+        if (school?.isEmpty)! {
+            self.showMessage(title: "Try again", message: "Error, school is empty. Please select a relation and try again.")            
             return
         }
         
@@ -820,42 +838,67 @@ class LoginViewController: UIViewController
                 
                 if let errorString = error.userInfo["error"] as? NSString {
 
-                    // Something went wrong
-                    self.message="Error \(errorString) Please try again."
-                    self.isMessage=true
-
-                    self.loginRegisterButton.setTitle("Try again", for: UIControlState())
-
-                    self.handleLoginRegisterChange()    
-
-                    self.activityIndicatorView?.stopAnimating()
-                    
-                }
+                    self.showMessage(title: "Try again", message: "Error \(errorString) Please try again.")   
+                    return               
+                }                
                 
-                
-            } else {                
+            } else {    
+
+                var isVerified = Bool()            
                 
                 if user?["emailVerified"] != nil {
                 
                     let emailVerified = user?["emailVerified"]
                     
                     if emailVerified as! Bool == true {
+
+                        isVerified = true
                         
                         UserDefaults.standard.setIsLoggedIn(value: true)
                         
                         if self.isRegistered {
                             
-                            Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
-                        
-                                Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+
+                                var sonUser:GamvesUser = Global.gamvesFamily.sonsUsers[0]
+
+                                var son_type = sonUser.typeNumber
+
+                                var selectedType = Int()
+                                var type = Int()
+
+                                if userType == "Father" {
+
+                                    // 0 = Father
+                                    selectedType = 0
+
+                                } else if userType == "Mother" { 
+
+                                    // 1 = Mother
+                                    selectedType = 1
+                                }
+
+                                if son_type == 0 || son_type == 1 {
+
+                                    type = 0
+                                }
+
+                                var son_school = Global.gamvesFamily.school.schoolName
+
+                                if selectedType != type && school != son_school {
+
+                                    self.showMessage(title: "Try again", message: "Error, the information you provided is wrong. Please try again.")            
+                                    return
+                                }
+                                
+                                Global.loaLevels(completionHandler: { ( result:Bool ) -> () in                              
                                     
                                     UserDefaults.standard.setIsLoggedIn(value: true)
                                     UserDefaults.standard.setIsRegistered(value: true)
                                     
                                     ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
 
-                                    if let userId = PFUser.current()?.objectId
-                                    {
+                                    if let userId = PFUser.current()?.objectId {
                                         self.puserId = userId
                                     }
 
@@ -909,20 +952,16 @@ class LoginViewController: UIViewController
                                     
                                     Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: spouseSmallImage!)
                                     
-                                    //SON
-                                    
-                                    let sonUser:GamvesUser = Global.gamvesFamily.sonsUsers[0]
+                                    //SON                            
                                     
                                     let son_name = sonUser.name
                                     Global.defaults.set(son_name, forKey: "\(self.puserId)_son_name")
                                     
                                     let son_username = sonUser.userName
-                                    Global.defaults.set(son_username, forKey: "\(self.puserId)_son_username")
+                                    Global.defaults.set(son_username, forKey: "\(self.puserId)_son_username")                                    
                                     
-                                    let son_type = sonUser.typeNumber
-                                    Global.defaults.set(son_type, forKey: "\(self.puserId)_son_type")
+                                    Global.defaults.set(son_type, forKey: "\(self.puserId)_son_type")                                    
                                     
-                                    let son_school = Global.gamvesFamily.school.schoolName
                                     Global.defaults.set(son_school, forKey: "\(self.puserId)_son_school")
                                     
                                     if let son_userId = sonUser.userObj.objectId {
@@ -937,9 +976,7 @@ class LoginViewController: UIViewController
                                     let sonImageLow = sonImage.lowestQualityJPEGNSData as Data
                                     var sonSmallImage = UIImage(data: sonImageLow)
                                     
-                                    Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)
-                                    
-                                    //self.tabBarViewController?.profileViewController.loadFamilyDataGromGlobal()
+                                    Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)                            
                                     
                                     NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
                                     
@@ -957,51 +994,46 @@ class LoginViewController: UIViewController
                             
                         } else {
 
-                            if let userId = PFUser.current()?.objectId
-                            {
+                            if let userId = PFUser.current()?.objectId {
                                 self.puserId = userId
                             }
 
                             Global.defaults.set(true, forKey: "\(self.puserId)_registrant_completed")
                                                   
                             self.activityIndicatorView?.stopAnimating()
-                            self.dismiss(animated: true, completion: nil)
-                            
-                            /*self.navigationController?.navigationBar.tintColor = UIColor.white
-                            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-                            self.navigationController?.pushViewController(self.profileViewController, animated: true)*/
-                            
-                        }
-                    
-                    } else {
-                     
-                        self.message="Please verify your email and then Continue."
+                            self.dismiss(animated: true, completion: nil)                                                  
+                        }                    
+                    } 
+                } 
+
+                if !isVerified {
+
+                    let message = "Your account has been created but you have not verified your email. Please check your email, verify and try again."
                         
-                        self.registerLabel.text = self.message
-                        
-                    }
-                    
-                } else {
-
-                    self.message="Your account has been created but you have not verified your email. Please check your email, verify and try again."
-                        
-                    self.registerLabel.text = self.message
-
-                    self.isMessage=true
-
-                    self.loginRegisterButton.setTitle("Try again", for: UIControlState())
-
-                    //self.handleLoginRegisterChange()    
-
-                    self.activityIndicatorView?.stopAnimating()
+                    self.showMessage(title: "User mail not verified", message: message)                         
 
                     PFUser.logOut()
+                    return
                 }
-
             }
         })
     }
 
+    func showMessage(title: String, message: String) {
+
+        self.message = message 
+
+        self.isMessage=true
+
+        self.loginRegisterButton.setTitle(title, for: UIControlState())
+
+        self.handleLoginRegisterChange()
+
+        self.emailTextField.becomeFirstResponder()    
+
+        self.activityIndicatorView?.stopAnimating()                   
+
+    }
     
     func hideShowMessage(bol:Bool)
     {
