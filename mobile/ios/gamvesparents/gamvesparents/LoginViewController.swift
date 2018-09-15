@@ -1010,7 +1010,7 @@ class LoginViewController: UIViewController
 
                     let message = "Your account has been created but you have not verified your email. Please check your email, verify and try again."
                         
-                    self.showMessage(title: "User mail not verified", message: message)                         
+                    self.showMessage(title: "Try again", message: message)                         
 
                     PFUser.logOut()
                     return
