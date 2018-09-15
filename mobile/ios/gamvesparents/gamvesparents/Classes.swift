@@ -170,6 +170,8 @@ class GamvesUser
     var level  = GamvesLevel()
 
     var familyId = String()
+
+    var birthday = String()
 }
 
 class GamvesGender

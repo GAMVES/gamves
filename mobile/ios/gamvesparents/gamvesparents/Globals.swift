@@ -104,6 +104,7 @@ class Global: NSObject
     //Notifications
     static var notificationKeyFamilyLoaded              = "com.gamves.gamvesparent.familyLoaded"
     static var notificationKeyLevelsLoaded              = "com.gamves.gamvesparent.levelsLoaded"
+    static var notificationKeyLoadDataAfterLogin        = "com.gamves.gamvesparent.loadDataAfterLogin"
     static var notificationKeyChatFeed                  = "com.gamves.gamvesparent.chatfeed"
     static var notificationYourAccountInfoLoaded        = "com.gamves.gamvesparent.notificationYourAccountInfoLoaded"
     static var notificationKeyLoadFamilyDataGromGlobal  = "com.gamves.gamvesparent.loadfamilydatagromglobal"
@@ -170,6 +171,10 @@ class Global: NSObject
                         Global.gamvesFamily.school = gamvesUser.school
                     }
                 }
+            }
+            
+            if user["birthday"] != nil {
+                gamvesUser.birthday = user["birthday"] as! String
             }
 
             if user["levelId"] != nil {
@@ -270,9 +275,9 @@ class Global: NSObject
                                 
                                 userGamves.gender = gender
                                 
-                                if user["levelObjId"] != nil {
+                                if user["levelId"] != nil {
                                 
-                                    let levelId = user["levelObjId"] as! String
+                                    let levelId = user["levelId"] as! String
                                     
                                     print(levelId)
                                     
@@ -281,7 +286,13 @@ class Global: NSObject
                                     print(levelGamves)
                                     
                                     userGamves.levelNumber = (levelGamves?.grade)!
-                                    userGamves.levelDescription = (levelGamves?.description)!
+                                    let description = (levelGamves?.description)!
+                                    
+                                    print(description)
+
+                                    let full = "\(userGamves.levelNumber) - \(description)"
+                                    
+                                    userGamves.levelDescription = full
                                     userGamves.levelId = levelId
                                 
                                 }
@@ -948,6 +959,7 @@ class Global: NSObject
                         self.levels[level.objectId!] = levelGamves
                         
                         if (countLevels-1)  == count {
+                            
                             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: self)
                             
                             self.levelsLoaded = true

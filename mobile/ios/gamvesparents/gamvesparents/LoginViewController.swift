@@ -979,19 +979,19 @@ class LoginViewController: UIViewController
                                     let sonImageLow = sonImage.lowestQualityJPEGNSData as Data
                                     var sonSmallImage = UIImage(data: sonImageLow)
                                     
-                                    Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)                            
-                                    
-                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)
-                                    
+                                    Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: sonSmallImage!)                                                                
+
+                                    //Refreshing all data on views
+                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: self)                                    
                                     NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: self)
+                                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLoadDataAfterLogin), object: self)
                                     
                                     Global.familyDataGromGlobal = true
                                     
                                     self.activityIndicatorView?.stopAnimating()
                                     self.dismiss(animated: true, completion: nil)
 
-                                    self.tabBarViewController?.selectedIndex = 0 //Home
-                                    //self.tabBarViewController?.reloadHomeView()
+                                    self.tabBarViewController?.selectedIndex = 0 //Home                                    
                                     
                                 })
                                 

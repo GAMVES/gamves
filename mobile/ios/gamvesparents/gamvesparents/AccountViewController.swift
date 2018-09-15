@@ -252,20 +252,28 @@ class AccountViewController: UIViewController,
             self.collectionView, 
             self.buttonRightView)
         
-        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
-            self.openProfile()
-            self.loadYourProfileInfo()
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {
+        
+            if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
+                
+                self.openProfile()                
+                self.loadYourProfileInfo()
+
+            }
+
         }
     }
     
 
      func showControllerForSetting(_ setting: Setting) {
+
         let dummySettingsViewController = UIViewController()
         dummySettingsViewController.view.backgroundColor = UIColor.white
         dummySettingsViewController.navigationItem.title = setting.name.rawValue
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
+
     }
     
     

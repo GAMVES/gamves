@@ -545,6 +545,8 @@ class ProfileViewController: UIViewController,
             NotificationCenter.default.addObserver(self, selector: #selector(self.familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
             
             NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)                   
+
+            NotificationCenter.default.addObserver(self, selector: #selector(self.loadDataAfterLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoadDataAfterLogin), object: nil)                               
             
         }
         
@@ -644,6 +646,8 @@ class ProfileViewController: UIViewController,
             self.puserId = userId
         }
 
+        let grades: NSMutableArray = [] 
+
         if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
             
             self.tabBarController?.tabBar.isHidden = true
@@ -664,10 +668,12 @@ class ProfileViewController: UIViewController,
             self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
             
             DispatchQueue.main.async() {
+
                 self.makeRounded(imageView:self.yourPhotoImageView)
                 self.makeRounded(imageView:self.sonPhotoImageView)
                 self.makeRounded(imageView:self.spousePhotoImageView)
                 self.makeRounded(imageView:self.familyPhotoImageView)
+
             }
             
             self.segmentedControl.setEnabled(true, forSegmentAt: 1)
@@ -683,8 +689,27 @@ class ProfileViewController: UIViewController,
 
             } 
 
-            self.boyConstraints()               
+            self.boyConstraints()     
+
+            let description = Global.gamvesFamily.sonsUsers[0].levelDescription
             
+            print(description)
+            
+            self.sonGradeTextField.text = description
+
+            let lkeys = Array(Global.levels.keys)
+        
+            for l in lkeys {
+
+                let schoolId = Global.levels[l]?.schoolId
+
+                let school = Global.gamvesFamily.schoolName
+
+                if school == Global.schools[schoolId!]?.schoolName {
+
+                    grades.add(Global.levels[l]?.fullDesc)
+                }            
+            }   
         }
         
         Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
@@ -696,20 +721,17 @@ class ProfileViewController: UIViewController,
             self.sonSchoolDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
         })     
 
-        //Populate empty so loaded when school selected
-        let grades: NSMutableArray = [] 
-        self.setGrades(grades: grades)
+        self.setGrades(grades: grades)        
         self.sonGradeDownPicker.setPlaceholder("Tap to choose grade...") 
         
         self.you = PFUser.current()
         self.setGrades(grades: grades)
+
     }
 
     func setGrades(grades: NSMutableArray) {
-
-        print(grades)
-        
-        self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])            
+        print(grades)        
+        self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])           
     }
 
     func handleSchoolPickerChange() {
@@ -727,8 +749,7 @@ class ProfileViewController: UIViewController,
             if self.sonSchoolTextField.text! == Global.schools[schoolId!]?.schoolName {
 
                 grades.add(Global.levels[l]?.fullDesc)
-            }
-            
+            }            
         }        
         
         self.setGrades(grades: grades)
@@ -741,22 +762,20 @@ class ProfileViewController: UIViewController,
             self.puserId = userId
         }
         
-        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed")
-        {
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
+
             let profile_completed = Global.defaults.bool(forKey: "\(self.puserId)_profile_completed")
             
-            if profile_completed
-            {
+            if profile_completed {
+
                 self.hideShowTabBar(hidden:false)
                 self.loadFamilyDataGromGlobal()
                 self.segmentedControl.setEnabled(true, forSegmentAt: 1)
             }
             
-        } else
-        {
+        } else {
 
-            self.hideShowTabBar(hidden:true)
-            
+            self.hideShowTabBar(hidden:true)            
         }
     }
     
@@ -778,6 +797,16 @@ class ProfileViewController: UIViewController,
 
             self.sonNameTextField.text = Global.gamvesFamily.sonsUsers[0].name
             self.sonUserTextField.text = Global.gamvesFamily.sonsUsers[0].userName
+
+            let b:String = Global.gamvesFamily.sonsUsers[0].birthday
+
+            var bArr = b.components(separatedBy: "-")
+
+            let birthday = "\(bArr[2])/\(bArr[1])/\(bArr[0])/"
+
+            //let birthday = b.replacingOccurrences(of: "-", with:"/")
+
+            self.sonBirthdayTextField.text = birthday
             
             self.yourNameTextField.text = Global.gamvesFamily.youUser.name
             self.yourUserTextField.text = Global.gamvesFamily.youUser.userName
@@ -785,9 +814,7 @@ class ProfileViewController: UIViewController,
             self.yourFamilyTextField.text = Global.gamvesFamily.familyName
             
             self.spouseNameTextField.text = Global.gamvesFamily.spouseUser.name
-            let spousemeail = Global.gamvesFamily.spouseUser.email
-            
-            print(spousemeail)
+            let spousemeail = Global.gamvesFamily.spouseUser.email       
             
             self.spouseEmailTextField.text = spousemeail
             
@@ -799,12 +826,9 @@ class ProfileViewController: UIViewController,
             
             let school = Global.gamvesFamily.schoolName
             
-            self.sonSchoolTextField.text = school
+            self.sonSchoolTextField.text = school                        
             
-            self.sonGradeTextField.text = Global.gamvesFamily.sonsUsers[0].levelDescription
-            
-            self.yourTypeId = PFUser.current()?["iDUserType"] as! Int //Global.gamvesFamily.youUser.typeNumber
-          
+            self.yourTypeId = PFUser.current()?["iDUserType"] as! Int           
         }
     }
 
@@ -1054,6 +1078,16 @@ class ProfileViewController: UIViewController,
         }    
     }
 
+    func loadDataAfterLogin() {
+
+        DispatchQueue.main.async() {
+
+            self.loadSonSpouseDataIfFamilyDontExist()
+
+        }
+
+    }
+
 
     func loadSonSpouseDataIfFamilyDontExist() {
 
@@ -1079,14 +1113,15 @@ class ProfileViewController: UIViewController,
             }
         })
 
-        
         let family_exist = Global.defaults.bool(forKey: "\(self.puserId)_family_exist")
         let son_exist = Global.defaults.bool(forKey: "\(self.puserId)_son_exist")
         
         Global.defaults.synchronize()
+        
+        print(family_exist)
+        print(son_exist)
 
-        if son_exist && !family_exist
-        {
+        if son_exist && !family_exist {
 
             self.activityIndicatorView?.startAnimating()
 
@@ -1098,14 +1133,14 @@ class ProfileViewController: UIViewController,
             
             queryUser?.findObjectsInBackground { (users, error) in
                 
-                if error != nil
-                {
+                if error != nil {
                     print("error")
                 } else {
                     
                     if let users = users
                     {
                         let userAmount = users.count
+                        
                         for user in users {
                             
                             self.son = user as! PFUser
@@ -1124,7 +1159,13 @@ class ProfileViewController: UIViewController,
                             self.familyPhotoImageSmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
                             
                             self.sonNameTextField.text = user["Name"] as! String
-                            self.sonUserTextField.text = user["username"] as! String                            
+                            self.sonUserTextField.text = user["username"] as! String  
+
+                            let birthday = user["birthday"] as! String
+                            
+                            print(birthday)
+                            
+                            self.sonBirthdayTextField.text = birthday
                             
                             self.sonTypeId = user["iDUserType"] as! Int
                             let sonUserType = user["iDUserType"] as! Int
