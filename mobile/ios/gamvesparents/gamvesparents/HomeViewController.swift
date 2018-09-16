@@ -119,8 +119,8 @@ class HomeViewController: UIViewController,
     var sonLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.textColor = UIColor.gray
-        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = UIColor.gamvesBlackColor
+        label.font = UIFont.boldSystemFont(ofSize: 25)
         return label
     }()   
 
@@ -255,10 +255,10 @@ class HomeViewController: UIViewController,
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
         
-        self.headerView.addConstraintsWithFormat("V:|[v0(100)]|", views: self.backImageView)
+        self.headerView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.backImageView)
         
         self.headerView.addConstraintsWithFormat(
-            "V:|-40-[v0(photoSize)][v1]|", views:
+            "V:|-30-[v0(photoSize)][v1]|", views:
             self.photosContainerView,
             self.sonLabel,
             metrics: self.metricsHome)
@@ -307,6 +307,12 @@ class HomeViewController: UIViewController,
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
+
+        self.collectionView.backgroundColor = UIColor.gamvesLightLightBlueColor
+        self.dataView.backgroundColor = UIColor.gamvesLightLightBlueColor
+        self.dataLeftView.backgroundColor = UIColor.gamvesLightLightBlueColor
+        self.dataRightView.backgroundColor = UIColor.gamvesLightLightBlueColor
+        self.headerView.backgroundColor = UIColor.gamvesGamvesLightColor
         
         self.activityIndicatorView?.startAnimating()
         
@@ -337,7 +343,7 @@ class HomeViewController: UIViewController,
         _status.data = _status_time
         self.userStatistics.append(_status)
     
-        _location.desc = "Last location"
+        _location.desc = "Location"
         _location.data = "5 Km"
         _location.id = 1
         _location.icon = UIImage(named: "map")!
@@ -347,7 +353,8 @@ class HomeViewController: UIViewController,
         _friends.desc = _friends_desc 
         _friends.data = _friends_data
         _friends.id = 2
-        _friends.icon = UIImage(named: "add_friend")!
+        _friends.icon = UIImage(named: "friend")!
+        _friends.second_icon = UIImage(named: "add_friend")!
         _friends.updated = self._friend_approval
         self.userStatistics.append(_friends)
 
@@ -548,7 +555,7 @@ class HomeViewController: UIViewController,
                         
                         locGamves.geopoint = location["geolocation"] as! PFGeoPoint
                         
-                        locGamves.address = location["address"] as! String
+                        /*locGamves.address = location["address"] as! String
                         
                         locGamves.city = location["city"] as! String
                         
@@ -576,7 +583,7 @@ class HomeViewController: UIViewController,
 
                         }
 
-                        count = count + 1
+                        count = count + 1*/
                     }
                 }                
             }
@@ -700,7 +707,7 @@ class HomeViewController: UIViewController,
                         
                         self.sonPhotoImageView.image = Global.userDictionary[sonId]?.avatar
                         
-                        Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)
+                        Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesGamvesLightColor)
                     }
                     
                     self.activityIndicatorView?.stopAnimating()
@@ -863,7 +870,7 @@ class HomeViewController: UIViewController,
    
         cell.iconImageView.image = stats.icon
         
-        if id == 0 || id == 1 {
+        if id == 0 || id == 1 || id == 2 {
             
             print(stats.desc)
 
