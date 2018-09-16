@@ -1007,6 +1007,8 @@
 
 	Parse.Cloud.afterSave("Location", function(request) {
 
+		var requestHttp = require("request");
+
 		var hasCoder = request.object.get("hasCoder");
 
 		console.log("hasCoder: " +hasCoder);
@@ -1018,11 +1020,44 @@
 			var geolocation = request.object.get("geolocation");
 
 			var latitude = geolocation.latitude;
-			var longitude = geolocation.longitude;
+			var longitude = geolocation.longitude;			
 
-			var geocoder = require('geocoder');
+			let geoAll = "'" + latitude ", " + longitude + "'";
 
-			geocoder.reverseGeocode( latitude, longitude, function ( err, data ) {
+			console.log("geoAll: " + geoAll);
+
+			var options = {
+			   method: 'GET',
+			   url: 'https://maps.googleapis.com/maps/api/geocode/json',
+			   qs: { 
+			   latlng: geoAll, 
+			   key: "AIzaSyAi_6G5rwhbTYkqyjo4wjzPJaz1uJYuTHI"
+			   },
+			};
+
+			console.log(options);
+
+			requestHttp(options, function(error, response, body) {
+
+				var allAdrs = JSON.parse(body).results[0].formatted_address; //data.results[0].formatted_address;
+
+		        var res = allAdrs.split(",");
+
+		        request.object.set("address", res[0]);
+		        request.object.set("city", res[1]);
+		        request.object.set("state", res[2]);
+		        request.object.set("country", res[3]);
+		        request.object.set("hasCoder", true);
+				request.object.save(); 
+
+			});
+			
+			// Package
+			//"node-geocoder": "^3.22.0"
+
+			/*var geocoder = require('geocoder');
+
+			geocoder.reverse( latitude, longitude, function ( err, data ) {
 
 				if(err){
 
@@ -1044,9 +1079,11 @@
 			        request.object.set("hasCoder", true);
 					request.object.save();  
 
+					///AIzaSyAi_6G5rwhbTYkqyjo4wjzPJaz1uJYuTHI
+
 			    }
 	  			
-			});
+			});*/
 		}		
 
 	});
