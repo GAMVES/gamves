@@ -60,12 +60,12 @@ class HomeViewController: UIViewController,
     }()
     
     
-    let scrollView: UIScrollView = {
+    /*let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
         //v.backgroundColor = UIColor.white
         return v
-    }()
+    }()*/
 
     let headerView: UIView = {
         let view = UIView()
@@ -209,43 +209,43 @@ class HomeViewController: UIViewController,
         
          self.cellId = "homeCellId"
     
-        self.view.addSubview(self.scrollView)
+        //self.view.addSubview(self.scrollView)
         
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)
-        self.view.addConstraintsWithFormat("V:|[v0]-50-|", views: self.scrollView)
+        //self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)
+        //self.view.addConstraintsWithFormat("V:|[v0]-50-|", views: self.scrollView)
         
-        self.scrollView.addSubview(self.headerView)
-        self.scrollView.addSubview(self.lineView)
-        self.scrollView.addSubview(self.dataView)
+        self.view.addSubview(self.headerView)
+        self.view.addSubview(self.lineView)
+        self.view.addSubview(self.dataView)
         
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.headerView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.dataView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.headerView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.dataView)
         
         let width:Int = Int(view.frame.size.width)
         let height:Int = Int(view.frame.size.height)
         
-        let topPadding = 40
-        let midPadding =  topPadding / 2
-        let smallPadding =  midPadding / 2
+        //let topPadding = 40
+        //let midPadding =  topPadding / 2
+        //let smallPadding =  midPadding / 2
         let photoSize = width / 3
         let padding = (width - photoSize) / 2
         self.photoCornerRadius = photoSize / 2
-        let dataHeight = height - 221
+        //let dataHeight = height - 180
         
-        self.metricsHome["topPadding"]      = topPadding
-        self.metricsHome["midPadding"]      = midPadding
-        self.metricsHome["smallPadding"]    = smallPadding
+        //self.metricsHome["topPadding"]      = topPadding
+        //self.metricsHome["midPadding"]      = midPadding
+        //self.metricsHome["smallPadding"]    = smallPadding
         self.metricsHome["photoSize"]       = photoSize
         self.metricsHome["padding"]         = padding
-        self.metricsHome["dataHeight"]      = dataHeight
+        //self.metricsHome["dataHeight"]      = dataHeight
         
-        self.scrollView.addConstraintsWithFormat(
-            "V:|[v0(220)][v1(1)][v2(dataHeight)]|", views:
+        self.view.addConstraintsWithFormat(
+            "V:|-80-[v0(200)][v1(1)][v2]|", views:
             self.headerView,
             self.lineView,
-            self.dataView,
-            metrics: self.metricsHome)
+            self.dataView) 
+            //metrics: self.metricsHome)
         
         self.headerView.addSubview(self.backImageView)
         self.headerView.addSubview(self.photosContainerView)
