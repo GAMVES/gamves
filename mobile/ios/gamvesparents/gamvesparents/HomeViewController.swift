@@ -341,6 +341,7 @@ class HomeViewController: UIViewController,
         _location.data = "5 Km"
         _location.id = 1
         _location.icon = UIImage(named: "map")!
+        _location.second_icon = UIImage(named: "location")!
         self.userStatistics.append(_location)
     
         _friends.desc = _friends_desc 
@@ -862,7 +863,7 @@ class HomeViewController: UIViewController,
    
         cell.iconImageView.image = stats.icon
         
-        if id == 0 {
+        if id == 0 || id == 1 {
             
             print(stats.desc)
 
