@@ -17,7 +17,7 @@ import ParseLiveQuery
 class HomeViewController: UIViewController,
     UICollectionViewDataSource,
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout
+    UICollectionViewDelegateFlowLayout    
 {
 
     var userStatistics = [UserStatistics]()
