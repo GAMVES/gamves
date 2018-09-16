@@ -420,15 +420,46 @@ class HomeViewController: UIViewController,
     }
   
     func getTimeCount() {
-        
-        let queryTimeCount = PFQuery(className:"TimeOnline")
-        
+
         let userId:String = Global.gamvesFamily.sonsUsers[0].userId
-        print(userId)
-        queryTimeCount.whereKey("userId", equalTo: userId)
+
+        //-
+        // Get last time online
+
+        let queryLastSeen = PFQuery(className:"TimeOnline")               
+        queryLastSeen.whereKey("userId", equalTo: userId)        
+        queryLastSeen.order(byDescending: "createdAt")        
+        queryLastSeen.limit = 1
+        queryLastSeen.findObjectsInBackground { (times, error) in
+
+            if error == nil {
+
+                for time in times! {
+                    
+                    let last = time.createdAt as! Date
+
+                    self._status_time = last.elapsedTime
+
+                    self.loadUserStatus()
+            
+                    DispatchQueue.main.async {
+                    
+                        self.collectionView.reloadData()
+                        
+                    }  
+
+                }
+            }
+        }
+
+        //-
+        // Count elapsed time last week
+
         
+        /*let queryTimeCount = PFQuery(className:"TimeOnline")         
+        queryTimeCount.whereKey("userId", equalTo: userId)        
         queryTimeCount.order(byDescending: "createdAt")
-        
+
         if let initWeek = Date().startOfWeek {
             
             let minute:TimeInterval = 60.0
@@ -461,8 +492,7 @@ class HomeViewController: UIViewController,
                         let interval = timeEnded.timeIntervalSince(timeStarted)
                         
                         self.countWeekTime = self.countWeekTime + interval
-                    }
-                    
+                    }                    
                 }
                 
                 let stringInterval = self.stringFromTimeInterval(interval: self.countWeekTime)
@@ -488,7 +518,7 @@ class HomeViewController: UIViewController,
                 }               
                 
             }
-        }
+        }*/
     }
 
 
@@ -1016,6 +1046,7 @@ class HomeViewController: UIViewController,
             let userId = Global.userDictionary[sonId]?.userId
 
             queryOnline.whereKey("userId", equalTo: userId)
+
             queryOnline.getFirstObjectInBackground { (usersOnline, error) in
         
                 if error != nil

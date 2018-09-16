@@ -802,9 +802,7 @@ class ProfileViewController: UIViewController,
 
             var bArr = b.components(separatedBy: "-")
 
-            let birthday = "\(bArr[2])/\(bArr[1])/\(bArr[0])/"
-
-            //let birthday = b.replacingOccurrences(of: "-", with:"/")
+            let birthday = "\(bArr[2])/\(bArr[1])/\(bArr[0])/"            
 
             self.sonBirthdayTextField.text = birthday
             

@@ -47,7 +47,6 @@
 		828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */; };
 		828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */; };
 		8296F1D9202CA1B200750C8D /* enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8296F1D8202CA1B200750C8D /* enums.swift */; };
-		8296F1DB202CA3AF00750C8D /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8296F1DA202CA3AF00750C8D /* Date+Extensions.swift */; };
 		8296F1DD202CA47000750C8D /* Formatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8296F1DC202CA46F00750C8D /* Formatter+Extensions.swift */; };
 		829F011B1FC3261500B8F2BD /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829F011A1FC3261500B8F2BD /* HomeCollectionViewCell.swift */; };
 		82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7EB7C1FAB6FA700C61A6B /* LoginViewController.swift */; };
@@ -150,7 +149,6 @@
 		828F83CD1FBC5C9300A1C67A /* ChatMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMethods.swift; sourceTree = "<group>"; };
 		828F83CF1FBD424500A1C67A /* ChatFeedMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatFeedMethods.swift; sourceTree = "<group>"; };
 		8296F1D8202CA1B200750C8D /* enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = enums.swift; sourceTree = "<group>"; };
-		8296F1DA202CA3AF00750C8D /* Date+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		8296F1DC202CA46F00750C8D /* Formatter+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Formatter+Extensions.swift"; sourceTree = "<group>"; };
 		829F011A1FC3261500B8F2BD /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		82B7EB7C1FAB6FA700C61A6B /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -300,7 +298,6 @@
 				8296F1DC202CA46F00750C8D /* Formatter+Extensions.swift */,
 				C73A31981DA3078D00C86C96 /* UserDefaults+helpers.swift */,
 				82B7EB7E1FAB772600C61A6B /* LoginViewController+Extensions.swift */,
-				8296F1DA202CA3AF00750C8D /* Date+Extensions.swift */,
 				8212D7071F7843B600F2A121 /* ImageView+Extensions.swift */,
 				8212D7051F78439400F2A121 /* Color+Extensions.swift */,
 				C70156201D8DC3B0003E25AF /* UIView+Extensions.swift */,
@@ -711,7 +708,6 @@
 				82E372481FB16C32000AD7EB /* InfoView.swift in Sources */,
 				822010B81FFAD684008C9027 /* FanpageApprovalLauncher.swift in Sources */,
 				82E3723F1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift in Sources */,
-				8296F1DB202CA3AF00750C8D /* Date+Extensions.swift in Sources */,
 				C92110D120F8241F008B5EC7 /* ButtonsFriendApprovalView.swift in Sources */,
 				C9381D6A213D7DF700352550 /* UINavigationController+Extension.swift in Sources */,
 				82E372371FB16550000AD7EB /* GroupNameViewController.swift in Sources */,
