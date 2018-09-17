@@ -1002,56 +1002,54 @@
 	});
 
 
+
+
+
 	// --
 	// Get Location reverse-geocoding.	
 
-	Parse.Cloud.afterSave("Location", function(request) {
-
-		var requestHttp = require("request");
+	Parse.Cloud.afterSave("Location", function(request) {		
 
 		var hasCoder = request.object.get("hasCoder");
-
-		console.log("hasCoder: " +hasCoder);
-
+		//console.log("hasCoder: " +hasCoder);
+		
 		if ( !hasCoder || hasCoder == undefined ) {
 
-			console.log("Has hasCoder");
-
+			//console.log("Does not hasCoder");
 			var geolocation = request.object.get("geolocation");
 
 			var latitude = geolocation.latitude;
 			var longitude = geolocation.longitude;			
+			let geoAll = latitude  + "," + longitude;
 
-			let geoAll = "'" + latitude ", " + longitude + "'";
+			var url = "https://maps.googleapis.com/maps/api/geocode/json";
+			var key = "AIzaSyAi_6G5rwhbTYkqyjo4wjzPJaz1uJYuTHI";			
+			var urlParams = url + "?" + "latlng=" + geoAll + "&key=" + key;
+			//console.log("urlParams: " + urlParams);
 
-			console.log("geoAll: " + geoAll);
+			Parse.Cloud.httpRequest({			
+				url: urlParams, 
+				method: "GET"				
+				}).then(function(httpResponse) {            	
 
-			var options = {
-			   method: 'GET',
-			   url: 'https://maps.googleapis.com/maps/api/geocode/json',
-			   qs: { 
-			   latlng: geoAll, 
-			   key: "AIzaSyAi_6G5rwhbTYkqyjo4wjzPJaz1uJYuTHI"
-			   },
-			};
+	            	var allAdrs = JSON.parse(httpResponse.text).results[0].formatted_address; //data.results[0].formatted_address;
 
-			console.log(options);
+					console.log("allAdrs: " + allAdrs);
 
-			requestHttp(options, function(error, response, body) {
+			        var res = allAdrs.split(",");
 
-				var allAdrs = JSON.parse(body).results[0].formatted_address; //data.results[0].formatted_address;
+			        request.object.set("address", res[0]);
+			        request.object.set("city", res[1]);
+			        request.object.set("state", res[2]);
+			        request.object.set("country", res[3]);
+			        request.object.set("hasCoder", true);
+					request.object.save(); 	            	
 
-		        var res = allAdrs.split(",");
-
-		        request.object.set("address", res[0]);
-		        request.object.set("city", res[1]);
-		        request.object.set("state", res[2]);
-		        request.object.set("country", res[3]);
-		        request.object.set("hasCoder", true);
-				request.object.save(); 
-
+				},function(httpResponse) {				  
+				  	// error
+				  	console.error('Request failed with response code ' + httpResponse.status);
 			});
-			
+
 			// Package
 			//"node-geocoder": "^3.22.0"
 
