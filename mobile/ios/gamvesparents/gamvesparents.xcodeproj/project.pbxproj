@@ -84,6 +84,7 @@
 		C92A549B20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92A549A20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift */; };
 		C92DCABB213ED5DA00A2C2EE /* OtherAccountsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DCABA213ED5DA00A2C2EE /* OtherAccountsViewController.swift */; };
 		C92DCABD213F03CE00A2C2EE /* OtherAccountViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */; };
+		C92EAE9C2150342B005765B4 /* VideoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92EAE9B2150342B005765B4 /* VideoCollectionViewCell.swift */; };
 		C9300F7320C9050F0027845F /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9300F7220C9050F0027845F /* Util.swift */; };
 		C935EBFD213F600500BCB206 /* OtherAccountSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C935EBFC213F600500BCB206 /* OtherAccountSectionHeader.swift */; };
 		C935EBFF213F91D800BCB206 /* FeedSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C935EBFE213F91D800BCB206 /* FeedSectionHeader.swift */; };
@@ -188,6 +189,7 @@
 		C92A549A20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendEmptyCollectionViewCell.swift; sourceTree = "<group>"; };
 		C92DCABA213ED5DA00A2C2EE /* OtherAccountsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherAccountsViewController.swift; sourceTree = "<group>"; };
 		C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherAccountViewCell.swift; sourceTree = "<group>"; };
+		C92EAE9B2150342B005765B4 /* VideoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoCollectionViewCell.swift; path = /Users/xcodeclub/repos/gamves/mobile/ios/gamvesparents/gamvesparents/VideoCollectionViewCell.swift; sourceTree = "<absolute>"; };
 		C9300F7220C9050F0027845F /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		C935EBFC213F600500BCB206 /* OtherAccountSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherAccountSectionHeader.swift; sourceTree = "<group>"; };
 		C935EBFE213F91D800BCB206 /* FeedSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedSectionHeader.swift; sourceTree = "<group>"; };
@@ -483,6 +485,7 @@
 		C95A487420F7D42F00E2D522 /* cells */ = {
 			isa = PBXGroup;
 			children = (
+				C92EAE9B2150342B005765B4 /* VideoCollectionViewCell.swift */,
 				8271ECCB1FE94BA1004160B9 /* ApprovalCell.swift */,
 				C95A487520F7D4D700E2D522 /* FriendApprovalCell.swift */,
 				C9BBCCED20FBAE170042D4B8 /* FriendCollectionViewCell.swift */,
@@ -617,6 +620,7 @@
 				"${BUILT_PRODUCTS_DIR}/Parse/Parse.framework",
 				"${BUILT_PRODUCTS_DIR}/ParseLiveQuery/ParseLiveQuery.framework",
 				"${BUILT_PRODUCTS_DIR}/PopupDialog/PopupDialog.framework",
+				"${BUILT_PRODUCTS_DIR}/PulsingHalo/PulsingHalo.framework",
 				"${BUILT_PRODUCTS_DIR}/RSKImageCropper/RSKImageCropper.framework",
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/Stripe/Stripe.framework",
@@ -640,6 +644,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Parse.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ParseLiveQuery.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PopupDialog.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PulsingHalo.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RSKImageCropper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stripe.framework",
@@ -712,6 +717,7 @@
 				C9381D6A213D7DF700352550 /* UINavigationController+Extension.swift in Sources */,
 				82E372371FB16550000AD7EB /* GroupNameViewController.swift in Sources */,
 				8262CDFC1FE1FE1D003F9C9D /* ApprovalViewController.swift in Sources */,
+				C92EAE9C2150342B005765B4 /* VideoCollectionViewCell.swift in Sources */,
 				82557C552016DBDE00752301 /* NoConnectionController.swift in Sources */,
 				82557C6120175CB300752301 /* Date+Extension.swift in Sources */,
 				82E372461FB16AD9000AD7EB /* VideoApprovalLauncher.swift in Sources */,

@@ -268,7 +268,7 @@ class ChatFeedMethods: NSObject {
                                             let thumbImage = UIImage(data:data!)
                                             
                                             
-                                            Global.parseVideo(video: video, chatId : chatId, videoImage: thumbImage! )
+                                            Global.parseVideo(videoPF: video, chatId : chatId, videoImage: thumbImage! )
 
                                         }
                                     })

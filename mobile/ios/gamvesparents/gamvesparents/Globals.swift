@@ -1048,7 +1048,7 @@ class Global: NSObject
                                                     
                                                     approval.thumbnail = thumbImage
                                                     
-                                                    let gamvesVideo = Global.parseVideo(video: videoObject!, chatId : videoId, videoImage: thumbImage! )
+                                                    let gamvesVideo = Global.parseVideo(videoPF: videoObject!, chatId : videoId, videoImage: thumbImage! )
                                                     
                                                     approval.video = gamvesVideo
                                                     
@@ -1507,43 +1507,45 @@ class Global: NSObject
     
     
     
-    static func parseVideo(video:PFObject, chatId :Int, videoImage: UIImage ) -> GamvesVideo
+    static func parseVideo(videoPF:PFObject, chatId :Int, videoImage: UIImage ) -> GamvesVideo
     {
     
         let videoGamves = GamvesVideo()
        
-        let title = video["title"] as! String
+        let title = videoPF["title"] as! String
         
         videoGamves.title = title
         
-        videoGamves.description = video["description"] as! String
-        videoGamves.videoId = video["videoId"] as! Int                
-        videoGamves.authorized = video["authorized"] as! Bool
+        videoGamves.description = videoPF["description"] as! String
+        videoGamves.videoId = videoPF["videoId"] as! Int                
+        videoGamves.authorized = videoPF["authorized"] as! Bool
 
-        videoGamves.categoryName = video["categoryName"] as! String
-        videoGamves.s3_source = video["s3_source"] as! String
+        videoGamves.categoryName = videoPF["categoryName"] as! String
+        videoGamves.s3_source = videoPF["s3_source"] as! String
         
-        if video["ytb_source"] != nil {
+        if videoPF["ytb_source"] != nil {
         
-            videoGamves.ytb_source = video["ytb_source"] as! String
-            videoGamves.ytb_thumbnail_source = video["ytb_thumbnail_source"] as! String
+            videoGamves.ytb_source = videoPF["ytb_source"] as! String
+            videoGamves.ytb_thumbnail_source = videoPF["ytb_thumbnail_source"] as! String
             
-            videoGamves.ytb_upload_date = video["ytb_upload_date"] as! String     
-            videoGamves.ytb_view_count = video["ytb_view_count"] as! Int 
+            videoGamves.ytb_upload_date = videoPF["ytb_upload_date"] as! String     
+            videoGamves.ytb_view_count = videoPF["ytb_view_count"] as! Int 
 
-            videoGamves.ytb_tags = video["ytb_tags"] as! [String]
-            videoGamves.ytb_duration = video["ytb_duration"] as! String     
-            videoGamves.ytb_categories = video["ytb_categories"] as! [String]
+            videoGamves.ytb_tags = videoPF["ytb_tags"] as! [String]
+            videoGamves.ytb_duration = videoPF["ytb_duration"] as! String     
+            videoGamves.ytb_categories = videoPF["ytb_categories"] as! [String]
 
             //videoGamves.ytb_like_count = video["ytb_like_count"] as! Int
         }
         
-        videoGamves.fanpageId = video["fanpageId"] as! Int
+        videoGamves.fanpageId = videoPF["fanpageId"] as! Int
 
-        videoGamves.posterId = video["posterId"] as! String    
-        videoGamves.videoObj = video
+        videoGamves.posterId = videoPF["posterId"] as! String    
+        videoGamves.videoObj = videoPF
 
-        videoGamves.thumbnail = video["thumbnail"] as! PFFile
+        videoGamves.thumbnail = videoPF["thumbnail"] as! PFFile
+
+        videoGamves.published  = videoPF.createdAt as! Date
         
         Global.chatVideos[chatId] = videoGamves
         

@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/xcodeclub/repos/gamves/mobile/ios/gamvesparents/gamvesparents/VideoCollectionViewCell.swift">
+   </FileRef>
+   <FileRef
       location = "group:gamvesparents.xcodeproj">
    </FileRef>
    <FileRef

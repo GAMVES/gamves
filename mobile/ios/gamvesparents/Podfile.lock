@@ -22,6 +22,7 @@ PODS:
     - Parse (~> 1.15.0)
     - Starscream (= 2.1.1)
   - PopupDialog (0.5.4)
+  - PulsingHalo (0.2.8)
   - RSKImageCropper (1.6.3)
   - Starscream (2.1.1)
   - Stripe (12.0.0)
@@ -40,6 +41,7 @@ DEPENDENCIES:
   - NVActivityIndicatorView
   - ParseLiveQuery (from `https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git`, branch `master`)
   - PopupDialog
+  - PulsingHalo
   - RSKImageCropper
   - Stripe
   - SwiftValidator (from `https://github.com/jpotts18/SwiftValidator.git`, branch `master`)
@@ -77,6 +79,7 @@ SPEC CHECKSUMS:
   Parse: 7daa8804b876d250a65420534c97d2d786c3b0b4
   ParseLiveQuery: 9743983026fb94d0b43c460b2d98107e2f435abb
   PopupDialog: 75cf955693590b0cb2fdde00223fb65d99c57247
+  PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
   RSKImageCropper: 356e36fc58c57c371b5d8b23d603936d6a73df6c
   Starscream: 142bd8ef24592d985daee9fa48c936070b85b15f
   Stripe: c1c4828adf3e078fb08ff56cd93f410c54011c54
@@ -84,6 +87,6 @@ SPEC CHECKSUMS:
   TaskQueue: c1c02deebf2665b8e625fc46dd37a29b1de8056e
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
 
-PODFILE CHECKSUM: 4d46f4c3280edab64f33ecbb67e5e52f8959f6f6
+PODFILE CHECKSUM: 1705a86517383dbf16062daab92c7651ef32a518
 
 COCOAPODS: 1.4.0

@@ -131,7 +131,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
                                                 
                                                 let thumbImage = UIImage(data:data!)
                                                 
-                                                let  videoGamves = Global.parseVideo(video: video, chatId : videoId, videoImage: thumbImage! )
+                                                let  videoGamves = Global.parseVideo(videoPF: video, chatId : videoId, videoImage: thumbImage! )
                                                 
                                                 historyGamves.videoGamves = videoGamves
                                                 

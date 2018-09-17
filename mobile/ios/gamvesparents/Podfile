@@ -43,6 +43,7 @@ target 'gamvesparents' do
   
   pod 'ISEmojiView' 
   
+  pod 'PulsingHalo'
 
     
 end

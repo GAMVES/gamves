@@ -19,6 +19,8 @@ protocol TutorialVideoProtocol {
 
 class TutorialVideoViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ApprovalProtocol {
     
+    var videosGamves  = [GamvesVideo]() 
+
     var activityIndicatorView:NVActivityIndicatorView?
     
     var homeViewController:HomeViewController? 
@@ -26,6 +28,16 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
     var isGroup = Bool()
     
     var popUp:PopupDialog?
+
+     var labelEmptyMessage: UILabel = {
+        let label = UILabel()
+        label.text = "There are no approvals yet loaded for your to approve"        
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.textColor = UIColor.gray
+        label.numberOfLines = 3
+        label.textAlignment = .center
+        return label
+    }()
 
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -64,13 +76,18 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
         super.viewDidLoad()
 
         self.navigationItem.title = "Tutorials"
-        
+
+        let buttonIcon = UIImage(named: "arrow_back_white")        
+        let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
+        leftBarButton.image = buttonIcon        
+        self.navigationItem.leftBarButtonItem = leftBarButton         
+
         self.view.addSubview(self.collectionView)
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)   
 
-        self.collectionView.register(TutorialVideoViewController.self, forCellWithReuseIdentifier: self.tutorialCellId)
+        self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.tutorialCellId)
 
         self.view.addSubview(self.messageLabel)
         
@@ -85,10 +102,39 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
 
         self.activityIndicatorView?.startAnimating()
         
-        self.getHistrory()
+        //self.getHistrory()
+        
+        self.hideShowTabBar(hidden: true)
+
+        if Global.chatVideos.count == 0 {
+
+            self.view.addSubview(self.labelEmptyMessage)
+            self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
+            self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
+
+            self.activityIndicatorView?.stopAnimating()
+        }
+
+    }
+
+    func backButton(sender: UIBarButtonItem) {
+
+        self.hideShowTabBar(hidden:false)
+
+        self.navigationController?.popViewController(animated: true)
+    }
+
+    func hideShowTabBar(hidden: Bool)
+    {
+        self.tabBarController?.tabBar.isHidden = hidden
+        
+        if hidden
+        {
+            navigationController?.navigationBar.tintColor = UIColor.white
+        } 
     }
     
-    func getHistrory() {
+    /*func getHistrory() {
         
         let historyQuery = PFQuery(className: "History")
         historyQuery.whereKey("userId", equalTo: Global.gamvesFamily.sonsUsers[0].userObj.objectId)
@@ -133,7 +179,7 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
                                                 
                                                 let thumbImage = UIImage(data:data!)
                                                 
-                                                let  videoGamves = Global.parseVideo(video: video, chatId : videoId, videoImage: thumbImage! )
+                                                let  videoGamves = Global.parseVideo(videoPF: video, chatId : videoId, videoImage: thumbImage! )
                                                 
                                                 historyGamves.videoGamves = videoGamves
                                                 
@@ -156,7 +202,7 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
                 }
             }
         }
-    }
+    }*/
     
     func appendVideoToHistoryAndCount(history: HistoryGamves){
         
@@ -204,68 +250,61 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let countItems = Global.histories.count
-        print(countItems)
-        return countItems
+        
+        let count = self.videosGamves.count
+
+        return count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = self.collectionView.dequeueReusableCell(withReuseIdentifier: tutorialCellId, for: indexPath) as! HistoryCell
+        let cellVideo = collectionView.dequeueReusableCell(withReuseIdentifier: self.tutorialCellId, for: indexPath) as! VideoCollectionViewCell
+            
+        cellVideo.thumbnailImageView.image = self.videosGamves[indexPath.row].image
         
-        let index = indexPath.item
-        let history:HistoryGamves = Global.histories[index]
-    
-        cell.nameLabel.text = history.videoGamves.title
+        let posterId = self.videosGamves[indexPath.row].posterId
+        
+        cellVideo.userProfileImageView.image = UIImage(named:"gamves_icons_white")
+        
+        cellVideo.videoName.text = videosGamves[indexPath.row].title
+        
+        let published = String(describing: videosGamves[indexPath.row].published)
+        
+        let shortDate = published.components(separatedBy: " at ")
+        
+        cellVideo.videoDatePublish.text = shortDate[0]       
 
-        let time = history.videoGamves.videoObj?.createdAt as! Date
+        cellVideo.checkView.isHidden = true            
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h:mm a"
+        //let recognizer = UITapGestureRecognizer(target: self, action:#selector(handleViewProfile(recognizer:)))
         
-        let elapsedTimeInSeconds = Date().timeIntervalSince(time)
-        
-        let secondInDays: TimeInterval = 60 * 60 * 24
-        
-        if elapsedTimeInSeconds > 7 * secondInDays {
-            dateFormatter.dateFormat = "MM/dd/yy"
-        } else if elapsedTimeInSeconds > secondInDays {
-            dateFormatter.dateFormat = "EEE"
-        }
-        
-        cell.timeLabel.text = dateFormatter.string(from: time)        
-        
-        let formatterLong = DateFormatter()
-        
-        formatterLong.dateFormat = "HH:mm:ss"
+        cellVideo.rowView.tag = indexPath.row
 
-        let timeLong = formatterLong.string(from: time)
+        //cellVideo.rowView.addGestureRecognizer(recognizer)
 
-        cell.elapsedLabel.text = timeLong  
-
-        cell.profileImageView.image = history.videoGamves.image
-
-        if indexPath.row % 2 == 0 {
-            cell.backgroundColor = UIColor.gamvesLightGrayColor
-        } else {
-            cell.backgroundColor = UIColor.white
-        }
-        
-        return cell
+        return cellVideo
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return CGSize(width: self.view.frame.width, height: 80)
+          let width = self.view.frame.width
+
+        var height = ((width - 16 - 16) * 9 / 16) + 16 + 88
+
+        height = height * CGFloat(self.videosGamves.count)
+            
+        let size = CGSize(width: width, height: height)
+
+        return size
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let history:HistoryGamves = Global.histories[indexPath.item]
+        let video:GamvesVideo = self.videosGamves[indexPath.item]
    
         if self.homeViewController != nil {
 
-            var chatId = history.videoId
+            var chatId = video.videoId
 
             var video = GamvesVideo()
                 

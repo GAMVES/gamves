@@ -210,6 +210,8 @@ class GamvesVideo
     var thumbnail:PFFile!
     var image = UIImage()
 
+    var published = Date()
+
 }
 
 class GamvesCategory
