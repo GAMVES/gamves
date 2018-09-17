@@ -316,6 +316,8 @@ class HomeViewController: UIViewController,
 
     var _approval_approval = String()
     var _friend_approval = Bool()
+
+    var _location_data = String()
     
     func loadStatistics() {
 
@@ -329,7 +331,7 @@ class HomeViewController: UIViewController,
         self.userStatistics.append(_status)
     
         _location.desc = "Location"
-        _location.data = "5 Km"
+        _location.data = _location_data 
         _location.id = 1
         _location.icon = UIImage(named: "map")!
         _location.second_icon = UIImage(named: "location")!
@@ -540,16 +542,6 @@ class HomeViewController: UIViewController,
                         var locGamves = LocationGamves()
                         
                         locGamves.geopoint = location["geolocation"] as! PFGeoPoint
-                        
-                        /*locGamves.address = location["address"] as! String
-                        
-                        locGamves.city = location["city"] as! String
-                        
-                        locGamves.state = location["state"] as! String
-                        
-                        locGamves.country = location["country"] as! String
-                        
-                        self.locations.append(locGamves)
 
                         if count == 0 {                           
 
@@ -557,7 +549,7 @@ class HomeViewController: UIViewController,
 
                             let distanceInMeters = myLocation.distance(from: myLocation)
                         
-                            self.userStatistics[1].data = "\(distanceInMeters) meters"
+                            self._location_data = "\(distanceInMeters) meters"
 
                              DispatchQueue.main.async {
                         
@@ -569,6 +561,18 @@ class HomeViewController: UIViewController,
 
                         }
 
+                        
+                        /*locGamves.address = location["address"] as! String
+                        
+                        locGamves.city = location["city"] as! String
+                        
+                        locGamves.state = location["state"] as! String
+                        
+                        locGamves.country = location["country"] as! String
+                        
+                        self.locations.append(locGamves)
+
+                        
                         count = count + 1*/
                     }
                 }                
