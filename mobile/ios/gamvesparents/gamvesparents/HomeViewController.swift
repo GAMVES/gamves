@@ -561,8 +561,9 @@ class HomeViewController: UIViewController,
 
                         }
 
+                        // Extended formatted_address reverse geocode data
                         
-                        /*locGamves.address = location["address"] as! String
+                        locGamves.address = location["address"] as! String
                         
                         locGamves.city = location["city"] as! String
                         
@@ -571,9 +572,8 @@ class HomeViewController: UIViewController,
                         locGamves.country = location["country"] as! String
                         
                         self.locations.append(locGamves)
-
                         
-                        count = count + 1*/
+                        count = count + 1
                     }
                 }                
             }
