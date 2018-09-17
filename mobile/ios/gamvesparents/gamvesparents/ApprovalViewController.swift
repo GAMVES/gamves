@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 import GameKit
-import Floaty
+//import Floaty
 import PopupDialog
 
 protocol ApprovalProtocol {

@@ -8,7 +8,7 @@
 import UIKit
 import Parse
 import ParseLiveQuery
-import Floaty
+//import Floaty
 import NVActivityIndicatorView
 
 
@@ -42,7 +42,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         return groupName
     }()
     
-    var floaty = Floaty(size: 80)
+    //var floaty = Floaty(size: 80)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,7 +54,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.registerLiveQuery()
 
-        self.floaty.paddingY = 15
+        /*self.floaty.paddingY = 15
         self.floaty.paddingX = 25                    
         self.floaty.itemSpace = 30        
         
@@ -94,7 +94,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.floaty.addItem(item: itemNewGroup)  
         self.floaty.addItem(item: itemSelectGroup)               
-        self.view.addSubview(floaty)
+        self.view.addSubview(floaty)*/
         
         NotificationCenter.default.addObserver(self, selector: #selector(loadChatFeed), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
 
