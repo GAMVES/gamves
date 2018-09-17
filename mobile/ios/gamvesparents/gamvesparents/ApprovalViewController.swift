@@ -17,7 +17,11 @@ protocol ApprovalProtocol {
     func pauseVideo()
 }
 
-class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, ApprovalProtocol {  
+class ApprovalViewController: UIViewController, 
+UICollectionViewDataSource, 
+UICollectionViewDelegate, 
+UICollectionViewDelegateFlowLayout, 
+ApprovalProtocol {  
     
     var homeViewController:HomeViewController?
     
@@ -34,6 +38,16 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
         cv.dataSource = self
         cv.delegate = self
         return cv
+    }()
+
+    var labelEmptyMessage: UILabel = {
+        let label = UILabel()
+        label.text = "There are no approvals yet loaded for your to approve"        
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.textColor = UIColor.gray
+        label.numberOfLines = 3
+        label.textAlignment = .center
+        return label
     }()
     
     let approvlCellId = "approvlCellId"
@@ -55,6 +69,14 @@ class ApprovalViewController: UIViewController, UICollectionViewDataSource, UICo
         self.collectionView.reloadData()
         
         self.familyId = Global.gamvesFamily.objectId
+
+        if Global.approvals.count == 0 {
+
+            self.view.addSubview(self.labelEmptyMessage)
+            self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
+            self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
+        }
+
     }
     
 
