@@ -205,14 +205,9 @@ class HomeViewController: UIViewController,
             self.puserId = userId
         }
 
-         tabBarController?.tabBar.isHidden = false
+        tabBarController?.tabBar.isHidden = false
         
-         self.cellId = "homeCellId"
-    
-        //self.view.addSubview(self.scrollView)
-        
-        //self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)
-        //self.view.addConstraintsWithFormat("V:|[v0]-50-|", views: self.scrollView)
+        self.cellId = "homeCellId"  
         
         self.view.addSubview(self.headerView)
         self.view.addSubview(self.lineView)
@@ -223,29 +218,19 @@ class HomeViewController: UIViewController,
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.dataView)
         
         let width:Int = Int(view.frame.size.width)
-        let height:Int = Int(view.frame.size.height)
+        let height:Int = Int(view.frame.size.height)        
         
-        //let topPadding = 40
-        //let midPadding =  topPadding / 2
-        //let smallPadding =  midPadding / 2
         let photoSize = width / 3
         let padding = (width - photoSize) / 2
-        self.photoCornerRadius = photoSize / 2
-        //let dataHeight = height - 180
-        
-        //self.metricsHome["topPadding"]      = topPadding
-        //self.metricsHome["midPadding"]      = midPadding
-        //self.metricsHome["smallPadding"]    = smallPadding
+        self.photoCornerRadius = photoSize / 2        
         self.metricsHome["photoSize"]       = photoSize
         self.metricsHome["padding"]         = padding
-        //self.metricsHome["dataHeight"]      = dataHeight
-        
+                
         self.view.addConstraintsWithFormat(
             "V:|-80-[v0(200)][v1(1)][v2]|", views:
             self.headerView,
             self.lineView,
-            self.dataView) 
-            //metrics: self.metricsHome)
+            self.dataView)         
         
         self.headerView.addSubview(self.backImageView)
         self.headerView.addSubview(self.photosContainerView)
@@ -329,7 +314,7 @@ class HomeViewController: UIViewController,
     var _friends_data = "04:50 hs"
     var _friends_desc = "Friends"
 
-    var _approval_approval = Bool()
+    var _approval_approval = String()
     var _friend_approval = Bool()
     
     func loadStatistics() {
@@ -361,12 +346,13 @@ class HomeViewController: UIViewController,
         _approval.desc = "Approvals"
         _approval.id = 3
         _approval.icon = UIImage(named: "check_circle")!
-        _approval.updated = self._approval_approval
+        _approval.data = self._approval_approval
+        _approval.second_icon = UIImage(named: "sand_watch")!
         self.userStatistics.append(_approval)
     
         _activity.desc = "Activity"
         _activity.id = 4
-        _activity.icon = UIImage(named: "view_activity")!
+        _activity.icon = UIImage(named: "view_activity")!        
         self.userStatistics.append(_activity)
     
         _history.desc = "History"
@@ -625,10 +611,8 @@ class HomeViewController: UIViewController,
                 let sob = "\(sonBadge!)"
                 
                 self.checkLabelSon.text = sob
-            }
-            
+            }            
         }
-
     }
     
     
@@ -638,7 +622,7 @@ class HomeViewController: UIViewController,
         
         Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in                      
 		
-            //self._approval_approval = count as Boool
+            self._approval_approval = "Pendings:  \(count)"
 
             self.loadStatistics()
             
@@ -870,7 +854,7 @@ class HomeViewController: UIViewController,
    
         cell.iconImageView.image = stats.icon
         
-        if id == 0 || id == 1 || id == 2 {
+        //if id < 3 {
             
             print(stats.desc)
 
@@ -878,12 +862,12 @@ class HomeViewController: UIViewController,
 
             cell.secondIconImageView.alpha = 0.4
 
-        }       
+        //}       
         
-        if id > 0
-        {
+        //if id > 0
+        //{
             cell.iconImageView.alpha = 0.4
-        }
+        //}
         
         return cell
     }
@@ -995,7 +979,7 @@ class HomeViewController: UIViewController,
                     
                     Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in                        
 
-                        //self._approval_approval = count as Int
+                        self._approval_approval = "Pendings:  \(count)"
 
                         self.loadStatistics()
 

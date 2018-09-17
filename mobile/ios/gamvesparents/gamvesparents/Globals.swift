@@ -984,6 +984,7 @@ class Global: NSObject
             if error != nil
             {
                 print("error")
+                completionHandler(0)
             } else
             {
                 
@@ -991,147 +992,155 @@ class Global: NSObject
                 {
                     
                     var countAapprovals = approvalObjects.count
-                    var count = 0
-                    
-                    print(countAapprovals)
-                    
-                    var countNotApproved = 0
-                    
-                    for approvalObj in approvalObjects
-                    {
-                        let approval = Approvals()
-                        
-                        approval.referenceId = approvalObj["referenceId"] as! Int
-                        
-                        if Global.approvals[approval.referenceId] == nil {
-                        
-                            approval.objectId = approvalObj.objectId!
-                            
-                            let approved = approvalObj["approved"] as! Int
-                            
-                            approval.approved = approved
-                            
-                            if approved == 0 {
 
-                                countNotApproved = countNotApproved + 1
+                    if countAapprovals > 0 {
 
-                            }
+                        var count = 0
+                        
+                        print(countAapprovals)
+                        
+                        var countNotApproved = 0
+                        
+                        for approvalObj in approvalObjects
+                        {
+                            let approval = Approvals()
                             
-                            let type = approvalObj["type"] as! Int
+                            approval.referenceId = approvalObj["referenceId"] as! Int
                             
-                            approval.type = type
+                            if Global.approvals[approval.referenceId] == nil {
                             
-                            if type == 1 {
-                            
-                                let queryVideo = PFQuery(className:"Videos")
-                                print(approval.referenceId)
-                                queryVideo.whereKey("videoId", equalTo: approval.referenceId)
-                                queryVideo.getFirstObjectInBackground(block: { (videoObject, error) in
-                                    
-                                    if error != nil
-                                    {
-                                        print("error: \(error)")
+                                approval.objectId = approvalObj.objectId!
+                                
+                                let approved = approvalObj["approved"] as! Int
+                                
+                                approval.approved = approved
+                                
+                                if approved == 0 {
+
+                                    countNotApproved = countNotApproved + 1
+
+                                }
+                                
+                                let type = approvalObj["type"] as! Int
+                                
+                                approval.type = type
+                                
+                                if type == 1 {
+                                
+                                    let queryVideo = PFQuery(className:"Videos")
+                                    print(approval.referenceId)
+                                    queryVideo.whereKey("videoId", equalTo: approval.referenceId)
+                                    queryVideo.getFirstObjectInBackground(block: { (videoObject, error) in
                                         
-                                    } else {
-                                        
-                                        let thumImage = videoObject?["thumbnail"] as! PFFile
-                                        let videoId = videoObject?["videoId"] as! Int
-                                        thumImage.getDataInBackground(block: { (data, error) in
+                                        if error != nil
+                                        {
+                                            print("error: \(error)")
                                             
-                                            if error == nil
-                                            {
-                                                let thumbImage = UIImage(data:data!)
-                                                
-                                                approval.thumbnail = thumbImage
-                                                
-                                                let gamvesVideo = Global.parseVideo(video: videoObject!, chatId : videoId, videoImage: thumbImage! )
-                                                
-                                                approval.video = gamvesVideo
-                                                
-                                                approval.title = videoObject?["title"] as! String
-                                                approval.description = videoObject?["description"] as! String
-                                                
-                                                //self.approvals.append(approval)
-                                                
-                                                self.approvals[approval.referenceId] = approval
-                                                
-                                                if (countAapprovals-1) == count {
-                                                    completionHandler(countNotApproved)
-                                                }
-                                                count = count + 1
-                                            }
-                                        })
-
-                                    }
-                                    
-                                })
-                                
-                                
-                            } else if type == 2 {
-                                
-                                
-                                let queryFanpage = PFQuery(className:"Fanpages")
-                                let refId = approval.referenceId
-                                print(refId)
-                                queryFanpage.whereKey("fanpageId", equalTo: refId)
-                                
-                                queryFanpage.getFirstObjectInBackground(block: { (fanpageObject, error) in
-                                    
-                                    if error != nil
-                                    {
-                                        print("error: \(error)")
-                                        
-                                    } else {
-                                        
-                                        if let fanpagePF = fanpageObject {
-                                        
-                                            let icon = fanpagePF["pageIcon"] as! PFFile
-                                        
-                                            let fanpageId = fanpagePF["fanpageId"] as! Int
-                                        
-                                            icon.getDataInBackground(block: { (data, error) in
+                                        } else {
+                                            
+                                            let thumImage = videoObject?["thumbnail"] as! PFFile
+                                            let videoId = videoObject?["videoId"] as! Int
+                                            thumImage.getDataInBackground(block: { (data, error) in
                                                 
                                                 if error == nil
                                                 {
-                                                    let iconImage = UIImage(data:data!)
+                                                    let thumbImage = UIImage(data:data!)
                                                     
-                                                    approval.thumbnail = iconImage
+                                                    approval.thumbnail = thumbImage
                                                     
-                                                    let gamvesFanpage = Global.parseFanpage(fanpage: fanpageObject!, fanpageId : fanpageId, fanpageImage: iconImage!, completionHandler: { ( fanpageGamves:GamvesFanpage ) -> () in
-                                                        
-                                                        approval.fanpage = fanpageGamves
-                                                        
-                                                        print(fanpageGamves.name)
-                                                        
-                                                        print(fanpageGamves.fanpage_images.count)
-                                                        
-                                                        approval.title = fanpagePF["pageName"] as! String
-                                                        
-                                                        let pageAbout = fanpagePF["pageAbout"] as! String
-                                                        
-                                                        approval.description = pageAbout
-                                                        
-                                                        approval.fanpage.about = pageAbout
-                                                        
-                                                        self.approvals[approval.referenceId] = approval
-                                                        
-                                                        //self.approvals.append(approval)
-                                                        
-                                                        if (countAapprovals-1) == count {
-                                                            completionHandler(countNotApproved)
-                                                        }
-                                                        count = count + 1
-                                                        
-                                                        
-                                                    })
+                                                    let gamvesVideo = Global.parseVideo(video: videoObject!, chatId : videoId, videoImage: thumbImage! )
+                                                    
+                                                    approval.video = gamvesVideo
+                                                    
+                                                    approval.title = videoObject?["title"] as! String
+                                                    approval.description = videoObject?["description"] as! String
+                                                    
+                                                    //self.approvals.append(approval)
+                                                    
+                                                    self.approvals[approval.referenceId] = approval
+                                                    
+                                                    if (countAapprovals-1) == count {
+                                                        completionHandler(countNotApproved)
+                                                    }
+                                                    count = count + 1
                                                 }
                                             })
+
                                         }
-                                    }
-                                })
+                                        
+                                    })
+                                    
+                                    
+                                } else if type == 2 {
+                                    
+                                    
+                                    let queryFanpage = PFQuery(className:"Fanpages")
+                                    let refId = approval.referenceId
+                                    print(refId)
+                                    queryFanpage.whereKey("fanpageId", equalTo: refId)
+                                    
+                                    queryFanpage.getFirstObjectInBackground(block: { (fanpageObject, error) in
+                                        
+                                        if error != nil
+                                        {
+                                            print("error: \(error)")
+                                            
+                                        } else {
+                                            
+                                            if let fanpagePF = fanpageObject {
+                                            
+                                                let icon = fanpagePF["pageIcon"] as! PFFile
+                                            
+                                                let fanpageId = fanpagePF["fanpageId"] as! Int
+                                            
+                                                icon.getDataInBackground(block: { (data, error) in
+                                                    
+                                                    if error == nil
+                                                    {
+                                                        let iconImage = UIImage(data:data!)
+                                                        
+                                                        approval.thumbnail = iconImage
+                                                        
+                                                        let gamvesFanpage = Global.parseFanpage(fanpage: fanpageObject!, fanpageId : fanpageId, fanpageImage: iconImage!, completionHandler: { ( fanpageGamves:GamvesFanpage ) -> () in
+                                                            
+                                                            approval.fanpage = fanpageGamves
+                                                            
+                                                            print(fanpageGamves.name)
+                                                            
+                                                            print(fanpageGamves.fanpage_images.count)
+                                                            
+                                                            approval.title = fanpagePF["pageName"] as! String
+                                                            
+                                                            let pageAbout = fanpagePF["pageAbout"] as! String
+                                                            
+                                                            approval.description = pageAbout
+                                                            
+                                                            approval.fanpage.about = pageAbout
+                                                            
+                                                            self.approvals[approval.referenceId] = approval
+                                                            
+                                                            //self.approvals.append(approval)
+                                                            
+                                                            if (countAapprovals-1) == count {
+                                                                completionHandler(countNotApproved)
+                                                            }
+                                                            count = count + 1
+                                                            
+                                                            
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    })
+                                }
                             }
                         }
-                    }
+
+                    } else {
+                        
+                        completionHandler(0)
+                    } 
                 }
             }
         }
