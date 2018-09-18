@@ -23,13 +23,7 @@ class AccountViewController: UIViewController,
     
     var tabBarViewController:TabBarViewController?
 
-    var accountButton = [AccountButton]()
-
-    let scrollView: UIScrollView = {
-        let v = UIScrollView()
-        v.translatesAutoresizingMaskIntoConstraints = false        
-        return v
-    }()
+    var accountButton = [AccountButton]()  
 
     let headerView: UIView = {
         let view = UIView()
@@ -54,9 +48,9 @@ class AccountViewController: UIViewController,
 
      var yourLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
-        label.textColor = UIColor.gray
-        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textAlignment = .center        
+        label.textColor = UIColor.gamvesBlackColor
+        label.font = UIFont.boldSystemFont(ofSize: 25)
         return label
     }()
 
@@ -147,35 +141,24 @@ class AccountViewController: UIViewController,
             self.puserId = userId
         }
 
-        self.cellId = "accountCellId"
+        self.cellId = "accountCellId"     
 
-        self.view.addSubview(self.scrollView)
+        self.view.addSubview(self.headerView)
+        self.view.addSubview(self.lineView)
+        self.view.addSubview(self.buttonsView)
         
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)
-        self.view.addConstraintsWithFormat("V:|[v0]-50-|", views: self.scrollView)
-
-        self.scrollView.addSubview(self.headerView)
-        self.scrollView.addSubview(self.lineView)
-        self.scrollView.addSubview(self.buttonsView)
-        
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.headerView)
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)  
-        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.buttonsView)  
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.headerView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)  
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.buttonsView)  
 
         let height:Int = Int(view.frame.size.height)
         let width:Int = Int(view.frame.size.width)
 
-        let componentsHeight = height - 221
-
-        var metricsComponents = [String:Int]()
-        metricsComponents["componentsHeight"] = componentsHeight
-
-        self.scrollView.addConstraintsWithFormat(
-            "V:|[v0(220)][v1(1)][v2(componentsHeight)]|", views:
+        self.view.addConstraintsWithFormat(
+            "V:|-80-[v0(220)][v1(1)][v2]|", views:
             self.headerView,
             self.lineView,
-            self.buttonsView,
-            metrics: metricsComponents)
+            self.buttonsView)            
 
         self.headerView.addSubview(self.backImageView)
         self.headerView.addSubview(self.photosContainerView)
@@ -215,7 +198,7 @@ class AccountViewController: UIViewController,
         
         self.photoCornerRadius = photoSize / 2
 
-        Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesBackgoundColor)              
+        Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesGamvesLightColor)              
        
         self.collectionView.register(AccountCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
 
@@ -258,12 +241,15 @@ class AccountViewController: UIViewController,
                 
                 self.openProfile()                
                 self.loadYourProfileInfo()
-
             }
-
         }
-    }
-    
+        
+        self.buttonsView.backgroundColor = UIColor.gamvesLightLightBlueColor
+        self.buttonLeftView.backgroundColor = UIColor.gamvesLightLightBlueColor
+        self.collectionView.backgroundColor = UIColor.gamvesLightLightBlueColor
+        self.buttonRightView.backgroundColor = UIColor.gamvesLightLightBlueColor        
+        self.headerView.backgroundColor = UIColor.gamvesGamvesLightColor
+    }    
 
      func showControllerForSetting(_ setting: Setting) {
 
@@ -275,12 +261,9 @@ class AccountViewController: UIViewController,
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
 
     }
-    
-    
 
     override func viewWillAppear(_ animated: Bool) {
-        self.setupNavBarButtons()
-        
+        self.setupNavBarButtons()        
         
     }
 

@@ -117,7 +117,7 @@ class Global: NSObject
     
     static var gamvesFamily = GamvesFamily()
     
-    static var chatVideos = Dictionary<Int, GamvesVideo>()
+    static var chatVideos = Dictionary<Int, GamvesVideo>()    
     
     static var hasNewFeed = Bool()
     

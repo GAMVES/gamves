@@ -31,7 +31,7 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
 
      var labelEmptyMessage: UILabel = {
         let label = UILabel()
-        label.text = "There are no approvals yet loaded for your to approve"        
+        label.text = "There are no tutorial yet loaded"        
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = UIColor.gray
         label.numberOfLines = 3
@@ -50,17 +50,6 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
         return cv
     }()
     
-    let messageLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "No video Tutorial found"
-        label.textColor = UIColor.gray
-        label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.numberOfLines = 4
-        label.textAlignment = .center
-        return label
-    }()
-
     let tutorialCellId = "tutorialCellId"
     
     var familyId = String()
@@ -87,35 +76,42 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.collectionView)
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.collectionView)   
 
-        self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.tutorialCellId)
-
-        self.view.addSubview(self.messageLabel)
-        
-        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.messageLabel)
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.messageLabel)
-
-        self.messageLabel.isHidden = true
+        self.collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: self.tutorialCellId)        
         
         self.familyId = Global.gamvesFamily.objectId
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray) 
 
-        self.activityIndicatorView?.startAnimating()
-        
-        //self.getHistrory()
+        self.activityIndicatorView?.startAnimating()       
         
         self.hideShowTabBar(hidden: true)
 
-        if Global.chatVideos.count == 0 {
+        if self.videosGamves.count > 0 {
 
-            self.view.addSubview(self.labelEmptyMessage)
-            self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
-            self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)
+            self.collectionView.reloadData()
+            
+        } else {
 
-            self.activityIndicatorView?.stopAnimating()
-        }
+            self.getTutorialVideos( completionHandler: { ( resutl ) -> () in
 
+                if resutl {
+
+                    self.collectionView.reloadData()
+
+                } else {
+
+                    self.view.addSubview(self.labelEmptyMessage)
+                    self.view.addConstraintsWithFormat("H:|-30-[v0]-30-|", views: self.labelEmptyMessage)
+                    self.view.addConstraintsWithFormat("V:|[v0]|", views: self.labelEmptyMessage)                     
+
+                }
+
+                self.activityIndicatorView?.stopAnimating()
+
+            })
+        }        
     }
+
 
     func backButton(sender: UIBarButtonItem) {
 
@@ -134,102 +130,71 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
         } 
     }
     
-    /*func getHistrory() {
-        
-        let historyQuery = PFQuery(className: "History")
-        historyQuery.whereKey("userId", equalTo: Global.gamvesFamily.sonsUsers[0].userObj.objectId)
-        
-        historyQuery.findObjectsInBackground { (histories, error) in
-            if error == nil {
-                
-                self.countHistories = (histories?.count)!
+    func getTutorialVideos(completionHandler : @escaping (_ resutl: Bool) -> ()) {
 
-                if self.countHistories > 0 {
-                
-                    for history in histories! {
+        let fanpageQuery = PFQuery(className: "Fanpages")        
+
+        fanpageQuery.whereKey("categoryName", equalTo: "TUTORIALS")
+
+        fanpageQuery.getFirstObjectInBackground { (fanpagePF, error) in
+
+            if error == nil {
+
+                var tutorialFanpage = fanpagePF
+
+                let videosQuery = PFQuery(className: "Videos")
+
+                videosQuery.whereKey("fanpageObjId", equalTo: tutorialFanpage?.objectId)
+
+                videosQuery.findObjectsInBackground { (videosPF, error) in
+                    
+                    if error == nil {
+
+                        var countVideos = videosPF?.count
+
+                        if countVideos! > 0 {
+
+                            var count = 0
                         
-                        var historyGamves = HistoryGamves()
-                        
-                        let videoId = history["videoId"] as! Int
-                        
-                        historyGamves.videoId = videoId
-                        
-                        if Global.chatVideos[videoId] != nil {
-                            
-                            historyGamves.videoGamves = Global.chatVideos[videoId]!
-                            
-                            self.appendVideoToHistoryAndCount(history: historyGamves)
-                            
-                        } else {
-                            
-                            let videoQuery = PFQuery(className: "Videos")
-                            videoQuery.whereKey("videoId", equalTo: videoId)
-                            
-                            videoQuery.findObjectsInBackground(block: { (videoObjs, error) in
+                            for videoPF in videosPF! {                                
+
+                                let thumImage = videoPF["thumbnail"] as! PFFile
+                                let videoId = videoPF["videoId"] as! Int
                                 
-                                if error == nil {
+                                thumImage.getDataInBackground(block: { (data, error) in
                                     
-                                    for video in videoObjs! {
+                                    if error == nil
+                                    {
+                                        let thumbImage = UIImage(data:data!)
                                         
-                                        let thumbnail = video["thumbnail"] as! PFFile
-                                        
-                                        thumbnail.getDataInBackground(block: { (data, error) in
-                                            
-                                            if error == nil {
-                                                
-                                                let thumbImage = UIImage(data:data!)
-                                                
-                                                let  videoGamves = Global.parseVideo(videoPF: video, chatId : videoId, videoImage: thumbImage! )
-                                                
-                                                historyGamves.videoGamves = videoGamves
-                                                
-                                                self.appendVideoToHistoryAndCount(history: historyGamves)
-                                                
-                                            }
-                                        })
+                                        let gamvesVideo = Global.parseVideo(videoPF: videoPF, chatId : videoId, videoImage: thumbImage! )
+
+                                        self.videosGamves.append(gamvesVideo)
+
+                                        if count == (countVideos! - 1) {
+
+                                            completionHandler(true)
+                                        }
+
+                                        count = count + 1
                                     }
-                                }
-                            })
+                                })
+                            }
+
+                        } else {
+
+                            completionHandler(false)
                         }
                     }
-
-                } else {
-
-                    self.messageLabel.isHidden = false
-
-                    self.activityIndicatorView?.stopAnimating()
-
                 }
-            }
-        }
-    }*/
-    
-    func appendVideoToHistoryAndCount(history: HistoryGamves){
-        
-        history.videoGamves.thumbnail.getDataInBackground { (data, error) in
-            
-            if error == nil {
-                
-                let image = UIImage(data: data!)
-                
-                history.videoGamves.image = image!
-            
-                Global.histories.append(history)
-                
-                if ( self.countHistories - 1 ) == self.countHistory {
-                    
-                    DispatchQueue.main.async {
 
-                        self.activityIndicatorView?.stopAnimating()
+            } else {
 
-                        self.collectionView.reloadData()
-                    }
-                }
+                completionHandler(false)
             }
-        }
-        
-        self.countHistory = self.countHistory + 1
-    }
+        }       
+    }   
+   
     
     func pauseVideo() {
         videoApprovalLauncher.pauseVideo()
