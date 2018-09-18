@@ -3,7 +3,6 @@
 //  gamvesparents
 //
 //  Created by XCodeClub on 2018-09-12.
-//  Copyright © 2018 Lets Build That App. All rights reserved.
 //
 
 import UIKit
@@ -49,7 +48,7 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
         cv.delegate = self
         return cv
     }()
-    
+
     let tutorialCellId = "tutorialCellId"
     
     var familyId = String()
@@ -111,7 +110,6 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
             })
         }        
     }
-
 
     func backButton(sender: UIBarButtonItem) {
 

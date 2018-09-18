@@ -3,7 +3,6 @@
 //  gamvesparents
 //
 //  Created by Jose Vigil on 9/26/17.
-//  Copyright © 2017 Lets Build That App. All rights reserved.
 //
 
 import UIKit
@@ -58,14 +57,6 @@ class HomeViewController: UIViewController,
         let selector = ActivityViewController()
         return selector
     }()
-    
-    
-    /*let scrollView: UIScrollView = {
-        let v = UIScrollView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        //v.backgroundColor = UIColor.white
-        return v
-    }()*/
 
     let headerView: UIView = {
         let view = UIView()
@@ -450,7 +441,6 @@ class HomeViewController: UIViewController,
 
         //-
         // Count elapsed time last week
-
         
         /*let queryTimeCount = PFQuery(className:"TimeOnline")         
         queryTimeCount.whereKey("userId", equalTo: userId)        

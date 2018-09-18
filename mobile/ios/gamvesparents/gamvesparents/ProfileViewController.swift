@@ -1,6 +1,4 @@
 //
-
-
 //  ProfileViewController.swift
 //  gamvesparents
 //
@@ -564,6 +562,23 @@ class ProfileViewController: UIViewController,
 
         self.boyConstraints()
 
+        // Disabling view after registered
+
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {
+        
+            if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {               
+
+                self.photosContainerView.isUserInteractionEnabled = false
+
+                self.sonNameContainerView.isUserInteractionEnabled = false
+                self.sonSchoolContainerView.isUserInteractionEnabled = false
+
+                self.yourNameContainerView.isUserInteractionEnabled = false
+                self.spouseContainerView.isUserInteractionEnabled = false
+
+                self.saveButton.isUserInteractionEnabled = false
+            }
+        }
     }
 
     func backButton(sender: UIBarButtonItem) {
