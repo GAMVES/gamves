@@ -242,6 +242,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
             Global.levelDescription.lowercased(),
             Global.userId] as [String]
         
+        print(filterTarget)
+        
         queryCategories.whereKey("target", containedIn: filterTarget)
         
         if !Global.hasDateChanged()

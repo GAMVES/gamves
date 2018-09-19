@@ -45,6 +45,7 @@ PODS:
   - Starscream (3.0.5)
   - SwiftHash (2.0.2)
   - SwiftyJSON (4.1.0)
+  - TaskQueue (1.1.1)
   - UITextView+Placeholder (1.2.1)
   - YouTubePlayer (0.4.0)
 
@@ -71,6 +72,7 @@ DEPENDENCIES:
   - SKPhotoBrowser
   - SwiftHash
   - SwiftyJSON
+  - TaskQueue
   - UITextView+Placeholder
   - YouTubePlayer
 
@@ -101,9 +103,10 @@ SPEC CHECKSUMS:
   Starscream: faf918b2f2eff7d5dd21180646bf015a669673bd
   SwiftHash: 6d312abe61c8359bdef8d0093642f3a70b1c17ba
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
+  TaskQueue: 53a3cdaf817d9ce3cd50837ff6610aeb7b968997
   UITextView+Placeholder: 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 38accadd0035cefa5918826ca258bcadb0f1f59d
+PODFILE CHECKSUM: 415f748c2b1fac6cfa18feaf507af4e8d481e8fc
 
 COCOAPODS: 1.4.0

@@ -239,31 +239,26 @@ class LoginController: UIViewController {
                 } else
                 {
                     
-                    // Still need to check if the email has been verified
-                    /*if user?["emailVerified"] != nil
-                     {
-                     
-                     let emailVerified = user?["emailVerified"];
-                     
-                     if emailVerified as! Bool == true
-                     {
-                     } else {
-                     // The email has not been verified, so logout the user
-                     PFUser.logOut()
-                     }
-                     
-                     } else {
-                     
-                     let layout = UICollectionViewFlowLayout()
-                     layout.scrollDirection = .vertical
-                     
-                     self.window?.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: layout))
-                     
-                     }*/
-                    
                     //User and family info
                     DispatchQueue.main.async {
                         Global.loadAditionalData()
+                    }
+                    
+                    //Copulsory UserData to reload Home
+                    if let userId = PFUser.current()?.objectId {
+                        
+                        Global.getYourUserData(id:userId, completionHandler: { ( result:Bool ) -> () in
+                            
+                            if result {
+                                
+                                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyYourUserDataLoaded), object: self)
+                                
+                            } else {
+                                
+                                print("Level not loading")
+                            }
+                            
+                        })
                     }
                     
                     //Check fisrt login
