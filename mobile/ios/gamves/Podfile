@@ -15,7 +15,9 @@ target 'gamves' do
 
   #pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift.git', :tag => '1.4.0' 
 
-  pod 'Bolts'
+  #pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift.git'
+
+  #pod 'Bolts'
   
   pod 'Floaty' 
   

@@ -4,12 +4,7 @@ PODS:
   - AWSCore (2.6.27)
   - AWSS3 (2.6.27):
     - AWSCore (= 2.6.27)
-  - Bolts (1.9.0):
-    - Bolts/AppLinks (= 1.9.0)
-    - Bolts/Tasks (= 1.9.0)
   - Bolts-Swift (1.3.0)
-  - Bolts/AppLinks (1.9.0):
-    - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
   - CalmParametricAnimations (1.0.1)
   - DeviceKit (1.7.0)
@@ -53,7 +48,6 @@ DEPENDENCIES:
   - Alamofire
   - Atributika
   - AWSS3
-  - Bolts
   - Bolts-Swift
   - CalmParametricAnimations
   - DeviceKit
@@ -107,6 +101,6 @@ SPEC CHECKSUMS:
   UITextView+Placeholder: 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 415f748c2b1fac6cfa18feaf507af4e8d481e8fc
+PODFILE CHECKSUM: 79e4f827d25d69683ab55aa7d98f3ecd74a76404
 
 COCOAPODS: 1.4.0
