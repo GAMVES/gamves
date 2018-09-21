@@ -227,7 +227,12 @@ RSKImageCropViewControllerDelegate {
     }
 
     func handleFinish() {
-
+        
+        print(self.type)
+        print(self.croppedImage)
+        print(self.smallImage)
+        print(self.profileImagesPickerProtocol)
+        
         self.profileImagesPickerProtocol.didpickImage(type: self.type, smallImage: self.smallImage, croppedImage:self.croppedImage)
 
         switch self.type {            

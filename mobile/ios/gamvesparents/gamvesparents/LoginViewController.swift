@@ -360,7 +360,7 @@ class LoginViewController: UIViewController
         if self.isRegistered {
             self.loginRegisterSegmentedControl.selectedSegmentIndex = 0
             self.handleLoginRegisterChange()
-        }
+        } 
         
         Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
             
@@ -701,12 +701,16 @@ class LoginViewController: UIViewController
                     self.activityIndicatorView?.stopAnimating()
                     
                     self.message="An email has been sent to your inbox. Please confirm, once then press the Continue."
+
+                    self.loginRegisterSegmentedControl.isUserInteractionEnabled = false
                     
                     self.okLogin = true
                     self.isRegistered = false
                     
                     self.loginRegisterButton.setTitle("Verify mail befor continuing", for: UIControlState())
+                    
                     self.loginRegisterButton.isEnabled = false
+                    
                     //self.loginRegisterButton.alpha = 0.30
 
                     if let userId = PFUser.current()?.objectId
@@ -825,9 +829,13 @@ class LoginViewController: UIViewController
             return
         }
 
-        if (school?.isEmpty)! {
-            self.showMessage(title: "Try again", message: "Error, school is empty. Please select a relation and try again.")            
-            return
+        if (loginRegisterSegmentedControl.selectedSegmentIndex == 0) {
+
+            if (school?.isEmpty)! {
+                self.showMessage(title: "Try again", message: "Error, school is empty. Please select a relation and try again.")            
+                return
+            }
+
         }
         
         // Defining the user object
@@ -862,34 +870,38 @@ class LoginViewController: UIViewController
 
                                 var sonUser:GamvesUser = Global.gamvesFamily.sonsUsers[0]
 
-                                var son_type = sonUser.typeNumber
+                                    var son_type = sonUser.typeNumber
 
-                                var selectedType = Int()
-                                var type = Int()
+                                    var son_school = Global.gamvesFamily.school.schoolName
 
-                                if userType == "Father" {
+                                    if (self.loginRegisterSegmentedControl.selectedSegmentIndex == 0) {                                    
 
-                                    // 0 = Father
-                                    selectedType = 0
+                                        var selectedType = Int()
+                                        var type = Int()
 
-                                } else if userType == "Mother" { 
+                                        if userType == "Father" {
 
-                                    // 1 = Mother
-                                    selectedType = 1
-                                }
+                                            // 0 = Father
+                                            selectedType = 0
 
-                                if son_type == 0 || son_type == 1 {
+                                        } else if userType == "Mother" { 
 
-                                    type = 0
-                                }
+                                            // 1 = Mother
+                                            selectedType = 1
+                                        }
 
-                                var son_school = Global.gamvesFamily.school.schoolName
+                                        if son_type == 0 || son_type == 1 {
 
-                                if selectedType != type && school != son_school {
+                                            type = 0
+                                        }                                        
 
-                                    self.showMessage(title: "Try again", message: "Error, the information you provided is wrong. Please try again.")            
-                                    return
-                                }
+                                        if selectedType != type && school != son_school {
+
+                                            self.showMessage(title: "Try again", message: "Error, the information you provided is wrong. Please try again.")            
+                                            return
+                                        }
+
+                                    }
                                 
                                 Global.loaLevels(completionHandler: { ( result:Bool ) -> () in                              
                                     

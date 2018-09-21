@@ -10,6 +10,7 @@ import UIKit
 
 // Swift 3 version, no co-animation (alongsideTransition parameter is nil)
 extension UINavigationController {
+    
     public func pushViewController(
         _ viewController: UIViewController,
         animated: Bool,

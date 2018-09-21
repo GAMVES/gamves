@@ -1309,6 +1309,8 @@ class ProfileViewController: UIViewController,
                                 Global.loadConfigData()
 
                                 self.hideShowTabBar(hidden: true)
+                                
+                                print(self.accountViewController)
 
                                 self.accountViewController.showImagePicker(type: ProfileImagesTypes.You)
 
@@ -1374,11 +1376,7 @@ class ProfileViewController: UIViewController,
                                                             // REGISTRATION COMPLETED                                                          
 
                                                             let title = "Congratulations Registration Completed!"
-                                                            var message = "\n\nThanks very much for registering to Gamves. You can share the app with your family! \n\n"
-                                                            
-                                                            //message = message + "Fortnite users\n\n" 
-
-                                                            //message = message +  "Before you start using Gamves please provide one las optional information about Fortnite, otherwise you can complete it later."
+                                                            var message = "\n\nThanks very much for registering to Gamves. You can share the app with your family! \n\n"                                                            
                                                             
                                                             let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                                                             
@@ -1386,18 +1384,10 @@ class ProfileViewController: UIViewController,
                                                                 
                                                                 self.activityIndicatorView?.stopAnimating()
                                                                 self.navigationController?.popViewController(animated: true)
-
-                                                                self.hideShowTabBar(hidden:false)
+                                                                self.accountViewController.hideShowTabBar(status:false)
+                                                                self.accountViewController.setTabbBarIndex(id:0)
                                                                 
                                                             }))
-
-                                                            /*alert.addAction(UIAlertAction(title: "Fornite", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                                                                                                      
-                                                                
-                                                                let fortniteViewController = FortniteViewController()
-                                                                fortniteViewController.isRegistering = true
-                                                                self.navigationController?.pushViewController(fortniteViewController, animated: true)
-                                                                
-                                                            }))*/
                                                             
                                                             self.present(alert, animated: true)                                                     
                                                             

@@ -51,7 +51,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             self.puserId = userId
         }
     
-        self.tabBarController?.tabBar.tintColor = UIColor.gamvesColor       
+        self.tabBarController?.tabBar.tintColor = UIColor.gamvesColor      
         
     
         locationManager.delegate = self
@@ -98,7 +98,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         self.accountViewController.tabBarItem.image = UIImage(named: "profile")
         let accountTitle = "Account"
         self.accountViewController.title = accountTitle
-
+        self.accountViewController.tabBarViewController = self
         
         viewControllers = [homeNavController, chatFeedNavController, accountNavController]
 
@@ -111,8 +111,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             self.selectedIndex = 2 //Account
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)                     
-                
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)                                    
         
     }      
     
@@ -138,9 +137,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
                 let picker_shown = Global.defaults.bool(forKey: "\(self.puserId)_picker_shown")
 
                 if registrant_completed && !picker_shown
-                {
-
-                    //sleep(1)
+                {                   
 
                     DispatchQueue.main.async
                     {
@@ -148,7 +145,6 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
 
                         Global.defaults.set(true, forKey: "\(self.puserId)_picker_shown")
                     }
-
                 }
             }
 

@@ -235,7 +235,7 @@ class AccountViewController: UIViewController,
             self.collectionView, 
             self.buttonRightView)
         
-        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {
+        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {
         
             if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
                 
@@ -263,8 +263,15 @@ class AccountViewController: UIViewController,
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.setupNavBarButtons()        
+        self.setupNavBarButtons()
         
+     
+    }
+
+    func setTabbBarIndex(id: Int) {
+
+        self.tabBarViewController?.selectedIndex = id
+
     }
 
     func showImagePicker(type:ProfileImagesTypes) {
@@ -272,6 +279,8 @@ class AccountViewController: UIViewController,
         self.hideShowTabBar(status: true)
         
         imagePickerViewController.setType(type: type)
+        
+        print(profileViewController)
 
         imagePickerViewController.profileImagesPickerProtocol = profileViewController
         
@@ -425,6 +434,7 @@ class AccountViewController: UIViewController,
     func openProfile() {
         
         profileViewController = ProfileViewController()
+        profileViewController.accountViewController = self
         profileViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
