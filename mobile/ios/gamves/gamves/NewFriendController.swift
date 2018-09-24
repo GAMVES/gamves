@@ -163,67 +163,80 @@ class NewFriendController: UIViewController,
 
             if resutl {
 
-                var alUsers = [GamvesUser]()
 
-                let ukeys = Array(Global.gamvesAllUsers.keys)
-               
-                for key in ukeys {
-                    
-                    let user = Global.gamvesAllUsers[key]
+                self.getPendingApprovals(completionHandler: { ( result ) -> () in
 
-                    if let userId = PFUser.current()?.objectId {
+                    if resutl {
 
-                        if let gUserId = user?.userId {
+                        self.buildGroup()              
+                    }
 
-                            if gUserId != userId {
-
-                                if Global.friends[gUserId] == nil {
-
-                                    alUsers.append(user!)    
-                                }                                
-                            }
-                        }
-                    }                    
-                }                
-
-                let groupDictionary = Dictionary(grouping: alUsers) { (user) -> String in
-                    return user.schoolId
-                }                            
-
-                let keys = groupDictionary.keys.sorted()
-
-                keys.forEach { (key) in
-                    
-                    print(key)
-
-                    if Global.schools[key] != nil {
-
-                        let school = Global.schools[key]
-                        self.schoolSections.append(school!)
-                        let user = groupDictionary[key]
-                        self.groupUsers.append(user!)
-
-                    }                    
-                }
-                
-                self.groupUsers.forEach({
-                    $0.forEach({print($0)})
-                    print("-----------------------")
-                })  
-
-                DispatchQueue.main.async {
-
-                    self.tableView.reloadData()
-                    self.activityIndicatorView?.stopAnimating()
-
-                }               
+                })        
             }
-
         })
 
         self.disableAddButton()
 
         self.tableView.register(AddFriendSectionHeader.self, forHeaderFooterViewReuseIdentifier: self.sectionHeaderId)
+
+    }
+
+    func buildGroup() {
+
+        var alUsers = [GamvesUser]()
+
+        let ukeys = Array(Global.gamvesAllUsers.keys)
+       
+        for key in ukeys {
+            
+            let user = Global.gamvesAllUsers[key]
+
+            if let userId = PFUser.current()?.objectId {
+
+                if let gUserId = user?.userId {
+
+                    if gUserId != userId {
+
+                        if Global.friends[gUserId] == nil {
+
+                            alUsers.append(user!)    
+                        }                                
+                    }
+                }
+            }                    
+        }                
+
+        let groupDictionary = Dictionary(grouping: alUsers) { (user) -> String in
+            return user.schoolId
+        }                            
+
+        let keys = groupDictionary.keys.sorted()
+
+        keys.forEach { (key) in
+            
+            print(key)
+
+            if Global.schools[key] != nil {
+
+                let school = Global.schools[key]
+                self.schoolSections.append(school!)
+                let user = groupDictionary[key]
+                self.groupUsers.append(user!)
+
+            }                    
+        }
+        
+        self.groupUsers.forEach({
+            $0.forEach({print($0)})
+            print("-----------------------")
+        })  
+
+        DispatchQueue.main.async {
+
+            self.tableView.reloadData()
+            self.activityIndicatorView?.stopAnimating()
+
+        } 
 
     }
 
@@ -375,6 +388,17 @@ class NewFriendController: UIViewController,
             cell.checkLabel.isHidden = true            
         }
 
+        if user.wasInvited {
+
+            cell.invitedLabel.isHidden = false
+            cell.checkLabel.isHidden = false
+
+        } else {
+
+            cell.invitedLabel.isHidden = true
+
+        }
+
         return cell 
     } 
 
@@ -389,38 +413,42 @@ class NewFriendController: UIViewController,
         let user =  self.groupUsers[indexPath.section][indexPath.row]
 
         let checked = user.isChecked
-            
-        if !checked {
 
-            user.isChecked  = true
-
-            if !self.selectedUsers.contains(where: { $0.name == user.name }) {
+        if !user.wasInvited {
             
-                self.selectedUsers.append(user) 
+            if !checked {
+
+                user.isChecked  = true
+
+                if !self.selectedUsers.contains(where: { $0.name == user.name }) {
+                
+                    self.selectedUsers.append(user) 
+                }
+
+                self.enableAddButton()
+                
+            } else
+            {
+                user.isChecked = false
+
+                let indexOfUser = selectedUsers.index{$0 === user}
+                
+                print(indexOfUser)
+        
+                self.selectedUsers.remove(at: indexOfUser!)
+
+                self.disableAddButton()
+            }        
+
+            DispatchQueue.main.async {
+
+                self.collectionView.reloadData()
+
+                self.tableView.reloadData()
+
             }
-
-            self.enableAddButton()
-            
-        } else
-        {
-            user.isChecked = false
-
-            let indexOfUser = selectedUsers.index{$0 === user}
-            
-            print(indexOfUser)
-    
-            self.selectedUsers.remove(at: indexOfUser!)
-
-            self.disableAddButton()
-        }        
-
-        DispatchQueue.main.async {
-
-            self.collectionView.reloadData()
-
-            self.tableView.reloadData()
-
-        }        
+                    
+        }
         
     }     
 
@@ -482,15 +510,21 @@ class NewFriendController: UIViewController,
                         
                         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                 
                             
-                            DispatchQueue.main.async {
+                            DispatchQueue.main.async {                               
 
-                                //let indexOfUser = Global.gamvesAllUsers.index{$0 === user}
+                                Global.gamvesAllUsers[user.userId]?.isChecked = true  
 
-                                Global.gamvesAllUsers[user.userId]?.isChecked = true
-                                
-                                //Global.gamvesAllUsers[indexOfUser!].isChecked = false
+                                self.getPendingApprovals(completionHandler: { ( result ) -> () in
 
-                                self.tableView.reloadData()
+                                    if resutl {
+
+                                        self.buildGroup()              
+
+                                        self.tableView.reloadData()
+
+                                    }                                  
+
+                                })                          
                             }            
 
                             self.navigationController?.popToRootViewController(animated: true)
@@ -506,5 +540,52 @@ class NewFriendController: UIViewController,
                 }
             }
         }
+    }
+
+    func getPendingApprovals(completionHandler : @escaping (_ resutl:Bool) -> ()) {
+
+
+        let queryFriendsApproval = PFQuery(className: "FriendsApproval")
+        
+        if let userId = PFUser.current()?.objectId {
+
+            queryFriendsApproval.whereKey("posterId", equalTo: userId)
+        }
+
+        queryFriendsApproval.whereKey("type", equalTo: 1)
+
+        queryFriendsApproval.whereKey("approved", equalTo: 0)
+
+        queryFriendsApproval.findObjectsInBackground(block: { (friendsApprovalPFs, error) in
+
+            if error == nil
+            {
+
+                if let friendsApprovalPFs = friendsApprovalPFs
+                {
+                    var countFriendsApproval = friendsApprovalPFs.count
+
+                    if countFriendsApproval > 0 {  
+                    
+                        var count = 0
+                        
+                        for friendsApprovalPF in friendsApprovalPFs
+                        {
+
+                            let friendId = friendsApprovalPF["friendId"] as! String
+
+                            Global.gamvesAllUsers[friendId]?.wasInvited = true                                 
+                        }
+
+                        completionHandler(true)
+                    
+                    } else {
+
+                        completionHandler(false)
+
+                    }
+                }
+            }
+        })
     }       
 }

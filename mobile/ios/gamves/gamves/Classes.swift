@@ -137,6 +137,9 @@ class GamvesUser {
     var status = String()
     var chatId = Int()
     var isChecked = Bool()
+
+    var wasInvited = Bool()    
+
     var gender = GamvesGender()
     
     var familyId = String()

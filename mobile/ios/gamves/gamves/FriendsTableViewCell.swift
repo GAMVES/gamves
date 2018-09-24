@@ -25,8 +25,7 @@ class FriendsTableViewCell: UITableViewCell {
     }()
 
     let containerView: UIView = {
-        let view = UIView()
-        //view.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
+        let view = UIView()        
         view.backgroundColor = UIColor.white
         return view
     }()
@@ -43,6 +42,21 @@ class FriendsTableViewCell: UITableViewCell {
         label.text = "Your friend's message and something else..."
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 14)
+        return label
+    }()
+
+    let invitedView: UIView = {
+        let view = UIView()        
+        view.backgroundColor = UIColor.white    
+        return view
+    }()
+
+    let invitedLabel: UILabel = {
+        let label = UILabel()        
+        label.font = UIFont.boldSystemFont(ofSize: 25)        
+        label.text = "Invited"
+        label.textColor = UIColor.gamvesColor        
+        label.textAlignment = .left
         return label
     }()
     
@@ -80,27 +94,30 @@ class FriendsTableViewCell: UITableViewCell {
         self.checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 24.0, borderWidth: 3.0, color: UIColor.gamvesColor)
         self.addSubview(checkLabel)           
 
-        self.addSubview(containerView)
+        self.addSubview(self.containerView)
+        self.addSubview(self.invitedView)
         
-        self.addConstraintsWithFormat("H:|-90-[v0]|", views: containerView)
-        self.addConstraintsWithFormat("V:[v0(50)]", views: containerView)
+        self.addConstraintsWithFormat("V:[v0(50)]", views: self.containerView)
+        self.addConstraintsWithFormat("V:[v0(50)]", views: self.invitedView)
+        self.addConstraintsWithFormat("H:|-90-[v0][v1(120)]|", views: containerView, invitedView)         
         
-        self.addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
-        
+        self.addConstraint(NSLayoutConstraint(item: self.containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.invitedView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+
+        self.invitedView.addSubview(self.invitedLabel)   
+        self.invitedView.addConstraintsWithFormat("H:|[v0]|", views: self.invitedLabel)
+        self.invitedView.addConstraintsWithFormat("V:|[v0]|", views: self.invitedLabel)
+
         self.containerView.addSubview(nameLabel)
         self.containerView.addSubview(statusLabel)
         
         self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: nameLabel)
-        
-        self.containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, statusLabel)
-        
-        self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: statusLabel)       
-        
+        self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: statusLabel)        
+        self.containerView.addConstraintsWithFormat("V:|[v0][v1(24)]|", views: nameLabel, statusLabel)        
         
         self.addConstraintsWithFormat("H:|-60-[v0(30)]", views: checkLabel)
         self.addConstraintsWithFormat("V:|-60-[v0(30)]", views: checkLabel)
         
-    }   
-    
-
+    }    
+  
 }
