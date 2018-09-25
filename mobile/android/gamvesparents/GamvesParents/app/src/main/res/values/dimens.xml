@@ -19,5 +19,7 @@
     <!--Floating Button-->
     <dimen name="panic_floating_button_diam">100dp</dimen>
 
+    <dimen name="dayHeight">64dp</dimen>
+
 
 </resources>

@@ -2,6 +2,7 @@ package gamves.com.gamvesparents;
 
 import android.app.Application;
 import android.content.Context;
+import android.location.Location;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.multidex.MultiDex;
@@ -19,6 +20,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import gamves.com.gamvesparents.model.User;
 import gamves.com.gamvesparents.utils.KeySaver;
 
 /**
@@ -54,6 +56,14 @@ public class GamvesParentsApplication extends Application
             R.drawable.home_gradient_ten
     };
 
+    private Location location;
+    double latitude; // latitude
+    double longitude; // longitude
+
+    double local_latitude; // local street latitude
+    double local_longitude; // local street longitude
+
+    private User user = new User();
 
     @Override
     public void onCreate () {
@@ -214,6 +224,57 @@ public class GamvesParentsApplication extends Application
     public static String INTENT_KEY_CHAT_ROOM_ID = "roomid";
     public static long TIME_TO_REFRESH = 10 * 1000;
     public static long TIME_TO_OFFLINE = 2 * 60 * 1000;
+
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+        this.user.setLatitude(latitude);
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+        this.user.setLongitude(longitude);
+    }
+
+    public double getLocal_latitude() {
+        return local_latitude;
+    }
+
+    public double getLocal_longitude() {
+        return local_longitude;
+    }
+
+    public void setLocal_latitude(double local_latitude) {
+        this.local_latitude = local_latitude;
+    }
+
+    public void setLocal_longitude(double local_longitude) {
+        this.local_longitude = local_longitude;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 
 }

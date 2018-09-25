@@ -10,6 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import gamves.com.gamvesparents.fragment.FragmentCommunity;
+import gamves.com.gamvesparents.fragment.FragmentHome;
+import gamves.com.gamvesparents.fragment.FragmentProfile;
+
 //import gamves.com.
 
 public class MainActivity extends AppCompatActivity {
@@ -30,20 +34,15 @@ public class MainActivity extends AppCompatActivity {
                     //mToolbar.setTitle("HOME");
                     getSupportActionBar().setTitle("Inicio");
                     break;
-                case R.id.navigation_cameras:
-                    fragment = new FragmentCameras();
+                case R.id.navigation_community:
+                    fragment = new FragmentCommunity();
                     //mToolbar.setTitle("CAMARAS");
                     getSupportActionBar().setTitle("Camaras");
                     break;
-                case R.id.navigation_reflector:
-                    fragment = new FragmentReflector();
+                case R.id.navigation_profile:
+                    fragment = new FragmentProfile();
                     //mToolbar.setTitle("REFLECTORES");
                     getSupportActionBar().setTitle("Reflectores");
-                    break;
-                case R.id.navigation_vigilant:
-                    fragment = new FragmentVigilant();
-                    //mToolbar.setTitle("VIGILADOR");
-                    getSupportActionBar().setTitle("Vigilador smart");
                     break;
             }
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -66,18 +65,19 @@ public class MainActivity extends AppCompatActivity {
         }*/
         }
 
-        ;
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-
-            mTextMessage = (TextView) findViewById(R.id.message);
-            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        }
-
     };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
+
+        mTextMessage = (TextView) findViewById(R.id.message);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
 
 }

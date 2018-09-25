@@ -36,8 +36,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-import ar.com.vigil.security.model.User;
-import ar.com.vigil.security.utils.HttpParse;
+import gamves.com.gamvesparents.model.User;
+import gamves.com.gamvesparents.utils.HttpParse;
 
 /**
  * Created by jose on 14/11/2017.
@@ -58,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
     HashMap<String,Object> hashMap = new HashMap<>();
     static HashMap<String,Object> hashMapAddress = new HashMap<>();
 
-    private static NosQuedamosApplication app;
+    private static GamvesParentsApplication app;
     HttpParse httpParse = new HttpParse();
 
     private static LatLng goodLatLng = new LatLng(37, -120);
@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        app = NosQuedamosApplication.getInstance();
+        app = GamvesParentsApplication.getInstance();
 
         double lat = app.getLatitude();
 

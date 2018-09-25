@@ -16,4 +16,8 @@
 
     <color name="black_semi_transparent">#B2000000</color>
 
+    <color name="app_bottom_navigation">#373435</color>
+
+    <color name="app_bottom_active_navigation">#727376</color>
+
 </resources>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="gamves.com.gamvesparents.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--<android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>-->
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="10">
+
+            <FrameLayout
+                android:id="@+id/fragment_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="8">
+            </FrameLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:weightSum="10"
+                android:gravity="bottom">
+
+                <View
+                    android:id="@+id/navigation_separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/app_bottom_navigation"
+                    android:layout_weight="3"/>
+
+                <gamves.com.gamvesparents.custom.CustomBottomNavigationView
+                    android:id="@+id/navigation_button_navigation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="7"
+                    app:menu="@menu/navigation"
+                    app:itemIconTint="@drawable/bottom_navigation_color_selector"
+                    android:background="@color/app_bottom_navigation"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/panic"
+            android:layout_width="@dimen/panic_floating_button_diam"
+            android:layout_height="@dimen/panic_floating_button_diam"
+            android:src="@drawable/panic_dual"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="40dp"
+            android:clickable="true"
+            app:elevation="8dp"
+            app:backgroundTint="@color/app_bottom_navigation"
+            app:srcCompat="@android:drawable/ic_input_add"/>
+
+    </FrameLayout>
+
+</android.support.constraint.ConstraintLayout>
