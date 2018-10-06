@@ -511,7 +511,7 @@
             
             print(self.chatId)
             let queryChatFeed = PFQuery(className:"ChatFeed")
-            
+    
             print(self.chatId)
             
             queryChatFeed.whereKey("chatId", equalTo: self.chatId)
@@ -614,6 +614,8 @@
                                                 {
                                                     self.loadChatsVideos(chatFeed: chatFeed, userCount: usersAmount, completionHandler: { ( messagesHandeled ) -> () in
                                                         
+                                                        print(messagesHandeled.count)
+                                                        
                                                         var sortedMessages = messagesHandeled.sorted(by: {
                                                             $0.date.compare($1.date) == .orderedAscending
                                                         })
@@ -629,7 +631,7 @@
                                                                 self.activityView.stopAnimating()
                                                          
                                                                 self.collectionView.reloadData()
-                                                            
+                                               	
                                                                 self.scrollToLast()      
 
                                                             }
@@ -1648,6 +1650,8 @@
                 userId = (PFUser.current()?.objectId)!
                 messagePF["userId"] = userId
             }
+            
+            print(self.chatId)
             
             messagePF["chatId"] = self.chatId
             

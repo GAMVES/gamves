@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>3008</string>
+	<string>3011</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -31,16 +31,12 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera.</string>
-	
-    <key>NSLocationAlwaysUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Need location for Gamves.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Gamves tracks your position near your family</string>
-    
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Need location for Gamves.</string>
-    
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Need location for Gamves.</string>
-    
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Need location for Gamves.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires access to the microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -196,7 +196,12 @@ class ChatFeedMethods: NSObject {
                                     chatFeedRoom = (Global.userDictionary[second]?.name)!
                                     chatThumbnail = (Global.userDictionary[second]?.avatar)!
                                 } else {
-                                    chatFeedRoom = (Global.userDictionary[first]?.name)!
+                                    
+                                    print(first)
+                                    
+                                    let firstName = (Global.userDictionary[first]?.name)!
+                                    
+                                    chatFeedRoom = firstName
                                     chatThumbnail = (Global.userDictionary[first]?.avatar)!
                                 }
                                 
@@ -284,6 +289,8 @@ class ChatFeedMethods: NSObject {
     {
         
         var members = chatFeedObj["members"] as! String
+        
+        print(members)
         
         let participantQuery = PFQuery(className:"_User")
         participantQuery.whereKey("objectId", containedIn: Global.parseUsersStringToArray(separated: members))
