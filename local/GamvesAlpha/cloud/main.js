@@ -183,16 +183,16 @@
 	function loadImagesArray(configPF, callback) {	
 
 		var files = [
-			"https://s3.amazonaws.com/gamves/images/personal.jpg",
-			"https://s3.amazonaws.com/gamves/images/personal_background.jpg",
-			"https://s3.amazonaws.com/gamves/images/trending.jpg",
-			"https://s3.amazonaws.com/gamves/images/trending_background.jpg",    		
-			"https://s3.amazonaws.com/gamves/images/universe.jpg",
-			"https://s3.amazonaws.com/gamves/images/image_0.jpg",
-			"https://s3.amazonaws.com/gamves/images/image_1.jpg",
-			"https://s3.amazonaws.com/gamves/images/image_2.jpg",
-			"https://s3.amazonaws.com/gamves/images/image_3.jpg",
-			"https://s3.amazonaws.com/gamves/images/image_4.jpg",
+			"https://s3.amazonaws.com/gamves/images/personal.png",
+			"https://s3.amazonaws.com/gamves/images/personal_background.png",
+			"https://s3.amazonaws.com/gamves/images/trending.png",
+			"https://s3.amazonaws.com/gamves/images/trending_background.png",    		
+			"https://s3.amazonaws.com/gamves/images/universe.png",
+			"https://s3.amazonaws.com/gamves/images/image_0.png",
+			"https://s3.amazonaws.com/gamves/images/image_1.png",
+			"https://s3.amazonaws.com/gamves/images/image_2.png",
+			"https://s3.amazonaws.com/gamves/images/image_3.png",
+			"https://s3.amazonaws.com/gamves/images/image_4.png",
 			"https://s3.amazonaws.com/gamves/images/welcome.png"
 		];
 
@@ -223,17 +223,17 @@
 
 				var name;               
 
-				var image_0 			= 'a6ea61c6f47f7e287';
-				var image_1 			= 'fa6f8a8768b8424da';
-				var image_2 			= 'f3f511077d91f0e76';
-				var image_3 			= '39e9809b9c1ed77c1';
-				var image_4 			= '693a50656ac7828d8';
-				var personal 			= 'c83314a78f5d1b5ff';
-				var personal_background = 'baa229c759587526f';
-				var trending 			= '2e8a6127a36111e76';
-				var trending_background = '0148aa260631f6a36';
-				var universe 			= '7bfda7963843b3a43';
-				var welcome 			= '7006b25a20ab9b934';
+				var image_0 			= 'c6db094717e232f8f0';
+				var image_1 			= '84d0d2b51f2e3c8ba9';
+				var image_2 			= '9ed10f7d8aa562616b';
+				var image_3 			= '7c2591a73767372af3';
+				var image_4 			= 'bbec6d8f987fc64b04';
+				var personal 			= '2a05a8c7c83314a78f';
+				var personal_background = '3eef7323eec2ca381b';
+				var trending 			= 'de45444c2e8a6127a3';
+				var trending_background = '162cb6095941216264';
+				var universe 			= '3093cdd35eaf6ba21f';
+				var welcome 			= 'dca79d3f7006b25a20';
 				
 				if (etag.indexOf(image_0) >= 0) {
 
@@ -295,12 +295,14 @@
 
 						configRel.add(savedImage);
 
-						//console.log("id: "+id);
-						//console.log("count: "+count);
+						console.log("id: "+id);
+						console.log("count: "+count);
 
-		            	if ( id == (count-1) ){	            				            	
+		            	if ( id == (count - 1) ) {
 
-		            		configPF.save();	     
+		            		console.log("counted_callback");	            				            	
+
+		            		configPF.save(null, { useMasterKey: true } );	     
 
 		            		callback(universeFile);
 
