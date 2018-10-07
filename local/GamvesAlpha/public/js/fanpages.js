@@ -370,11 +370,13 @@ document.addEventListener("LoadFanpage", function(event){
             album.set("cover", albumImages[i]);
             var fanId = fanpageIdArray[_fId];
             album.set("referenceId", fanId);   
-            album.set("type", "Images");   
+            album.set("type", "Images");
 
             var name = $('#edit_album_name').val();                      
             var result = MD5(name);
             album.set("imageId", result);      
+
+            album.set("name", name); 
 
             album.save(null, {
               success: function (albumStored) {

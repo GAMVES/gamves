@@ -269,6 +269,8 @@
 
 					var fanpageId = fanpageSaved.get("fanpageId");
 
+					album.set("type", "Images");   			
+
 		    		album.set("referenceId", fanpageId);
 		    		album.set("name", name);
 
