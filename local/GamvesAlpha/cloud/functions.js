@@ -353,7 +353,16 @@
 
 						getFortniteApi(fanpagePF,  function() {
 
-							status.success(true);
+							//status.success(true);
+
+							saveAlbumsFanpageRelation(fanpagePF, function(restultSave) {
+
+								if (!restultSave.error) {
+
+									status.success(true);
+								}
+
+							});
 
 						});
 
@@ -371,7 +380,16 @@
 
 						getFortniteApi(fanpagePF,  function() {
 
-							status.success(true);
+							//status.success(true);
+
+							saveAlbumsFanpageRelation(fanpagePF, function(restultSave) {
+
+								if (!restultSave.error) {
+
+									status.success(true);
+								}
+
+							});
 
 						});
 						
@@ -390,8 +408,53 @@
 		});	
 	}); 	
 
+	function saveAlbumsFanpageRelation(fanpagePF, callback) {
 
-	function getFortniteApi(fanpageObj, callback) {
+		var albumRelation = fanpagePF.relation("albums");
+
+		var typesArray = ["Upcoming","News","Store"];	
+
+		var queryAlbums = new Parse.Query("Albums");
+		queryAlbums.containedIn("type", typesArray);
+		queryAlbums.find({
+
+			success: function(albumsPF) {
+
+				for (var j = 0; j < albumsPF.length; j++) {
+
+					var album = albumsPF[j];	
+					albumRelation.add(album);			
+					
+				}
+				//fanpagePF.save(null, { useMasterKey: true});
+
+				fanpagePF.save(null, { useMasterKey: true,	
+
+					success: function (fanpagePFSaved) {
+
+						callback({"error":false});					
+
+					},
+					error: function (response, error) {			
+
+						callback({"error":true, "message":error});
+					}
+				});
+
+			},
+			error: function(error) {
+			
+				callback({"error":true, "message":error});
+
+			}		
+
+		});
+	}
+
+
+	function getFortniteApi(fanpage, callback) {
+
+		var fanpageObj = fanpage;
 
 		new Promise(function(resolve, reject) {		
 
@@ -517,6 +580,7 @@
 			//console.log("name: " + name + " filenameText: " + filenameText + " imageUrl: " + imageUrl);
 
 			var fanpageId = fanpagePF.get("fanpageId");
+			//var albumRelation = fanpagePF.relation("albums");
 
 			//console.log(" fanpageId :: Fornite: " + fanpageId);
 
@@ -557,15 +621,16 @@
 		                   	album.save(null, { useMasterKey: true,	
 
 								success: function (albumSaved) {
-									
-									var albumRelation = fanpagePF.relation("albums");
-		        					albumRelation.add(albumSaved);	
+																		
+		        					//albumRelation.add(albumSaved);	
 
-		        					//console.log("__count: " + count + " rows: " + rows);      										
+		        					console.log("__countUpcoming: " + count + " rows: " + rows);      										
 
 									if (count == (rows-1)) {
 
-										fanpagePF.save(null, { useMasterKey: true,	
+										callbackUpcoming({"error":false});
+
+										/*fanpagePF.save(null, { useMasterKey: true,	
 
 											success: function (fanpagePFSaved) {
 
@@ -576,7 +641,7 @@
 
 												callbackUpcoming({"error":true, "message":error});
 											}
-										});  									
+										});*/ 									
 
 								   	}
 								   	count++;
@@ -621,7 +686,7 @@
 		}
 	}
 
-	function removeIfNotExist(ids, fanpageId, callback){			
+	/*function removeIfNotExist(ids, fanpageId, callback){			
 
 		var queryAlbum = new Parse.Query("Albums");	
 		queryAlbum.equalTo("referenceId", fanpageId);		
@@ -646,7 +711,7 @@
 				callback();			
 			}
 		});
-	} 
+	}*/
 
 
 	// --
@@ -712,7 +777,8 @@
 
 			ids.push(filenameText);
 
-			var fanpageId = fanpagePF.get("fanpageId");								
+			var fanpageId = fanpagePF.get("fanpageId");	
+			//var albumRelation = fanpagePF.relation("albums");							
 
 			var queryAlbum = new Parse.Query("Albums");
 			queryAlbum.equalTo("referenceId", fanpageId);
@@ -751,16 +817,17 @@
 
 		                   	album.save(null, { useMasterKey: true,	
 
-								success: function (albumSaved) {
+								success: function (albumSaved) {									
 									
-									var albumRelation = fanpagePF.relation("albums");
-		        					albumRelation.add(albumSaved);	 										
+		        					//albumRelation.add(albumSaved);	 										
 
 		        					console.log("__countNews: " + count + " rows: " + rows);      										
 
 									if (count == (rows-1)) {
 
-										fanpagePF.save(null, { useMasterKey: true,	
+										callbackNews({"error":false});
+
+										/*fanpagePF.save(null, { useMasterKey: true,	
 
 											success: function (fanpagePFSaved) {
 
@@ -771,7 +838,7 @@
 
 												callbackNews({"error":true, "message":error});
 											}
-										});  									
+										});*/  									
 
 								   	}
 								   	count++;				
@@ -871,7 +938,8 @@
 
 			ids.push(filenameText);
 
-			var fanpageId = fanpagePF.get("fanpageId");								
+			var fanpageId = fanpagePF.get("fanpageId");	
+			//var albumRelation = fanpagePF.relation("albums");							
 
 			var queryAlbum = new Parse.Query("Albums");
 			queryAlbum.equalTo("referenceId", fanpageId);
@@ -908,16 +976,17 @@
 
 		                   	album.save(null, { useMasterKey: true,	
 
-								success: function (albumSaved) {
+								success: function (albumSaved) {									
 									
-									var albumRelation = fanpagePF.relation("albums");
-		        					albumRelation.add(albumSaved);	 										
+		        					//albumRelation.add(albumSaved);	 										
 
 		        					console.log("__countStore: " + count + " rows: " + rows);      										
 
 									if (count == (rows-1)) {
 
-										fanpagePF.save(null, { useMasterKey: true,	
+										callbackStore({"error":false});
+
+										/*fanpagePF.save(null, { useMasterKey: true,	
 
 											success: function (fanpagePFSaved) {
 
@@ -928,7 +997,7 @@
 
 												callbackStore({"error":true, "message":error});
 											}
-										});  									
+										});*/  									
 
 								   	}
 								   	count++;	
@@ -962,4 +1031,15 @@
 			});
 		}
 	}
+
+
+	// --
+  	// Fornite API Calls	
+
+	Parse.Cloud.define("ForniteAuth", function(request, status) {
+
+
+
+
+	})	
 

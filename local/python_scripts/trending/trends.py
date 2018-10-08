@@ -10,8 +10,8 @@ from parse_rest.connection import SessionToken, register
 from parse_rest.datatypes import Object
 from parse_rest.user import User
 
-print("----------------------------------------------")
 
+print("----------------------------------------------")
 pytrend = TrendReq()
 
 year = datetime.utcnow().strftime('%Y')
@@ -26,9 +26,12 @@ else:
 
 date = year + sm
 
-#print(date)
+print(date)
 
-top_games = pytrend.top_charts(cid="games", geo='US', date=date)
+
+#top_games = pytrend.top_charts(cid="games", geo='US', date=date)
+top_games = pytrend.top_charts(cid="basketball_players", geo='US', date=date)
+
 top_tv = pytrend.top_charts(cid="childrens_tv_programs", geo='US', date=date)
 top_animals = pytrend.top_charts(cid="animals", geo='US', date=date)
 top_teen_pop_artists = pytrend.top_charts(cid="teen_pop_artists", geo='US', date=date)
