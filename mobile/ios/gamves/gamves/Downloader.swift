@@ -75,7 +75,11 @@ class Downloader: NSObject
                                     album.name = name
                                 }
                                 
-                                album.type = fanpageAlbum["type"] as! String
+                                let type = fanpageAlbum["type"] as! String
+
+                                print(type)
+
+                                album.type = type
                                 
                                 let coverFile = fanpageAlbum["cover"] as! PFFile
                                 

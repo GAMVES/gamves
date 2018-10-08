@@ -254,12 +254,21 @@ class FanpagePage: UIViewController,
         if Downloader.fanpageImagesDictionary[fanpageId] != nil {
 
             let allAbums =  Downloader.fanpageImagesDictionary[fanpageId] as! [GamvesAlbum]
+            
+            print(allAbums)
+
+            for alb in allAbums {
+
+                print(alb.type)
+            }
 
             let groupDictionary = Dictionary(grouping: allAbums) { (album) -> String in
+                print(album.type)
                 return album.type
             }            
             
             var keys = groupDictionary.keys.sorted()
+            print(keys)
             keys.forEach{ (key) in
                 print(key)                
                 self.groupAlbums.append(groupDictionary[key]!)
@@ -713,7 +722,10 @@ class FanpagePage: UIViewController,
             let cellI = tableView.dequeueReusableCell(withIdentifier: self.cellFanpageTableId, for: indexPath) as! FanpageTableCell
             
             cellI.delegate = self
-            let albums = self.groupAlbums[indexPath.section] 
+            print(indexPath.section)
+            print(self.groupAlbums.count)
+            let id = indexPath.section - 1
+            let albums = self.groupAlbums[id] 
             cellI.albums = albums
             cellI.albumCollectionView.reloadData()
             return cellI
