@@ -344,9 +344,42 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let index = indexPath.item
+        /*let index = indexPath.item
         let key: Int = Array(ChatFeedMethods.chatFeeds)[index].key
-        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!
+        let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[key]!*/
+
+
+        let index = indexPath.item
+
+        let section = indexPath.section        
+
+        var chatfeed = ChatFeed()
+
+        if section == 0 {           
+
+            let key: Int = Array(ChatFeedMethods.chatFeedFamily)[index].key
+            chatfeed = ChatFeedMethods.chatFeedFamily[key]!
+            
+        } else if section == 1 {           
+            
+            let key: Int = Array(ChatFeedMethods.chatFeedAdmin)[index].key
+            chatfeed = ChatFeedMethods.chatFeedAdmin[key]!
+
+        } else {
+
+            let has = hasFriendsAndVideSections(index: section)
+            
+            if has == 1 {
+
+                let key: Int = Array(ChatFeedMethods.chatFeedFriends)[index].key
+                chatfeed = ChatFeedMethods.chatFeedFriends[key]!
+
+            } else if has == 2 {      
+
+                let key: Int = Array(ChatFeedMethods.chatFeedVideos)[index].key
+                chatfeed = ChatFeedMethods.chatFeedVideos[key]!   
+            }
+        } 
 
         let isVideoChat:Bool = chatfeed.isVideoChat! as Bool
         
@@ -382,6 +415,23 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
             videoApprovalLauncher.showVideoPlayer(videoGamves: video, approved: 0)
             
         }*/
+    }
+
+
+    func hasFriendsAndVideSections(index: Int) -> Int
+    {
+        var result = 0
+
+        if index == 2 && ChatFeedMethods.chatFeedFriends.count > 0 {           
+
+            result = 1
+
+        } else if index == 3 && ChatFeedMethods.chatFeedVideos.count > 0 {
+
+            result = 2
+        }
+
+        return result
     }
 
     func openChat(room: String, chatId:Int, users:[GamvesUser])
