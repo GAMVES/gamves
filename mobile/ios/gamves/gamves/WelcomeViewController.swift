@@ -156,20 +156,20 @@ UICollectionViewDelegateFlowLayout {
                         var count = 0
                         
                         for welcomePF in welcomesPF {
-                       
+
                             let welcome = GamvesWelcome()
-                            
-                            welcome.welcomeOBj = welcomePF
 
-                            welcome.objectId = (welcomePF.objectId as? String)!
+                            welcome.objectId = welcomePF.objectId as! String
 
-                            welcome.description = (welcomePF["description"] as? String!)!
-                            welcome.title = (welcomePF["title"] as? String!)!
-                           
+                            welcome.description = welcomePF["description"] as! String
+
+                            welcome.description = welcomePF["description"] as! String
+                            welcome.title = welcomePF["title"] as! String
+
                             let thumbnail = welcomePF["thumbnail"] as! PFFile
 
                             thumbnail.getDataInBackground(block: { (imageThumbnail, error) in
-                    
+
                                 if error == nil {
 
                                     if let imageAvatarData = imageThumbnail {
@@ -190,9 +190,10 @@ UICollectionViewDelegateFlowLayout {
 
                                     }
                                 }
-                            })                           
-
+                            })
+                            
                         }
+                        
                         
                     } else
                     {
@@ -205,5 +206,4 @@ UICollectionViewDelegateFlowLayout {
     }
 
 } 
-
 

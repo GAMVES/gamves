@@ -465,29 +465,29 @@ UICollectionViewDelegateFlowLayout {
                    
                         let notification = GamvesNotification()
 
-                        notification.objectId = (notificationPF.objectId as? String)!
-                        notification.title = (notificationPF["title"] as? String)!
+                        notification.objectId = notificationPF.objectId as! String
+                        notification.title = notificationPF["title"] as! String
                         
                         if notificationPF["referenceId"] != nil {
-                            notification.referenceId = (notificationPF["referenceId"] as? Int)!
+                            notification.referenceId = notificationPF["referenceId"] as! Int
                         }
 
-                        notification.description = (notificationPF["description"] as? String)!
-                        notification.posterName = (notificationPF["posterName"] as? String)!
-                        notification.date = (notificationPF["date"] as? Date!)!
+                        notification.description = notificationPF["description"] as! String
+                        notification.posterName = notificationPF["posterName"] as! String
+                        notification.date = notificationPF["date"] as! Date
                         
                         if Calendar.current.isDateInToday(notification.date) {
                             notification.isNew = true
                         }
                         
-                        notification.posterId = (notificationPF["posterId"] as? String)!
+                        notification.posterId = notificationPF["posterId"] as! String
 
                         let type =  notificationPF["type"] as? Int 
 
                         if type == 1 { //video
 
                             let videoGamves = GamvesVideo()
-                            let videoObj:PFObject = (notificationPF["video"] as? PFObject)!
+                            let videoObj:PFObject = notificationPF["video"] as! PFObject
 
                             do {
                                 try videoObj.fetchIfNeeded()

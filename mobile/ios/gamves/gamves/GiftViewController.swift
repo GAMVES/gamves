@@ -323,13 +323,13 @@ UICollectionViewDelegateFlowLayout   {
                         
                         gift.giftOBj = giftPF
 
-                        gift.objectId = (giftPF.objectId as? String)!
+                        gift.objectId = giftPF.objectId as! String
 
-                        gift.description = (giftPF["description"] as? String!)!
-                        gift.title = (giftPF["title"] as? String!)!
+                        gift.description = giftPF["description"] as! String
+                        gift.title = giftPF["title"] as! String
 
-                        gift.price = (giftPF["price"] as? Int!)!
-                        gift.points = (giftPF["points"] as? Int!)!
+                        gift.price = giftPF["price"] as! Int
+                        gift.points = giftPF["points"] as! Int
 
                         let relationSubscriptors = giftPF.relation(forKey: "subscriptors")
 

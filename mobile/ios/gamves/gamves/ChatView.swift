@@ -2774,7 +2774,7 @@
             
             switch self.type {
                 
-                case .isText:
+                case .isText?:
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.blueBubbleImage
@@ -2785,7 +2785,7 @@
                     }
                     break
                     
-                case .isPicture, .isPictureDownloading:
+                case .isPicture?, .isPictureDownloading?:
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.bluePictureBubbleImage
@@ -2796,12 +2796,12 @@
                     }
                     break
                     
-                case .isAudio, .isAudioDownloading:                    
+                case .isAudio?, .isAudioDownloading?:
                     self.bubbleImageView.isHidden = true //.image = Global.audioBubbleImage
                     self.chatView.audioControlDelegate = self
                     break
                     
-                case .isAdmin:
+                case .isAdmin?:
                     self.bubbleImageView.image = Global.adminBubbleImage
                     self.bubbleImageView.tintColor = UIColor.lightGray
                     self.messageTextView.textColor = UIColor.gray
@@ -2870,6 +2870,9 @@
             }
             
             if Global.isAudio(type: self.type) {
+                
+                
+                //?(type: self.type?) {
                 
                 self.playContainerView.isHidden = false
                 
