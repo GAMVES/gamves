@@ -11,13 +11,9 @@ target 'gamves' do
 
   pod 'Parse'
 
-  pod 'Bolts-Swift'
+  pod 'Parse'
 
-  #pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift.git', :tag => '1.4.0' 
-
-  #pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift.git'
-
-  #pod 'Bolts'
+  pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift', :commit => 'e9baa72d04521c3b25ef4fa6fef12b340953ee02'
   
   pod 'Floaty' 
   
@@ -32,56 +28,31 @@ target 'gamves' do
   pod 'SwiftyJSON'
   
   pod 'UITextView+Placeholder'
-
-  #, '~> 1.2'
   
   pod 'AWSS3'
   
   pod 'YouTubePlayer'
-  
-  #pod 'AACarousel'
-  
-  #pod 'KenBurns'
 
   pod 'CalmParametricAnimations'
   pod 'SDWebImage'
   
-  #pod 'M13Checkbox'
-  #, :git => 'https://github.com/Marxon13/M13Checkbox.git', :branch => 'swift_4_2'
-
   pod 'IGColorPicker' 
-
-  #, :git => 'https://github.com/iGenius-Srl/IGColorPicker.git', :branch => 'swift-4'
   
   pod 'PulsingHalo'
-
-  #pod 'ABVideoRangeSlider'
-  
+ 
   pod 'ISEmojiView'
   
   pod 'RSKImageCropper'
 
-  #pod 'SwiftPhotoGallery'
-
   pod 'PopupDialog'
 
   pod 'Atributika'
-
-  #, :git => 'https://github.com/psharanda/Atributika.git', :tag => 'swift-3.2'
   
   pod 'SwiftHash'
 
-  #pod 'FLAnimatedImage', :git => 'https://github.com/Flipboard/FLAnimatedImage.git', :tag => '1.0.14'
-
-  #pod 'AXPhotoViewer'
-
   pod 'SKPhotoBrowser'
 
-  #, :git => 'https://github.com/alexhillc/AXPhotoViewer.git', :tag => 'v1.4.3'
-
   pod 'DRPLoadingSpinner'
-
-  #pod 'CampcotCollectionView'
 
   pod 'TaskQueue'
   
