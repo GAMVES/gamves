@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -604,7 +604,6 @@
 				C77B55101CFFF3AD00FF375C /* Frameworks */,
 				C77B55111CFFF3AD00FF375C /* Resources */,
 				A318D572B9F4B2A9ADC0D6E9 /* [CP] Embed Pods Frameworks */,
-				144531C673356ABB1BB16935 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -623,7 +622,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0730;
-				ORGANIZATIONNAME = letsbuildthatapp;
+				ORGANIZATIONNAME = Gamves;
 				TargetAttributes = {
 					C77B55121CFFF3AD00FF375C = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -641,7 +640,7 @@
 				};
 			};
 			buildConfigurationList = C77B550E1CFFF3AD00FF375C /* Build configuration list for PBXProject "gamves" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -672,21 +671,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		144531C673356ABB1BB16935 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-gamves/Pods-gamves-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		9BACE108DFB26ED79C4B551B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1017,7 +1001,10 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/gamves/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.gamves;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -1037,7 +1024,10 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/gamves/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.gamves;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

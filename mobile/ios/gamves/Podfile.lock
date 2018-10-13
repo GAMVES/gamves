@@ -41,14 +41,14 @@ PODS:
   - SwiftHash (2.0.2)
   - SwiftyJSON (4.1.0)
   - TaskQueue (1.1.1)
-  - UITextView+Placeholder (1.2.1)
+  - "UITextView+Placeholder (1.2.1)"
   - YouTubePlayer (0.4.0)
 
 DEPENDENCIES:
   - Alamofire
   - Atributika
   - AWSS3
-  - Bolts-Swift
+  - Bolts-Swift (from `https://github.com/BoltsFramework/Bolts-Swift`, commit `e9baa72d04521c3b25ef4fa6fef12b340953ee02`)
   - CalmParametricAnimations
   - DeviceKit
   - DownPicker
@@ -67,8 +67,49 @@ DEPENDENCIES:
   - SwiftHash
   - SwiftyJSON
   - TaskQueue
-  - UITextView+Placeholder
+  - "UITextView+Placeholder"
   - YouTubePlayer
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - Atributika
+    - AWSCore
+    - AWSS3
+    - Bolts
+    - CalmParametricAnimations
+    - DeviceKit
+    - DownPicker
+    - DRPLoadingSpinner
+    - DynamicBlurView
+    - Floaty
+    - IGColorPicker
+    - ISEmojiView
+    - M13Checkbox
+    - NVActivityIndicatorView
+    - Parse
+    - ParseLiveQuery
+    - PopupDialog
+    - PulsingHalo
+    - RSKImageCropper
+    - SDWebImage
+    - SKPhotoBrowser
+    - Starscream
+    - SwiftHash
+    - SwiftyJSON
+    - TaskQueue
+    - "UITextView+Placeholder"
+    - YouTubePlayer
+
+EXTERNAL SOURCES:
+  Bolts-Swift:
+    :commit: e9baa72d04521c3b25ef4fa6fef12b340953ee02
+    :git: https://github.com/BoltsFramework/Bolts-Swift
+
+CHECKOUT OPTIONS:
+  Bolts-Swift:
+    :commit: e9baa72d04521c3b25ef4fa6fef12b340953ee02
+    :git: https://github.com/BoltsFramework/Bolts-Swift
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
@@ -98,9 +139,9 @@ SPEC CHECKSUMS:
   SwiftHash: 6d312abe61c8359bdef8d0093642f3a70b1c17ba
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   TaskQueue: 53a3cdaf817d9ce3cd50837ff6610aeb7b968997
-  UITextView+Placeholder: 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
+  "UITextView+Placeholder": 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 79e4f827d25d69683ab55aa7d98f3ecd74a76404
+PODFILE CHECKSUM: 922fe427ffc0310c1e1098cc41e10767f76d7ec3
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3

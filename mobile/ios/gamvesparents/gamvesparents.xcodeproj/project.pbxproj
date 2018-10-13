@@ -510,7 +510,6 @@
 				C7B401F81D78C167001D8ED4 /* Frameworks */,
 				C7B401F91D78C167001D8ED4 /* Resources */,
 				C9BEB4D1E9458B8C3912A7A4 /* [CP] Embed Pods Frameworks */,
-				FD80592C530812040839591B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -655,21 +654,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FD80592C530812040839591B /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

@@ -48,6 +48,28 @@ DEPENDENCIES:
   - TaskQueue
   - youtube-ios-player-helper (~> 0.1.4)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AWSCore
+    - AWSS3
+    - BEMCheckBox
+    - Bolts
+    - Bolts-Swift
+    - DeviceKit
+    - DownPicker
+    - Floaty
+    - ImageSlideshow
+    - ISEmojiView
+    - NVActivityIndicatorView
+    - Parse
+    - PopupDialog
+    - PulsingHalo
+    - RSKImageCropper
+    - Starscream
+    - Stripe
+    - TaskQueue
+    - youtube-ios-player-helper
+
 EXTERNAL SOURCES:
   ParseLiveQuery:
     :branch: master
@@ -89,4 +111,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 57cdea94301131cb2c8f10e0cb2add70df8deb4c
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3
