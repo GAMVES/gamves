@@ -889,7 +889,7 @@
 					"$(PROJECT_DIR)/gamvesparents",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/gamvesparents/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -916,7 +916,7 @@
 					"$(PROJECT_DIR)/gamvesparents",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/gamvesparents/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

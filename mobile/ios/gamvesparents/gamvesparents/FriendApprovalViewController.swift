@@ -94,7 +94,7 @@ FriendApprovalProtocol
 
         Global.friendApproval = Dictionary<String, FriendApproval>() 
         
-        Global.getFriendsApprovasByFamilyId(familyId: self.familyId) { ( count ) in
+        Global.getFriendsApprovasByFamilyId(familyId: self.familyId) { ( invites, invited, updated) in
             
             let userId = Global.gamvesFamily.sonsUsers[0].userId
 

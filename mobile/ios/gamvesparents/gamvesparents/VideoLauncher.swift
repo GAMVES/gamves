@@ -196,7 +196,9 @@ class VideoPlayerView: UIView {
             }            
             
             self.playerLayer = AVPlayerLayer(player: self.player)
-            self.playerLayAVLayerVideoGravity.resizeAspectravityResizeAspect
+            
+            //self.playerLayer.videoGravity =  AVLayerVideoGravity.resizeAspectravityResizeAspect
+            
             self.layer.addSublayer(self.playerLayer)
             self.playerLayer.frame = self.frame
             
