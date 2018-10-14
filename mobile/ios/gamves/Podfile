@@ -3,23 +3,23 @@ platform :ios, '10.0'
 
 use_frameworks!
 
-target 'gamves' do
-
-  pod 'ParseLiveQuery'
+target 'gamves' do 
 
   pod 'DeviceKit'
 
   pod 'Parse'
 
-  pod 'Parse'
-
   pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift', :commit => 'e9baa72d04521c3b25ef4fa6fef12b340953ee02'
+
+  pod 'ParseLiveQuery'
   
-  pod 'Floaty' 
-  
-  pod 'NVActivityIndicatorView'
-  
-  pod 'PopupDialog'
+  pod 'Floaty', '~> 4.0.1'
+
+  pod 'SKPhotoBrowser', '~> 5.1.0'
+
+  pod 'PopupDialog', '~> 0.6.0'
+
+  pod 'NVActivityIndicatorView' 
   
   pod 'DownPicker'
   
@@ -29,11 +29,16 @@ target 'gamves' do
   
   pod 'UITextView+Placeholder'
   
-  pod 'AWSS3'
-  
+  #pod 'AWSS3', :git => 'https://github.com/aws/aws-sdk-ios.git', :branch => 'xcode-10'
+
+  #pod 'AWSS3', :git => 'https://github.com/aws/aws-sdk-ios.git', :tag => 'untagged-97748b31578af347f0f5'  
+
+  pod 'AWSS3', '~> 2.6.22'
+
   pod 'YouTubePlayer'
 
   pod 'CalmParametricAnimations'
+
   pod 'SDWebImage'
   
   pod 'IGColorPicker' 
@@ -44,13 +49,9 @@ target 'gamves' do
   
   pod 'RSKImageCropper'
 
-  pod 'PopupDialog'
-
   pod 'Atributika'
   
-  pod 'SwiftHash'
-
-  pod 'SKPhotoBrowser'
+  pod 'SwiftHash'  
 
   pod 'DRPLoadingSpinner'
 
