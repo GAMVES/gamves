@@ -101,7 +101,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     }
     
     
-    func loadChatFeed()
+    @objc func loadChatFeed()
     {
         self.collectionView?.reloadData()
     }
@@ -552,7 +552,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         selectContactViewController.chatFeedViewController = self
         selectContactViewController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]        
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]        
         navigationController?.pushViewController(selectContactViewController, animated: true)
         tabBarController?.tabBar.isHidden = true
     }
@@ -564,7 +564,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         self.chatLauncher.room = room
         chatLauncher.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(self.chatLauncher, animated: true)
     }
 
@@ -575,7 +575,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         groupNameViewController.gamvesUsers = users
         groupNameViewController.chatFeedViewController = self
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(groupNameViewController, animated: true)
     }
     

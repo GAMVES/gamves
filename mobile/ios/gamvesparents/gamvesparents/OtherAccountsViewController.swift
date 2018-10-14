@@ -67,7 +67,10 @@ UICollectionViewDelegateFlowLayout {
         self.infoView.addConstraintsWithFormat("V:|[v0]|", views: self.info)
 
         let buttonIcon = UIImage(named: "arrow_back_white")        
+       
+        
         let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
+        
         leftBarButton.image = buttonIcon        
         self.navigationItem.leftBarButtonItem = leftBarButton   
 
@@ -116,7 +119,7 @@ UICollectionViewDelegateFlowLayout {
         
     }
 
-    func backButton(sender: UIBarButtonItem) {
+    @objc func backButton(sender: UIBarButtonItem) {
 
         self.hideShowTabBar(hidden:false)
 

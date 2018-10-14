@@ -14,15 +14,16 @@ extension UINavigationController {
     public func pushViewController(
         _ viewController: UIViewController,
         animated: Bool,
-        completion: @escaping (Void) -> Void)
+        completion: @escaping (Bool) -> Void)
     {
         pushViewController(viewController, animated: animated)
 
         guard animated, let coordinator = transitionCoordinator else {
-            completion()
+            completion(true)
             return
         }
 
-        coordinator.animate(alongsideTransition: nil) { _ in completion() }
+        coordinator.animate(alongsideTransition: nil) { _ in completion(true) }
+            
     }
 }

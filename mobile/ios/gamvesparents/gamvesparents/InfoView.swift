@@ -169,7 +169,7 @@ class InfoView: UIView {
         }
     }
 
-    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
     {
         
         //Review here

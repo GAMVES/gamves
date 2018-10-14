@@ -207,7 +207,7 @@ class VideoApprovalPlayerView: UIView {
             player = AVPlayer(url: url)
             
             playerLayer = AVPlayerLayer(player: player)
-            playerLayer.videoGravity = AVLayerVideoGravityResizeAspect
+            playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
             self.controlsContainerView.layer.addSublayer(playerLayer)
             playerLayer.frame = self.frame
             

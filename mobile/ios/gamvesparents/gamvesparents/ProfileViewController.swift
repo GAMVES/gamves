@@ -433,7 +433,7 @@ class ProfileViewController: UIViewController,
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)   
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.scrollView)          
 
-        let attr = NSDictionary(object: UIFont(name: "Arial", size: 16.0)!, forKey: NSFontAttributeName as NSCopying)
+        let attr = NSDictionary(object: UIFont(name: "Arial", size: 16.0)!, forKey: NSAttributedStringKey.font as NSCopying)
         self.segmentedControl.setTitleTextAttributes(attr as [NSObject : AnyObject] , for: .normal)
         
         self.scrollView.addSubview(self.photosContainerView)
@@ -581,14 +581,14 @@ class ProfileViewController: UIViewController,
         }
     }
 
-    func backButton(sender: UIBarButtonItem) {
+    @objc func backButton(sender: UIBarButtonItem) {
 
         self.hideShowTabBar(hidden:false)
 
         self.navigationController?.popViewController(animated: true)
     }
 
-    func showDatePicker(){
+    @objc func showDatePicker(){
        
         datePicker.datePickerMode = .date       
         let toolbar = UIToolbar();
@@ -604,7 +604,7 @@ class ProfileViewController: UIViewController,
 
     }
 
-    func donedatePicker(){
+    @objc func donedatePicker(){
     
        let formatter = DateFormatter()
        formatter.dateFormat = "dd/MM/yyyy"
@@ -618,7 +618,7 @@ class ProfileViewController: UIViewController,
        self.view.endEditing(true) 
    }
 
-    func cancelDatePicker(){
+    @objc func cancelDatePicker(){
    
         self.view.endEditing(true)          
     }
@@ -654,7 +654,7 @@ class ProfileViewController: UIViewController,
 
     }
     
-    func levelsLoaded() {
+    @objc func levelsLoaded() {
         
         if let userId = PFUser.current()?.objectId
         {
@@ -749,7 +749,7 @@ class ProfileViewController: UIViewController,
         self.sonGradeDownPicker = DownPicker(textField: self.sonGradeTextField, withData:grades as! [Any])           
     }
 
-    func handleSchoolPickerChange() {
+    @objc func handleSchoolPickerChange() {
 
         self.sonGradeTextField.text = ""
 
@@ -770,7 +770,7 @@ class ProfileViewController: UIViewController,
         self.setGrades(grades: grades)
     }
     
-    func familyLoaded() {
+    @objc func familyLoaded() {
 
         if let userId = PFUser.current()?.objectId
         {
@@ -1091,7 +1091,7 @@ class ProfileViewController: UIViewController,
         }    
     }
 
-    func loadDataAfterLogin() {
+    @objc func loadDataAfterLogin() {
 
         DispatchQueue.main.async() {
 

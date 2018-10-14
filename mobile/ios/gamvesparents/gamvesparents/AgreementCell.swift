@@ -90,7 +90,7 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
         let label = UILabel()
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 18)
-        let underlineAttribute = [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue]
+        let underlineAttribute = [NSAttributedStringKey.underlineStyle: NSUnderlineStyle.styleSingle.rawValue]
         let underlineAttributedString = NSAttributedString(string: "I accept the Terms and Conditions", attributes: underlineAttribute)
         label.attributedText = underlineAttributedString
         label.numberOfLines = 2
@@ -109,7 +109,7 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
         let label = UILabel()
         label.textColor = UIColor.darkGray
         label.font = UIFont.systemFont(ofSize: 18)
-        let underlineAttribute = [NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue]
+        let underlineAttribute = [NSAttributedStringKey.underlineStyle: NSUnderlineStyle.styleSingle.rawValue]
         let underlineAttributedString = NSAttributedString(string: "I accept the Licence Agreement", attributes: underlineAttribute)
         label.attributedText = underlineAttributedString
         label.numberOfLines = 2

@@ -2502,7 +2502,7 @@
             
             let size = CGSize(width: 250, height: 1000)
             let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-            let eFrame = NSString(string: messageText!).boundingRect(with: size, options: options, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 18)], context: nil)
+            let eFrame = NSString(string: messageText!).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 18)], context: nil)
             
             if  Global.isAudio(type: message.type) && eFrame.width < 60 {
                 
@@ -2763,7 +2763,7 @@
             
             switch self.type {
                 
-                case .isText:
+            case .isText?:
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.blueBubbleImage
@@ -2774,7 +2774,7 @@
                     }
                     break
                     
-                case .isPicture, .isPictureDownloading:
+            case .isPicture?, .isPictureDownloading?:
                     
                     if self.isSender {
                         self.bubbleImageView.image = Global.bluePictureBubbleImage
@@ -2785,12 +2785,12 @@
                     }
                     break
                     
-                case .isAudio, .isAudioDownloading:                    
+            case .isAudio?, .isAudioDownloading?:                    
                     self.bubbleImageView.isHidden = true //.image = Global.audioBubbleImage
                     self.chatView.audioControlDelegate = self
                     break
                     
-                case .isAdmin:
+            case .isAdmin?:
                     self.bubbleImageView.image = Global.adminBubbleImage
                     self.bubbleImageView.tintColor = UIColor.lightGray
                     self.messageTextView.textColor = UIColor.gray
@@ -3037,13 +3037,13 @@
 
         }
         
-        func showImage(button: UIButton) {
+        @objc func showImage(button: UIButton) {
             
             let image = self.gamvesPicture
             
         }
         
-        func playPause(button: UIButton) {
+        @objc func playPause(button: UIButton) {
             
             if self.playerStatus == PayerStatus.isPlaying {
                 
@@ -3151,7 +3151,7 @@
             print(player.debugDescription)
         }
         
-        func sliderValueDidChange(sender: AnyObject) {
+        @objc func sliderValueDidChange(sender: AnyObject) {
             
         }
         
@@ -3203,7 +3203,7 @@
             }
         }
         
-        func timerRunning() {
+        @objc func timerRunning() {
             
             time = Date().timeIntervalSinceReferenceDate - startTime
             

@@ -257,7 +257,7 @@ class AccountViewController: UIViewController,
         dummySettingsViewController.view.backgroundColor = UIColor.white
         dummySettingsViewController.navigationItem.title = setting.name.rawValue
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
 
     }
@@ -310,7 +310,7 @@ class AccountViewController: UIViewController,
         navigationItem.rightBarButtonItems = [moreButton] //, searchBarButtonItem]
     }
 
-    func handleMore() {
+    @objc func handleMore() {
         //show menu
         settingsLauncher.showSettings()
     }
@@ -319,21 +319,21 @@ class AccountViewController: UIViewController,
         
     }
     
-    func familyLoaded() {
+    @objc func familyLoaded() {
         self.sonPhotoImageView.image = Global.gamvesFamily.youUser.avatar
         self.yourLabel.text = Global.gamvesFamily.youUser.name
         self.loadYourProfileInfo()
     }
     
-    func yourAccountInfoLoaded() {
+    @objc func yourAccountInfoLoaded() {
         
     }
     
-    func levelsLoaded() {
+    @objc func levelsLoaded() {
         
     }
     
-    func loadFamilyDataGromGlobal() {
+    @objc func loadFamilyDataGromGlobal() {
         
     }
 
@@ -435,7 +435,7 @@ class AccountViewController: UIViewController,
         profileViewController.accountViewController = self
         profileViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(profileViewController, animated: true, completion: { (reult) in
             
             self.profileViewController.hideShowTabBar(hidden:true)
@@ -448,7 +448,7 @@ class AccountViewController: UIViewController,
         otherAccountsViewController = OtherAccountsViewController()
         otherAccountsViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(otherAccountsViewController, animated: true)
         
     }
@@ -458,7 +458,7 @@ class AccountViewController: UIViewController,
         tutorialVideoViewController = TutorialVideoViewController()
         tutorialVideoViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(tutorialVideoViewController, animated: true)
         
     }

@@ -210,7 +210,7 @@ class FortniteViewController: UIViewController
         }	
     }
 
-    func backButton(sender: UIBarButtonItem) {
+    @objc func backButton(sender: UIBarButtonItem) {
 
         self.hideShowTabBar(hidden:false)
 
@@ -254,7 +254,7 @@ class FortniteViewController: UIViewController
         super.didReceiveMemoryWarning()        
     }
 
-    func handleSave() {
+    @objc func handleSave() {
 
         if ( (userTextField.text?.isEmpty)! || (passTextField.text?.isEmpty)! ) {
 
@@ -364,7 +364,7 @@ class FortniteViewController: UIViewController
     }
 
 
-    func handleCancel() {
+    @objc func handleCancel() {
 
         self.showAlert(title: "Cancel Fortnite credentials", message: "You will be able to provide your username later", completionHandler: { (gamvesUser) in            
 

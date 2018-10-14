@@ -191,7 +191,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         dummySettingsViewController.view.backgroundColor = UIColor.white
         dummySettingsViewController.navigationItem.title = setting.name.rawValue
         navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
     }
     

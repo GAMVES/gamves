@@ -881,7 +881,7 @@ class HomeViewController: UIViewController,
             friendApprovalViewController.homeViewController = self
             friendApprovalViewController.view.backgroundColor = UIColor.white
             navigationController?.navigationBar.tintColor = UIColor.white
-            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
             navigationController?.pushViewController(friendApprovalViewController, animated: true)
             tabBarController?.tabBar.isHidden = true            
             
@@ -891,7 +891,7 @@ class HomeViewController: UIViewController,
             approvalViewController.homeViewController = self
             approvalViewController.view.backgroundColor = UIColor.white
             navigationController?.navigationBar.tintColor = UIColor.white
-            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
             navigationController?.pushViewController(approvalViewController, animated: true)
             tabBarController?.tabBar.isHidden = true
             
@@ -900,7 +900,7 @@ class HomeViewController: UIViewController,
             activityViewControlle.homeViewController = self
             activityViewControlle.view.backgroundColor = UIColor.white
             navigationController?.navigationBar.tintColor = UIColor.white
-            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
             navigationController?.pushViewController(activityViewControlle, animated: true)
             tabBarController?.tabBar.isHidden = true
         
@@ -909,7 +909,7 @@ class HomeViewController: UIViewController,
             historyViewControlle.homeViewController = self
             historyViewControlle.view.backgroundColor = UIColor.white
             navigationController?.navigationBar.tintColor = UIColor.white
-            navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+            navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
             navigationController?.pushViewController(historyViewControlle, animated: true)
             tabBarController?.tabBar.isHidden = true
             

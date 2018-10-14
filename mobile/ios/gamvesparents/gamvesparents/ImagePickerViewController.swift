@@ -172,7 +172,7 @@ RSKImageCropViewControllerDelegate {
 
         switch self.type {
             
-            case .Son: 
+        case .Son?: 
 
                 title = "Child Image"
                 message = "Pick up an image for your son by touching the (+) add image"
@@ -181,7 +181,7 @@ RSKImageCropViewControllerDelegate {
 
                 break
             
-            case .Family:
+        case .Family?:
 
                 title = "Family Image"
                 message = "Choose a family image where the three of you are present"
@@ -190,7 +190,7 @@ RSKImageCropViewControllerDelegate {
 
                 break
 
-            case .You:
+        case .You?:
 
                 title = "Your Image"
                 message = "Choose your image"
@@ -199,7 +199,7 @@ RSKImageCropViewControllerDelegate {
 
                 break
 
-             case .Spouse:
+        case .Spouse?:
 
                 title = "spouse Image"
                 message = "Choose your spouse image"
@@ -226,7 +226,7 @@ RSKImageCropViewControllerDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    func handleFinish() {
+    @objc func handleFinish() {
         
         print(self.type)
         print(self.croppedImage)
@@ -237,7 +237,7 @@ RSKImageCropViewControllerDelegate {
 
         switch self.type {            
             
-            case .Son:              
+        case .Son?:              
 
                 self.type = ProfileImagesTypes.Family                
 
@@ -245,7 +245,7 @@ RSKImageCropViewControllerDelegate {
 
                 break
             
-            case .Family:
+        case .Family?:
 
                 self.type = ProfileImagesTypes.You                
 
@@ -255,7 +255,7 @@ RSKImageCropViewControllerDelegate {
                 
                 break
 
-            case .You:
+        case .You?:
 
                 self.type = ProfileImagesTypes.Spouse                
 
@@ -263,7 +263,7 @@ RSKImageCropViewControllerDelegate {
                
                 break
 
-             case .Spouse:
+        case .Spouse?:
 
                 self.navigationController?.popViewController(animated: true)               
 

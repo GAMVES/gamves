@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '10.0'
 
 target 'gamvesparents' do
   
@@ -8,38 +8,40 @@ target 'gamvesparents' do
   # Pods for gamvesparents
 
   pod 'DeviceKit'
+
+  pod 'Parse'
+
+  pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift', :commit => 'e9baa72d04521c3b25ef4fa6fef12b340953ee02'
+
+  pod 'ParseLiveQuery'
+  
+  pod 'Floaty', '~> 4.0.1'  
   
   pod 'DownPicker'
 
   pod 'SwiftValidator', :git => 'https://github.com/jpotts18/SwiftValidator.git', :branch => 'master'
-  
-  pod 'ParseLiveQuery', :git => 'https://github.com/parse-community/ParseLiveQuery-iOS-OSX.git', :branch => 'master'
-  
+    
   pod 'BEMCheckBox'
   
-  pod 'NVActivityIndicatorView'
+  pod 'NVActivityIndicatorView', '~> 4.0.0'
 
   pod 'RSKImageCropper'
   
-  #pod 'Floaty', :git => 'https://github.com/kciter/Floaty.git', :tag => '4.0.0'
-
-  pod 'Floaty'
-
-  pod 'PopupDialog'
+  pod 'PopupDialog', '~> 0.6.0'
 
   pod 'TaskQueue'
   
   pod 'youtube-ios-player-helper', '~> 0.1.4'
   
-  pod 'AWSS3'
+  pod 'AWSS3', '~> 2.6.32'
   
   pod 'Stripe'
   
   #pod 'SwiftPhotoGallery'
   
-  pod 'ImageSlideshow', '~> 1.4'
+  pod 'ImageSlideshow' #, '~> 1.4'
   
-  # pod 'MercadoPagoSDK', '3.7.1'
+  pod 'MercadoPagoSDK' #, '3.7.1'
   
   pod 'ISEmojiView' 
   

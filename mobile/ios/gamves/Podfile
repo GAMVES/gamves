@@ -19,7 +19,7 @@ target 'gamves' do
 
   pod 'PopupDialog', '~> 0.6.0'
 
-  pod 'NVActivityIndicatorView' 
+  pod 'NVActivityIndicatorView', '~> 4.0.1'
   
   pod 'DownPicker'
   
@@ -27,13 +27,9 @@ target 'gamves' do
   
   pod 'SwiftyJSON'
   
-  pod 'UITextView+Placeholder'
+  pod 'UITextView+Placeholder'  
   
-  #pod 'AWSS3', :git => 'https://github.com/aws/aws-sdk-ios.git', :branch => 'xcode-10'
-
-  #pod 'AWSS3', :git => 'https://github.com/aws/aws-sdk-ios.git', :tag => 'untagged-97748b31578af347f0f5'  
-
-  pod 'AWSS3', '~> 2.6.22'
+  pod 'AWSS3', '~> 2.6.32'
 
   pod 'YouTubePlayer'
 

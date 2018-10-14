@@ -95,13 +95,13 @@ class VideoPlayerView: UIView {
         self.keyWindow = view
     }   
 
-    func handleCloseButton() {        
+    @objc func handleCloseButton() {        
 
         self.closeVideo()
     }    
 
     
-    func handleSliderChange() {
+    @objc func handleSliderChange() {
 
         print(videoSlider.value)
         
@@ -118,7 +118,7 @@ class VideoPlayerView: UIView {
     }        
     
 
-    func handlePause() {
+    @objc func handlePause() {
         if isPlaying {
             player?.pause()
             pausePlayButton.setImage(UIImage(named: "play"), for: UIControlState())
@@ -196,7 +196,7 @@ class VideoPlayerView: UIView {
             }            
             
             self.playerLayer = AVPlayerLayer(player: self.player)
-            self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect
+            self.playerLayAVLayerVideoGravity.resizeAspectravityResizeAspect
             self.layer.addSublayer(self.playerLayer)
             self.playerLayer.frame = self.frame
             
@@ -263,7 +263,7 @@ class VideoPlayerView: UIView {
     }
     
     
-    func closeVideo()
+    @objc func closeVideo()
     {
         //REMOVE IF EXISTS VIDEO RUNNING
         for subview in (UIApplication.shared.keyWindow?.subviews)! {

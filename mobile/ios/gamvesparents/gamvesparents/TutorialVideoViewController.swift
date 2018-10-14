@@ -111,7 +111,7 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
         }        
     }
 
-    func backButton(sender: UIBarButtonItem) {
+    @objc func backButton(sender: UIBarButtonItem) {
 
         self.hideShowTabBar(hidden:false)
 
