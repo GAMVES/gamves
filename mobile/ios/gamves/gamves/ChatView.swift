@@ -102,7 +102,6 @@
         
         
         
-        
         var activityView: NVActivityIndicatorView!
         
         let chatClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)

@@ -17,6 +17,7 @@
 		09397275217591EF00496571 /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09397274217591EF00496571 /* CustomHeader.swift */; };
 		09397279217595F600496571 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09397278217595F600496571 /* CustomSearchBar.swift */; };
 		0939727B21759CC600496571 /* UISearch+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0939727A21759CC500496571 /* UISearch+Extension.swift */; };
+		0959FD092175BF3100711C7A /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959FD082175BF3000711C7A /* UIFont+Extension.swift */; };
 		19761041B06941D4B4D5BF5F /* Pods_gamvesparents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C54E21136EE63AD18AFFB195 /* Pods_gamvesparents.framework */; };
 		8212D6D81F735F1000F2A121 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8212D6D61F735F1000F2A121 /* Bolts.framework */; };
 		8212D6D91F735F1000F2A121 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8212D6D71F735F1000F2A121 /* Parse.framework */; };
@@ -127,6 +128,7 @@
 		09397274217591EF00496571 /* CustomHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
 		09397278217595F600496571 /* CustomSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
 		0939727A21759CC500496571 /* UISearch+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISearch+Extension.swift"; sourceTree = "<group>"; };
+		0959FD082175BF3000711C7A /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
 		0DE98C8C50A63DDAFA10CAD9 /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 		8212D6D61F735F1000F2A121 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		8212D6D71F735F1000F2A121 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -352,6 +354,7 @@
 				C98C23DA20742D4400310E3E /* PFGeoPoint+Extension.swift */,
 				C98F266320B25EB700755733 /* UIAlertController+Extension.swift */,
 				C9381D69213D7DF700352550 /* UINavigationController+Extension.swift */,
+				0959FD082175BF3000711C7A /* UIFont+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -790,6 +793,7 @@
 				82E372461FB16AD9000AD7EB /* VideoApprovalLauncher.swift in Sources */,
 				C94AC05B214A0F490056F6AB /* TutorialVideoViewController.swift in Sources */,
 				C7B401FF1D78C167001D8ED4 /* AppDelegate.swift in Sources */,
+				0959FD092175BF3100711C7A /* UIFont+Extension.swift in Sources */,
 				0939726A21756C7C00496571 /* SearchSingleImageCell.swift in Sources */,
 				C9263DFE20D8B9BE0029DBAE /* Artwork.swift in Sources */,
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,

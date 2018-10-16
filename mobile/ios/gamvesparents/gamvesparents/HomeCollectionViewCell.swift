@@ -26,6 +26,7 @@ class HomeCollectionViewCell: BaseCell {
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
         label.textColor = UIColor.darkGray
+        label.fitTextToBounds()
         return label
     }()
 
@@ -44,6 +45,7 @@ class HomeCollectionViewCell: BaseCell {
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .left
         label.numberOfLines = 2
+        label.fitTextToBounds()
         return label
     }()
 
@@ -74,7 +76,7 @@ class HomeCollectionViewCell: BaseCell {
         self.backView.addConstraintsWithFormat("V:|-10-[v0]-10-|", views: self.secondIconImageView)
         self.backView.addConstraintsWithFormat("V:|-5-[v0]-5-|", views: self.dataLabel)
         
-        self.backView.addConstraintsWithFormat("H:|-15-[v0(30)]-5-[v1][v2(30)][v3(150)]|", views: 
+        self.backView.addConstraintsWithFormat("H:|-10-[v0(30)]-5-[v1][v2(30)][v3(120)]|", views: 
             self.iconImageView, 
             self.descLabel, 
             self.secondIconImageView,
