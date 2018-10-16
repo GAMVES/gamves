@@ -96,8 +96,8 @@
         UITextFieldDelegate,
         AVAudioRecorderDelegate,
         ISEmojiViewDelegate,
-        TimerDelegate
-        //MediaDelegate
+        TimerDelegate,
+        MediaDelegate
     {
         
         var activityView: NVActivityIndicatorView!

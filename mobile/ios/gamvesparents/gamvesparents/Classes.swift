@@ -10,6 +10,24 @@ import Foundation
 import UIKit
 import Parse
 
+class GamvesTrend {
+    
+    var objectId = String()
+    var name = String()
+    var description = String()
+    
+}
+
+class GamvesTrendCategory {
+    
+    var objectId = String()
+    var name = String()
+    var description = String()
+    
+    var trend = [GamvesTrend]()
+    
+}
+
 class GamvesVendor
 {
     var objectId = String()       

@@ -8,20 +8,20 @@
 
 import UIKit
 
-public enum MediaType {
+/*public enum MediaType {
     case selectImage
     case selectVideo
-}
+}*/
 
-public enum SearchType {
+/*public enum SearchType {
     case isImageGallery
     case isSingleImage
     case isVideo
-}
+}*/
 
 
-public enum SearchSize {
+/*public enum SearchSize {
     case noSize
     case imageSmall
     case imageLarge
-}
+}*/

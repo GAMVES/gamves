@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     var gamvesApplication:UIApplication?
     
+    var tabBarViewController:TabBarViewController!
+    
     var connect = Bool()
 
     var puserId = String()
@@ -42,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         //window?.rootViewController = UINavigationController(rootViewController: FortniteViewController())
         //return true            
-            
+        
         if Reachability.isConnectedToNetwork() == true {
     
             loadParse(application: application, launchOptions: launchOptions)
@@ -73,7 +75,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         
-        window?.rootViewController = TabBarViewController()
+        tabBarViewController = TabBarViewController()
+        
+        window?.rootViewController = tabBarViewController
 
         //- Load Admin
         Global.loadAdminUser()
@@ -379,7 +383,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func openSearch(params:[String : Any]) {
-        //self.homeController.openSearch(params:params)
+        self.tabBarViewController.openSearch(params:params)
     }
 
 }

@@ -23,7 +23,7 @@ target 'gamvesparents' do
     
   pod 'BEMCheckBox'
   
-  pod 'NVActivityIndicatorView', '~> 4.0.0'
+  pod 'NVActivityIndicatorView', '~> 4.0.1'
 
   pod 'RSKImageCropper'
   
@@ -46,5 +46,13 @@ target 'gamvesparents' do
   pod 'ISEmojiView' 
   
   pod 'PulsingHalo'
+
+  pod 'Alamofire'
+
+  pod 'SwiftyJSON'
+
+  pod 'YouTubePlayer'
+
+  pod 'UITextView+Placeholder'
     
 end

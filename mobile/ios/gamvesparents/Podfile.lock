@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (4.7.3)
   - AWSCore (2.6.32)
   - AWSS3 (2.6.32):
     - AWSCore (= 2.6.32)
@@ -127,10 +128,14 @@ PODS:
   - Starscream (3.0.6)
   - Stripe (12.0.0)
   - SwiftValidator (4.0.0)
+  - SwiftyJSON (4.2.0)
   - TaskQueue (1.0.3)
+  - "UITextView+Placeholder (1.2.1)"
   - youtube-ios-player-helper (0.1.6)
+  - YouTubePlayer (0.4.0)
 
 DEPENDENCIES:
+  - Alamofire
   - AWSS3 (~> 2.6.32)
   - BEMCheckBox
   - Bolts-Swift (from `https://github.com/BoltsFramework/Bolts-Swift`, commit `e9baa72d04521c3b25ef4fa6fef12b340953ee02`)
@@ -140,7 +145,7 @@ DEPENDENCIES:
   - ImageSlideshow
   - ISEmojiView
   - MercadoPagoSDK
-  - NVActivityIndicatorView (~> 4.0.0)
+  - NVActivityIndicatorView (~> 4.0.1)
   - Parse
   - ParseLiveQuery
   - PopupDialog (~> 0.6.0)
@@ -148,11 +153,15 @@ DEPENDENCIES:
   - RSKImageCropper
   - Stripe
   - SwiftValidator (from `https://github.com/jpotts18/SwiftValidator.git`, branch `master`)
+  - SwiftyJSON
   - TaskQueue
+  - "UITextView+Placeholder"
   - youtube-ios-player-helper (~> 0.1.4)
+  - YouTubePlayer
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - Alamofire
     - AWSCore
     - AWSS3
     - BEMCheckBox
@@ -174,8 +183,11 @@ SPEC REPOS:
     - RSKImageCropper
     - Starscream
     - Stripe
+    - SwiftyJSON
     - TaskQueue
+    - "UITextView+Placeholder"
     - youtube-ios-player-helper
+    - YouTubePlayer
 
 EXTERNAL SOURCES:
   Bolts-Swift:
@@ -194,6 +206,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 SPEC CHECKSUMS:
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   AWSCore: bfb49938a3a4eb190bc68edf1fa9e90969de8fa2
   AWSS3: 5c2c57693f78ef3930bc6e267a1702182f3ceaa1
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
@@ -217,9 +230,12 @@ SPEC CHECKSUMS:
   Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
   Stripe: c1c4828adf3e078fb08ff56cd93f410c54011c54
   SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
+  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
   TaskQueue: c1c02deebf2665b8e625fc46dd37a29b1de8056e
+  "UITextView+Placeholder": 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
+  YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 167d6c1b00a6ffc37d02c8b3c20348f818ad38bb
+PODFILE CHECKSUM: 3297e502a6850661c42eabb8749af09dc96850cc
 
 COCOAPODS: 1.5.3

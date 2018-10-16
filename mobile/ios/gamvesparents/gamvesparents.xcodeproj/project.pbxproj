@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		093972612175642000496571 /* MediaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093972602175641F00496571 /* MediaController.swift */; };
+		093972632175675D00496571 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093972622175675C00496571 /* SearchController.swift */; };
+		0939726921756C7C00496571 /* SearchVideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0939726621756C7C00496571 /* SearchVideoCell.swift */; };
+		0939726A21756C7C00496571 /* SearchSingleImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0939726721756C7C00496571 /* SearchSingleImageCell.swift */; };
+		0939726B21756C7C00496571 /* SearchGridImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0939726821756C7C00496571 /* SearchGridImageCell.swift */; };
+		0939726F217572D400496571 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0939726E217572D300496571 /* RangeSlider.swift */; };
+		093972712175742C00496571 /* CustomSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093972702175742B00496571 /* CustomSearchController.swift */; };
+		09397275217591EF00496571 /* CustomHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09397274217591EF00496571 /* CustomHeader.swift */; };
+		09397279217595F600496571 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09397278217595F600496571 /* CustomSearchBar.swift */; };
+		0939727B21759CC600496571 /* UISearch+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0939727A21759CC500496571 /* UISearch+Extension.swift */; };
 		19761041B06941D4B4D5BF5F /* Pods_gamvesparents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C54E21136EE63AD18AFFB195 /* Pods_gamvesparents.framework */; };
 		8212D6D81F735F1000F2A121 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8212D6D61F735F1000F2A121 /* Bolts.framework */; };
 		8212D6D91F735F1000F2A121 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8212D6D71F735F1000F2A121 /* Parse.framework */; };
@@ -107,6 +117,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		093972602175641F00496571 /* MediaController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaController.swift; sourceTree = "<group>"; };
+		093972622175675C00496571 /* SearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
+		0939726621756C7C00496571 /* SearchVideoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchVideoCell.swift; sourceTree = "<group>"; };
+		0939726721756C7C00496571 /* SearchSingleImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSingleImageCell.swift; sourceTree = "<group>"; };
+		0939726821756C7C00496571 /* SearchGridImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchGridImageCell.swift; sourceTree = "<group>"; };
+		0939726E217572D300496571 /* RangeSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
+		093972702175742B00496571 /* CustomSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchController.swift; sourceTree = "<group>"; };
+		09397274217591EF00496571 /* CustomHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomHeader.swift; sourceTree = "<group>"; };
+		09397278217595F600496571 /* CustomSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
+		0939727A21759CC500496571 /* UISearch+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISearch+Extension.swift"; sourceTree = "<group>"; };
 		0DE98C8C50A63DDAFA10CAD9 /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 		8212D6D61F735F1000F2A121 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		8212D6D71F735F1000F2A121 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -237,6 +257,38 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0939725F217563FE00496571 /* media */ = {
+			isa = PBXGroup;
+			children = (
+				0939726E217572D300496571 /* RangeSlider.swift */,
+				0939726421756BF800496571 /* search */,
+				093972602175641F00496571 /* MediaController.swift */,
+			);
+			name = media;
+			sourceTree = "<group>";
+		};
+		0939726421756BF800496571 /* search */ = {
+			isa = PBXGroup;
+			children = (
+				09397278217595F600496571 /* CustomSearchBar.swift */,
+				093972702175742B00496571 /* CustomSearchController.swift */,
+				0939726521756C6C00496571 /* cells */,
+				093972622175675C00496571 /* SearchController.swift */,
+			);
+			name = search;
+			sourceTree = "<group>";
+		};
+		0939726521756C6C00496571 /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				09397274217591EF00496571 /* CustomHeader.swift */,
+				0939726821756C7C00496571 /* SearchGridImageCell.swift */,
+				0939726721756C7C00496571 /* SearchSingleImageCell.swift */,
+				0939726621756C7C00496571 /* SearchVideoCell.swift */,
+			);
+			name = cells;
+			sourceTree = "<group>";
+		};
 		8212D6D51F735EF500F2A121 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -284,6 +336,7 @@
 		8212D7041F78437600F2A121 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				0939727A21759CC500496571 /* UISearch+Extension.swift */,
 				C93BF39A20954A66006A0551 /* Int+Extension.swift */,
 				C93BF39C20954DF6006A0551 /* CGFloat+Extension.swift */,
 				82E372421FB169D0000AD7EB /* UIImage+Extension.swift */,
@@ -341,6 +394,7 @@
 		8262CDFA1FE1FE0F003F9C9D /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				0939725F217563FE00496571 /* media */,
 				C95A487420F7D42F00E2D522 /* cells */,
 				82557C4C2016CE2B00752301 /* HistoryViewController.swift */,
 				82557C502016CFDB00752301 /* ActivityViewController.swift */,
@@ -613,6 +667,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AWSCore/AWSCore.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSS3/AWSS3.framework",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/BEMCheckBox/BEMCheckBox.framework",
 				"${BUILT_PRODUCTS_DIR}/Bolts-Swift/BoltsSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
@@ -634,7 +689,10 @@
 				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/Stripe/Stripe.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/TaskQueue/TaskQueue.framework",
+				"${BUILT_PRODUCTS_DIR}/UITextView+Placeholder/UITextView_Placeholder.framework",
+				"${BUILT_PRODUCTS_DIR}/YouTubePlayer/YouTubePlayer.framework",
 				"${BUILT_PRODUCTS_DIR}/youtube-ios-player-helper/youtube_ios_player_helper.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -643,6 +701,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSS3.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BEMCheckBox.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BoltsSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
@@ -664,7 +723,10 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Stripe.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TaskQueue.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UITextView_Placeholder.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YouTubePlayer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/youtube_ios_player_helper.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -697,7 +759,10 @@
 				C9709B4320F6B5190098B061 /* FriendApprovalLauncher.swift in Sources */,
 				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
+				093972712175742C00496571 /* CustomSearchController.swift in Sources */,
 				C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */,
+				09397279217595F600496571 /* CustomSearchBar.swift in Sources */,
+				093972632175675D00496571 /* SearchController.swift in Sources */,
 				8271ECD01FE9552D004160B9 /* InfoApprovalView.swift in Sources */,
 				C92DCABB213ED5DA00A2C2EE /* OtherAccountsViewController.swift in Sources */,
 				C7B402011D78C167001D8ED4 /* TutorialController.swift in Sources */,
@@ -710,6 +775,7 @@
 				C92DCABD213F03CE00A2C2EE /* OtherAccountViewCell.swift in Sources */,
 				8212D7291F7AF3BD00F2A121 /* ProfileViewController.swift in Sources */,
 				827FE2F71FAE599100A32994 /* CheckBoxView.swift in Sources */,
+				09397275217591EF00496571 /* CustomHeader.swift in Sources */,
 				82E372481FB16C32000AD7EB /* InfoView.swift in Sources */,
 				822010B81FFAD684008C9027 /* FanpageApprovalLauncher.swift in Sources */,
 				82E3723F1FB168E5000AD7EB /* GroupUserCollectionViewCell.swift in Sources */,
@@ -717,12 +783,14 @@
 				C9381D6A213D7DF700352550 /* UINavigationController+Extension.swift in Sources */,
 				82E372371FB16550000AD7EB /* GroupNameViewController.swift in Sources */,
 				8262CDFC1FE1FE1D003F9C9D /* ApprovalViewController.swift in Sources */,
+				0939726B21756C7C00496571 /* SearchGridImageCell.swift in Sources */,
 				C92C01B52152C8EB00B24EF7 /* VideoCollectionViewCell.swift in Sources */,
 				82557C552016DBDE00752301 /* NoConnectionController.swift in Sources */,
 				82557C6120175CB300752301 /* Date+Extension.swift in Sources */,
 				82E372461FB16AD9000AD7EB /* VideoApprovalLauncher.swift in Sources */,
 				C94AC05B214A0F490056F6AB /* TutorialVideoViewController.swift in Sources */,
 				C7B401FF1D78C167001D8ED4 /* AppDelegate.swift in Sources */,
+				0939726A21756C7C00496571 /* SearchSingleImageCell.swift in Sources */,
 				C9263DFE20D8B9BE0029DBAE /* Artwork.swift in Sources */,
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
@@ -742,7 +810,9 @@
 				82E3723B1FB16676000AD7EB /* ChatView.swift in Sources */,
 				82557C532016D00A00752301 /* ActivityCell.swift in Sources */,
 				8212D70A1F78490C00F2A121 /* Colors.swift in Sources */,
+				0939726921756C7C00496571 /* SearchVideoCell.swift in Sources */,
 				8212D6F11F73707800F2A121 /* Reachability.swift in Sources */,
+				0939726F217572D400496571 /* RangeSlider.swift in Sources */,
 				82E372391FB1665A000AD7EB /* Protocols.swift in Sources */,
 				82E372431FB169D0000AD7EB /* UIImage+Extension.swift in Sources */,
 				82557C5F20173C0100752301 /* LocationViewController.swift in Sources */,
@@ -754,11 +824,13 @@
 				C98C23DB20742D4400310E3E /* PFGeoPoint+Extension.swift in Sources */,
 				C98F266620B26AE300755733 /* ImagePickerViewController.swift in Sources */,
 				828F83D01FBD424500A1C67A /* ChatFeedMethods.swift in Sources */,
+				093972612175642000496571 /* MediaController.swift in Sources */,
 				C969A4F22101DA0A00DD4AA5 /* FortniteViewController.swift in Sources */,
 				C93D611C20A3DA8300245CC7 /* SettingsLauncher.swift in Sources */,
 				8212D7081F7843B600F2A121 /* ImageView+Extensions.swift in Sources */,
 				82E372351FB16520000AD7EB /* ChatViewController.swift in Sources */,
 				C73A31991DA3078D00C86C96 /* UserDefaults+helpers.swift in Sources */,
+				0939727B21759CC600496571 /* UISearch+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,6 +35,8 @@ class Global: NSObject
         print(listOfChatColors)
     }
     
+    static var trends_stored = [GamvesTrendCategory]()
+    
     static var pictureRecorded = GamvesPicture()
     static var audioRecorded = GamvesAudio()
 
@@ -122,6 +124,10 @@ class Global: NSObject
     static var hasNewFeed = Bool()
     
     static var yourAccountBackImage = UIImage()
+    
+    static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
+    
+    static var search_engine = "010975053378915722447:h2ob_fkvam0"
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
