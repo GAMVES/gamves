@@ -16,7 +16,7 @@ pytrend = TrendReq()
 
 year = datetime.utcnow().strftime('%Y')
 month = datetime.utcnow().strftime('%m')
-mt = int(month) - 4
+mt = int(month) - 7
 sm = ""
 
 if mt <= 9:
@@ -28,10 +28,10 @@ date = year + sm
 
 print(date)
 
+# issue
+#https://github.com/GeneralMills/pytrends/issues/269
 
-#top_games = pytrend.top_charts(cid="games", geo='US', date=date)
-top_games = pytrend.top_charts(cid="basketball_players", geo='US', date=date)
-
+top_games = pytrend.top_charts(cid="games", geo='US', date=date)
 top_tv = pytrend.top_charts(cid="childrens_tv_programs", geo='US', date=date)
 top_animals = pytrend.top_charts(cid="animals", geo='US', date=date)
 top_teen_pop_artists = pytrend.top_charts(cid="teen_pop_artists", geo='US', date=date)
@@ -39,8 +39,8 @@ top_soccer_teams = pytrend.top_charts(cid="soccer_teams", geo='US', date=date)
 
 print("-------------------------------------------------------------------")
 
-APPLICATION_ID = 'fyJV5DhvVXJz2Vlk53K3eeqNKzwdBQhftfBwCyQ7'
-REST_API_KEY = '8Xu4lY4wRsUZl2YpNuzFYWVd90Va4uY0kItunG8g'
+APPLICATION_ID = '45cgsAjYqwQQRctQTluoUpVvKsHqrjCmvh72UGBx'
+REST_API_KEY = 'ztAtrUlQVEacsoZWbkH2Ljk8AZew25rz2wJPPOAX'
 
 register(APPLICATION_ID, REST_API_KEY)
 
