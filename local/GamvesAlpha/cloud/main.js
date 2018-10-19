@@ -1114,6 +1114,8 @@
 
 		if ( type == 2 && approved == 2 ) {
 
+			console.log("ENTRA");
+
 			var posterPF, friendPF;			
 
 			//- Save Initial Invite FriendApprovalInvite				
@@ -1125,12 +1127,16 @@
 			
 		    return friendApprovalQuery.first({useMasterKey:true}).then(function(friendApprovalPF) {		    	
 
+		    	//Set approval to approved
+
 		    	friendApprovalPF.set("approved", 2);
 
 		    	return friendApprovalPF.save(null, {useMasterKey: true});
 
 		    }).then(function(obj) {  
 		    
+		    	// Query poster user
+
 				var posterQuery = new Parse.Query(Parse.User);		
 				posterQuery.equalTo("objectId", posterId);
 				
@@ -1140,6 +1146,8 @@
 
 		    	posterPF = restulPosterPF;
 
+		    	//Query friend user
+
 		    	var friendQuery = new Parse.Query(Parse.User);
 		    	friendQuery.equalTo("objectId", friendId);
 
@@ -1148,6 +1156,8 @@
 		    }).then(function(restulFriendPF) {   	
 
 				friendPF = restulFriendPF;
+
+				//problema, que tengo que hacer para que?
 
 				var queryFanpage = new Parse.Query("Fanpages");
 				queryFanpage.equalTo('categoryName', 'PERSONAL');
@@ -1193,11 +1203,8 @@
 				notificationPoster.set("posterId", friendPF.id);					
 				
 				notificationPoster.set("type", 3);							
-				notificationPoster.save(null, {useMasterKey: true}); 	
-
-				notificationPoster.add("target", posterId);				
-				notificationPoster.set("date", request.object.get("createdAt"));	
-				notificationPoster.save(null, {useMasterKey: true}); 						
+				
+				//notificationPoster.save(null, {useMasterKey: true});									
 			
 				let objPoster = {
 		    		title:titlePoster,
@@ -1224,11 +1231,8 @@
 				notificationFriend.set("posterId", posterPF.id);	
 				
 				notificationFriend.set("type", 3);	
-				notificationFriend.save(null, {useMasterKey: true}); 	
-
-				notificationFriend.add("target", friendId);	
-				notificationFriend.set("date", request.object.get("createdAt"));			
-				notificationFriend.save(null, {useMasterKey: true}); 						
+				
+				//notificationFriend.save(null, {useMasterKey: true}); 										
 
 				let objFriend = {
 		    		title:titleFriend,
@@ -1236,9 +1240,131 @@
 		    		user:friendPF,		    		
 		    		data:descFriend
 		    	};
-		    	sendPushToUser(objFriend);		    	
+		    	sendPushToUser(objFriend);	
+
+		    	return Parse.Object.saveAll([notificationPoster, notificationFriend]);
+
+		    }).then(function(restulNotificationsPF) {   
+
+		    	let notiPoster = restulNotificationsPF[0];
+
+		    	notiPoster.add("target", posterId);				
+				notiPoster.set("date", request.object.get("createdAt"));					
+
+				let notiFriend = restulNotificationsPF[1];
+
+				notiFriend.add("target", friendId);	
+				notiFriend.set("date", request.object.get("createdAt"));				
+
+				return Parse.Object.saveAll([notiPoster, notiFriend]);
+
+			}).then(function(resutl) {   
+
+			    let posterFanpageQuery = new Parse.Query("Fanpages");		
+				posterFanpageQuery.equalTo("posterId", posterId);		
+
+				return posterFanpageQuery.find({useMasterKey:true});
+
+			}).then(function(posterFanpagesPF) {  
+
+				console.log("posterFanpagesPF");
+
+				if ( posterFanpagesPF != undefined ) {
+
+					let countPFPF = posterFanpagesPF.length;							
+
+					if ( countPFPF > 0 ) {  
+
+						for (let i=0; i<countPFPF; i++) {							
+
+							let fanpagePPF = posterFanpagesPF[i];						
+							fanpagePPF.add("target", friendId);
+							fanpagePPF.save(null, {useMasterKey: true});		
+						}  					
+					}
+				}				 				
+
+			    let friendFanpageQuery = new Parse.Query("Fanpages");		
+				friendFanpageQuery.equalTo("posterId", friendId);			
+			
+				return friendFanpageQuery.find({useMasterKey:true});
+
+			}).then(function(friendFanpagesPF) { 
+
+				console.log("friendFanpagesPF"); 
+
+				if ( friendFanpagesPF != undefined ) {
+
+					let countFFPF = friendFanpagesPF.length;	
+
+					if ( countFFPF > 0 ) {  
+
+						for (let i=0; i<countFFPF; i++) {
+							
+							let fanpageFPF = friendFanpagesPF[i];							
+							fanpageFPF.add("target", posterId);
+							fanpageFPF.save(null, {useMasterKey: true});
+
+						}
+
+					}
+				}  
+				
+			    let posterVideoQuery = new Parse.Query("Videos");		
+				posterVideoQuery.equalTo("posterId", posterId);
+			
+				return posterVideoQuery.find({useMasterKey:true});	
+
+			}).then(function(posterVideosPF) { 
+
+				console.log("posterVideosPF");  
+
+				if ( posterVideosPF != undefined ) {
+
+					let countPVPF = posterVideosPF.length;	
+
+					if ( countPVPF > 0 ) {			
+
+						for (let i=0; i<countPVPF; i++) {
+
+							let videoPPF = posterVideosPF[i];							
+							videoPPF.add("target", friendId);
+							videoPPF.save(null, {useMasterKey: true});
+
+						}
+					}
+				}  
+				
+				let friendVideoQuery = new Parse.Query("Videos");		
+				friendVideoQuery.equalTo("posterId", friendId);			
+
+				return friendVideoQuery.find({useMasterKey:true});	
+
+			}).then(function(friendVideosPF) {  
+
+				console.log("friendVideosPF"); 
+
+				if ( friendVideosPF != undefined ) {
+
+					let countFVPF = friendVideosPF.length;	
+
+					if ( countFVPF > 0 ) { 			
+				
+						for (let i=0; i<countFVPF; i++) {
+
+							let videoFPF = friendVideosPF[i];							
+							videoFPF.add("target", posterId);
+							videoFPF.save(null, {useMasterKey: true});
+
+						}
+					}
+				}	  
+				
 
 			});
+
+
+			/*--
 
 			//- Fanpage Targets // Only when there is data
 
@@ -1286,7 +1412,9 @@
 					videoPF.get("target").add(posterId);
 					videoPF.save(null, {useMasterKey: true});
 				}
-		    });		    
+		    });		  
+
+		    --*/  
 		}
 	});
 

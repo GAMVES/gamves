@@ -1036,10 +1036,47 @@
 	// --
   	// Fornite API Calls	
 
-	Parse.Cloud.define("ForniteAuth", function(request, status) {
+	Parse.Cloud.define("ForniteAuth", function(request, response) {
 
+  		var urlApi = "https://account-public-service-prod03.ol.epicgames.com/account/api/oauth/token";
 
+		Parse.Cloud.httpRequest({			
+			url: urlApi, 
+			method: "POST",			
+			headers: {
+		    	'Authorization':'basic MzRhMDJjZjhmNDQxNGUyOWIxNTkyMTg3NmRhMzZmOWE6ZGFhZmJjY2M3Mzc3NDUwMzlkZmZlNTNkOTRmYzc2Y2Y=',			  
+		    	'content-type':'application/x-www-form-urlencode'
+		  	},
+		  	body: {
+		  		'grant_type':'password',
+				'includePerms':'false',
+				'username':'josemanuelvigil@gmail.com',
+				'password':'Clemen1234'
+				//'username':'jose.vigil@roamtouch.com',
+				//'password':'JoseEpicGames2016'
+		    }
+			}).then( function(httpResponse) {
 
+				console.log("SUCCESS");
+
+				console.log(httpResponse.text); // SUCCESS
+
+            	var hash = httpResponse.text;
+
+            	response.success('hash: ' + hash);
+
+			},function(httpResponse) {				  
+			  	// error
+			  	//console.error('Request failed with response code ' + httpResponse.status);
+
+			  	console.log("ERROR");			  	
+
+			  	console.log("headers :" + httpResponse.headers); 
+
+			  	console.log("data:" + httpResponse.data); 
+
+			  	response.error('Error: ' + httpResponse.status);
+			});
 
 	})	
 
