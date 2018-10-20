@@ -30,8 +30,12 @@ class HomeViewController: UIViewController,
     let liveQueryClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .remoteWs)
     
     private var approvalSubscription: Subscription<PFObject>!
-    private var friendApprovalSubscription: Subscription<PFObject>!    
+    private var friendApprovalSubscription: Subscription<PFObject>!        
+
+    private var approvalSubscriptionUpdate: Subscription<PFObject>!
+    private var friendApprovalSubscriptionUpdate: Subscription<PFObject>!    
     
+
     let liveQueryClientApproval: Client = ParseLiveQuery.Client(server: Global.localWs)
 
     let liveQueryClientFriendApproval: Client = ParseLiveQuery.Client(server: Global.localWs)
@@ -971,39 +975,64 @@ class HomeViewController: UIViewController,
                 
                 var approvalQuery = PFQuery(className: "Approvals").whereKey("familyId", equalTo: familyId)
                 
-                self.approvalSubscription = liveQueryClientApproval.subscribe(approvalQuery).handle(Event.updated) { _, approvals in
+                self.approvalSubscription = liveQueryClientApproval.subscribe(approvalQuery).handle(Event.created) { _, approvals in
                     
-                    Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in                        
+                    Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in        
 
-                        self._approval_approval = "Pendings:  \(count)"
+                        self.updateApproval(count: count)
 
-                        self.loadStatistics()
+                    })
+                }
 
-                         DispatchQueue.main.async {
+                 self.approvalSubscriptionUpdate = liveQueryClientApproval.subscribe(approvalQuery).handle(Event.updated) { _, approvals in
                     
-                            self.collectionView.reloadData()
-                            
-                        }                        
+                    Global.getApprovasByFamilyId(familyId: familyId, completionHandler: { ( count ) -> () in         
+
+                        self.updateApproval(count: count)               
+                   
                     })
                 }
                 
-                var friendsApprovalQuery = PFQuery(className: "FriendsApproval").whereKey("familyId", equalTo: familyId)
+                var friendsApprovalQuery = PFQuery(className: "FriendsApproval").whereKey("familyId", equalTo: familyId)                               
                 
-                self.friendApprovalSubscription = liveQueryClientFriendApproval.subscribe(friendsApprovalQuery).handle(Event.updated) { _, approvals in
+                self.friendApprovalSubscription = liveQueryClientFriendApproval.subscribe(friendsApprovalQuery).handle(Event.created) { _, approvals in
                     
                     Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( invites, invited, updated ) -> () in                             
-
-                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: self)
 
                         self.updateFriendView(invites: invites, invited: invited, updated: updated)
                         
                     })
                 }
+
+                self.friendApprovalSubscriptionUpdate = liveQueryClientFriendApproval.subscribe(friendsApprovalQuery).handle(Event.updated) { _, approvals in
+                    
+                    Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( invites, invited, updated ) -> () in                             
+
+                        self.updateFriendView(invites: invites, invited: invited, updated: updated)
+                        
+                    })
+                }
+                
             }
         }
     }
+
+    func updateApproval(count : Int) { 
+
+        self._approval_approval = "Pendings:  \(count)"
+
+        self.loadStatistics()
+
+         DispatchQueue.main.async {
+    
+            self.collectionView.reloadData()
+            
+        }
+    } 
     
     func updateFriendView(invites: Int, invited: Int, updated: Bool) {
+
+        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: self)
         
         self._friend_approval = updated
         
