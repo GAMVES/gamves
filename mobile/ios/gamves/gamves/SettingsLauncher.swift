@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Parse
 
 class Setting: NSObject {
     let name: SettingName
@@ -98,7 +99,7 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
                 
                 self.collectionView.frame = CGRect(x: 0, y: y, width: self.collectionView.frame.width, height: self.collectionView.frame.height)
                 
-                }, completion: nil)
+            }, completion: nil)
         }
     }
     
@@ -143,6 +144,18 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let setting = self.settings[indexPath.item]
+        
+        if setting.imageName == "switch_account" {
+            
+            PFUser.logOutInBackground { (error) in
+                
+                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLogOut), object: self)
+                
+            }
+            
+        }
+        
+        
         handleDismiss(setting)
     }
     

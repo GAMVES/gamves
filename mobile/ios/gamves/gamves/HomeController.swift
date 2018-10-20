@@ -145,7 +145,32 @@ CLLocationManagerDelegate {
 
         NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)     
 
-        NotificationCenter.default.addObserver(self, selector: #selector(showProfileController), name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil)                   
+        NotificationCenter.default.addObserver(self, selector: #selector(showProfileController), name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)   
+        
+    }
+    
+    @objc private func loggedOut() {
+        
+        self.showLoginController(registered: true)
+    }
+    
+    func showLoginController(registered: Bool) {
+        
+        UserDefaults.standard.setIsRegistered(value: registered)
+        
+        let loginController = LoginController()
+        
+        //loginController.isRegistered = registered
+        //loginController.tabBarViewController = self
+        
+        //self.tutorialController.dismiss(animated: true)
+        
+        present(loginController, animated: true, completion: {
+            //perhaps we'll do something here later
+            //self.blurVisualEffectView?.removeFromSuperview()
+        })
         
     }
 

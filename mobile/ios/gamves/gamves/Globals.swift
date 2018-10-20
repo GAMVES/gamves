@@ -104,7 +104,8 @@ class Global: NSObject
     static var notificationKeyMediaDelegate = "com.gamves.notificationKeyMediaDelegate"
     static var notificationKeyShowProfile   = "com.gamvess.notificationKeyShowProfile"
     static var notificationOpenChatFromUser   = "com.gamvess.notificationOpenChatFromUser"
-    static var notificationKeyReloadPageFanpage   = "com.gamvess.notificationKeyReloadPageFanpage"        
+    static var notificationKeyReloadPageFanpage   = "com.gamvess.notificationKeyReloadPageFanpage"
+    static var notificationKeyLogOut              = "com.gamves.gamvesparent.notificationLogOut"
         
     static var REGISTER_MOTHER  = 0
     static var SPOUSE_MOTHER    = 1

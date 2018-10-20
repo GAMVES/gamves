@@ -276,7 +276,6 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
             let videoLauncher = VideoLauncher()
             videoLauncher.showVideoPlayer(videoGamves: video)
 
-
             
             /*var video = VideoGamves()
             

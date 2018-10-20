@@ -111,7 +111,7 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
             }
         }
     }
-    
+    	
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return settings.count
     }

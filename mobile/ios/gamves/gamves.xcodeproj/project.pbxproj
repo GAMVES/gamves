@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09550F6B2178F5FF00FA7F3D /* UserDefaults+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */; };
 		8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D6F41F74B46C00F2A121 /* Colors.swift */; };
 		822010B61FF96A5A008C9027 /* NewFanpageController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B51FF96A5A008C9027 /* NewFanpageController+Extensions.swift */; };
 		822760C9200EDBCE00860638 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822760C8200EDBCE00860638 /* NotificationCell.swift */; };
@@ -128,6 +129,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+helpers.swift"; sourceTree = "<group>"; };
 		233BC8CE2FEF6D293765B4BD /* Pods-gamves.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.release.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.release.xcconfig"; sourceTree = "<group>"; };
 		8212D6F41F74B46C00F2A121 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		822010B51FF96A5A008C9027 /* NewFanpageController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewFanpageController+Extensions.swift"; sourceTree = "<group>"; };
@@ -413,6 +415,7 @@
 		82C6F7521F8AA8E80090C725 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */,
 				C930D4C52148C18700F67DA4 /* KenBurns+Helpers.swift */,
 				C92DE080208570B400BC9AA0 /* CGFloat+Extension.swift */,
 				8268445B1FF2A82B008BA13B /* LoginController+Extensions.swift */,
@@ -848,6 +851,7 @@
 				82DD00371F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift in Sources */,
 				82970BA41F1DBFF000F6ABAD /* VideoPage.swift in Sources */,
 				82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */,
+				09550F6B2178F5FF00FA7F3D /* UserDefaults+helpers.swift in Sources */,
 				82BD5EFF1F93AC9600BD8760 /* ContactCell.swift in Sources */,
 				82FFF52F2022D795005F45AA /* CatFanSelectorViewCell.swift in Sources */,
 				C969004621430B5E00F3BFF6 /* FanpageVideoTableCell.swift in Sources */,

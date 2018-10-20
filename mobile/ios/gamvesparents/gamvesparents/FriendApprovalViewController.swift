@@ -77,6 +77,9 @@ FriendApprovalProtocol
         self.familyId = Global.gamvesFamily.objectId
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(self.closedRefresh), name: NSNotification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: nil)
+        
     }
     
 
@@ -88,7 +91,7 @@ FriendApprovalProtocol
         super.didReceiveMemoryWarning()
     }
     
-    func closedRefresh() {   
+    @objc func closedRefresh() {   
 
         self.activityIndicatorView?.startAnimating()    
 

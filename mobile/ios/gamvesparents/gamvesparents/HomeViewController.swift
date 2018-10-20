@@ -30,9 +30,11 @@ class HomeViewController: UIViewController,
     let liveQueryClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .remoteWs)
     
     private var approvalSubscription: Subscription<PFObject>!
-    private var friendApprovalSubscription: Subscription<PFObject>!
+    private var friendApprovalSubscription: Subscription<PFObject>!    
     
-    let liveQueryClientApproval: Client = ParseLiveQuery.Client(server: Global.localWs) // .remoteWs .localWs)
+    let liveQueryClientApproval: Client = ParseLiveQuery.Client(server: Global.localWs)
+
+    let liveQueryClientFriendApproval: Client = ParseLiveQuery.Client(server: Global.localWs)
 
     var youSonChatId = Int()
     var youSpouseChatId = Int()
@@ -987,9 +989,11 @@ class HomeViewController: UIViewController,
                 
                 var friendsApprovalQuery = PFQuery(className: "FriendsApproval").whereKey("familyId", equalTo: familyId)
                 
-                self.friendApprovalSubscription = liveQueryClientApproval.subscribe(friendsApprovalQuery).handle(Event.updated) { _, approvals in
+                self.friendApprovalSubscription = liveQueryClientFriendApproval.subscribe(friendsApprovalQuery).handle(Event.updated) { _, approvals in
                     
                     Global.getFriendsApprovasByFamilyId(familyId: familyId, completionHandler: { ( invites, invited, updated ) -> () in                             
+
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: self)
 
                         self.updateFriendView(invites: invites, invited: invited, updated: updated)
                         
