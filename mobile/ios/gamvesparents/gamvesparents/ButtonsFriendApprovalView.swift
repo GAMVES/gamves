@@ -284,36 +284,48 @@ class ButtonsFriendApprovalView: UIView {
 
         let userQuery = PFQuery(className:"Friends")
         userQuery.whereKey("userId", equalTo: userId)
-        userQuery.getFirstObjectInBackground(block: { (friendObject, error) in   
-
-            let friendObj:PFObject!       
+        userQuery.getFirstObjectInBackground(block: { (friendObject, error) in               
     
             if friendObject != nil
             {
 
-                friendObj = friendObject
-                var frindsPosterArray = friendObj!["friends"] as! [String]
-                frindsPosterArray.append(friendId)                
+                friendObject?.addObjects(from: [friendId], forKey: "friends")
+                
+                friendObject?.saveInBackground(block: { (friendSPF, error) in
+                
+                    if error == nil {
+
+                        completionHandler(true) 
+
+                    } else {
+
+                        completionHandler(false) 
+                    }
+
+                })
 
             } else {               
 
-                friendObj = PFObject(className: "Friends")
+                let friendObj = PFObject(className: "Friends")
                 friendObj["userId"] = userId
-                friendObj["friends"] = [friendId]                
+                friendObj["friends"] = [friendId]    
+
+                friendObj.saveInBackground(block: { (friendSPF, error) in
+                
+                    if error == nil {
+
+                        completionHandler(true) 
+
+                    } else {
+
+                        completionHandler(false) 
+                    }
+
+                })
+
             }        
 
-            friendObj.saveInBackground(block: { (friendSPF, error) in
-                
-                if error == nil {
-
-                    completionHandler(true) 
-
-                } else {
-
-                    completionHandler(false) 
-                }
-
-            })
+            
         })
     }       
 

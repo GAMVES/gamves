@@ -102,6 +102,8 @@ FriendApprovalProtocol
             let userId = Global.gamvesFamily.sonsUsers[0].userId
 
             Global.getFriendsAmount(posterId: userId, completionHandler: { ( count ) -> () in
+                
+                print(count)
 
                 DispatchQueue.main.async {
 

@@ -1177,6 +1177,9 @@ class Global: NSObject
                 {
                     
                     var countFriendAapprovals = friendApprovalObjects.count
+                    
+                    print(countFriendAapprovals)
+                    
                     var count = 0                  
                     
                     
@@ -1354,6 +1357,8 @@ class Global: NSObject
                 let friendsIds = friendObject!["friends"] as! [String]
 
                 let countFriends = friendsIds.count
+                
+                print(countFriends)
 
                 if countFriends == 0 {
                                 
