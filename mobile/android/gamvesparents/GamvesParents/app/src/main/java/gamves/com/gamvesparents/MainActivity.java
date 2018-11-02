@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import gamves.com.gamvesparents.fragment.FragmentCommunity;
+import gamves.com.gamvesparents.fragment.FragmentFeed;
 import gamves.com.gamvesparents.fragment.FragmentHome;
 import gamves.com.gamvesparents.fragment.FragmentProfile;
 
@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
                     //mToolbar.setTitle("HOME");
                     getSupportActionBar().setTitle("Inicio");
                     break;
-                case R.id.navigation_community:
-                    fragment = new FragmentCommunity();
+                case R.id.navigation_feed:
+                    fragment = new FragmentFeed();
                     //mToolbar.setTitle("CAMARAS");
-                    getSupportActionBar().setTitle("Camaras");
+                    getSupportActionBar().setTitle("Messages");
                     break;
                 case R.id.navigation_profile:
                     fragment = new FragmentProfile();
@@ -50,19 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
             return false;
 
-            /*  switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_activity:
-                    mTextMessage.setText(R.string.title_activity);
-                    return true;
-                case R.id.navigation_account:
-                    mTextMessage.setText(R.string.title_account);
-                    return true;
-            }
-            return false;
-        }*/
         }
 
     };
@@ -71,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        fragmentManager = getSupportFragmentManager();
 
         setContentView(R.layout.activity_main);
 

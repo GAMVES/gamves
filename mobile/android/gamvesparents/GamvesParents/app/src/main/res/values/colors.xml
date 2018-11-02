@@ -11,6 +11,7 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="white">#fafafa</color>
+    <color name="black">#000000</color>
     <color name="white_pressed">#f1f1f1</color>
     <color name="half_black">#808080</color>
 
@@ -19,5 +20,44 @@
     <color name="app_bottom_navigation">#373435</color>
 
     <color name="app_bottom_active_navigation">#727376</color>
+
+    <color name="rippelColor">#0099CC</color>
+
+    <color name="popup_bg_color">#1da1f2</color>
+
+    <color name="transparent_white">#00FFFFFF</color>
+
+    <color name="purple">#425daf</color>
+
+    <color name="gray_90">#E6000000</color>
+    <color name="gray_80">#CC000000</color>
+    <color name="gray_70">#B3000000</color>
+    <color name="gray_60">#99000000</color>
+    <color name="gray_50">#80000000</color>
+    <color name="gray_40">#66000000</color>
+    <color name="gray_30">#4D000000</color>
+    <color name="gray_20">#33000000</color>
+    <color name="gray_10">#1A000000</color>
+
+
+    <color name="app_primary">#F44336</color>
+    <color name="app_primary_pressed">#EF5350</color>
+
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_500">#a4a4a4</color>
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_800">#212121</color>
+
+    <color name="colorBlack">#000000</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+
+    <!--Gamves Color-->
+    <color name="gamvesColor">#00afef</color>
+    <color name="gambesDarkColor">#007bb0</color>
+    <color name="gamvesBlackColor">#373435</color>
+    <color name="gamvesTurquezeColor">#1abc9c</color>
+    <color name="gamvesCyanColor">#00afef</color>
+
 
 </resources>

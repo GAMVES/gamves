@@ -25,5 +25,18 @@
 
     <string name="bt_vigilant_map">Ubicacion</string>
 
+    <string name="language_0" translatable="false">All</string>
+    <string name="language_1" translatable="false">7N6FmcRutH</string>
+    <string name="language_2" translatable="false">bmG2qv6jPX</string>
+
+    <string name="language_name_0" translatable="false">All</string>
+    <string name="language_name_1" translatable="false">English</string>
+    <string name="language_name_2" translatable="false">Spanish</string>
+
+    <string name="loading_dialog_capture_description">Preparing capture&#8230;</string>
+
+    <string name="your_daily_feed">YOUR DAILY FEED</string>
+
+    <string name="snack_close">CLOSE</string>
 
 </resources>
