@@ -117,6 +117,9 @@ class Global: NSObject
     static var keySpouse = "spousePhotoImage"
     static var keyYour = "yourPhotoImage"
     static var keySon = "sonPhotoImage"
+
+    static var appGroupDefaults = UserDefaults.standard 
+    static var groupShare = "group.com.gamves.share"
     
     static var keySpouseSmall   = String()
     static var keyYourSmall     = String()

@@ -109,6 +109,7 @@ class LoginController: UIViewController {
         return sc
     }()
     
+    var appDelegate = UIApplication.shared.delegate as! AppDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -224,7 +225,7 @@ class LoginController: UIViewController {
             print(password)
             
             // Defining the user object
-            PFUser.logInWithUsername(inBackground: user.lowercased(), password: password, block: {(user, error) -> Void in
+            PFUser.logInWithUsername(inBackground: user.lowercased(), password: password, block: {(userPF, error) -> Void in
                 
                 if let error = error as NSError? {
                     
@@ -239,6 +240,11 @@ class LoginController: UIViewController {
                 } else
                 {
                     
+                    
+                    self.appDelegate.userDefault.set(user.lowercased(), forKey: "gamves_shared_extension_user")
+                    self.appDelegate.userDefault.set(password, forKey: "gamves_shared_extension_password")
+                    self.appDelegate.userDefault.synchronize()
+
                     //User and family info
                     DispatchQueue.main.async {
                         Global.loadAditionalData()

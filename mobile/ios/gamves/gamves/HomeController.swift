@@ -148,8 +148,21 @@ CLLocationManagerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(showProfileController), name: NSNotification.Name(rawValue: Global.notificationKeyShowProfile), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)   
+
+        ///Global.appGroupDefaults.addObserver(self, forKeyPath: "extensionUrl", options: .new, context: nil)
+        //Global.appGroupDefaults.set(value: arrayDataToPasstoTodayExtension, forKey: "arrayDatatoDisplayInToday")
         
     }
+
+    
+    /*override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+            if keyPath == Global.groupShare {
+                //gatherReceivedNotifications()
+                print(change)
+            }
+        
+    }*/
     
     @objc private func loggedOut() {
         

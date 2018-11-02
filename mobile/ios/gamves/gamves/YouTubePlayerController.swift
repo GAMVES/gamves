@@ -13,7 +13,6 @@ class YouTubePlayerController: UIViewController, YouTubePlayerDelegate  {
     
     var videoId = String()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         

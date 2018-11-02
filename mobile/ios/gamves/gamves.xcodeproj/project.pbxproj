@@ -7,10 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		090C1E452188DD22004F678E /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090C1E442188DD22004F678E /* Parse.framework */; };
+		090C1E472188DD22004F678E /* ParseLiveQuery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090C1E462188DD22004F678E /* ParseLiveQuery.framework */; };
 		09550F6B2178F5FF00FA7F3D /* UserDefaults+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */; };
 		09687E95217C49D6001F7578 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09687E94217C49D6001F7578 /* ShareViewController.swift */; };
 		09687E98217C49D7001F7578 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09687E96217C49D7001F7578 /* MainInterface.storyboard */; };
 		09687E9C217C49D7001F7578 /* shared.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 09687E92217C49D4001F7578 /* shared.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		099ADE132186A87E0075B053 /* ShareSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099ADE122186A87D0075B053 /* ShareSelectViewController.swift */; };
+		099ADE162186AA010075B053 /* SharedClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099ADE152186AA010075B053 /* SharedClasses.swift */; };
 		8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D6F41F74B46C00F2A121 /* Colors.swift */; };
 		822010B61FF96A5A008C9027 /* NewFanpageController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B51FF96A5A008C9027 /* NewFanpageController+Extensions.swift */; };
 		822760C9200EDBCE00860638 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822760C8200EDBCE00860638 /* NotificationCell.swift */; };
@@ -88,6 +92,7 @@
 		82F3F7CB202B38AC001E3DA5 /* Formatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F3F7CA202B38AC001E3DA5 /* Formatter+Extensions.swift */; };
 		82FFF52A2022CF6E005F45AA /* SelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FFF5292022CF6E005F45AA /* SelectorView.swift */; };
 		82FFF52F2022D795005F45AA /* CatFanSelectorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FFF52E2022D795005F45AA /* CatFanSelectorViewCell.swift */; };
+		8CC4CE1FA0F075372C6311A9 /* Pods_shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAEA45094A7BD3AFEBAB82CD /* Pods_shared.framework */; };
 		C7027A691D296DE4007AA9BF /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7027A681D296DE4007AA9BF /* FeedCell.swift */; };
 		C75742B71D5D93FA001C066C /* VideoLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75742B61D5D93FA001C066C /* VideoLauncher.swift */; };
 		C766D2491D09F1D9005921EC /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = C766D2481D09F1D9005921EC /* Video.swift */; };
@@ -156,11 +161,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		090C1E442188DD22004F678E /* Parse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Parse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		090C1E462188DD22004F678E /* ParseLiveQuery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ParseLiveQuery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0938B84E2182E1FA001E3A34 /* shared.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = shared.entitlements; sourceTree = "<group>"; };
 		09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+helpers.swift"; sourceTree = "<group>"; };
 		09687E92217C49D4001F7578 /* shared.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shared.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		09687E94217C49D6001F7578 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		09687E97217C49D7001F7578 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		09687E99217C49D7001F7578 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		099ADE122186A87D0075B053 /* ShareSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSelectViewController.swift; sourceTree = "<group>"; };
+		099ADE152186AA010075B053 /* SharedClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedClasses.swift; sourceTree = "<group>"; };
+		0B556824388525CC4C294DDA /* Pods-shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-shared/Pods-shared.debug.xcconfig"; sourceTree = "<group>"; };
 		233BC8CE2FEF6D293765B4BD /* Pods-gamves.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.release.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.release.xcconfig"; sourceTree = "<group>"; };
 		8212D6F41F74B46C00F2A121 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		822010B51FF96A5A008C9027 /* NewFanpageController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewFanpageController+Extensions.swift"; sourceTree = "<group>"; };
@@ -240,6 +251,7 @@
 		82F3F7CA202B38AC001E3DA5 /* Formatter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Formatter+Extensions.swift"; sourceTree = "<group>"; };
 		82FFF5292022CF6E005F45AA /* SelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorView.swift; sourceTree = "<group>"; };
 		82FFF52E2022D795005F45AA /* CatFanSelectorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFanSelectorViewCell.swift; sourceTree = "<group>"; };
+		8D36D1ED8BF55FAD32AE949F /* Pods-shared.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared.release.xcconfig"; path = "Pods/Target Support Files/Pods-shared/Pods-shared.release.xcconfig"; sourceTree = "<group>"; };
 		AE0CDF0FEB14AE73EB0AA9EC /* Pods_gamves.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gamves.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD9599865998F2DF27E0D72A /* Pods-gamves.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.debug.xcconfig"; sourceTree = "<group>"; };
 		C7027A681D296DE4007AA9BF /* FeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
@@ -284,6 +296,7 @@
 		C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendCollectionViewCell.swift; sourceTree = "<group>"; };
 		C98FD882210613B000631D78 /* FriendSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendSectionHeader.swift; sourceTree = "<group>"; };
 		C9A0011B20F3CEE900906F33 /* NewFriendController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendController.swift; sourceTree = "<group>"; };
+		CAEA45094A7BD3AFEBAB82CD /* Pods_shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +304,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				090C1E452188DD22004F678E /* Parse.framework in Frameworks */,
+				090C1E472188DD22004F678E /* ParseLiveQuery.framework in Frameworks */,
+				8CC4CE1FA0F075372C6311A9 /* Pods_shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +334,9 @@
 		09687E93217C49D6001F7578 /* shared */ = {
 			isa = PBXGroup;
 			children = (
+				099ADE142186A9D20075B053 /* Model */,
+				099ADE122186A87D0075B053 /* ShareSelectViewController.swift */,
+				0938B84E2182E1FA001E3A34 /* shared.entitlements */,
 				09687E94217C49D6001F7578 /* ShareViewController.swift */,
 				09687E96217C49D7001F7578 /* MainInterface.storyboard */,
 				09687E99217C49D7001F7578 /* Info.plist */,
@@ -325,11 +344,21 @@
 			path = shared;
 			sourceTree = "<group>";
 		};
+		099ADE142186A9D20075B053 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				099ADE152186AA010075B053 /* SharedClasses.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		62600C7C27EC843EB7442956 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				BD9599865998F2DF27E0D72A /* Pods-gamves.debug.xcconfig */,
 				233BC8CE2FEF6D293765B4BD /* Pods-gamves.release.xcconfig */,
+				0B556824388525CC4C294DDA /* Pods-shared.debug.xcconfig */,
+				8D36D1ED8BF55FAD32AE949F /* Pods-shared.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -402,6 +431,8 @@
 		82566DEB1EFE36F200C8D83D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				090C1E442188DD22004F678E /* Parse.framework */,
+				090C1E462188DD22004F678E /* ParseLiveQuery.framework */,
 				82566DFE1EFE376B00C8D83D /* libsqlite3.tbd */,
 				82566DFC1EFE375C00C8D83D /* libz.tbd */,
 				82566DFA1EFE374A00C8D83D /* SystemConfiguration.framework */,
@@ -413,6 +444,7 @@
 				82566DEE1EFE36FE00C8D83D /* CFNetwork.framework */,
 				82566DEC1EFE36F200C8D83D /* AudioToolbox.framework */,
 				AE0CDF0FEB14AE73EB0AA9EC /* Pods_gamves.framework */,
+				CAEA45094A7BD3AFEBAB82CD /* Pods_shared.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -648,6 +680,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 09687E9F217C49DA001F7578 /* Build configuration list for PBXNativeTarget "shared" */;
 			buildPhases = (
+				EC0B19D3E61AC68DC5DAB5FC /* [CP] Check Pods Manifest.lock */,
 				09687E8E217C49D4001F7578 /* Sources */,
 				09687E8F217C49D4001F7578 /* Frameworks */,
 				09687E90217C49D4001F7578 /* Resources */,
@@ -694,11 +727,19 @@
 				TargetAttributes = {
 					09687E91217C49D4001F7578 = {
 						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					C77B55121CFFF3AD00FF375C = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
@@ -848,6 +889,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		EC0B19D3E61AC68DC5DAB5FC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-shared-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -855,6 +918,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				099ADE162186AA010075B053 /* SharedClasses.swift in Sources */,
+				099ADE132186A87E0075B053 /* ShareSelectViewController.swift in Sources */,
 				09687E95217C49D6001F7578 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1011,6 +1076,7 @@
 /* Begin XCBuildConfiguration section */
 		09687E9D217C49D8001F7578 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0B556824388525CC4C294DDA /* Pods-shared.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1027,12 +1093,13 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = shared/shared.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YDE3D3X5DH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = shared/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1044,13 +1111,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		09687E9E217C49D8001F7578 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8D36D1ED8BF55FAD32AE949F /* Pods-shared.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1067,12 +1135,13 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = shared/shared.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YDE3D3X5DH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = shared/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1084,7 +1153,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1183,6 +1252,7 @@
 			baseConfigurationReference = BD9599865998F2DF27E0D72A /* Pods-gamves.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = gamves/gamves.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1210,6 +1280,7 @@
 			baseConfigurationReference = 233BC8CE2FEF6D293765B4BD /* Pods-gamves.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = gamves/gamves.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

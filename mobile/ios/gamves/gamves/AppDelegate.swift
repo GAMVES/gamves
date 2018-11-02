@@ -10,6 +10,8 @@ import Parse
 import UserNotifications
 import DeviceKit
 
+import os.log
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
@@ -27,8 +29,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     var online = Bool()
     var connect = Bool()
+    
+    var userDefault = UserDefaults(suiteName: "group.com.gamves.share")!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
+        if #available(iOS 10.0, *) {
+            os_log("HOLA")
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        var username = userDefault.string(forKey: "gamves_shared_extension_user")
+        var password = userDefault.string(forKey: "gamves_shared_extension_password")
+
+        //Shared group extension
+        Global.appGroupDefaults = UserDefaults(suiteName: Global.groupShare)!
         
         Global.forceFromNetworkCache = true
         
@@ -65,8 +81,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
             // get rid of black bar underneath navbar
             UINavigationBar.appearance().shadowImage = UIImage()
-            UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-            
+            UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)            
+                        
             DispatchQueue.main.async {
                 Global.loadAditionalData()
             }
@@ -341,6 +357,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func openSearch(params:[String : Any]) {        
         self.homeController.openSearch(params:params)
+    } 
+    
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+        if url.scheme == "gamves"
+        {
+            //TODO: Write your code here
+        }
+        
+        print("url.scheme - \(url.scheme)")
+        print("url.absoluteString - \(url.absoluteString)")
+        print("url.absoluteURL - \(url.absoluteURL)")
+        print("url.description - \(url.description)")
+        print("url.debugDescription - \(url.debugDescription)")
+        
+        let queryItems = URLComponents(string: url.absoluteString)?.queryItems
+        let param1 = queryItems?.filter({$0.name == "myParam"}).first
+        
+        if let temp = param1 {
+            
+            // we first unwrap param1, when its valid, we can use it to access its property value
+            // value is optional itself, i decided to use force unwrap here
+            /*let topWindow = UIWindow(frame: UIScreen.main.bounds)
+            topWindow.rootViewController = UIViewController()
+            topWindow.windowLevel = UIWindowLevelAlert + 1
+            let alert = UIAlertController(title: "APNS", message: "received Notification -  \(temp.value!)", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "confirm"), style: .cancel, handler: {(_ action: UIAlertAction) -> Void in
+                // continue your work
+                // important to hide the window after work completed.
+                // this also keeps a reference to the window until the action is invoked.
+                topWindow.isHidden = true
+            }))
+            topWindow.makeKeyAndVisible()
+            topWindow.rootViewController?.present(alert, animated: true, completion: { _ in })*/
+            
+        }
+        return true
     }
     
     

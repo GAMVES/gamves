@@ -51,6 +51,16 @@ target 'gamves' do
 
   pod 'DRPLoadingSpinner'
 
-  pod 'TaskQueue'
-  
+  pod 'TaskQueue'   
+
+end
+
+target 'shared' do
+
+  pod 'Parse'
+
+  pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift', :commit => 'e9baa72d04521c3b25ef4fa6fef12b340953ee02'
+
+  pod 'ParseLiveQuery'
+
 end
