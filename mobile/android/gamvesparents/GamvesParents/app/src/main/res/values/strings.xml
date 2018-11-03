@@ -15,9 +15,7 @@
     <string name="video_title">Chromecast Video</string>
     <string name="content_type_mp4">video/mp4</string>
 
-    <string name="title_proyecto">Nos Quedamos y la municipalidad de Hurlingham</string>
-
-    <string name="btn_login">Ingresar</string>
+    <string name="title_proyecto">Gamves Parents</string>
 
     <string name="btn_link_signup">No tenes una cuenta, Registrate</string>
 
@@ -38,5 +36,15 @@
     <string name="your_daily_feed">YOUR DAILY FEED</string>
 
     <string name="snack_close">CLOSE</string>
+
+    <!--SUSCRIPTION-->
+    <string name="hint_password">Password</string>
+    <string name="hint_user">User name</string>
+    <string name="btn_login">Login</string>
+
+    <string name="register_message">Please ask your parents for registration credentials and come back. They should register first in order to give you access.</string>
+
+    <string name="login_segmented_button">Login</string>
+    <string name="register_segmented_button">Register</string>
 
 </resources>

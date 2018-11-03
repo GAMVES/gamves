@@ -6,6 +6,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -45,8 +47,13 @@ public class MainActivity extends AppCompatActivity {
                     getSupportActionBar().setTitle("Reflectores");
                     break;
             }
-            final FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.fragment_content, fragment).commit();
+            if (fragment != null) {
+                final FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_content, fragment).commit();
+            }
+
+            //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            //drawer.closeDrawer(GravityCompat.START);
 
             return false;
 

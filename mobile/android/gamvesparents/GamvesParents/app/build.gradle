@@ -52,6 +52,8 @@ dependencies {
 
     compile 'com.wang.avi:library:1.0.5'
 
+    compile 'info.hoang8f:android-segmented:1.0.6'
+
     //compile 'com.framgia.library.calendardayview:library:1.0.4'
 
 }

@@ -124,7 +124,7 @@ public class FragmentFeed extends Fragment {
         mProgress = (AVLoadingIndicatorView) view.findViewById(R.id.feed_progress_balls);
         Utils.showProgress(mProgress);
 
-        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) view.findViewById(R.id.add_vigilant_task);
+        /*final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) view.findViewById(R.id.add_vigilant_task);
 
         final FloatingActionButton actionA = (FloatingActionButton) view.findViewById(R.id.action_a);
         actionA.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +140,7 @@ public class FragmentFeed extends Fragment {
             public void onClick(View view) {
                 actionB.setTitle("Action B clicked");
             }
-        });
+        });*/
 
         return view;
     }

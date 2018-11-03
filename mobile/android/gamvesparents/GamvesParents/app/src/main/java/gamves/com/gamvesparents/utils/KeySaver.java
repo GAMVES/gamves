@@ -1,6 +1,5 @@
 package gamves.com.gamvesparents.utils;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,10 +11,9 @@ import java.util.Map;
 public class KeySaver {
 	private static final String AWKEY = "projects";
 	private static final String AWPREFIX = "images_";
-
+	
 	public static String getIMEI(Activity a ) {
 		TelephonyManager telephonyManager = (TelephonyManager) a.getSystemService(Context.TELEPHONY_SERVICE);
-
 		return telephonyManager.getDeviceId();
 	}
 	
