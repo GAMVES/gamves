@@ -304,6 +304,8 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("poster_name", "Gamves Official");       
                     video.set("target", [schoolId]);
                     video.set("source_type", 2);  //YOUTUBE   
+
+                    video.set("approved", true);
                     
                     video.set("target", window.checkChecked("frm_edit", schoolShort));
 
