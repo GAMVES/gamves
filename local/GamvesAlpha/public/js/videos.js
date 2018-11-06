@@ -234,7 +234,18 @@ document.addEventListener("LoadVideo", function(event){
             $('#img_thumbnail_video').attr('src', thumbnailUrl); 
 
             upload_date = result.upload_date;
-            view_count = result.view_count;
+
+
+            if ( result.view_count != undefined ){ 
+
+              view_count = result.view_count;
+
+            } else {
+
+              view_count = 0<
+            }
+
+            
             tags = result.tags;
             duration = result.duration;
             categories = result.categories,
@@ -281,7 +292,10 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("ytb_thumbnail_source", thumbnailUrl);
                     video.set("ytb_videoId", vId);
 
-                    video.set("ytb_upload_date", upload_date);          
+                    video.set("ytb_upload_date", upload_date);  
+
+                    if 
+
                     video.set("ytb_view_count", view_count);       
                     video.set("ytb_tags", tags);
                     video.set("ytb_duration", duration);         
