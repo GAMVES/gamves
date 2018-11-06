@@ -242,7 +242,7 @@ document.addEventListener("LoadVideo", function(event){
 
             } else {
 
-              view_count = 0<
+              view_count = 0;
             }
 
             
