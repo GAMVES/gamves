@@ -1,9 +1,19 @@
 package gamves.com.gamvesparents.singleton;
 
+import android.app.AlertDialog;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import gamves.com.gamvesparents.GamvesParentsApplication;
+import gamves.com.gamvesparents.UserLoginActivity;
 import gamves.com.gamvesparents.model.CategoryItem;
+import gamves.com.gamvesparents.model.Classes;
 import gamves.com.gamvesparents.model.FanPageListItem;
 import gamves.com.gamvesparents.model.FeedItem;
 import gamves.com.gamvesparents.model.VideosListItem;
@@ -14,6 +24,12 @@ import gamves.com.gamvesparents.model.VideosListItem;
 
 public class DataSingleton
 {
+
+    private static GamvesParentsApplication app;
+
+    public GamvesParentsApplication getApp() {
+        return this.app;
+    }
 
     private List<CategoryItem> categoryList;
 
@@ -29,6 +45,9 @@ public class DataSingleton
       	if(instance == null) {
          	instance = new DataSingleton();
       	}
+
+      	this.app = GamvesParentsApplication.getInstance();
+
       	return instance;
    }
 
@@ -94,6 +113,26 @@ public class DataSingleton
         }
         return false;
     }
+
+    //-
+    //  SCHOOL
+    // private Bitmap avatarBitmap;
+
+    public List<FeedItem> getSchools() {
+
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+                        query.whereEqualTo("username", app.getUser().getEmail());
+
+        query.findInBackground(new FindCallback<ParseUser>() {
+
+            @Override
+            public void done(List<ParseUser> parseUsers, ParseException e) {
+
+
+            }
+        });
+    }
+
 
 
     public List<FeedItem> getFeedList() {

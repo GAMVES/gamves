@@ -77,8 +77,8 @@ public class GamvesParentsApplication extends Application
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId("fyJV5DhvVXJz2Vlk53K3eeqNKzwdBQhftfBwCyQ7")
-                .clientKey("IPoWpsp5ub2qqCmAGgZmjlBuvzQKEaHoeBm8SFuX")
+                .applicationId("45cgsAjYqwQQRctQTluoUpVvKsHqrjCmvh72UGBx")
+                .clientKey("FNRCkl1ou1wjX4j8uzhnavxNAna2OH8pjmTYPvvF")
                 .server("https://parseapi.back4app.com").build()
         );
 
