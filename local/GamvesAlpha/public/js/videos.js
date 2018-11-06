@@ -294,8 +294,6 @@ document.addEventListener("LoadVideo", function(event){
 
                     video.set("ytb_upload_date", upload_date);  
 
-                    if 
-
                     video.set("ytb_view_count", view_count);       
                     video.set("ytb_tags", tags);
                     video.set("ytb_duration", duration);         
