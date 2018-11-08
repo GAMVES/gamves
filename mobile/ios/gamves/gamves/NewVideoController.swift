@@ -745,6 +745,10 @@ SelectorProtocol {
             var friend = Global.friends[i] as! GamvesUser
             targetArray.append(friend.userId)
         }
+        
+        let userId = PFUser.current()?.objectId
+        
+        targetArray.append(userId!)
 
         if let fanpagePF:PFObject = self.fanpage.fanpageObj {
 
@@ -760,7 +764,6 @@ SelectorProtocol {
 
         videoPF["posterId"] = PFUser.current()?.objectId
         
-        let userId = PFUser.current()?.objectId
         let name = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name
         
         videoPF["poster_name"] = name
