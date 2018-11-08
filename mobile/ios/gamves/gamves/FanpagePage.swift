@@ -213,6 +213,9 @@ class FanpagePage: UIViewController,
         self.tableView.separatorStyle = .none     
 
         self.activityVideoView = Global.setActivityIndicator(container: self.tableView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)          
+
+
+        //HIde Floaty
         
     }    
        
@@ -499,6 +502,10 @@ class FanpagePage: UIViewController,
             Global.levelDescription.lowercased(),
             Global.userId] as [String]
         
+        print(" filterTarget:    \(filterTarget) ")
+        
+        print(" fan.fanpageObj!:    \(fan.fanpageObj?.objectId) ")
+        
         queryvideos.whereKey("target", containedIn: filterTarget)
         
         if !Global.hasDateChanged()
@@ -519,7 +526,7 @@ class FanpagePage: UIViewController,
                 var countVideos = videoObjects?.count
                 var count = 0
                 
-                //print(countVideos)
+                print("countVideos  >>>>\(countVideos)")
                 
                 if countVideos! > 0
                 {
@@ -696,7 +703,7 @@ class FanpagePage: UIViewController,
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 
-        return 40
+        return 60
     }    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {     
@@ -788,7 +795,7 @@ class FanpagePage: UIViewController,
 
             let amountOfSections = self.albumSections.count
 
-            let sectionsHeight = (amountOfSections * 40) + 80
+            let sectionsHeight = (amountOfSections * 40) + 60
 
             let totalHeight = Int(self.view.frame.height) - sectionsHeight
 

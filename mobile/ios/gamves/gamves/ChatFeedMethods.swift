@@ -225,6 +225,8 @@ class ChatFeedMethods: NSObject {
                                 
                                     self.splitFeedSection()
                                     
+                                    self.sortAllFeeds()
+                                    
                                     completionHandler(chatId)
                                 }
                                 
@@ -249,7 +251,24 @@ class ChatFeedMethods: NSObject {
                     
                     print(videoId)
                     
-                    videosQuery.findObjectsInBackground(block: { (videos, error) in
+                    videosQuery.getFirstObjectInBackground { (videoPF, error) in
+                        
+                        if error != nil
+                        {
+                            
+                            print("error")
+                            
+                        } else {
+                         
+                            Global.getGamvesVideoFromObject(videoPF: videoPF!, completionHandler: { (videoGamves) in
+                                
+                                Global.chatVideos[chatId] = videoGamves
+                            })
+                            
+                        }
+                    }
+                    
+                    /*videosQuery.findObjectsInBackground(block: { (videos, error) in
                         
                         if error != nil
                         {
@@ -278,7 +297,7 @@ class ChatFeedMethods: NSObject {
                                 }
                             }
                         }
-                    })
+                    })*/
                 }
             }
         }

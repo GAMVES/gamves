@@ -1968,6 +1968,17 @@
 
             self.senderColor = UIColor.init(hex: "0x\(colorString)")
             
+            let date = Date()
+            let calendar = Calendar.current
+            
+            let minutes = calendar.component(.minute, from: date)
+            let seconds = calendar.component(.second, from: date)
+            
+            let strMinutes = String(format: "%02d", minutes)
+            let strSeconds = String(format: "%02d", seconds)
+            
+            chatFeed["time"] = "\(strMinutes):\(strSeconds)"
+            
             let groupImageFile:PFFile!
             
             if isVideoChat
@@ -2017,7 +2028,10 @@
                         array.append(user.typeObj.objectId!)
                     }
                     let members = String(describing: array)
-                    self.chatFeed["members"] = members
+
+                    self.chatFeed.addObjects(from: [members], forKey: "members")
+
+                    //self.chatFeed["members"] = members
                     
                 } else {
                     
@@ -2027,7 +2041,7 @@
                     
                     if let myUser = PFUser.current()?.objectId {
                         let member = String(describing: [self.gamvesUsers[0].userId,myUser])
-                        self.chatFeed["members"] = member
+                        self.chatFeed["members"] = [member]
                         self.chatFeed["room"] = "\(self.gamvesUsers[0].userId)____\(myUser)"
                     }
                 }
@@ -2051,8 +2065,10 @@
                 self.chatFeed["lastPoster"] = objectId
                 
                 if self.isVideo {
+
                     self.chatFeed["members"] = objectId
                     self.chatFeed["lastMessage"] = self.inputTextField.text
+                    
                 }
             }
             

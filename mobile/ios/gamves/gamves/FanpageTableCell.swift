@@ -81,7 +81,8 @@ UICollectionViewDelegateFlowLayout {
         let album = self.albums[indexPath.item]        
 
         if let x:CGFloat = album.cover_image.size.width,
-           let y:CGFloat = album.cover_image.size.height {
+           
+            let y:CGFloat = album.cover_image.size.height {
 
             if x > y {
                 width = 200

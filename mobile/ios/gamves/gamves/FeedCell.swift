@@ -280,13 +280,16 @@ FeedDelegate {
 
     func hasFriendsAndVideSections(index: Int) -> Int
     {
+        
+        print(index)
+        
         var result = 0
 
-        if index == 2 && ChatFeedMethods.chatFeedFriends.count > 0 {           
+        if index == 1 && ChatFeedMethods.chatFeedFriends.count > 0 {
 
             result = 1
 
-        } else if index == 3 && ChatFeedMethods.chatFeedVideos.count > 0 {
+        } else if index == 2 && ChatFeedMethods.chatFeedVideos.count > 0 {
 
             result = 2
         }
@@ -336,6 +339,8 @@ FeedDelegate {
         let section = indexPath.section
 
         var chatfeed = ChatFeed()
+        
+        print(section)
 
         if section == 0 {           
 
