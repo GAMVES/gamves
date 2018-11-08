@@ -1275,11 +1275,30 @@
 
 					if ( countPFPF > 0 ) {  
 
-						for (let i=0; i<countPFPF; i++) {							
+						for (let i=0; i<coun+tPFPF; i++) {							
 
-							let fanpagePPF = posterFanpagesPF[i];						
-							fanpagePPF.add("target", friendId);
-							fanpagePPF.save(null, {useMasterKey: true});		
+							let fanpagePPF = posterFanpagesPF[i];					
+
+							let targetArray = fanpagePPF.get("target");
+
+							let has = false;
+
+							if (!targetArray.includes(friendId)) {
+
+								fanpagePPF.add("target", friendId);								
+								hast = true;
+							} 						
+
+							if (!targetArray.includes(posterId)) {
+
+								fanpagePPF.add("target", posterId);
+								hast = true;							
+							}
+
+							if (has) {
+
+								fanpagePPF.save(null, {useMasterKey: true});		
+							}
 						}  					
 					}
 				}				 				
@@ -1301,12 +1320,32 @@
 
 						for (let i=0; i<countFFPF; i++) {
 							
-							let fanpageFPF = friendFanpagesPF[i];							
-							fanpageFPF.add("target", posterId);
-							fanpageFPF.save(null, {useMasterKey: true});
+							let fanpageFPF = friendFanpagesPF[i];													
+							
+							let targetArray = fanpagePPF.get("target");
 
+							let has = false;
+
+							if (!targetArray.includes(friendId)) {
+
+								fanpagePPF.add("target", friendId);								
+								hast = true;
+							} 						
+
+							if (!targetArray.includes(posterId)) {
+
+								fanpagePPF.add("target", posterId);
+								hast = true;							
+							}
+
+							if (has) {
+
+								fanpagePPF.save(null, {useMasterKey: true});		
+							}
+
+							//fanpageFPF.add("target", posterId);
+							//fanpageFPF.save(null, {useMasterKey: true});
 						}
-
 					}
 				}  
 				
@@ -1317,7 +1356,9 @@
 
 			}).then(function(posterVideosPF) { 
 
-				console.log("posterVideosPF");  
+				console.log("posterVideosPF");
+
+				////
 
 				if ( posterVideosPF != undefined ) {
 
