@@ -534,7 +534,6 @@ class FanpagePage: UIViewController,
                     {
                         for qvideoinfo in videoArray
                         {
-                            
                             let video = GamvesVideo()
                             
                             var videothum = qvideoinfo["thumbnail"] as! PFFile

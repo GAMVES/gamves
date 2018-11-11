@@ -68,6 +68,17 @@ class VideoPlayerView: UIView {
         label.font = UIFont.boldSystemFont(ofSize: 13)
         return label
     }()
+
+    lazy var fullscreenButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(named: "full_screen")
+        button.setImage(image, for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
+        button.isHidden = true
+        button.addTarget(self, action: #selector(handleFullScreen), for: .touchUpInside)
+        return button
+    }()
     
     lazy var videoSlider: UISlider = {
         let slider = UISlider()
@@ -83,13 +94,15 @@ class VideoPlayerView: UIView {
     var videoType = Int()
     var gradientLayer = CAGradientLayer()
     var videoUrl = String()
-    var isVideoDown = Bool()       
-    var videoFrame = CGRect()    
+    var isVideoDown = Bool()
+    var videoFrame = CGRect()   
 
-    override init(frame: CGRect) {
+    var timerHideControls : Timer?
+
+    override init(frame: CGRect) {        
         self.videoFrame = frame
-        super.init(frame: frame)
-    }
+        super.init(frame: frame)        
+    }   
     
     func setViews(view:UIView, videoLauncherVidew:VideoLauncher) {
         self.videoLauncher = videoLauncherVidew
@@ -108,6 +121,7 @@ class VideoPlayerView: UIView {
         self.arrowDownButton.isHidden = status
         self.pausePlayButton.isHidden = status
         self.videoLengthLabel.isHidden = status
+        self.currentTimeLabel.isHidden = status
         self.currentTimeLabel.isHidden = status
         self.videoSlider.isHidden = status   
         self.gradientLayer.isHidden = status        
@@ -138,10 +152,21 @@ class VideoPlayerView: UIView {
         } else {
             player?.play()
             pausePlayButton.setImage(UIImage(named: "pause"), for: UIControlState())
+            timerHideControls = Timer.scheduledTimer(timeInterval: 3, target:self, selector:#selector(hideTimer), userInfo: nil, repeats: false)
         }
-        
         isPlaying = !isPlaying
-    }  
+    }
+
+    @objc func  handleFullScreen() {
+
+        self.playerLayer.videoGravity = .resizeAspectFill
+
+    } 
+
+    @objc func hideTimer() {
+        
+        self.hideShowControllers(status: true)
+    }
 
 
     func setNativePlayer(url:String)
@@ -152,38 +177,48 @@ class VideoPlayerView: UIView {
         controlsContainerView.frame = frame
         addSubview(self.controlsContainerView)        
      
-        controlsContainerView.addSubview(arrowDownButton)   
+        self.controlsContainerView.addSubview(arrowDownButton)           
+        self.arrowDownButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
+        self.arrowDownButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10).isActive = true
+
+                
+        self.controlsContainerView.addSubview(activityIndicatorView)
+        self.activityIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        self.activityIndicatorView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         
-        arrowDownButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 30).isActive = true
-        arrowDownButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 30).isActive = true
+        self.controlsContainerView.addSubview(pausePlayButton)
+        self.pausePlayButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        self.pausePlayButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        self.pausePlayButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        self.pausePlayButton.heightAnchor.constraint(equalToConstant: 60).isActive = true    
+
+        self.controlsContainerView.addSubview(fullscreenButton) 
+        self.fullscreenButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
+        self.fullscreenButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 100).isActive = true
+
+        self.controlsContainerView.addSubview(videoLengthLabel)
+        self.videoLengthLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
+        self.videoLengthLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
+        self.videoLengthLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        self.videoLengthLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
         
-        controlsContainerView.addSubview(activityIndicatorView)
-        activityIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        activityIndicatorView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        
-        controlsContainerView.addSubview(pausePlayButton)
-        pausePlayButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        pausePlayButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        pausePlayButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        pausePlayButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        controlsContainerView.addSubview(videoLengthLabel)
-        videoLengthLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -8).isActive = true
-        videoLengthLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
-        videoLengthLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        videoLengthLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        
-        controlsContainerView.addSubview(currentTimeLabel)
-        currentTimeLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
-        currentTimeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
-        currentTimeLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        currentTimeLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        
-        controlsContainerView.addSubview(videoSlider)
-        videoSlider.rightAnchor.constraint(equalTo: videoLengthLabel.leftAnchor).isActive = true
-        videoSlider.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        videoSlider.leftAnchor.constraint(equalTo: currentTimeLabel.rightAnchor).isActive = true
-        videoSlider.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        self.controlsContainerView.addSubview(currentTimeLabel)
+        self.currentTimeLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
+        self.currentTimeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
+        self.currentTimeLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        self.currentTimeLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
+
+        //self.controlsContainerView.addSubview(fullscreenButton)
+        //self.fullscreenButton.rightAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
+        //self.fullscreenButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
+        //self.fullscreenButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        //self.fullscreenButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
+        self.controlsContainerView.addSubview(videoSlider)
+        self.videoSlider.rightAnchor.constraint(equalTo: videoLengthLabel.leftAnchor).isActive = true
+        self.videoSlider.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        self.videoSlider.leftAnchor.constraint(equalTo: currentTimeLabel.rightAnchor).isActive = true
+        self.videoSlider.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
       
 
@@ -219,6 +254,8 @@ class VideoPlayerView: UIView {
             self.playerLayer.frame = self.frame
             
             self.player?.play()
+
+            timerHideControls = Timer.scheduledTimer(timeInterval: 3, target:self, selector:#selector(hideTimer), userInfo: nil, repeats: false)
             
             self.player?.addObserver(self, forKeyPath: "currentItem.loadedTimeRanges", options: .new, context: nil)
             
@@ -286,10 +323,10 @@ class VideoPlayerView: UIView {
             activityIndicatorView.stopAnimating()
             controlsContainerView.backgroundColor = .clear
 
-            if !isVideoDown
-            {
-                pausePlayButton.isHidden = false
-            }
+            //if !isVideoDown
+            //{
+                //pausePlayButton.isHidden = false
+            //}
             isPlaying = true
             
             if let duration = player?.currentItem?.duration {
@@ -391,7 +428,10 @@ class VideoLauncher: UIView, KeyboardDelegate {
             self.videoPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.reopenVideo))) 
 
             let panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture))                                 
-            self.videoPlayerView.addGestureRecognizer(panGesture)            
+            self.videoPlayerView.addGestureRecognizer(panGesture)                       
+
+            let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handleTap))
+            self.videoPlayerView.addGestureRecognizer(tap)                       
             
             let infoHeight = 90            
             let infoFrame = CGRect(x: 0, y: Int(self.videoPlayerView.frame.height), width: Int(keyWindow.frame.width), height: infoHeight)
@@ -430,7 +470,15 @@ class VideoLauncher: UIView, KeyboardDelegate {
                     UIApplication.shared.setStatusBarHidden(true, with: .fade)
             })
         }
-    }    
+    }  
+
+    @objc func handleTap(sender: UITapGestureRecognizer) {
+
+        //self.videoPlayerView.pausePlayButton.isHidden = false
+        
+        self.videoPlayerView.hideShowControllers(status: false)
+    
+    }  
 
     @objc func handlePanGesture(sender: UIPanGestureRecognizer) {        
 
@@ -548,8 +596,7 @@ class VideoLauncher: UIView, KeyboardDelegate {
         {
 
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {                 
-                
-                
+                                
                 self.videoPlayerView.videoLauncher.view.frame = self.originalVideoFrame
 
                 let smallOriginFrame = CGRect(x: 0, y: 0, width: self.originalVideoFrame.width, height: self.originalVideoFrame.height)
@@ -565,7 +612,9 @@ class VideoLauncher: UIView, KeyboardDelegate {
                 UIApplication.shared.setStatusBarHidden(true, with: .fade)
 
                 self.videoPlayerView.isVideoDown = true
-                
+
+                self.videoPlayerView.pausePlayButton.isHidden = true
+
             })
 
         }

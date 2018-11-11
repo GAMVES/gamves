@@ -115,7 +115,7 @@ class AccountViewController: UIViewController,
     var cellId = String()
 
     var _profile = AccountButton()
-    var _payment = AccountButton()
+    var _documents = AccountButton()
     var _account = AccountButton()
     var _tutorial = AccountButton()
     
@@ -207,10 +207,10 @@ class AccountViewController: UIViewController,
         _profile.id = 0
         self.accountButton.append(_profile)
 
-        _payment.desc = "Payments"
-        _payment.icon = UIImage(named: "payment")!
-        _payment.id = 1
-        self.accountButton.append(_payment)
+        _documents.desc = "Documents"
+        _documents.icon = UIImage(named: "document")!
+        _documents.id = 1
+        self.accountButton.append(_documents)
 
         _account.desc = "Other Accounts"
         _account.icon = UIImage(named: "account")!
