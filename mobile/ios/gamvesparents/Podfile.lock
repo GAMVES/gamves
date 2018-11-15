@@ -1,116 +1,116 @@
 PODS:
   - Alamofire (4.7.3)
-  - AWSCore (2.6.32)
-  - AWSS3 (2.6.32):
-    - AWSCore (= 2.6.32)
+  - AWSCore (2.6.35)
+  - AWSS3 (2.6.35):
+    - AWSCore (= 2.6.35)
   - BEMCheckBox (1.4.1)
   - Bolts-Swift (1.3.0)
   - Bolts/Tasks (1.9.0)
-  - DeviceKit (1.2.3)
+  - DeviceKit (1.10.0)
   - DownPicker (0.1.34)
   - Floaty (4.0.1)
   - FXBlurView (1.6.4)
-  - ImageSlideshow (1.4.1):
-    - ImageSlideshow/Core (= 1.4.1)
-  - ImageSlideshow/Core (1.4.1)
-  - ISEmojiView (0.0.6)
+  - ImageSlideshow (1.7.0):
+    - ImageSlideshow/Core (= 1.7.0)
+  - ImageSlideshow/Core (1.7.0)
+  - ISEmojiView (0.1.2)
   - JRSwizzle (1.0)
   - MercadoPagoSDK (4.0.12):
     - MercadoPagoSDK/Default (= 4.0.12)
   - MercadoPagoSDK/Default (4.0.12):
     - MLUI (~> 5.0)
-  - MLUI (5.1.0):
-    - MLUI/ActionButton (= 5.1.0)
-    - MLUI/Core (= 5.1.0)
-    - MLUI/Helpers (= 5.1.0)
-    - MLUI/MLButton (= 5.1.0)
-    - MLUI/MLCheckBox (= 5.1.0)
-    - MLUI/MLColorPalette (= 5.1.0)
-    - MLUI/MLContextualMenu (= 5.1.0)
-    - MLUI/MLFonts (= 5.1.0)
-    - MLUI/MLGenericErrorView (= 5.1.0)
-    - MLUI/MLHtml (= 5.1.0)
-    - MLUI/MLModal (= 5.1.0)
-    - MLUI/MLRadioButton (= 5.1.0)
-    - MLUI/MLSnackBar (= 5.1.0)
-    - MLUI/MLSpacing (= 5.1.0)
-    - MLUI/MLSpinner (= 5.1.0)
-    - MLUI/MLSwitch (= 5.1.0)
-    - MLUI/MLTextView (= 5.1.0)
-    - MLUI/MLTitledMultiLineTextField (= 5.1.0)
-    - MLUI/MLTitledSingleLineTextField (= 5.1.0)
-    - MLUI/PriceView (= 5.1.0)
-    - MLUI/SnackBarView (= 5.1.0)
-    - MLUI/StyleSheet (= 5.1.0)
-  - MLUI/ActionButton (5.1.0):
+  - MLUI (5.2.0):
+    - MLUI/ActionButton (= 5.2.0)
+    - MLUI/Core (= 5.2.0)
+    - MLUI/Helpers (= 5.2.0)
+    - MLUI/MLButton (= 5.2.0)
+    - MLUI/MLCheckBox (= 5.2.0)
+    - MLUI/MLColorPalette (= 5.2.0)
+    - MLUI/MLContextualMenu (= 5.2.0)
+    - MLUI/MLFonts (= 5.2.0)
+    - MLUI/MLGenericErrorView (= 5.2.0)
+    - MLUI/MLHtml (= 5.2.0)
+    - MLUI/MLModal (= 5.2.0)
+    - MLUI/MLRadioButton (= 5.2.0)
+    - MLUI/MLSnackBar (= 5.2.0)
+    - MLUI/MLSpacing (= 5.2.0)
+    - MLUI/MLSpinner (= 5.2.0)
+    - MLUI/MLSwitch (= 5.2.0)
+    - MLUI/MLTextView (= 5.2.0)
+    - MLUI/MLTitledMultiLineTextField (= 5.2.0)
+    - MLUI/MLTitledSingleLineTextField (= 5.2.0)
+    - MLUI/PriceView (= 5.2.0)
+    - MLUI/SnackBarView (= 5.2.0)
+    - MLUI/StyleSheet (= 5.2.0)
+  - MLUI/ActionButton (5.2.0):
     - MLUI/Core
-  - MLUI/Core (5.1.0):
+  - MLUI/Core (5.2.0):
     - MLUI/MLFonts
-  - MLUI/Helpers (5.1.0)
-  - MLUI/MLButton (5.1.0):
+  - MLUI/Helpers (5.2.0)
+  - MLUI/MLButton (5.2.0):
     - MLUI/MLColorPalette
     - MLUI/MLFonts
     - MLUI/MLSpinner
     - MLUI/StyleSheet
-  - MLUI/MLCheckBox (5.1.0):
+  - MLUI/MLCheckBox (5.2.0):
     - MLUI/MLColorPalette
-  - MLUI/MLColorPalette (5.1.0)
-  - MLUI/MLContextualMenu (5.1.0):
+  - MLUI/MLColorPalette (5.2.0)
+  - MLUI/MLContextualMenu (5.2.0):
     - MLUI/MLColorPalette
     - MLUI/MLFonts
-  - MLUI/MLFonts (5.1.0):
+  - MLUI/MLFonts (5.2.0):
     - JRSwizzle (= 1.0)
     - MLUI/Helpers
     - MLUI/StyleSheet
-  - MLUI/MLGenericErrorView (5.1.0):
+  - MLUI/MLGenericErrorView (5.2.0):
     - MLUI/MLButton
     - MLUI/MLColorPalette
     - MLUI/MLSpacing
-  - MLUI/MLHtml (5.1.0):
+  - MLUI/MLHtml (5.2.0):
     - MLUI/MLFonts
-  - MLUI/MLModal (5.1.0):
+  - MLUI/MLModal (5.2.0):
     - FXBlurView (~> 1.6)
     - MLUI/Core
     - MLUI/MLButton
     - MLUI/MLColorPalette
     - MLUI/MLFonts
     - MLUI/StyleSheet
-  - MLUI/MLRadioButton (5.1.0):
+  - MLUI/MLRadioButton (5.2.0):
     - MLUI/MLColorPalette
-  - MLUI/MLSnackBar (5.1.0):
+  - MLUI/MLSnackBar (5.2.0):
     - MLUI/Helpers
     - MLUI/MLButton
     - MLUI/MLColorPalette
     - MLUI/MLFonts
-  - MLUI/MLSpacing (5.1.0):
+  - MLUI/MLSpacing (5.2.0):
     - JRSwizzle (= 1.0)
     - MLUI/MLFonts
-  - MLUI/MLSpinner (5.1.0):
+  - MLUI/MLSpinner (5.2.0):
     - MLUI/MLColorPalette
     - MLUI/MLFonts
     - MLUI/StyleSheet
-  - MLUI/MLSwitch (5.1.0):
+  - MLUI/MLSwitch (5.2.0):
     - MLUI/Helpers
     - MLUI/MLColorPalette
-  - MLUI/MLTextView (5.1.0):
+  - MLUI/MLTextView (5.2.0):
     - MLUI/MLColorPalette
     - MLUI/MLFonts
-  - MLUI/MLTitledMultiLineTextField (5.1.0):
+  - MLUI/MLTitledMultiLineTextField (5.2.0):
     - MLUI/MLColorPalette
     - MLUI/MLFonts
     - MLUI/MLTitledSingleLineTextField
     - MLUI/StyleSheet
-  - MLUI/MLTitledSingleLineTextField (5.1.0):
+  - MLUI/MLTitledSingleLineTextField (5.2.0):
     - MLUI/MLColorPalette
     - MLUI/MLFonts
     - MLUI/StyleSheet
-  - MLUI/PriceView (5.1.0):
+  - MLUI/PriceView (5.2.0):
     - MLUI/Core
     - MLUI/MLFonts
-  - MLUI/SnackBarView (5.1.0):
+  - MLUI/SnackBarView (5.2.0):
     - MLUI/Helpers
     - MLUI/MLFonts
-  - MLUI/StyleSheet (5.1.0)
+  - MLUI/StyleSheet (5.2.0)
   - NVActivityIndicatorView (4.0.1):
     - NVActivityIndicatorView/Presenter (= 4.0.1)
   - NVActivityIndicatorView/Presenter (4.0.1)
@@ -124,12 +124,12 @@ PODS:
     - Starscream (~> 3.0.4)
   - PopupDialog (0.6.2)
   - PulsingHalo (0.2.8)
-  - RSKImageCropper (1.6.3)
+  - RSKImageCropper (2.2.1)
   - Starscream (3.0.6)
-  - Stripe (12.0.0)
+  - Stripe (13.2.0)
   - SwiftValidator (4.0.0)
   - SwiftyJSON (4.2.0)
-  - TaskQueue (1.0.3)
+  - TaskQueue (1.1.1)
   - "UITextView+Placeholder (1.2.1)"
   - youtube-ios-player-helper (0.1.6)
   - YouTubePlayer (0.4.0)
@@ -202,36 +202,36 @@ CHECKOUT OPTIONS:
     :commit: e9baa72d04521c3b25ef4fa6fef12b340953ee02
     :git: https://github.com/BoltsFramework/Bolts-Swift
   SwiftValidator:
-    :commit: 6cff6cac3e02a617f7cf11323e18526a117d5673
+    :commit: c0ee801a2d107eca5f748d07932b449666d8effd
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  AWSCore: bfb49938a3a4eb190bc68edf1fa9e90969de8fa2
-  AWSS3: 5c2c57693f78ef3930bc6e267a1702182f3ceaa1
+  AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
+  AWSS3: 282a590bb47e9cd88de24979fb28954399c41c52
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Bolts-Swift: fa98d1b59fc1acea9b21a21306dcdca1c85e3737
-  DeviceKit: f33cbc6e67d9bb416e42dedc647557c7c2f6d3d7
+  DeviceKit: 2a6cf0d1ec05e2ac7f9b24cdfdb3cb358900a247
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
   FXBlurView: db786c2561cb49a09ae98407f52460096ab8a44f
-  ImageSlideshow: 1bb0e610e28a71e8936d57265d882f61714a470b
-  ISEmojiView: 2ab7c5ad9c58a318cefcf407af374464ccc56f1d
+  ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
+  ISEmojiView: 5b53bdf057ddf484b92e70064a1cc46b5fedf7ea
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
   MercadoPagoSDK: 7341cb870406fa49ea9dd1bfe6c938bb28219fb3
-  MLUI: 4bc30710e102d8348eece6a57f15ca86060f36b2
+  MLUI: f2de892289a9914a21d64fc95bbb1296afe6cf89
   NVActivityIndicatorView: 77ed6d7b571643e24899e7858bf9ae2ee4c21f31
   Parse: d3edaf8c7c722cb33cb83ba7821d015ae32d362d
   ParseLiveQuery: 0ea078a12015d64070d0ae07da32fae3d3198c42
   PopupDialog: d4336d7274a6aa3af4cb26d8b6691510eba90cc3
   PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
-  RSKImageCropper: 356e36fc58c57c371b5d8b23d603936d6a73df6c
+  RSKImageCropper: 98296ad26b41753f796b6898d015509598f13d97
   Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
-  Stripe: c1c4828adf3e078fb08ff56cd93f410c54011c54
+  Stripe: 2c69e216061d54d9c538204bb4f58bd597ddfc5b
   SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
   SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
-  TaskQueue: c1c02deebf2665b8e625fc46dd37a29b1de8056e
+  TaskQueue: 53a3cdaf817d9ce3cd50837ff6610aeb7b968997
   "UITextView+Placeholder": 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473

@@ -95,10 +95,11 @@
         UICollectionViewDelegateFlowLayout,
         UITextFieldDelegate,
         AVAudioRecorderDelegate,
-        ISEmojiViewDelegate,
+        EmojiViewDelegate,
         TimerDelegate,
         MediaDelegate
     {
+        
         
         var activityView: NVActivityIndicatorView!
         
@@ -258,7 +259,7 @@
             return imageView
         }()
         
-        let emojiView = ISEmojiView()
+        let emojiView = EmojiView()
         
         enum RecordStatus {
             case isRecording
@@ -2246,14 +2247,14 @@
             self.setSendToRect()
             
             return true
-        }
+        }        
         
-        func emojiViewDidSelectEmoji(emojiView: ISEmojiView, emoji: String) {
+        func emojiViewDidSelectEmoji(_ emoji: String, emojiView: EmojiView) {
             self.inputTextField.insertText(emoji)
             self.setSendToText()
         }
         
-        func emojiViewDidPressDeleteButton(emojiView: ISEmojiView) {
+        func emojiViewDidPressDeleteButton(emojiView: EmojiView) {
             self.inputTextField.deleteBackward()
             self.setSendToRect()
         }

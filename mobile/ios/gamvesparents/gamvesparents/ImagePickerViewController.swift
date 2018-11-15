@@ -334,8 +334,7 @@ RSKImageCropViewControllerDelegate {
         navigationController?.popViewController(animated: true)
     }
     
-    
-    func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect) {
+    func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
         
         let imageLow = croppedImage.lowestQualityJPEGNSData as Data
         self.smallImage = UIImage(data: imageLow)!

@@ -2221,8 +2221,7 @@ class ProfileViewController: UIViewController,
         navigationController?.popViewController(animated: true)
     }
     
-    
-    func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect) {
+    func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
         
          let imageLow = croppedImage.lowestQualityJPEGNSData as Data
          var smallImage = UIImage(data: imageLow)
