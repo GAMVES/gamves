@@ -23,6 +23,7 @@ class LoginController: UIViewController {
     }()  
 
     let loginBackgroundView: UIView = {
+        
         let view = UIView()        
         view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false

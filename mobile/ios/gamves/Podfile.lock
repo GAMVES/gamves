@@ -1,13 +1,13 @@
 PODS:
   - Alamofire (4.7.3)
-  - Atributika (4.6.5)
-  - AWSCore (2.6.32)
-  - AWSS3 (2.6.32):
-    - AWSCore (= 2.6.32)
+  - Atributika (4.6.7)
+  - AWSCore (2.6.35)
+  - AWSS3 (2.6.35):
+    - AWSCore (= 2.6.35)
   - Bolts-Swift (1.3.0)
   - Bolts/Tasks (1.9.0)
   - CalmParametricAnimations (1.0.1)
-  - DeviceKit (1.9.0)
+  - DeviceKit (1.10.0)
   - DownPicker (0.1.34)
   - DRPLoadingSpinner (1.3.1):
     - DRPLoadingSpinner/core (= 1.3.1)
@@ -15,7 +15,7 @@ PODS:
   - Floaty (4.0.1)
   - IGColorPicker (0.4.2):
     - M13Checkbox (~> 3.2.0)
-  - ISEmojiView (0.1.1)
+  - ISEmojiView (0.1.2)
   - M13Checkbox (3.2.2)
   - NVActivityIndicatorView (4.0.1):
     - NVActivityIndicatorView/Presenter (= 4.0.1)
@@ -110,18 +110,18 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Atributika: f15e4c0003b34d5c6be92080f0ad6fecbe2c5c2f
-  AWSCore: bfb49938a3a4eb190bc68edf1fa9e90969de8fa2
-  AWSS3: 5c2c57693f78ef3930bc6e267a1702182f3ceaa1
+  Atributika: 01164ef4e8a0103c879f7499a7de8902385d8bf9
+  AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
+  AWSS3: 282a590bb47e9cd88de24979fb28954399c41c52
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Bolts-Swift: fa98d1b59fc1acea9b21a21306dcdca1c85e3737
   CalmParametricAnimations: 8747c67d71e07be5e5b3b9d524560d1fbe74be94
-  DeviceKit: a376cb3d0dda0c27c81dcc0d2b7b8600b6802065
+  DeviceKit: 2a6cf0d1ec05e2ac7f9b24cdfdb3cb358900a247
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   DRPLoadingSpinner: 725e530bf4ebe2cc351b1fbc94d24fe8ac3300fd
   Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
   IGColorPicker: c6d43aa386a9fdc8f958f3bd4e5ab85905242c8a
-  ISEmojiView: 427b75423d47563c458c27d81799efd535b2312b
+  ISEmojiView: 5b53bdf057ddf484b92e70064a1cc46b5fedf7ea
   M13Checkbox: a8c2491cfbbca10797925fd0b9154a782bf40d89
   NVActivityIndicatorView: 77ed6d7b571643e24899e7858bf9ae2ee4c21f31
   Parse: d3edaf8c7c722cb33cb83ba7821d015ae32d362d

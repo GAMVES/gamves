@@ -793,22 +793,70 @@ SelectorProtocol {
         } else  {
             
             let upload_date     = json["upload_date"] as? String
-            let view_count      = json["view_count"] as! Double
-            let tags            = json["tags"] as! NSArray
-            let duration        = json["duration"] as! String
-            let categoriesArray = json["categories"] as! NSArray
-            //let like_count      = json["like_count"] as! Int
-        
-            self.thumbnail_url    = (json["thumbnail"] as? String)!
-            videoPF["ytb_source"]   =  self.video_url
-            videoPF["ytb_thumbnail_source"] = self.thumbnail_url
-            videoPF["ytb_videoId"]  = self.videoId
             
-            videoPF["ytb_upload_date"]  = upload_date
-            videoPF["ytb_view_count"]   = view_count
-            videoPF["ytb_tags"]         = tags
-            videoPF["ytb_duration"]     = duration
-            videoPF["ytb_categories"]   = categoriesArray
+            var view_count:Double = 0.0
+            
+            //if json["view_count"] != nil {
+            //    print(json["view_count"])
+            //    view_count  = json["view_count"] as! Double
+            //}
+
+            var tags:NSArray?
+
+            if json["tags"] != nil {
+                tags = json["tags"] as! NSArray
+            }
+            
+            var duration:String?
+
+            if json["duration"] != nil {
+                duration = json["duration"] as! String
+            }
+
+            var categoriesArray:NSArray?
+
+            if json["categories"] != nil {                    
+                categoriesArray = json["categories"] as! NSArray
+            }
+
+            //let like_count      = json["like_count"] as! Int
+
+            if json["thumbnail"] != nil {                            
+                self.thumbnail_url    = (json["thumbnail"] as? String)!
+            }
+
+            if json["ytb_source"] != nil {     
+                videoPF["ytb_source"]   =  self.video_url
+            }               
+
+            if json["ytb_thumbnail_source"] != nil {
+                videoPF["ytb_thumbnail_source"] = self.thumbnail_url
+            }     
+               
+            if json["ytb_upload_date"] != nil {
+                videoPF["ytb_upload_date"]  = upload_date
+            }
+
+            if json["ytb_view_count"] != nil {
+                videoPF["ytb_view_count"]   = view_count
+            }
+
+            if json["ytb_tags"] != nil {
+                videoPF["ytb_tags"]         = tags
+            }
+
+            if json["ytb_duration"] != nil {
+                videoPF["ytb_duration"]     = duration
+            }
+
+            if json["ytb_categories"] != nil {
+                videoPF["ytb_categories"]   = categoriesArray
+            }
+            
+            if json["ytb_videoId"] != nil {
+                videoPF["ytb_videoId"]  = self.videoId
+            }      
+            
             //videoPF["ytb_like_count"]   = like_count
             videoPF["source_type"] = 2
             

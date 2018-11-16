@@ -270,7 +270,8 @@ class ProfileCell: BaseCell,
 
     let pointsView: UIView = {
         let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false             
+        v.translatesAutoresizingMaskIntoConstraints = false    
+        //v.backgroundColor = UIColor.cyan         
         return v
     }()   
 
@@ -288,7 +289,7 @@ class ProfileCell: BaseCell,
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray        
-        label.font = UIFont.systemFont(ofSize: 35)
+        label.font = UIFont.systemFont(ofSize: 30)
         label.text = "0"        
         label.textAlignment = .center        
         return label
@@ -587,7 +588,7 @@ class ProfileCell: BaseCell,
         self.gradeUserPlsView.addConstraintsWithFormat("V:|[v0]|", views: self.gradeUserView)
         self.gradeUserPlsView.addConstraintsWithFormat("V:|[v0]|", views: self.pointsView)
 
-        self.gradeUserPlsView.addConstraintsWithFormat("H:|[v0][v1(50)]|", views: 
+        self.gradeUserPlsView.addConstraintsWithFormat("H:|[v0][v1(100)]|", views: 
             self.gradeUserView, 
             self.pointsView)
 
