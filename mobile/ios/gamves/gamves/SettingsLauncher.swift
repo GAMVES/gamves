@@ -34,6 +34,8 @@ enum SettingName: String
 }
 
 class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     let blackView = UIView()
     
@@ -104,6 +106,7 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
     }
     
     @objc func handleDismiss(_ setting: Setting) {
+
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             self.blackView.alpha = 0
@@ -146,17 +149,41 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
         let setting = self.settings[indexPath.item]
         
         if setting.imageName == "switch_account" {
+
+
+            let title = "Log Out"
+            let message = "Are you sure you want to log out?"
             
-            PFUser.logOutInBackground { (error) in
-                
-                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLogOut), object: self)
-                
-            }
+            var alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
             
-        }
+            alert.addAction(UIAlertAction(title: "Yes log me out", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                
+                PFUser.logOutInBackground { (error) in
+                
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyLogOut), object: self)
+                    
+                }
+                
+            }))
+
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: {(alertAction: UIAlertAction!) in
+                
+                   alert.dismiss(animated: true, completion: nil)
         
+                
+            }))
+            
+            // show the alert            
+            self.appDelegate.window?.rootViewController?.present(alert, animated: true, completion: nil)
+            
+            
+        } 
         
         handleDismiss(setting)
+
+                
+        
+        
     }
     
     override init() {
