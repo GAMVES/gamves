@@ -225,7 +225,7 @@ class GamvesVideo
     var posterId = String()  
     
     var videoObj:PFObject?
-    var thumbnail:PFFile!
+    var thumbnail:PFFileObject!
     var image = UIImage()
 
     var published = Date()

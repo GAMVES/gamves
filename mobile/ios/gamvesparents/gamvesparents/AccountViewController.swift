@@ -353,7 +353,7 @@ class AccountViewController: UIViewController,
                     
                         if prPF["pictureBackground"] != nil {
                             
-                            let backImage = prPF["pictureBackground"] as! PFFile
+                            let backImage = prPF["pictureBackground"] as! PFFileObject
                         
                             backImage.getDataInBackground { (imageData, error) in
                                 

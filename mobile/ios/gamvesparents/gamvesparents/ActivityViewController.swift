@@ -172,7 +172,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
             var chatId = chatFeedObj["chatId"] as! Int
             activity.chatId = chatId
             
-            let picture = chatFeedObj["thumbnail"] as! PFFile
+            let picture = chatFeedObj["thumbnail"] as! PFFileObject
             picture.getDataInBackground(block: { (imageData, error) in
                 
                 if error == nil
@@ -247,7 +247,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
                                 for video in videos
                                 {
                                     
-                                    let thumbnail = video["thumbnail"] as! PFFile
+                                    let thumbnail = video["thumbnail"] as! PFFileObject
                                  
                                     thumbnail.getDataInBackground(block: { (data, error) in
                                         

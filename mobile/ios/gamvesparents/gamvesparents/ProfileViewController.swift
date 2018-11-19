@@ -1823,16 +1823,18 @@ class ProfileViewController: UIViewController,
         //self.you["email"] = your_email
         //self.you.email = your_email
         
-        let yourimage = PFFile(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
+        let yourimage = PFFileObject(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
         self.you.setObject(yourimage!, forKey: "picture")
         
         let yourImgName = "\(reusername)_small"
+        
+        
         
         print("--------------")
         print(yourImgName)
         print("--------------")
         
-        let yourimageSmall = PFFile(name: yourImgName, data: UIImageJPEGRepresentation(self.yourPhotoImageSmall, 1.0)!)
+        let yourimageSmall = PFFileObject(name: yourImgName, data: UIImageJPEGRepresentation(self.yourPhotoImageSmall, 1.0)!)
         self.you.setObject(yourimageSmall!, forKey: "pictureSmall")
         
         let profileRelation = self.you.relation(forKey: "profile")
@@ -1917,12 +1919,12 @@ class ProfileViewController: UIViewController,
         
         let imageFamily = self.loadImageFromDisc(imageName: Global.familyImageName)
 
-        let pfimage = PFFile(name: "family", data: UIImageJPEGRepresentation(imageFamily, 1.0)!)
+        let pfimage = PFFileObject(name: "family", data: UIImageJPEGRepresentation(imageFamily, 1.0)!)
         family.setObject(pfimage!, forKey: "picture")
 
         let imageFamilySmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
         
-        let pfimageSmall = PFFile(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall, 1.0)!)
+        let pfimageSmall = PFFileObject(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall, 1.0)!)
         family.setObject(pfimageSmall!, forKey: "pictureSmall")
 
         let skeys = Array(Global.schools.keys)

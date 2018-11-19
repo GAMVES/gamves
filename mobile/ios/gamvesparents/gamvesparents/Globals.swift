@@ -219,7 +219,7 @@ class Global: NSObject
             if user["pictureSmall"] != nil
             {
                 
-                let picture = user["pictureSmall"] as! PFFile
+                let picture = user["pictureSmall"] as! PFFileObject
                 
                      self.getImage(gamvesUser: gamvesUser, file:picture, completionHandler: { ( userGamves, image ) -> () in
                 
@@ -356,7 +356,7 @@ class Global: NSObject
 
     }
     
-    static func getImage(gamvesUser: GamvesUser, file:PFFile, completionHandler : @escaping (_ user:GamvesUser, _ image:UIImage) -> Void)
+    static func getImage(gamvesUser: GamvesUser, file:PFFileObject, completionHandler : @escaping (_ user:GamvesUser, _ image:UIImage) -> Void)
     {
         
         print(gamvesUser.name)
@@ -830,7 +830,7 @@ class Global: NSObject
                         self.gamvesFamily.spouseRegisterChatId = family["spouseRegisterChatId"] as! Int
                         self.gamvesFamily.objectId = family.objectId!                
                         
-                        let picture = family["picture"] as! PFFile
+                        let picture = family["picture"] as! PFFileObject
                         
                         picture.getDataInBackground(block: { (data, error) in
                             
@@ -1045,7 +1045,7 @@ class Global: NSObject
                                             
                                         } else {
                                             
-                                            let thumImage = videoObject?["thumbnail"] as! PFFile
+                                            let thumImage = videoObject?["thumbnail"] as! PFFileObject
                                             let videoId = videoObject?["videoId"] as! Int
                                             thumImage.getDataInBackground(block: { (data, error) in
                                                 
@@ -1096,7 +1096,7 @@ class Global: NSObject
                                             
                                             if let fanpagePF = fanpageObject {
                                             
-                                                let icon = fanpagePF["pageIcon"] as! PFFile
+                                                let icon = fanpagePF["pageIcon"] as! PFFileObject
                                             
                                                 let fanpageId = fanpagePF["fanpageId"] as! Int
                                             
@@ -1439,7 +1439,7 @@ class Global: NSObject
         
         fanpageGamves.fanpageId = fanpageId
         
-        let cover = fanpage["pageCover"] as! PFFile
+        let cover = fanpage["pageCover"] as! PFFileObject
         
         cover.getDataInBackground { (data, error) in
             
@@ -1449,7 +1449,7 @@ class Global: NSObject
                 
                 fanpageGamves.cover_image = image_cover!
                 
-                let avatar = fanpage["pageIcon"] as! PFFile
+                let avatar = fanpage["pageIcon"] as! PFFileObject
                 
                 avatar.getDataInBackground(block: { (data, error) in
                     
@@ -1482,7 +1482,7 @@ class Global: NSObject
                                     
                                     for album in albumsPF {
                                         
-                                        let cover = album["cover"] as! PFFile
+                                        let cover = album["cover"] as! PFFileObject
                                         
                                         cover.getDataInBackground(block: { (data, error) in
                                             
@@ -1556,7 +1556,7 @@ class Global: NSObject
         videoGamves.posterId = videoPF["posterId"] as! String    
         videoGamves.videoObj = videoPF
 
-        videoGamves.thumbnail = videoPF["thumbnail"] as! PFFile
+        videoGamves.thumbnail = videoPF["thumbnail"] as! PFFileObject
 
         videoGamves.published  = videoPF.createdAt as! Date
         
@@ -1686,7 +1686,7 @@ class Global: NSObject
                         gSchool.schoolOBj = school as PFObject
                         gSchool.short = short
 
-                        let thumnail = school["thumbnail"] as! PFFile
+                        let thumnail = school["thumbnail"] as! PFFileObject
                         
                         thumnail.getDataInBackground(block: { (data, error) in
                                             

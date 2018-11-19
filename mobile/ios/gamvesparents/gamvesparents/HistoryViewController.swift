@@ -123,7 +123,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
                                     
                                     for video in videoObjs! {
                                         
-                                        let thumbnail = video["thumbnail"] as! PFFile
+                                        let thumbnail = video["thumbnail"] as! PFFileObject
                                         
                                         thumbnail.getDataInBackground(block: { (data, error) in
                                             

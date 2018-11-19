@@ -114,9 +114,9 @@ PODS:
   - NVActivityIndicatorView (4.0.1):
     - NVActivityIndicatorView/Presenter (= 4.0.1)
   - NVActivityIndicatorView/Presenter (4.0.1)
-  - Parse (1.17.1):
-    - Parse/Core (= 1.17.1)
-  - Parse/Core (1.17.1):
+  - Parse (1.17.2):
+    - Parse/Core (= 1.17.2)
+  - Parse/Core (1.17.2):
     - Bolts/Tasks (~> 1.9)
   - ParseLiveQuery (2.4.0):
     - Bolts-Swift (~> 1.3.0)
@@ -126,7 +126,7 @@ PODS:
   - PulsingHalo (0.2.8)
   - RSKImageCropper (2.2.1)
   - Starscream (3.0.6)
-  - Stripe (13.2.0)
+  - Stripe (14.0.0)
   - SwiftValidator (4.0.0)
   - SwiftyJSON (4.2.0)
   - TaskQueue (1.1.1)
@@ -222,13 +222,13 @@ SPEC CHECKSUMS:
   MercadoPagoSDK: 7341cb870406fa49ea9dd1bfe6c938bb28219fb3
   MLUI: f2de892289a9914a21d64fc95bbb1296afe6cf89
   NVActivityIndicatorView: 77ed6d7b571643e24899e7858bf9ae2ee4c21f31
-  Parse: d3edaf8c7c722cb33cb83ba7821d015ae32d362d
+  Parse: 3b31a3dd1777b07ee7f0caee32fafbff544483a5
   ParseLiveQuery: 0ea078a12015d64070d0ae07da32fae3d3198c42
   PopupDialog: d4336d7274a6aa3af4cb26d8b6691510eba90cc3
   PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
   RSKImageCropper: 98296ad26b41753f796b6898d015509598f13d97
   Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
-  Stripe: 2c69e216061d54d9c538204bb4f58bd597ddfc5b
+  Stripe: db29ad197c74aca6fb981e4e8355cf7ebd0fca5a
   SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
   SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
   TaskQueue: 53a3cdaf817d9ce3cd50837ff6610aeb7b968997

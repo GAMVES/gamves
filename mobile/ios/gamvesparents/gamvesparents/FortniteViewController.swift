@@ -238,8 +238,7 @@ class FortniteViewController: UIViewController
         title = "Fortnite" //"Registration completed. Please add Fortnite user name and password"
         message = "Provide your son/daughter Fortnite username and password"
         buttonTitle = "  Select child Image"
-        imageName = "son_photo"
-        
+        imageName = "son_photo"        
 
         self.titleLabel.text = title
         self.pictureImageView.image = UIImage(named: "fortnite")

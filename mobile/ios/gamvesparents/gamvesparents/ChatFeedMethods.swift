@@ -167,7 +167,7 @@ class ChatFeedMethods: NSObject {
             let type = chatFeedObj["type"] as! Int
             chatfeed.type = type
             
-            let picture = chatFeedObj["thumbnail"] as! PFFile
+            let picture = chatFeedObj["thumbnail"] as! PFFileObject
             picture.getDataInBackground(block: { (imageData, error) in
                 
                 if error == nil
@@ -258,7 +258,7 @@ class ChatFeedMethods: NSObject {
                                 for video in videos
                                 {
                                     
-                                    let thumbnail = video["thumbnail"] as! PFFile
+                                    let thumbnail = video["thumbnail"] as! PFFileObject
                                  
                                     thumbnail.getDataInBackground(block: { (data, error) in
                                         

@@ -156,7 +156,7 @@ class TutorialVideoViewController: UIViewController, UICollectionViewDataSource,
                         
                             for videoPF in videosPF! {                                
 
-                                let thumImage = videoPF["thumbnail"] as! PFFile
+                                let thumImage = videoPF["thumbnail"] as! PFFileObject
                                 let videoId = videoPF["videoId"] as! Int
                                 
                                 thumImage.getDataInBackground(block: { (data, error) in

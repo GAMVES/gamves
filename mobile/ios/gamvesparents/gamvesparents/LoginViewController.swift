@@ -772,7 +772,7 @@ class LoginViewController: UIViewController
         
         let backImage = UIImage(named: "universe")
         
-        var backimagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage!, 1.0)!)
+        var backimagePF = PFFileObject(name: "background.png", data: UIImageJPEGRepresentation(backImage!, 1.0)!)
         profilePF.setObject(backimagePF, forKey: "pictureBackground")
         
         if let userId = PFUser.current()?.objectId {

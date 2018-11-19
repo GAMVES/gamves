@@ -40,7 +40,7 @@ class ChatMethods: NSObject
 
         chatFeed["time"] = "\(strMinutes):\(strSeconds)"
 
-        let groupImageFile:PFFile!
+        let groupImageFile:PFFileObject!
 
         if gamvesUsers.count > 2
         {
@@ -56,7 +56,7 @@ class ChatMethods: NSObject
                 
             }
             
-            groupImageFile = PFFile(data: UIImageJPEGRepresentation(imageGroup, 1.0)!)
+            groupImageFile = PFFileObject(data: UIImageJPEGRepresentation(imageGroup, 1.0)!)
             
             var array = [String]()
             
@@ -74,7 +74,7 @@ class ChatMethods: NSObject
         } else
         {
     
-            groupImageFile = PFFile(data: UIImageJPEGRepresentation(gamvesUsers[1].avatar, 1.0)!)          
+            groupImageFile = PFFileObject(data: UIImageJPEGRepresentation(gamvesUsers[1].avatar, 1.0)!)          
             
             let member = String(describing: [gamvesUsers[1].userId, gamvesUsers[0].userId])
             chatFeed["members"] = member
