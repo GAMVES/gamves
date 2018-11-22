@@ -1093,7 +1093,7 @@ class ProfileCell: BaseCell,
                     
                     if self.profilePF["pictureBackground"] != nil {
                 
-                        let backImage = self.profilePF["pictureBackground"] as! PFFile
+                        let backImage = self.profilePF["pictureBackground"] as! PFFileObject
                         
                         let colorArray:[CGFloat] = self.profilePF["backgroundColor"] as! [CGFloat]
                         let backgroundColor = UIColor.rgb(colorArray[0], green: colorArray[1], blue: colorArray[2])
@@ -1442,7 +1442,7 @@ class ProfileCell: BaseCell,
             self.activityIndicatorView?.startAnimating()
             
             let backImage:UIImage = self.selectedBackImage
-            let backImagePF = PFFile(name: "background.png", data: UIImageJPEGRepresentation(backImage, 1.0)!)            
+            let backImagePF = PFFileObject(name: "background.png", data: UIImageJPEGRepresentation(backImage, 1.0)!)
             self.profilePF["pictureBackground"] = backImagePF            
             self.profilePF["bio"] = self.bioLabel.text
 
@@ -1471,11 +1471,11 @@ class ProfileCell: BaseCell,
                     let sonUser:PFUser = PFUser.current()!
                     let userId = PFUser.current()?.objectId                    
                     let firstName = Global.gamvesFamily.getFamilyUserById(userId: userId!)?.name                    
-                    let sonImagePF = PFFile(name: "\(firstName)picture.png", data: UIImageJPEGRepresentation(self.sonProfileImageView.image!, 1.0)!)
+                    let sonImagePF = PFFileObject(name: "\(firstName)picture.png", data: UIImageJPEGRepresentation(self.sonProfileImageView.image!, 1.0)!)
                     sonUser.setObject(sonImagePF!, forKey: "picture")
                     let sonImageLow = self.sonProfileImageView.image?.lowestQualityJPEGNSData as! Data
                     var sonSmallImage = UIImage(data: sonImageLow)
-                    let sonImageSmallPF = PFFile(name: "\(firstName)pictureSmall.png", data: UIImageJPEGRepresentation(sonSmallImage!, 1.0)!)
+                    let sonImageSmallPF = PFFileObject(name: "\(firstName)pictureSmall.png", data: UIImageJPEGRepresentation(sonSmallImage!, 1.0)!)
                     sonUser.setObject(sonImageSmallPF!, forKey: "pictureSmall")               
 
                     sonUser.saveInBackground(block: { (user, error) in
@@ -1796,7 +1796,7 @@ class ProfileCell: BaseCell,
                             
                             let video = GamvesVideo()
                             
-                            var videothum = qvideoinfo["thumbnail"] as! PFFile
+                            var videothum = qvideoinfo["thumbnail"] as! PFFileObject
                             
                             video.title                     = qvideoinfo["title"] as! String
                             video.description               = qvideoinfo["description"] as! String

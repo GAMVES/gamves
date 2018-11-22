@@ -168,7 +168,7 @@ class ChatFeedMethods: NSObject {
             var chatId = chatFeedObj["chatId"] as! Int
             chatfeed.chatId = chatId
             
-            let picture = chatFeedObj["thumbnail"] as! PFFile
+            let picture = chatFeedObj["thumbnail"] as! PFFileObject
             
             picture.getDataInBackground(block: { (imageData, error) in
                 

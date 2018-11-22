@@ -540,9 +540,9 @@ UICollectionViewDelegateFlowLayout {
 
                         notification.type = type!
 
-                        let cover   = notificationPF["cover"] as! PFFile
+                        let cover   = notificationPF["cover"] as! PFFileObject
 
-                        let avatar = notificationPF["posterAvatar"] as! PFFile
+                        let avatar = notificationPF["posterAvatar"] as! PFFileObject
 
                         avatar.getDataInBackground(block: { (imageAvatar, error) in
                 

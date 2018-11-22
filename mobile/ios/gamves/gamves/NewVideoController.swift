@@ -778,7 +778,7 @@ SelectorProtocol {
         
             let filename = "\(Global.generateFileName()).png"
         
-            let thumbnail = PFFile(name: filename, data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
+            let thumbnail = PFFileObject(name: filename, data: UIImageJPEGRepresentation(self.videoSelThumbnail, 1.0)!)
     
             videoPF.setObject(thumbnail!, forKey: "thumbnail")
             

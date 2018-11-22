@@ -81,7 +81,7 @@ class Downloader: NSObject
 
                                 album.type = type
                                 
-                                let coverFile = fanpageAlbum["cover"] as! PFFile
+                                let coverFile = fanpageAlbum["cover"] as! PFFileObject
                                 
                                 album.source = coverFile.url!
                                 

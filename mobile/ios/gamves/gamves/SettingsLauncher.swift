@@ -27,10 +27,11 @@ enum SettingName: String
     
     case Cancel             = "Cancel & Dismiss Completely"
     case History            = "History"
-    case Feedback           = "Send Feedback"
+    case ReportBug          = "Report a bug"
     case Settings           = "Settings"
     case SwitchAccount      = "Log out"
     case Likes              = "Likes"
+    case BugList            = "Bug list"
 }
 
 class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -51,23 +52,21 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
     
     let settings: [Setting] =
     {
-
-        //let notificationSetting = Setting(name: .Notifications, imageName: "notifications")
-        //let laterSetting = Setting(name: .WatchLater, imageName: "watch_later")
-        //let likeSetting = Setting(name: .Likes, imageName: "like")
         
-        let likesSetting = Setting(name: .Likes, imageName: "like_gray")
-        let historySetting = Setting(name: .History, imageName: "history")
-        let feedbackSetting = Setting(name: .Feedback, imageName: "feedback")
-        let settingsSetting = Setting(name: .Settings, imageName: "settings")
+        //let likesSetting = Setting(name: .Likes, imageName: "like_gray")
+        //let historySetting = Setting(name: .History, imageName: "history")
+        let reportBugSetting = Setting(name: .ReportBug, imageName: "report_bug")
+        //let settingsSetting = Setting(name: .Settings, imageName: "settings")
+        let bugListSetting = Setting(name: .BugList, imageName: "list")
         let logoutSetting = Setting(name: .SwitchAccount, imageName: "switch_account")
         let cancelSetting = Setting(name: .Cancel, imageName: "cancel")
+
         
         return [ 
-                 likesSetting,
-                 historySetting,
-                 feedbackSetting,
-                 settingsSetting,
+                 //likesSetting,
+                 //historySetting,
+                 reportBugSetting,
+                 //settingsSetting,
                  logoutSetting,
                  cancelSetting ]
 
@@ -116,8 +115,24 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
             }
             
         }) { (completed: Bool) in
+            
             if setting.name != .Cancel {
-                self.homeController?.showControllerForSetting(setting)
+
+                if setting.imageName == "report_bug" { 
+
+
+                    let screenShoot = Global.captureScreenshot()
+                    
+                    self.homeController?.showReportBugControllerForSetting(setting,image: screenShoot)
+
+
+                } else {
+
+                    self.homeController?.showControllerForSetting(setting)
+                
+                }
+
+                
             }
         }
     }
@@ -175,13 +190,15 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
             
             // show the alert            
             self.appDelegate.window?.rootViewController?.present(alert, animated: true, completion: nil)
-            
-            
-        } 
-        
-        handleDismiss(setting)
 
-                
+       } else if setting.imageName == "list" {
+
+
+            self.homeController?.showBugList()
+
+       }
+        
+        handleDismiss(setting)                
         
         
     }

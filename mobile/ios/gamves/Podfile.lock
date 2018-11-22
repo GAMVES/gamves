@@ -20,9 +20,9 @@ PODS:
   - NVActivityIndicatorView (4.0.1):
     - NVActivityIndicatorView/Presenter (= 4.0.1)
   - NVActivityIndicatorView/Presenter (4.0.1)
-  - Parse (1.17.1):
-    - Parse/Core (= 1.17.1)
-  - Parse/Core (1.17.1):
+  - Parse (1.17.2):
+    - Parse/Core (= 1.17.2)
+  - Parse/Core (1.17.2):
     - Bolts/Tasks (~> 1.9)
   - ParseLiveQuery (2.4.0):
     - Bolts-Swift (~> 1.3.0)
@@ -124,7 +124,7 @@ SPEC CHECKSUMS:
   ISEmojiView: 5b53bdf057ddf484b92e70064a1cc46b5fedf7ea
   M13Checkbox: a8c2491cfbbca10797925fd0b9154a782bf40d89
   NVActivityIndicatorView: 77ed6d7b571643e24899e7858bf9ae2ee4c21f31
-  Parse: d3edaf8c7c722cb33cb83ba7821d015ae32d362d
+  Parse: 3b31a3dd1777b07ee7f0caee32fafbff544483a5
   ParseLiveQuery: 0ea078a12015d64070d0ae07da32fae3d3198c42
   PopupDialog: d4336d7274a6aa3af4cb26d8b6691510eba90cc3
   PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b

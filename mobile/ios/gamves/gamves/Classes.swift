@@ -9,6 +9,15 @@ import Foundation
 import UIKit
 import Parse
 
+class GamvesBug
+{
+    var objectId = String()       
+    var objectPF:PFObject!   
+
+    var description = String()
+    var screenshot:UIImage?      
+}
+
 class GamvesWelcome {
 
     var objectId = String()       
@@ -178,7 +187,7 @@ class GamvesVideo {
     var description = String()
     var videoId = Int()
     var categoryName = String()
-    var thumbnail:PFFile?
+    var thumbnail:PFFileObject?
     var s3_source = String()        
     var ytb_thumbnail_source = String()
     var ytb_videoId = String()

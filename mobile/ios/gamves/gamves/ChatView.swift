@@ -19,8 +19,8 @@
     class GamvesPicture
     {
         var pictureObj:PFObject!
-        var picture:PFFile!
-        var pictureSmall:PFFile!
+        var picture:PFFileObject!
+        var pictureSmall:PFFileObject!
         var chatId = Int()
         var image = UIImage()
         var imageSmall = UIImage()
@@ -589,7 +589,7 @@
                                                     if !isQuened
                                                     {
                                                         
-                                                        let picture = user["pictureSmall"] as! PFFile
+                                                        let picture = user["pictureSmall"] as! PFFileObject
                                                         
                                                         picture.getDataInBackground(block: { (data, error) in
                                                             
@@ -883,9 +883,9 @@
                         picture.pictureObj = picturePF
                         picture.chatId = picturePF["chatId"] as! Int
                         
-                        let image = picturePF["picture"] as! PFFile
+                        let image = picturePF["picture"] as! PFFileObject
                         
-                        let imageSmall = picturePF["pictureSmall"] as! PFFile
+                        let imageSmall = picturePF["pictureSmall"] as! PFFileObject
                         
                         picture.picture = image
                         
@@ -1533,13 +1533,13 @@
             
             picturePF["chatId"] = self.chatId
             
-            let picture = PFFile(name: "picture.png", data: UIImageJPEGRepresentation(image, 1.0)!)
+            let picture = PFFileObject(name: "picture.png", data: UIImageJPEGRepresentation(image, 1.0)!)
             picturePF.setObject(picture!, forKey: "picture")
             
             let dataLow = image.lowestQualityJPEGNSData as Data
             var imageSmall = UIImage(data: dataLow)
             
-            let pictureSmall = PFFile(name: "pictureSmall.png", data: UIImageJPEGRepresentation(image, 1.0)!)
+            let pictureSmall = PFFileObject(name: "pictureSmall.png", data: UIImageJPEGRepresentation(image, 1.0)!)
             picturePF.setObject(pictureSmall!, forKey: "pictureSmall")
             
             if let userId = PFUser.current()?.objectId {
@@ -1979,11 +1979,11 @@
             
             chatFeed["time"] = "\(strMinutes):\(strSeconds)"
             
-            let groupImageFile:PFFile!
+            let groupImageFile:PFFileObject!
             
             if isVideoChat
             {
-                groupImageFile = PFFile(data: UIImageJPEGRepresentation(self.thumbnailImage, 1.0)!)
+                groupImageFile = PFFileObject(data: UIImageJPEGRepresentation(self.thumbnailImage, 1.0)!)
                 
                 let queryVideo = PFQuery(className:"Videos")
                 
@@ -2019,7 +2019,7 @@
                 if self.gamvesUsers.count > 1 {
                     
                     let imageGroup = UIImage(named: "community")
-                    groupImageFile = PFFile(data: UIImageJPEGRepresentation(imageGroup!, 1.0)!)
+                    groupImageFile = PFFileObject(data: UIImageJPEGRepresentation(imageGroup!, 1.0)!)
                     
                     var array = [String]()
                     
@@ -2035,7 +2035,7 @@
                     
                 } else {
                     
-                    groupImageFile = PFFile(data: UIImageJPEGRepresentation(self.gamvesUsers[0].avatar, 1.0)!)
+                    groupImageFile = PFFileObject(data: UIImageJPEGRepresentation(self.gamvesUsers[0].avatar, 1.0)!)
                     
                     print(PFUser.current())
                     
@@ -2058,7 +2058,7 @@
             }
         }
         
-        func saveChatFeed(file:PFFile, completionHandlerSave : @escaping (_ resutl:Bool) -> ()) {
+        func saveChatFeed(file:PFFileObject, completionHandlerSave : @escaping (_ resutl:Bool) -> ()) {
             
             if let objectId = PFUser.current()?.objectId {
                 

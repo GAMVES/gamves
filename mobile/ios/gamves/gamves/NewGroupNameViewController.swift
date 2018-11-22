@@ -201,7 +201,7 @@ class NewGroupNameViewController: UIViewController,
         
         self.chatFeed["room"] = self.userTextField.text
         
-        let groupImageFile:PFFile!
+        let groupImageFile:PFFileObject!
     
         var imageGroup = UIImage()
         
@@ -213,7 +213,7 @@ class NewGroupNameViewController: UIViewController,
             imageGroup = self.cameraContainerView.image!
         }
         
-        groupImageFile = PFFile(data: UIImageJPEGRepresentation(imageGroup, 1.0)!)
+        groupImageFile = PFFileObject(data: UIImageJPEGRepresentation(imageGroup, 1.0)!)
         
         for user in self.gamvesUsers
         {

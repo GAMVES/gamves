@@ -232,7 +232,7 @@ class Global: NSObject
             if user["pictureSmall"] != nil
             {
                 
-                let picture = user["pictureSmall"] as! PFFile
+                let picture = user["pictureSmall"] as! PFFileObject
                 
                 picture.getDataInBackground(block: { (data, error) in
                     
@@ -371,7 +371,7 @@ class Global: NSObject
                         gSchool.schoolName = schoolName
                         gSchool.schoolOBj = school as PFObject                  
 
-                        let thumnail = school["thumbnail"] as! PFFile
+                        let thumnail = school["thumbnail"] as! PFFileObject
                         
                         thumnail.getDataInBackground(block: { (data_thumbnail, error) in
                                             
@@ -381,7 +381,7 @@ class Global: NSObject
 
                                 gSchool.thumbnail = thumb_school 
 
-                                let icon = school["iso"] as! PFFile
+                                let icon = school["iso"] as! PFFileObject
                             
                                 icon.getDataInBackground(block: { (data_icon, error) in
 
@@ -1450,7 +1450,7 @@ class Global: NSObject
                     
                     self.gamvesFamily.objectId = family.objectId!
                     
-                    let picture = family["picture"] as! PFFile
+                    let picture = family["picture"] as! PFFileObject
                     
                     picture.getDataInBackground(block: { (data, error) in
                         
@@ -1635,7 +1635,7 @@ class Global: NSObject
         video.title                     = videoPF["title"] as! String
         video.description               = videoPF["description"] as! String
 
-        var videothum = videoPF["thumbnail"] as! PFFile
+        var videothum = videoPF["thumbnail"] as! PFFileObject
 
         video.thumbnail                 = videothum
         video.categoryName              = videoPF["categoryName"] as! String
@@ -1798,6 +1798,20 @@ class Global: NSObject
 
         return newImage!
     }
+
+
+    static func captureScreenshot()  -> UIImage {     
+        
+        let layer = UIApplication.shared.keyWindow!.layer
+        let scale = UIScreen.main.scale
+        
+        UIGraphicsBeginImageContextWithOptions(layer.frame.size, false, scale);
+        layer.render(in: UIGraphicsGetCurrentContext()!)
+        
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        
+        return image!
+    } 
 
     
 

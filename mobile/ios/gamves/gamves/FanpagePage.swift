@@ -536,7 +536,7 @@ class FanpagePage: UIViewController,
                         {
                             let video = GamvesVideo()
                             
-                            var videothum = qvideoinfo["thumbnail"] as! PFFile
+                            var videothum = qvideoinfo["thumbnail"] as! PFFileObject
                             
                             video.authorized                = qvideoinfo["authorized"] as! Bool
 

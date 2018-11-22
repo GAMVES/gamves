@@ -1108,7 +1108,7 @@ ChooseAvatarProtocol
 
                         let filename = "\(md5Data).png"
                         
-                        let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
+                        let imageFile = PFFileObject(name: filename, data: UIImageJPEGRepresentation(image, 1.0)!)
                         
                         albumPF["cover"] = imageFile
                         albumPF["imageId"] = md5Data
@@ -1140,13 +1140,13 @@ ChooseAvatarProtocol
                     
                     let filenameIcon = "icon.png"
                     
-                    let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.selectedIconImage, 1.0)!)
+                    let iconImageFile = PFFileObject(name: filenameIcon, data: UIImageJPEGRepresentation(self.selectedIconImage, 1.0)!)
                     
                     fanpagePF.setObject(iconImageFile, forKey: "pageIcon")
                     
                     let coverIcon = "cover.png"
                     
-                    let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.selectedCoverImage, 1.0)!)
+                    let coverImageFile = PFFileObject(name: coverIcon, data: UIImageJPEGRepresentation(self.selectedCoverImage, 1.0)!)
                 
                     fanpagePF.setObject(coverImageFile, forKey: "pageCover")
                     
@@ -1274,13 +1274,13 @@ ChooseAvatarProtocol
 
         let coverIcon = "cover.png"
                     
-        let coverImageFile = PFFile(name: coverIcon, data: UIImageJPEGRepresentation(self.backgroundCoverImage.image!, 1.0)!)
+        let coverImageFile = PFFileObject(name: coverIcon, data: UIImageJPEGRepresentation(self.backgroundCoverImage.image!, 1.0)!)
     
         fanPF?.setObject(coverImageFile, forKey: "pageCover")
 
         let filenameIcon = "icon.png"
                     
-        let iconImageFile = PFFile(name: filenameIcon, data: UIImageJPEGRepresentation(self.chooseAvatarView.backgroundIconImage.image!, 1.0)!)
+        let iconImageFile = PFFileObject(name: filenameIcon, data: UIImageJPEGRepresentation(self.chooseAvatarView.backgroundIconImage.image!, 1.0)!)
                     
         fanPF?.setObject(iconImageFile, forKey: "pageIcon")
       
@@ -1320,7 +1320,7 @@ ChooseAvatarProtocol
                             
                 let filename = "\(Global.generateFileName()).png"
                 
-                let imageFile = PFFile(name: filename, data: UIImageJPEGRepresentation(aImage, 1.0)!)
+                let imageFile = PFFileObject(name: filename, data: UIImageJPEGRepresentation(aImage, 1.0)!)
                 
                 albumPF["cover"] = imageFile
                 

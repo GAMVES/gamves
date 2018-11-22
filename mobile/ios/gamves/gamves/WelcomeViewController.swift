@@ -166,7 +166,7 @@ UICollectionViewDelegateFlowLayout {
                             welcome.description = welcomePF["description"] as! String
                             welcome.title = welcomePF["title"] as! String
 
-                            let thumbnail = welcomePF["thumbnail"] as! PFFile
+                            let thumbnail = welcomePF["thumbnail"] as! PFFileObject
 
                             thumbnail.getDataInBackground(block: { (imageThumbnail, error) in
 

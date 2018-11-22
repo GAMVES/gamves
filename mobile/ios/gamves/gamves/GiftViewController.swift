@@ -355,7 +355,7 @@ UICollectionViewDelegateFlowLayout   {
 								gift.isChecked = false
                         	}
 
-                        	let thumbnail = giftPF["thumbnail"] as! PFFile
+                        	let thumbnail = giftPF["thumbnail"] as! PFFileObject
 
 	                        thumbnail.getDataInBackground(block: { (imageThumbnail, error) in
 	                

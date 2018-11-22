@@ -122,7 +122,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
                         gamvesUser.isSender = true
                     }
                     
-                    let picture = user["pictureSmall"] as! PFFile
+                    let picture = user["pictureSmall"] as! PFFileObject
                     picture.getDataInBackground(block: { (data, error) in
                         
                         let image = UIImage(data: data!)

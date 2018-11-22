@@ -285,7 +285,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                         
                         let name = pcategory["name"] as! String
                         
-                        let thumbnail = pcategory["thumbnail"] as! PFFile
+                        let thumbnail = pcategory["thumbnail"] as! PFFileObject
                         
                         var count_urls = 0
                         
@@ -301,7 +301,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                     cat.thum_image = image!
                                     
                                     print(name)
-                                    let backImage = pcategory["backImage"] as! PFFile
+                                    let backImage = pcategory["backImage"] as! PFFileObject
                                     
                                     print(backImage)
                                     
@@ -422,9 +422,9 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                 fan.categoryName = fpObj["categoryName"] as! String
                                 
                                 let fanpageId = fpObj["fanpageId"] as! Int
-                                let cover = fpObj["pageCover"] as! PFFile
+                                let cover = fpObj["pageCover"] as! PFFileObject
                                 let name  = fpObj["pageName"] as! String
-                                let icon  = fpObj["pageIcon"] as! PFFile
+                                let icon  = fpObj["pageIcon"] as! PFFileObject
                                 let about  = fpObj["pageAbout"] as! String
                                 
                                 
