@@ -14,6 +14,8 @@ UICollectionViewDataSource,
 UICollectionViewDelegate,
 UICollectionViewDelegateFlowLayout {
 
+    var homeController: HomeController?
+
     var gamvesBugs = [GamvesBug]()
 
     let infoView: UIView = {
@@ -64,13 +66,13 @@ UICollectionViewDelegateFlowLayout {
         self.infoView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: self.info)
         self.infoView.addConstraintsWithFormat("V:|[v0]|", views: self.info)
 
-        let buttonIcon = UIImage(named: "arrow_back_white")        
+        /*let buttonIcon = UIImage(named: "arrow_back_white")        
        
         
         let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
         
         leftBarButton.image = buttonIcon        
-        self.navigationItem.leftBarButtonItem = leftBarButton  
+        self.navigationItem.leftBarButtonItem = leftBarButton  */
 
         self.collectionView.register(BugsViewCell.self, forCellWithReuseIdentifier: self.cellId)
         self.collectionView.register(BugsSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
@@ -110,6 +112,8 @@ UICollectionViewDelegateFlowLayout {
                     bug.objectPF = bugPF
 
                     bug.description = bugPF["description"] as! String
+
+                    bug.approved = bugPF["approved"] as! Int                    
 
                     let screenshot = bugPF["screenshot"] as! PFFileObject
                             
@@ -166,14 +170,15 @@ UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
-    {        
+    {
+        print(self.gamvesBugs.count)
         return self.gamvesBugs.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! BugsViewCell
+        /*let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! BugsViewCell
         
         let bug = self.gamvesBugs[indexPath.item]
         
@@ -186,8 +191,46 @@ UICollectionViewDelegateFlowLayout {
         
         cell.iconImageView.image = bug.screenshot
         
-        Global.setRoundedImage(image: cell.iconImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.lightGray)
+        Global.setRoundedImage(image: cell.iconImageView, cornerRadius: 40, boderWidth: 2, boderColor: UIColor.lightGray)*/
+
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! BugsViewCell
         
+        let bug = self.gamvesBugs[indexPath.item]
+
+        cell.nameLabel.text = bug.description
+        
+        print(bug.approved)
+        
+        if bug.approved == 0 || bug.approved == 2 || bug.approved == -1 { // NOT
+            
+            if bug.approved == -1 {
+                
+                cell.statusLabel.text = "REJECTED"
+
+                cell.setCheckLabel(color: UIColor.red, symbol: "-")
+                
+                //(color: UIColor.red, symbol: "-" )
+                
+            } else  {
+                
+               cell.statusLabel.text = "NOT APPROVED"
+
+               cell.setCheckLabel(color: UIColor.gamvesYellowColor, symbol: "+" )
+            }
+            
+            cell.checkLabel.isHidden = false
+            
+        } else if bug.approved == 1 { //APPROVED
+        
+            cell.statusLabel.text = "APPROVED"
+            cell.checkLabel.isHidden = true
+
+            cell.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: "✓" )
+        }
+        
+       
+        cell.profileImageView.image = bug.screenshot
+
         return cell
     }
     
@@ -197,6 +240,11 @@ UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        let bug = self.gamvesBugs[indexPath.item]
+
+        self.homeController?.showBugViewControllerForSetting(nil, image: nil, bug: bug)
+            
 
         /*let vendor = self.gamvesBugs[indexPath.item]
 

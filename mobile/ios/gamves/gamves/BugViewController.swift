@@ -131,13 +131,13 @@ class BugViewController: UIViewController {
         self.view.addSubview(bottomView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: bottomView)
 
-        self.view.addSubview(listView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: listView)
+        //self.view.addSubview(listView)
+        //self.view.addConstraintsWithFormat("H:|[v0]|", views: listView)
        
-        self.view.addConstraintsWithFormat("V:|-20-[v0(200)]-10-[v1(60)]-10-[v2(60)][v3]|", views:             
+        self.view.addConstraintsWithFormat("V:|-20-[v0(200)]-10-[v1(60)][v2]|", views:             
             photoContainerView,
             buttonsView,
-            listView,
+            //listView,
             bottomView)
 
         self.photoContainerView.addSubview(self.pictureImageView)
@@ -160,13 +160,12 @@ class BugViewController: UIViewController {
             self.saveButton,
             self.cancelButton)      
 
-        self.listView.addSubview(listButton)
-        self.listView.addConstraintsWithFormat("H:|-20-[v0]-10-|", views: listButton) 
-        self.listView.addConstraintsWithFormat("V:|[v0]|", views: listButton)  
+        //self.listView.addSubview(listButton)
+        //self.listView.addConstraintsWithFormat("H:|-20-[v0]-10-|", views: listButton) 
+        //self.listView.addConstraintsWithFormat("V:|[v0]|", views: listButton)  
 
         self.saveButton.setTitle("  SAVE", for: .normal)
-        self.listButton.setTitle("  YOUR BUG LIST", for: .normal)
-        //self.cancelButton.setTitle(" CANCEL", for: .normal)    
+        //self.listButton.setTitle("  YOUR BUG LIST", for: .normal)        
 
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action:  #selector(self.dismissKeyboard))
         tap.cancelsTouchesInView = false

@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		090C1E452188DD22004F678E /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090C1E442188DD22004F678E /* Parse.framework */; };
 		090C1E472188DD22004F678E /* ParseLiveQuery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090C1E462188DD22004F678E /* ParseLiveQuery.framework */; };
+		0915760421A7C5C8001618ED /* BugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0915760321A7C5C8001618ED /* BugViewController.swift */; };
 		09550F6B2178F5FF00FA7F3D /* UserDefaults+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */; };
 		09687E95217C49D6001F7578 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09687E94217C49D6001F7578 /* ShareViewController.swift */; };
 		09687E98217C49D7001F7578 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09687E96217C49D7001F7578 /* MainInterface.storyboard */; };
 		09687E9C217C49D7001F7578 /* shared.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 09687E92217C49D4001F7578 /* shared.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		09756ED421A1BDC6005DDFC5 /* ReportBugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09756ED321A1BDC6005DDFC5 /* ReportBugViewController.swift */; };
 		09756ED621A300B2005DDFC5 /* BugListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09756ED521A300B0005DDFC5 /* BugListViewController.swift */; };
 		09756ED821A30499005DDFC5 /* BugsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09756ED721A30498005DDFC5 /* BugsViewCell.swift */; };
 		09756EDA21A30500005DDFC5 /* BugsSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09756ED921A30500005DDFC5 /* BugsSectionHeader.swift */; };
@@ -167,13 +167,13 @@
 /* Begin PBXFileReference section */
 		090C1E442188DD22004F678E /* Parse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Parse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		090C1E462188DD22004F678E /* ParseLiveQuery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ParseLiveQuery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0915760321A7C5C8001618ED /* BugViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugViewController.swift; sourceTree = "<group>"; };
 		0938B84E2182E1FA001E3A34 /* shared.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = shared.entitlements; sourceTree = "<group>"; };
 		09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+helpers.swift"; sourceTree = "<group>"; };
 		09687E92217C49D4001F7578 /* shared.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shared.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		09687E94217C49D6001F7578 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		09687E97217C49D7001F7578 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		09687E99217C49D7001F7578 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		09756ED321A1BDC6005DDFC5 /* ReportBugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportBugViewController.swift; sourceTree = "<group>"; };
 		09756ED521A300B0005DDFC5 /* BugListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugListViewController.swift; sourceTree = "<group>"; };
 		09756ED721A30498005DDFC5 /* BugsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsViewCell.swift; sourceTree = "<group>"; };
 		09756ED921A30500005DDFC5 /* BugsSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsSectionHeader.swift; sourceTree = "<group>"; };
@@ -668,8 +668,8 @@
 				C9253A8E211274C9001B4A73 /* GiftViewController.swift */,
 				C92F5D03211CE1360056E482 /* NotificationViewController.swift */,
 				C9273DA6212BDDE800AC067F /* WelcomeViewController.swift */,
-				09756ED321A1BDC6005DDFC5 /* ReportBugViewController.swift */,
 				09756ED521A300B0005DDFC5 /* BugListViewController.swift */,
+				0915760321A7C5C8001618ED /* BugViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -945,13 +945,13 @@
 				82418F3D1EF86FBC00D7E6BC /* FanpagePage.swift in Sources */,
 				8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */,
 				C978A4B32140F36A0063EBE1 /* FanpageTableCell.swift in Sources */,
-				09756ED421A1BDC6005DDFC5 /* ReportBugViewController.swift in Sources */,
 				825E24041F984C14009462CD /* Protocols.swift in Sources */,
 				82BD5EFD1F92B58600BD8760 /* Int+Extension.swift in Sources */,
 				C930D4C62148C18700F67DA4 /* KenBurns+Helpers.swift in Sources */,
 				C930D4C42148B54400F67DA4 /* Double+Extensions.swift in Sources */,
 				C98412D621485B890016CC40 /* KenBurns.swift in Sources */,
 				C77B55191CFFF3AD00FF375C /* HomeController.swift in Sources */,
+				0915760421A7C5C8001618ED /* BugViewController.swift in Sources */,
 				82BD5EFB1F91635400BD8760 /* SelectContactViewController.swift in Sources */,
 				82C6F75A1F8AA8F50090C725 /* View+Extensions.swift in Sources */,
 				82C6F75B1F8AA8F50090C725 /* Label+Extension.swift in Sources */,

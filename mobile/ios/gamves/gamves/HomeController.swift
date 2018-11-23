@@ -87,8 +87,12 @@ CLLocationManagerDelegate {
 
     lazy var bugListViewController: BugListViewController = {
         let bugList = BugListViewController()
-        //bugList.homeController = self
         return bugList
+    }()
+    
+    lazy var bugViewController: BugViewController = {
+        let bug = BugViewController()
+        return bug
     }()
 
     //- MenuBar
@@ -260,17 +264,6 @@ CLLocationManagerDelegate {
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
-    }
-    
-    func showReportBugControllerForSetting(_ setting: Setting, image: UIImage) {
-        let reportBugViewController = ReportBugViewController()
-        reportBugViewController.homeController = self
-        reportBugViewController.pictureImageView.image = image
-        reportBugViewController.view.backgroundColor = UIColor.gamvesColor
-        reportBugViewController.navigationItem.title = setting.name.rawValue
-        navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
-        navigationController?.pushViewController(reportBugViewController, animated: true)
     }
 
     func openSearch(params:[String : Any]) {
@@ -468,13 +461,35 @@ CLLocationManagerDelegate {
     }  
 
     func showBugList() {
-
+    
+        bugListViewController.homeController = self
         bugListViewController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(bugListViewController, animated: true)
 
-    }  
+    }
+    
+    func showBugViewControllerForSetting(_ setting: Setting?, image: UIImage?, bug:GamvesBug?) {
+        bugViewController.homeController = self
+        
+        if bug != nil {
+            
+            bugViewController.pictureImageView.image = bug?.screenshot
+            bugViewController.navigationItem.title = bug?.description
+            
+        } else  {
+            
+            bugViewController.pictureImageView.image = image
+            bugViewController.navigationItem.title = setting!.name.rawValue
+        }
+        
+        bugViewController.view.backgroundColor = UIColor.gamvesColor
+        
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
+        navigationController?.pushViewController(bugViewController, animated: true)
+    }
     
     func addNewFanpage(edit:Bool) {
         if edit {
@@ -486,6 +501,7 @@ CLLocationManagerDelegate {
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(newFanpageController, animated: true)
+        
     }
 
     func showGiftViewcontroller() {               

@@ -67,6 +67,7 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
                  //historySetting,
                  reportBugSetting,
                  //settingsSetting,
+                 bugListSetting,
                  logoutSetting,
                  cancelSetting ]
 
@@ -120,12 +121,26 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
 
                 if setting.imageName == "report_bug" { 
 
-
-                    let screenShoot = Global.captureScreenshot()
+                    let title = "Report a bug!"
+                    let message = "A screenchot will capture the bug below, press OK and wait please."
                     
-                    self.homeController?.showReportBugControllerForSetting(setting,image: screenShoot)
+                    let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                    
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
 
+                        let screenShoot = Global.captureScreenshot()
 
+                        self.homeController?.showBugViewControllerForSetting(setting,image: screenShoot, bug: nil)
+                        
+                    }))
+                    
+                    self.appDelegate.window?.rootViewController?.present(alert, animated: true)
+
+                    
+                } else if setting.imageName == "list" {
+
+                    self.homeController?.showBugList() 
+                
                 } else {
 
                     self.homeController?.showControllerForSetting(setting)
@@ -191,12 +206,14 @@ class SettingsLauncher: NSObject, UICollectionViewDataSource, UICollectionViewDe
             // show the alert            
             self.appDelegate.window?.rootViewController?.present(alert, animated: true, completion: nil)
 
-       } else if setting.imageName == "list" {
+       } 
+
+       /*else if setting.imageName == "list" {
 
 
             self.homeController?.showBugList()
 
-       }
+       }*/
         
         handleDismiss(setting)                
         

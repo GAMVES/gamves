@@ -15,7 +15,9 @@ class GamvesBug
     var objectPF:PFObject!   
 
     var description = String()
-    var screenshot:UIImage?      
+    var screenshot:UIImage?   
+
+    var approved = Int()   
 }
 
 class GamvesWelcome {
