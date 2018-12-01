@@ -471,21 +471,29 @@ CLLocationManagerDelegate {
     }
     
     func showBugViewControllerForSetting(_ setting: Setting?, image: UIImage?, bug:GamvesBug?) {
+        
+        
         bugViewController.homeController = self
         
         if bug != nil {
             
             bugViewController.pictureImageView.image = bug?.screenshot
-            bugViewController.navigationItem.title = bug?.description
+            bugViewController.navigationItem.title = bug?.title
+            
+            bugViewController.titleTextField.text = bug?.title
+            bugViewController.descTextView.text = bug?.description
+
+            bugViewController.isEdit = true
             
         } else  {
             
             bugViewController.pictureImageView.image = image
             bugViewController.navigationItem.title = setting!.name.rawValue
+
+            bugViewController.isEdit = false
         }
         
-        bugViewController.view.backgroundColor = UIColor.gamvesColor
-        
+        bugViewController.view.backgroundColor = UIColor.gamvesColor        
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(bugViewController, animated: true)

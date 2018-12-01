@@ -14,6 +14,7 @@ class GamvesBug
     var objectId = String()       
     var objectPF:PFObject!   
 
+    var title = String()
     var description = String()
     var screenshot:UIImage?   
 

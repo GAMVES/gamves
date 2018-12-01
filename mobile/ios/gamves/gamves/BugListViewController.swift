@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import NVActivityIndicatorView
 
 class BugListViewController: UIViewController,
 UICollectionViewDataSource,
@@ -46,9 +47,10 @@ UICollectionViewDelegateFlowLayout {
     var cellId = "cellId"
     let sectionHeaderId = "feedSectionHeader"
 
+    var activityView: NVActivityIndicatorView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
      
         self.view.backgroundColor = UIColor.white
 
@@ -66,8 +68,7 @@ UICollectionViewDelegateFlowLayout {
         self.infoView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: self.info)
         self.infoView.addConstraintsWithFormat("V:|[v0]|", views: self.info)
 
-        /*let buttonIcon = UIImage(named: "arrow_back_white")        
-       
+        /*let buttonIcon = UIImage(named: "arrow_back_white")     
         
         let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
         
@@ -77,7 +78,11 @@ UICollectionViewDelegateFlowLayout {
         self.collectionView.register(BugsViewCell.self, forCellWithReuseIdentifier: self.cellId)
         self.collectionView.register(BugsSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
 
-        self.loadBugs()      
+        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray)
+        
+        self.loadBugs()  
+
+
 
     }
   
@@ -89,6 +94,8 @@ UICollectionViewDelegateFlowLayout {
 
     func loadBugs() 
     {
+
+        self.activityView.startAnimating()
 
         let otherQuery = PFQuery(className:"Bugs")    
 
@@ -111,6 +118,8 @@ UICollectionViewDelegateFlowLayout {
                     bug.objectId = bugPF.objectId!
                     bug.objectPF = bugPF
 
+                    bug.title = bugPF["title"] as! String
+
                     bug.description = bugPF["description"] as! String
 
                     bug.approved = bugPF["approved"] as! Int                    
@@ -129,6 +138,8 @@ UICollectionViewDelegateFlowLayout {
                         {                           
 
                             self.collectionView.reloadData()
+
+                            self.activityView.stopAnimating()
                         }
                         count = count + 1
 
@@ -197,7 +208,7 @@ UICollectionViewDelegateFlowLayout {
         
         let bug = self.gamvesBugs[indexPath.item]
 
-        cell.nameLabel.text = bug.description
+        cell.nameLabel.text = bug.title
         
         print(bug.approved)
         

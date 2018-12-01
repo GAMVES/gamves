@@ -9,10 +9,13 @@
 import UIKit
 import SKPhotoBrowser
 import Parse
+import NVActivityIndicatorView
 
 class BugViewController: UIViewController {
 
     var homeController: HomeController?
+
+    var isEdit = false
 
     var keyBoardOpened = Bool()
     
@@ -31,9 +34,26 @@ class BugViewController: UIViewController {
         //imageView.view.addTarget(self, action: #selector(showImage), for: .touchUpInside)    
         imageView.tag = 0           
         return imageView
-    }()    
+    }() 
 
-    let userTextView: UITextView = {
+    let textView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false        
+        view.layer.masksToBounds = true
+        //view.backgroundColor = UIColor.cyan
+        return view
+    }()
+
+    let titleTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "Title"
+        tf.translatesAutoresizingMaskIntoConstraints = false  
+        tf.backgroundColor = UIColor.white 
+        tf.font = UIFont.boldSystemFont(ofSize: 20)                  
+        return tf
+    }()   
+
+    let descTextView: UITextView = {
         let tf = UITextView()
         tf.placeholder = "Describe the bug, explain with "
         tf.translatesAutoresizingMaskIntoConstraints = false  
@@ -110,8 +130,10 @@ class BugViewController: UIViewController {
         return view
     }()    
 
+    var activityView: NVActivityIndicatorView!
+
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()         
 
         let buttonIcon = UIImage(named: "arrow_back_white")        
         let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
@@ -143,22 +165,37 @@ class BugViewController: UIViewController {
         self.photoContainerView.addSubview(self.pictureImageView)
         self.photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.pictureImageView)        
 
-        self.photoContainerView.addSubview(self.userTextView)
-        self.photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.userTextView)            
+        self.photoContainerView.addSubview(self.textView)               
+        self.photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.textView)  
 
         self.photoContainerView.addConstraintsWithFormat("H:|[v0(150)][v1]|", views: 
             self.pictureImageView,
-            self.userTextView)    
+            self.textView)           
+
+        self.textView.addSubview(self.titleTextField)
+        self.textView.addConstraintsWithFormat("H:|[v0]|", views: self.titleTextField)
+        
+        self.textView.addSubview(self.descTextView)
+        self.textView.addConstraintsWithFormat("H:|[v0]|", views: self.descTextView)      
+
+        self.textView.addConstraintsWithFormat("V:|[v0(50)]-5-[v1]|", views:
+            self.titleTextField,
+            self.descTextView)      
 
         self.buttonsView.addSubview(saveButton)
         self.buttonsView.addConstraintsWithFormat("V:|[v0]|", views: saveButton)      
+        self.buttonsView.addConstraintsWithFormat("H:|[v0]|", views: saveButton)      
 
-        self.buttonsView.addSubview(cancelButton)
-        self.buttonsView.addConstraintsWithFormat("V:|[v0]|", views: cancelButton)      
+        //self.buttonsView.addSubview(cancelButton)
+        //self.buttonsView.addConstraintsWithFormat("V:|[v0]|", views: cancelButton)      
 
-        self.buttonsView.addConstraintsWithFormat("H:|-10-[v0]-10-[v1(60)]|", views: 
-            self.saveButton,
-            self.cancelButton)      
+        //self.buttonsView.addConstraintsWithFormat("H:|-10-[v0]-10-[v1(60)]|", views: 
+        //    self.saveButton,
+        //    self.cancelButton)  
+
+        self.view.addSubview(cancelButton)
+        self.view.addConstraintsWithFormat("V:|-10-[v0(50)]|", views: cancelButton)      
+        self.view.addConstraintsWithFormat("H:|-10-[v0(50)]|", views: cancelButton)      
 
         //self.listView.addSubview(listButton)
         //self.listView.addConstraintsWithFormat("H:|-20-[v0]-10-|", views: listButton) 
@@ -169,7 +206,7 @@ class BugViewController: UIViewController {
 
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action:  #selector(self.dismissKeyboard))
         tap.cancelsTouchesInView = false
-        self.view.addGestureRecognizer(tap) 
+        self.view.addGestureRecognizer(tap)
 
         let tapImage:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.showImage))
         
@@ -181,21 +218,31 @@ class BugViewController: UIViewController {
 
         self.saveButton.isEnabled = false
 
+        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray)
+
       }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        if !isEdit {
+
+            self.titleTextField.text = ""
+            self.descTextView.text = ""
+        }
+    }
 
     @objc func dismissKeyboard() {
        self.view.endEditing(true)
 
-       if self.userTextView.text.count > 0 {
+       if self.descTextView.text.count > 0 {
             self.saveButton.isEnabled = true        
        }
 
     }
 
     @objc func backButton(sender: UIBarButtonItem) {        
-
+        self.isEdit = false
         self.navigationController?.popViewController(animated: true)
-
     }
 
     @objc func showList() {
@@ -205,7 +252,10 @@ class BugViewController: UIViewController {
     }        
 
     @objc func handleCancel() {
+        //self.isEdit = false
+        //self.navigationController?.popToRootViewController(animated: true)        
 
+        self.pictureImageView.image = UIImage()
     }
 
     @objc func showImage() {
@@ -239,11 +289,15 @@ class BugViewController: UIViewController {
     }
 
     @objc func handleSave() {
+                    
+        self.activityView.startAnimating()     
 
         let bug: PFObject = PFObject(className: "Bugs")                
         
         bug["posterId"] = PFUser.current()?.objectId
-        bug["description"] = self.userTextView.text
+        bug["title"] = self.titleTextField.text
+        bug["description"] = self.descTextView.text
+        bug["approved"] = 1
 
         let thumbnail = PFFileObject(name: "bug", data: UIImageJPEGRepresentation(self.pictureImageView.image!, 1.0)!)
     
@@ -251,9 +305,10 @@ class BugViewController: UIViewController {
         
         bug.saveInBackground { (resutl, error) in
             
-            if error == nil {
+            if error == nil {             
                 
-                //self.activityIndicatorView?.startAnimating()
+
+                self.activityView.startAnimating()     
                 
                 let title = "Bug reported!"
                 let message = "The bug has been reported, please wait appoval. Thanks for submitting!"
@@ -262,9 +317,8 @@ class BugViewController: UIViewController {
                 
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
                     
-                    //self.activityIndicatorView?.stopAnimating()
-                    //self.navigationController?.popToRootViewController(animated: true)
-                    //self.homeController?.clearNewVideo()
+                    self.isEdit = false
+                    self.navigationController?.popToRootViewController(animated: true)                    
                     
                 }))
                 
