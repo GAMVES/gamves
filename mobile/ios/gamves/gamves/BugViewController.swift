@@ -251,11 +251,14 @@ class BugViewController: UIViewController {
 
     }        
 
-    @objc func handleCancel() {
-        //self.isEdit = false
-        //self.navigationController?.popToRootViewController(animated: true)        
+    @objc func handleCancel() {        
 
-        self.pictureImageView.image = UIImage()
+        //let letterImageGenerator = LetterImageGenerator()
+
+        let nAImage = LetterImageGenerator.imageWith(name: "NO IMAGE ONLY DESCRIPTION")
+
+        self.pictureImageView.image = nAImage
+
     }
 
     @objc func showImage() {
@@ -297,12 +300,12 @@ class BugViewController: UIViewController {
         bug["posterId"] = PFUser.current()?.objectId
         bug["title"] = self.titleTextField.text
         bug["description"] = self.descTextView.text
-        bug["approved"] = 1
+        bug["approved"] = 1        
 
         let thumbnail = PFFileObject(name: "bug", data: UIImageJPEGRepresentation(self.pictureImageView.image!, 1.0)!)
     
-        bug.setObject(thumbnail!, forKey: "screenshot")     
-        
+        bug.setObject(thumbnail!, forKey: "screenshot")             
+
         bug.saveInBackground { (resutl, error) in
             
             if error == nil {             
@@ -355,6 +358,40 @@ class BugViewController: UIViewController {
 
         */
 
+    }
+
+    class LetterImageGenerator: NSObject {
+      class func imageWith(name: String?) -> UIImage? {
+        let frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        let nameLabel = UILabel(frame: frame)
+        nameLabel.textAlignment = .center
+        nameLabel.backgroundColor = UIColor.gambesDarkColor
+        nameLabel.textColor = .white
+        nameLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        var initials = ""
+        if let initialsArray = name?.components(separatedBy: " ") {
+          if let firstWord = initialsArray.first {
+            if let firstLetter = firstWord.characters.first {
+              initials += String(firstLetter).capitalized
+            }
+          }
+          if initialsArray.count > 1, let lastWord = initialsArray.last {
+            if let lastLetter = lastWord.characters.first {
+              initials += String(lastLetter).capitalized
+            }
+          }
+        } else {
+          return nil
+        }
+        nameLabel.text = initials
+        UIGraphicsBeginImageContext(frame.size)
+        if let currentContext = UIGraphicsGetCurrentContext() {
+          nameLabel.layer.render(in: currentContext)
+          let nameImage = UIGraphicsGetImageFromCurrentImageContext()
+          return nameImage
+        }
+        return nil
+      }
     }
 
 
