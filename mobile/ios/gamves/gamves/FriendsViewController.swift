@@ -104,7 +104,7 @@ FriendProtocol
         itemAddFriend.buttonColor = UIColor.gamvesGreenColor
         itemAddFriend.titleLabelPosition = .left
         itemAddFriend.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-        itemAddFriend.title = "ADD FRIEND"
+        itemAddFriend.title = "ADD FRIENDS"
         itemAddFriend.handler = { item in
             
             if self.homeController != nil {
@@ -113,27 +113,28 @@ FriendProtocol
 
         }
 
-
-        let itemNewChat = FloatyItem()    
+        let itemFriendApproval = FloatyItem()    
         var chatRoomImage = UIImage(named: "chat_room_black")
         chatRoomImage = chatRoomImage?.maskWithColor(color: UIColor.white)
-        itemNewChat.icon = chatRoomImage
-        itemNewChat.buttonColor = UIColor.gamvesGreenColor
-        itemNewChat.titleLabelPosition = .left
-        itemNewChat.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-        itemNewChat.title = "NEW CHAT"
-        itemNewChat.handler = { item in
+        itemFriendApproval.icon = chatRoomImage
+        itemFriendApproval.buttonColor = UIColor.gamvesGreenColor
+        itemFriendApproval.titleLabelPosition = .left
+        itemFriendApproval.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemFriendApproval.title = "APPROVALS"
+        itemFriendApproval.handler = { item in
             
             if self.homeController != nil {
-                self.homeController?.selectContact(group: false)
+                self.homeController?.showFriendApproval()
             }    
-
         }
         
         self.floaty.addItem(item: itemAddFriend)
-        self.floaty.addItem(item: itemNewChat)
+        self.floaty.addItem(item: itemFriendApproval)
         
-        self.floaty.shadowOpacity = 40
+        //self.floaty.shadowColor = UIColor.white
+        //self.floaty.shadowOpacity = 40
+        
+        self.view.addSubview(floaty)
 
     }
     

@@ -59,6 +59,12 @@ CLLocationManagerDelegate {
         return friendsController
     }()
 
+    lazy var friendApprovalViewController: FriendApprovalViewController = {
+        let friendsApproval = FriendApprovalViewController()
+        friendsApproval.homeController = self
+        return friendsApproval
+    }()
+
     lazy var giftViewController: GiftViewController = {
         let giftController = GiftViewController()
         giftController.homeController = self
@@ -376,6 +382,7 @@ CLLocationManagerDelegate {
             titleLabel.text = "  \(titles[index])"
         }
 
+
     }  
    
     
@@ -505,6 +512,16 @@ CLLocationManagerDelegate {
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(friendsViewController, animated: true)
     }  
+
+     func showFriendApproval() {        
+        friendApprovalViewController.view.backgroundColor = UIColor.white
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
+        navigationController?.pushViewController(friendApprovalViewController, animated: true)
+    }
+
+
+    
 
     func showBugList() {
     
