@@ -96,7 +96,6 @@ FeedDelegate {
             }
         }
         
-        
 
         let itemNewChat = FloatyItem()    
         var chatRoomImage = UIImage(named: "chat_room_black")
@@ -132,7 +131,7 @@ FeedDelegate {
 
         self.floaty.addItem(item: itemNewGroup)  
         self.floaty.addItem(item: itemNewChat)  
-        self.floaty.addItem(item: itemAddFriend)       
+        
         self.addSubview(floaty) 
         
         let homeImage = "background_horizontal"

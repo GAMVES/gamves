@@ -781,6 +781,26 @@ class ProfileCell: BaseCell,
 
         if self.profileSaveType == ProfileSaveType.profile {
             
+            
+
+            
+
+            let itemFriend = FloatyItem()
+            var addFriendImage = UIImage(named: "user")
+            addFriendImage = addFriendImage?.maskWithColor(color: UIColor.white)
+            itemFriend.icon = addFriendImage
+            itemFriend.buttonColor = UIColor.gamvesFucsiaColor
+            itemFriend.titleLabelPosition = .left
+            itemFriend.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+            itemFriend.title = "FRIENDS"
+            itemFriend.handler = { item in
+                
+                if self.homeController != nil {
+                    self.homeController?.showFriends()
+                }    
+
+            }
+
             let itemEditProfile = FloatyItem()
             var editImage = UIImage(named: "edit")
             editImage = editImage?.maskWithColor(color: UIColor.white)
@@ -805,13 +825,16 @@ class ProfileCell: BaseCell,
             itemEditFanpage.buttonColor = UIColor.gamvesFucsiaColor
             itemEditFanpage.titleLabelPosition = .left
             itemEditFanpage.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-            itemEditFanpage.title = "EDIT YOUR FANPAGE"
+            itemEditFanpage.title = "EDIT FANPAGE"
             itemEditFanpage.handler = { item in
                 self.handleEditFanpage()
             }
 
+            self.floaty.addItem(item: itemFriend)     
             self.floaty.addItem(item: itemEditProfile)       
-            self.floaty.addItem(item: itemEditFanpage)      
+            self.floaty.addItem(item: itemEditFanpage)
+            
+            
 
         } else if self.profileSaveType == ProfileSaveType.publicProfile {
 
@@ -821,15 +844,15 @@ class ProfileCell: BaseCell,
 
             if Global.friends[userId] == nil {
 
-                let itemAddFriend = FloatyItem()
+                let itemFriend = FloatyItem()
                 var addFriendImage = UIImage(named: "friend_add")
                 addFriendImage = addFriendImage?.maskWithColor(color: UIColor.white)
-                itemAddFriend.icon = addFriendImage
-                itemAddFriend.buttonColor = UIColor.gamvesFucsiaColor
-                itemAddFriend.titleLabelPosition = .left
-                itemAddFriend.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-                itemAddFriend.title = "ADD FRIEND"
-                itemAddFriend.handler = { item in
+                itemFriend.icon = addFriendImage
+                itemFriend.buttonColor = UIColor.gamvesFucsiaColor
+                itemFriend.titleLabelPosition = .left
+                itemFriend.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+                itemFriend.title = "ADD FRIEND"
+                itemFriend.handler = { item in
                     
                     if self.homeController != nil {
                         self.homeController?.addFriend()
@@ -837,7 +860,7 @@ class ProfileCell: BaseCell,
 
                 }
 
-                self.floaty.addItem(item: itemAddFriend)    
+                self.floaty.addItem(item: itemFriend)    
 
             } else {
 

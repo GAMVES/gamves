@@ -12,6 +12,7 @@ import GameKit
 import Floaty
 import PopupDialog
 import NVActivityIndicatorView
+import Floaty
 
 protocol FriendProtocol {
     func closedRefresh()
@@ -54,6 +55,8 @@ FriendProtocol
     let friendCell = "friendCell"
     
     var familyId = String()
+
+    var floaty = Floaty(size: 80)     
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,6 +81,60 @@ FriendProtocol
         self.familyId = Global.gamvesFamily.objectId
         
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+
+         self.floaty.paddingY = 35
+        self.floaty.paddingX = 20                    
+        self.floaty.itemSpace = 30
+        self.floaty.shadowRadius = 20
+        self.floaty.hasShadow = true
+        self.floaty.shadowColor = UIColor.black
+        self.floaty.buttonColor = UIColor.gamvesGreenColor
+        var addImage = UIImage(named: "add_symbol")
+        addImage = addImage?.maskWithColor(color: UIColor.white)
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
+        self.floaty.buttonImage = addImage
+        self.floaty.sizeToFit()
+
+        //floaty.verticalDirection = .down        
+        
+        let itemAddFriend = FloatyItem()
+        var addFriendImage = UIImage(named: "friend_add")
+        addFriendImage = addFriendImage?.maskWithColor(color: UIColor.white)
+        itemAddFriend.icon = addFriendImage
+        itemAddFriend.buttonColor = UIColor.gamvesGreenColor
+        itemAddFriend.titleLabelPosition = .left
+        itemAddFriend.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemAddFriend.title = "ADD FRIEND"
+        itemAddFriend.handler = { item in
+            
+            if self.homeController != nil {
+                self.homeController?.addFriend()
+            }    
+
+        }
+
+
+        let itemNewChat = FloatyItem()    
+        var chatRoomImage = UIImage(named: "chat_room_black")
+        chatRoomImage = chatRoomImage?.maskWithColor(color: UIColor.white)
+        itemNewChat.icon = chatRoomImage
+        itemNewChat.buttonColor = UIColor.gamvesGreenColor
+        itemNewChat.titleLabelPosition = .left
+        itemNewChat.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemNewChat.title = "NEW CHAT"
+        itemNewChat.handler = { item in
+            
+            if self.homeController != nil {
+                self.homeController?.selectContact(group: false)
+            }    
+
+        }
+        
+        self.floaty.addItem(item: itemAddFriend)
+        self.floaty.addItem(item: itemNewChat)
+        
+        self.floaty.shadowOpacity = 40
+
     }
     
     
