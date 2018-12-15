@@ -82,9 +82,7 @@ UICollectionViewDelegateFlowLayout {
         addImage = addImage?.maskWithColor(color: UIColor.white)
         addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
         self.floaty.buttonImage = addImage
-        self.floaty.sizeToFit()
-
-        //floaty.verticalDirection = .down        
+        self.floaty.sizeToFit()        
         
         let itemGift = FloatyItem()
         var giftImage = UIImage(named: "gift")
@@ -100,10 +98,27 @@ UICollectionViewDelegateFlowLayout {
             {
                 self.homeController?.showGiftViewcontroller()
             }
+        }
+
+        let itemPet = FloatyItem()
+        var petImage = UIImage(named: "dog")
+        petImage = petImage?.maskWithColor(color: UIColor.white)
+        itemPet.icon = petImage
+        itemPet.buttonColor = UIColor.gamvesTurquezeColor
+        itemPet.titleLabelPosition = .left
+        itemPet.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemPet.title = "PETS"
+        itemPet.handler = { item in
+            
+            if self.homeController != nil
+            {
+                self.homeController?.showPetController()
+            }
 
         }
 
         self.floaty.addItem(item: itemGift)          
+        self.floaty.addItem(item: itemPet)          
         self.addSubview(floaty) 
     }
     

@@ -9,6 +9,49 @@ import Foundation
 import UIKit
 import Parse
 
+
+class GamvesPet
+{
+    var objectId = String()
+    var thumbnail:UIImage?    
+    var status = Int()
+    var name = String()   
+    var description = String()   
+    var isChecked = Bool()
+    var petOBj:PFObject!   
+}
+
+class Approvals
+{
+    var objectId = String()
+    var thumbnail:UIImage?
+    var referenceId = Int()
+    var title = String()
+    var description = String()
+    var approved = Int()
+    var video = GamvesVideo()
+    var fanpage = GamvesFanpage()
+    var type = Int()
+}
+
+class FriendApproval
+{
+    var objectId = String()       
+    var objectPF:PFObject!
+
+    var user = GamvesUser()
+
+    var title = String()
+
+    var posterId = String()    
+    var friendId = String() 
+
+    var approved = Int()    
+    //var thumbnail:UIImage?
+    var type = Int()
+    
+}
+
 class GamvesBug
 {
     var objectId = String()       

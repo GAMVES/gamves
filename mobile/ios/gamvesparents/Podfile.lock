@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.7.3)
+  - Alamofire (4.8.0)
   - AWSCore (2.6.35)
   - AWSS3 (2.6.35):
     - AWSCore (= 2.6.35)
@@ -206,7 +206,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 SPEC CHECKSUMS:
-  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
   AWSS3: 282a590bb47e9cd88de24979fb28954399c41c52
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e

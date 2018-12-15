@@ -95,6 +95,11 @@ CLLocationManagerDelegate {
         return bug
     }()
 
+    lazy var petSelectorViewController: PetSelectorViewController = {
+        let petSelector = PetSelectorViewController()
+        return petSelector
+    }()
+  
     //- MenuBar
 
     lazy var menuBar: MenuBar = {
@@ -122,7 +127,10 @@ CLLocationManagerDelegate {
     
     var locationManager : CLLocationManager = CLLocationManager()
     
-    var didFindLocation = Bool()   
+    var didFindLocation = Bool()  
+
+    var pet:GamvesPet!
+    var userPets:PFObject!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -147,9 +155,9 @@ CLLocationManagerDelegate {
         titleLabel.font = UIFont.systemFont(ofSize: 20)
         navigationItem.titleView = titleLabel
         
-        setupCollectionView()
-        setupMenuBar()
-        setupNavBarButtons()
+        self.setupCollectionView()
+        self.setupMenuBar()
+        self.setupNavBarButtons()
        
         NotificationCenter.default.addObserver(self, selector: #selector(openChatFromUser), name: NSNotification.Name(rawValue: Global.notificationOpenChatFromUser), object: nil)        
 
@@ -161,6 +169,16 @@ CLLocationManagerDelegate {
 
         ///Global.appGroupDefaults.addObserver(self, forKeyPath: "extensionUrl", options: .new, context: nil)
         //Global.appGroupDefaults.set(value: arrayDataToPasstoTodayExtension, forKey: "arrayDatatoDisplayInToday")
+
+        self.getPets(completionHandler: { ( resutl ) -> () in
+            
+            if resutl {
+
+                self.getUserPets()
+            }
+
+        })     
+        
         
     }
 
@@ -240,15 +258,19 @@ CLLocationManagerDelegate {
        
     }
     
-    func setupNavBarButtons() {
+    func setupNavBarButtons() {        
  
+        var dogImage = UIImage(named: "dog")?.withRenderingMode(.alwaysOriginal)
+      
+        let dogButtonItem = UIBarButtonItem(image: dogImage, style: .plain, target: self, action: #selector(handlePet))
+
         let searchImage = UIImage(named: "search_icon")?.withRenderingMode(.alwaysOriginal)
 
         let searchBarButtonItem = UIBarButtonItem(image: searchImage, style: .plain, target: self, action: #selector(handleSearch))
         
         let moreButton = UIBarButtonItem(image: UIImage(named: "nav_more_icon")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleMore))
         
-        navigationItem.rightBarButtonItems = [moreButton, searchBarButtonItem]
+        navigationItem.rightBarButtonItems = [moreButton, searchBarButtonItem, dogButtonItem]
     }
     
     
@@ -303,8 +325,34 @@ CLLocationManagerDelegate {
     @objc func handleSearch() {
         scrollToMenuIndex(2)
     }
+
+    @objc func handlePet() {                 
+
+        if self.pet == nil {
+
+            self.showPetController()
+
+        } else {
+
+            let petLauncher = PetLauncher()            
+            petLauncher.showPet(petGamves: self.pet)
+
+        }
+        
+    }
+
+    func showPetController() {
+
+        petSelectorViewController.homeController = self         
+        petSelectorViewController.view.backgroundColor = UIColor.gamvesPetBackgroundColor        
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
+        navigationController?.pushViewController(petSelectorViewController, animated: true)
+
+    }
     
     func scrollToMenuIndex(_ menuIndex: Int) {
+    
         print(menuIndex)
         let indexPath = IndexPath(item: menuIndex, section: 0)
         collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition(), animated: true)
@@ -681,10 +729,91 @@ CLLocationManagerDelegate {
 
         let homeCell = getHomeCell()
         
-        homeCell.setCurrentPage(current: current, direction: direction, data: data)
-        
+        homeCell.setCurrentPage(current: current, direction: direction, data: data)        
+    }   
+
+
+    func getPets(completionHandler : @escaping (_ resutl:Bool) -> ()) {
+
+        let petQuery = PFQuery(className:"Pets")    
+
+        petQuery.findObjectsInBackground(block: { (petsPF, error) in
+            
+            if error == nil
+            {
+                if let petsPF = petsPF
+                {
+                    var countPets = petsPF.count
+                    var count = 0
+
+                    var pets = [GamvesPet]()
+                    
+                    for petPF in petsPF
+                    {
+                        
+                        var gamvesPet = GamvesPet()
+
+                        gamvesPet.objectId = petPF.objectId!
+                        gamvesPet.name = petPF["name"] as! String
+
+                        let thumnail = petPF["thumbnail"] as! PFFileObject
+                        
+                        thumnail.getDataInBackground(block: { (data_thumbnail, error) in
+                                            
+                            if error == nil {
+                                
+                                let thumb_pet = UIImage(data: data_thumbnail!)
+
+                                gamvesPet.thumbnail = thumb_pet 
+
+                                Global.pets[gamvesPet.objectId] = gamvesPet
+
+                                if count == (countPets - 1)
+                                {
+                                    completionHandler(true)
+                                }
+                                count = count + 1
+                            }
+                        })        
+                    }
+                }
+            }
+        })
     }
-    
+
+     func getUserPets() {
+
+        let userPetQuery = PFQuery(className:"UserPets")
+        
+        if let userId = PFUser.current()?.objectId
+        {
+            userPetQuery.whereKey("userId", equalTo: userId)
+        }       
+        
+        userPetQuery.getFirstObjectInBackground { (userPetsPF, error) in                       
+            
+            if error != nil
+            {
+                print("error: \(error)")
+                
+                print(self.pet)
+                
+                self.pet = nil
+            
+            } else {                
+
+                let petsId = userPetsPF!["petsId"] as! String
+
+                if Global.pets[petsId] != nil {
+
+                    self.pet = Global.pets[petsId]               
+                }
+
+                self.userPets = userPetsPF
+                 
+            }            
+        }
+    }
 }
 
 

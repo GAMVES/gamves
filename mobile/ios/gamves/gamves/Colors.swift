@@ -28,10 +28,16 @@ extension UIColor
     static let gamvesGreenColor = UIColor.rgb(168, green: 207, blue: 69)
     static let gamvesGreenDarkColor = UIColor.rgb(78, green: 97, blue: 31)
 
+    static let gamvesSemaphorGreenColor = UIColor.rgb(96, green: 187, blue: 81)
+    static let gamvesSemaphorRedColor = UIColor.rgb(237, green: 50, blue: 55)
+
     static let gamvesFucsiaColor = UIColor.rgb(255, green: 41, blue: 192)
 
     static let gamvesLightBlueColor = UIColor.rgb(93, green: 182, blue: 255)
     static let gamvesChatBubbleBlueColor = UIColor.rgb(90, green: 87, blue: 88)
+
+    static let gamvesPetBackgroundColor = UIColor.rgb(67, green: 67, blue: 67)
+    static let gamvesPetBackgroundLightColor = UIColor.rgb(161, green: 161, blue: 161)
 }
 
 

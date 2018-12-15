@@ -10,6 +10,11 @@
 		090C1E452188DD22004F678E /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090C1E442188DD22004F678E /* Parse.framework */; };
 		090C1E472188DD22004F678E /* ParseLiveQuery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090C1E462188DD22004F678E /* ParseLiveQuery.framework */; };
 		0915760421A7C5C8001618ED /* BugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0915760321A7C5C8001618ED /* BugViewController.swift */; };
+		09260B6821B38AF900B17B27 /* FriendApprovalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B6721B38AF900B17B27 /* FriendApprovalCell.swift */; };
+		09260B6A21B38B5B00B17B27 /* FriendApprovalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B6921B38B5B00B17B27 /* FriendApprovalLauncher.swift */; };
+		09260B6C21B38B7400B17B27 /* FriendApprovalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B6B21B38B7400B17B27 /* FriendApprovalViewController.swift */; };
+		09260B6E21B38E7C00B17B27 /* FriendApprovaButtonslView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B6D21B38E7B00B17B27 /* FriendApprovaButtonslView.swift */; };
+		09260B7221B39EE900B17B27 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B7121B39EE800B17B27 /* Util.swift */; };
 		09550F6B2178F5FF00FA7F3D /* UserDefaults+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */; };
 		09687E95217C49D6001F7578 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09687E94217C49D6001F7578 /* ShareViewController.swift */; };
 		09687E98217C49D7001F7578 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09687E96217C49D7001F7578 /* MainInterface.storyboard */; };
@@ -19,6 +24,10 @@
 		09756EDA21A30500005DDFC5 /* BugsSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09756ED921A30500005DDFC5 /* BugsSectionHeader.swift */; };
 		099ADE132186A87E0075B053 /* ShareSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099ADE122186A87D0075B053 /* ShareSelectViewController.swift */; };
 		099ADE162186AA010075B053 /* SharedClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099ADE152186AA010075B053 /* SharedClasses.swift */; };
+		09E19F8E21BA1B1000A1E842 /* UIWindow+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E19F8D21BA1B0F00A1E842 /* UIWindow+Extension.swift */; };
+		09E19F9221BB664A00A1E842 /* PetLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E19F9121BB664A00A1E842 /* PetLauncher.swift */; };
+		09E19F9421BC962B00A1E842 /* PetSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E19F9321BC962900A1E842 /* PetSelectorViewController.swift */; };
+		09E19F9621BCB85500A1E842 /* PetViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E19F9521BCB85500A1E842 /* PetViewCell.swift */; };
 		8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212D6F41F74B46C00F2A121 /* Colors.swift */; };
 		822010B61FF96A5A008C9027 /* NewFanpageController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822010B51FF96A5A008C9027 /* NewFanpageController+Extensions.swift */; };
 		822760C9200EDBCE00860638 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822760C8200EDBCE00860638 /* NotificationCell.swift */; };
@@ -168,6 +177,11 @@
 		090C1E442188DD22004F678E /* Parse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Parse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		090C1E462188DD22004F678E /* ParseLiveQuery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ParseLiveQuery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0915760321A7C5C8001618ED /* BugViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugViewController.swift; sourceTree = "<group>"; };
+		09260B6721B38AF900B17B27 /* FriendApprovalCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendApprovalCell.swift; sourceTree = "<group>"; };
+		09260B6921B38B5B00B17B27 /* FriendApprovalLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendApprovalLauncher.swift; sourceTree = "<group>"; };
+		09260B6B21B38B7400B17B27 /* FriendApprovalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendApprovalViewController.swift; sourceTree = "<group>"; };
+		09260B6D21B38E7B00B17B27 /* FriendApprovaButtonslView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendApprovaButtonslView.swift; sourceTree = "<group>"; };
+		09260B7121B39EE800B17B27 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Util.swift; path = ../../gamvesparents/gamvesparents/Util.swift; sourceTree = "<group>"; };
 		0938B84E2182E1FA001E3A34 /* shared.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = shared.entitlements; sourceTree = "<group>"; };
 		09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+helpers.swift"; sourceTree = "<group>"; };
 		09687E92217C49D4001F7578 /* shared.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shared.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,6 +193,10 @@
 		09756ED921A30500005DDFC5 /* BugsSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsSectionHeader.swift; sourceTree = "<group>"; };
 		099ADE122186A87D0075B053 /* ShareSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSelectViewController.swift; sourceTree = "<group>"; };
 		099ADE152186AA010075B053 /* SharedClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedClasses.swift; sourceTree = "<group>"; };
+		09E19F8D21BA1B0F00A1E842 /* UIWindow+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extension.swift"; sourceTree = "<group>"; };
+		09E19F9121BB664A00A1E842 /* PetLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetLauncher.swift; sourceTree = "<group>"; };
+		09E19F9321BC962900A1E842 /* PetSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetSelectorViewController.swift; sourceTree = "<group>"; };
+		09E19F9521BCB85500A1E842 /* PetViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetViewCell.swift; sourceTree = "<group>"; };
 		0B556824388525CC4C294DDA /* Pods-shared.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shared.debug.xcconfig"; path = "Pods/Target Support Files/Pods-shared/Pods-shared.debug.xcconfig"; sourceTree = "<group>"; };
 		233BC8CE2FEF6D293765B4BD /* Pods-gamves.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamves.release.xcconfig"; path = "Pods/Target Support Files/Pods-gamves/Pods-gamves.release.xcconfig"; sourceTree = "<group>"; };
 		8212D6F41F74B46C00F2A121 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -483,6 +501,7 @@
 		828DB5DB1EFE406700403C66 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				09260B7121B39EE800B17B27 /* Util.swift */,
 				C98412D521485B890016CC40 /* KenBurns.swift */,
 				C92FDB9720E29FBE0056EB40 /* CustomSearchController.swift */,
 				C925F9AE20E1EAE000E9B1E9 /* CustomSearchBar.swift */,
@@ -523,6 +542,7 @@
 				82F3F7CA202B38AC001E3DA5 /* Formatter+Extensions.swift */,
 				C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */,
 				C930D4C32148B54400F67DA4 /* Double+Extensions.swift */,
+				09E19F8D21BA1B0F00A1E842 /* UIWindow+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -549,6 +569,7 @@
 		82FFF5282022CF12005F45AA /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				09260B6D21B38E7B00B17B27 /* FriendApprovaButtonslView.swift */,
 				82FFF52B2022D350005F45AA /* cells */,
 				82FFF5292022CF6E005F45AA /* SelectorView.swift */,
 				825237B92024E3CF00D6ED92 /* ChooseAvatarView.swift */,
@@ -626,8 +647,10 @@
 			isa = PBXGroup;
 			children = (
 				C75742B61D5D93FA001C066C /* VideoLauncher.swift */,
+				09260B6921B38B5B00B17B27 /* FriendApprovalLauncher.swift */,
 				826844571FF058F3008BA13B /* NoConnectionController.swift */,
 				C926096821015EC5000CFF84 /* PublicProfileLauncher.swift */,
+				09E19F9121BB664A00A1E842 /* PetLauncher.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -650,6 +673,7 @@
 		C77B55531D02346C00FF375C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				09260B6B21B38B7400B17B27 /* FriendApprovalViewController.swift */,
 				C92D8A47211CEF140051F414 /* cells */,
 				82FFF5282022CF12005F45AA /* Components */,
 				82E1AC231FF422D400209AEF /* NewFanpageController.swift */,
@@ -670,6 +694,7 @@
 				C9273DA6212BDDE800AC067F /* WelcomeViewController.swift */,
 				09756ED521A300B0005DDFC5 /* BugListViewController.swift */,
 				0915760321A7C5C8001618ED /* BugViewController.swift */,
+				09E19F9321BC962900A1E842 /* PetSelectorViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -677,10 +702,12 @@
 		C92D8A47211CEF140051F414 /* cells */ = {
 			isa = PBXGroup;
 			children = (
+				09260B6721B38AF900B17B27 /* FriendApprovalCell.swift */,
 				C927192B212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift */,
 				C92D8A48211CEF460051F414 /* GiftViewCell.swift */,
 				09756ED721A30498005DDFC5 /* BugsViewCell.swift */,
 				09756ED921A30500005DDFC5 /* BugsSectionHeader.swift */,
+				09E19F9521BCB85500A1E842 /* PetViewCell.swift */,
 			);
 			name = cells;
 			sourceTree = "<group>";
@@ -949,6 +976,7 @@
 				82BD5EFD1F92B58600BD8760 /* Int+Extension.swift in Sources */,
 				C930D4C62148C18700F67DA4 /* KenBurns+Helpers.swift in Sources */,
 				C930D4C42148B54400F67DA4 /* Double+Extensions.swift in Sources */,
+				09E19F8E21BA1B1000A1E842 /* UIWindow+Extension.swift in Sources */,
 				C98412D621485B890016CC40 /* KenBurns.swift in Sources */,
 				C77B55191CFFF3AD00FF375C /* HomeController.swift in Sources */,
 				0915760421A7C5C8001618ED /* BugViewController.swift in Sources */,
@@ -962,16 +990,20 @@
 				826844581FF058F3008BA13B /* NoConnectionController.swift in Sources */,
 				82F3F7CB202B38AC001E3DA5 /* Formatter+Extensions.swift in Sources */,
 				822D620D1FD62FBD0025481E /* SearchVideoCell.swift in Sources */,
+				09E19F9421BC962B00A1E842 /* PetSelectorViewController.swift in Sources */,
 				82C62C451F0440FA005A308E /* CategoryTableCollCell.swift in Sources */,
 				09756ED621A300B2005DDFC5 /* BugListViewController.swift in Sources */,
 				8252F6EF20104A14007B3952 /* NotificationFeedCell.swift in Sources */,
 				824E67C61F59960E0025096D /* VideoCollectionViewCell.swift in Sources */,
 				C7E095CF1D15C0020081F88C /* SettingCell.swift in Sources */,
 				82E66DB91FD4B51000968E88 /* NewVideoController.swift in Sources */,
+				09260B6A21B38B5B00B17B27 /* FriendApprovalLauncher.swift in Sources */,
 				82BAAF2E1EFE453E0021C405 /* Globals.swift in Sources */,
 				09756ED821A30499005DDFC5 /* BugsViewCell.swift in Sources */,
+				09260B7221B39EE900B17B27 /* Util.swift in Sources */,
 				C92ABB9B210E5505009CC646 /* NotificationSectionHeader.swift in Sources */,
 				82FFF52A2022CF6E005F45AA /* SelectorView.swift in Sources */,
+				09E19F9621BCB85500A1E842 /* PetViewCell.swift in Sources */,
 				C9253A91211277F4001B4A73 /* FeedSectionHeader.swift in Sources */,
 				C92CD2372060332F0080CB13 /* UINavigationController+Extension.swift in Sources */,
 				82477BB620090DD000A45922 /* ChatView.swift in Sources */,
@@ -980,9 +1012,11 @@
 				C77B55521D02345100FF375C /* VideoCell.swift in Sources */,
 				C92B3D3F20EC7EAC00700BA4 /* CustomHeader.swift in Sources */,
 				C7E095C91D14C6690081F88C /* SettingsLauncher.swift in Sources */,
+				09260B6821B38AF900B17B27 /* FriendApprovalCell.swift in Sources */,
 				C9383D62210593CB008E54D5 /* FriendsViewController.swift in Sources */,
 				8268445C1FF2A82B008BA13B /* LoginController+Extensions.swift in Sources */,
 				82C6F7591F8AA8F50090C725 /* Color+Extensions.swift in Sources */,
+				09E19F9221BB664A00A1E842 /* PetLauncher.swift in Sources */,
 				82DD00301F9CF21600CD19D7 /* NewGroupNameViewController.swift in Sources */,
 				C926096921015EC5000CFF84 /* PublicProfileLauncher.swift in Sources */,
 				824EDD771FDD5DB300D513D8 /* TakePicturesController.swift in Sources */,
@@ -1031,6 +1065,8 @@
 				8294F9D41FDA4EFC0082D99D /* MergeVideoViewController.swift in Sources */,
 				82557C5D2016EE1200752301 /* ChatFeedMethods.swift in Sources */,
 				8268445A1FF2950E008BA13B /* NewVideoController+Extensions.swift in Sources */,
+				09260B6E21B38E7C00B17B27 /* FriendApprovaButtonslView.swift in Sources */,
+				09260B6C21B38B7400B17B27 /* FriendApprovalViewController.swift in Sources */,
 				C92816F82135B55600FB3E52 /* FanpageSectionHeader.swift in Sources */,
 				C92BC7C82085AFB200EDEBCD /* GradientMaskView.swift in Sources */,
 				82C62C471F044950005A308E /* CategoryCollectionViewCell.swift in Sources */,

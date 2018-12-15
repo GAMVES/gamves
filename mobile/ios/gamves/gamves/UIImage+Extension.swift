@@ -42,9 +42,9 @@ extension UIImage {
         return coloredImage
     }
 
-    func imageWithColor(color1: UIColor) -> UIImage {
+    func imageWithColor(color: UIColor) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
-        color1.setFill()
+        color.setFill()
 
         let context = UIGraphicsGetCurrentContext()
         context?.translateBy(x: 0, y: self.size.height)
