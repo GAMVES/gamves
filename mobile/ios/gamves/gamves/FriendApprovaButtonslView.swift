@@ -191,6 +191,8 @@ class FriendApprovalButtonsView: UIView {
 
     func updateFriendRegisterApproval() {
 
+        // VERIFY IF A PENDING INVITATION EXISTS
+
         self.activityIndicatorView?.startAnimating()
 
         let friendApprovalPF = self.friendApproval.objectPF

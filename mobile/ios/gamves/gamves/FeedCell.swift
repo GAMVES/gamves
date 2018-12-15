@@ -95,6 +95,8 @@ FeedDelegate {
                 self.homeController?.selectContact(group: true)
             }
         }
+        
+        
 
         let itemNewChat = FloatyItem()    
         var chatRoomImage = UIImage(named: "chat_room_black")
@@ -112,7 +114,7 @@ FeedDelegate {
 
         }
         
-        let itemAddFriend = FloatyItem()
+        /*let itemAddFriend = FloatyItem()
         var addFriendImage = UIImage(named: "friend_add")
         addFriendImage = addFriendImage?.maskWithColor(color: UIColor.white)
         itemAddFriend.icon = addFriendImage
@@ -126,7 +128,7 @@ FeedDelegate {
                 self.homeController?.addFriend()
             }    
 
-        }
+        }*/
 
         self.floaty.addItem(item: itemNewGroup)  
         self.floaty.addItem(item: itemNewChat)  

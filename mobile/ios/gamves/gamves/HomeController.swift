@@ -474,9 +474,7 @@ CLLocationManagerDelegate {
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(self.chatViewController, animated: true)
-    } 
-
-   
+    }    
     
     func selectContact(group: Bool) {
         selectContactViewController.isGroup = group
@@ -515,7 +513,6 @@ CLLocationManagerDelegate {
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(bugListViewController, animated: true)
-
     }
     
     func showBugViewControllerForSetting(_ setting: Setting?, image: UIImage?, bug:GamvesBug?) {
