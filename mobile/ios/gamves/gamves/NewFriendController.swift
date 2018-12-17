@@ -467,79 +467,143 @@ class NewFriendController: UIViewController,
 
     @objc func handleAdd() {  
 
-        self.activityIndicatorView?.startAnimating()  
+        self.checkFriendInvitationExist(completionHandler: { ( exist ) -> () in
+
+            if !exist {                    
+
+                let countFriendsApproval = self.selectedUsers.count
+
+                var count = 0
+
+                for user in self.selectedUsers {
+
+                    if let userId = PFUser.current()?.objectId {                
+
+                        let friendsApproval: PFObject = PFObject(className: "FriendsApproval")
+
+                        friendsApproval["posterId"] = userId
+
+                        let name = Global.userDictionary[user.userId]?.firstName
+
+                        let familyId = Global.gamvesFamily.objectId
+
+                        print(familyId)
+
+                        friendsApproval["familyId"] = familyId 
+
+                        friendsApproval["approved"] = 0
+                        
+                        friendsApproval["friendId"] = user.userId
+
+                        friendsApproval["type"] = 1          
+                        
+                        friendsApproval.saveInBackground { (resutl, error) in
+                            
+                            if error == nil {
+
+                                if count == (countFriendsApproval - 1) {
+                                
+                                    self.activityIndicatorView?.stopAnimating()
+                                    
+                                    let title = "Friend Approval Requested!"
+                                    let message = "The invitations for becoming new friends have been sent to your parents for appoval. Thanks for submitting!"
+                                    
+                                    let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                                    
+                                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                 
+                                        
+                                        DispatchQueue.main.async {                               
+
+                                            Global.gamvesAllUsers[user.userId]?.isChecked = true  
+
+                                            self.getPendingApprovals(completionHandler: { ( result ) -> () in
+
+                                                if resutl {
+
+                                                    self.buildGroup()              
+
+                                                    self.tableView.reloadData()
+
+                                                }                                  
+
+                                            })                          
+                                        }            
+
+                                        self.navigationController?.popToRootViewController(animated: true)
+                                        self.homeController?.clearNewVideo()
+                                        
+                                    }))
+                                    
+                                    self.present(alert, animated: true)
+
+                                }
+
+                                count = count + 1 
+                            }
+                        }                       
+                    }
+                }          
+            }
+        })        
+    }
+
+
+
+    func checkFriendInvitationExist(completionHandler : @escaping (_ finished:Bool) -> ()) {
+
+        self.activityIndicatorView?.startAnimating()          
 
         let countFriendsApproval = self.selectedUsers.count
 
         var count = 0
+        var countSelected = self.selectedUsers.count
 
-        for user in self.selectedUsers {
+        for user in self.selectedUsers {            
 
-            let friendsApproval: PFObject = PFObject(className: "FriendsApproval")
-
+            var friendApprovalQuery = PFQuery(className:"FriendApproval")
+            
             if let userId = PFUser.current()?.objectId {
-                friendsApproval["posterId"] = userId    
-            }       
 
-            let name = Global.userDictionary[user.userId]?.firstName
+                friendApprovalQuery.whereKey("friendId", containedIn: [userId, user.userId])
+                friendApprovalQuery.whereKey("posterId", containedIn: [userId, user.userId])
+            }
 
-            let familyId = Global.gamvesFamily.objectId
+            friendApprovalQuery.whereKey("type", equalTo: 1)        
 
-            print(familyId)
-
-            friendsApproval["familyId"] = familyId 
-
-            friendsApproval["approved"] = 0
-            
-            friendsApproval["friendId"] = user.userId
-
-            friendsApproval["type"] = 1          
-            
-            friendsApproval.saveInBackground { (resutl, error) in
-                
-                if error == nil {
-
-                    if count == (countFriendsApproval - 1) {
+            friendApprovalQuery.getFirstObjectInBackground(block: { (friendApprovalPF, error) in               
+        
+                if friendApprovalPF != nil
+                {               
                     
-                        self.activityIndicatorView?.stopAnimating()
-                        
-                        let title = "Friend Approval Requested!"
-                        let message = "The invitations for becoming new friends have been sent to your parents for appoval. Thanks for submitting!"
-                        
-                        let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
-                        
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                 
-                            
-                            DispatchQueue.main.async {                               
+                    let index = self.selectedUsers.indexOfObject(object: user)                 
 
-                                Global.gamvesAllUsers[user.userId]?.isChecked = true  
+                    self.selectedUsers.remove(at: index)
 
-                                self.getPendingApprovals(completionHandler: { ( result ) -> () in
+                    let message = "\(user.name) has already invited you to be a friend, try again. Please check your pending intivations."
 
-                                    if resutl {
+                    self.presentAlertWithTitle(title: "Invitation found!",message:  message, completion: { ( id ) -> () in
 
-                                        self.buildGroup()              
+                        self.collectionView.reloadData()
 
-                                        self.tableView.reloadData()
+                        completionHandler(true)
 
-                                    }                                  
+                    })
 
-                                })                          
-                            }            
+                    self.activityIndicatorView?.stopAnimating()  
 
-                            self.navigationController?.popToRootViewController(animated: true)
-                            self.homeController?.clearNewVideo()
-                            
-                        }))
-                        
-                        self.present(alert, animated: true)
+                }  else {
+
+                    if count == ( countSelected-1 ) {
+
+                        completionHandler(false)
 
                     }
 
-                    count = count + 1 
-                }
-            }
-        }
+                }           
+
+                count = count + 1   
+            })
+        }         
     }
 
     func getPendingApprovals(completionHandler : @escaping (_ resutl:Bool) -> ()) {

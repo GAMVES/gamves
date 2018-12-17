@@ -238,17 +238,18 @@ class FriendApprovalButtonsView: UIView {
     }
     
     func addFriend() {
-
+        
+        var posterId = self.friendApproval.posterId           
+        var friendId = self.friendApproval.friendId  
+        
         self.activityIndicatorView?.startAnimating()
 
         let friendApprovalPF = self.friendApproval.objectPF
 
         friendApprovalPF?["approved"] = 2
         
-        friendApprovalPF?.saveInBackground(block: { (resutlFA, error) in            
-           
-            var posterId = self.friendApproval.posterId           
-            let friendId = self.friendApproval.friendId            
+        friendApprovalPF?.saveInBackground(block: { (resutlFA, error) in                      
+            
 
             self.getFriendIfnotExist(userId: friendId, friendId: posterId, completionHandler: { ( resutl ) -> () in
 
@@ -279,8 +280,9 @@ class FriendApprovalButtonsView: UIView {
                     
             })
 
-        })
+        })            
     }
+    
 
     func getFriendIfnotExist(userId: String, friendId: String, completionHandler : @escaping (_ result: Bool) -> ()) {
 

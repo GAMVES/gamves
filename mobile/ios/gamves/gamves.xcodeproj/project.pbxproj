@@ -15,6 +15,7 @@
 		09260B6C21B38B7400B17B27 /* FriendApprovalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B6B21B38B7400B17B27 /* FriendApprovalViewController.swift */; };
 		09260B6E21B38E7C00B17B27 /* FriendApprovaButtonslView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B6D21B38E7B00B17B27 /* FriendApprovaButtonslView.swift */; };
 		09260B7221B39EE900B17B27 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B7121B39EE800B17B27 /* Util.swift */; };
+		0926CEB021C80D50008EF48D /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0926CEAF21C80D50008EF48D /* UIViewController+Extension.swift */; };
 		09550F6B2178F5FF00FA7F3D /* UserDefaults+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */; };
 		09687E95217C49D6001F7578 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09687E94217C49D6001F7578 /* ShareViewController.swift */; };
 		09687E98217C49D7001F7578 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09687E96217C49D7001F7578 /* MainInterface.storyboard */; };
@@ -182,6 +183,7 @@
 		09260B6B21B38B7400B17B27 /* FriendApprovalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendApprovalViewController.swift; sourceTree = "<group>"; };
 		09260B6D21B38E7B00B17B27 /* FriendApprovaButtonslView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendApprovaButtonslView.swift; sourceTree = "<group>"; };
 		09260B7121B39EE800B17B27 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Util.swift; path = ../../gamvesparents/gamvesparents/Util.swift; sourceTree = "<group>"; };
+		0926CEAF21C80D50008EF48D /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		0938B84E2182E1FA001E3A34 /* shared.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = shared.entitlements; sourceTree = "<group>"; };
 		09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+helpers.swift"; sourceTree = "<group>"; };
 		09687E92217C49D4001F7578 /* shared.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shared.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -543,6 +545,7 @@
 				C92CD2362060332F0080CB13 /* UINavigationController+Extension.swift */,
 				C930D4C32148B54400F67DA4 /* Double+Extensions.swift */,
 				09E19F8D21BA1B0F00A1E842 /* UIWindow+Extension.swift */,
+				0926CEAF21C80D50008EF48D /* UIViewController+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -971,6 +974,7 @@
 				826D58341F8D98C50014A2C8 /* ProfileCell.swift in Sources */,
 				82418F3D1EF86FBC00D7E6BC /* FanpagePage.swift in Sources */,
 				8212D6F51F74B46C00F2A121 /* Colors.swift in Sources */,
+				0926CEB021C80D50008EF48D /* UIViewController+Extension.swift in Sources */,
 				C978A4B32140F36A0063EBE1 /* FanpageTableCell.swift in Sources */,
 				825E24041F984C14009462CD /* Protocols.swift in Sources */,
 				82BD5EFD1F92B58600BD8760 /* Int+Extension.swift in Sources */,

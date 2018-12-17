@@ -24,4 +24,8 @@ extension Array {
         copied.shuffle()
         return copied
     }
+    
+    func indexOfObject(object : AnyObject) -> NSInteger {
+        return (self as NSArray).index(of: object)
+    }
 }

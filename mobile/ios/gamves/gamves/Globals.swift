@@ -2056,7 +2056,4 @@ class Global: NSObject
         return image!
     } 
 
-    
-
-
 }
