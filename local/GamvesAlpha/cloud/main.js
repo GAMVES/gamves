@@ -139,7 +139,13 @@
 												profile.save(null, {useMasterKey: true}, {
 
 								                    success: function(result) {
-								                        response.success(resutl);
+
+								                    	loadPetsArray( function(universeFile){
+
+								                    		response.success(resutl);
+
+								                    	});
+								                        
 								                    },
 								                    error: function(error) {
 								                        response.error(error);
@@ -306,6 +312,143 @@
 
 		            		callback(universeFile);
 
+		            	}
+		            	id++;
+	    			},
+					error: function (response, error) {
+					    console.log('Error: ' + error.message);
+					}
+
+				});
+
+				cd++;            	
+	   		});    			
+		}
+	}
+
+	function loadPetsArray(callback) {	
+
+		var files = [
+			"https://s3.amazonaws.com/gamves/pets/dog.png",
+			"https://s3.amazonaws.com/gamves/pets/cat.png",
+			"https://s3.amazonaws.com/gamves/pets/chicken.png",
+			"https://s3.amazonaws.com/gamves/pets/pig.png"			
+			/*"https://s3.amazonaws.com/gamves/images/personal_background.png",
+			"https://s3.amazonaws.com/gamves/images/trending.png",
+			"https://s3.amazonaws.com/gamves/images/trending_background.png",    		
+			"https://s3.amazonaws.com/gamves/images/universe.png",
+			"https://s3.amazonaws.com/gamves/images/image_0.png",
+			"https://s3.amazonaws.com/gamves/images/image_1.png",
+			"https://s3.amazonaws.com/gamves/images/image_2.png",
+			"https://s3.amazonaws.com/gamves/images/image_3.png",
+			"https://s3.amazonaws.com/gamves/images/image_4.png",
+			"https://s3.amazonaws.com/gamves/images/welcome.png"*/
+		];
+
+		var count = files.length;		
+
+		for (var i=0; i<count; i++) {
+
+			var imagesArray = [];
+
+			var _url = files[i];
+			
+			var cd=0, id=0;						
+
+			Parse.Cloud.httpRequest({url: _url}).then(function(httpResponse) {   			
+
+				var headers = httpResponse.headers;
+				var etag = headers.etag.trim(); 
+
+				etag.replace(/['"]+/g, '')
+
+				console.log("etag: " + etag);			    			
+
+				var name, description;               
+
+				var image_0 			= '3eb6e5073338bb1eff8807095e72c55c';
+				var image_1 			= '8aa2d80695cac2f1ac7151715693cbba';
+				var image_2 			= '373be15f6e6f58af9b76704f47790445';
+				var image_3 			= 'f8fa92301bbfe323c3f19cd13d2355e7';
+				
+				/*var image_4 			= 'bbec6d8f987fc64b04';
+				var personal 			= '2a05a8c7c83314a78f';
+				var personal_background = '3eef7323eec2ca381b';
+				var trending 			= 'de45444c2e8a6127a3';
+				var trending_background = '162cb6095941216264';
+				var universe 			= '3093cdd35eaf6ba21f';
+				var welcome 			= 'dca79d3f7006b25a20';*/
+				
+				if (etag.indexOf(image_0) >= 0) {
+
+					name = 'dog';
+					descritpion = 'The friendly dog'; 
+				
+				} else if (etag.indexOf(image_1) >= 0) {
+
+					name = 'cat';
+					descritpion = 'The lovely cat'; 
+				
+				} else if (etag.indexOf(image_2) >= 0) {
+
+					name = 'chicken';
+					descritpion = 'The singing chicken'; 
+				
+				} else if (etag.indexOf(image_3) >= 0) {
+
+					name = 'pig';				
+					descritpion = 'The fat pig'; 
+				} 
+
+				/*else if (etag.indexOf(image_4) >= 0) {
+
+					name = 'image_4';
+				
+				} else if (etag.indexOf(personal) >= 0) {
+					
+					name = 'personal'; 
+				} else if (etag.indexOf(personal_background) >= 0) {
+
+					name = 'personal_background'; 
+				} else if (etag.indexOf(trending) >= 0) {
+
+					name = 'trending';  
+				} else if (etag.indexOf(trending_background) >= 0) {
+
+					name = 'trending_background'; 
+				} else if (etag.indexOf(universe) >= 0) {
+
+					name = 'universe';  
+
+					
+				} else if (etag.indexOf(welcome) >= 0) {
+
+					name = 'welcome'; 
+				}*/
+
+				//console.log("name: " + name);
+				//console.log("---------------------------------");			    			
+
+				var imageBuffer = httpResponse.buffer;
+	            var base64 = imageBuffer.toString("base64");                          
+
+	            var Pet = Parse.Object.extend("Pets");
+				var pet = new Pet();
+
+	            var file = new Parse.File(name+".jpg", { base64: base64 }, "image/png");
+	            pet.set("image", file);
+	            pet.set("name", name); 	
+	            pet.set("descritpion", descritpion); 					                       
+
+	            pet.save(null, {											
+					success: function (savedImage) {	 						
+
+						console.log("id: "+id);
+						console.log("count: "+count);
+
+		            	if ( id == (count - 1) ) {
+		            		
+		            		callback();
 		            	}
 		            	id++;
 	    			},
