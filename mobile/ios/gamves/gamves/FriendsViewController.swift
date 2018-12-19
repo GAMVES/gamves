@@ -136,6 +136,24 @@ FriendProtocol
         
         self.view.addSubview(floaty)
 
+        if Global.gamvesAllUsers.count == 0 {
+
+            self.activityIndicatorView?.startAnimating()
+
+            Global.fetchUsers(completionHandler: { (count) in
+                
+                print(count)
+
+                if count > 0 {
+
+                    self.collectionView.reloadData()
+
+                    self.activityIndicatorView?.stopAnimating()
+                         
+                }
+            })
+        }
+
     }
     
     
@@ -204,7 +222,7 @@ FriendProtocol
             
         } else if section == 1 {
             
-            countItems = Global.allUsers.count
+            countItems = Global.gamvesAllUsers.count
             
             if countItems == 0
             {
@@ -296,7 +314,7 @@ FriendProtocol
             
         } else if indexPath.section == 1 {
             
-            let countItems = Global.allUsers.count
+            let countItems = Global.gamvesAllUsers.count
             
             if countItems == 0 {
                 
@@ -310,10 +328,10 @@ FriendProtocol
                 
                 let cellf = self.collectionView.dequeueReusableCell(withReuseIdentifier: self.friendCell, for: indexPath) as! FriendCollectionViewCell
                 
-                let keysFriendsArray = Array(Global.allUsers.keys)
+                let keysFriendsArray = Array(Global.gamvesAllUsers.keys)
                 
                 let keyIndexFriend = keysFriendsArray[index] as String
-                let friend:GamvesUser = Global.allUsers[keyIndexFriend]! as GamvesUser
+                let friend:GamvesUser = Global.gamvesAllUsers[keyIndexFriend]! as GamvesUser
                 
                 cellf.profileImageView.image    = friend.avatar
                 cellf.nameLabel.text            = friend.name
@@ -357,12 +375,14 @@ FriendProtocol
             
         } else if section == 1 {
             
-            let keysFriendArray = Array(Global.allUsers.keys)
-            let keyFriendIndex = keysFriendArray[index]
-            let friend:GamvesUser = Global.allUsers[keyFriendIndex]!
+            if Global.gamvesAllUsers.count > 0 {
             
-            print("user: \(friend.name)")
+                let keysFriendArray = Array(Global.gamvesAllUsers.keys)
+                let keyFriendIndex = keysFriendArray[index]
+                let friend:GamvesUser = Global.gamvesAllUsers[keyFriendIndex]!
             
+                print("user: \(friend.name)")
+            }
         }
         
         

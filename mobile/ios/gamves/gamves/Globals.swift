@@ -140,7 +140,7 @@ class Global: NSObject
 
     static var friends = Dictionary<String, GamvesUser>()
 
-    static var allUsers = Dictionary<String, GamvesUser>()
+    //static var allUsers = Dictionary<String, GamvesUser>()
 
     static var friendsAmount = Int()
     
@@ -586,7 +586,7 @@ class Global: NSObject
         })        
     }
 
-    static func fetchUsers(completionHandler : @escaping (_ resutl:Bool) -> ())
+    static func fetchUsers(completionHandler : @escaping (_ count:Int) -> ())
     {
         let userQuery = PFQuery(className:"_User")        
         userQuery.whereKey("iDUserType", containedIn: [2,3])
@@ -616,7 +616,7 @@ class Global: NSObject
 
                             if (usersCount! - 1) == count
                             {
-                                completionHandler(true)
+                                completionHandler(usersCount!)
                             }
 
                             count = count + 1
@@ -631,12 +631,14 @@ class Global: NSObject
 
                         if (usersCount! - 1) == count
                         {
-                            completionHandler(true)
+                            completionHandler(usersCount!)
                         }
                         
                         count = count + 1
                     }                    
                 }
+            } else {
+                completionHandler(0)
             }
         })
     }  

@@ -35,8 +35,8 @@ CLLocationManagerDelegate {
         return selector
     }()
 
-    lazy var newFriendController: NewFriendController = {
-        let newFriend = NewFriendController()
+    lazy var friendNewController: FriendNewController = {
+        let newFriend = FriendNewController()
         newFriend.homeController = self
         return newFriend
     }()    
@@ -492,10 +492,10 @@ CLLocationManagerDelegate {
     }  
 
     func addFriend() {        
-        newFriendController.view.backgroundColor = UIColor.white
+        friendNewController.view.backgroundColor = UIColor.white
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
-        navigationController?.pushViewController(newFriendController, animated: true)
+        navigationController?.pushViewController(friendNewController, animated: true)
     }  
     
     

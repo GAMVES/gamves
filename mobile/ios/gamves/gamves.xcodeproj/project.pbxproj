@@ -146,7 +146,7 @@
 		C98FD87F2106131200631D78 /* FriendEmptyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */; };
 		C98FD8812106133F00631D78 /* FriendCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */; };
 		C98FD883210613B000631D78 /* FriendSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98FD882210613B000631D78 /* FriendSectionHeader.swift */; };
-		C9A0011C20F3CEE900906F33 /* NewFriendController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0011B20F3CEE900906F33 /* NewFriendController.swift */; };
+		C9A0011C20F3CEE900906F33 /* FriendNewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0011B20F3CEE900906F33 /* FriendNewController.swift */; };
 		D6D11644A0515CF14006BC5A /* Pods_gamves.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE0CDF0FEB14AE73EB0AA9EC /* Pods_gamves.framework */; };
 /* End PBXBuildFile section */
 
@@ -323,7 +323,7 @@
 		C98FD87E2106131200631D78 /* FriendEmptyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendEmptyCollectionViewCell.swift; sourceTree = "<group>"; };
 		C98FD8802106133F00631D78 /* FriendCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendCollectionViewCell.swift; sourceTree = "<group>"; };
 		C98FD882210613B000631D78 /* FriendSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendSectionHeader.swift; sourceTree = "<group>"; };
-		C9A0011B20F3CEE900906F33 /* NewFriendController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendController.swift; sourceTree = "<group>"; };
+		C9A0011B20F3CEE900906F33 /* FriendNewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendNewController.swift; sourceTree = "<group>"; };
 		CAEA45094A7BD3AFEBAB82CD /* Pods_shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -690,7 +690,7 @@
 				82DD002F1F9CF21500CD19D7 /* NewGroupNameViewController.swift */,
 				82E66DB81FD4B51000968E88 /* NewVideoController.swift */,
 				82B0343C1FDFC35F009CD1A7 /* YouTubePlayerController.swift */,
-				C9A0011B20F3CEE900906F33 /* NewFriendController.swift */,
+				C9A0011B20F3CEE900906F33 /* FriendNewController.swift */,
 				C9383D61210593CB008E54D5 /* FriendsViewController.swift */,
 				C9253A8E211274C9001B4A73 /* GiftViewController.swift */,
 				C92F5D03211CE1360056E482 /* NotificationViewController.swift */,
@@ -1054,7 +1054,7 @@
 				824E67D41F5D781C0025096D /* InfoView.swift in Sources */,
 				826B8CC420184C37008C19A3 /* MediaController.swift in Sources */,
 				C92BCA8220F44F8200BD37F0 /* FriendsTableViewCell.swift in Sources */,
-				C9A0011C20F3CEE900906F33 /* NewFriendController.swift in Sources */,
+				C9A0011C20F3CEE900906F33 /* FriendNewController.swift in Sources */,
 				82DD00371F9D1C8300CD19D7 /* GroupUserCollectionViewCell.swift in Sources */,
 				82970BA41F1DBFF000F6ABAD /* VideoPage.swift in Sources */,
 				82E1AC241FF422D400209AEF /* NewFanpageController.swift in Sources */,

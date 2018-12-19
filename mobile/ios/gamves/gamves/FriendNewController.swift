@@ -9,7 +9,7 @@ import UIKit
 import NVActivityIndicatorView
 import Parse
 
-class NewFriendController: UIViewController,
+class FriendNewController: UIViewController,
     UICollectionViewDataSource,
     UICollectionViewDelegate,
     UICollectionViewDelegateFlowLayout,
@@ -52,14 +52,16 @@ class NewFriendController: UIViewController,
    
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 5
+        layout.minimumLineSpacing = 5
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = UIColor.gamvesGreenColor
         cv.dataSource = self
         cv.delegate = self
+        cv.translatesAutoresizingMaskIntoConstraints = false
         return cv
-    }()
+    }()    
 
     let friendsAvailable: PaddingLabel = {
         let label = PaddingLabel()
@@ -159,21 +161,20 @@ class NewFriendController: UIViewController,
         self.collectionView.register(CatFanSelectorViewCell.self, forCellWithReuseIdentifier: cellIdCollectionView)
         self.activityIndicatorView?.startAnimating()
 
-        Global.fetchUsers(completionHandler: { (resutl) in
+        //Global.fetchUsers(completionHandler: { (count) in
 
-            if resutl {
+            //if count > 0 {
 
 
-                self.getPendingApprovals(completionHandler: { ( result ) -> () in
+        self.getPendingApprovals(completionHandler: { ( result ) -> () in
+           
+           self.buildGroup()                         
 
-                    if resutl {
+        })        
+       
 
-                        self.buildGroup()              
-                    }
-
-                })        
-            }
-        })
+            //}
+        //})
 
         self.disableAddButton()
 
@@ -402,6 +403,11 @@ class NewFriendController: UIViewController,
         return cell 
     } 
 
+    /*func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets
+    {
+        return UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+    }*/
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {  
         
         print(indexPath.row)
@@ -467,9 +473,9 @@ class NewFriendController: UIViewController,
 
     @objc func handleAdd() {  
 
-        self.checkFriendInvitationExist(completionHandler: { ( exist ) -> () in
+        //self.checkFriendInvitationExist(completionHandler: { ( exist ) -> () in
 
-            if !exist {                    
+            //if !exist {                    
 
                 let countFriendsApproval = self.selectedUsers.count
 
@@ -543,13 +549,12 @@ class NewFriendController: UIViewController,
                         }                       
                     }
                 }          
-            }
-        })        
+            //}
+        //})        
     }
 
 
-
-    func checkFriendInvitationExist(completionHandler : @escaping (_ finished:Bool) -> ()) {
+    /*func checkFriendInvitationExist(completionHandler : @escaping (_ finished:Bool) -> ()) {
 
         self.activityIndicatorView?.startAnimating()          
 
@@ -598,15 +603,14 @@ class NewFriendController: UIViewController,
                         completionHandler(false)
 
                     }
-
                 }           
 
                 count = count + 1   
             })
         }         
-    }
+    }*/
 
-    func getPendingApprovals(completionHandler : @escaping (_ resutl:Bool) -> ()) {
+    func getPendingApprovals(completionHandler: @escaping (_ resutl:Bool) -> ()) {
 
 
         let queryFriendsApproval = PFQuery(className: "FriendsApproval")
@@ -614,6 +618,7 @@ class NewFriendController: UIViewController,
         if let userId = PFUser.current()?.objectId {
 
             queryFriendsApproval.whereKey("posterId", equalTo: userId)
+            queryFriendsApproval.whereKey("friendId", equalTo: userId)            
         }
 
         queryFriendsApproval.whereKey("type", equalTo: 1)
