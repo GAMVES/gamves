@@ -13,7 +13,7 @@ import PopupDialog
 import NVActivityIndicatorView
 
 protocol FriendApprovalProtocol {
-    func closedRefresh()
+    func refresh()
     func update(name:String)
     func usersAdded(friendName:String, posterName:String)
 }
@@ -78,20 +78,26 @@ FriendApprovalProtocol
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.closedRefresh), name: NSNotification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: nil)
+        
+        self.activityIndicatorView?.startAnimating()
+        
+        self.refresh()
         
     }
     
 
     override func viewDidAppear(_ animated: Bool) {
         self.collectionView.reloadData()
+        
+        self.refresh()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    @objc func closedRefresh() {   
+    @objc func refresh() {   
 
         self.activityIndicatorView?.startAnimating()    
 
@@ -347,7 +353,7 @@ FriendApprovalProtocol
         
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                                             
 
-            self.closedRefresh()            
+            self.refresh()            
             
         }))
         
@@ -365,12 +371,11 @@ FriendApprovalProtocol
         
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in                                                                             
 
-            self.closedRefresh()            
+            self.refresh()            
             
         }))
         
         self.present(alert, animated: true)
-
         
     }
   

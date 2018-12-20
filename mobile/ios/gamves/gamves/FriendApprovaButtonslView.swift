@@ -137,7 +137,7 @@ class FriendApprovalButtonsView: UIView {
 
             print(negativeButtonText)
 
-            self.delegate.closedRefresh()
+            self.delegate.refresh()
             self.closeApprovalWindow()
 
         },{()->() in
@@ -181,7 +181,7 @@ class FriendApprovalButtonsView: UIView {
         
         friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
            
-           self.delegate.closedRefresh()
+           self.delegate.refresh()
            self.closeApprovalWindow()
             
         })            

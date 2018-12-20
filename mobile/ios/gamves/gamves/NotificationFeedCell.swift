@@ -83,8 +83,7 @@ class NotificationFeedCell: BaseCell {
         let view = UIView() 
         //view.backgroundColor = UIColor.brown           
         return view
-    }()           
-    
+    }()               
     
     let descriptionTextView: UITextView = {
         let textView = UITextView()
@@ -93,6 +92,7 @@ class NotificationFeedCell: BaseCell {
         textView.font = UIFont.systemFont(ofSize: 15)
         textView.backgroundColor = UIColor.clear    
         textView.textColor = UIColor.gray
+        textView.isEditable = false
         return textView
     }()    
 

@@ -435,7 +435,11 @@ UICollectionViewDelegateFlowLayout {
                 print(fanpage.fanpageObj?.objectId)
                 self.homeController?.setCurrentPage(current: 2, direction: 1, data: fanpage)*/
 
-            } else if notification.type == 3 || notification.type == 4 { //friend && birthday  
+            } else if notification.type == 3 { //friend
+
+                self.homeController!.showFriendApproval()
+
+            } else if notification.type == 4 { //birthday  
 
                 let posterId = notification.posterId
 
@@ -534,8 +538,9 @@ UICollectionViewDelegateFlowLayout {
                             if let userId = PFUser.current()?.objectId {    
 
                                 Global.getFriendsAmount(posterId: userId, completionHandler: { ( countFriends ) -> () in  })
-
                             }
+
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: self)
 
                         } else if notification.type == 4 { //Birthday
 
@@ -545,7 +550,6 @@ UICollectionViewDelegateFlowLayout {
 
                         } else if notification.type == 6 { //Welcome
 
-
                         }
 
  
@@ -554,8 +558,12 @@ UICollectionViewDelegateFlowLayout {
                         }               
 
                         notification.type = type!
+                        
+                        var cover:AnyObject!                        
 
-                        let cover   = notificationPF["cover"] as! PFFileObject
+                        if notificationPF["cover"] != nil {
+                            cover = notificationPF["cover"] as! PFFileObject
+                        }                        
 
                         let avatar = notificationPF["posterAvatar"] as! PFFileObject
 
@@ -565,54 +573,32 @@ UICollectionViewDelegateFlowLayout {
 
                                 if let imageAvatarData = imageAvatar {
 
-                                    notification.avatar = UIImage(data:imageAvatarData)                                  
+                                    notification.avatar = UIImage(data:imageAvatarData)  
 
-                                    cover.getDataInBackground(block: { (imageCover, error) in
-                
-                                        if error == nil {
+                                    if cover != nil {
 
-                                            if let imageCoverData = imageCover {
+                                        cover!.getDataInBackground(block: { (imageCover, error) in
+                    
+                                            if error == nil {
 
-                                                notification.cover = UIImage(data:imageCoverData)
+                                                if let imageCoverData = imageCover {
 
-                                                if notification.isNew {
-                                                    
-                                                    Global.notificationsNew.append(notification)                                     
-                                                    
-                                                } else {
-                                                
-                                                    Global.notifications.append(notification)
+                                                    notification.cover = UIImage(data:imageCoverData)
+
+                                                    self.storeNotification(count: count, notificationsCount: notificationsCount!, notification: notification)
+
+                                                    count = count + 1
                                                 }
-
-                                                if count == (notificationsCount! - 1) {                          
-                                                    
-
-                                                    var sortedNotifications = Global.notifications.sorted(by: {
-                                                            $0.date.compare($1.date) == .orderedDescending
-                                                    })
-                                                        
-                                                    Global.notifications = sortedNotifications
-                                                    
-                                                    if Global.notificationsNew.count > 0 {
-                                                    
-                                                        var sortedNewNotifications = Global.notificationsNew.sorted(by: {
-                                                            $0.date.compare($1.date) == .orderedDescending
-                                                        })
-                                                        
-                                                        Global.notificationsNew = sortedNewNotifications
-                                                    }
-
-                                                    self.notificationLoaded = true
-                                                    
-                                                    self.collectionView.reloadData()
-                                                    
-                                                    self.activityView.stopAnimating()
-                                                }
-                                                
-                                                count = count + 1
                                             }
-                                        }
-                                    })
+                                        })
+
+                                    } else {
+
+                                        self.storeNotification(count: count, notificationsCount: notificationsCount!, notification: notification)
+
+                                        count = count + 1
+                                    }
+
                                 }
                             }
                         })
@@ -626,6 +612,48 @@ UICollectionViewDelegateFlowLayout {
             }
         })
     
+    }
+
+    func storeNotification(count:Int, notificationsCount:Int, notification:GamvesNotification) 
+    {
+
+        if notification.isNew {
+                                                    
+            Global.notificationsNew.append(notification)                                     
+            
+        } else {
+        
+            Global.notifications.append(notification)
+        }
+
+        if count == (notificationsCount - 1) {
+            
+
+            var sortedNotifications = Global.notifications.sorted(by: {
+                    $0.date.compare($1.date) == .orderedDescending
+            })
+                
+            Global.notifications = sortedNotifications
+            
+            if Global.notificationsNew.count > 0 {
+            
+                var sortedNewNotifications = Global.notificationsNew.sorted(by: {
+                    $0.date.compare($1.date) == .orderedDescending
+                })
+                
+                Global.notificationsNew = sortedNewNotifications
+            }
+
+            self.notificationLoaded = true
+            
+            self.collectionView.reloadData()
+            
+            self.activityView.stopAnimating()
+        }
+        
+        //return count
+
+        //count = count + 1
     }
     
     

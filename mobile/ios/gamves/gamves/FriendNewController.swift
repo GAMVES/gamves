@@ -491,7 +491,7 @@ class FriendNewController: UIViewController,
 
                         let name = Global.userDictionary[user.userId]?.firstName
 
-                        let familyId = Global.gamvesFamily.objectId
+                        let familyId = user.familyId  //Global.gamvesFamily.objectId
 
                         print(familyId)
 
@@ -512,7 +512,7 @@ class FriendNewController: UIViewController,
                                     self.activityIndicatorView?.stopAnimating()
                                     
                                     let title = "Friend Approval Requested!"
-                                    let message = "The invitations for becoming new friends have been sent to your parents for appoval. Thanks for submitting!"
+                                    let message = "The invitations for becoming new friends have been sent for approval. Thanks for submitting!"
                                     
                                     let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                                     
