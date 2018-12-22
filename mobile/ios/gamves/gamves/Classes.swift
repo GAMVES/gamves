@@ -49,6 +49,8 @@ class FriendApproval
     var approved = Int()    
     //var thumbnail:UIImage?
     var type = Int()
+
+    var invite = Bool()
     
 }
 

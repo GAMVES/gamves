@@ -398,7 +398,9 @@ UICollectionViewDelegateFlowLayout {
             
         }
         
-        //Everything here is wrong 
+        //Everything here is wrong
+        
+        print(notification.posterId)
 
         if notification.posterId != PFUser.current()?.objectId {
 

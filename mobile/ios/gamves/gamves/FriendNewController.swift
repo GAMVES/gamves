@@ -491,11 +491,15 @@ class FriendNewController: UIViewController,
 
                         let name = Global.userDictionary[user.userId]?.firstName
 
-                        let familyId = user.familyId  //Global.gamvesFamily.objectId
+                        let familyFriendId = user.familyId  
+                        let familyPosterId = Global.gamvesFamily.objectId
 
-                        print(familyId)
+                        print(familyFriendId)
+                        print(familyPosterId)
 
-                        friendsApproval["familyId"] = familyId 
+                        friendsApproval["familyFriendId"] = familyFriendId 
+                        
+                        friendsApproval["familyPosterId"] = familyPosterId 
 
                         friendsApproval["approved"] = 0
                         

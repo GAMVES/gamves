@@ -26,6 +26,19 @@ class FriendApprovalCell: BaseCell {
         //view.backgroundColor = UIColor.cyan
         return view
     }() 
+    
+    let typeView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.cyan   
+        return view
+    }()
+
+    let typeIcon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill        
+        imageView.layer.masksToBounds = true
+        return imageView
+    }()
 
     let typeLabel: UILabel = {
         let label = UILabel()        
@@ -36,7 +49,7 @@ class FriendApprovalCell: BaseCell {
         label.textAlignment = .center
         label.textColor = UIColor.white        
         return label
-    }()
+    }()    
     
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -101,15 +114,15 @@ class FriendApprovalCell: BaseCell {
     fileprivate func setupContainerView() {      
         
         self.addSubview(self.containerView)
-        self.addSubview(self.typeLabel)        
+        self.addSubview(self.typeView)        
         
-        self.addConstraintsWithFormat("H:|-90-[v0][v1(120)]-20-|", views: self.containerView, self.typeLabel)
+        self.addConstraintsWithFormat("H:|-90-[v0][v1(80)]-10-|", views: self.containerView, self.typeView)
         
         self.addConstraintsWithFormat("V:[v0(50)]", views: self.containerView)
-        self.addConstraintsWithFormat("V:[v0(50)]", views: self.typeLabel)
+        self.addConstraintsWithFormat("V:[v0(100)]", views: self.typeView)
         
         self.addConstraint(NSLayoutConstraint(item: self.containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
-        self.addConstraint(NSLayoutConstraint(item: self.typeLabel, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+        self.addConstraint(NSLayoutConstraint(item: self.typeView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
         self.containerView.addSubview(self.nameLabel)
         self.containerView.addSubview(self.statusLabel)
@@ -117,6 +130,13 @@ class FriendApprovalCell: BaseCell {
         self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: self.nameLabel)
         self.containerView.addConstraintsWithFormat("V:|[v0]-10-[v1(24)]|", views: self.nameLabel, self.statusLabel)
         self.containerView.addConstraintsWithFormat("H:|[v0]-12-|", views: self.statusLabel)    
+
+        self.typeView.addSubview(self.typeIcon)
+        self.typeView.addSubview(self.typeLabel)
+        
+        self.typeView.addConstraintsWithFormat("H:|[v0]|", views: self.typeIcon)
+        self.typeView.addConstraintsWithFormat("H:|[v0]|", views: self.typeLabel)    
+        self.typeView.addConstraintsWithFormat("V:|[v0]-10-[v1]|", views: self.typeIcon, self.typeLabel)       
      
         
     }

@@ -160,16 +160,13 @@ class FriendApprovalButtonsView: UIView {
     func closeApprovalWindow() {
         
         //REMOVE IF EXISTS VIDEO RUNNING
-        /*for subview in (UIApplication.shared.keyWindow?.subviews)! {
+        for subview in (UIApplication.shared.keyWindow?.subviews)! {
             
             if (subview.tag == 1)
             {
-                if self.approvalType == ApprovalType.TypeVideo {                    
-                    //self.playerView.handlePause()
-                }
                 subview.removeFromSuperview()
             }
-        }*/
+        }
     }
 
 
@@ -305,7 +302,6 @@ class FriendApprovalButtonsView: UIView {
 
                         completionHandler(false) 
                     }
-
                 })
 
             } else {               
@@ -326,11 +322,7 @@ class FriendApprovalButtonsView: UIView {
                     }
 
                 })
-
-            }        
-
-            
+            }                    
         })
-    }       
-
+    }
 }

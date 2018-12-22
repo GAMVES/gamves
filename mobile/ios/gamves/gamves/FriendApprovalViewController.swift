@@ -211,8 +211,8 @@ FriendApprovalProtocol
             cella.nameLabel.text = friendApproval.title    
 
             let type =  friendApproval.type
-            let approved = friendApproval.approved       
-
+            let approved = friendApproval.approved
+            let invite = friendApproval.invite
 
             if approved == 0  || approved == -1 { // NOT
                 
@@ -231,9 +231,28 @@ FriendApprovalProtocol
                 
                 cella.checkLabel.isHidden = false
                 
+            } else if approved == 2 { //APPROVED
+                
+                cella.statusLabel.text = "APPROVED"
+                cella.checkLabel.isHidden = true
+
+                cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: "✓" )
+            
             }
 
-            if type == 1 {
+            if invite {
+
+                cella.typeLabel.text = "SENT" 
+                cella.typeLabel.backgroundColor = UIColor.gamvesLightBlueColor
+
+            } else {
+
+                cella.typeLabel.text = "RECEIVED" 
+                cella.typeLabel.backgroundColor = UIColor.gamvesGreenColor
+
+            }
+
+            /*if type == 1 {
 
                 if approved == 1 { //SENT
             
@@ -244,7 +263,7 @@ FriendApprovalProtocol
                 
                 }  
 
-                cella.typeLabel.text = "INVITED\nFRIEND"
+                cella.typeLabel.text = "INVITED\nFRIEND" //"INVITED\nFRIEND"
                 cella.typeLabel.backgroundColor = UIColor.gamvesLightBlueColor
 
 
@@ -253,16 +272,7 @@ FriendApprovalProtocol
                 cella.typeLabel.text = "FRIEND\nINVITATION"
                 cella.typeLabel.backgroundColor = UIColor.gamvesTurquezeColor
 
-            }   
-
-            if approved == 2 { //APPROVED
-                
-                cella.statusLabel.text = "APPROVED"
-                cella.checkLabel.isHidden = true
-
-                cella.setCheckLabel(color: UIColor.gamvesGreenColor, symbol: "✓" )
-            
-            }
+            }*/               
              
             
             cella.profileImageView.image = friendApproval.user.avatar

@@ -202,6 +202,17 @@ class FriendApprovalView: UIView {
         fatalError("init(coder:) has not been implemented")
     }  
 
+    @objc func closeVideo()
+    {
+        //REMOVE IF EXISTS VIDEO RUNNING
+        for subview in (UIApplication.shared.keyWindow?.subviews)! {
+            if (subview.tag == 1)
+            {                
+                subview.removeFromSuperview()
+                UIApplication.shared.setStatusBarHidden(false, with: .fade)
+            }
+        }
+    }
 }
 
 
@@ -217,6 +228,8 @@ class FriendApprovalLauncher: UIView {
     
     var originaChatYPosition = CGFloat()
     var originaChatHeightPosition = CGFloat()
+
+    var initialTouchPoint: CGPoint = CGPoint(x: 0,y: 0)
 
     func showUserForFriend(friendApproval: FriendApproval, approved :Int, screenHeight:Int){
                 
@@ -246,6 +259,10 @@ class FriendApprovalLauncher: UIView {
             friendApprovalView.backgroundColor = UIColor.gamvesColor           
            
             view.addSubview(friendApprovalView)
+
+            let panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture))                                 
+            friendApprovalView.addGestureRecognizer(panGesture)                       
+
             
             let apprFrame = CGRect(x: 0, y: friendHeight, width: Int(keyWindow.frame.width), height: buttonsHeight)
             
@@ -273,10 +290,63 @@ class FriendApprovalLauncher: UIView {
                 }, completion: { (completedAnimation) in
                     
                     UIApplication.shared.setStatusBarHidden(true, with: .fade)
+
                     
             })
         }
     }
+
+     @objc func handlePanGesture(sender: UIPanGestureRecognizer) {        
+
+        let touchPoint = sender.location(in: self.view?.window)
+
+        let touchY = touchPoint.y - initialTouchPoint.y
+
+        if touchY > 100 {
+
+            let alpha = self.view.alpha
+            let remove = touchY/10000
+            let finalAlpha = alpha - remove
+
+            self.view.alpha = finalAlpha            
+
+            if touchY > 500 {
+
+                self.friendApprovalView.closeVideo()                
+
+                UIApplication.shared.setStatusBarHidden(false, with: .fade)
+            }
+        }
+
+        if sender.state == UIGestureRecognizerState.began {
+
+            initialTouchPoint = touchPoint
+
+        } else if sender.state == UIGestureRecognizerState.changed {
+
+            if touchPoint.y - initialTouchPoint.y > 0 {
+
+                self.view.frame = CGRect(x: 0, y: touchPoint.y - initialTouchPoint.y, width: self.view.frame.size.width, height: self.view.frame.size.height)
+                
+            }
+
+        } else if sender.state == UIGestureRecognizerState.ended || sender.state == UIGestureRecognizerState.cancelled {
+            
+            if touchPoint.y - initialTouchPoint.y > 200 {                               
+
+                self.friendApprovalView.closeVideo()
+                
+                UIApplication.shared.setStatusBarHidden(false, with: .fade)
+
+            } else {
+                
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
+                })
+            }
+        }
+
+    } 
 
     
 }

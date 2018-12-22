@@ -120,7 +120,7 @@ FriendProtocol
         itemFriendApproval.buttonColor = UIColor.gamvesGreenColor
         itemFriendApproval.titleLabelPosition = .left
         itemFriendApproval.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-        itemFriendApproval.title = "APPROVALS"
+        itemFriendApproval.title = "INVITATIONS"
         itemFriendApproval.handler = { item in
             
             if self.homeController != nil {

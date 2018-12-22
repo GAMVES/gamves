@@ -1458,10 +1458,14 @@ class Global: NSObject
 
     static func getFriendsApprovasByFamilyId(familyId:String, completionHandler : @escaping (_ invites:Int, _ invited:Int, _ updated:Bool) -> ()) {
         
-        let queryFriendApproval = PFQuery(className:"FriendsApproval")
-        queryFriendApproval.whereKey("familyId", equalTo: familyId)
-        print(familyId)
-        queryFriendApproval.findObjectsInBackground { (friendApprovalObjects, error) in
+        let queryFriendApprovalPoster = PFQuery(className:"FriendsApproval")        
+        queryFriendApprovalPoster.whereKey("familyPosterId", equalTo: familyId)
+
+        let queryFriendApprovalFrind = PFQuery(className:"FriendsApproval")
+        queryFriendApprovalFrind.whereKey("familyFriendId", equalTo: familyId)
+        
+        let query = PFQuery.orQuery(withSubqueries: [queryFriendApprovalPoster, queryFriendApprovalFrind])
+        query.findObjectsInBackground { (friendApprovalObjects, error) in
             
             if error != nil
             {
@@ -1483,8 +1487,7 @@ class Global: NSObject
                     
                     print(countFriendAapprovals)
                     
-                    var count = 0                  
-                    
+                    var count = 0                    
                     
                     var updated = Bool()                 
 
@@ -1495,6 +1498,7 @@ class Global: NSObject
 
                         for friendApprovalObj in friendApprovalObjects
                         {
+
                             let friendApproval = FriendApproval()  
 
                             let type = friendApprovalObj["type"] as! Int
@@ -1505,7 +1509,6 @@ class Global: NSObject
                                 if approved == 0 {
 
                                     updated = true
-
                                 } 
 
                                 countInvite = countInvite + 1
@@ -1519,7 +1522,6 @@ class Global: NSObject
                                 } 
 
                                 countInvited = countInvited + 1
-
                             }
                                 
                             let posterId = friendApprovalObj["posterId"] as! String
@@ -1533,16 +1535,33 @@ class Global: NSObject
                             friendApproval.approved = approved  
                             friendApproval.type     = type                                                       
 
-                            var userId = String()
+                            var myUserId = String()
 
-                            if type == 1 {
+                            if let myUserId = PFUser.current()?.objectId {
 
-                                userId = friendId
+                                if myUserId == posterId {
+
+                                    friendApproval.invite = true
+                                    userId = friendId
+
+                                } else if myUserId == friendId {
+
+                                    friendApproval.invite = false
+                                    userId = posterId                                   
+
+                                }                
+                            }            
+
+                            /*if type == 1 {
+
+                                //userId = friendId
+                                userId = posterId
 
                             } else if type == 2 {
 
-                                userId = posterId
-                            }
+                                //userId = posterId                            
+                                userId = friendId
+                            }*/ 
 
                             if self.userDictionary[userId] == nil
                             {
