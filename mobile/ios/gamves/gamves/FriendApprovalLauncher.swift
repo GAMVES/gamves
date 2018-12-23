@@ -8,14 +8,14 @@
 import UIKit
 import AVFoundation
 import Parse
-
+import NVActivityIndicatorView
 
 enum FriendApprovalType {
     case YouInvite
     case YouAreInvited
 }
 
-class FriendApprovalView: UIView {
+class FriendApprovalView: UIView {    
 
     var type:FriendApprovalType!
 
@@ -50,7 +50,7 @@ class FriendApprovalView: UIView {
 
     let titleLabel: PaddingLabel = {
         let label = PaddingLabel()        
-        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textColor = UIColor.black
         label.numberOfLines = 3
         label.textAlignment = .left        
@@ -101,8 +101,71 @@ class FriendApprovalView: UIView {
         return imageView
     }()
 
+    let buttonsView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false     
+        view.backgroundColor = UIColor.white         
+        return view
+    }()
+
+    lazy var approveButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gamvesSemaphorGreenColor
+        //button.setTitle("APPROVE SEND INVITATION", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(touchUpApprove), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+    
+    lazy var rejectButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gamvesSemaphorRedColor
+        //button.setTitle("REJECT INVITATION", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(touchUpReject), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+
+    lazy var laterButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.backgroundColor = UIColor.gamvesColor
+        button.setTitle("DECIDE LATER", for: UIControlState())
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState())
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        button.addTarget(self, action: #selector(touchUpLater), for: .touchUpInside)
+        button.layer.cornerRadius = 5
+        return button
+    }()
+
+    let bottomView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+
+    ///ALERT 
+    var alertTitle = String() 
+    var alertMessage = String()
+    var positiveButtonText = String() //"OK"
+    var negativeButtonText = String() //"Cancel"
+    var typeName = String()
+
+    var alertAction = Int()
+    // 1 remove invitation
+    // 
+
     init(frame: CGRect, friendApproval: FriendApproval, type:FriendApprovalType) {
         super.init(frame: frame)
+    
+        self.friendApproval = friendApproval
 
         self.type = type
 
@@ -112,16 +175,7 @@ class FriendApprovalView: UIView {
         let friend =  Global.userDictionary[friendId] as! GamvesUser
 
         let posterId = friendApproval.posterId
-        let poster =  Global.userDictionary[posterId] as! GamvesUser        
-
-        if type == FriendApprovalType.YouInvite {                        
-
-            titleLabel.text = "\(poster.firstName) wants to become friends with \(friend.firstName)"
-
-        } else if type == FriendApprovalType.YouAreInvited { 
-
-            titleLabel.text = "\(friend.firstName) wants to become friends with \(poster.firstName)"            
-        }
+        let poster =  Global.userDictionary[posterId] as! GamvesUser               
 
         self.nameLabel.text = friendApproval.user.name
 
@@ -140,7 +194,7 @@ class FriendApprovalView: UIView {
 
         self.addSubview(self.contanierView)
         self.addConstraintsWithFormat("H:|[v0]|", views: self.contanierView)
-        self.addConstraintsWithFormat("V:|-20-[v0]|", views: self.contanierView)
+        self.addConstraintsWithFormat("V:|[v0]|", views: self.contanierView)
 
         self.contanierView.addSubview(self.titleView)
         self.contanierView.addConstraintsWithFormat("H:|[v0]|", views: self.titleView)
@@ -153,12 +207,16 @@ class FriendApprovalView: UIView {
 
         self.titleView.addConstraintsWithFormat("H:|-30-[v0(50)]-30-[v1]-30-|", views: self.iconImageView, self.titleLabel)
 
-        self.iconImageView.alpha = 0.3
-        self.titleLabel.alpha = 0.3
+        self.iconImageView.alpha = 0.5
+        self.titleLabel.alpha = 0.5
 
         self.contanierView.addSubview(self.userView)
         self.contanierView.addConstraintsWithFormat("H:|[v0]|", views: self.userView)        
-        self.contanierView.addConstraintsWithFormat("V:|-120-[v0(200)]|", views: self.userView)        
+
+        self.contanierView.addSubview(self.buttonsView)
+        self.contanierView.addConstraintsWithFormat("H:|[v0]|", views: self.buttonsView)
+
+        self.contanierView.addConstraintsWithFormat("V:|-120-[v0(200)][v1]|", views: self.userView, self.buttonsView)        
 
         ///// USER 
 
@@ -187,8 +245,81 @@ class FriendApprovalView: UIView {
         self.userView.addSubview(self.schoolImageView)     
         self.userView.addConstraintsWithFormat("H:|-leftMargin-[v0(100)]|", views: self.schoolImageView, metrics: imageMetrics)
         self.userView.addConstraintsWithFormat("V:|-130-[v0(30)]|", views: self.schoolImageView)          
+        
+        //BUTTONS
 
+        self.buttonsView.addSubview(self.approveButton)
+        self.buttonsView.addSubview(self.rejectButton)
+        self.buttonsView.addSubview(self.laterButton)
+        self.buttonsView.addSubview(self.bottomView)
+        
+        self.buttonsView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.approveButton)
+        self.buttonsView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.rejectButton)
+        self.buttonsView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.laterButton)
+        self.buttonsView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)
+
+        self.addConstraintsWithFormat("V:|-30-[v0(60)]-10-[v1(60)]-10-[v2(60)]-10-[v3]|",views:
+            self.approveButton,
+            self.rejectButton,  
+            self.laterButton,          
+            self.bottomView)
+
+        self.setLabelAndButton()
     }   
+
+    func setLabelAndButton() {
+
+        var posterId = self.friendApproval.posterId           
+        var friendId = self.friendApproval.friendId 
+
+        var posterName =  String()
+        var friendName =  String()
+
+
+        if let nm =  Global.userDictionary[posterId]?.name {
+            posterName = nm
+        }
+
+        if let fn =  Global.userDictionary[friendId]?.name {
+            friendName = fn 
+        }
+        
+        // YOU INVITE
+
+        if self.type == FriendApprovalType.YouInvite { 
+
+            let textButton = String()
+
+            if  self.friendApproval!.approved == 0 {
+
+                self.approveButton.isHidden = true
+
+                //BUTTON
+
+                self.rejectButton.setTitle("REMOVE SENT INVITATION", for: UIControlState())     
+
+                //ALERT 
+
+                self.alertMessage = "Are you sure you want to remove your invitation to \(typeName)?"
+                self.positiveButtonText = "YES"
+                self.negativeButtonText = "NO"        
+
+                self.alertAction = 1
+
+            }                 
+
+            titleLabel.text = "You invited \(friendName) to become your friend"//\(friend.firstName)"
+            iconImageView.image = UIImage(named: "call_sent")
+
+
+        } else if self.type == FriendApprovalType.YouAreInvited { 
+
+            self.approveButton.setTitle("ACCEPT INVITATION", for: UIControlState())
+
+            titleLabel.text = "\(posterName) wants to become friends with you" //\(poster.firstName)"            
+            iconImageView.image = UIImage(named: "call_received")
+        }
+    }
     
     
     func setViews(view:UIView, friendLauncherVidew:FriendApprovalLauncher)
@@ -202,6 +333,11 @@ class FriendApprovalView: UIView {
         fatalError("init(coder:) has not been implemented")
     }  
 
+    @objc func touchUpLater() {
+        
+        self.closeApprovalWindow()
+    }
+
     @objc func closeVideo()
     {
         //REMOVE IF EXISTS VIDEO RUNNING
@@ -213,10 +349,240 @@ class FriendApprovalView: UIView {
             }
         }
     }
+
+     @objc func touchUpApprove() {
+        
+        if self.type == FriendApprovalType.YouInvite {           
+
+            self.updateFriendRegisterApproval()
+
+        } else if self.type == FriendApprovalType.YouAreInvited {            
+
+            self.addFriend()            
+        }        
+    }
+    
+    @objc func touchUpReject() {        
+        
+        Util.sharedInstance.showAlertView(title: self.alertTitle , message: self.alertMessage, actionTitles: [self.negativeButtonText, self.positiveButtonText], actions: [
+        {()->() in
+
+            print(self.negativeButtonText)
+
+            self.friendLauncher.delegate.refresh()
+            self.closeApprovalWindow()
+
+        },{()->() in
+
+            print(self.positiveButtonText)
+                 
+
+            switch self.alertAction {
+                
+                case 1:
+                    self.removeInvitation()
+                    break
+
+                case 2:
+                    self.updateFriendApprovalStatus(status: -1)
+                    break
+
+                case 3:
+                    break
+
+                default:
+                    break                
+            }       
+        
+        }])        
+    }
+    
+    
+    func closeApprovalWindow() {
+        
+        //REMOVE IF EXISTS VIDEO RUNNING
+        for subview in (UIApplication.shared.keyWindow?.subviews)! {
+            
+            if (subview.tag == 1)
+            {
+                subview.removeFromSuperview()
+                UIApplication.shared.setStatusBarHidden(false, with: .fade)
+            }
+        }
+    }
+
+    func removeInvitation() {
+
+        let friendApprovalPF = self.friendApproval.objectPF
+        
+        friendApprovalPF?.deleteInBackground(block: { (resutl, error) in
+            
+            self.friendLauncher.delegate.refresh()
+            self.closeApprovalWindow()
+            
+        })
+    }
+
+
+     func updateFriendApprovalStatus(status: Int) {    
+
+        let friendApprovalPF = self.friendApproval.objectPF       
+                
+        friendApprovalPF?["approved"] = status
+        
+        friendApprovalPF?.saveInBackground(block: { (resutl, error) in            
+           
+           self.friendLauncher.delegate.refresh()
+           self.closeApprovalWindow()
+            
+        })            
+        
+    }
+    
+
+    func updateFriendRegisterApproval() {
+
+        // VERIFY IF A PENDING INVITATION EXISTS
+
+        self.friendLauncher.activityIndicatorView?.startAnimating()
+
+        let friendApprovalPF = self.friendApproval.objectPF
+
+        friendApprovalPF?["approved"] = 1
+        
+        friendApprovalPF?.saveInBackground(block: { (resutl, error) in    
+
+            let friendsRegisterApproval: PFObject = PFObject(className: "FriendsApproval")
+
+            var posterId = self.friendApproval.posterId  
+
+            friendsRegisterApproval["posterId"] = posterId
+
+            friendsRegisterApproval["friendApprovalId"] = friendApprovalPF?.objectId
+
+            let friendId = self.friendApproval.friendId  
+
+            var friend = Global.userDictionary[friendId]
+
+            friendsRegisterApproval["friendId"] = friendId        
+
+            let familyId = friend?.familyId
+
+            print(familyId)
+
+            friendsRegisterApproval["familyId"] = familyId 
+
+            friendsRegisterApproval["approved"] = 0            
+
+            friendsRegisterApproval["type"] = 2      
+            
+            friendsRegisterApproval.saveInBackground { (resutl, error) in
+                
+                if error == nil {                    
+
+                    self.friendLauncher.activityIndicatorView?.stopAnimating()
+                    self.friendLauncher.delegate.update(name: (friend?.name)!)
+                    self.closeApprovalWindow()                                       
+                }
+            }
+        })  
+    }
+    
+    func addFriend() {
+        
+        var posterId = self.friendApproval.posterId           
+        var friendId = self.friendApproval.friendId  
+        
+        self.friendLauncher.activityIndicatorView?.startAnimating()
+
+        let friendApprovalPF = self.friendApproval.objectPF
+
+        friendApprovalPF?["approved"] = 2
+        
+        friendApprovalPF?.saveInBackground(block: { (resutlFA, error) in                      
+            
+
+            self.getFriendIfnotExist(userId: friendId, friendId: posterId, completionHandler: { ( resutl ) -> () in
+
+                if resutl {
+                    
+                    self.getFriendIfnotExist(userId: posterId, friendId: friendId, completionHandler: { ( friendObj ) -> () in                                           
+
+                        if friendObj != nil {
+                        
+                            let posterName =  Global.userDictionary[posterId]?.name
+                            let friendName =  Global.userDictionary[friendId]?.name
+                            
+                            self.friendLauncher.activityIndicatorView?.stopAnimating()
+                            self.friendLauncher.delegate.usersAdded(friendName: friendName!, posterName: posterName!)
+                            self.closeApprovalWindow()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+                        
+                        } else {
+                            
+                            print("error")
+                        }
+                        
+                    })
+                    
+                } else {
+                    
+                    print("error")
+                }                                            
+            })
+        })            
+    }
+    
+
+    func getFriendIfnotExist(userId: String, friendId: String, completionHandler : @escaping (_ result: Bool) -> ()) {
+
+        let userQuery = PFQuery(className:"Friends")
+        userQuery.whereKey("userId", equalTo: userId)
+        userQuery.getFirstObjectInBackground(block: { (friendObject, error) in               
+    
+            if friendObject != nil
+            {
+
+                friendObject?.addObjects(from: [friendId], forKey: "friends")
+                
+                friendObject?.saveInBackground(block: { (friendSPF, error) in
+                
+                    if error == nil {
+
+                        completionHandler(true) 
+
+                    } else {
+
+                        completionHandler(false) 
+                    }
+                })
+
+            } else {               
+
+                let friendObj = PFObject(className: "Friends")
+                friendObj["userId"] = userId
+                friendObj["friends"] = [friendId]    
+
+                friendObj.saveInBackground(block: { (friendSPF, error) in
+                
+                    if error == nil {
+
+                        completionHandler(true) 
+
+                    } else {
+
+                        completionHandler(false) 
+                    }
+
+                })
+            }                    
+        })
+    }
 }
 
 
-class FriendApprovalLauncher: UIView {    
+class FriendApprovalLauncher: UIView {  
+
+    var activityIndicatorView:NVActivityIndicatorView?  
     
     var buttonsFriendApprovalView:FriendApprovalButtonsView!
     
@@ -238,22 +604,17 @@ class FriendApprovalLauncher: UIView {
             view = UIView(frame: keyWindow.frame)
             view.backgroundColor = UIColor.white
             
-            view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)                 
-            
-            let friendHeight = 320
-            let buttonsHeight = screenHeight - friendHeight 
-
-            print(buttonsHeight)
-
-            let friendFrame = CGRect(x: 0, y: 0, width: Int(keyWindow.frame.width), height: friendHeight)
+            view.frame = CGRect(x: keyWindow.frame.width - 10, y: keyWindow.frame.height - 10, width: 10, height: 10)                                    
 
             var type:FriendApprovalType!
 
-            if friendApproval.type == 1 {
+            if friendApproval.invite {
                 type = FriendApprovalType.YouInvite 
-            } else if friendApproval.type == 2 {
+            } else {
                 type = FriendApprovalType.YouAreInvited 
             }
+
+            let friendFrame = CGRect(x: 0, y: 0, width: Int(keyWindow.frame.width) , height: Int(keyWindow.frame.height))
 
             friendApprovalView = FriendApprovalView(frame: friendFrame, friendApproval: friendApproval, type:type)
             friendApprovalView.backgroundColor = UIColor.gamvesColor           
@@ -263,25 +624,12 @@ class FriendApprovalLauncher: UIView {
             let panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture))                                 
             friendApprovalView.addGestureRecognizer(panGesture)                       
 
-            
-            let apprFrame = CGRect(x: 0, y: friendHeight, width: Int(keyWindow.frame.width), height: buttonsHeight)
-            
-            buttonsFriendApprovalView = FriendApprovalButtonsView(frame: apprFrame, obj: friendApprovalView, friendApproval: friendApproval, delegate: self.delegate, approved: approved)
-            buttonsFriendApprovalView.backgroundColor = UIColor.gamvesBackgoundColor
-            buttonsFriendApprovalView.type = type
-            
-            if friendApproval.type == 2 
-            {
-                buttonsFriendApprovalView.friendApproval = friendApproval
-            }
-
-            view.addSubview(buttonsFriendApprovalView)
-            buttonsFriendApprovalView.addSubViews()
-
             friendApprovalView.setViews(view: view, friendLauncherVidew: self)
             keyWindow.addSubview(view)
 
             view.tag = 1
+
+            self.activityIndicatorView = Global.setActivityIndicator(container: view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
             
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
                 
@@ -290,7 +638,6 @@ class FriendApprovalLauncher: UIView {
                 }, completion: { (completedAnimation) in
                     
                     UIApplication.shared.setStatusBarHidden(true, with: .fade)
-
                     
             })
         }

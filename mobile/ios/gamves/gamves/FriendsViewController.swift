@@ -114,7 +114,7 @@ FriendProtocol
         }
 
         let itemFriendApproval = FloatyItem()    
-        var chatRoomImage = UIImage(named: "chat_room_black")
+        var chatRoomImage = UIImage(named: "invitation")
         chatRoomImage = chatRoomImage?.maskWithColor(color: UIColor.white)
         itemFriendApproval.icon = chatRoomImage
         itemFriendApproval.buttonColor = UIColor.gamvesGreenColor

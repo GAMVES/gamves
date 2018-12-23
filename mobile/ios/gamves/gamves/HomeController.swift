@@ -518,10 +518,7 @@ CLLocationManagerDelegate {
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [kCTForegroundColorAttributeName: UIColor.white] as [NSAttributedStringKey : Any]
         navigationController?.pushViewController(friendApprovalViewController, animated: true)
-    }
-
-
-    
+    }   
 
     func showBugList() {
     

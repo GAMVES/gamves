@@ -29,7 +29,7 @@ class FriendApprovalCell: BaseCell {
     
     let typeView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.cyan   
+        //view.backgroundColor = UIColor.cyan   
         return view
     }()
 
@@ -43,9 +43,9 @@ class FriendApprovalCell: BaseCell {
     let typeLabel: UILabel = {
         let label = UILabel()        
         label.textColor = UIColor.darkGray
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = UIFont.boldSystemFont(ofSize: 12)
         label.layer.cornerRadius = 10
-        label.numberOfLines = 2
+        //label.numberOfLines = 2
         label.textAlignment = .center
         label.textColor = UIColor.white        
         return label
@@ -119,7 +119,7 @@ class FriendApprovalCell: BaseCell {
         self.addConstraintsWithFormat("H:|-90-[v0][v1(80)]-10-|", views: self.containerView, self.typeView)
         
         self.addConstraintsWithFormat("V:[v0(50)]", views: self.containerView)
-        self.addConstraintsWithFormat("V:[v0(100)]", views: self.typeView)
+        self.addConstraintsWithFormat("V:|-10-[v0(80)]-10-|", views: self.typeView)
         
         self.addConstraint(NSLayoutConstraint(item: self.containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         self.addConstraint(NSLayoutConstraint(item: self.typeView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
@@ -134,9 +134,9 @@ class FriendApprovalCell: BaseCell {
         self.typeView.addSubview(self.typeIcon)
         self.typeView.addSubview(self.typeLabel)
         
-        self.typeView.addConstraintsWithFormat("H:|[v0]|", views: self.typeIcon)
+        self.typeView.addConstraintsWithFormat("H:|-10-[v0(60)]-10-|", views: self.typeIcon)
         self.typeView.addConstraintsWithFormat("H:|[v0]|", views: self.typeLabel)    
-        self.typeView.addConstraintsWithFormat("V:|[v0]-10-[v1]|", views: self.typeIcon, self.typeLabel)       
+        self.typeView.addConstraintsWithFormat("V:|[v0(60)][v1(20)]|", views: self.typeIcon, self.typeLabel)       
      
         
     }

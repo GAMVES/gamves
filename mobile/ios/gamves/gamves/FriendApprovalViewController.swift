@@ -134,7 +134,7 @@ FriendApprovalProtocol
 
         if indexPath.section == 0 {
 
-            let image  = UIImage(named: "add_friend")
+            let image  = UIImage(named: "invitation")
             sectionHeaderView.iconImageView.image = image
 
             sectionHeaderView.nameLabel.text = "Invitations"
@@ -242,11 +242,13 @@ FriendApprovalProtocol
 
             if invite {
 
+                cella.typeIcon.image = UIImage(named: "call_sent")
                 cella.typeLabel.text = "SENT" 
                 cella.typeLabel.backgroundColor = UIColor.gamvesLightBlueColor
 
             } else {
 
+                cella.typeIcon.image = UIImage(named: "call_received")
                 cella.typeLabel.text = "RECEIVED" 
                 cella.typeLabel.backgroundColor = UIColor.gamvesGreenColor
 
