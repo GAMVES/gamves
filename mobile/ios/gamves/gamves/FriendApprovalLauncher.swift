@@ -150,7 +150,6 @@ class FriendApprovalView: UIView {
         return view
     }()
 
-
     ///ALERT 
     var alertTitle = String() 
     var alertMessage = String()
@@ -316,8 +315,12 @@ class FriendApprovalView: UIView {
 
             self.approveButton.setTitle("ACCEPT INVITATION", for: UIControlState())
 
+            self.rejectButton.setTitle("REJECT INVITATION", for: UIControlState())
+
             titleLabel.text = "\(posterName) wants to become friends with you" //\(poster.firstName)"            
             iconImageView.image = UIImage(named: "call_received")
+
+            self.alertAction = 2
         }
     }
     
@@ -385,9 +388,6 @@ class FriendApprovalView: UIView {
 
                 case 2:
                     self.updateFriendApprovalStatus(status: -1)
-                    break
-
-                case 3:
                     break
 
                 default:
@@ -582,9 +582,7 @@ class FriendApprovalView: UIView {
 
 class FriendApprovalLauncher: UIView {  
 
-    var activityIndicatorView:NVActivityIndicatorView?  
-    
-    var buttonsFriendApprovalView:FriendApprovalButtonsView!
+    var activityIndicatorView:NVActivityIndicatorView?    
     
     var friendApprovalView:FriendApprovalView!
     
