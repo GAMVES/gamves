@@ -29,7 +29,7 @@
 	    });
 
 	});
-
+	
 	// --
 	// Set user to admin role.
 
@@ -1079,4 +1079,136 @@
 			});
 
 	})	
+
+	
+	// --
+  	// Add role by name
+
+	Parse.Cloud.define("AddRoleByName", function(request, response) {
+
+		console.log("------------");		
+
+		var params = request.params;
+		console.log("params: " + JSON.stringify(params)); 
+
+		console.log("***************");		
+   		
+   		if (!params.short)
+        	return response.error("Missing parameters: short"); 
+		
+		var short = request.params.short;
+
+		console.log("short: " + short);
+
+		var schoolRole = new Parse.Role(short, new Parse.ACL());		
+
+		schoolRole.save(null, {useMasterKey: true}).then(function(role) {
+
+			var acl = new Parse.ACL();
+			acl.setReadAccess(role, true); //give read access to Role
+			acl.setWriteAccess(role, true); //give write access to Role
+
+			schoolRole.setACL(acl);            
+			schoolRole.save(null, {useMasterKey: true});
+
+		});
+
+	});
+
+	// --
+  	// Add role by name
+
+	Parse.Cloud.define("AddUserToRole", function(request, response) {	
+
+		var roleName = request.params.role;	  
+	    var userId = request.params.userId; 
+
+		Parse.Cloud.run("CheckUserHasRole", { "userId": userId, "role": roleName}).then(function(result) {    
+
+            console.log("__________________________");                         
+            console.log(JSON.stringify(result));       
+           
+        }, function(error) {
+
+            console.log("error :" + error);       
+
+        });    
+	    
+	    
+	    //console.log("roleName: " + roleName + " userId: " + userId);		        
+		
+		/*var queryRole = new Parse.Query(Parse.Role);		
+		queryRole.equalTo('name', roleName);		
+
+		queryRole.first({useMasterKey:true}).then(function(rolePF) {
+
+	        var userQuery = new Parse.Query(Parse.User);
+			userQuery.equalTo("objectId", userId);		        
+	       
+	        userQuery.first({
+
+	            success: function(userPF) {
+
+	            	var userRelation = rolePF.relation("users");
+					userRelation.add(userPF);
+
+					rolePF.save(null, { useMasterKey: true,	
+
+						success: function (roleSaved) {
+											
+							let restul = {"result":true, "role":JSON.stringify(roleSaved)}
+
+        					response.success(restul);
+		    			},
+						error: function (response, error) {										
+						    
+						    response.error("error: "  + error);
+						}
+					});  
+	            }
+	        });		
+		});*/
+	});
+
+
+	// --
+  	// Check user has role
+
+	Parse.Cloud.define("CheckUserHasRole", function(request, response) {	    
+	    
+	    var roleName = request.params.role;	  
+	    var userId = request.params.userId; 
+
+		var authorized = false;
+		console.log('Before test: Auth = ' + authorized);
+
+		var queryRole = new Parse.Query(Parse.Role);		
+		queryRole.equalTo('name', roleName);		
+		queryRole.first({useMasterKey:true}).then(function(rolePF) {			
+	    	
+	        var role = rolePF;
+	        var adminRelation = new Parse.Relation(role, 'users');
+	        var queryAdmins = adminRelation.query();
+
+	        queryAdmins.equalTo('objectId', userId);	        
+	        queryAdmins.first({
+
+	            success: function(userPF) {
+	                var user = userPF;
+	                console.log('user: ' + user.id);	               
+	                response.success(true);
+	            },
+			    error: function (error) {
+			    	response.error('Error! ' + error.message);
+			        console.log('Error: ' + error.message);
+			    }
+	        });
+
+	     });
+
+	});
+
+
+
+
 

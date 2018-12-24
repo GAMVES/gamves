@@ -1281,14 +1281,14 @@
 
 				console.log("posterName: " + posterName + " friendName: " + friendName);					
 		    	
-				let friendImage = friendPF.get("pictureSmall");			
+				let posterImage = posterPF.get("pictureSmall");			
 
 				let notificationFriendRequest = new Notifications();
 				
-				let titleNotification = "<b>" + friendName + "</b> set you a friend request"; 
-				let descNotification  = "Start interacting with " + friendName + " , check out the profile, accept his/her friendship and start chatting!"; 				
+				let titleNotification = "<b>" + posterName + "</b> set you a friend request"; 
+				let descNotification  = "Start interacting with " + posterName + " , check out the profile, accept his/her friendship and start chatting!"; 				
 
-				notificationFriendRequest.set("posterAvatar", friendImage);
+				notificationFriendRequest.set("posterAvatar", posterImage);
 				notificationFriendRequest.set("title", titleNotification);	
 				notificationFriendRequest.set("description", descNotification);	
 				notificationFriendRequest.set("posterName", posterName);
@@ -1297,7 +1297,7 @@
 				notificationFriendRequest.set("date", request.object.get("createdAt"));								
 
 				//notificationFriendRequest.set("cover", coverPoster);
-				notificationFriendRequest.set("posterId", friendPF.id);					
+				notificationFriendRequest.set("posterId", posterPF.id);					
 				
 				notificationFriendRequest.set("type", 3);				
 
@@ -1306,8 +1306,8 @@
 				let objFriend = {
 		    		title:titleNotification,
 		    		alert:"You have a friend invitation request",
-		    		user:friendPF,		    		
-		    		data:descFriend
+		    		user:posterPF,		    		
+		    		data:posterName
 		    	};
 		    	sendPushToUser(objFriend);	
 
@@ -1743,9 +1743,13 @@
 	// --
 	// Update users upon Family creation
 
-	Parse.Cloud.afterSave("Family", function(request) {	
+	Parse.Cloud.afterSave("Family", function(request) {			 
 
-		var familyId = request.object.id;
+		var object = request.object;
+
+		var familyId = object.id;
+
+		var short = object.get("short");
 
 		console.log("entra family");
 
@@ -1778,7 +1782,43 @@
 
 			});
 		});	
+		
+		/*var schoolRole = new Parse.Role(short, new Parse.ACL());		
+
+		return schoolRole.save(null, {useMasterKey: true}).then(function(role) {
+
+			var acl = new Parse.ACL();
+			acl.setReadAccess(role, true); //give read access to Role
+			acl.setWriteAccess(role, true); //give write access to Role
+
+			schoolRole.setACL(acl);            
+			schoolRole.save(null, {useMasterKey: true});
+
+		});*/
+
+
 	});
+
+	
+	// --
+	// Create role after school was created
+
+	Parse.Cloud.afterSave("School", function(request) {	
+
+
+		var object = request.object;
+
+		var familyId = object.id;
+
+		var short = object.get("short");
+
+
+
+
+	});
+
+
+	
 
 
 
