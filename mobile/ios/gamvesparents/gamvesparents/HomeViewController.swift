@@ -253,7 +253,7 @@ class HomeViewController: UIViewController,
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel) 
 
-        self.headerView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.backImageView)
+        self.headerView.addConstraintsWithFormat("V:|[v0(70)]|", views: self.backImageView)
         
         self.headerView.addConstraintsWithFormat(
             "V:|-20-[v0(photoSize)][v1]|", views:

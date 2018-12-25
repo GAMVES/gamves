@@ -50,7 +50,7 @@ class AccountViewController: UIViewController,
         let label = UILabel()
         label.textAlignment = .center        
         label.textColor = UIColor.gamvesBlackColor
-        label.font = UIFont.boldSystemFont(ofSize: 25)
+        label.font = UIFont.boldSystemFont(ofSize: 20)
         return label
     }()
 
@@ -109,6 +109,13 @@ class AccountViewController: UIViewController,
         launcher.accountViewController = self
         return launcher
     }()
+
+    let bottomView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
+    }()
     
     var photoCornerRadius = Int()
 
@@ -146,26 +153,35 @@ class AccountViewController: UIViewController,
         self.view.addSubview(self.headerView)
         self.view.addSubview(self.lineView)
         self.view.addSubview(self.buttonsView)
+        self.view.addSubview(self.bottomView)        
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.headerView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)  
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.buttonsView)  
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.buttonsView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)  
 
         let height:Int = Int(view.frame.size.height)
         let width:Int = Int(view.frame.size.width)
 
+        let tabBarHeight = self.tabBarController!.tabBar.frame.size.height
+
+        var metricsProfile = [String:Int]()
+        metricsProfile["tabBarHeight"] = Int(tabBarHeight)
+
         self.view.addConstraintsWithFormat(
-            "V:|-80-[v0(220)][v1(1)][v2]|", views:
+            "V:|-60-[v0(160)][v1(1)][v2][v3(tabBarHeight)]|", views:
             self.headerView,
             self.lineView,
-            self.buttonsView)            
+            self.buttonsView,
+            self.bottomView, 
+            metrics: metricsProfile)            
 
         self.headerView.addSubview(self.backImageView)
         self.headerView.addSubview(self.photosContainerView)
         self.headerView.addSubview(self.yourLabel)
 
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
-        self.headerView.addConstraintsWithFormat("V:|[v0(100)]|", views: self.backImageView)
+        self.headerView.addConstraintsWithFormat("V:|[v0(75)]|", views: self.backImageView)
 
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.yourLabel)
@@ -178,7 +194,7 @@ class AccountViewController: UIViewController,
         metricsHeader["padding"] = padding
 
         self.headerView.addConstraintsWithFormat(
-            "V:|-40-[v0(photoSize)][v1]|", views:
+            "V:|-20-[v0(photoSize)][v1]|", views:
             self.photosContainerView,
             self.yourLabel,
             metrics: metricsHeader)
