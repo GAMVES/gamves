@@ -67,7 +67,7 @@ class HomeViewController: UIViewController,
     let headerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.gamvesBackgoundColor
+        view.backgroundColor = UIColor.red //.gamvesBackgoundColor
         return view
     }()
     
@@ -88,7 +88,7 @@ class HomeViewController: UIViewController,
     let photosContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.masksToBounds = true
+        view.layer.masksToBounds = true        
         return view
     }()
     
@@ -117,7 +117,7 @@ class HomeViewController: UIViewController,
         let label = UILabel()
         label.textAlignment = .center
         label.textColor = UIColor.gamvesBlackColor
-        label.font = UIFont.boldSystemFont(ofSize: 25)
+        label.font = UIFont.boldSystemFont(ofSize: 20)
         return label
     }()   
 
@@ -161,6 +161,14 @@ class HomeViewController: UIViewController,
     lazy var locationViewController: LocationViewController = {
         let location = LocationViewController()
         return location
+    }()
+
+
+    let bottomView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        return view
     }()
 
     var activityIndicatorView:NVActivityIndicatorView?
@@ -209,10 +217,12 @@ class HomeViewController: UIViewController,
         self.view.addSubview(self.headerView)
         self.view.addSubview(self.lineView)
         self.view.addSubview(self.dataView)
+        self.view.addSubview(self.bottomView)        
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.headerView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.lineView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.dataView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)        
         
         let width:Int = Int(view.frame.size.width)
         let height:Int = Int(view.frame.size.height)        
@@ -220,14 +230,20 @@ class HomeViewController: UIViewController,
         let photoSize = width / 3
         let padding = (width - photoSize) / 2
         self.photoCornerRadius = photoSize / 2        
+
+        let tabBarHeight = self.tabBarController!.tabBar.frame.size.height
+
         self.metricsHome["photoSize"]       = photoSize
         self.metricsHome["padding"]         = padding
+        self.metricsHome["tabBarHeight"]    = Int(tabBarHeight)
                 
         self.view.addConstraintsWithFormat(
-            "V:|-80-[v0(200)][v1(1)][v2]|", views:
+            "V:|-60-[v0(160)][v1(1)][v2][v3(tabBarHeight)]|", views:
             self.headerView,
             self.lineView,
-            self.dataView)         
+            self.dataView,
+            self.bottomView, 
+            metrics: metricsHome)         
         
         self.headerView.addSubview(self.backImageView)
         self.headerView.addSubview(self.photosContainerView)
@@ -235,12 +251,12 @@ class HomeViewController: UIViewController,
         
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.backImageView)
         self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.photosContainerView)
-        self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel)
-        
+        self.headerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonLabel) 
+
         self.headerView.addConstraintsWithFormat("V:|[v0(80)]|", views: self.backImageView)
         
         self.headerView.addConstraintsWithFormat(
-            "V:|-30-[v0(photoSize)][v1]|", views:
+            "V:|-20-[v0(photoSize)][v1]|", views:
             self.photosContainerView,
             self.sonLabel,
             metrics: self.metricsHome)
