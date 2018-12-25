@@ -1741,7 +1741,7 @@
 	}
 
 	// --
-	// Update users upon Family creation
+	// Update users and create roles upon Family creation
 
 	Parse.Cloud.afterSave("Family", function(request) {			 
 
@@ -1753,79 +1753,51 @@
 
 		console.log("entra family");
 
-		var schoolQuery = request.object.relation("school").query();
-		schoolQuery.first({useMasterKey:true}).then(function(schoolPF){
+		var familyRole, schoolRole;
 
-			var schoolId = schoolPF.id;
+		var familyRoleName = "family_" + familyId;
+		Parse.Cloud.run("AddRoleByName", { "name": familyRoleName}).then(function(familyRolePF) {  
 
-			var levelQuery = request.object.relation("level").query();
-			levelQuery.first({useMasterKey:true}).then(function(levelPF){
+			familyRole = familyRolePF;
 
-				var levelId = levelPF.id;
+			var schoolQuery = request.object.relation("school").query();
+			schoolQuery.first({useMasterKey:true}).then(function(schoolPF){
 
-				console.log("familyId: " + familyId);
-				console.log("schoolId: " + schoolId);
-				console.log("levelId: " + levelId);
+				var schoolId = schoolPF.id;
 
-				var usersQuery = request.object.relation("members").query();
-				usersQuery.find({useMasterKey:true}).then(function(usersPF){
+				var shortSchool = schoolPF.get("short");
 
-					for (var i = 0; i < usersPF.length; ++i) 
-					{
-						usersPF[i].set("schoolId", schoolId);
-						usersPF[i].set("familyId", familyId);
-						usersPF[i].set("levelId", levelId);
-						usersPF[i].save(null, {useMasterKey: true});
-					}
+				Parse.Cloud.run("AddRoleByName", { "name": shortSchool}).then(function(schoolRolePF) {
 
-				});
+					schoolRole = schoolRolePF;
 
+					Parse.Cloud.run("AddUserToRole", { "parent": schoolRole, "child": familyRole});
+
+					var levelQuery = request.object.relation("level").query();					
+					levelQuery.first({useMasterKey:true}).then(function(levelPF){
+
+						var levelId = levelPF.id;
+
+						console.log("familyId: " + familyId);
+						console.log("schoolId: " + schoolId);
+						console.log("levelId: " + levelId);
+
+						var usersQuery = request.object.relation("members").query();
+						usersQuery.find({useMasterKey:true}).then(function(usersPF){
+
+							for (var i = 0; i < usersPF.length; ++i) 
+							{
+								Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": familyRoleName});
+
+								usersPF[i].set("schoolId", schoolId);
+								usersPF[i].set("familyId", familyId);
+								usersPF[i].set("levelId", levelId);
+								usersPF[i].save(null, {useMasterKey: true});
+							}
+						});
+					});
+				});				
 			});
 		});	
-		
-		/*var schoolRole = new Parse.Role(short, new Parse.ACL());		
-
-		return schoolRole.save(null, {useMasterKey: true}).then(function(role) {
-
-			var acl = new Parse.ACL();
-			acl.setReadAccess(role, true); //give read access to Role
-			acl.setWriteAccess(role, true); //give write access to Role
-
-			schoolRole.setACL(acl);            
-			schoolRole.save(null, {useMasterKey: true});
-
-		});*/
-
-
 	});
-
-	
-	// --
-	// Create role after school was created
-
-	Parse.Cloud.afterSave("School", function(request) {	
-
-
-		var object = request.object;
-
-		var familyId = object.id;
-
-		var short = object.get("short");
-
-
-
-
-	});
-
-
-	
-
-
-
-	
-
-
-
-
-
 

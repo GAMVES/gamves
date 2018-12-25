@@ -1093,27 +1093,59 @@
 
 		console.log("***************");		
    		
-   		if (!params.short)
+   		if (!params.name)
+        	return response.error("Missing parameters: name"); 
+
+        var name = request.params.name;
+
+        console.log("name: " + name);
+
+        var queryRole = new Parse.Query(Parse.Role);		
+		queryRole.equalTo('name', name);		
+
+		queryRole.first({useMasterKey:true}).then(function(rolePF) {
+
+			if (rolePF) {
+
+        		console.log( "TRUE" );			
+
+				response.success(rolePF);
+
+        	} else {
+
+        		console.log( "FALSE" );										
+
+				var newRole = new Parse.Role(name, new Parse.ACL());		
+
+				newRole.save(null, {useMasterKey: true}).then(function(role) {
+
+					var acl = new Parse.ACL();
+					acl.setReadAccess(role, true); //give read access to Role
+					acl.setWriteAccess(role, true); //give write access to Role
+
+					newRole.setACL(acl);            
+					newRole.save(null, {useMasterKey: true});
+
+					response.success(newRole);
+
+				});
+        	}
+		});
+	});
+
+	
+	/*Parse.Cloud.define("TestRun", function(request, response) {
+
+		var params = request.params;
+
+		if (!params.short)
         	return response.error("Missing parameters: short"); 
 		
 		var short = request.params.short;
 
-		console.log("short: " + short);
+		Parse.Cloud.run("AddRoleByName", { "short": short});
 
-		var schoolRole = new Parse.Role(short, new Parse.ACL());		
-
-		schoolRole.save(null, {useMasterKey: true}).then(function(role) {
-
-			var acl = new Parse.ACL();
-			acl.setReadAccess(role, true); //give read access to Role
-			acl.setWriteAccess(role, true); //give write access to Role
-
-			schoolRole.setACL(acl);            
-			schoolRole.save(null, {useMasterKey: true});
-
-		});
-
-	});
+	});*/
 
 	// --
   	// Add role by name
@@ -1123,89 +1155,122 @@
 		var roleName = request.params.role;	  
 	    var userId = request.params.userId; 
 
-		Parse.Cloud.run("CheckUserHasRole", { "userId": userId, "role": roleName}).then(function(result) {    
+		Parse.Cloud.run("CheckRoleHasUser", { "userId": userId, "role": roleName}).then(function(result) {    
 
-            console.log("__________________________");                         
-            console.log(JSON.stringify(result));       
+            if (!result) {
+
+            	console.log("roleName: " + roleName + " userId: " + userId);		        
+		
+				var queryRole = new Parse.Query(Parse.Role);		
+				queryRole.equalTo('name', roleName);		
+
+				queryRole.first({useMasterKey:true}).then(function(rolePF) {
+
+			        var userQuery = new Parse.Query(Parse.User);
+					userQuery.equalTo("objectId", userId);		        
+			       
+			        userQuery.first({
+
+			            success: function(userPF) {
+
+			            	var userRelation = rolePF.relation("users");
+							userRelation.add(userPF);
+
+							rolePF.save(null, { useMasterKey: true,	
+
+								success: function (roleSaved) {
+													
+									//let restul = {"result":true, "role":JSON.stringify(roleSaved)}
+
+		        					response.success(rolePF.id);
+				    			},
+								error: function (response, error) {										
+								    
+								    response.error("error: "  + error);
+								}
+							});  
+			            }
+			        });		
+				});
+
+            }  
            
         }, function(error) {
-
             console.log("error :" + error);       
 
-        });    
-	    
-	    
-	    //console.log("roleName: " + roleName + " userId: " + userId);		        
-		
-		/*var queryRole = new Parse.Query(Parse.Role);		
-		queryRole.equalTo('name', roleName);		
+        });    	   
+	});
 
-		queryRole.first({useMasterKey:true}).then(function(rolePF) {
+	// --
+  	// Add role to role
 
-	        var userQuery = new Parse.Query(Parse.User);
-			userQuery.equalTo("objectId", userId);		        
-	       
-	        userQuery.first({
+	Parse.Cloud.define("AddRoleToRole", function(request, response) {	
 
-	            success: function(userPF) {
+		var roleParent = request.params.parent;	  
+	    var roleChild = request.params.child; 
 
-	            	var userRelation = rolePF.relation("users");
-					userRelation.add(userPF);
+    	console.log("roleParent: " + roleParent.id + " roleChild: " + roleChild.id);
 
-					rolePF.save(null, { useMasterKey: true,	
+    	var roleParentRelation = roleParent.relation("roles");
+		roleParentRelation.add(roleChild);		        
 
-						success: function (roleSaved) {
-											
-							let restul = {"result":true, "role":JSON.stringify(roleSaved)}
+		roleParent.save(null, { useMasterKey: true,	
 
-        					response.success(restul);
-		    			},
-						error: function (response, error) {										
-						    
-						    response.error("error: "  + error);
-						}
-					});  
-	            }
-	        });		
-		});*/
+			success: function (roleSaved) {				
+
+				response.success(roleSaved.id);
+			},
+			error: function (response, error) {										
+			    
+			    response.error("error: "  + error);
+			}
+		}); 
+          	   
 	});
 
 
 	// --
   	// Check user has role
 
-	Parse.Cloud.define("CheckUserHasRole", function(request, response) {	    
+	Parse.Cloud.define("CheckRoleHasUser", function(request, response) {	    
 	    
 	    var roleName = request.params.role;	  
 	    var userId = request.params.userId; 
 
-		var authorized = false;
-		console.log('Before test: Auth = ' + authorized);
-
+	    console.log("roleName:  " + roleName + " userId: " + userId);
+		
 		var queryRole = new Parse.Query(Parse.Role);		
 		queryRole.equalTo('name', roleName);		
-		queryRole.first({useMasterKey:true}).then(function(rolePF) {			
+		queryRole.first({useMasterKey:true}).then(function(rolePF) {
+
+			console.log( "rolePF id : "  + rolePF.id );			
 	    	
 	        var role = rolePF;
 	        var adminRelation = new Parse.Relation(role, 'users');
+
 	        var queryAdmins = adminRelation.query();
+	        
+	        queryAdmins.equalTo('objectId', userId);
 
-	        queryAdmins.equalTo('objectId', userId);	        
-	        queryAdmins.first({
+	        queryAdmins.first({useMasterKey:true}).then(function(userPF) {
 
-	            success: function(userPF) {
-	                var user = userPF;
-	                console.log('user: ' + user.id);	               
-	                response.success(true);
-	            },
-			    error: function (error) {
-			    	response.error('Error! ' + error.message);
-			        console.log('Error: ' + error.message);
-			    }
-	        });
+	        	if (userPF) {
+
+	        		console.log( "TRUE" );			
+
+					response.success(rolePF.id);
+
+	        	} else {
+
+	        		console.log( "FALSE" );			
+
+					response.success(false);
+
+	        	}
+
+			});	        
 
 	     });
-
 	});
 
 
