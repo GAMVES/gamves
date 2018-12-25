@@ -41,6 +41,12 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         return launcher
     }()
 
+    lazy var eventViewController: EventViewController = {
+        let event = EventViewController()
+        event.tabBarViewController = self        
+        return event
+    }()
+
     var puserId = String()
 
     override func viewDidLoad() {
@@ -76,9 +82,15 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             }
         } else {
             perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
-        }           
+        }      
+
+        let eventNavController = UINavigationController(rootViewController: self.eventViewController)
+        self.eventViewController.tabBarItem.image = UIImage(named: "event")
+        let eventTitle = "Events"
+        self.eventViewController.title = eventTitle
+        self.eventViewController.tabBarViewController = self
         
-        let homeNavController = UINavigationController(rootViewController: homeViewController)
+        let homeNavController = UINavigationController(rootViewController: self.homeViewController)
         homeViewController.initilizeObservers()
         homeNavController.tabBarItem.image = UIImage(named: "home")
         
@@ -89,18 +101,18 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         let homeTitle = "Home"
         self.homeViewController.title = homeTitle
         
-        let chatFeedNavController = UINavigationController(rootViewController: chatFeedViewController)
+        let chatFeedNavController = UINavigationController(rootViewController: self.chatFeedViewController)
         self.chatFeedViewController.tabBarItem.image = UIImage(named: "community")
         let activiyTitle = "Activity"
         self.chatFeedViewController.title = activiyTitle
         
-        let accountNavController = UINavigationController(rootViewController: accountViewController)
+        let accountNavController = UINavigationController(rootViewController: self.accountViewController)
         self.accountViewController.tabBarItem.image = UIImage(named: "profile")
         let accountTitle = "Account"
         self.accountViewController.title = accountTitle
         self.accountViewController.tabBarViewController = self
         
-        viewControllers = [homeNavController, chatFeedNavController, accountNavController]
+        viewControllers = [eventNavController, homeViewController, chatFeedNavController, accountNavController]
 
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
