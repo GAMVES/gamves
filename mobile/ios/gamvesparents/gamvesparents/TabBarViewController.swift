@@ -99,7 +99,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         self.chatFeedViewController.tabBarViewController = self
         
         let homeTitle = "Home"
-        self.homeViewController.title = homeTitle
+        self.homeViewController.title = homeTitle  
         
         let chatFeedNavController = UINavigationController(rootViewController: self.chatFeedViewController)
         self.chatFeedViewController.tabBarItem.image = UIImage(named: "community")
