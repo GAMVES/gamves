@@ -51,14 +51,11 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         if let userId = PFUser.current()?.objectId
         {
             self.puserId = userId
         }
-    
-        self.tabBarController?.tabBar.tintColor = UIColor.gamvesColor      
-        
     
         locationManager.delegate = self
         
@@ -84,35 +81,48 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
         }      
 
-        let eventNavController = UINavigationController(rootViewController: self.eventViewController)
-        self.eventViewController.tabBarItem.image = UIImage(named: "event")
-        let eventTitle = "Events"
-        self.eventViewController.title = eventTitle
-        self.eventViewController.tabBarViewController = self
+        let eventNavController = UINavigationController(rootViewController: eventViewController)
+
+        let homeImage: UIImage = UIImage(named: "home")!.resizedImage(newWidth: 40)
         
-        let homeNavController = UINavigationController(rootViewController: self.homeViewController)
+        eventNavController.tabBarItem.image = homeImage //UIImage(named: "home")
+        self.eventViewController.tabBarViewController = self            
+
+        let eventTitle = "Home"
+        self.eventViewController.title = eventTitle
+       
+        let homeNavController = UINavigationController(rootViewController: homeViewController)
         homeViewController.initilizeObservers()
-        homeNavController.tabBarItem.image = UIImage(named: "home")
+
+        let activityTitle = "Activity"
+        self.homeViewController.title = activityTitle
+
+        let starImage: UIImage = UIImage(named: "star")!.resizedImage(newWidth: 40)
+        homeNavController.tabBarItem.image = starImage
         
         let layout = UICollectionViewFlowLayout()
         self.chatFeedViewController = ChatFeedViewController(collectionViewLayout: layout)
-        self.chatFeedViewController.tabBarViewController = self
+        self.chatFeedViewController.tabBarViewController = self    
         
-        let homeTitle = "Home"
-        self.homeViewController.title = homeTitle  
         
-        let chatFeedNavController = UINavigationController(rootViewController: self.chatFeedViewController)
-        self.chatFeedViewController.tabBarItem.image = UIImage(named: "community")
-        let activiyTitle = "Activity"
-        self.chatFeedViewController.title = activiyTitle
+        let chatFeedNavController = UINavigationController(rootViewController: chatFeedViewController)
+        let groupImage: UIImage = UIImage(named: "group")!.resizedImage(newWidth: 40)
+        self.chatFeedViewController.tabBarItem.image = groupImage
         
-        let accountNavController = UINavigationController(rootViewController: self.accountViewController)
-        self.accountViewController.tabBarItem.image = UIImage(named: "profile")
+        let chatsTitle = "Chats"
+        self.chatFeedViewController.title = chatsTitle
+        
+        let accountNavController = UINavigationController(rootViewController: accountViewController)
+        let friendImage: UIImage = UIImage(named: "friend")!.resizedImage(newWidth: 40)
+        self.accountViewController.tabBarItem.image = friendImage
+        
         let accountTitle = "Account"
         self.accountViewController.title = accountTitle
+        
         self.accountViewController.tabBarViewController = self
         
-        viewControllers = [eventNavController, homeViewController, chatFeedNavController, accountNavController]
+        viewControllers = [eventNavController, homeNavController, chatFeedNavController, accountNavController]
+
 
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
@@ -123,8 +133,14 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             self.selectedIndex = 2 //Account
         }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)                                    
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)      
+     
+        let array = viewControllers as! [UIViewController]
+        for controller in array {
+            controller.tabBarItem.title = ""
+            controller.tabBarItem.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0)
+        }
+
     }      
     
     override func viewDidAppear(_ animated: Bool) {
@@ -170,7 +186,10 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         if isLoggedIn()
         {
             self.blurVisualEffectView?.removeFromSuperview()
-        }        
+        }
+        
+        //self.tabBarController!.tabBar.tintColor = UIColor.gamvesColor
+        
     }
 
     func reloadHomeView() {
