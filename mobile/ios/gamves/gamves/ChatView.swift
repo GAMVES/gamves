@@ -114,7 +114,7 @@
         private var audioSubscription: Subscription<PFObject>!
         private var onlineSubscription: Subscription<PFObject>!
         
-        var videoQuery:PFQuery<PFObject>!
+        var chatQuery:PFQuery<PFObject>!
         var feedQuery:PFQuery<PFObject>!
         var audioQuery:PFQuery<PFObject>!
         var onlineQuery:PFQuery<PFObject>!
@@ -962,9 +962,9 @@
         func initializeChatSubscription()
         {
             
-            self.videoQuery = PFQuery(className: "ChatVideo").whereKey("chatId", equalTo: self.chatId)
+            self.chatQuery = PFQuery(className: "Chats").whereKey("chatId", equalTo: self.chatId)
             
-            self.chatSubscription = chatClient.subscribe(self.videoQuery).handle(Event.created) { _, chatMessage in
+            self.chatSubscription = chatClient.subscribe(self.chatQuery).handle(Event.created) { _, chatMessage in
                 
                 print(chatMessage)
                 
@@ -1258,8 +1258,8 @@
         
         func unsubcribeClients() {
             
-            if self.videoQuery != nil {
-                self.chatClient.unsubscribe(self.videoQuery)
+            if self.chatQuery != nil {
+                self.chatClient.unsubscribe(self.chatQuery)
             }
             if self.feedQuery != nil {
                 self.feedClient.unsubscribe(self.feedQuery)
@@ -1419,7 +1419,7 @@
                     
                     Global.audioRecorded.audioObj = audioPF
                     
-                    let messagePF: PFObject = PFObject(className: "ChatVideo")
+                    let messagePF: PFObject = PFObject(className: "Chats")
                     
                     var userId = String()
                     
@@ -1557,7 +1557,7 @@
                     Global.pictureRecorded.pictureSmall = pictureSmall
                     Global.pictureRecorded.pictureObj = picturePF
                     
-                    let messagePF: PFObject = PFObject(className: "ChatVideo")
+                    let messagePF: PFObject = PFObject(className: "Chats")
                     
                     var userId = String()
                     
@@ -1638,7 +1638,7 @@
 
         func sendMessageAtLast(sendPush:Bool) {
 
-            let messagePF: PFObject = PFObject(className: "ChatVideo")
+            let messagePF: PFObject = PFObject(className: "Chats")
             
             var userId = String()
             

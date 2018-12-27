@@ -194,7 +194,7 @@ class ChatMethods: NSObject
     {
         print(text)
         
-        let messagePF: PFObject = PFObject(className: "ChatVideo")
+        let chatPF: PFObject = PFObject(className: "Chats")
         
         var userId = String()
         
@@ -203,12 +203,12 @@ class ChatMethods: NSObject
         if PFUser.current() != nil
         {
             userId = (PFUser.current()?.objectId)!
-            messagePF["userId"] = userId
+            chatPF["userId"] = userId
         }
         
-        messagePF["chatId"] = chatId
+        chatPF["chatId"] = chatId
         
-        messagePF["message"] = text
+        chatPF["message"] = text
 
         if let puserId = PFUser.current()?.objectId
         {        
@@ -217,7 +217,7 @@ class ChatMethods: NSObject
         
         var message = text
         
-        messagePF.saveInBackground { (resutl, error) in
+        chatPF.saveInBackground { (resutl, error) in
             
             if error == nil
             {
