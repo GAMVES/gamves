@@ -17,7 +17,7 @@
 		var adminUser;
 		var notificationSaved;
 		
-		var iDUserType = request.params.iDUserType;
+		var iDUserType = request.params.user_type;
 
 		var userQuery = new Parse.Query(Parse.User);
 		userQuery.equalTo("username", "gamvesadmin");
@@ -95,7 +95,7 @@
 			user.set("Name", firstName + " " + lastName);
 		  	user.set("firstName", firstName);
 		  	user.set("lastName", lastName);
-			user.set("iDUserType", iDUserType);
+			user.set("user_type", iDUserType);
 			user.set("picture", file);
 			user.set("pictureSmall", fileSmall);
 

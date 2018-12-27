@@ -33,7 +33,7 @@
 	// --
 	// Set user to admin role.
 
-	Parse.Cloud.define("setUserAdmin", function(request, response) {
+	Parse.Cloud.define("setUserAdminRole", function(request, response) {
 	    
 	    console.info("llega");
 	    var user;

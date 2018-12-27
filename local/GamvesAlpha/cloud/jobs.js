@@ -280,7 +280,7 @@
 	  	function birthdayDailyCheck(callback) {	  		
 
 	  		var userQuery = new Parse.Query(Parse.User);
-			userQuery.containedIn("iDUserType", [2,3]);
+			userQuery.containedIn("user_type", [2,3]);
 			userQuery.find().then(function(usersPF) {				
 
 				let countUsers = usersPF.length;
