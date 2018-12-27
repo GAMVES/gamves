@@ -565,7 +565,7 @@
 	// --
 	// Update or create Budges
 
-	Parse.Cloud.afterSave("ChatVideo", function(request) {		
+	Parse.Cloud.afterSave("Chats", function(request) {		
 
 		var object = request.object;
 
