@@ -1176,7 +1176,7 @@ ChooseAvatarProtocol
                         targetArray.append(friend.userId)
                     }
 
-                    fanpagePF.addObjects(from: targetArray, forKey: "target")
+                    //fanpagePF.addObjects(from: targetArray, forKey: "target")
                     
                     fanpagePF.saveInBackground(block: { (fanpge, error) in
                         

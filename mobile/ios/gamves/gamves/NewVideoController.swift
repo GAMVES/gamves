@@ -757,7 +757,7 @@ SelectorProtocol {
                 videoPF["fanpageObjId"] = fanpageId
             }
             
-            fanpagePF.addObjects(from: targetArray, forKey: "target")
+            //fanpagePF.addObjects(from: targetArray, forKey: "target")
        
             fanpagePF.saveEventually()
         }   
@@ -772,7 +772,7 @@ SelectorProtocol {
         
         videoPF["folder"] = short
                
-        videoPF["target"] = targetArray
+        //videoPF["target"] = targetArray
         
         if self.videoSelThumbnail != nil {
         

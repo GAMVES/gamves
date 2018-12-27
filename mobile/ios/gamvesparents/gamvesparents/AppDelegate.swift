@@ -80,10 +80,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         window?.rootViewController = tabBarViewController      
         
         UITabBar.appearance().barTintColor = UIColor.gamvesColor
-        UITabBar.appearance().tintColor = UIColor.black
+        UITabBar.appearance().tintColor = UIColor.white
+       
+        
         if #available(iOS 10.0, *) {
-            UITabBar.appearance().unselectedItemTintColor = UIColor.white
-        } 
+            UITabBar.appearance().unselectedItemTintColor = UIColor.black
+        } else {
+            tabBarViewController.tabBar.unselectedItemTintColor = UIColor.black
+        }
             
         //- Load Admin
         Global.loadAdminUser()

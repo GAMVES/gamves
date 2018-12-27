@@ -83,7 +83,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
 
         let eventNavController = UINavigationController(rootViewController: eventViewController)
 
-        let homeImage: UIImage = UIImage(named: "home")!.resizedImage(newWidth: 40)
+        let homeImage: UIImage = UIImage(named: "home")!.resizedImage(newWidth: 30)
         
         eventNavController.tabBarItem.image = homeImage //UIImage(named: "home")
         self.eventViewController.tabBarViewController = self            
@@ -97,7 +97,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         let activityTitle = "Activity"
         self.homeViewController.title = activityTitle
 
-        let starImage: UIImage = UIImage(named: "star")!.resizedImage(newWidth: 40)
+        let starImage: UIImage = UIImage(named: "star")!.resizedImage(newWidth: 30)
         homeNavController.tabBarItem.image = starImage
         
         let layout = UICollectionViewFlowLayout()
@@ -106,14 +106,14 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         
         
         let chatFeedNavController = UINavigationController(rootViewController: chatFeedViewController)
-        let groupImage: UIImage = UIImage(named: "group")!.resizedImage(newWidth: 40)
+        let groupImage: UIImage = UIImage(named: "group")!.resizedImage(newWidth: 30)
         self.chatFeedViewController.tabBarItem.image = groupImage
         
         let chatsTitle = "Chats"
         self.chatFeedViewController.title = chatsTitle
         
         let accountNavController = UINavigationController(rootViewController: accountViewController)
-        let friendImage: UIImage = UIImage(named: "friend")!.resizedImage(newWidth: 40)
+        let friendImage: UIImage = UIImage(named: "friend")!.resizedImage(newWidth: 30)
         self.accountViewController.tabBarItem.image = friendImage
         
         let accountTitle = "Account"

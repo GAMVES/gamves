@@ -506,7 +506,7 @@ class FanpagePage: UIViewController,
         
         print(" fan.fanpageObj!:    \(fan.fanpageObj?.objectId) ")
         
-        queryvideos.whereKey("target", containedIn: filterTarget)
+        //queryvideos.whereKey("target", containedIn: filterTarget)
         
         if !Global.hasDateChanged()
         {

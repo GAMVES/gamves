@@ -47,7 +47,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         self.width = self.view.frame.width
         self.height = self.view.frame.height
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray) 
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorView.ballSpinFadeLoader.rawValue, color: UIColor.gray)
 
         self.activityIndicatorView?.startAnimating()
                         
@@ -244,7 +244,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         
         print(filterTarget)
         
-        queryCategories.whereKey("target", containedIn: filterTarget)
+        //queryCategories.whereKey("target", containedIn: filterTarget)
         
         if !Global.hasDateChanged()
         {
@@ -376,7 +376,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                 Global.levelDescription.lowercased(),
                 Global.userId] as [String]
             
-            queryFanpage.whereKey("target", containedIn: filterTarget)
+            //queryFanpage.whereKey("target", containedIn: filterTarget)
             
             queryFanpage.whereKey("category", equalTo: category)
             

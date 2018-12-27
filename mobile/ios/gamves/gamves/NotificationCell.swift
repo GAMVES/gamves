@@ -133,7 +133,7 @@ UICollectionViewDelegateFlowLayout {
                 Global.levelDescription.lowercased(),
                 userId] as [String]
 
-            queryNotification.whereKey("target", containedIn: filterTarget)
+            //queryNotification.whereKey("target", containedIn: filterTarget)
         }
         
         self.subscription = liveQueryClientFeed.subscribe(queryNotification).handle(Event.created) { _, notification in            

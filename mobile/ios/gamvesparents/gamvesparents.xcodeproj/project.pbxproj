@@ -19,6 +19,7 @@
 		09397279217595F600496571 /* CustomSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09397278217595F600496571 /* CustomSearchBar.swift */; };
 		0939727B21759CC600496571 /* UISearch+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0939727A21759CC500496571 /* UISearch+Extension.swift */; };
 		0959FD092175BF3100711C7A /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959FD082175BF3000711C7A /* UIFont+Extension.swift */; };
+		098A903121D3F1D4001C6FC1 /* UITabbar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098A903021D3F1D4001C6FC1 /* UITabbar+Extension.swift */; };
 		19761041B06941D4B4D5BF5F /* Pods_gamvesparents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C54E21136EE63AD18AFFB195 /* Pods_gamvesparents.framework */; };
 		8212D6D81F735F1000F2A121 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8212D6D61F735F1000F2A121 /* Bolts.framework */; };
 		8212D6D91F735F1000F2A121 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8212D6D71F735F1000F2A121 /* Parse.framework */; };
@@ -131,6 +132,7 @@
 		09397278217595F600496571 /* CustomSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSearchBar.swift; sourceTree = "<group>"; };
 		0939727A21759CC500496571 /* UISearch+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISearch+Extension.swift"; sourceTree = "<group>"; };
 		0959FD082175BF3000711C7A /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
+		098A903021D3F1D4001C6FC1 /* UITabbar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabbar+Extension.swift"; sourceTree = "<group>"; };
 		0DE98C8C50A63DDAFA10CAD9 /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 		8212D6D61F735F1000F2A121 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		8212D6D71F735F1000F2A121 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -357,6 +359,7 @@
 				C98F266320B25EB700755733 /* UIAlertController+Extension.swift */,
 				C9381D69213D7DF700352550 /* UINavigationController+Extension.swift */,
 				0959FD082175BF3000711C7A /* UIFont+Extension.swift */,
+				098A903021D3F1D4001C6FC1 /* UITabbar+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -765,6 +768,7 @@
 				826B8CC720191F21008C19A3 /* AccountViewController.swift in Sources */,
 				C9709B4320F6B5190098B061 /* FriendApprovalLauncher.swift in Sources */,
 				828F83CE1FBC5C9300A1C67A /* ChatMethods.swift in Sources */,
+				098A903121D3F1D4001C6FC1 /* UITabbar+Extension.swift in Sources */,
 				8212D70F1F7A71CF00F2A121 /* Label+Extension.swift in Sources */,
 				093972712175742C00496571 /* CustomSearchController.swift in Sources */,
 				C70156211D8DC3B0003E25AF /* UIView+Extensions.swift in Sources */,
