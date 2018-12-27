@@ -8,6 +8,8 @@ document.addEventListener("LoadCategories", function(event){
     var categoriesLenght = 0;
     var categoryName;
 
+    var categoryACL = window.loadRole(short);
+
     loadOtherSchools(schoolId);
     loadCategories();
 
@@ -17,7 +19,7 @@ document.addEventListener("LoadCategories", function(event){
     function loadCategories()
     {  
         queryCategory = new Parse.Query("Categories");  
-        queryCategory.containedIn("target", [short]);          
+        //queryCategory.containedIn("target", [short]);          
         queryCategory.find({
             success: function (categories) {
 
@@ -259,8 +261,18 @@ document.addEventListener("LoadCategories", function(event){
           cat.set("name", $("#edit_description").val());
           var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
-          cat.set("backImage", parseFileBackImage);
-          cat.set("target", window.checkChecked("frm_edit", short));
+          cat.set("backImage", parseFileBackImage); 
+
+          cat.setACL(categoryACL);
+
+          var roles = window.getCheckedRole("frm_edit");
+
+          if (roles.length >0) {
+            for (var i = 0; i < roles.length; ++i) {
+                cat.setACL(roles[i]);
+            }                      
+          }
+
           cat.save(null, {
               success: function (pet) {
                   console.log('Category created successful with name: ' + cat.get("pageName"));

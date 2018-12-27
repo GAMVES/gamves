@@ -272,20 +272,32 @@
           school.set("iso", parseFileIso);
           school.set("name", $("#edit_name").val());   
           var short =  $("#edit_short").val();          
-          school.set("short", short);  
+          school.set("short", short);           
 
           school.save(null, {
-              success: function (schoolNew) {
+              success: function (schoolNew) {                  
+          
+                  Parse.Cloud.run("AddRoleByName", { "name": short}).then(function(schoolRolePF) {
 
-                  console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
+                      var currentUser = Parse.User.current();
 
-                  checkKnownCategoryExistByName(short, function(categoriesPF) {
+                      let name = schoolRolePF.get("name");
+
+                      Parse.Cloud.run("AddUserToRole", { "userId": currentUser.id, "role": name});
+
+                      console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
+
+                      checkKnownCategoryExistByName(short, function(categoriesPF) {
+                          
+                            saveCategoriesForTarget(categoriesPF, short);                                            
+
+                      });       
                       
-                        saveCategoriesForTarget(categoriesPF, short);                                            
+                      createSchoolS3Folder();
 
-                  });       
+                  });
+
                   
-                  createSchoolS3Folder();
 
               },
               error: function (response, error) {
@@ -559,16 +571,59 @@
         });
     }
 
-    window.checkChecked = function(formname, short) {
-        var shortArrays = [short];
-        $('#' + formname + ' input[type="checkbox"]').each(function() {
-            if ($(this).is(":checked")) {
-                let short = $(this).val();
-                shortArrays.push(short);                
-            }
-        });
-        return shortArrays;
+    window.getCheckedRole = function(formname) {        
+
+        var aclArray = [];
+        var countChecks = 0;
+        var numberOfChecked = $('input[type="checkbox"]').is(":checked").length;
+
+        if ( numberOfChecked > 0 ) {
+
+          $('#' + formname + ' input[type="checkbox"]').each(function() {
+              
+              if ($(this).is(":checked")) {
+              
+                  let short = $(this).val();
+                  
+                  var queryRole = new Parse.Query(Parse.Role);    
+                  queryRole.equalTo('name', roleName);    
+
+                  queryRole.first({useMasterKey:true}).then(function(rolePF) {
+
+                      aclArray.push(rolePF); 
+
+                      if (countChecks == (numberOfChecked-1)) {
+                        return aclArray;
+                      }
+
+                      countChecks++;
+
+                  });
+
+              }
+
+          });
+
+        } else {
+
+          return aclArray;
+        }
+        
      }
+
+
+     window.loadRole = function(roleName) { 
+
+        var queryRole = new Parse.Query(Parse.Role);    
+        queryRole.equalTo('name', roleName);    
+
+        queryRole.first({useMasterKey:true}).then(function(rolePF) {           
+
+           return rolePF;
+           
+        });
+
+    }
 
   });
 

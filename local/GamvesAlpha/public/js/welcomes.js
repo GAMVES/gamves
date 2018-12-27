@@ -10,6 +10,8 @@ document.addEventListener("LoadWelcomes", function(event){
     
     loadWelcomes();
 
+    var welcomeACL = window.loadRole(short);
+
     var parseFileThumbanil;    
 
     function loadWelcomes()
@@ -236,6 +238,9 @@ document.addEventListener("LoadWelcomes", function(event){
           welcome.set("description", description);                  
             
           welcome.set("thumbnail", parseFileThumbanil);
+
+          welcome.setACL(welcomeACL);
+
           welcome.set("target", window.checkChecked("frm_welcome_edit", short));
           
           welcome.save(null, {

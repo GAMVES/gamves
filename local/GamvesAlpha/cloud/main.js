@@ -62,7 +62,16 @@
 					admin.set(d, "Administrator");					
 
 					admin.save(null, {											
-						success: function (adm) {		
+						success: function (adm) {	
+
+							var roleName = "admin";
+							var adminRole = new Parse.Role(roleName, new Parse.ACL());
+							adminRole.getUsers().add(admin); 
+							var acl = new Parse.ACL();
+							acl.setReadAccess(role, true); 
+							acl.setWriteAccess(role, true); 
+							adminRole.setACL(acl);            
+							adminRole.save(null, {useMasterKey: true});
 
 							var app_icon_url = "https://s3.amazonaws.com/gamves/config/gamves.png";					
 
@@ -129,7 +138,8 @@
 
 				    							var Profile = Parse.Object.extend("Profile");         
 
-									            profile = new Profile();												profile.set("pictureBackground", universeFile);
+									            profile = new Profile();												
+									            profile.set("pictureBackground", universeFile);
 												profile.set("bio", "Gamves Administrator");		
 												profile.set("backgroundColor", [228, 239, 245]);
 												profile.set("userId", user.id);		
@@ -141,6 +151,8 @@
 								                    success: function(result) {
 
 								                    	loadPetsArray( function(universeFile){
+
+								                    		Parse.Cloud.run("CreateClasses");
 
 								                    		response.success(resutl);
 
@@ -185,6 +197,27 @@
 	    });
 
 	});	
+
+
+	Parse.Cloud.define("CreateClasses", function( request, response ) {
+
+		var classses = [
+		 "Approvals",
+		 "Audios",
+		 "ChatFeed",
+		 "FriendsApproval",
+		 "Notifications",
+		 "UserStatus",
+		 "Recommendations"
+		 ]
+
+		for (var i=0; i<classses.length; i++) {
+
+			var classs = Parse.Object.extend(classses[i]);		
+			classs.save(null, { useMasterKey: true } );
+		}
+	});
+
 
 	function loadImagesArray(configPF, callback) {	
 
@@ -1136,18 +1169,12 @@
 			        }
 			    });
 
-
 		    }, function(error) {	    
-
 		        response.error(error);
 
 		    });		
 		}
-
 	});
-
-
-
 
 
 	// --
@@ -1444,6 +1471,8 @@
 
 					console.log("posterFanpagesPF");
 
+					///REPLACE TARGET WITH ROLE
+
 					if ( posterFanpagesPF != undefined ) {
 
 						let countPFPF = posterFanpagesPF.length;							
@@ -1486,6 +1515,8 @@
 				}).then(function(friendFanpagesPF) { 
 
 					console.log("friendFanpagesPF"); 
+
+					///REPLACE TARGET WITH ROLE
 
 					if ( friendFanpagesPF != undefined ) {
 
@@ -1533,7 +1564,7 @@
 
 					console.log("posterVideosPF");
 
-					////
+					///REPLACE TARGET WITH ROLE
 
 					if ( posterVideosPF != undefined ) {
 
@@ -1559,6 +1590,8 @@
 				}).then(function(friendVideosPF) {  
 
 					console.log("friendVideosPF"); 
+
+					///REPLACE TARGET WITH ROLE
 
 					if ( friendVideosPF != undefined ) {
 
@@ -1756,6 +1789,7 @@
 		var familyRole, schoolRole;
 
 		var familyRoleName = "family_" + familyId;
+
 		Parse.Cloud.run("AddRoleByName", { "name": familyRoleName}).then(function(familyRolePF) {  
 
 			familyRole = familyRolePF;
@@ -1778,7 +1812,7 @@
 
 						var levelId = levelPF.id;
 
-						console.log("familyId: " + familyId);
+						console.log("famlyId: " + familyId);
 						console.log("schoolId: " + schoolId);
 						console.log("levelId: " + levelId);
 
@@ -1787,11 +1821,17 @@
 
 							for (var i = 0; i < usersPF.length; ++i) 
 							{
+
+								var friendOfRole = "friendOf___" + usersPF.id;
+
+								Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": friendOfRole});
+
 								Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": familyRoleName});
 
 								usersPF[i].set("schoolId", schoolId);
 								usersPF[i].set("familyId", familyId);
 								usersPF[i].set("levelId", levelId);
+								
 								usersPF[i].save(null, {useMasterKey: true});
 							}
 						});

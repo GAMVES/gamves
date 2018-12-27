@@ -10,12 +10,14 @@ document.addEventListener("LoadGifts", function(event){
     
     loadGifts();
 
-    var parseFileThumbanil;    
+    var giftACL = window.loadRole(short);   
+
+    var parseFileThumbanil; 
 
     function loadGifts()
     {  
         queryGift = new Parse.Query("Gifts");  
-        queryGift.containedIn("target", [short]);          
+        //queryGift.containedIn("target", [short]);          
         queryGift.find({
             success: function (gifts) {
 
@@ -243,7 +245,18 @@ document.addEventListener("LoadGifts", function(event){
           gift.set("points", parseInt($("#edit_points").val()));              
             
           gift.set("thumbnail", parseFileThumbanil);
-          gift.set("target", window.checkChecked("frm_gift_edit", short));
+          
+          //gift.set("target", window.checkChecked("frm_gift_edit", short));
+
+          gift.setACL(giftACL);
+
+          var roles = window.getCheckedRole("frm_gift_edit");
+
+          if (roles.length >0) {
+            for (var i = 0; i < roles.length; ++i) {
+                gift.setACL(roles[i]);
+            }                      
+          }
           
           gift.save(null, {
               success: function (pet) {

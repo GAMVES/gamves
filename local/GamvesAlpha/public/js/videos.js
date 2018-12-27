@@ -9,6 +9,8 @@ document.addEventListener("LoadVideo", function(event){
       var appIconFile;
       var schoolShort;
 
+      var schoolACL = new Parse.ACL();
+
       var queryFanpage = new Parse.Query("Fanpages");             
       queryFanpage.equalTo("objectId", fanpageId);
       queryFanpage.first({
@@ -313,13 +315,21 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("videoId", vrnd);              
 
                     video.set("fanpageObjId", fanpageObj.id);                     
-                    video.set("poster_name", "Gamves Official");       
-                    video.set("target", [schoolId]);
+                    video.set("poster_name", "Gamves Official");                        
+
                     video.set("source_type", 2);  //YOUTUBE   
 
-                    video.set("approved", true);
-                    
-                    video.set("target", window.checkChecked("frm_edit", schoolShort));
+                    video.set("approved", true);                 
+
+                    video.setACL(schoolACL);
+
+                    var roles = window.getCheckedRole("frm_edit");
+
+                    if (roles.length >0) {
+                      for (var i = 0; i < roles.length; ++i) {
+                          video.setACL(roles[i]);
+                      }                      
+                    }
 
                     video.save(null, {
                         success: function (savedVideo) {        
@@ -399,7 +409,16 @@ document.addEventListener("LoadVideo", function(event){
               success: function (school) {
                   
                   if (school) { 
-                        schoolShort = school.get("short");   
+                        schoolShort = school.get("short");                           
+
+                        var queryRole = new Parse.Query(Parse.Role);    
+                        queryRole.equalTo('name', roleName);    
+
+                        queryRole.first({useMasterKey:true}).then(function(rolePF) {
+
+                            schoolACL = rolePF;
+
+                        });
                   }
               }
           });           

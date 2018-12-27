@@ -12,11 +12,13 @@ document.addEventListener("LoadFanpage", function(event){
       var fanpageId;
       var fanpageObjs = [];
       var _fId;
-      var fanpageIdArray = [];       
+      var fanpageIdArray = [];  
+
+      var fanpagetACL = window.loadRole(short);       
 
       var queryCategory = new Parse.Query("Categories");             
       queryCategory.equalTo("objectId", catId);
-      queryCategory.containedIn("target", [short]);
+      //queryCategory.containedIn("target", [short]);
       queryCategory.first({
           success: function (category) {
               
@@ -331,10 +333,18 @@ document.addEventListener("LoadFanpage", function(event){
 
               fanpage.set("approved", true);
               fanpage.set("posterId" , user.id);
-              fanpage.set("fanpageId", Math.floor(Math.random() * 100000));         
+              fanpage.set("fanpageId", Math.floor(Math.random() * 100000));                       
 
-              fanpage.set("target", window.checkChecked("frm_edit", short));
-                                         
+              fanpage.setACL(fanpagetACL);
+
+              var roles = window.getCheckedRole("frm_edit");
+
+              if (roles.length >0) {
+                for (var i = 0; i < roles.length; ++i) {
+                    fanpage.setACL(roles[i]);
+                }                      
+              }
+                                        
               fanpage.save(null, {
                   success: function (pet) {
 
