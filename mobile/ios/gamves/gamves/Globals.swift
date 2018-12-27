@@ -252,7 +252,7 @@ class Global: NSObject
                         gamvesUser.isAvatarDownloaded = true
                         gamvesUser.isAvatarQuened = false
                         
-                        var typeNumber = user["iDUserType"] as! Int
+                        var typeNumber = user["user_type"] as! Int
                         print(gamvesUser.firstName)
                         
                         gamvesUser.typeNumber = typeNumber
@@ -546,7 +546,7 @@ class Global: NSObject
                         
                         let userTypeGamves = UserTypeGamves()
                         userTypeGamves.description = userType["description"] as! String
-                        let type = userType["idUserType"] as! Int
+                        let type = userType["user_type"] as! Int
                         userTypeGamves.idUserType = type
                         userTypeGamves.userTypeObj = userType
                         
@@ -589,7 +589,7 @@ class Global: NSObject
     static func fetchUsers(completionHandler : @escaping (_ count:Int) -> ())
     {
         let userQuery = PFQuery(className:"_User")        
-        userQuery.whereKey("iDUserType", containedIn: [2,3])
+        userQuery.whereKey("user_type", containedIn: [2,3])
 
         if let userId = PFUser.current() {
             userQuery.whereKey("objectId", notEqualTo: userId)

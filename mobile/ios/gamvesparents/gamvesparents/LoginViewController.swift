@@ -679,7 +679,7 @@ class LoginViewController: UIViewController
                 type = Global.REGISTER_MOTHER
             }
             
-            user["iDUserType"] = type
+            user["user_type"] = type
         
             user.signUpInBackground {
                 (success, error) -> Void in

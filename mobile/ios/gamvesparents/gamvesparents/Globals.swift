@@ -229,7 +229,7 @@ class Global: NSObject
                         userGamves.isAvatarDownloaded = true
                         userGamves.isAvatarQuened = false
                         
-                        var typeNumber = user["iDUserType"] as! Int
+                        var typeNumber = user["user_type"] as! Int
                         print(userGamves.firstName)
                         
                         userGamves.typeNumber = typeNumber
@@ -1595,7 +1595,7 @@ class Global: NSObject
                         
                         let userTypeGamves = UserTypeGamves()
                         userTypeGamves.description = userType["description"] as! String
-                        let type = userType["idUserType"] as! Int
+                        let type = userType["user_type"] as! Int
                         userTypeGamves.idUserType = type
                         userTypeGamves.userTypeObj = userType
                         

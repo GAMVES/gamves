@@ -680,7 +680,7 @@ class ProfileViewController: UIViewController,
             
         } else {
             
-            self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
+            self.yourTypeId = PFUser.current()?["user_type"] as! Int
             
             DispatchQueue.main.async() {
 
@@ -841,7 +841,7 @@ class ProfileViewController: UIViewController,
             
             self.sonSchoolTextField.text = school                        
             
-            self.yourTypeId = PFUser.current()?["iDUserType"] as! Int           
+            self.yourTypeId = PFUser.current()?["user_type"] as! Int
         }
     }
 
@@ -1180,8 +1180,8 @@ class ProfileViewController: UIViewController,
                             
                             self.sonBirthdayTextField.text = birthday
                             
-                            self.sonTypeId = user["iDUserType"] as! Int
-                            let sonUserType = user["iDUserType"] as! Int
+                            self.sonTypeId = user["user_type"] as! Int
+                            let sonUserType = user["user_type"] as! Int
                             
                             var sType = String()
                             
@@ -1263,7 +1263,7 @@ class ProfileViewController: UIViewController,
 
         if self.segmentedControl.selectedSegmentIndex == 0 {
             
-            self.yourTypeId = PFUser.current()?["iDUserType"] as! Int
+            self.yourTypeId = PFUser.current()?["user_type"] as! Int
 
             let name = PFUser.current()?["Name"] as! String
         
@@ -1655,7 +1655,7 @@ class ProfileViewController: UIViewController,
             "user_birthday" : self.birthDate,
             "firstName" : firstName,
             "lastName" : lastName,
-            "iDUserType" : type,
+            "user_type" : type,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
             "short": short,
@@ -1754,7 +1754,7 @@ class ProfileViewController: UIViewController,
             "user_email" : spouse_email,
             "firstName" : firstName,
             "lastName" : lastName,
-            "iDUserType" : type,
+            "user_type" : type,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
             "dataPhotoImage": dataPhotoImage,
