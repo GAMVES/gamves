@@ -2,322 +2,167 @@
 	require('./jobs');	
 	require('./users');
 
+	var _admuser = "gamvesadmin";
+
 	// --
 	// Run startup script
 
 	Parse.Cloud.define("InitializeGamves", function(request, response) {
 
-		console.log("--1--");		
-
-		var _admuser = "gamvesadmin";
-		var adminUser = new Parse.User();
-		var roleName = "admin";
-		var adminRole = new Parse.Role(roleName, new Parse.ACL());			
-
-		var acl = new Parse.ACL();
-		acl.setReadAccess(adminRole, true); 
-		acl.setWriteAccess(adminRole, true); 
-
-		adminRole.setACL(acl);
-
 		var t = "user_type";
-		var d = "description";      
+		var d = "description";
 
-		adminRole.save(null, {useMasterKey: true}).then(function(adminRolePF) {
+		var adminLogged, adminRole, universePFile;
 
-			var app_icon_url = "https://s3.amazonaws.com/gamves/config/gamves.png";					
+		var app_icon_url = "https://s3.amazonaws.com/gamves/config/gamves.png";					
 
-			Parse.Cloud.httpRequest({url: app_icon_url}).then(function(httpResponse) {
+		Parse.Cloud.httpRequest({url: app_icon_url}).then(function(httpResponse) {
       
-               	var imageBuffer = httpResponse.buffer;
-               	var base64 = imageBuffer.toString("base64");
-               	var iconFile = new Parse.File("gamves.png", { base64: base64 });                                	
+           	var imageBuffer = httpResponse.buffer;
+           	var base64 = imageBuffer.toString("base64");
+           	var iconFile = new Parse.File("gamves.png", { base64: base64 });                                	
 
-				adminUser.set("username", _admuser);
-				adminUser.set("Name", "Gamves Official");
-				adminUser.set("firstName", "Gamves");
-				adminUser.set("lastName", "Official");
-				adminUser.set("pictureSmall", iconFile);
-				adminUser.set("password", "lo vas a lograr");
-				adminUser.set(t, -1);				
+           	console.log("--2--");
 
-	        	console.log("--3--");
+           	var adminUser = new Parse.User();
+			adminUser.set("username", _admuser);
+			adminUser.set("name", "Gamves Official");
+			adminUser.set("firstName", "Gamves");
+			adminUser.set("lastName", "Official");
+			adminUser.set("pictureSmall", iconFile);
+			adminUser.set("password", "lo vas a lograr");
+			adminUser.set(t, -1);				
 
-				adminUser.signUp(null, {useMasterKey: true}, {
-					success: function(userLogged) {	
+			adminUser.signUp(null, {useMasterKey: true}).then(function(userLoggedPF) {	
 
-						var adminRoleRelation = adminRolePF.relation("users");
-						adminRoleRelation.add(userLogged);
-						adminRolePF.save(null, {useMasterKey: true});
+				adminLogged = userLoggedPF;				
 
-						var UserTypes = Parse.Object.extend("UserType");					
+				var roleName = "admin";
+				var aRole = new Parse.Role(roleName, new Parse.ACL());			
 
-						var registerMother = new UserTypes();
-						registerMother.set(t, 0);
-						registerMother.set(d, "Register-Mother");
-						registerMother.save(null, {useMasterKey: true});                        
+				var acl = new Parse.ACL();
+				acl.setReadAccess(aRole, true); 
+				acl.setWriteAccess(aRole, true); 
 
-						var spouseMother = new UserTypes();
-						spouseMother.set(t, 1);
-						spouseMother.set(d, "Spouse-Mother");
-						spouseMother.save(null, {useMasterKey: true});
+				aRole.setACL(acl);						   
 
-						var son = new UserTypes();
-						son.set(t, 2);
-						son.set(d, "Son");
-						son.save(null, {useMasterKey: true});
+				return aRole.save(null, {useMasterKey: true});
+			
+			}).then(function(adminRolePF) {
 
-						var daughter = new UserTypes();
-						daughter.set(t, 3);
-						daughter.set(d, "Daughter");
-						daughter.save(null, {useMasterKey: true});
+				console.log("--5--");
 
-						var spouseFather = new UserTypes();
-						spouseFather.set(t, 4);
-						spouseFather.set(d, "Spouse-Father");
-						spouseFather.save(null, {useMasterKey: true});
+				var adminRoleRelation = adminRolePF.relation("users");
+				adminRoleRelation.add(adminLogged);
+				return adminRolePF.save(null, {useMasterKey: true});
 
-						var registerFather = new UserTypes();
-						registerFather.set(t, 5);
-						registerFather.set(d, "Register-Father");
-						registerFather.save(null, {useMasterKey: true});						
+			}).then(function(adminRolePF) {
 
-						var adminUserType = new UserTypes();
-						adminUserType.set(t, -1);
-						adminUserType.set(d, "Administrator");
-						adminUserType.save(null, {useMasterKey: true});	
+				adminRole = adminRolePF;				
 
-						var adminRelation = adminUserType.relation("userType");
-	        			adminRelation.add(adminUser);
+				var UserTypes = Parse.Object.extend("UserType");					
 
-	        			//GamvesDev
-						var app_id 			= "PJwimi4PtpAKCpt8UAnDA0QBh5FHLhENew6YQLyI";
-						var master_key		= "G8tmbgWc7u2YOZjN1ZhzYPaMHEnoKAAVFHUwn1ot";
-						var server_url 		= "https://parseapi.back4app.com";											
-						
-						var hasIcon 		= false;
+				var registerMother = new UserTypes();
+				registerMother.set(t, 0);
+				registerMother.set(d, "Register-Mother");
+				registerMother.save(null, {useMasterKey: true});
 
-						//Config
-						var Config = Parse.Object.extend("Config");
-						var config = new Config();
+				var spouseMother = new UserTypes();
+				spouseMother.set(t, 1);
+				spouseMother.set(d, "Spouse-Mother");
+				spouseMother.save(null, {useMasterKey: true});
 
-						config.set("server_url", server_url); 
-						config.set("app_id", app_id);
-						config.set("master_key", master_key);
-						config.set("app_icon_url", app_icon_url);  
-						config.set("iconPicture", iconFile);
-						config.set("hasIcon", hasIcon);   
-						config.set("badWords", "4r5e|5h1t|5hit|a55|anal|anus|ar5e|arrse|arse|ass|ass-fucker|asses|assfucker|assfukka|asshole|assholes|asswhole|a_s_s|b!tch|b00bs|b17ch|b1tch|ballbag|balls|ballsack|bastard|beastial|beastiality|bellend|bestial|bestiality|bi\+ch|biatch|bitch|bitcher|bitchers|bitches|bitchin|bitching|bloody|blow job|blowjob|blowjobs|boiolas|bollock|bollok|boner|boob|boobs|booobs|boooobs|booooobs|booooooobs|breasts|buceta|bugger|bum|bunny fucker|butt|butthole|buttmuch|buttplug|c0ck|c0cksucker|carpet muncher|cawk|chink|cipa|cl1t|clit|clitoris|clits|cnut|cock|cock-sucker|cockface|cockhead|cockmunch|cockmuncher|cocks|cocksuck|cocksucked|cocksucker|cocksucking|cocksucks|cocksuka|cocksukka|cok|cokmuncher|coksucka|coon|cox|crap|cum|cummer|cumming|cums|cumshot|cunilingus|cunillingus|cunnilingus|cunt|cuntlick|cuntlicker|cuntlicking|cunts|cyalis|cyberfuc|cyberfuck|cyberfucked|cyberfucker|cyberfuckers|cyberfucking|d1ck|damn|dick|dickhead|dildo|dildos|dink|dinks|dirsa|dlck|dog-fucker|doggin|dogging|donkeyribber|doosh|duche|dyke|ejaculate|ejaculated|ejaculates|ejaculating|ejaculatings|ejaculation|ejakulate|f u c k|f u c k e r|f4nny|fag|fagging|faggitt|faggot|faggs|fagot|fagots|fags|fanny|fannyflaps|fannyfucker|fanyy|fatass|fcuk|fcuker|fcuking|feck|fecker|felching|fellate|fellatio|fingerfuck|fingerfucked|fingerfucker|fingerfuckers|fingerfucking|fingerfucks|fistfuck|fistfucked|fistfucker|fistfuckers|fistfucking|fistfuckings|fistfucks|flange|fook|fooker|fuck|fucka|fucked|fucker|fuckers|fuckhead|fuckheads|fuckin|fucking|fuckings|fuckingshitmotherfucker|fuckme|fucks|fuckwhit|fuckwit|fudge packer|fudgepacker|fuk|fuker|fukker|fukkin|fuks|fukwhit|fukwit|fux|fux0r|f_u_c_k|gangbang|gangbanged|gangbangs|gaylord|gaysex|goatse|God|god-dam|god-damned|goddamn|goddamned|hardcoresex|hell|heshe|hoar|hoare|hoer|homo|hore|horniest|horny|hotsex|jack-off|jackoff|jap|jerk-off|jism|jiz|jizm|jizz|kawk|knob|knobead|knobed|knobend|knobhead|knobjocky|knobjokey|kock|kondum|kondums|kum|kummer|kumming|kums|kunilingus|l3i\+ch|l3itch|labia|lust|lusting|m0f0|m0fo|m45terbate|ma5terb8|ma5terbate|masochist|master-bate|masterb8|masterbat*|masterbat3|masterbate|masterbation|masterbations|masturbate|mo-fo|mof0|mofo|mothafuck|mothafucka|mothafuckas|mothafuckaz|mothafucked|mothafucker|mothafuckers|mothafuckin|mothafucking|mothafuckings|mothafucks|mother fucker|motherfuck|motherfucked|motherfucker|motherfuckers|motherfuckin|motherfucking|motherfuckings|motherfuckka|motherfucks|muff|mutha|muthafecker|muthafuckker|muther|mutherfucker|n1gga|n1gger|nazi|nigg3r|nigg4h|nigga|niggah|niggas|niggaz|nigger|niggers|nob|nob jokey|nobhead|nobjocky|nobjokey|numbnuts|nutsack|orgasim|orgasims|orgasm|orgasms|p0rn|pawn|pecker|penis|penisfucker|phonesex|phuck|phuk|phuked|phuking|phukked|phukking|phuks|phuq|pigfucker|pimpis|piss|pissed|pisser|pissers|pisses|pissflaps|pissin|pissing|pissoff|poop|porn|porno|pornography|pornos|prick|pricks|pron|pube|pusse|pussi|pussies|pussy|pussys|rectum|retard|rimjaw|rimming|s hit|s.o.b.|sadist|schlong|screwing|scroat|scrote|scrotum|semen|sex|sh!\+|sh!t|sh1t|shag|shagger|shaggin|shagging|shemale|shi\+|shit|shitdick|shite|shited|shitey|shitfuck|shitfull|shithead|shiting|shitings|shits|shitted|shitter|shitters|shitting|shittings|shitty|skank|slut|sluts|smegma|smut|snatch|son-of-a-bitch|spac|spunk|s_h_i_t|t1tt1e5|t1tties|teets|teez|testical|testicle|tit|titfuck|tits|titt|tittie5|tittiefucker|titties|tittyfuck|tittywank|titwank|tosser|turd|tw4t|twat|twathead|twatty|twunt|twunter|v14gra|v1gra|vagina|viagra|vulva|w00se|wang|wank|wanker|wanky|whoar|whore|willies|willy|xrated|abanto|abrazafarolas|adufe|afloja|alcornoque|alfeñíque|anal|andurriasmo|argentuzo|argentuso|argentucho|arrastracueros|Arse|Arsehole|arseholes|artabán|artaban|ass|asshole|assholes|auschwitz|ausschwitz|aguebonado|aguebonada|agüevonado|agüevonada|asco|asqueroso|asquerosa|aweonado|aweonada|awebonado|awebonada|awevonado|awevonada|baboso|babosa|babosadas|basura|Bellaco|bitch|bizcocho|blow|Blowjob|Bollocks|bolú|bolu|boludo|b0ludo|bolud0|b0lud0|boluda|b0luda|boobs|bufarron|bufarrón|bujarron|bujarrón|buey|Bullshit|buttfuck|buttfucker|cabilla|cabron|cabrón|cabrona|caca|Cachapera|cagalera|cagar|caga|cagante|cagarla|cagaste|cagaste|cagón|cagon|cagona|cancer|cáncer|Carado|caramonda|caramono|caremono|caramondá|caraculo|careculo|carepito|carapito|carapendejo|carependejo|castra|castroso|castrosa|castrante|chacha|chachar|chichar|chichis|chilote|chinga|chinga tu madre|chingadera|chingada|chingado|chíngate|chingate|chingar|chingas|chingaste|chingo|chingon|chingón|chingona|chingues|chinguisa|chinguiza|Chink|Chinky|chiquitingo|chocha|chój|chucha|chuchamadre|chuj|chupalo|chúpalo|chúpala|chupala|chwdp|cipa|cipo|cochon|cochón|cock|Cock|Cocks|Cocksucker|cogas|cojas|coger|cojete|cojón|cojon|cochar|coshar|cocho|comecaca|comepollas|comepoyas|coñazo|coñaso|concha|conchatumadre|conchadetumadre|conxetumare|conxetumadre|conxatumare|conxatumadre|conchetumare|conchatumare|coño|creido|creído|creida|creída|cuca|cueco|Cul|culea|culear|culera|culero|culiado|culiada|culiao|culia|culiad@|culo|Culo|Cum|Cunt|cunts|ctm|csm|Dick|Dickhead|Dicks|encabrona|encabronado|encabronada|emputar|enputar|emputo|enputo|empute|emputado|emputada|enputado|enputada|encular|Enculé|enculer|encula|enculada|enculado|enculo|estafador|estafadora|estupido|estúpido|estupida|estúpida|Faggot|falkland|falklands|fucklands|fuckland|falangista|fascista|Fellatio|fick|fistfuck|follada|follar|follo|follón|follon|Fook|Fooker|Fooking|Fotze|follada|foyada|frei|frijolero|Fuck|Fucker|Fuckers|Fucking|Führer|garcha|gilipolla|guatepeor|jilipolla|gachupín|gachupin|gilipoya|jilipoya|gonorrea|guevon|guevón|guevona|guey|heil|hideputa|hijodeputa|hijoputa|hdp|hitler|Hitler|hueva|huevon|huevón|huevona|HWDP|idiota|imbécil|imbecil|jalabola|Japseye|jeba&H107|jebanie|jebca|jilipollas|Jizz|job|jodan|jodas|jodaz|joder|jodido|jodida|joto|joyo|judenmutter|judensöhne|kaka|caka|kaca|kabron|kabrón|kabrona|Kike|korwa|kórwa|kurwa|kurwia|kutas|leck|leche|lexe|m4nco|macht|maldito|maldita|malnacida|Malnacido|malparida|malparido|Malvinas|mamada|mamadas|mamado|mamalo|mámalo|mamarla|mamaste|mames|mamón|mamon|mamona|manco|manko|manca|maraca|Marica|marico|Maricon|Maricón|maricones|maricona|mariconas|mariconson|mariconsón|mariconzón|mariconzon|mariqueta|mariquis|mayate|meco|mecos|melgambrea|merde|mexicaca|mejicaca|mexicoño|mejicoño|mejicaño|mexicaño|mich|mierda|m1erda|mierdero|mondá|monda|Mong|moraco|motherfucker|Motherfucking|Nazi|neger|negrata|Nègre|negrero|nekrofil|Nigga|Nigger|niggers|Niquer|no mames|odbyt|odjeba&H142o|ojete|ogete|pajear|pajote|Paki|pakis|panocha|Paragua|payaso|payasa|pecheche|peda|pederasta|pedo|pedota|pedota|pedofila|pedófila|pedofilo|pedófilo|pedón|pendeja|pendejear|pendejo|pendejos|pendejas|pelotudo|pel0tud0|pelotuda|pel0tuda|pene|percanta|perra|Perucho|pete|pierdol|pierdolic|pierdolona|Pinacate|pinche|pinches|pinga|pirobo|pito|pitudo|pizda|polla|porno|poronga|poya|Prick|Pricks|prostiputo|prostiputa|prostituir|prostituta|prostituto|proxeneta|pt|pucha|Puñeta|Pussy|puta|Putain|Putaso|Putazo|pute|Pute|Putete|putillo|putiyo|putito|putita|putitos|putitas|Putiza|puto|putos|putón|ql|qli40|qliao|qli4o|qlia0|qliaos|qli40s|qli4os|qlia0s|Queer|raghead|ragheads|rallig|ramera|rape|reculia|reculiao|retardado|retrasado|retrazado|renob|reql|rentafuck|ridiculo|ridículo|ridicula|ridícula|rimjob|rimming|rozpierdala&H107|rozpierdolone|rozpierdolony|rucha&H107|ruchanie|ruha&H107|ruski|ruskoff|ruskov|s-c-v-m|s.hit|s&m|s1ut|sackgesicht|sado-masochistic|sadomaso|sadomasochistic|sadomasoquismo|sadomasoquista|salame|salvatrucha|salvatrusha|salbatrucha|salbatrusha|samckdaddy|sandm|sandnigger|sangron|sangrón|sangrona|sangrones|sangronas|sarasa|sarracena|sarraceno|satan|satán|satánico|satanico|sausagejockey|sc*m|scat|schamhaar|scheiss|schlampe|schleu|schleuh|schlitzauge|schlong|schutzstaffel|schwanz|schwuchtel|scrote|scum|scum!|sh!t|sh!te|sh!tes|sh1\'t|sh1t|sh1te|sh1thead|sh1theads|shadybackroomdealings|shadydealings|shag|shaggers|shaggin|shagging|shat|shawtypimp|sheep-l0ver|sheep-l0vers|sheep-lover|sheep-lovers|sheep-shaggers|sheepl0ver|sheepl0vers|sheeplover|sheepshaggers|sheethead|sheetheads|sheister|shhit|shit|shít|shit4brains|shitass|shitbag|shitbagger|shitbrains|shitbreath|shitcunt|shitdick|shiteater|shited|shitface|shitfaced|shitforbrains|shitfuck|shitfucker|shitfull|shithapens|shithappens|shithead|shithole|shithouse|shiting|shitings|shitoutofluck|shits|shitspitter|shitstabber|shitstabbers|shitstain|shitted|shitter|shitters|shittiest|shitting|shittings|shitty|shiz|shiznit|shortfuck|shortfuck|shyte|sida|s1da|sidoso|s1doso|slag|slanderyou2.blogspot.com|slanteye|slut|slutbag|sluts|slutt|slutting|slutty|slutwear|slutwhore|slutwhore|smackdaddy|smackthemonkey|smagma|smartass|smeg|snortingcoke|sonofabitch|sorete|sonofbitch|soplapollas|soplapoyas|Spacka|Spast|Spasten|Spasti|Spaz|Spunk|Spunkbubble|sranie|subnormal|sucker|sudaca|sudaka|tarado|tarada|tarados|taradas|tarugo|tetas|tetona|tolete|tortillera|tortiyera|torpe|traga|Tranny|Twat|verga|vergasen|vergón|vergon|violar|Violer|Wank|Wanker|weon|weona|wey|wn wehon|wheon|weohn|weonh |w3on|wetback|wyjeb&H107|wyjebac|wyjebany|wypierdol|xuxa|xuxas|Yoruga|zajeba&H107|zajebane|zajebany|zemen|zooplapollas|zoplapollas|zorra|zorriputa|zudaca|zudaka");  										                               
-						config.set("colorsChat", "ed1e1e|ed1e8e|ed1ee6|bf1eed|841eed|1e36ed|ed891e|1eb20f|acb20f|10aca6|ac7e10|9911ef|a811ef|ef1184|ef4a11");
-						config.save(null, {useMasterKey: true});	
+				var son = new UserTypes();
+				son.set(t, 2);
+				son.set(d, "Son");
+				son.save(null, {useMasterKey: true});
 
-						//UserVerified
-						var UserVerified = Parse.Object.extend("UserVerified");
-						var userVer = new UserVerified();		
-						userVer.save(null, {useMasterKey: true});
+				var daughter = new UserTypes();
+				daughter.set(t, 3);
+				daughter.set(d, "Daughter");
+				daughter.save(null, {useMasterKey: true});
 
-					},
-					error: function(user, error) {
-						  // Show the error message somewhere and let the user try again.
-						  console.log("Error: " + error.code + " " + error.message);
-						  response.error("Error: " + error.code + " " + error.message);
-					}
+				var spouseFather = new UserTypes();
+				spouseFather.set(t, 4);
+				spouseFather.set(d, "Spouse-Father");
+				spouseFather.save(null, {useMasterKey: true});
+
+				var registerFather = new UserTypes();
+				registerFather.set(t, 5);
+				registerFather.set(d, "Register-Father");
+				registerFather.save(null, {useMasterKey: true});
+
+				var adminType = new UserTypes();
+				adminType.set(t, -1);
+				adminType.set(d, "Administrator");	
+				return adminType.save(null, {useMasterKey: true});
+
+			}).then(function(adminTypePF) {	
+
+				var adminRelation = adminLogged.relation("userType");
+				adminRelation.add(adminTypePF);
+
+				return adminLogged.save(null, {useMasterKey: true});
+
+			}).then(function(userUpdatedPF) {	
+
+				adminLogged = userUpdatedPF;
+
+				//GamvesDev
+				var app_id 			= "PJwimi4PtpAKCpt8UAnDA0QBh5FHLhENew6YQLyI";
+				var master_key		= "G8tmbgWc7u2YOZjN1ZhzYPaMHEnoKAAVFHUwn1ot";
+				var server_url 		= "https://parseapi.back4app.com";											
+				
+				var hasIcon 		= false;
+
+				//Config
+				var Config = Parse.Object.extend("Config");
+				var config = new Config();
+
+				config.set("server_url", server_url); 
+				config.set("app_id", app_id);
+				config.set("master_key", master_key);
+				config.set("app_icon_url", app_icon_url);  
+				config.set("iconPicture", iconFile);
+				config.set("hasIcon", hasIcon);   
+				config.set("badWords", "4r5e|5h1t|5hit|a55|anal|anus|ar5e|arrse|arse|ass|ass-fucker|asses|assfucker|assfukka|asshole|assholes|asswhole|a_s_s|b!tch|b00bs|b17ch|b1tch|ballbag|balls|ballsack|bastard|beastial|beastiality|bellend|bestial|bestiality|bi\+ch|biatch|bitch|bitcher|bitchers|bitches|bitchin|bitching|bloody|blow job|blowjob|blowjobs|boiolas|bollock|bollok|boner|boob|boobs|booobs|boooobs|booooobs|booooooobs|breasts|buceta|bugger|bum|bunny fucker|butt|butthole|buttmuch|buttplug|c0ck|c0cksucker|carpet muncher|cawk|chink|cipa|cl1t|clit|clitoris|clits|cnut|cock|cock-sucker|cockface|cockhead|cockmunch|cockmuncher|cocks|cocksuck|cocksucked|cocksucker|cocksucking|cocksucks|cocksuka|cocksukka|cok|cokmuncher|coksucka|coon|cox|crap|cum|cummer|cumming|cums|cumshot|cunilingus|cunillingus|cunnilingus|cunt|cuntlick|cuntlicker|cuntlicking|cunts|cyalis|cyberfuc|cyberfuck|cyberfucked|cyberfucker|cyberfuckers|cyberfucking|d1ck|damn|dick|dickhead|dildo|dildos|dink|dinks|dirsa|dlck|dog-fucker|doggin|dogging|donkeyribber|doosh|duche|dyke|ejaculate|ejaculated|ejaculates|ejaculating|ejaculatings|ejaculation|ejakulate|f u c k|f u c k e r|f4nny|fag|fagging|faggitt|faggot|faggs|fagot|fagots|fags|fanny|fannyflaps|fannyfucker|fanyy|fatass|fcuk|fcuker|fcuking|feck|fecker|felching|fellate|fellatio|fingerfuck|fingerfucked|fingerfucker|fingerfuckers|fingerfucking|fingerfucks|fistfuck|fistfucked|fistfucker|fistfuckers|fistfucking|fistfuckings|fistfucks|flange|fook|fooker|fuck|fucka|fucked|fucker|fuckers|fuckhead|fuckheads|fuckin|fucking|fuckings|fuckingshitmotherfucker|fuckme|fucks|fuckwhit|fuckwit|fudge packer|fudgepacker|fuk|fuker|fukker|fukkin|fuks|fukwhit|fukwit|fux|fux0r|f_u_c_k|gangbang|gangbanged|gangbangs|gaylord|gaysex|goatse|God|god-dam|god-damned|goddamn|goddamned|hardcoresex|hell|heshe|hoar|hoare|hoer|homo|hore|horniest|horny|hotsex|jack-off|jackoff|jap|jerk-off|jism|jiz|jizm|jizz|kawk|knob|knobead|knobed|knobend|knobhead|knobjocky|knobjokey|kock|kondum|kondums|kum|kummer|kumming|kums|kunilingus|l3i\+ch|l3itch|labia|lust|lusting|m0f0|m0fo|m45terbate|ma5terb8|ma5terbate|masochist|master-bate|masterb8|masterbat*|masterbat3|masterbate|masterbation|masterbations|masturbate|mo-fo|mof0|mofo|mothafuck|mothafucka|mothafuckas|mothafuckaz|mothafucked|mothafucker|mothafuckers|mothafuckin|mothafucking|mothafuckings|mothafucks|mother fucker|motherfuck|motherfucked|motherfucker|motherfuckers|motherfuckin|motherfucking|motherfuckings|motherfuckka|motherfucks|muff|mutha|muthafecker|muthafuckker|muther|mutherfucker|n1gga|n1gger|nazi|nigg3r|nigg4h|nigga|niggah|niggas|niggaz|nigger|niggers|nob|nob jokey|nobhead|nobjocky|nobjokey|numbnuts|nutsack|orgasim|orgasims|orgasm|orgasms|p0rn|pawn|pecker|penis|penisfucker|phonesex|phuck|phuk|phuked|phuking|phukked|phukking|phuks|phuq|pigfucker|pimpis|piss|pissed|pisser|pissers|pisses|pissflaps|pissin|pissing|pissoff|poop|porn|porno|pornography|pornos|prick|pricks|pron|pube|pusse|pussi|pussies|pussy|pussys|rectum|retard|rimjaw|rimming|s hit|s.o.b.|sadist|schlong|screwing|scroat|scrote|scrotum|semen|sex|sh!\+|sh!t|sh1t|shag|shagger|shaggin|shagging|shemale|shi\+|shit|shitdick|shite|shited|shitey|shitfuck|shitfull|shithead|shiting|shitings|shits|shitted|shitter|shitters|shitting|shittings|shitty|skank|slut|sluts|smegma|smut|snatch|son-of-a-bitch|spac|spunk|s_h_i_t|t1tt1e5|t1tties|teets|teez|testical|testicle|tit|titfuck|tits|titt|tittie5|tittiefucker|titties|tittyfuck|tittywank|titwank|tosser|turd|tw4t|twat|twathead|twatty|twunt|twunter|v14gra|v1gra|vagina|viagra|vulva|w00se|wang|wank|wanker|wanky|whoar|whore|willies|willy|xrated|abanto|abrazafarolas|adufe|afloja|alcornoque|alfeñíque|anal|andurriasmo|argentuzo|argentuso|argentucho|arrastracueros|Arse|Arsehole|arseholes|artabán|artaban|ass|asshole|assholes|auschwitz|ausschwitz|aguebonado|aguebonada|agüevonado|agüevonada|asco|asqueroso|asquerosa|aweonado|aweonada|awebonado|awebonada|awevonado|awevonada|baboso|babosa|babosadas|basura|Bellaco|bitch|bizcocho|blow|Blowjob|Bollocks|bolú|bolu|boludo|b0ludo|bolud0|b0lud0|boluda|b0luda|boobs|bufarron|bufarrón|bujarron|bujarrón|buey|Bullshit|buttfuck|buttfucker|cabilla|cabron|cabrón|cabrona|caca|Cachapera|cagalera|cagar|caga|cagante|cagarla|cagaste|cagaste|cagón|cagon|cagona|cancer|cáncer|Carado|caramonda|caramono|caremono|caramondá|caraculo|careculo|carepito|carapito|carapendejo|carependejo|castra|castroso|castrosa|castrante|chacha|chachar|chichar|chichis|chilote|chinga|chinga tu madre|chingadera|chingada|chingado|chíngate|chingate|chingar|chingas|chingaste|chingo|chingon|chingón|chingona|chingues|chinguisa|chinguiza|Chink|Chinky|chiquitingo|chocha|chój|chucha|chuchamadre|chuj|chupalo|chúpalo|chúpala|chupala|chwdp|cipa|cipo|cochon|cochón|cock|Cock|Cocks|Cocksucker|cogas|cojas|coger|cojete|cojón|cojon|cochar|coshar|cocho|comecaca|comepollas|comepoyas|coñazo|coñaso|concha|conchatumadre|conchadetumadre|conxetumare|conxetumadre|conxatumare|conxatumadre|conchetumare|conchatumare|coño|creido|creído|creida|creída|cuca|cueco|Cul|culea|culear|culera|culero|culiado|culiada|culiao|culia|culiad@|culo|Culo|Cum|Cunt|cunts|ctm|csm|Dick|Dickhead|Dicks|encabrona|encabronado|encabronada|emputar|enputar|emputo|enputo|empute|emputado|emputada|enputado|enputada|encular|Enculé|enculer|encula|enculada|enculado|enculo|estafador|estafadora|estupido|estúpido|estupida|estúpida|Faggot|falkland|falklands|fucklands|fuckland|falangista|fascista|Fellatio|fick|fistfuck|follada|follar|follo|follón|follon|Fook|Fooker|Fooking|Fotze|follada|foyada|frei|frijolero|Fuck|Fucker|Fuckers|Fucking|Führer|garcha|gilipolla|guatepeor|jilipolla|gachupín|gachupin|gilipoya|jilipoya|gonorrea|guevon|guevón|guevona|guey|heil|hideputa|hijodeputa|hijoputa|hdp|hitler|Hitler|hueva|huevon|huevón|huevona|HWDP|idiota|imbécil|imbecil|jalabola|Japseye|jeba&H107|jebanie|jebca|jilipollas|Jizz|job|jodan|jodas|jodaz|joder|jodido|jodida|joto|joyo|judenmutter|judensöhne|kaka|caka|kaca|kabron|kabrón|kabrona|Kike|korwa|kórwa|kurwa|kurwia|kutas|leck|leche|lexe|m4nco|macht|maldito|maldita|malnacida|Malnacido|malparida|malparido|Malvinas|mamada|mamadas|mamado|mamalo|mámalo|mamarla|mamaste|mames|mamón|mamon|mamona|manco|manko|manca|maraca|Marica|marico|Maricon|Maricón|maricones|maricona|mariconas|mariconson|mariconsón|mariconzón|mariconzon|mariqueta|mariquis|mayate|meco|mecos|melgambrea|merde|mexicaca|mejicaca|mexicoño|mejicoño|mejicaño|mexicaño|mich|mierda|m1erda|mierdero|mondá|monda|Mong|moraco|motherfucker|Motherfucking|Nazi|neger|negrata|Nègre|negrero|nekrofil|Nigga|Nigger|niggers|Niquer|no mames|odbyt|odjeba&H142o|ojete|ogete|pajear|pajote|Paki|pakis|panocha|Paragua|payaso|payasa|pecheche|peda|pederasta|pedo|pedota|pedota|pedofila|pedófila|pedofilo|pedófilo|pedón|pendeja|pendejear|pendejo|pendejos|pendejas|pelotudo|pel0tud0|pelotuda|pel0tuda|pene|percanta|perra|Perucho|pete|pierdol|pierdolic|pierdolona|Pinacate|pinche|pinches|pinga|pirobo|pito|pitudo|pizda|polla|porno|poronga|poya|Prick|Pricks|prostiputo|prostiputa|prostituir|prostituta|prostituto|proxeneta|pt|pucha|Puñeta|Pussy|puta|Putain|Putaso|Putazo|pute|Pute|Putete|putillo|putiyo|putito|putita|putitos|putitas|Putiza|puto|putos|putón|ql|qli40|qliao|qli4o|qlia0|qliaos|qli40s|qli4os|qlia0s|Queer|raghead|ragheads|rallig|ramera|rape|reculia|reculiao|retardado|retrasado|retrazado|renob|reql|rentafuck|ridiculo|ridículo|ridicula|ridícula|rimjob|rimming|rozpierdala&H107|rozpierdolone|rozpierdolony|rucha&H107|ruchanie|ruha&H107|ruski|ruskoff|ruskov|s-c-v-m|s.hit|s&m|s1ut|sackgesicht|sado-masochistic|sadomaso|sadomasochistic|sadomasoquismo|sadomasoquista|salame|salvatrucha|salvatrusha|salbatrucha|salbatrusha|samckdaddy|sandm|sandnigger|sangron|sangrón|sangrona|sangrones|sangronas|sarasa|sarracena|sarraceno|satan|satán|satánico|satanico|sausagejockey|sc*m|scat|schamhaar|scheiss|schlampe|schleu|schleuh|schlitzauge|schlong|schutzstaffel|schwanz|schwuchtel|scrote|scum|scum!|sh!t|sh!te|sh!tes|sh1\'t|sh1t|sh1te|sh1thead|sh1theads|shadybackroomdealings|shadydealings|shag|shaggers|shaggin|shagging|shat|shawtypimp|sheep-l0ver|sheep-l0vers|sheep-lover|sheep-lovers|sheep-shaggers|sheepl0ver|sheepl0vers|sheeplover|sheepshaggers|sheethead|sheetheads|sheister|shhit|shit|shít|shit4brains|shitass|shitbag|shitbagger|shitbrains|shitbreath|shitcunt|shitdick|shiteater|shited|shitface|shitfaced|shitforbrains|shitfuck|shitfucker|shitfull|shithapens|shithappens|shithead|shithole|shithouse|shiting|shitings|shitoutofluck|shits|shitspitter|shitstabber|shitstabbers|shitstain|shitted|shitter|shitters|shittiest|shitting|shittings|shitty|shiz|shiznit|shortfuck|shortfuck|shyte|sida|s1da|sidoso|s1doso|slag|slanderyou2.blogspot.com|slanteye|slut|slutbag|sluts|slutt|slutting|slutty|slutwear|slutwhore|slutwhore|smackdaddy|smackthemonkey|smagma|smartass|smeg|snortingcoke|sonofabitch|sorete|sonofbitch|soplapollas|soplapoyas|Spacka|Spast|Spasten|Spasti|Spaz|Spunk|Spunkbubble|sranie|subnormal|sucker|sudaca|sudaka|tarado|tarada|tarados|taradas|tarugo|tetas|tetona|tolete|tortillera|tortiyera|torpe|traga|Tranny|Twat|verga|vergasen|vergón|vergon|violar|Violer|Wank|Wanker|weon|weona|wey|wn wehon|wheon|weohn|weonh |w3on|wetback|wyjeb&H107|wyjebac|wyjebany|wypierdol|xuxa|xuxas|Yoruga|zajeba&H107|zajebane|zajebany|zemen|zooplapollas|zoplapollas|zorra|zorriputa|zudaca|zudaka");  										                               
+				config.set("colorsChat", "ed1e1e|ed1e8e|ed1ee6|bf1eed|841eed|1e36ed|ed891e|1eb20f|acb20f|10aca6|ac7e10|9911ef|a811ef|ef1184|ef4a11");
+				
+				return config.save(null, {useMasterKey: true});
+
+			}).then(function(configPF) {
+
+				loadImagesArray(configPF, function(universeFile){
+
+					return universeFile;
+
 				});	
+
+			}).then(function(pFile) { 
+
+				universePFile = pFile;
+
+				var Profile = Parse.Object.extend("Profile");         
+
+	            profile = new Profile();												
+	            profile.set("pictureBackground", universePFile);
+				profile.set("bio", "Gamves Administrator");		
+				profile.set("backgroundColor", [228, 239, 245]);
+				profile.set("userId", adminLogged.id);					
+
+				return profile.save(null, {useMasterKey: true}); 
+
+			}).then(function(profilePF) {                    
+
+            	loadPetsArray( function(universePFile) {
+
+            		Parse.Cloud.run("CreateClasses");
+
+            		response.success(resutl);
+
+            	});           	
 			});
-		});	
-
-
-		//var _admuser = "gamvesadmin";
-		//var query = new Parse.Query(Parse.User);
-	    //query.equalTo("username", _admuser);
-
-	    
-
-	    /*query.find({
-	        useMasterKey: true,
-	        success: function(results) {
-
-	        	if( results.length == 0 ) 
-	        	{					
-
-					var UserTypes = Parse.Object.extend("UserType");
-
-					var t = "idUserType";
-					var d = "description";
-
-					var registerMother = new UserTypes();
-					registerMother.set(t, 0);
-					registerMother.set(d, "Register-Mother");
-					registerMother.save();                         
-
-					var spouseMother = new UserTypes();
-					spouseMother.set(t, 1);
-					spouseMother.set(d, "Spouse-Mother");
-					spouseMother.save();
-
-					var son = new UserTypes();
-					son.set(t, 2);
-					son.set(d, "Son");
-					son.save();
-
-					var daughter = new UserTypes();
-					daughter.set(t, 3);
-					daughter.set(d, "Daughter");
-					daughter.save();
-
-					var spouseFather = new UserTypes();
-					spouseFather.set(t, 4);
-					spouseFather.set(d, "Spouse-Father");
-					spouseFather.save();
-
-					var registerFather = new UserTypes();
-					registerFather.set(t, 5);
-					registerFather.set(d, "Register-Father");
-					registerFather.save(); 
-
-					console.log("--2--");
-
-					var admin = new UserTypes();
-					admin.set(t, -1);
-					admin.set(d, "Administrator");					
-
-					admin.save(null, {											
-						success: function (adm) {	
-
-							var roleName = "admin";
-							var newRole = new Parse.Role(roleName, new Parse.ACL());
-							newRole.getUsers().add(admin); 
-							var acl = new Parse.ACL();
-							acl.setReadAccess(role, true); 
-							acl.setWriteAccess(role, true); 
-							newRole.setACL(acl);            
-							newRole.save(null, {useMasterKey: true}).then(function(adminRole) {
-
-								var app_icon_url = "https://s3.amazonaws.com/gamves/config/gamves.png";					
-
-								Parse.Cloud.httpRequest({url: app_icon_url}).then(function(httpResponse) {
-		                  
-			                       	var imageBuffer = httpResponse.buffer;
-			                       	var base64 = imageBuffer.toString("base64");
-			                       	var iconFile = new Parse.File("gamves.png", { base64: base64 });                    
-			                       
-			                       	var user = new Parse.User();
-									user.set("username", _admuser);
-									user.set("Name", "Gamves Official");
-									user.set("firstName", "Gamves");
-									user.set("lastName", "Official");
-									user.set("pictureSmall", iconFile);
-									user.set("password", "lo vas a lograr");
-									user.set("iDUserType", -1);
-
-									var adminRelation = user.relation("userType");
-						        	adminRelation.add(adm);	
-
-						        	console.log("--3--");
-
-									user.signUp(null, {
-										success: function(userLogged) {								  																	
-
-											//GamvesDev
-											var app_id 			= "PJwimi4PtpAKCpt8UAnDA0QBh5FHLhENew6YQLyI";
-											var master_key		= "G8tmbgWc7u2YOZjN1ZhzYPaMHEnoKAAVFHUwn1ot";
-											var server_url 		= "https://parseapi.back4app.com";											
-											
-											var hasIcon 		= false;
-
-											//Config
-											var Config = Parse.Object.extend("Config");
-											var config = new Config();
-
-											config.set("server_url", server_url); 
-											config.set("app_id", app_id);
-											config.set("master_key", master_key);
-											config.set("app_icon_url", app_icon_url);  
-											config.set("iconPicture", iconFile);
-											config.set("hasIcon", hasIcon);   
-											config.set("badWords", "4r5e|5h1t|5hit|a55|anal|anus|ar5e|arrse|arse|ass|ass-fucker|asses|assfucker|assfukka|asshole|assholes|asswhole|a_s_s|b!tch|b00bs|b17ch|b1tch|ballbag|balls|ballsack|bastard|beastial|beastiality|bellend|bestial|bestiality|bi\+ch|biatch|bitch|bitcher|bitchers|bitches|bitchin|bitching|bloody|blow job|blowjob|blowjobs|boiolas|bollock|bollok|boner|boob|boobs|booobs|boooobs|booooobs|booooooobs|breasts|buceta|bugger|bum|bunny fucker|butt|butthole|buttmuch|buttplug|c0ck|c0cksucker|carpet muncher|cawk|chink|cipa|cl1t|clit|clitoris|clits|cnut|cock|cock-sucker|cockface|cockhead|cockmunch|cockmuncher|cocks|cocksuck|cocksucked|cocksucker|cocksucking|cocksucks|cocksuka|cocksukka|cok|cokmuncher|coksucka|coon|cox|crap|cum|cummer|cumming|cums|cumshot|cunilingus|cunillingus|cunnilingus|cunt|cuntlick|cuntlicker|cuntlicking|cunts|cyalis|cyberfuc|cyberfuck|cyberfucked|cyberfucker|cyberfuckers|cyberfucking|d1ck|damn|dick|dickhead|dildo|dildos|dink|dinks|dirsa|dlck|dog-fucker|doggin|dogging|donkeyribber|doosh|duche|dyke|ejaculate|ejaculated|ejaculates|ejaculating|ejaculatings|ejaculation|ejakulate|f u c k|f u c k e r|f4nny|fag|fagging|faggitt|faggot|faggs|fagot|fagots|fags|fanny|fannyflaps|fannyfucker|fanyy|fatass|fcuk|fcuker|fcuking|feck|fecker|felching|fellate|fellatio|fingerfuck|fingerfucked|fingerfucker|fingerfuckers|fingerfucking|fingerfucks|fistfuck|fistfucked|fistfucker|fistfuckers|fistfucking|fistfuckings|fistfucks|flange|fook|fooker|fuck|fucka|fucked|fucker|fuckers|fuckhead|fuckheads|fuckin|fucking|fuckings|fuckingshitmotherfucker|fuckme|fucks|fuckwhit|fuckwit|fudge packer|fudgepacker|fuk|fuker|fukker|fukkin|fuks|fukwhit|fukwit|fux|fux0r|f_u_c_k|gangbang|gangbanged|gangbangs|gaylord|gaysex|goatse|God|god-dam|god-damned|goddamn|goddamned|hardcoresex|hell|heshe|hoar|hoare|hoer|homo|hore|horniest|horny|hotsex|jack-off|jackoff|jap|jerk-off|jism|jiz|jizm|jizz|kawk|knob|knobead|knobed|knobend|knobhead|knobjocky|knobjokey|kock|kondum|kondums|kum|kummer|kumming|kums|kunilingus|l3i\+ch|l3itch|labia|lust|lusting|m0f0|m0fo|m45terbate|ma5terb8|ma5terbate|masochist|master-bate|masterb8|masterbat*|masterbat3|masterbate|masterbation|masterbations|masturbate|mo-fo|mof0|mofo|mothafuck|mothafucka|mothafuckas|mothafuckaz|mothafucked|mothafucker|mothafuckers|mothafuckin|mothafucking|mothafuckings|mothafucks|mother fucker|motherfuck|motherfucked|motherfucker|motherfuckers|motherfuckin|motherfucking|motherfuckings|motherfuckka|motherfucks|muff|mutha|muthafecker|muthafuckker|muther|mutherfucker|n1gga|n1gger|nazi|nigg3r|nigg4h|nigga|niggah|niggas|niggaz|nigger|niggers|nob|nob jokey|nobhead|nobjocky|nobjokey|numbnuts|nutsack|orgasim|orgasims|orgasm|orgasms|p0rn|pawn|pecker|penis|penisfucker|phonesex|phuck|phuk|phuked|phuking|phukked|phukking|phuks|phuq|pigfucker|pimpis|piss|pissed|pisser|pissers|pisses|pissflaps|pissin|pissing|pissoff|poop|porn|porno|pornography|pornos|prick|pricks|pron|pube|pusse|pussi|pussies|pussy|pussys|rectum|retard|rimjaw|rimming|s hit|s.o.b.|sadist|schlong|screwing|scroat|scrote|scrotum|semen|sex|sh!\+|sh!t|sh1t|shag|shagger|shaggin|shagging|shemale|shi\+|shit|shitdick|shite|shited|shitey|shitfuck|shitfull|shithead|shiting|shitings|shits|shitted|shitter|shitters|shitting|shittings|shitty|skank|slut|sluts|smegma|smut|snatch|son-of-a-bitch|spac|spunk|s_h_i_t|t1tt1e5|t1tties|teets|teez|testical|testicle|tit|titfuck|tits|titt|tittie5|tittiefucker|titties|tittyfuck|tittywank|titwank|tosser|turd|tw4t|twat|twathead|twatty|twunt|twunter|v14gra|v1gra|vagina|viagra|vulva|w00se|wang|wank|wanker|wanky|whoar|whore|willies|willy|xrated|abanto|abrazafarolas|adufe|afloja|alcornoque|alfeñíque|anal|andurriasmo|argentuzo|argentuso|argentucho|arrastracueros|Arse|Arsehole|arseholes|artabán|artaban|ass|asshole|assholes|auschwitz|ausschwitz|aguebonado|aguebonada|agüevonado|agüevonada|asco|asqueroso|asquerosa|aweonado|aweonada|awebonado|awebonada|awevonado|awevonada|baboso|babosa|babosadas|basura|Bellaco|bitch|bizcocho|blow|Blowjob|Bollocks|bolú|bolu|boludo|b0ludo|bolud0|b0lud0|boluda|b0luda|boobs|bufarron|bufarrón|bujarron|bujarrón|buey|Bullshit|buttfuck|buttfucker|cabilla|cabron|cabrón|cabrona|caca|Cachapera|cagalera|cagar|caga|cagante|cagarla|cagaste|cagaste|cagón|cagon|cagona|cancer|cáncer|Carado|caramonda|caramono|caremono|caramondá|caraculo|careculo|carepito|carapito|carapendejo|carependejo|castra|castroso|castrosa|castrante|chacha|chachar|chichar|chichis|chilote|chinga|chinga tu madre|chingadera|chingada|chingado|chíngate|chingate|chingar|chingas|chingaste|chingo|chingon|chingón|chingona|chingues|chinguisa|chinguiza|Chink|Chinky|chiquitingo|chocha|chój|chucha|chuchamadre|chuj|chupalo|chúpalo|chúpala|chupala|chwdp|cipa|cipo|cochon|cochón|cock|Cock|Cocks|Cocksucker|cogas|cojas|coger|cojete|cojón|cojon|cochar|coshar|cocho|comecaca|comepollas|comepoyas|coñazo|coñaso|concha|conchatumadre|conchadetumadre|conxetumare|conxetumadre|conxatumare|conxatumadre|conchetumare|conchatumare|coño|creido|creído|creida|creída|cuca|cueco|Cul|culea|culear|culera|culero|culiado|culiada|culiao|culia|culiad@|culo|Culo|Cum|Cunt|cunts|ctm|csm|Dick|Dickhead|Dicks|encabrona|encabronado|encabronada|emputar|enputar|emputo|enputo|empute|emputado|emputada|enputado|enputada|encular|Enculé|enculer|encula|enculada|enculado|enculo|estafador|estafadora|estupido|estúpido|estupida|estúpida|Faggot|falkland|falklands|fucklands|fuckland|falangista|fascista|Fellatio|fick|fistfuck|follada|follar|follo|follón|follon|Fook|Fooker|Fooking|Fotze|follada|foyada|frei|frijolero|Fuck|Fucker|Fuckers|Fucking|Führer|garcha|gilipolla|guatepeor|jilipolla|gachupín|gachupin|gilipoya|jilipoya|gonorrea|guevon|guevón|guevona|guey|heil|hideputa|hijodeputa|hijoputa|hdp|hitler|Hitler|hueva|huevon|huevón|huevona|HWDP|idiota|imbécil|imbecil|jalabola|Japseye|jeba&H107|jebanie|jebca|jilipollas|Jizz|job|jodan|jodas|jodaz|joder|jodido|jodida|joto|joyo|judenmutter|judensöhne|kaka|caka|kaca|kabron|kabrón|kabrona|Kike|korwa|kórwa|kurwa|kurwia|kutas|leck|leche|lexe|m4nco|macht|maldito|maldita|malnacida|Malnacido|malparida|malparido|Malvinas|mamada|mamadas|mamado|mamalo|mámalo|mamarla|mamaste|mames|mamón|mamon|mamona|manco|manko|manca|maraca|Marica|marico|Maricon|Maricón|maricones|maricona|mariconas|mariconson|mariconsón|mariconzón|mariconzon|mariqueta|mariquis|mayate|meco|mecos|melgambrea|merde|mexicaca|mejicaca|mexicoño|mejicoño|mejicaño|mexicaño|mich|mierda|m1erda|mierdero|mondá|monda|Mong|moraco|motherfucker|Motherfucking|Nazi|neger|negrata|Nègre|negrero|nekrofil|Nigga|Nigger|niggers|Niquer|no mames|odbyt|odjeba&H142o|ojete|ogete|pajear|pajote|Paki|pakis|panocha|Paragua|payaso|payasa|pecheche|peda|pederasta|pedo|pedota|pedota|pedofila|pedófila|pedofilo|pedófilo|pedón|pendeja|pendejear|pendejo|pendejos|pendejas|pelotudo|pel0tud0|pelotuda|pel0tuda|pene|percanta|perra|Perucho|pete|pierdol|pierdolic|pierdolona|Pinacate|pinche|pinches|pinga|pirobo|pito|pitudo|pizda|polla|porno|poronga|poya|Prick|Pricks|prostiputo|prostiputa|prostituir|prostituta|prostituto|proxeneta|pt|pucha|Puñeta|Pussy|puta|Putain|Putaso|Putazo|pute|Pute|Putete|putillo|putiyo|putito|putita|putitos|putitas|Putiza|puto|putos|putón|ql|qli40|qliao|qli4o|qlia0|qliaos|qli40s|qli4os|qlia0s|Queer|raghead|ragheads|rallig|ramera|rape|reculia|reculiao|retardado|retrasado|retrazado|renob|reql|rentafuck|ridiculo|ridículo|ridicula|ridícula|rimjob|rimming|rozpierdala&H107|rozpierdolone|rozpierdolony|rucha&H107|ruchanie|ruha&H107|ruski|ruskoff|ruskov|s-c-v-m|s.hit|s&m|s1ut|sackgesicht|sado-masochistic|sadomaso|sadomasochistic|sadomasoquismo|sadomasoquista|salame|salvatrucha|salvatrusha|salbatrucha|salbatrusha|samckdaddy|sandm|sandnigger|sangron|sangrón|sangrona|sangrones|sangronas|sarasa|sarracena|sarraceno|satan|satán|satánico|satanico|sausagejockey|sc*m|scat|schamhaar|scheiss|schlampe|schleu|schleuh|schlitzauge|schlong|schutzstaffel|schwanz|schwuchtel|scrote|scum|scum!|sh!t|sh!te|sh!tes|sh1\'t|sh1t|sh1te|sh1thead|sh1theads|shadybackroomdealings|shadydealings|shag|shaggers|shaggin|shagging|shat|shawtypimp|sheep-l0ver|sheep-l0vers|sheep-lover|sheep-lovers|sheep-shaggers|sheepl0ver|sheepl0vers|sheeplover|sheepshaggers|sheethead|sheetheads|sheister|shhit|shit|shít|shit4brains|shitass|shitbag|shitbagger|shitbrains|shitbreath|shitcunt|shitdick|shiteater|shited|shitface|shitfaced|shitforbrains|shitfuck|shitfucker|shitfull|shithapens|shithappens|shithead|shithole|shithouse|shiting|shitings|shitoutofluck|shits|shitspitter|shitstabber|shitstabbers|shitstain|shitted|shitter|shitters|shittiest|shitting|shittings|shitty|shiz|shiznit|shortfuck|shortfuck|shyte|sida|s1da|sidoso|s1doso|slag|slanderyou2.blogspot.com|slanteye|slut|slutbag|sluts|slutt|slutting|slutty|slutwear|slutwhore|slutwhore|smackdaddy|smackthemonkey|smagma|smartass|smeg|snortingcoke|sonofabitch|sorete|sonofbitch|soplapollas|soplapoyas|Spacka|Spast|Spasten|Spasti|Spaz|Spunk|Spunkbubble|sranie|subnormal|sucker|sudaca|sudaka|tarado|tarada|tarados|taradas|tarugo|tetas|tetona|tolete|tortillera|tortiyera|torpe|traga|Tranny|Twat|verga|vergasen|vergón|vergon|violar|Violer|Wank|Wanker|weon|weona|wey|wn wehon|wheon|weohn|weonh |w3on|wetback|wyjeb&H107|wyjebac|wyjebany|wypierdol|xuxa|xuxas|Yoruga|zajeba&H107|zajebane|zajebany|zemen|zooplapollas|zoplapollas|zorra|zorriputa|zudaca|zudaka");  										                               
-											config.set("colorsChat", "ed1e1e|ed1e8e|ed1ee6|bf1eed|841eed|1e36ed|ed891e|1eb20f|acb20f|10aca6|ac7e10|9911ef|a811ef|ef1184|ef4a11");
-											config.save();
-
-											//UserVerified
-											var UserVerified = Parse.Object.extend("UserVerified");
-											var userVer = new UserVerified();		
-											userVer.save();
-
-											console.log("--4--");
-											
-								        	//var queryRole = new Parse.Query(Parse.Role);
-											//queryRole.equalTo('name', 'admin');
-											//queryRole.first({useMasterKey:true}).then(function(adminRole){								
-
-												var adminRoleRelation = adminRole.relation("users");
-						        				adminRoleRelation.add(userLogged);
-					    						adminRole.save(null, {useMasterKey: true});
-					    						
-					    						loadImagesArray(config, function(universeFile){
-
-					    							var Profile = Parse.Object.extend("Profile");         
-
-										            profile = new Profile();												
-										            profile.set("pictureBackground", universeFile);
-													profile.set("bio", "Gamves Administrator");		
-													profile.set("backgroundColor", [228, 239, 245]);
-													profile.set("userId", user.id);		
-
-													console.log("--5--");
-
-													profile.save(null, {useMasterKey: true}, {
-
-									                    success: function(result) {
-
-									                    	loadPetsArray( function(universeFile){
-
-									                    		Parse.Cloud.run("CreateClasses");
-
-									                    		response.success(resutl);
-
-									                    	});
-									                        
-									                    },
-									                    error: function(error) {
-									                        response.error(error);
-									                    }
-									                    
-									                });
-
-					    						});
-
-											//});	
-
-										},
-										error: function(user, error) {
-											  // Show the error message somewhere and let the user try again.
-											  alert("Error: " + error.code + " " + error.message);
-											  response.error("Error: " + error.code + " " + error.message);
-										}
-								});
-
-							});
-		                                                   
-		                                                            
-		                  }, function(error) {                    
-		                      response.error(error);
-		                  });
-
-						},
-						error: function (response, error) {
-						    response.error(error);
-						}
-
-					}); 
-					
-			    } 
-	        },
-	        error: function(error) {
-	           response.error(error);
-	        }
-	    });*/
-
+		});		
 	});	
 
 
@@ -330,7 +175,8 @@
 		 "FriendsApproval",
 		 "Notifications",
 		 "UserStatus",
-		 "Recommendations"
+		 "Recommendations",
+		 "UserVerified"
 		 ];
 
 		for (var i=0; i<classses.length; i++) {
@@ -339,7 +185,7 @@
 		}
 
 	});
-
+	
 
 	function loadImagesArray(configPF, callback) {	
 
@@ -625,49 +471,62 @@
 
 		var userId = request.object.id;
 
-		var emailVerified = request.object.get("emailVerified");
+		var username = request.object.get("username");
 
-		console.log("_User : " + userId); 		
+		console.log("username : " + username + " _admuser: " + _admuser ); 	
 
-		var userVerifiedQuery = new Parse.Query("UserVerified");
-		userVerifiedQuery.equalTo("userId", userId);		
+		console.log("user: " + JSON.stringify(request.object));
 
-		userVerifiedQuery.find({
-	        useMasterKey: true,
-	        success: function(results) {
+		if ( username != _admuser ) {		
 
-	        	console.log("success"); 
+			var emailVerified = request.object.get("emailVerified");
 
-	        	console.log("results.length: " + results.length); 	
-	        	       	
-	        	if( results.length == 0) {
+			console.log("_User : " + userId); 		
 
-					setUserVerified(userId, false);					
+			var userVerifiedQuery = new Parse.Query("UserVerified");
+			userVerifiedQuery.equalTo("userId", userId);		
 
-			    } else { 										
+			userVerifiedQuery.find({
+		        useMasterKey: true,
+		        success: function(results) {
 
-			    	var verifiedObject = results[0]; 					
+		        	console.log("success"); 
 
-					verifiedObject.set("emailVerified", emailVerified);		
+		        	console.log("results.length: " + results.length); 	
+		        	       	
+		        	if( results.length == 0) {
 
-					verifiedObject.save(null, { useMasterKey: true } );
-					
-				} 
+						setUserVerified(userId, false);					
 
-				response.success(true);  
+				    } else { 										
 
-	        },
-	        error: function(error) {
+				    	var verifiedObject = results[0]; 					
 
-	        	console.log("error: " +error); 	
-	         
-	         	setUserVerified(userId, false);
+						verifiedObject.set("emailVerified", emailVerified);		
 
-		        response.success(true);   
-	        }      
+						verifiedObject.save(null, { useMasterKey: true } );
+						
+					} 
 
-		});
+					response.success(true);  
 
+		        },
+		        error: function(error) {
+
+		        	console.log("error: " +error); 	
+		         
+		         	setUserVerified(userId, false);
+
+			        response.success(true);   
+		        }      
+
+			});
+
+		} else {
+
+			console.log("username = _admuser"); 	
+
+		}
 	});
 
 	function setUserVerified(id, status) {

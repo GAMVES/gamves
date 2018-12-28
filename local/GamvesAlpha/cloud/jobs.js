@@ -272,8 +272,6 @@
 			});
 		}
 
-
-
 		// --
 	  	// Calculate Trending Fanpages. 	  	
 
