@@ -147,7 +147,7 @@ class Global: NSObject
             
             let gamvesUser = GamvesUser()
             
-            gamvesUser.name = user["Name"] as! String
+            gamvesUser.name = user["name"] as! String
             gamvesUser.userId = user.objectId!
             
             gamvesUser.firstName = user["firstName"] as! String
