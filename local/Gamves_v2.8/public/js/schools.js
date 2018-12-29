@@ -3,8 +3,8 @@
    
     //Back4app
     Parse.serverURL = "https://parseapi.back4app.com";
-    Parse.initialize("45cgsAjYqwQQRctQTluoUpVvKsHqrjCmvh72UGBx");     
-    Parse.javaScriptKey = "Xkg4PiKyxFJPPA2GncRCxdzaOmblseMbr8050vGb";    
+    Parse.initialize("DinPu5dG42HU12QxN50ES4GVjk1NysN4WXUSy2L5");     
+    Parse.javaScriptKey = "jmgeYWp7Tcl9BhzSH4Ub5jlu6Xn582xLXcTpKZN8";    
 
     var currentUser = Parse.User.current();
     if (!currentUser) {
@@ -281,7 +281,7 @@
 
                   console.log( "short : " + short );      
 
-                  Parse.Cloud.run("AddRoleByName", { short: short }).then(function(schoolRolePF) {    
+                  Parse.Cloud.run("AddRoleByName", { name: short }).then(function(schoolRolePF) {    
 
                       var currentUser = Parse.User.current();
 
@@ -295,9 +295,10 @@
                           
                             saveCategoriesForTarget(categoriesPF, short);                                            
 
-                      });       
+                      }); 
+
+                      Parse.Cloud.run("createS3Folder", { folder: name });           
                       
-                      createSchoolS3Folder();
 
                      
                   }, function(error) {
@@ -531,7 +532,7 @@
       }
 
 
-      function createSchoolS3Folder() {
+      /*function createSchoolS3Folder() {
 
         let short =  $("#edit_short").val();          
 
@@ -548,7 +549,7 @@
             $('#error_message').html("<p>" + errort + "</p>");
 
         });  
-      }
+      }*/
 
     window.otherSchools = [];  
 
