@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Gamves": {
+      "applicationId": "DinPu5dG42HU12QxN50ES4GVjk1NysN4WXUSy2L5"
+    },
+    "_default": {
+      "link": "Gamves"
+    }
+  }
+}
