@@ -1084,52 +1084,34 @@
 	// --
   	// Add role by name
 
-	Parse.Cloud.define("AddRoleByName", function(request, response) {
-
-		console.log("------------");		
+	Parse.Cloud.define("AddRoleByName", function(request, response) {		
 
 		var params = request.params;
-		console.log("params: " + JSON.stringify(params)); 
-
-		console.log("***************");		
-   		
-   		if (!params.name)
+		
+   		if (!params.name) {
+        	response.error("Missing parameters: name");
         	return response.error("Missing parameters: name"); 
+   		}
 
-        var name = request.params.name;
+        var name = request.params.name; 
 
-        console.log("name: " + name);
+        var newRole = new Parse.Role(name, new Parse.ACL());      
+        newRole.save(null, {useMasterKey: true}).then(function(newRolePF) {	       		        				
 
-        var queryRole = new Parse.Query(Parse.Role);		
-		queryRole.equalTo('name', name);		
+			var acl = new Parse.ACL();
+			
+			acl.setReadAccess(newRolePF, true); 
 
-		queryRole.first({useMasterKey:true}).then(function(rolePF) {
+			acl.setWriteAccess(newRolePF, true); 
 
-			if (rolePF) {
+			newRolePF.setACL(acl); 
 
-        		console.log( "TRUE" );			
+			return newRolePF.save(null, {useMasterKey: true});
 
-				response.success(rolePF);
+		}).then(function(roleFinalPF) {	 
 
-        	} else {
+			response.success(roleFinalPF);	
 
-        		console.log( "FALSE" );										
-
-				var newRole = new Parse.Role(name, new Parse.ACL());		
-
-				newRole.save(null, {useMasterKey: true}).then(function(role) {
-
-					var acl = new Parse.ACL();
-					acl.setReadAccess(role, true); //give read access to Role
-					acl.setWriteAccess(role, true); //give write access to Role
-
-					newRole.setACL(acl);            
-					newRole.save(null, {useMasterKey: true});
-
-					response.success(newRole);
-
-				});
-        	}
 		});
 	});
 

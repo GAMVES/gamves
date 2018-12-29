@@ -28,8 +28,10 @@
     function loadschools()
     {
   
-        querySchools = new Parse.Query("Schools");      
+        querySchools = new Parse.Query("Schools");    
+
         querySchools.find({
+
             success: function (schools) {
 
                 if (schools) {                
@@ -275,9 +277,11 @@
           school.set("short", short);           
 
           school.save(null, {
-              success: function (schoolNew) {                  
-          
-                  Parse.Cloud.run("AddRoleByName", { "name": short}).then(function(schoolRolePF) {
+              success: function (schoolNew) {  
+
+                  console.log( "short : " + short );      
+
+                  Parse.Cloud.run("AddRoleByName", { short: short }).then(function(schoolRolePF) {    
 
                       var currentUser = Parse.User.current();
 
@@ -295,8 +299,16 @@
                       
                       createSchoolS3Folder();
 
-                  });
+                     
+                  }, function(error) {
 
+                      console.log("error :" +errort);
+                      // error
+
+                      $('#error_message').html("<p>" + errort + "</p>");
+
+                  });                  
+          
                   
 
               },
