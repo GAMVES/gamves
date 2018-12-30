@@ -1256,47 +1256,68 @@
 	});
 
 
-	Parse.Cloud.define("SetAclToCategory", function(request, response) {	    
+	Parse.Cloud.define("AddAclToCategory", function(request, response) {	    
 	    
-	    var aclname = request.params.aclname;	  
-	    var categoryname = request.params.categoryname; 
+	    var category = request.params.category;
+	    var rolesArray = request.params.roles;	    
 
 	    var params = request.params;
 
-	    if (!params.aclname) {
-        	response.error("Missing parameters: aclname");
-        	//return response.error("Missing parameters: aclname"); 
+	    if (!params.category) {
+        	response.error("Missing parameters: rolesArray");        	
    		}
 
-	    console.log("aclname:  " + aclname + " categoryname: " + categoryname);
+   		 if (!params.category) {
+        	response.error("Missing parameters: category");        	
+   		}   			    
 
-	    var role = new Parse.Role();
+	    var roles = new Parse.Role();
 		
-		var queryRole = new Parse.Query(Parse.Role);		
-		queryRole.equalTo('name', aclname);		
-		queryRole.first({useMasterKey:true}).then(function(rolePF) {			
+		var queryRole = new Parse.Query(Parse.Role);	
+		queryRole.containedIn("name", rolesArray);
+		queryRole.find({
+			useMasterKey: true,
+			success: function(rolesPF) {              	
+				roles = rolesPF;
 
-			role = rolePF;
+				var queryCategories = new Parse.Query("Categories");
+				queryCategories.equalTo("name", category);         	
+		    	queryCategories.first({
+					useMasterKey: true,
+					success: function(categoryPF) {
 
-			var queryCategories = new Parse.Query("Categories");
-	    	queryCategories.equalTo("name", categoryname);
+						let res = "categoryPF.id " + categoryPF.id;
+                        response.success(res);
 
-	    	return queryCategories.first({useMasterKey:true});
+            			var groupACL = new Parse.ACL();	    	
+						for (var i = 0; i < roles.length; i++) {
+						  groupACL.setReadAccess(roles[i], true);
+						  groupACL.setWriteAccess(roles[i], true);
+						}	
+						categoryPF.setACL(groupACL);  					
 
-	    }).then(function(categoryPF) {			    			
+						categoryPF.save(null, { useMasterKey: true,	
 
-	    	categoryPF.setACL(role.getACL());
+							success: function (categoryPFSaved) {									
+								response.success(categoryPFSaved.id);
+							},
+							error: function (response, error) {
+								response.error("Error: " + error.code + " " + error.message);
+							}
+						});
 
-	    	return categoryPF.save(null, {useMasterKey: true});
-			
-		}).then(function(finalCategoryPF) {	
-
-			//var log = "role.id: " + role.id + " categoryPF.id: " + categoryPF.id;
-
-			response.success(finalCategoryPF);
-			
-		});
-
+            		},
+		            error: function (error) {
+		                console.log("Error: " + error.code + " " + error.message);
+		                response.error("Error: " + error.code + " " + error.message);
+		            }
+				});
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
+                response.error("Error: " + error.code + " " + error.message);
+            }
+        });
 	});
 	
 

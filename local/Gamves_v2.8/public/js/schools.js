@@ -16,18 +16,18 @@
     var schoolsLenght = 0;
     var schoolName;
 
-     var schoolObjs = [];
+    var schoolObjs = [];
 
-     var schoolACL = new Parse.ACL();
+    var schoolACL = new Parse.ACL();
 
-    loadschools();
+    loadschools();  
 
     var parseFileThumbanil, parseFileIso;     
 
     var schoolIdArray = [];
     var _sId, _schoolId_for_grade;   
 
-    function loadschools()
+    function loadschools(callback)
     {
   
         querySchools = new Parse.Query("Schools");    
@@ -41,6 +41,8 @@
                   schoolObjs = schools;
                   schoolsLenght = schools.length;
                   var dataJson = [];
+                  var shortArray = [];
+                  var count = 0;
 
                   for (var i = 0; i < schoolsLenght; ++i) 
                   {
@@ -50,7 +52,9 @@
                       dataJson.objectId = objectId;   
                       schoolIdArray.push(objectId);                   
                       item["objectId"] = objectId; 
-                      item["short"] = schools[i].get("short");                                      
+                      var short = schools[i].get("short");                                      
+                      
+                      item["short"] = short;
                       if (schools[i].get("thumbnail") != undefined){                
                         var thumbnail = schools[i].get("thumbnail");
                         item["thumbnail"] = thumbnail._url;
@@ -60,6 +64,14 @@
                       var name = schools[i].get("name");
                       item["name"] = name;                      
                       dataJson.push(item);
+
+                      shortArray.push(short);
+                      if (count == schoolsLenght-1) {                        
+                        if (callback!=undefined){
+                          callback(shortArray);
+                        }
+                      }
+                      count++
                   }                          
 
                   var rowIds = [];
@@ -295,9 +307,47 @@
 
                       console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
 
-                      checkKnownCategoryExistByName(short, function(categoriesPF) {
+                      checkKnownCategoryExistByName(short, function(arrayCategorie) {
                           
-                            saveCategoriesForTarget(categoriesPF, short);                                            
+                            //saveCategoriesForTarget(arrayCategorie, short);  
+
+                            var length = arrayCategorie.length;         
+
+                            var categoriesArray = [];                                 
+
+                            for (let i=0; i < length; i++) {
+
+                                  let cat = arrayCategorie[i]; 
+
+                                  let catName = cat.get("name");
+
+                                  categoriesArray.push(catName);
+                            }      
+
+                            loadschools( function(schoolsArray) {
+
+                                for (let i=0; i < categoriesArray.length; i++) {                                
+
+                                  let cat = categoriesArray[i];
+
+                                  Parse.Cloud.run("AddAclToCategory", { "roles": schoolsArray, "category": cat }).then(function(result) {    
+                                     
+                                      console.log(result);       
+                                     
+                                  }, function(error) {
+
+                                      console.log("error :" +errort);                                 
+
+                                  }); 
+
+                                }                                
+
+                            });
+
+
+                            clearField();           
+
+                            $('#edit_model_school').modal('hide');                      
 
                       }); 
 
@@ -361,7 +411,12 @@
                 } else {
 
                     // Create New
-                    createCategories(short);
+                    createCategories(short, function(categoriesArrayCreated){
+
+
+                        callback(categoriesArrayCreated);                      
+
+                    });
                 }
 
             },
@@ -370,28 +425,10 @@
             }
 
           });
-      } 
-      
-      function saveCategoriesForTarget(categoriesPF, short) {
+      }       
+   
 
-            let cat0 = categoriesPF[0];          
-
-            cat0.add("target", short); 
-            cat0.save();
-
-            let cat1 = categoriesPF[1];
-
-            cat1.add("target", short); 
-            cat1.save();
-
-            loadschools();
-            clearField();           
-
-            $('#edit_model_school').modal('hide');
-
-    }
-
-      function createCategories(short) {                
+      function createCategories(short, callback) {                
 
           var queryImages = new Parse.Query("Images");         
           queryImages.ascending("createdAt");           
@@ -422,7 +459,9 @@
 
                           categoriesArrayCreated.push(categoryTrendingPF);
 
-                          saveCategoriesForTarget(categoriesArrayCreated, short);
+                          //saveCategoriesForTarget(categoriesArrayCreated, short);
+
+                          callback(categoriesArrayCreated);
 
                       });
 
@@ -451,9 +490,7 @@
 
           categoryPersonal.save(null, {
 
-            success: function (categoryPersonalPF) {
-
-                Parse.Cloud.run("SetAclToCategory", { "aclname": name, "categoryname": pcatn });
+            success: function (categoryPersonalPF) {                
 
                 callback(categoryPersonalPF);
 
@@ -479,9 +516,7 @@
 
           categoryTrending.save(null, {
 
-            success: function (categoryTrendingPF) {
-
-                Parse.Cloud.run("SetAclToCategory", { "aclname": name, "categoryname": tcatn });
+            success: function (categoryTrendingPF) {                
 
                 callback(categoryTrendingPF);
 
