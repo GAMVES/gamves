@@ -18,8 +18,7 @@ document.addEventListener("LoadCategories", function(event){
 
     function loadCategories()
     {  
-        queryCategory = new Parse.Query("Categories");  
-        //queryCategory.containedIn("target", [short]);          
+        queryCategory = new Parse.Query("Categories");            
         queryCategory.find({
             success: function (categories) {
 
@@ -258,27 +257,31 @@ document.addEventListener("LoadCategories", function(event){
           var Category = Parse.Object.extend("Categories");         
           var cat = new Category();              
           cat.set("thumbnail", parseFileThumbanil);
-          cat.set("name", $("#edit_description").val());
+          var name = $("#edit_description").val();
+          cat.set("name", name);
           var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
           cat.set("backImage", parseFileBackImage); 
-
-          cat.setACL(categoryACL);
-
-          var roles = window.getCheckedRole("frm_edit");
-
-          if (roles.length >0) {
-            for (var i = 0; i < roles.length; ++i) {
-                cat.setACL(roles[i]);
-            }                      
-          }
-
           cat.save(null, {
-              success: function (pet) {
-                  console.log('Category created successful with name: ' + cat.get("pageName"));
-                  $('#edit_model_category').modal('hide');
-                  loadCategories();
-                  clearField();
+              success: function (categoryPF) {    
+
+                  let shortArray = window.GetCheckedNames("frm_edit_categories", short);
+
+                  Parse.Cloud.run("AddAclToCategory", { "roles": window.shortArray, "category": name }).then(function(result) {    
+                  
+                      console.log('Category created successful with name: ' + cat.get("pageName"));
+
+                      $('#edit_model_category').modal('hide');
+
+                      console.log(result);    
+
+                      loadCategories();
+                      clearField();   
+                     
+                  }, function(error) {
+                      console.log("error :" +errort);                                 
+                  });
+                  
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);

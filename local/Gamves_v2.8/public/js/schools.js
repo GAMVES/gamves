@@ -20,12 +20,17 @@
 
     var schoolACL = new Parse.ACL();
 
-    loadschools();  
+    loadschools( function(schoolsArray) {
+
+
+    });  
 
     var parseFileThumbanil, parseFileIso;     
 
     var schoolIdArray = [];
     var _sId, _schoolId_for_grade;   
+
+    window.shortArray = [];
 
     function loadschools(callback)
     {
@@ -40,8 +45,7 @@
 
                   schoolObjs = schools;
                   schoolsLenght = schools.length;
-                  var dataJson = [];
-                  var shortArray = [];
+                  var dataJson = [];                  
                   var count = 0;
 
                   for (var i = 0; i < schoolsLenght; ++i) 
@@ -65,10 +69,10 @@
                       item["name"] = name;                      
                       dataJson.push(item);
 
-                      shortArray.push(short);
+                      window.shortArray.push(short);
                       if (count == schoolsLenght-1) {                        
                         if (callback!=undefined){
-                          callback(shortArray);
+                          callback(window.shortArray);
                         }
                       }
                       count++
@@ -326,13 +330,27 @@
 
                             loadschools( function(schoolsArray) {
 
-                                for (let i=0; i < categoriesArray.length; i++) {                                
+                                var count = 0;
+
+                                var countCategories =  categoriesArray.length;
+
+                                for (let i=0; i < countCategories; i++) {                                
 
                                   let cat = categoriesArray[i];
 
                                   Parse.Cloud.run("AddAclToCategory", { "roles": schoolsArray, "category": cat }).then(function(result) {    
                                      
-                                      console.log(result);       
+                                      console.log(result);     
+
+                                      if (count == (countCategories-1)) {
+
+                                          clearField();           
+
+                                          $('#edit_model_school').modal('hide');
+
+                                      }
+
+                                      count++;
                                      
                                   }, function(error) {
 
@@ -345,9 +363,7 @@
                             });
 
 
-                            clearField();           
-
-                            $('#edit_model_school').modal('hide');                      
+                                                  
 
                       }); 
 
@@ -653,42 +669,35 @@
         });
     }
 
-    window.getCheckedRole = function(formname) {        
-
-        var aclArray = [];
+    window.GetCheckedNames = function(formname, short) {        
+        
+        var shortArray = [];
         var countChecks = 0;
-        var numberOfChecked = $('input[type="checkbox"]').is(":checked").length;
+        var numberOfChecked = $('#' + formname + " input:checked" ).length;        
 
         if ( numberOfChecked > 0 ) {
 
           $('#' + formname + ' input[type="checkbox"]').each(function() {
               
               if ($(this).is(":checked")) {
-              
-                  let short = $(this).val();
                   
-                  var queryRole = new Parse.Query(Parse.Role);    
-                  queryRole.equalTo('name', roleName);    
+                      let short = $(this).val();
 
-                  queryRole.first({useMasterKey:true}).then(function(rolePF) {
-
-                      aclArray.push(rolePF); 
+                      shortArray.push(short); 
 
                       if (countChecks == (numberOfChecked-1)) {
-                        return aclArray;
+                        shortArray.push(short);
+                        return shortArray;
                       }
 
-                      countChecks++;
+                      countChecks++;                  
+                  }
 
-                  });
-
-              }
-
-          });
+              });
 
         } else {
 
-          return aclArray;
+          return shortArray;
         }
         
      }
