@@ -1256,6 +1256,50 @@
 	});
 
 
+	Parse.Cloud.define("SetAclToCategory", function(request, response) {	    
+	    
+	    var aclname = request.params.aclname;	  
+	    var categoryname = request.params.categoryname; 
+
+	    var params = request.params;
+
+	    if (!params.aclname) {
+        	response.error("Missing parameters: aclname");
+        	//return response.error("Missing parameters: aclname"); 
+   		}
+
+	    console.log("aclname:  " + aclname + " categoryname: " + categoryname);
+
+	    var role = new Parse.Role();
+		
+		var queryRole = new Parse.Query(Parse.Role);		
+		queryRole.equalTo('name', aclname);		
+		queryRole.first({useMasterKey:true}).then(function(rolePF) {			
+
+			role = rolePF;
+
+			var queryCategories = new Parse.Query("Categories");
+	    	queryCategories.equalTo("name", categoryname);
+
+	    	return queryCategories.first({useMasterKey:true});
+
+	    }).then(function(categoryPF) {			    			
+
+	    	categoryPF.setACL(role.getACL());
+
+	    	return categoryPF.save(null, {useMasterKey: true});
+			
+		}).then(function(finalCategoryPF) {	
+
+			//var log = "role.id: " + role.id + " categoryPF.id: " + categoryPF.id;
+
+			response.success(finalCategoryPF);
+			
+		});
+
+	});
+	
+
 
 
 

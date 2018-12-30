@@ -18,6 +18,8 @@
 
      var schoolObjs = [];
 
+     var schoolACL = new Parse.ACL();
+
     loadschools();
 
     var parseFileThumbanil, parseFileIso;     
@@ -281,11 +283,13 @@
 
                   console.log( "short : " + short );      
 
-                  Parse.Cloud.run("AddRoleByName", { name: short }).then(function(schoolRolePF) {    
+                  Parse.Cloud.run("AddRoleByName", { name: short }).then(function(schoolACLPF) {                    
+
+                      schoolACL = schoolACLPF;
 
                       var currentUser = Parse.User.current();
 
-                      let name = schoolRolePF.get("name");
+                      let name = schoolACL.get("name");
 
                       Parse.Cloud.run("AddUserToRole", { "userId": currentUser.id, "role": name});
 
@@ -389,76 +393,106 @@
 
       function createCategories(short) {                
 
-          var queryImages = new Parse.Query("Images");  
-          queryImages.ascending("createdAt");    
-          queryImages.find({
-            success: function (images) {
+          var queryImages = new Parse.Query("Images");         
+          queryImages.ascending("createdAt");           
+          queryImages.find({              
+              success: function (images) {
 
-                    var personal, personalBackground, trending, trendingBackground;
-
-                    for (var i=0;i<images.length; i++) {
-                        var image = images[i];
-                        var name = image.get("name");
-                        if (name=="personal") {
-                            personal = image.get("image");                        
-                        } else if (name=="trending") {
-                            trending = image.get("image");                                            
-                        } else if (name=="personal_background") {
-                            personalBackground = image.get("image");                        
-                        } else if (name=="trending_background") {
-                            trendingBackground = image.get("image");
-                        }
-                    } 
-
-                    var categoriesArrayCreated = [];              
-
-                    var Category = Parse.Object.extend("Categories"); 
-                    var categoryPersonal = new Category();    
-                    categoryPersonal.set("thumbnail", personal);
-                    categoryPersonal.set("backImage", personalBackground);
-                    categoryPersonal.set("name", "PERSONAL");
-                    categoryPersonal.set("order", 1);                                      
-                    categoryPersonal.set("description", "Personal pages for each registeres kid to customize");                                          
+                  var personal, personalBackground, trending, trendingBackground;
+                  for (var i=0;i<images.length; i++) {
+                      var image = images[i];
+                      var name = image.get("name");
+                      if (name=="personal") {
+                          personal = image.get("image");                        
+                      } else if (name=="trending") {
+                          trending = image.get("image");                                            
+                      } else if (name=="personal_background") {
+                          personalBackground = image.get("image");                        
+                      } else if (name=="trending_background") {
+                          trendingBackground = image.get("image");
+                      }
+                  }
+                  var categoriesArrayCreated = [];
                   
-                    categoryPersonal.save(null, { 
-                        success: function (catPerPF) {              	                          	                  
-                  
-                            categoriesArrayCreated.push(catPerPF);
+                  savePersonalCategory(short, personal, personalBackground, function(categoryPersonalPF){
 
-                            var categoryTrending = new Category();    
+                      categoriesArrayCreated.push(categoryPersonalPF);
 
-                            categoryTrending.set("thumbnail", trending);
-                            categoryTrending.set("backImage", trendingBackground);                            
-                            categoryTrending.set("name", "TRENDING");  
-                            categoryTrending.set("order", 0);                                      
-                            categoryTrending.set("description", "Most viewed and liked fanpages, trendings in general");                                       
+                      saveTrendingCategory(short, trending, trendingBackground, function(categoryTrendingPF){
 
-                            categoryTrending.save(null, { 
-                                success: function (catTrendPF) {                          
+                          categoriesArrayCreated.push(categoryTrendingPF);
 
-                                    categoriesArrayCreated.push(catTrendPF);  
-                                    
-                                    saveCategoriesForTarget(categoriesArrayCreated, short);
+                          saveCategoriesForTarget(categoriesArrayCreated, short);
 
-                                },
-                                error: function (error) {
-                                    console.log('Error! ' + error.message);
-                                }
-                            }); 
+                      });
 
-                        },
-                        error: function (error) {
-                            console.log('Error! ' + error.message);
-                        }
-                    }); 
+                  });                                   
 
-                },
-                error: function (error) {
-                    console.log("Error: " + error.code + " " + error.message);
-                }
+              },
+              error: function (error) {
+                  console.log("Error: " + error.code + " " + error.message);
+              }
+
            });  
 
       }
+
+      function savePersonalCategory(name, personal, personalBackground, callback) {
+
+          var pcatn = "PERSONAL";
+
+          var Category = Parse.Object.extend("Categories"); 
+          var categoryPersonal = new Category();    
+          categoryPersonal.set("thumbnail", personal);
+          categoryPersonal.set("backImage", personalBackground);
+          categoryPersonal.set("name", pcatn);
+          categoryPersonal.set("order", 1);                                      
+          categoryPersonal.set("description", "Personal pages for each registeres kid to customize");
+
+          categoryPersonal.save(null, {
+
+            success: function (categoryPersonalPF) {
+
+                Parse.Cloud.run("SetAclToCategory", { "aclname": name, "categoryname": pcatn });
+
+                callback(categoryPersonalPF);
+
+            },
+            error: function (response, error) {
+                console.log('Error: ' + error.message);
+            }
+
+          });
+      }
+
+      function saveTrendingCategory(name, trending, trendingBackground, callback) {
+
+          var tcatn = "TRENDING";
+
+          var Category = Parse.Object.extend("Categories"); 
+          var categoryTrending = new Category();
+          categoryTrending.set("thumbnail", trending);
+          categoryTrending.set("backImage", trendingBackground);                            
+          categoryTrending.set("name", tcatn);  
+          categoryTrending.set("order", 0);                                      
+          categoryTrending.set("description", "Most viewed and liked fanpages, trendings in general");   
+
+          categoryTrending.save(null, {
+
+            success: function (categoryTrendingPF) {
+
+                Parse.Cloud.run("SetAclToCategory", { "aclname": name, "categoryname": tcatn });
+
+                callback(categoryTrendingPF);
+
+            },
+            error: function (response, error) {
+                console.log('Error: ' + error.message);
+            }
+
+          });
+      }
+
 
       function addGrade() {          
 
@@ -630,7 +664,7 @@
         var queryRole = new Parse.Query(Parse.Role);    
         queryRole.equalTo('name', roleName);    
 
-        queryRole.first({useMasterKey:true}).then(function(rolePF) {           
+        queryRole.first().then(function(rolePF) {           
 
            return rolePF;
            
