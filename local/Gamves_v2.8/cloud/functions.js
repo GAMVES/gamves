@@ -1267,10 +1267,7 @@
         	response.error("Missing parameters: rolesArray");        	
    		}
 
-   		 if (!params.category) {
-        	response.error("Missing parameters: category");        	
-   		}   			    
-
+   		
 	    var roles = new Parse.Role();
 		
 		var queryRole = new Parse.Query(Parse.Role);	
@@ -1300,6 +1297,74 @@
 
 							success: function (categoryPFSaved) {									
 								response.success(categoryPFSaved.id);
+							},
+							error: function (response, error) {
+								response.error("Error: " + error.code + " " + error.message);
+							}
+						});
+
+            		},
+		            error: function (error) {
+		                console.log("Error: " + error.code + " " + error.message);
+		                response.error("Error: " + error.code + " " + error.message);
+		            }
+				});
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
+                response.error("Error: " + error.code + " " + error.message);
+            }
+        });
+	});
+
+
+
+	Parse.Cloud.define("AddAclToFanpage", function(request, response) {	    
+	    
+	    var fanpage = request.params.fanpage;
+	    var rolesArray = request.params.roles;	    
+
+	    var params = request.params;
+
+	    if (!params.fanpage) {
+        	response.error("Missing parameters: fanpage");        	
+   		}
+
+   		// response.success(rolesArray);
+   		//console.log("rolesArray: " + rolesArray);   		  			    
+
+	    var roles = new Parse.Role();
+		
+		var queryRole = new Parse.Query(Parse.Role);	
+		queryRole.containedIn("name", rolesArray);
+		queryRole.find({
+			useMasterKey: true,
+			success: function(rolesPF) {              	
+				roles = rolesPF;
+
+				let res = "rolesPF.length " + rolesPF.length;
+                response.success(res);
+
+				var queryFanpage = new Parse.Query("Fanpages");
+				queryFanpage.equalTo("pageName", fanpage);         	
+		    	queryFanpage.first({
+					useMasterKey: true,
+					success: function(fanpgaePF) {
+
+						let res = "fanpgaePF.id " + fanpgaePF.id;
+                        response.success(res);
+
+            			var groupACL = new Parse.ACL();	    	
+						for (var i = 0; i < roles.length; i++) {
+						  groupACL.setReadAccess(roles[i], true);
+						  groupACL.setWriteAccess(roles[i], true);
+						}	
+						fanpgaePF.setACL(groupACL);  					
+
+						fanpgaePF.save(null, { useMasterKey: true,	
+
+							success: function (fanpagePFSaved) {									
+								response.success(fanpagePFSaved.id);
 							},
 							error: function (response, error) {
 								response.error("Error: " + error.code + " " + error.message);

@@ -17,8 +17,7 @@ document.addEventListener("LoadFanpage", function(event){
       var fanpagetACL = window.loadRole(short);       
 
       var queryCategory = new Parse.Query("Categories");             
-      queryCategory.equalTo("objectId", catId);
-      //queryCategory.containedIn("target", [short]);
+      queryCategory.equalTo("objectId", catId);      
       queryCategory.first({
           success: function (category) {
               
@@ -333,20 +332,27 @@ document.addEventListener("LoadFanpage", function(event){
 
               fanpage.set("approved", true);
               fanpage.set("posterId" , user.id);
-              fanpage.set("fanpageId", Math.floor(Math.random() * 100000));                       
+              fanpage.set("fanpageId", Math.floor(Math.random() * 100000));
 
-              fanpage.setACL(fanpagetACL);
-
-              var roles = window.getCheckedRole("frm_edit");
-
-              if (roles.length >0) {
-                for (var i = 0; i < roles.length; ++i) {
-                    fanpage.setACL(roles[i]);
-                }                      
-              }
-                                        
               fanpage.save(null, {
-                  success: function (pet) {
+                  success: function (fanpagePF) {
+
+                      let shortArray = window.GetCheckedNames("frm_edit_fanpage", short);
+
+                      Parse.Cloud.run("AddAclToFanpage", { "roles": window.shortArray, "fanpage": fanpageName }).then(function(result) {    
+                      
+                          console.log('Category created successful with name: ' + fanpage.get("pageName"));
+
+                          $('#frm_edit_fanpage').modal('hide');
+
+                          console.log(result);    
+
+                          loadFanpages(category);            
+                          clearField();   
+                         
+                      }, function(error) {
+                          console.log("error :" +errort);                                 
+                      });
 
                       console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
                       $('#edit_modal_fanpage').modal('hide');
