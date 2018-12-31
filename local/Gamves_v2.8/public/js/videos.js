@@ -18,7 +18,7 @@ document.addEventListener("LoadVideo", function(event){
               
               if (fanpage) { 
                     fanpageObj = fanpage;                  
-                    searchVideo(fanpage); 
+                    loadVideo(fanpage); 
                     getAppIcon();   
                     getSchoolShort();        
               }
@@ -27,7 +27,7 @@ document.addEventListener("LoadVideo", function(event){
 
       var videosLenght = 0;      
 
-      function searchVideo(fanpage)
+      function loadVideo(fanpage)
       {           
 
             var videosRelation = fanpage.relation('videos').query();
@@ -320,49 +320,50 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("source_type", 2);  //YOUTUBE   
 
                     video.set("approved", true);                 
-
-                    video.setACL(schoolACL);
-
-                    var roles = window.getCheckedRole("frm_edit");
-
-                    if (roles.length >0) {
-                      for (var i = 0; i < roles.length; ++i) {
-                          video.setACL(roles[i]);
-                      }                      
-                    }
-
+              
                     video.save(null, {
-                        success: function (savedVideo) {        
+                        success: function (savedVideo) {     
+
+
+                            let shortArray = window.GetCheckedNames("frm_edit_video", short);
+
+                            Parse.Cloud.run("AddAclToVideo", { "roles": window.shortArray, "videoId": video.id }).then(function(result) {                                         
+                                
+                                console.log('Video created successful with name: ' + video.get("title"));                         
+
+                                var Notification = Parse.Object.extend("Notifications");         
+                                var notification = new Notification();  
+
+                                notification.set("posterName", userAdmin.get("Name"));
+                                notification.set("posterAvatar", userAdmin.get("picture"));
+
+                                notification.set("title", video.get("title"));
+                                notification.set("description", video.get("description"));         
+                                notification.set("cover", video.get("thumbnail"));
+                                notification.set("referenceId", video.get("videoId"));
+                                notification.set("date", video.get("createdAt"));
+                                notification.set("video", video);
+
+                                notification.set("type", type);
+
+                                notification.save(null, {
+                                    success: function (savedVideo) {
+                                      clearField();
+                                      loadVideo(fanpage);    
+                                    },
+                                    error: function (response, error) {
+                                          $('#error_message').html("<p>" + errort + "</p>");
+                                          console.log('Error: ' + error.message);
+                                    }
+                                }); 
+
+                                $('#edit_modal_video').modal('hide');
+                                
+                            }, function(error) {
+                                console.log("error :" +errort);                                 
+                            });   
                            
-                            console.log('Video created successful with name: ' + video.get("title"));
-                           
-                            $('#edit_model_video').modal('hide');
-
-                            var Notification = Parse.Object.extend("Notifications");         
-                            var notification = new Notification();  
-
-                            notification.set("posterName", userAdmin.get("Name"));
-                            notification.set("posterAvatar", userAdmin.get("picture"));
-
-                            notification.set("title", video.get("title"));
-                            notification.set("description", video.get("description"));         
-                            notification.set("cover", video.get("thumbnail"));
-                            notification.set("referenceId", video.get("videoId"));
-                            notification.set("date", video.get("createdAt"));
-                            notification.set("video", video);
-
-                            notification.set("type", type);
-
-                            notification.save(null, {
-                                success: function (savedVideo) {
-                                  clearField();
-                                  searchVideo(fanpage);    
-                                },
-                                error: function (response, error) {
-                                      $('#error_message').html("<p>" + errort + "</p>");
-                                      console.log('Error: ' + error.message);
-                                }
-                            });              
+                                         
                                                                                                 
                         },
                         error: function (response, error) {
