@@ -339,25 +339,20 @@ document.addEventListener("LoadFanpage", function(event){
 
                       let shortArray = window.GetCheckedNames("frm_edit_fanpage", short);
 
-                      Parse.Cloud.run("AddAclToFanpage", { "roles": window.shortArray, "fanpage": fanpageName }).then(function(result) {    
-                      
-                          console.log('Category created successful with name: ' + fanpage.get("pageName"));
+                      Parse.Cloud.run("AddAclToFanpage", { "roles": window.shortArray, "fanpage": fanpageName }).then(function(result) {                          
+                          
+                          console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
 
-                          $('#frm_edit_fanpage').modal('hide');
+                          $('#edit_modal_fanpage').modal('hide');
 
-                          console.log(result);    
-
-                          loadFanpages(category);            
-                          clearField();   
+                          loadFanpages(categoryPF);
+                          clearField();
                          
                       }, function(error) {
                           console.log("error :" +errort);                                 
                       });
 
-                      console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
-                      $('#edit_modal_fanpage').modal('hide');
-                      loadFanpages(categoryPF);
-                      clearField();
+                      
 
                   },
                   error: function (response, error) {
