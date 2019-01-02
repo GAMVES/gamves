@@ -8,9 +8,7 @@ document.addEventListener("LoadWelcomes", function(event){
     var welcomesLenght = 0;
     var WelcomeName;
     
-    loadWelcomes();
-
-    var welcomeACL = window.loadRole(short);
+    loadWelcomes();    
 
     var parseFileThumbanil;    
 
@@ -121,7 +119,7 @@ document.addEventListener("LoadWelcomes", function(event){
 
                             $("#welcome_title").text("New Welcome"); 
 
-                            $('#edit_model_welcome').modal('show');                               
+                            $('#edit_modal_welcome').modal('show');                               
 
                             if (welcomesLenght==0){
                                 $("#edit_order_welcomes").append(($("<option/>", { html: 0 })));                                     
@@ -162,7 +160,7 @@ document.addEventListener("LoadWelcomes", function(event){
                             console.log(g_name);
 
                             //console.log(grid.data());//
-                            $('#edit_model_welcome').modal('show');
+                            $('#edit_modal_welcome').modal('show');
 
                             if ($(this).data("row-id") >0) {
 
@@ -237,18 +235,30 @@ document.addEventListener("LoadWelcomes", function(event){
           var description = $("#edit_welcome_description").val();
           welcome.set("description", description);                  
             
-          welcome.set("thumbnail", parseFileThumbanil);
-
-          welcome.setACL(welcomeACL);
-
-          welcome.set("target", window.checkChecked("frm_welcome_edit", short));
+          welcome.set("thumbnail", parseFileThumbanil);         
           
           welcome.save(null, {
-              success: function (pet) {
-                  console.log('Welcome created successful with name: ' + welcome.get("title"));
-                  $('#edit_model_welcome').modal('hide');
-                  loadWelcomes();
-                  clearField();
+              success: function (savedWelcome) {
+
+                var shortArray = [];
+
+                window.GetCheckedNames("frm_edit_welcome", short, function(array) {
+
+                  shortArray = array;
+
+                  Parse.Cloud.run("AddAclToWelcome", { "roles": shortArray, "welcomeId": welcome.id }).then(function(result) {                                         
+
+                      console.log('Welcome created successful with name: ' + welcome.get("title"));
+                      
+                      $('#edit_modal_welcome').modal('hide');
+
+                      loadWelcomes();
+                      clearField();
+                      
+                  });    
+
+                });
+                  
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
@@ -257,7 +267,7 @@ document.addEventListener("LoadWelcomes", function(event){
       }
 
       function clearField(){
-          $("#edit_model_welcome").find("input[type=text], textarea").val("");                    
+          $("#edit_modal_welcome").find("input[type=text], textarea").val("");                    
           $('#img_thumbnail_welcome').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");                       
       }
 

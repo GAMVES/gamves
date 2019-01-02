@@ -15,15 +15,15 @@ document.addEventListener("LoadVideo", function(event){
       var queryFanpage = new Parse.Query("Fanpages");             
       queryFanpage.equalTo("objectId", fanpageId);
       queryFanpage.first({
-          success: function (fanpage) {
-              
-              if (fanpage) { 
-                    fanpageObj = fanpage;                  
-                    loadVideo(fanpage); 
-                    getAppIcon();   
-                    //getSchoolShort();        
-              }
+        success: function (fanpage) {
+            
+          if (fanpage) { 
+                fanpageObj = fanpage;                  
+                loadVideo(fanpage); 
+                getAppIcon();   
+                //getSchoolShort();        
           }
+        }
       });   
 
       var videosLenght = 0;      

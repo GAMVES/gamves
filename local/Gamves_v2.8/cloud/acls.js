@@ -402,7 +402,7 @@
 					useMasterKey: true,
 					success: function(notificationPF) {
 
-						//let res = "fanpgaePF.id " + fanpgaePF.id;
+						//let res = "notificationPF.id " + notificationPF.id;
                         //response.success(res);
 
             			var groupACL = new Parse.ACL();	    	
@@ -437,6 +437,143 @@
 	});
 	
 
+	// --
+  	// Add role to Welcome
 
+	Parse.Cloud.define("AddAclToWelcome", function(request, response) {	    
+	    
+	    var welcomeId = request.params.welcomeId;
+	    var rolesArray = request.params.roles;	    
+
+	    var params = request.params;
+
+	    if (!params.welcomeId) {
+        	response.error("Missing parameters: welcomeId");        	
+   		}
+
+   		// response.success(rolesArray);
+   		//console.log("rolesArray: " + rolesArray);   		  			    
+
+	    var roles = new Parse.Role();
+		
+		var queryRole = new Parse.Query(Parse.Role);	
+		queryRole.containedIn("name", rolesArray);
+		queryRole.find({
+			useMasterKey: true,
+			success: function(rolesPF) {              	
+				roles = rolesPF;
+
+				//let res = "rolesPF.length " + rolesPF.length;
+                //response.success(res);
+
+				var queryWelcome = new Parse.Query("Welcomes");
+				queryWelcome.equalTo("objectId", welcomeId);         	
+		    	queryWelcome.first({
+					useMasterKey: true,
+					success: function(welcomePF) {
+
+						//let res = "welcomePF.id " + welcomePF.id;
+                        //response.success(res);
+
+            			var groupACL = new Parse.ACL();	    	
+						for (var i = 0; i < roles.length; i++) {
+						  groupACL.setReadAccess(roles[i], true);
+						  groupACL.setWriteAccess(roles[i], true);
+						}	
+						welcomePF.setACL(groupACL);  					
+
+						welcomePF.save(null, { useMasterKey: true,	
+
+							success: function (welcomePFSaved) {									
+								response.success(welcomePFSaved.id);
+							},
+							error: function (response, error) {
+								response.error("Error: " + error.code + " " + error.message);
+							}
+						});
+
+            		},
+		            error: function (error) {
+		                console.log("Error: " + error.code + " " + error.message);
+		                response.error("Error: " + error.code + " " + error.message);
+		            }
+				});
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
+                response.error("Error: " + error.code + " " + error.message);
+            }
+        });
+	});
+
+
+	// --
+  	// Add role to Gift
+
+	Parse.Cloud.define("AddAclToGift", function(request, response) {	    
+	    
+	    var giftId = request.params.giftId;
+	    var rolesArray = request.params.roles;	    
+
+	    var params = request.params;
+
+	    if (!params.giftId) {
+        	response.error("Missing parameters: giftId");        	
+   		}
+
+   		// response.success(rolesArray);
+   		//console.log("rolesArray: " + rolesArray);   		  			    
+
+	    var roles = new Parse.Role();
+		
+		var queryRole = new Parse.Query(Parse.Role);	
+		queryRole.containedIn("name", rolesArray);
+		queryRole.find({
+			useMasterKey: true,
+			success: function(rolesPF) {              	
+				roles = rolesPF;
+
+				//let res = "rolesPF.length " + rolesPF.length;
+                //response.success(res);
+
+				var queryGift = new Parse.Query("Gifts");
+				queryGift.equalTo("objectId", giftId);         	
+		    	queryGift.first({
+					useMasterKey: true,
+					success: function(giftPF) {
+
+						//let res = "giftPF.id " + giftPF.id;
+                        //response.success(res);
+
+            			var groupACL = new Parse.ACL();	    	
+						for (var i = 0; i < roles.length; i++) {
+						  groupACL.setReadAccess(roles[i], true);
+						  groupACL.setWriteAccess(roles[i], true);
+						}	
+						giftPF.setACL(groupACL);  					
+
+						giftPF.save(null, { useMasterKey: true,	
+
+							success: function (giftPFSaved) {									
+								response.success(giftPFSaved.id);
+							},
+							error: function (response, error) {
+								response.error("Error: " + error.code + " " + error.message);
+							}
+						});
+
+            		},
+		            error: function (error) {
+		                console.log("Error: " + error.code + " " + error.message);
+		                response.error("Error: " + error.code + " " + error.message);
+		            }
+				});
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
+                response.error("Error: " + error.code + " " + error.message);
+            }
+        });
+	});
 
 

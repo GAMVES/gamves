@@ -126,7 +126,7 @@ document.addEventListener("LoadGifts", function(event){
 
                             $("#gift_title").text("New Gift"); 
 
-                            $('#edit_model_gift').modal('show');                               
+                            $('#edit_modal_gift').modal('show');                               
 
                             if (giftsLenght==0){
                                 $("#edit_order_gifts").append(($("<option/>", { html: 0 })));                                     
@@ -167,7 +167,7 @@ document.addEventListener("LoadGifts", function(event){
                             console.log(g_name);
 
                             //console.log(grid.data());//
-                            $('#edit_model_gift').modal('show');
+                            $('#edit_modal_gift').modal('show');
 
                             if ($(this).data("row-id") >0) {
 
@@ -246,24 +246,26 @@ document.addEventListener("LoadGifts", function(event){
             
           gift.set("thumbnail", parseFileThumbanil);
           
-          //gift.set("target", window.checkChecked("frm_gift_edit", short));
-
-          gift.setACL(giftACL);
-
-          var roles = window.getCheckedRole("frm_gift_edit");
-
-          if (roles.length >0) {
-            for (var i = 0; i < roles.length; ++i) {
-                gift.setACL(roles[i]);
-            }                      
-          }
-          
           gift.save(null, {
               success: function (pet) {
-                  console.log('Gift created successful with name: ' + gift.get("title"));
-                  $('#edit_model_gift').modal('hide');
-                  loadGifts();
-                  clearField();
+
+                var shortArray = [];
+
+                window.GetCheckedNames("frm_edit_gift", short, function(array) {
+
+                  shortArray = array;
+
+                  Parse.Cloud.run("AddAclToGift", { "roles": shortArray, "giftId": gift.id }).then(function(result) {                                         
+
+                    console.log('Gift created successful with name: ' + gift.get("title"));
+                    $('#edit_modal_gift').modal('hide');
+                    loadGifts();
+                    clearField();
+                  
+                  });
+
+                });    
+
               },
               error: function (response, error) {
                   console.log('Error: ' + error.message);
@@ -272,7 +274,7 @@ document.addEventListener("LoadGifts", function(event){
       }
 
       function clearField(){
-          $("#edit_model_gift").find("input[type=text], textarea").val("");                    
+          $("#edit_modal_gift").find("input[type=text], textarea").val("");                    
           $('#img_thumbnail_gift').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");                       
       }
 
