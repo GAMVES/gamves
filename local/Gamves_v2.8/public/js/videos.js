@@ -3,13 +3,14 @@ document.addEventListener("LoadVideo", function(event){
 
       var fanpageId = event.detail.fanpageId;
       var categoryName = event.detail.categoryName;
-      var schoolId = event.detail.schoolId;       
+      var schoolId = event.detail.schoolId;     
+      var short = event.detail.short;  
 
       var fanpageObj;
       var appIconFile;
-      var schoolShort;
+      //var schoolShort;
 
-      var schoolACL = new Parse.ACL();
+      //var schoolACL = new Parse.ACL();
 
       var queryFanpage = new Parse.Query("Fanpages");             
       queryFanpage.equalTo("objectId", fanpageId);
@@ -20,7 +21,7 @@ document.addEventListener("LoadVideo", function(event){
                     fanpageObj = fanpage;                  
                     loadVideo(fanpage); 
                     getAppIcon();   
-                    getSchoolShort();        
+                    //getSchoolShort();        
               }
           }
       });   
@@ -223,7 +224,7 @@ document.addEventListener("LoadVideo", function(event){
 
          vId = videoUrl.split("watch?v=")[1];                                              
 
-         Parse.Cloud.run("getYoutubeVideoInfo", { videoId: vId }).then(function(result) {    
+         Parse.Cloud.run("GetYoutubeVideoInfo", { videoId: vId }).then(function(result) {    
 
             console.log("__________________________");                         
             console.log(JSON.stringify(result));       
@@ -267,6 +268,8 @@ document.addEventListener("LoadVideo", function(event){
 
       function saveVideo() { 
 
+          var shortArray = window.GetCheckedNames("frm_edit_video", short);
+
           var userQuery = new Parse.Query(Parse.User);         
           userQuery.equalTo("username", "gamvesadmin");
           userQuery.first({
@@ -307,7 +310,7 @@ document.addEventListener("LoadVideo", function(event){
 
                     video.set("public", true); 
 
-                    video.set("folder", schoolShort); //Here TODO query School short and put as folder.  
+                    video.set("folder", "admvideos"); 
 
                     video.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
 
@@ -325,9 +328,9 @@ document.addEventListener("LoadVideo", function(event){
                         success: function (savedVideo) {     
 
 
-                            let shortArray = window.GetCheckedNames("frm_edit_video", short);
+                            var shortArray = window.GetCheckedNames("frm_edit_video", short);
 
-                            Parse.Cloud.run("AddAclToVideo", { "roles": window.shortArray, "videoId": video.id }).then(function(result) {                                         
+                            Parse.Cloud.run("AddAclToVideo", { "roles": shortArray, "videoId": video.id }).then(function(result) {                                         
                                 
                                 console.log('Video created successful with name: ' + video.get("title"));                         
 
@@ -347,9 +350,13 @@ document.addEventListener("LoadVideo", function(event){
                                 notification.set("type", type);
 
                                 notification.save(null, {
-                                    success: function (savedVideo) {
+                                    success: function (savedNotification) {                                      
+
+                                      Parse.Cloud.run("AddAclToNotification", { "roles": shortArray, "notificationId": savedNotification.id });                                     
+
                                       clearField();
-                                      loadVideo(fanpage);    
+                                      loadVideo(fanpageObj);
+
                                     },
                                     error: function (response, error) {
                                           $('#error_message').html("<p>" + errort + "</p>");
@@ -361,8 +368,7 @@ document.addEventListener("LoadVideo", function(event){
                                 
                             }, function(error) {
                                 console.log("error :" +errort);                                 
-                            });   
-                           
+                            });                          
                                          
                                                                                                 
                         },
@@ -399,7 +405,7 @@ document.addEventListener("LoadVideo", function(event){
           });
       }
 
-      function getSchoolShort()
+      /*function getSchoolShort()
       {
 
           console.log(schoolId);
@@ -424,6 +430,6 @@ document.addEventListener("LoadVideo", function(event){
               }
           });           
           
-      } 
+      }*/ 
 });
 

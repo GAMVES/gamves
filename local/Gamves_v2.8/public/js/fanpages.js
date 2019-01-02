@@ -122,7 +122,8 @@ document.addEventListener("LoadFanpage", function(event){
                           var event = new CustomEvent("LoadVideo", { detail: {
                                     fanpageId: fanpageId,
                                     categoryName: categoryName,
-                                    schoolId: schoolId }} );                                    
+                                    schoolId: schoolId, 
+                                    short: short}} );                                    
                           document.dispatchEvent(event);
 
                       }).on("deselected.rs.jquery.bootgrid", function(e, rows)

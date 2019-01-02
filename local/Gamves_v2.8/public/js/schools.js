@@ -367,7 +367,7 @@
 
                       }); 
 
-                      Parse.Cloud.run("createS3Folder", { folder: name });           
+                      Parse.Cloud.run("CreateS3Folder", { folder: name });           
                       
 
                      

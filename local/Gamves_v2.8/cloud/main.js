@@ -1,4 +1,5 @@
 	require('./functions');
+	require('./acls');
 	require('./jobs');	
 	require('./users');
 
