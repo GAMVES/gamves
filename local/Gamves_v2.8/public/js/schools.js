@@ -669,7 +669,7 @@
         });
     }
 
-    window.GetCheckedNames = function(formname, short) {        
+    window.GetCheckedNames = function(formname, short, callback) {        
         
         var shortArray = [];
         var countChecks = 0;
@@ -677,17 +677,20 @@
 
         if ( numberOfChecked > 0 ) {
 
-          $('#' + formname + ' input[type="checkbox"]').each(function() {
+          //$('#' + formname + ' input[type="checkbox"]').each(function() {
+
+          $('#' + formname + " input:checkbox:checked").each(function() {
+
               
               if ($(this).is(":checked")) {
                   
-                      let short = $(this).val();
+                      let checked = $(this).val();
 
-                      shortArray.push(short); 
+                      shortArray.push(checked); 
 
                       if (countChecks == (numberOfChecked-1)) {
                         shortArray.push(short);
-                        return shortArray;
+                        callback(shortArray);
                       }
 
                       countChecks++;                  

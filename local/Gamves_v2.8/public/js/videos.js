@@ -61,8 +61,8 @@ document.addEventListener("LoadVideo", function(event){
                           var description = videos[i].get("description");
                           item["description"] = description;
 
-                          if (videos[i].get("ytb_source") != undefined){
-                            var source = videos[i].get("source");
+                          if (videos[i].get("ytb_thumbnail_source") != undefined){
+                            var source = videos[i].get("ytb_thumbnail_source");
                             item["source"] = source;
                           } else {
                             item["source"] = "https://dummyimage.com/150x60/286090/ffffff.png&text=Not+Available";
@@ -116,7 +116,7 @@ document.addEventListener("LoadVideo", function(event){
 
                                     $("#video_title").text("New Video"); 
 
-                                    $('#edit_model_video').modal('show');
+                                    $('#edit_modal_video').modal('show');
 
                                     //$('#video_spinner').hide();
 
@@ -158,7 +158,7 @@ document.addEventListener("LoadVideo", function(event){
                               console.log(g_name);
 
                               //console.log(grid.data());//
-                              $('#edit_model_video').modal('show');
+                              $('#edit_modal_video').modal('show');
 
                               if ($(this).data("row-id") >0) {
 
@@ -266,9 +266,7 @@ document.addEventListener("LoadVideo", function(event){
       }); 
         
 
-      function saveVideo() { 
-
-          var shortArray = window.GetCheckedNames("frm_edit_video", short);
+      function saveVideo() {              
 
           var userQuery = new Parse.Query(Parse.User);         
           userQuery.equalTo("username", "gamvesadmin");
@@ -328,49 +326,57 @@ document.addEventListener("LoadVideo", function(event){
                         success: function (savedVideo) {     
 
 
-                            var shortArray = window.GetCheckedNames("frm_edit_video", short);
+                            var shortArray = [];
 
-                            Parse.Cloud.run("AddAclToVideo", { "roles": shortArray, "videoId": video.id }).then(function(result) {                                         
-                                
-                                console.log('Video created successful with name: ' + video.get("title"));                         
+                            window.GetCheckedNames("frm_edit_video", short, function(array) {
 
-                                var Notification = Parse.Object.extend("Notifications");         
-                                var notification = new Notification();  
+                              shortArray = array;
 
-                                notification.set("posterName", userAdmin.get("Name"));
-                                notification.set("posterAvatar", userAdmin.get("picture"));
+                              Parse.Cloud.run("AddAclToVideo", { "roles": shortArray, "videoId": video.id }).then(function(result) {                                         
+                                  
+                                  console.log('Video created successful with name: ' + video.get("title"));                         
 
-                                notification.set("title", video.get("title"));
-                                notification.set("description", video.get("description"));         
-                                notification.set("cover", video.get("thumbnail"));
-                                notification.set("referenceId", video.get("videoId"));
-                                notification.set("date", video.get("createdAt"));
-                                notification.set("video", video);
+                                  var Notification = Parse.Object.extend("Notifications");         
+                                  var notification = new Notification();  
 
-                                notification.set("type", type);
+                                  notification.set("posterName", userAdmin.get("Name"));
+                                  notification.set("posterAvatar", userAdmin.get("picture"));
 
-                                notification.save(null, {
-                                    success: function (savedNotification) {                                      
+                                  notification.set("title", video.get("title"));
+                                  notification.set("description", video.get("description"));         
+                                  notification.set("cover", video.get("thumbnail"));
+                                  notification.set("referenceId", video.get("videoId"));
+                                  notification.set("date", video.get("createdAt"));
+                                  notification.set("video", video);
 
-                                      Parse.Cloud.run("AddAclToNotification", { "roles": shortArray, "notificationId": savedNotification.id });                                     
+                                  notification.set("type", 1);
 
-                                      clearField();
-                                      loadVideo(fanpageObj);
+                                  notification.save(null, {
+                                      success: function (savedNotification) {                                      
 
-                                    },
-                                    error: function (response, error) {
-                                          $('#error_message').html("<p>" + errort + "</p>");
-                                          console.log('Error: ' + error.message);
-                                    }
-                                }); 
+                                        Parse.Cloud.run("AddAclToNotification", { "roles": shortArray, "notificationId": savedNotification.id });                                     
 
-                                $('#edit_modal_video').modal('hide');
-                                
-                            }, function(error) {
-                                console.log("error :" +errort);                                 
-                            });                          
-                                         
-                                                                                                
+                                        $('#edit_modal_video').modal('hide');
+
+                                        clearField();
+                                        loadVideo(fanpageObj);
+
+                                      },
+                                      error: function (response, error) {
+                                            $('#error_message').html("<p>" + errort + "</p>");
+                                            console.log('Error: ' + error.message);
+                                      }
+
+                                  }); 
+
+                                  
+                                  
+                              }, function(error) {
+                                  console.log("error :" +errort);                                 
+                              });                          
+                               
+                            });
+
                         },
                         error: function (response, error) {
                               $('#error_message').html("<p>" + errort + "</p>");
@@ -391,7 +397,7 @@ document.addEventListener("LoadVideo", function(event){
         $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
       }
 
-      function getAppIcon(){
+      function getAppIcon() {
 
         var queryConfig = new Parse.Query("Config");
           queryConfig.first({         

@@ -338,27 +338,32 @@ document.addEventListener("LoadFanpage", function(event){
               fanpage.save(null, {
                   success: function (fanpagePF) {
 
-                      let shortArray = window.GetCheckedNames("frm_edit_fanpage", short);
+                      var shortArray = [];
 
-                      Parse.Cloud.run("AddAclToFanpage", { "roles": window.shortArray, "fanpage": fanpageName }).then(function(result) {                          
-                          
-                          console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
+                      window.GetCheckedNames("frm_edit_video", short, function(array) {
 
-                          $('#edit_modal_fanpage').modal('hide');
+                        shortArray = array;
 
-                          loadFanpages(categoryPF);
-                          clearField();
-                         
-                      }, function(error) {
-                          console.log("error :" +errort);                                 
-                      });
+                        Parse.Cloud.run("AddAclToFanpage", { "roles": window.shortArray, "fanpage": fanpageName }).then(function(result) {                          
+                            
+                            console.log('Fanpage created successful with name: ' + fanpage.get("pageName"));
 
-                      
+                            $('#edit_modal_fanpage').modal('hide');
+
+                            loadFanpages(categoryPF);
+                            clearField();
+                           
+                        }, function(error) {
+                            console.log("error :" +errort);                                 
+                        });
+
+                      });  
 
                   },
                   error: function (response, error) {
                       console.log('Error: ' + error.message);
                   }
+                  
               });
 
              }, function(error) {     

@@ -265,21 +265,27 @@ document.addEventListener("LoadCategories", function(event){
           cat.save(null, {
               success: function (categoryPF) {    
 
-                  let shortArray = window.GetCheckedNames("frm_edit_categories", short);
+                  var shortArray = [];
 
-                  Parse.Cloud.run("AddAclToCategory", { "roles": window.shortArray, "category": name }).then(function(result) {    
-                  
-                      console.log('Category created successful with name: ' + cat.get("pageName"));
+                  window.GetCheckedNames("frm_edit_video", short, function(array) {
 
-                      $('#edit_model_category').modal('hide');
+                    shortArray = array;
 
-                      console.log(result);    
+                    Parse.Cloud.run("AddAclToCategory", { "roles": window.shortArray, "category": name }).then(function(result) {    
+                    
+                        console.log('Category created successful with name: ' + cat.get("pageName"));
 
-                      loadCategories();
-                      clearField();   
-                     
-                  }, function(error) {
-                      console.log("error :" +errort);                                 
+                        $('#edit_model_category').modal('hide');
+
+                        console.log(result);    
+
+                        loadCategories();
+                        clearField();   
+                       
+                    }, function(error) {
+                        console.log("error :" +errort);                                 
+                    });
+
                   });
                   
               },
