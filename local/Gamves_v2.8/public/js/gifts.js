@@ -247,7 +247,7 @@ document.addEventListener("LoadGifts", function(event){
           gift.set("thumbnail", parseFileThumbanil);
           
           gift.save(null, {
-              success: function (pet) {
+              success: function (giftSavedPF) {
 
                 var shortArray = [];
 
