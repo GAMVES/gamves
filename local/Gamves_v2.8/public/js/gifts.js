@@ -8,9 +8,7 @@ document.addEventListener("LoadGifts", function(event){
     var giftsLenght = 0;
     var GiftName;
     
-    loadGifts();
-
-    var giftACL = window.loadRole(short);   
+    loadGifts();    
 
     var parseFileThumbanil; 
 
