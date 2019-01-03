@@ -169,7 +169,7 @@
 
 	Parse.Cloud.define("CreateClasses", function( request, response ) {
 
-		var classses = [
+		var newClasses = [
 		 "Approvals",
 		 "Audios",
 		 "ChatFeed",
@@ -180,10 +180,11 @@
 		 "UserVerified"
 		 ];
 
-		for (var i=0; i<classses.length; i++) {
-			var classs = Parse.Object.extend(classses[i]);		
-			classs.save(null, { useMasterKey: true } );
-		}
+		for (var i=0; i < newClasses.length; i++) {
+			var NewClass = Parse.Object.extend(newClasses[i]);	
+			var newClass = new NewClass();
+			newClass.save(null, { useMasterKey: true } );
+		}		
 
 	});
 	
@@ -478,50 +479,58 @@
 
 		console.log("user: " + JSON.stringify(request.object));
 
-		if ( username != _admuser ) {		
+		if ( username != _admuser ) {
 
-			var emailVerified = request.object.get("emailVerified");
+			var friendOfRole = "friendOf___" + userId;
 
-			console.log("_User : " + userId); 		
+			Parse.Cloud.run("AddRoleByName", { "name": friendOfRole}).then(function(familyRolePF) {				
 
-			var userVerifiedQuery = new Parse.Query("UserVerified");
-			userVerifiedQuery.equalTo("userId", userId);		
+				Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": friendOfRole});		
 
-			userVerifiedQuery.find({
-		        useMasterKey: true,
-		        success: function(results) {
+				var emailVerified = request.object.get("emailVerified");
 
-		        	console.log("success"); 
+				console.log("_User : " + userId); 		
 
-		        	console.log("results.length: " + results.length); 	
-		        	       	
-		        	if( results.length == 0) {
+				var userVerifiedQuery = new Parse.Query("UserVerified");
+				userVerifiedQuery.equalTo("userId", userId);		
 
-						setUserVerified(userId, false);					
+				userVerifiedQuery.find({
+			        useMasterKey: true,
+			        success: function(results) {
 
-				    } else { 										
+			        	console.log("success"); 
 
-				    	var verifiedObject = results[0]; 					
+			        	console.log("results.length: " + results.length); 	
+			        	       	
+			        	if( results.length == 0) {
 
-						verifiedObject.set("emailVerified", emailVerified);		
+							setUserVerified(userId, false);					
 
-						verifiedObject.save(null, { useMasterKey: true } );
-						
-					} 
+					    } else { 										
 
-					response.success(true);  
+					    	var verifiedObject = results[0]; 					
 
-		        },
-		        error: function(error) {
+							verifiedObject.set("emailVerified", emailVerified);		
 
-		        	console.log("error: " +error); 	
-		         
-		         	setUserVerified(userId, false);
+							verifiedObject.save(null, { useMasterKey: true } );
+							
+						} 
 
-			        response.success(true);   
-		        }      
+						response.success(true);  
 
-			});
+			        },
+			        error: function(error) {
+
+			        	console.log("error: " +error); 	
+			         
+			         	setUserVerified(userId, false);
+
+				        response.success(true);   
+			        }      
+
+				});
+
+			});	
 
 		} else {
 
@@ -529,6 +538,9 @@
 
 		}
 	});
+
+
+
 
 	function setUserVerified(id, status) {
 
@@ -1765,7 +1777,7 @@
 
 		var short = object.get("short");
 
-		console.log("entra family");
+		//console.log("entra family");
 
 		var familyRole, schoolRole;
 
@@ -1780,42 +1792,37 @@
 
 				var schoolId = schoolPF.id;
 
-				var shortSchool = schoolPF.get("short");
+				var shortSchool = schoolPF.get("short");				
 
-				Parse.Cloud.run("AddRoleByName", { "name": shortSchool}).then(function(schoolRolePF) {
+				Parse.Cloud.run("AddUserToRole", { "parent": schoolRole, "child": familyRole});
 
-					schoolRole = schoolRolePF;
+				var levelQuery = request.object.relation("level").query();					
+				levelQuery.first({useMasterKey:true}).then(function(levelPF){
 
-					Parse.Cloud.run("AddUserToRole", { "parent": schoolRole, "child": familyRole});
+					var levelId = levelPF.id;
 
-					var levelQuery = request.object.relation("level").query();					
-					levelQuery.first({useMasterKey:true}).then(function(levelPF){
+					console.log("famlyId: " + familyId);
+					console.log("schoolId: " + schoolId);
+					console.log("levelId: " + levelId);
 
-						var levelId = levelPF.id;
+					var usersQuery = request.object.relation("members").query();
+					usersQuery.find({useMasterKey:true}).then(function(usersPF){
 
-						console.log("famlyId: " + familyId);
-						console.log("schoolId: " + schoolId);
-						console.log("levelId: " + levelId);
+						for (var i = 0; i < usersPF.length; ++i) 
+						{
 
-						var usersQuery = request.object.relation("members").query();
-						usersQuery.find({useMasterKey:true}).then(function(usersPF){
+							//var friendOfRole = "friendOf___" + usersPF.id;
 
-							for (var i = 0; i < usersPF.length; ++i) 
-							{
+							//Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": friendOfRole});
 
-								var friendOfRole = "friendOf___" + usersPF.id;
+							Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": familyRoleName});
 
-								Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": friendOfRole});
-
-								Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": familyRoleName});
-
-								usersPF[i].set("schoolId", schoolId);
-								usersPF[i].set("familyId", familyId);
-								usersPF[i].set("levelId", levelId);
-								
-								usersPF[i].save(null, {useMasterKey: true});
-							}
-						});
+							usersPF[i].set("schoolId", schoolId);
+							usersPF[i].set("familyId", familyId);
+							usersPF[i].set("levelId", levelId);
+							
+							usersPF[i].save(null, {useMasterKey: true});
+						}
 					});
 				});				
 			});
