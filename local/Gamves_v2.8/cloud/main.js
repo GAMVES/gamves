@@ -173,6 +173,7 @@
 		 "Approvals",
 		 "Audios",
 		 "ChatFeed",
+		 "Chats",
 		 "FriendsApproval",
 		 "Notifications",
 		 "UserStatus",
