@@ -29,136 +29,123 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         
-        UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
-        
-        //application.statusBarStyle = .lightContent
+        UINavigationBar.appearance().barTintColor = UIColor.gamvesColor        
       
         var reached = false
 
         let deviceobj = Device()
         let device:String = "\(deviceobj)"
-        Global.device = device
-        
-        //connect = true
-        //if connect {        
-
-        //window?.rootViewController = UINavigationController(rootViewController: FortniteViewController())
-        //return true            
-        
+        Global.device = device        
+         
         if Reachability.isConnectedToNetwork() == true {
     
             loadParse(application: application, launchOptions: launchOptions)
             print("Internet connection OK")
             
             reached = true
+
+            window = UIWindow(frame: UIScreen.main.bounds)
+            window?.makeKeyAndVisible()
             
-        } else {
+            tabBarViewController = TabBarViewController()
             
-            window?.rootViewController = UINavigationController(rootViewController: NoConnectionController())
+            window?.rootViewController = tabBarViewController      
             
-            let title = "Internet Connection"
-            let message = "Your device is not connected to the Internet, please check your connection. The app is closing.. bye!"
+            UITabBar.appearance().barTintColor = UIColor.gamvesColor
+            UITabBar.appearance().tintColor = UIColor.white
+           
             
-            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
-            
-            // add an action (button)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+            if #available(iOS 10.0, *) {
+                UITabBar.appearance().unselectedItemTintColor = UIColor.black
+            } else {
+                tabBarViewController.tabBar.unselectedItemTintColor = UIColor.black
+            }
                 
-                exit(0)
-                
-            }))
+            //- Load Admin
+            Global.loadAdminUser()
             
-            // show the alert
-            self.window?.rootViewController?.present(alert, animated: true, completion: nil)
-        }
-        
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.makeKeyAndVisible()
-        
-        tabBarViewController = TabBarViewController()
-        
-        window?.rootViewController = tabBarViewController      
-        
-        UITabBar.appearance().barTintColor = UIColor.gamvesColor
-        UITabBar.appearance().tintColor = UIColor.white
-       
-        
-        if #available(iOS 10.0, *) {
-            UITabBar.appearance().unselectedItemTintColor = UIColor.black
-        } else {
-            tabBarViewController.tabBar.unselectedItemTintColor = UIColor.black
-        }
+            Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
             
-        //- Load Admin
-        Global.loadAdminUser()
-        
-        Global.loaLevels(completionHandler: { ( result:Bool ) -> () in
-        
-            if PFUser.current() != nil
-            {
-                
-                Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
+                if PFUser.current() != nil
+                {
                     
-                    Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                    Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
                         
-                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                        Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                            
+                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
+                            
+                        })
+                        
+                        self.loadChatChannels()
                         
                     })
-                    
-                    self.loadChatChannels()
-                    
-                })
-            }
-        })
-        
-        if PFUser.current() != nil
-        {
-            if let userId = PFUser.current()?.objectId
-            {
-                self.puserId = userId
-            }
-        }
-
+                }
+            })
             
-        if #available(iOS 10.0, *)
-        {
-            let center = UNUserNotificationCenter.current()
-            center.delegate = self
-            center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
-                
-                if error == nil
+            if PFUser.current() != nil
+            {
+                if let userId = PFUser.current()?.objectId
                 {
-                    UIApplication.shared.registerForRemoteNotifications()
+                    self.puserId = userId
+                }
+            }
+
+                
+            if #available(iOS 10.0, *)
+            {
+                let center = UNUserNotificationCenter.current()
+                center.delegate = self
+                center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
+                    
+                    if error == nil
+                    {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    }
+                    
                 }
                 
-            }
-            
-        } else {
-            
-            if #available(iOS 7, *)
-            {
-                //application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
-                registerApplicationForPushNotifications(application: application)
             } else {
                 
-                let notificationTypes: UIUserNotificationType = [UIUserNotificationType.alert, UIUserNotificationType.badge, UIUserNotificationType.sound]
-                
-                let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
-                
-                UIApplication.shared.registerUserNotificationSettings(notificationSettings)
-                UIApplication.shared.registerForRemoteNotifications()
+                if #available(iOS 7, *)
+                {
+                    //application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
+                    registerApplicationForPushNotifications(application: application)
+                } else {
+                    
+                    let notificationTypes: UIUserNotificationType = [UIUserNotificationType.alert, UIUserNotificationType.badge, UIUserNotificationType.sound]
+                    
+                    let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
+                    
+                    UIApplication.shared.registerUserNotificationSettings(notificationSettings)
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
             }
+            
+            Global.loadUserTypes()
+
+            var paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+            let documentsDirectory = paths[0]
+            let fileName = "\(Date()).log"
+            let logFilePath = (documentsDirectory as NSString).appendingPathComponent(fileName)
+            freopen(logFilePath.cString(using: String.Encoding.ascii)!, "a+", stderr)  
+
+            Global.loadAditionalData()     
+            
+        } else {
+
+            var noConnectionViewController:NoConnectionViewController!
+
+            noConnectionViewController = NoConnectionViewController()
+            
+            window?.rootViewController = noConnectionViewController      
+            
+            UITabBar.appearance().barTintColor = UIColor.gamvesColor
+            UITabBar.appearance().tintColor = UIColor.white            
+         
         }
         
-        Global.loadUserTypes()
-
-        var paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        let documentsDirectory = paths[0]
-        let fileName = "\(Date()).log"
-        let logFilePath = (documentsDirectory as NSString).appendingPathComponent(fileName)
-        freopen(logFilePath.cString(using: String.Encoding.ascii)!, "a+", stderr)  
-
-        Global.loadAditionalData()     
+        
 
         return true
     }
@@ -175,13 +162,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         Parse.initialize(with: configuration)*/
         
-        //Back4app
+        //Gamves
         let configuration = ParseClientConfiguration {
+            $0.applicationId = "DinPu5dG42HU12QxN50ES4GVjk1NysN4WXUSy2L5"
+            $0.clientKey = "pLYLESc3C72uZGhK6fmEdhCcTy94g9J2BPYHPRT7"
+            $0.server = "https://parseapi.back4app.com"
+        }
+        Parse.initialize(with: configuration)
+
+        //3.1.1
+        /*let configuration = ParseClientConfiguration {
             $0.applicationId = "45cgsAjYqwQQRctQTluoUpVvKsHqrjCmvh72UGBx"
             $0.clientKey = "FNRCkl1ou1wjX4j8uzhnavxNAna2OH8pjmTYPvvF"
             $0.server = "https://parseapi.back4app.com"
         }
-        Parse.initialize(with: configuration)
+        Parse.initialize(with: configuration)*/
         
         //Sashido
         /*let configuration = ParseClientConfiguration {

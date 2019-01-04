@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		091C0A0421DEF5030005508F /* NoConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091C0A0321DEF5020005508F /* NoConnectionViewController.swift */; };
 		093784A321D2E33A0093A695 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093784A221D2E33A0093A695 /* EventViewController.swift */; };
 		093972612175642000496571 /* MediaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093972602175641F00496571 /* MediaController.swift */; };
 		093972632175675D00496571 /* SearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093972622175675C00496571 /* SearchController.swift */; };
@@ -120,6 +121,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		091C0A0321DEF5020005508F /* NoConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoConnectionViewController.swift; sourceTree = "<group>"; };
 		093784A221D2E33A0093A695 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		093972602175641F00496571 /* MediaController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaController.swift; sourceTree = "<group>"; };
 		093972622175675C00496571 /* SearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchController.swift; sourceTree = "<group>"; };
@@ -416,6 +418,7 @@
 				C92DCABA213ED5DA00A2C2EE /* OtherAccountsViewController.swift */,
 				C94AC05A214A0F490056F6AB /* TutorialVideoViewController.swift */,
 				093784A221D2E33A0093A695 /* EventViewController.swift */,
+				091C0A0321DEF5020005508F /* NoConnectionViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -804,6 +807,7 @@
 				0959FD092175BF3100711C7A /* UIFont+Extension.swift in Sources */,
 				0939726A21756C7C00496571 /* SearchSingleImageCell.swift in Sources */,
 				C9263DFE20D8B9BE0029DBAE /* Artwork.swift in Sources */,
+				091C0A0421DEF5030005508F /* NoConnectionViewController.swift in Sources */,
 				8212D72B1F7AF3CC00F2A121 /* SettingsViewController.swift in Sources */,
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
 				C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */,

@@ -24,6 +24,7 @@
 		09756EDA21A30500005DDFC5 /* BugsSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09756ED921A30500005DDFC5 /* BugsSectionHeader.swift */; };
 		099ADE132186A87E0075B053 /* ShareSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099ADE122186A87D0075B053 /* ShareSelectViewController.swift */; };
 		099ADE162186AA010075B053 /* SharedClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099ADE152186AA010075B053 /* SharedClasses.swift */; };
+		09BA208121DF2AF200FDEA3B /* NoConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09BA208021DF2AF200FDEA3B /* NoConnectionViewController.swift */; };
 		09E19F8E21BA1B1000A1E842 /* UIWindow+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E19F8D21BA1B0F00A1E842 /* UIWindow+Extension.swift */; };
 		09E19F9221BB664A00A1E842 /* PetLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E19F9121BB664A00A1E842 /* PetLauncher.swift */; };
 		09E19F9421BC962B00A1E842 /* PetSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E19F9321BC962900A1E842 /* PetSelectorViewController.swift */; };
@@ -193,6 +194,7 @@
 		09756ED921A30500005DDFC5 /* BugsSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsSectionHeader.swift; sourceTree = "<group>"; };
 		099ADE122186A87D0075B053 /* ShareSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSelectViewController.swift; sourceTree = "<group>"; };
 		099ADE152186AA010075B053 /* SharedClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedClasses.swift; sourceTree = "<group>"; };
+		09BA208021DF2AF200FDEA3B /* NoConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoConnectionViewController.swift; sourceTree = "<group>"; };
 		09E19F8D21BA1B0F00A1E842 /* UIWindow+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIWindow+Extension.swift"; sourceTree = "<group>"; };
 		09E19F9121BB664A00A1E842 /* PetLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetLauncher.swift; sourceTree = "<group>"; };
 		09E19F9321BC962900A1E842 /* PetSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetSelectorViewController.swift; sourceTree = "<group>"; };
@@ -695,6 +697,7 @@
 				09756ED521A300B0005DDFC5 /* BugListViewController.swift */,
 				0915760321A7C5C8001618ED /* BugViewController.swift */,
 				09E19F9321BC962900A1E842 /* PetSelectorViewController.swift */,
+				09BA208021DF2AF200FDEA3B /* NoConnectionViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -1035,6 +1038,7 @@
 				8294F9D21FDA4EF80082D99D /* RecordVideoViewController.swift in Sources */,
 				822010B61FF96A5A008C9027 /* NewFanpageController+Extensions.swift in Sources */,
 				8294F9D01FDA4EF40082D99D /* PlayVideoViewController.swift in Sources */,
+				09BA208121DF2AF200FDEA3B /* NoConnectionViewController.swift in Sources */,
 				82C9084B1FA0FD790059FAB8 /* Downloader.swift in Sources */,
 				C92CDDBC21064FCD001B5978 /* FriendCell.swift in Sources */,
 				C927192C212CD9B00099ABA6 /* WelcomeCollectionViewCell.swift in Sources */,

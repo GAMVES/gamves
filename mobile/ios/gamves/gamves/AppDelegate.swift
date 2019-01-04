@@ -153,22 +153,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
         } else {
             
-            window?.rootViewController = UINavigationController(rootViewController: NoConnectionController())
+           var noConnectionViewController:NoConnectionViewController!
+
+           noConnectionViewController = NoConnectionViewController()
             
-            let title = "Internet Connection"
-            let message = "Your device is not connected to the Internet, please check your connection. The app is closing.. bye!"
+           window?.rootViewController = noConnectionViewController      
             
-            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
-            
-            // add an action (button)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
-                
-                exit(0)
-                
-            }))
-            
-            // show the alert
-            self.window?.rootViewController?.present(alert, animated: true, completion: nil)
+           UITabBar.appearance().barTintColor = UIColor.gamvesColor
+           UITabBar.appearance().tintColor = UIColor.white 
             
         }
         

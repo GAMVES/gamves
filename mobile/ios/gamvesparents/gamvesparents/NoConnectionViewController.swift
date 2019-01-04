@@ -1,16 +1,16 @@
 //
 //  NoConnectionViewController.swift
-//  gamves
+//  gamvesparents
 //
-//  Created by Jose Vigil on 12/24/17.
-//  Copyright © 2017 letsbuildthatapp. All rights reserved.
+//  Created by Jose Vigil on 03/01/2019.
+//  Copyright © 2019 Gamves Parents. All rights reserved.
 //
 
 import UIKit
 
-class NoConnectionController: UIViewController {
+class NoConnectionViewController: UIViewController {
 
-     var seconds = 6
+    var seconds = 6
 
     let gamvesImageView: UIImageView = {
         let imageView = UIImageView()
@@ -108,5 +108,4 @@ class NoConnectionController: UIViewController {
             exit(0);
         } 
     }
-
 }
