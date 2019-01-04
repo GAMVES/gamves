@@ -65,24 +65,23 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
 
     //////////////////////
 
-    let contentContainerView: UIView = {
+    let cntView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
         return view
     }()
-
-    let topView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.white
-        return view
-    }()
-
 
     let termsView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
         return view
     }()
+
+    let licenceView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        return view
+    }()    
 
     var checkboxTerms = BEMCheckBox()
 
@@ -96,12 +95,7 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
         label.numberOfLines = 2
         return label
     }()
-
-    let licenceView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.white
-        return view
-    }()
+    
 
     var checkboxLicence = BEMCheckBox()
     
@@ -146,24 +140,29 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
 
             let totalHeight = self.frame.height
 
-            let heatherHeight:CGFloat = 300
+            let heatherHeight:CGFloat = 240
             let contentHeight:CGFloat = totalHeight - heatherHeight
             metricsAgreement = ["contentHeight": Int(contentHeight)]
 
             self.addSubview(self.titleContainerView)            
             self.addConstraintsWithFormat("H:|[v0]|", views: self.titleContainerView)            
 
-            self.addSubview(self.contentContainerView)
-            self.addConstraintsWithFormat("H:|[v0]|", views: self.contentContainerView)               
+            self.addSubview(self.cntView)
+            self.addConstraintsWithFormat("H:|[v0]|", views: self.cntView)               
                   
-            self.addConstraintsWithFormat("V:|-100-[v0(200)][v1(contentHeight)]|", views: self.titleContainerView, self.contentContainerView, metrics: metricsAgreement)            
+            self.addConstraintsWithFormat("V:|-50-[v0(160)][v1(contentHeight)]|", views: 
+                self.titleContainerView, 
+                self.cntView, 
+                metrics: metricsAgreement)            
 
             self.titleContainerView.addSubview(self.logoImageView)
-            self.titleContainerView.addConstraintsWithFormat("V:|-40-[v0(90)]|", views: self.logoImageView)
+            self.titleContainerView.addConstraintsWithFormat("V:|-10-[v0(90)]|", views: self.logoImageView)
 
             self.titleContainerView.addSubview(self.labelsView)
             self.titleContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.labelsView) 
-            self.titleContainerView.addConstraintsWithFormat("H:|[v0(90)][v1]|", views: self.logoImageView, self.labelsView)
+            self.titleContainerView.addConstraintsWithFormat("H:|[v0(90)][v1]|", views: 
+                self.logoImageView, 
+                self.labelsView)
 
             self.labelsView.addSubview(self.accountLabel)
             self.labelsView.addConstraintsWithFormat("H:|[v0]|", views: self.accountLabel)
@@ -171,28 +170,31 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
             self.labelsView.addSubview(self.accountDescriptionLabel)
             self.labelsView.addConstraintsWithFormat("H:|[v0]|", views: self.accountDescriptionLabel)
 
-            self.labelsView.addConstraintsWithFormat("V:|-60-[v0][v1]-40-|", views: self.accountLabel, self.accountDescriptionLabel)
+            self.labelsView.addConstraintsWithFormat("V:|-60-[v0][v1]-40-|", views: 
+                self.accountLabel, 
+                self.accountDescriptionLabel)
 
-            self.contentContainerView.addSubview(self.topView)
-            self.contentContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.topView)                       
+            self.cntView.addSubview(self.termsView)
+            self.cntView.addConstraintsWithFormat("H:|[v0]|", views: self.termsView)           
 
-            self.contentContainerView.addSubview(self.termsView)
-            self.contentContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.termsView)           
+            self.cntView.addSubview(self.licenceView)
+            self.cntView.addConstraintsWithFormat("H:|[v0]|", views: self.licenceView)           
 
-            self.contentContainerView.addSubview(self.licenceView)
-            self.contentContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.licenceView)           
+            self.cntView.addSubview(self.nextButton)
+            self.cntView.addConstraintsWithFormat("H:|-80-[v0]-80-|", views: self.nextButton)          
 
-            self.contentContainerView.addSubview(self.nextButton)
-            self.contentContainerView.addConstraintsWithFormat("H:|-40-[v0]-40-|", views: self.nextButton)          
+            self.cntView.addSubview(self.bottomView)
+            self.cntView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)                    
 
-            self.contentContainerView.addSubview(self.bottomView)
-            self.contentContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)                    
-
-            self.contentContainerView.addConstraintsWithFormat("V:|[v0(50)][v1(60)]-30-[v2(60)]-30-[v3(100)][v4]|", 
-                views: self.topView, self.termsView, self.licenceView, self.nextButton, self.bottomView)           
+            self.cntView.addConstraintsWithFormat("V:|[v0(60)]-30-[v1(60)]-30-[v2(100)][v3]|", views: 
+                self.termsView, 
+                self.licenceView, 
+                self.nextButton, 
+                self.bottomView)           
 
             self.checkboxTerms.tag = 0
             self.checkboxTerms.delegate = self
+
             self.termsView.addSubview(self.checkboxTerms)
             self.termsView.addConstraintsWithFormat("V:|[v0(60)]|", views: self.checkboxTerms)           
 
