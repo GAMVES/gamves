@@ -113,13 +113,13 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
     lazy var nextButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.gambesDarkColor
-        button.setTitle("Next", for: UIControlState())
+        button.setTitle("CONTINUE", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 25)        
         button.addTarget(self, action: #selector(handleNext), for: .touchUpInside)
         button.layer.cornerRadius = 5
-        button.isEnabled = false
+        //button.isEnabled = false
         return button
     }()
 
@@ -181,7 +181,7 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
             self.cntView.addConstraintsWithFormat("H:|[v0]|", views: self.licenceView)           
 
             self.cntView.addSubview(self.nextButton)
-            self.cntView.addConstraintsWithFormat("H:|-80-[v0]-80-|", views: self.nextButton)          
+            self.cntView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.nextButton)          
 
             self.cntView.addSubview(self.bottomView)
             self.cntView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)                    
@@ -216,8 +216,22 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
     }
 
     @objc func handleNext()
-    {       
-        self.tutorialController?.showLoginController(registered: false)
+    {      
+        if licenceEnabled && termsEnabled {
+        
+            self.tutorialController?.showLoginController(registered: false)            
+
+        } else {
+
+            let alert = UIAlertController(title: "Did you accept?", message: "You must accept the Terms and Licence agreement before continuing.", preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))            
+
+            tutorialController!.present(alert, animated: true)
+            
+        }
+
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -244,10 +258,10 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
         print(licenceEnabled)
 
 
-        if licenceEnabled && termsEnabled
-        {
-            nextButton.isEnabled = true
-        }
+        //if licenceEnabled && termsEnabled
+        //{
+        //    nextButton.isEnabled = true
+        //}
         
     }
     
