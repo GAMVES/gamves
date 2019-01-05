@@ -45,7 +45,6 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
         btnlogin = (Button) findViewById(R.id.btn_login);
         btnlogin.setTag(new Integer(0));
 
-
         loginInputUserName.setText("Clemente");
         loginInputPassword.setText("clemen");
 

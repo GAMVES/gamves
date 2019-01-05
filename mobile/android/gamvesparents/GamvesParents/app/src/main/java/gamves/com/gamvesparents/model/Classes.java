@@ -70,30 +70,8 @@ public class Classes
         }
     }
 
-    public static class GamvesParseUser
-    {
-        private ParseUser gamvesUser;
-        private String userId;
 
-        public ParseUser getGamvesUser() {
-            return gamvesUser;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setGamvesUser(ParseUser gamvesUser) {
-            this.gamvesUser = gamvesUser;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-    }
-
-
-    public static class GamvesSchools
+    /*public static class GamvesSchools
     {
         private String objectId;
         private Bitmap thumbnail;
@@ -140,7 +118,7 @@ public class Classes
         public void setSchoolOBj(ParseObject schoolOBj) {
             this.schoolOBj = schoolOBj;
         }
-    }
+    }*/
 
 
 

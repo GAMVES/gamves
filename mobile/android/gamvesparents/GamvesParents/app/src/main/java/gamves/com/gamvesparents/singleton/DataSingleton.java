@@ -1,9 +1,11 @@
 package gamves.com.gamvesparents.singleton;
 
 import android.app.AlertDialog;
+import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -16,6 +18,7 @@ import gamves.com.gamvesparents.model.CategoryItem;
 import gamves.com.gamvesparents.model.Classes;
 import gamves.com.gamvesparents.model.FanPageListItem;
 import gamves.com.gamvesparents.model.FeedItem;
+import gamves.com.gamvesparents.model.School;
 import gamves.com.gamvesparents.model.VideosListItem;
 
 /**
@@ -25,15 +28,11 @@ import gamves.com.gamvesparents.model.VideosListItem;
 public class DataSingleton
 {
 
-    private static GamvesParentsApplication app;
-
-    public GamvesParentsApplication getApp() {
-        return this.app;
-    }
-
     private List<CategoryItem> categoryList;
 
     private List<FeedItem> feedList;
+
+    private List<School> schools;
 
  	private static DataSingleton instance = null;
    	protected DataSingleton() {
@@ -46,7 +45,6 @@ public class DataSingleton
          	instance = new DataSingleton();
       	}
 
-      	this.app = GamvesParentsApplication.getInstance();
 
       	return instance;
    }
@@ -118,22 +116,57 @@ public class DataSingleton
     //  SCHOOL
     // private Bitmap avatarBitmap;
 
-    public List<FeedItem> getSchools() {
+    public void getSchools() {
 
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-                        query.whereEqualTo("username", app.getUser().getEmail());
+        ParseQuery<ParseObject> querySchools = ParseQuery.getQuery("Schools");
 
-        query.findInBackground(new FindCallback<ParseUser>() {
+        querySchools.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> schoolList, ParseException e) {
+                if (e == null) {
 
-            @Override
-            public void done(List<ParseUser> parseUsers, ParseException e) {
+                    Log.d("score", "Retrieved " + schoolList.size() + " scores");
 
+                    List<School> schoolz = null;
 
+                    for (int i=0; i<schoolList.size(); i++){
+
+                        ParseObject schoolPF =  schoolList.get(i);
+
+                        School school = new School();
+
+                        school.setObjectId(schoolPF.getString("objectId"));
+
+                        schoolz.add(school);
+
+                        /*
+                        private String objectId;
+                        private Bitmap thumbnail;
+                        private String schoolName;
+                        private String shortName;
+                        private ParseObject schoolOBj;
+                         */
+
+                    }
+
+                    schools = schoolz;
+
+                    dataCallback.getSchools(schoolz);
+
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                }
             }
         });
+    };
+
+    private OnDataCallback dataCallback;
+    public interface OnDataCallback
+    {
+        void getSchools(List<School> schools);
     }
-
-
+    public void setOnDataCallback(OnDataCallback callback){
+        this.dataCallback = callback;
+    }
 
     public List<FeedItem> getFeedList() {
         return feedList;
