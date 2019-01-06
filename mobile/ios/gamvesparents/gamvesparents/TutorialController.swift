@@ -105,7 +105,11 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     @objc func loginPage() {
-        self.showLoginController(registered: true)
+
+         let imagePickerRegisterViewController = ImagePickerRegisterViewController()
+         self.present(imagePickerRegisterViewController, animated: true)     
+         
+        //self.showLoginController(registered: true)
     }
     
     var pageControlBottomAnchor: NSLayoutConstraint?
@@ -113,7 +117,9 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
     var nextButtonTopAnchor: NSLayoutConstraint?
 
     override func viewDidLoad() {
-        super.viewDidLoad()        
+        super.viewDidLoad()  
+
+          
         
         observeKeyboardNotifications()
         
