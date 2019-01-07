@@ -1,13 +1,16 @@
 package gamves.com.gamvesparents.singleton;
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.ProgressCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,13 +131,27 @@ public class DataSingleton
 
                     List<School> schoolz = null;
 
-                    for (int i=0; i<schoolList.size(); i++){
+                    for (ParseObject pObject : schoolList) {
 
-                        ParseObject schoolPF =  schoolList.get(i);
+                        ParseObject schoolOBj = pObject;
+                        String objectId =  pObject.getString("objectId");
+                        String schoolName =  pObject.getString("schoolName");
+                        String shortName =  pObject.getString("shortName");
+
+                        ParseFile parseFile = pObject.getParseFile("thumbnail");
 
                         School school = new School();
+                        school.setObjectId(objectId);
+                        school.setSchoolName(schoolName);
+                        school.setShortName(shortName);
 
-                        school.setObjectId(schoolPF.getString("objectId"));
+                        parseFile.getDataInBackground(new ProgressCallback() {
+                            @Override
+                            public void done(Integer percentDone) {
+
+                                
+                            }
+                        });
 
                         schoolz.add(school);
 
