@@ -793,6 +793,10 @@ class LoginViewController: UIViewController
     }
     
     func handleLogin() {
+
+
+        //self.dismiss(animated: true, completion: nil)
+        //self.tabBarViewController?.selectedIndex = 0 //Home 
      
         self.activityIndicatorView?.startAnimating()   
         
@@ -1000,15 +1004,9 @@ class LoginViewController: UIViewController
                                     
                                     Global.familyDataGromGlobal = true
                                     
-                                    //self.activityIndicatorView?.stopAnimating()
-                                    //self.dismiss(animated: true, completion: nil)
-
-                                    //self.tabBarViewController?.selectedIndex = 0 //Home                                    
-
-                                    let imagePickerRegisterViewController = ImagePickerRegisterViewController()
-                                    self.present(imagePickerRegisterViewController, animated: true)
-
-                                    
+                                    self.activityIndicatorView?.stopAnimating()
+                                    self.dismiss(animated: true, completion: nil)
+                                    self.tabBarViewController?.selectedIndex = 0 //Home                                                                      
                                 })
                                 
                             })

@@ -7,19 +7,46 @@
 //
 
 import UIKit
+import Parse
 
 class EventViewController: UIViewController {
     
     var tabBarViewController:TabBarViewController?
 
+    var finishRegistrationViewController:FinishRegistrationViewController!   
+
+    var puserId = String()
 
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad()   
 
-        // Do any additional setup after loading the view.
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }     
+        
+        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {  
 
-       
+            openFinishRegistration()
+
+        }
+        
+
     }
-    
+
+    func openFinishRegistration() {
+        
+        finishRegistrationViewController = FinishRegistrationViewController()
+        finishRegistrationViewController.eventViewController = self
+        finishRegistrationViewController.tabBarController?.tabBar.isHidden = true                
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        navigationController?.pushViewController(finishRegistrationViewController, animated: true, completion: { (reult) in
+            
+            self.finishRegistrationViewController.hideShowTabBar(status:true)
+        })        
+        
+    }  
+
 
 }

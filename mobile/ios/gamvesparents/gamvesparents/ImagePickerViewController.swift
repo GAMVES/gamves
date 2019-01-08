@@ -11,6 +11,7 @@ import RSKImageCropper
 
 protocol ProfileImagesPickerProtocol {
    func didpickImage(type:ProfileImagesTypes, smallImage:UIImage, croppedImage:UIImage)  
+   func saveYou(phone:String)
 }
 
 enum ProfileImagesTypes {
@@ -76,6 +77,28 @@ RSKImageCropViewControllerDelegate {
         label.numberOfLines = 3
         return label
     }()
+
+    let phoneLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false        
+        label.textColor = .white
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.textAlignment = .center
+        label.numberOfLines = 3
+        //label.backgroundColor = UIColor.brown
+        return label
+    }()
+
+    let phoneTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "    Cellphone number"
+        tf.translatesAutoresizingMaskIntoConstraints = false  
+        tf.backgroundColor = UIColor.white 
+        tf.font = UIFont.boldSystemFont(ofSize: 20)     
+        tf.layer.cornerRadius = 10.0
+        tf.tag = 0
+        return tf
+    }()
     
     lazy var finishButton: UIButton = {
         let button = UIButton(type: .system)
@@ -109,6 +132,68 @@ RSKImageCropViewControllerDelegate {
 
         self.imagePicker.delegate = self
 
+        self.view.backgroundColor = UIColor.gamvesColor
+
+        self.view.addSubview(self.topView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.topView)        
+        
+        self.view.addSubview(self.photoContainerView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.photoContainerView)
+
+        self.view.addSubview(self.messageLabel)
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.messageLabel)
+        
+        self.view.addSubview(self.phoneLabel)
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneLabel)
+
+        self.view.addSubview(self.phoneTextField)
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneTextField)  
+
+        self.view.addSubview(self.finishButton)
+        self.view.addConstraintsWithFormat("H:|-60-[v0]-60-|", views: self.finishButton)       
+
+        self.view.addSubview(self.bottomView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)
+
+        var metricsPicker = [String:Int]()
+
+        let width:Int = Int(self.view.frame.size.width)
+        let height:Int = Int(self.view.frame.size.height)
+        let photoSize = width / 3        
+
+        metricsPicker["photoSize"] = photoSize  
+
+        if (self.type == .You) {
+            metricsPicker["phoneHeight"] = 40
+            metricsPicker["phoneGap"] = 30
+        } else {
+            metricsPicker["phoneHeight"] = 0
+            metricsPicker["phoneGap"] = 10
+        }           
+
+        self.view.addConstraintsWithFormat(
+            "V:|-20-[v0(100)]-20-[v1(photoSize)][v2(40)][v3(phoneHeight)][v4(phoneHeight)]-phoneGap-[v5(60)][v6]|", views: 
+            self.topView,
+            self.photoContainerView,
+            self.messageLabel,
+            self.phoneLabel,
+            self.phoneTextField,
+            self.finishButton,
+            self.bottomView,
+            metrics: metricsPicker)
+
+        photoContainerView.addSubview(self.pictureImageView)
+        photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.pictureImageView)
+        photoContainerView.addConstraintsWithFormat("H:|-photoSize-[v0(photoSize)]-photoSize-|", views: 
+            self.pictureImageView, 
+            metrics: metricsPicker)                      
+
+        self.topView.addSubview(self.titleLabel)        
+        self.topView.addConstraintsWithFormat("H:|[v0]|", views: self.titleLabel)
+        self.topView.addConstraintsWithFormat("V:|-40-[v0(80)]|", views: 
+            self.titleLabel)
+
+        /*
         self.view.backgroundColor = UIColor.gamvesColor
 
         self.view.addSubview(topView)
@@ -156,7 +241,7 @@ RSKImageCropViewControllerDelegate {
 
         topView.addSubview(titleLabel)        
         topView.addConstraintsWithFormat("H:|[v0]|", views: titleLabel)
-        topView.addConstraintsWithFormat("V:|-topTitle-[v0(80)]|", views: titleLabel, metrics: metricsTitle)
+        topView.addConstraintsWithFormat("V:|-topTitle-[v0(80)]|", views: titleLabel, metrics: metricsTitle)*/
 
         self.setScreenByType()        
 
@@ -167,48 +252,51 @@ RSKImageCropViewControllerDelegate {
 
         var title = String()
         var message = String()
-        var buttonTitle = String()
+        var buttonTitle = String()        
         var imageName = String()
 
         switch self.type {
             
-        case .Son?: 
+            case .Son?: 
 
-                title = "Child Image"
-                message = "Pick up an image for your son by touching the (+) add image"
-                buttonTitle = "  Select child Image"
-                imageName = "son_photo"
+                    title = "Child Image"
+                    message = "Pick up an image for your son by touching the (+) add image"
+                    buttonTitle = "  Select child Image"
+                    imageName = "son_photo"
 
-                break
-            
-        case .Family?:
+                    break
+                
+            case .Family?:
 
-                title = "Family Image"
-                message = "Choose a family image where the three of you are present"
-                buttonTitle = "  Select Family Image"
-                imageName = "family_photo"
+                    title = "Family Image"
+                    message = "Choose a family image where the three of you are present"
+                    buttonTitle = "  Select Family Image"
+                    imageName = "family_photo"
 
-                break
+                    break
 
-        case .You?:
+            case .You?:
 
-                title = "Your Image"
-                message = "Choose your image"
-                buttonTitle = "  Select Your Image"
-                imageName = "your_photo"
+                    title = "Your Image"
+                    message = "Choose your image"
+                    buttonTitle = "  Select Your Image"
+                    buttonTitle = "  Save image and phone"
+                    imageName = "your_photo"    
+                    let phoneTitle = "  Your phone number"    
+                    self.phoneLabel.text = phoneTitle            
 
-                break
+                    break
 
-        case .Spouse?:
+            case .Spouse?:
 
-                title = "spouse Image"
-                message = "Choose your spouse image"
-                buttonTitle = "  Select Your Spouse Image"
-                imageName = "spouse_photo"
+                    title = "spouse Image"
+                    message = "Choose your spouse image"
+                    buttonTitle = "  Select Your Spouse Image"
+                    imageName = "spouse_photo"
 
-                break    
-            
-            default: break
+                    break    
+                
+                default: break
             
         }
 
@@ -233,44 +321,44 @@ RSKImageCropViewControllerDelegate {
         print(self.smallImage)
         print(self.profileImagesPickerProtocol)
         
-        self.profileImagesPickerProtocol.didpickImage(type: self.type, smallImage: self.smallImage, croppedImage:self.croppedImage)
+        if (self.type != .You) {
+            self.profileImagesPickerProtocol.didpickImage(type: self.type, smallImage: self.smallImage, croppedImage:self.croppedImage)
+        }        
 
-        switch self.type {            
-            
-        case .Son?:              
+        switch self.type {                
 
-                self.type = ProfileImagesTypes.Family                
-
-                self.setScreenByType()
-
-                break
-            
-        case .Family?:
-
-                self.type = ProfileImagesTypes.You                
-
-                self.setScreenByType()
-
-                self.navigationController?.popViewController(animated: true)
+            case .You?:
                 
-                break
-
-        case .You?:
-
-                self.type = ProfileImagesTypes.Spouse                
-
-                self.setScreenByType()
+                let phoneNumber = phoneTextField.text
+                self.profileImagesPickerProtocol.saveYou(phone: phoneNumber!)
                
                 break
+                
+            case .Son?:              
 
-        case .Spouse?:
+                    self.type = ProfileImagesTypes.Family                
 
-                self.navigationController?.popViewController(animated: true)               
+                    self.setScreenByType()
 
-                break    
-            
-            default: break
-            
+                    break
+                
+            case .Family?:
+
+                    self.type = ProfileImagesTypes.You                
+
+                    self.setScreenByType()
+
+                    self.navigationController?.popViewController(animated: true)
+                    
+                    break       
+
+            case .Spouse?:
+
+                    self.navigationController?.popViewController(animated: true)               
+
+                    break    
+                
+            default: break                
         }
         
     }
@@ -322,9 +410,9 @@ RSKImageCropViewControllerDelegate {
 
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage 
         {           
-            imageCropVC = RSKImageCropViewController(image: image)
-            imageCropVC.delegate = self
-            navigationController?.pushViewController(imageCropVC, animated: true)           
+            self.imageCropVC = RSKImageCropViewController(image: image)
+            self.imageCropVC.delegate = self
+            self.navigationController?.pushViewController(imageCropVC, animated: true)               
         }
 
         picker.dismiss(animated: true, completion: nil);

@@ -252,6 +252,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
     @objc func showTutorialController() 
     {
         self.tutorialController.tabBarViewController = self
+
         present(self.tutorialController, animated: true, completion: {
             //perhaps we'll do something here later
         })

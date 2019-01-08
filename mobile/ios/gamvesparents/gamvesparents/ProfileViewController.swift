@@ -413,8 +413,8 @@ class ProfileViewController: UIViewController,
     var photoEditTextHeight = Int()
     
     override func viewDidLoad() {        
-        super.viewDidLoad() 
-       
+        super.viewDidLoad()      
+
         let buttonIcon = UIImage(named: "arrow_back_white")        
         let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(backButton(sender:)))
         leftBarButton.image = buttonIcon        
@@ -654,6 +654,10 @@ class ProfileViewController: UIViewController,
 
     }
     
+    func saveYou(phone: String) {
+        
+    }
+    
     @objc func levelsLoaded() {
         
         if let userId = PFUser.current()?.objectId
@@ -776,6 +780,11 @@ class ProfileViewController: UIViewController,
         {
             self.puserId = userId
         }
+
+        if Global.userDictionary[self.puserId] == nil
+        {
+            self.youGamves = Global.userDictionary[self.puserId]!
+        }       
         
         if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
 
@@ -1347,11 +1356,11 @@ class ProfileViewController: UIViewController,
                         
                         DispatchQueue.main.async() {
                     
-                            self.saveYou(completionHandler: { ( resutl ) -> () in
+                            //self.saveYou(completionHandler: { ( resutl ) -> () in
                                 
-                                print("YOU SAVED")
+                                //print("YOU SAVED")
                                 
-                                if resutl {
+                                //if resutl {
                                     
                                     self.saveFamily(completionHandler: { ( resutl ) -> () in
                                         
@@ -1375,8 +1384,8 @@ class ProfileViewController: UIViewController,
                                                             
                                                             // REGISTRATION COMPLETED                                                          
 
-                                                            let title = "Congratulations Registration Completed!"
-                                                            var message = "\n\nThanks very much for registering to Gamves. You can share the app with your family! \n\n"                                                            
+                                                            let title = "Congratulations Family Registration Completed!"
+                                                            var message = "\n\nThanks very much for registering your family to Gamves. You can share the app with your family! \n\n"                                                            
                                                             
                                                             let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                                                             
@@ -1397,8 +1406,8 @@ class ProfileViewController: UIViewController,
                                             })
                                         }
                                     })
-                                }
-                            })
+                                //}
+                            //})
                         }          
                     
                     } else 
@@ -1811,7 +1820,7 @@ class ProfileViewController: UIViewController,
     }
 
   
-    func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
+    /*func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
     {	
         
         let your_email = Global.defaults.string(forKey: "\(self.puserId)_your_email")
@@ -1891,7 +1900,7 @@ class ProfileViewController: UIViewController,
             }
         })
         
-    }
+    }*/
 
     func saveFamily(completionHandler : @escaping (_ resutl:Bool) -> ())
     {

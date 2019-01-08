@@ -104,12 +104,9 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         self.view.backgroundColor = UIColor.gamvesColor
     }
     
-    @objc func loginPage() {
+    @objc func loginPage() {       
 
-         let imagePickerRegisterViewController = ImagePickerRegisterViewController()
-         self.present(imagePickerRegisterViewController, animated: true)     
-         
-        //self.showLoginController(registered: true)
+        self.showLoginController(registered: true)
     }
     
     var pageControlBottomAnchor: NSLayoutConstraint?

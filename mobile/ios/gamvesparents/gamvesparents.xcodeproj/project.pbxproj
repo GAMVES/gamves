@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		091258EB21E3B02000753B7F /* FinishRegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091258EA21E3B02000753B7F /* FinishRegistrationViewController.swift */; };
 		091C0A0421DEF5030005508F /* NoConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091C0A0321DEF5020005508F /* NoConnectionViewController.swift */; };
 		092E6C1C21E14E1A00B19F0F /* ImagePickerRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 092E6C1B21E14E1A00B19F0F /* ImagePickerRegisterViewController.swift */; };
 		093784A321D2E33A0093A695 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093784A221D2E33A0093A695 /* EventViewController.swift */; };
@@ -122,6 +123,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		091258EA21E3B02000753B7F /* FinishRegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishRegistrationViewController.swift; sourceTree = "<group>"; };
 		091C0A0321DEF5020005508F /* NoConnectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoConnectionViewController.swift; sourceTree = "<group>"; };
 		092E6C1B21E14E1A00B19F0F /* ImagePickerRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerRegisterViewController.swift; sourceTree = "<group>"; };
 		093784A221D2E33A0093A695 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 				C94AC05A214A0F490056F6AB /* TutorialVideoViewController.swift */,
 				093784A221D2E33A0093A695 /* EventViewController.swift */,
 				091C0A0321DEF5020005508F /* NoConnectionViewController.swift */,
+				091258EA21E3B02000753B7F /* FinishRegistrationViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -816,6 +819,7 @@
 				8212D7211F7AD44500F2A121 /* HomeViewController.swift in Sources */,
 				C93BF39D20954DF6006A0551 /* CGFloat+Extension.swift in Sources */,
 				C97D24D120FC05380030A2FD /* FriendSectionHeader.swift in Sources */,
+				091258EB21E3B02000753B7F /* FinishRegistrationViewController.swift in Sources */,
 				C73A31971DA3064A00C86C96 /* TabBarViewController.swift in Sources */,
 				C98F266420B25EB700755733 /* UIAlertController+Extension.swift in Sources */,
 				C92A549B20FD8A3B005594D1 /* FriendEmptyCollectionViewCell.swift in Sources */,

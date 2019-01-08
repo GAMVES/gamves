@@ -7,8 +7,13 @@
 //
 
 import UIKit
+import RSKImageCropper
 
-class ImagePickerRegisterViewController: UIViewController {
+
+class ImagePickerRegisterViewController: UIViewController,
+UIImagePickerControllerDelegate,
+UINavigationControllerDelegate,
+RSKImageCropViewControllerDelegate {
 
     var imageCropVC = RSKImageCropViewController()
     
@@ -30,6 +35,7 @@ class ImagePickerRegisterViewController: UIViewController {
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 30)
         label.textAlignment = .center        
+        label.backgroundColor = UIColor.cyan
         return label
     }()
 
@@ -38,6 +44,7 @@ class ImagePickerRegisterViewController: UIViewController {
         //view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false        
         view.layer.masksToBounds = true
+        view.backgroundColor = UIColor.green
         return view
     }()
 
@@ -59,6 +66,7 @@ class ImagePickerRegisterViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 13)
         label.textAlignment = .center
         label.numberOfLines = 3
+        label.backgroundColor = UIColor.gray
         return label
     }()
     
@@ -75,11 +83,34 @@ class ImagePickerRegisterViewController: UIViewController {
         return button
     }()
 
+    let phoneLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false        
+        label.textColor = .white
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.textAlignment = .center
+        label.numberOfLines = 3
+        label.backgroundColor = UIColor.brown
+        return label
+    }()
+
+    let phoneTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "Phone number"
+        tf.translatesAutoresizingMaskIntoConstraints = false  
+        tf.backgroundColor = UIColor.white 
+        tf.font = UIFont.boldSystemFont(ofSize: 20)     
+        tf.layer.cornerRadius = 10.0
+        tf.tag = 0
+        return tf
+    }()
+
     let bottomView: UIView = {
         let view = UIView()
         //view.backgroundColor = UIColor.yellow
         view.translatesAutoresizingMaskIntoConstraints = false        
         view.layer.masksToBounds = true
+        view.backgroundColor = UIColor.yellow
         return view
     }()
 
@@ -96,54 +127,101 @@ class ImagePickerRegisterViewController: UIViewController {
 
         self.view.backgroundColor = UIColor.gamvesColor
 
-        self.view.addSubview(topView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: topView)        
+        self.view.addSubview(self.topView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.topView)        
         
-        self.view.addSubview(photoContainerView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: photoContainerView)
+        self.view.addSubview(self.photoContainerView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.photoContainerView)
 
-        self.view.addSubview(messageLabel),m
-        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: messageLabel)
-
-        self.view.addSubview(finishButton)
-        self.view.addConstraintsWithFormat("H:|-60-[v0]-60-|", views: finishButton)
+        self.view.addSubview(self.messageLabel)
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.messageLabel)
         
-        self.view.addSubview(bottomView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: bottomView)
+        self.view.addSubview(self.phoneLabel)
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneLabel)
+
+        self.view.addSubview(self.phoneTextField)
+        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneTextField)  
+
+        self.view.addSubview(self.finishButton)
+        self.view.addConstraintsWithFormat("H:|-60-[v0]-60-|", views: self.finishButton)       
+
+        self.view.addSubview(self.bottomView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)
 
         var metricsPicker = [String:Int]()
 
         let width:Int = Int(self.view.frame.size.width)
         let height:Int = Int(self.view.frame.size.height)
-        let photoSize = width / 3
-        
-        let padding = (height - (photoSize + 100 + 60)) / 2
+        let photoSize = width / 3        
 
-        metricsPicker["photoSize"]             =  photoSize
-        metricsPicker["padding"]               =  padding
+        metricsPicker["photoSize"] = photoSize  
 
-        self.view.addConstraintsWithFormat("V:|[v0(padding)][v1(photoSize)][v2(100)][v3(60)][v4(padding)]|", views: 
-            topView,
-            photoContainerView,
-            messageLabel,
-            finishButton,
-            bottomView,
+        if (self.type == .Son) {
+            metricsPicker["sonHeight"] = 40
+        } else {
+            metricsPicker["sonHeight"] = 0
+        }           
+
+        self.view.addConstraintsWithFormat("V:|[v0(100)]-20-[v1(photoSize)][v2(40)][v3(sonHeight)][v4(sonHeight)]-10-[v5(60)][v6]|", views: 
+            self.topView,
+            self.photoContainerView,
+            self.messageLabel,
+            self.phoneLabel,
+            self.phoneTextField,
+            self.finishButton,
+            self.bottomView,
             metrics: metricsPicker)
 
-        photoContainerView.addSubview(pictureImageView)
-        photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: pictureImageView)
-        photoContainerView.addConstraintsWithFormat("H:|-photoSize-[v0(photoSize)]-photoSize-|", views: pictureImageView, metrics: metricsPicker)              
+        photoContainerView.addSubview(self.pictureImageView)
+        photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.pictureImageView)
+        photoContainerView.addConstraintsWithFormat("H:|-photoSize-[v0(photoSize)]-photoSize-|", views: 
+            self.pictureImageView, 
+            metrics: metricsPicker)                      
 
-        var metricsTitle = [String:Int]()
-        let topTitle = padding / 2
+        self.topView.addSubview(self.titleLabel)        
+        self.topView.addConstraintsWithFormat("H:|[v0]|", views: self.titleLabel)
+        self.topView.addConstraintsWithFormat("V:|-40-[v0(80)]|", views: 
+            self.titleLabel)
 
-        metricsTitle["topTitle"]             =  topTitle
-
-        topView.addSubview(titleLabel)        
-        topView.addConstraintsWithFormat("H:|[v0]|", views: titleLabel)
-        topView.addConstraintsWithFormat("V:|-topTitle-[v0(80)]|", views: titleLabel, metrics: metricsTitle)
+        self.setScreen()
 
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        /*let imagePhone = UIImage(named: "phone")
+        let rightImageView = UIImageView(image: imagePhone)
+        let height = self.finishButton.frame.height * 0.2
+        let width = height
+        let xPos = self.finishButton.frame.width - width
+        let yPos = (self.finishButton.frame.height - height) / 2
+
+        rightImageView.frame = CGRect(x: xPos, y: yPos, width: width, height: height)
+        self.finishButton.addSubview(rightImageView)*/
+
+    }
+
+     func setScreen() {
+
+        var title = String()
+        var message = String()        
+        var buttonTitle = String()
+        var phoneTitle = String()
+        var imageName = String()        
+        
+        title = "Your Image"
+        message = "Choose your image"
+        buttonTitle = "  Save image ad phone"
+        phoneTitle = "  Your phone number"
+        imageName = "your_photo"
+
+        self.titleLabel.text = title
+        self.pictureImageView.image = UIImage(named: imageName)
+        self.messageLabel.text = message
+        self.phoneLabel.text = phoneTitle
+        self.finishButton.setTitle(buttonTitle, for: .normal)
+    }
+
 
     @objc func handleFinish() {
 
@@ -193,7 +271,7 @@ class ImagePickerRegisterViewController: UIViewController {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage 
         {           
             imageCropVC = RSKImageCropViewController(image: image)
-            //imageCropVC.delegate = self
+            imageCropVC.delegate = self
             navigationController?.pushViewController(imageCropVC, animated: true)           
         }
 
@@ -228,16 +306,6 @@ class ImagePickerRegisterViewController: UIViewController {
         imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
         imageView.layer.borderWidth = 3
     } 
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+	
+  
 }
