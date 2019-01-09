@@ -23,12 +23,11 @@ class EventViewController: UIViewController {
         if let userId = PFUser.current()?.objectId
         {
             self.puserId = userId
-        }     
-        
-        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {  
+        }             
+
+        if !UserDefaults.standard.isHasPhoneAndImage() {  
 
             openFinishRegistration()
-
         }
         
 

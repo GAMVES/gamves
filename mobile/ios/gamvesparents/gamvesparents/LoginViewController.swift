@@ -1005,8 +1005,11 @@ class LoginViewController: UIViewController
                                     Global.familyDataGromGlobal = true
                                     
                                     self.activityIndicatorView?.stopAnimating()
+
+                                    UserDefaults.standard.setIsRegistered(value: true)
                                     self.dismiss(animated: true, completion: nil)
-                                    self.tabBarViewController?.selectedIndex = 0 //Home                                                                      
+                                    self.tabBarViewController?.selectedIndex = 0 //Home  
+
                                 })
                                 
                             })

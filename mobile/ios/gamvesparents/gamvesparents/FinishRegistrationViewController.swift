@@ -74,6 +74,8 @@ ProfileImagesPickerProtocol {
                         self.activityIndicatorView?.stopAnimating()
                         self.navigationController?.popViewController(animated: true)                        
 
+                        UserDefaults.standard.setHasPhoneAndImage(value: true)
+
                         self.hideShowTabBar(status:false)                        
                         
                     }))
@@ -88,15 +90,14 @@ ProfileImagesPickerProtocol {
         } else {
 
 
-            let title = "Phone number is missing"
-            var message = "\n\nThanks very much for registering to Gamves. Enjoy the educative videos and add your family! \n\n"                                                            
+            let title = "Phone number is empty"
+            var message = "\n\nPlease fill in your phone number and try agaiin! \n\n"                                                            
             
             let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
             
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
-                
-                self.activityIndicatorView?.stopAnimating()
-                self.navigationController?.popViewController(animated: true)        
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in             
+
+                self.imagePickerViewController.phoneTextField.becomeFirstResponder()
                 
             }))
             

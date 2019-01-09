@@ -13,6 +13,7 @@ extension UserDefaults {
         case isLoggedIn
         case isHasProfileInfo
         case isRegistered
+        case isHasPhoneAndImage
     }
     
     func setIsLoggedIn(value: Bool) {
@@ -40,6 +41,15 @@ extension UserDefaults {
     
     func isRegistered() -> Bool {
         return bool(forKey: UserDefaultsKeys.isRegistered.rawValue)
+    }
+
+    func setHasPhoneAndImage(value: Bool) {
+        set(value, forKey: UserDefaultsKeys.isHasPhoneAndImage.rawValue)
+        synchronize()
+    }
+    
+    func isHasPhoneAndImage() -> Bool {
+        return bool(forKey: UserDefaultsKeys.isHasPhoneAndImage.rawValue)
     }
     
     

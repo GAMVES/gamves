@@ -145,7 +145,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
     
     override func viewDidAppear(_ animated: Bool) {
         
-        if !isHasProfileInfo() && !isHasRegistered()
+        /*if !isHasProfileInfo() && !isHasRegistered()
         {
             self.selectedIndex = 2           
 
@@ -181,7 +181,21 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         {
             self.selectedIndex = 0            
             
+        }*/
+
+        if !isHasRegistered() {
+            self.selectedIndex = 2
+        } else {
+            self.selectedIndex = 2
         }
+
+        
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+        }
+       
 
         if isLoggedIn()
         {
