@@ -654,9 +654,8 @@ class ProfileViewController: UIViewController,
 
     }
     
-    func saveYou(phone: String) {
-        
-    }
+    //Delegate
+    func saveYouImageAndPhone(phone: String) {}    
     
     @objc func levelsLoaded() {
         

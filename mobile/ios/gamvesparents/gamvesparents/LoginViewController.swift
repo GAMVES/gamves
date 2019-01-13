@@ -12,8 +12,8 @@ import BEMCheckBox
 import NVActivityIndicatorView
 import ParseLiveQuery
 
-class LoginViewController: UIViewController, ProfileImagesPickerProtocol
-{
+class LoginViewController: UIViewController, 
+ProfileImagesPickerProtocol {
 
     let userClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
 
@@ -1068,17 +1068,21 @@ class LoginViewController: UIViewController, ProfileImagesPickerProtocol
                             self.tabBarViewController?.selectedIndex = 0 
 
                             self.imagePickerViewController = ImagePickerViewController()
-
+                            self.imagePickerViewController.profileImagesPickerProtocol = self
                             self.you = PFUser.current()
 
                             if let userId = PFUser.current()?.objectId {
                                 self.puserId = userId
                             }
 
-                            self.yourTypeId = PFUser.current()?["user_type"] as! Int                            
-                            
+                            self.yourTypeId = PFUser.current()?["user_type"] as! Int                                                  
+
                             self.imagePickerViewController.setType(type: ProfileImagesTypes.You)
-                            self.present(self.imagePickerViewController, animated: true, completion: nil)                            
+
+                            let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+                            appDelegate.window?.rootViewController = self.imagePickerViewController
+                                                        
+                            //self.present(self.imagePickerViewController, animated: true, completion: nil)                            
                                                         
                         }
                     } 
@@ -1203,7 +1207,7 @@ class LoginViewController: UIViewController, ProfileImagesPickerProtocol
 
     // Image Picker
 
-     func saveYou(phone:String) {
+     func saveYouImageAndPhone(phone:String) {
 
         if (!phone.isEmpty) {
 
@@ -1354,8 +1358,7 @@ class LoginViewController: UIViewController, ProfileImagesPickerProtocol
                     
                 })
             }
-        })
-        
+        })        
     }
 
 
@@ -1367,7 +1370,5 @@ class LoginViewController: UIViewController, ProfileImagesPickerProtocol
         imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
         imageView.layer.borderWidth = 3
     } 
-
-
     
 }

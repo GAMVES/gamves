@@ -11,7 +11,7 @@ import RSKImageCropper
 
 protocol ProfileImagesPickerProtocol {
    func didpickImage(type:ProfileImagesTypes, smallImage:UIImage, croppedImage:UIImage)  
-   func saveYou(phone:String)
+   func saveYouImageAndPhone(phone:String)
 }
 
 enum ProfileImagesTypes {
@@ -330,7 +330,7 @@ RSKImageCropViewControllerDelegate {
             case .You?:
                 
                 let phoneNumber = phoneTextField.text
-                self.profileImagesPickerProtocol.saveYou(phone: phoneNumber!)
+                self.profileImagesPickerProtocol.saveYouImageAndPhone(phone: phoneNumber!)
                
                 break
                 
@@ -410,12 +410,23 @@ RSKImageCropViewControllerDelegate {
 
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage 
         {           
-            self.imageCropVC = RSKImageCropViewController(image: image)
+            self.imageCropVC = RSKImageCropViewController(image: image, cropMode: .circle)
             self.imageCropVC.delegate = self
-            self.navigationController?.pushViewController(imageCropVC, animated: true)               
+
+            //if self.type == .You {
+                
+                //self.present(imageCropVC, animated: true)
+
+            //} else {
+
+                self.navigationController?.pushViewController(imageCropVC, animated: true)               
+
+            //}
+
+            
         }
 
-        picker.dismiss(animated: true, completion: nil);
+        //picker.dismiss(animated: true, completion: nil);
     }
     
     func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {
