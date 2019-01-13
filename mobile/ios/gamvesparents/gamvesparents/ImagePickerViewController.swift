@@ -419,14 +419,14 @@ RSKImageCropViewControllerDelegate {
 
             //} else {
 
-                self.navigationController?.pushViewController(imageCropVC, animated: true)               
+                self.navigationController?.pushViewController(imageCropVC, animated: true)
 
             //}
 
             
         }
 
-        //picker.dismiss(animated: true, completion: nil);
+        picker.dismiss(animated: true, completion: nil);
     }
     
     func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {

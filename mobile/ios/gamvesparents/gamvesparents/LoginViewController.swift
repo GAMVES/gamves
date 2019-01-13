@@ -1079,9 +1079,12 @@ ProfileImagesPickerProtocol {
 
                             self.imagePickerViewController.setType(type: ProfileImagesTypes.You)
 
+                            let navigationController = UINavigationController(rootViewController: self.imagePickerViewController)
+                            //window.rootViewController = navigationController
+
                             let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-                            appDelegate.window?.rootViewController = self.imagePickerViewController
-                                                        
+                            appDelegate.window?.rootViewController = navigationController
+
                             //self.present(self.imagePickerViewController, animated: true, completion: nil)                            
                                                         
                         }
