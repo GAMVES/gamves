@@ -13,7 +13,7 @@ import NVActivityIndicatorView
 import ParseLiveQuery
 
 class LoginViewController: UIViewController, 
-ProfileImagesPickerProtocol {
+ImagesPickerProtocol {
 
     let userClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
 
@@ -1068,7 +1068,7 @@ ProfileImagesPickerProtocol {
                             self.tabBarViewController?.selectedIndex = 0 
 
                             self.imagePickerViewController = ImagePickerViewController()
-                            self.imagePickerViewController.profileImagesPickerProtocol = self
+                            self.imagePickerViewController.imagesPickerProtocol = self
                             self.you = PFUser.current()
 
                             if let userId = PFUser.current()?.objectId {
@@ -1080,12 +1080,9 @@ ProfileImagesPickerProtocol {
                             self.imagePickerViewController.setType(type: ProfileImagesTypes.You)
 
                             let navigationController = UINavigationController(rootViewController: self.imagePickerViewController)
-                            //window.rootViewController = navigationController
 
                             let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-                            appDelegate.window?.rootViewController = navigationController
-
-                            //self.present(self.imagePickerViewController, animated: true, completion: nil)                            
+                            appDelegate.window?.rootViewController = navigationController                     
                                                         
                         }
                     } 
@@ -1202,9 +1199,8 @@ ProfileImagesPickerProtocol {
         return errors
     }
     
-    func handleSelectProfileImageView()
-    {
-        
+    func handleSelectProfileImageView() {   
+
     }
 
 
@@ -1267,9 +1263,14 @@ ProfileImagesPickerProtocol {
     
     func didpickImage(type: ProfileImagesTypes, smallImage: UIImage, croppedImage: UIImage) {
         
+        self.yourPhotoImageView = UIImageView()
         self.yourPhotoImageView.image   = croppedImage
-        self.yourPhotoImage             = croppedImage
-        self.yourPhotoImageSmall        = smallImage
+        
+        self.yourPhotoImage = UIImage()
+        self.yourPhotoImage = croppedImage
+
+        self.yourPhotoImageSmall = UIImage()
+        self.yourPhotoImageSmall = smallImage
         self.makeRounded(imageView:self.yourPhotoImageView)
     }    
 
@@ -1286,6 +1287,8 @@ ProfileImagesPickerProtocol {
 
     func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
     {   
+
+        self.you = PFUser.current()
         
         let your_email = Global.defaults.string(forKey: "\(self.puserId)_your_email")
         let your_password = Global.defaults.string(forKey: "\(self.puserId)_your_password")
@@ -1335,13 +1338,13 @@ ProfileImagesPickerProtocol {
         let levelRel:PFRelation = self.you.relation(forKey: "level")
         
         //I add the level of all sons
-        let levleId = Global.gamvesFamily.sonsUsers[0].levelId as String
+        /*let levleId = Global.gamvesFamily.sonsUsers[0].levelId as String
         
         for sons in Global.gamvesFamily.sonsUsers {
             let levelId = sons.levelId
             let levelObj = Global.levels[levelId]?.levelObj
             levelRel.add(levelObj!)
-        }
+        }*/
 
         self.you["phone"]  = self.phoneNumber
         

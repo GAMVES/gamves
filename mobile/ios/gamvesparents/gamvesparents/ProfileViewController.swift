@@ -18,7 +18,7 @@ class ProfileViewController: UIViewController,
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate,
     RSKImageCropViewControllerDelegate,
-    ProfileImagesPickerProtocol  
+    ImagesPickerProtocol  
 {
 
     var accountViewController:AccountViewController!

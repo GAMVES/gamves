@@ -9,7 +9,7 @@
 import UIKit
 import RSKImageCropper
 
-protocol ProfileImagesPickerProtocol {
+protocol ImagesPickerProtocol {
    func didpickImage(type:ProfileImagesTypes, smallImage:UIImage, croppedImage:UIImage)  
    func saveYouImageAndPhone(phone:String)
 }
@@ -24,13 +24,21 @@ enum ProfileImagesTypes {
 class ImagePickerViewController: UIViewController,
 UIImagePickerControllerDelegate,
 UINavigationControllerDelegate,
-RSKImageCropViewControllerDelegate {
+RSKImageCropViewControllerDelegate,
+UITextFieldDelegate  {
+
+    let scrollView: UIScrollView = {
+        let v = UIScrollView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = UIColor.gamvesColor
+        return v
+    }()
     
     var imageCropVC = RSKImageCropViewController()
     
     var type:ProfileImagesTypes!
 
-    var profileImagesPickerProtocol:ProfileImagesPickerProtocol!
+    var imagesPickerProtocol:ImagesPickerProtocol!
 
     let topView: UIView = {
         let view = UIView()
@@ -97,6 +105,7 @@ RSKImageCropViewControllerDelegate {
         tf.font = UIFont.boldSystemFont(ofSize: 20)     
         tf.layer.cornerRadius = 10.0
         tf.tag = 0
+        tf.keyboardType = UIKeyboardType.decimalPad
         return tf
     }()
     
@@ -132,28 +141,32 @@ RSKImageCropViewControllerDelegate {
 
         self.imagePicker.delegate = self
 
+        self.view.addSubview(self.scrollView)
+        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)        
+        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.scrollView)     
+
         self.view.backgroundColor = UIColor.gamvesColor
 
-        self.view.addSubview(self.topView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.topView)        
+        self.scrollView.addSubview(self.topView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.topView)        
         
-        self.view.addSubview(self.photoContainerView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.photoContainerView)
+        self.scrollView.addSubview(self.photoContainerView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.photoContainerView)
 
-        self.view.addSubview(self.messageLabel)
-        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.messageLabel)
+        self.scrollView.addSubview(self.messageLabel)
+        self.scrollView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.messageLabel)
         
-        self.view.addSubview(self.phoneLabel)
-        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneLabel)
+        self.scrollView.addSubview(self.phoneLabel)
+        self.scrollView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneLabel)
 
-        self.view.addSubview(self.phoneTextField)
-        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneTextField)  
+        self.scrollView.addSubview(self.phoneTextField)
+        self.scrollView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneTextField)  
 
-        self.view.addSubview(self.finishButton)
-        self.view.addConstraintsWithFormat("H:|-60-[v0]-60-|", views: self.finishButton)       
+        self.scrollView.addSubview(self.finishButton)
+        self.scrollView.addConstraintsWithFormat("H:|-60-[v0]-60-|", views: self.finishButton)       
 
-        self.view.addSubview(self.bottomView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)
+        self.scrollView.addSubview(self.bottomView)
+        self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.bottomView)
 
         var metricsPicker = [String:Int]()
 
@@ -171,7 +184,7 @@ RSKImageCropViewControllerDelegate {
             metricsPicker["phoneGap"] = 10
         }           
 
-        self.view.addConstraintsWithFormat(
+        self.scrollView.addConstraintsWithFormat(
             "V:|-20-[v0(100)]-20-[v1(photoSize)][v2(40)][v3(phoneHeight)][v4(phoneHeight)]-phoneGap-[v5(60)][v6]|", views: 
             self.topView,
             self.photoContainerView,
@@ -191,61 +204,42 @@ RSKImageCropViewControllerDelegate {
         self.topView.addSubview(self.titleLabel)        
         self.topView.addConstraintsWithFormat("H:|[v0]|", views: self.titleLabel)
         self.topView.addConstraintsWithFormat("V:|-40-[v0(80)]|", views: 
-            self.titleLabel)
-
-        /*
-        self.view.backgroundColor = UIColor.gamvesColor
-
-        self.view.addSubview(topView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: topView)        
-        
-        self.view.addSubview(photoContainerView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: photoContainerView)
-
-        self.view.addSubview(messageLabel)
-        self.view.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: messageLabel)
-
-        self.view.addSubview(finishButton)
-        self.view.addConstraintsWithFormat("H:|-60-[v0]-60-|", views: finishButton)
-        
-        self.view.addSubview(bottomView)
-        self.view.addConstraintsWithFormat("H:|[v0]|", views: bottomView)
-
-        var metricsPicker = [String:Int]()
-
-        let width:Int = Int(self.view.frame.size.width)
-        let height:Int = Int(self.view.frame.size.height)
-        let photoSize = width / 3
-        
-        let padding = (height - (photoSize + 100 + 60)) / 2
-
-        metricsPicker["photoSize"]             =  photoSize
-        metricsPicker["padding"]               =  padding
-
-        self.view.addConstraintsWithFormat("V:|[v0(padding)][v1(photoSize)][v2(100)][v3(60)][v4(padding)]|", views: 
-            topView,
-            photoContainerView,
-            messageLabel,
-            finishButton,
-            bottomView,
-            metrics: metricsPicker)
-
-        photoContainerView.addSubview(pictureImageView)
-        photoContainerView.addConstraintsWithFormat("V:|[v0]|", views: pictureImageView)
-        photoContainerView.addConstraintsWithFormat("H:|-photoSize-[v0(photoSize)]-photoSize-|", views: pictureImageView, metrics: metricsPicker)              
-
-        var metricsTitle = [String:Int]()
-        let topTitle = padding / 2
-
-        metricsTitle["topTitle"]             =  topTitle
-
-        topView.addSubview(titleLabel)        
-        topView.addConstraintsWithFormat("H:|[v0]|", views: titleLabel)
-        topView.addConstraintsWithFormat("V:|-topTitle-[v0(80)]|", views: titleLabel, metrics: metricsTitle)*/
+            self.titleLabel)      
 
         self.setScreenByType()        
 
         // Do any additional setup after loading the view.
+
+        if self.type == .You {
+
+            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
+
+            let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+            self.scrollView.addGestureRecognizer(tap)
+        }
+    }
+
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+
+    @objc func keyboardWillShow(notification:NSNotification){
+
+        var userInfo = notification.userInfo!
+        var keyboardFrame:CGRect = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+
+        var contentInset:UIEdgeInsets = self.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height
+        self.scrollView.contentInset = contentInset
+    }
+
+    @objc func keyboardWillHide(notification:NSNotification){
+
+        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
+        self.scrollView.contentInset = contentInset
     }
 
     func setScreenByType() {
@@ -310,8 +304,7 @@ RSKImageCropViewControllerDelegate {
     
 
     override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        super.didReceiveMemoryWarning()        
     }
 
     @objc func handleFinish() {
@@ -319,18 +312,18 @@ RSKImageCropViewControllerDelegate {
         print(self.type)
         print(self.croppedImage)
         print(self.smallImage)
-        print(self.profileImagesPickerProtocol)
-        
-        if (self.type != .You) {
-            self.profileImagesPickerProtocol.didpickImage(type: self.type, smallImage: self.smallImage, croppedImage:self.croppedImage)
-        }        
+        print(self.imagesPickerProtocol)      
 
         switch self.type {                
 
-            case .You?:
+            case .You?:               
+                
+                self.imagesPickerProtocol.didpickImage(type: self.type,
+                        smallImage: self.smallImage,
+                        croppedImage:self.croppedImage)
                 
                 let phoneNumber = phoneTextField.text
-                self.profileImagesPickerProtocol.saveYouImageAndPhone(phone: phoneNumber!)
+                self.imagesPickerProtocol.saveYouImageAndPhone(phone: phoneNumber!)
                
                 break
                 
@@ -412,18 +405,7 @@ RSKImageCropViewControllerDelegate {
         {           
             self.imageCropVC = RSKImageCropViewController(image: image, cropMode: .circle)
             self.imageCropVC.delegate = self
-
-            //if self.type == .You {
-                
-                //self.present(imageCropVC, animated: true)
-
-            //} else {
-
-                self.navigationController?.pushViewController(imageCropVC, animated: true)
-
-            //}
-
-            
+            self.navigationController?.pushViewController(imageCropVC, animated: true)         
         }
 
         picker.dismiss(animated: true, completion: nil);
@@ -436,6 +418,7 @@ RSKImageCropViewControllerDelegate {
     func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
         
         let imageLow = croppedImage.lowestQualityJPEGNSData as Data
+        
         self.smallImage = UIImage(data: imageLow)!
         
         self.croppedImage = croppedImage
@@ -457,6 +440,10 @@ RSKImageCropViewControllerDelegate {
         imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
         imageView.layer.borderWidth = 3
     } 
+
+    @objc func dismissKeyboard() {
+        self.scrollView.endEditing(true)
+    }
 
 
 }

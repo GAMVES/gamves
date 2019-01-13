@@ -298,7 +298,7 @@ class AccountViewController: UIViewController,
         
         print(profileViewController)
 
-        imagePickerViewController.profileImagesPickerProtocol = profileViewController       
+        imagePickerViewController.imagesPickerProtocol = profileViewController
         
         self.navigationController?.pushViewController(imagePickerViewController, animated: true)        
       
