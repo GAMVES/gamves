@@ -12,7 +12,7 @@ import BEMCheckBox
 import NVActivityIndicatorView
 import ParseLiveQuery
 
-class LoginViewController: UIViewController
+class LoginViewController: UIViewController, ProfileImagesPickerProtocol
 {
 
     let userClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
@@ -87,7 +87,7 @@ class LoginViewController: UIViewController
     let nameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Full name"
-        //tf.text = "Jose Vigil"
+        tf.text = "Jose Vigil"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.tag = 0
         return tf
@@ -103,7 +103,7 @@ class LoginViewController: UIViewController
     let emailTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Email"
-        //tf.text = "josemanuelvigil@gmail.com"
+        tf.text = "josemanuelvigil@gmail.com"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.tag = 1
@@ -122,7 +122,7 @@ class LoginViewController: UIViewController
         tf.placeholder = "Password"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.isSecureTextEntry = true
-        //tf.text = "JoseVigil2016"
+        tf.text = "JoseVigil2016"
         tf.tag = 2
         return tf
     }()
@@ -175,6 +175,7 @@ class LoginViewController: UIViewController
     }()
 
     var isMessage = Bool()
+    var isError = Bool()    
     var message = String()
     var containerViewHeight = CGFloat()
     
@@ -202,8 +203,22 @@ class LoginViewController: UIViewController
     let lrbHeight:CGFloat   = 60
     
     var metricsDict:[String:Any]!
+    
+    // Image Picker        
 
-    var puserId = String() 
+    var imagePickerViewController = ImagePickerViewController()
+
+    var you:PFUser!
+    var puserId = String()
+    
+    var yourPhotoImageView:UIImageView!
+    var yourPhotoImage:UIImage!
+    var yourPhotoImageSmall:UIImage!
+
+    var yourType:PFObject!
+    var yourTypeId = Int()    
+    var phoneNumber = String()
+    var eventViewController:EventViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -561,38 +576,64 @@ class LoginViewController: UIViewController
     @objc func handleLoginRegister()
     {
         if !okLogin
-        {
-            
-            if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
+        {        
+           
+            // THIS BLOCK IS A MESS
 
-                if self.loginRegisterButton.titleLabel?.text == "Try again" {
+             //if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
 
-                    // THIS BLOCK IS A MESS
+                if (self.isError) {
 
-                    self.loginRegisterSegmentedControl.selectedSegmentIndex = 1
+                    if self.loginRegisterButton.titleLabel?.text == "Try again" {                                               
 
-                    self.isMessage = false
+                        self.isMessage = false
 
-                    self.handleLoginRegisterChange()
+                        self.handleLoginRegisterChange()
 
-                    self.clearLoginFields()
+                        self.clearFields()
 
-                    self.userTypeTextField.isHidden = false
+                        self.userTypeTextField.isHidden = false
 
-                    self.loginRegisterSegmentedControl.selectedSegmentIndex = 0
-                    
-                    self.handleLoginRegisterChange()
-                  
-                } else  {
+                        if self.loginRegisterSegmentedControl.selectedSegmentIndex == 1 {                          
 
-                    self.handleLogin()        
+                            self.nameTextField.becomeFirstResponder() 
+
+                        } else {
+
+                            self.emailTextField.becomeFirstResponder()   
+                        }
+
+                        self.handleLoginRegisterChange()                     
+                      
+                    } else  {
+
+                        self.handleLogin()        
+                    }  
+
+                    self.isError = false    
+
+                } else {
+
+                    if loginRegisterSegmentedControl.selectedSegmentIndex == 0 {
+
+                         self.handleLogin()          
+
+                    } else if loginRegisterSegmentedControl.selectedSegmentIndex == 1 {
+
+                        self.handleRegister()
+
+                    }                   
+
                 }
-                
 
-            } else {
-                
-                self.handleRegister()
-            }
+            //} else {
+                    
+                //self.handleRegister()
+            
+            //}
+
+            
+
             
         } else {
             
@@ -619,27 +660,22 @@ class LoginViewController: UIViewController
         }
     }
 
-    func clearLoginFields() {
+    func clearFields() {
 
-        //nameTextField.text = ""
-        //nameTextField.placeholder = "Full name"
+        self.nameTextField.text = ""
+        self.nameTextField.placeholder = "Full name"
+     
+        self.emailTextField.text = ""
+        self.emailTextField.placeholder = "Email"
 
-        emailTextField.text = ""
-        emailTextField.placeholder = "Email"
+        self.passwordTextField.text = ""
+        self.passwordTextField.placeholder = "Password"
 
-        passwordTextField.text = ""
-        passwordTextField.placeholder = "Password"
-
-        self.userTypeTextField.text = ""        
-        //self.userTypeDownPicker = nil
-        //self.userTypeDownPicker = DownPicker(textField: self.userTypeTextField, withData: self.parents as! [Any])        
+        self.userTypeTextField.text = ""                
         self.userTypeTextField.placeholder = "Tap to choose relationship..."  
 
-        self.sonSchoolTextField.text = ""   
-        //self.sonSchoolDownPicker = nil     
-        //self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData: self.schoolsArray as! [Any])
-        self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")                
-       
+        self.sonSchoolTextField.text = ""           
+        self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")               
     }
 
     
@@ -688,8 +724,13 @@ class LoginViewController: UIViewController
                 {
                     
                     let errorString = error.userInfo["error"] as? NSString
-                    // In case something went wrong...
+                    
+                    // In case something went                   		wrong...
                     self.message = errorString as! String
+
+                    //self.okLogin = false
+
+                    self.showMessage(title: "Try again", message: self.message)            
 
                     self.activityIndicatorView?.stopAnimating()
                     
@@ -700,7 +741,7 @@ class LoginViewController: UIViewController
                     
                     self.activityIndicatorView?.stopAnimating()
                     
-                    self.message="An email has been sent to your inbox. Please confirm, once then press the Continue."
+                    self.message = "An email has been sent to your inbox. Please confirm, once then press the Continue."
 
                     self.loginRegisterSegmentedControl.isUserInteractionEnabled = false
                     
@@ -759,7 +800,7 @@ class LoginViewController: UIViewController
                     })
                 }
                 
-                self.isMessage=true
+                self.isMessage = true
                 self.handleLoginRegisterChange()
             }
         }
@@ -1008,7 +1049,7 @@ class LoginViewController: UIViewController
 
                                     UserDefaults.standard.setIsRegistered(value: true)
                                     self.dismiss(animated: true, completion: nil)
-                                    self.tabBarViewController?.selectedIndex = 0 //Home  
+                                    self.tabBarViewController?.selectedIndex = 0 //Home                                      
 
                                 })
                                 
@@ -1023,8 +1064,23 @@ class LoginViewController: UIViewController
                             Global.defaults.set(true, forKey: "\(self.puserId)_registrant_completed")
                                                   
                             self.activityIndicatorView?.stopAnimating()
-                            self.dismiss(animated: true, completion: nil)                                                  
-                        }                    
+                            
+                            self.tabBarViewController?.selectedIndex = 0 
+
+                            self.imagePickerViewController = ImagePickerViewController()
+
+                            self.you = PFUser.current()
+
+                            if let userId = PFUser.current()?.objectId {
+                                self.puserId = userId
+                            }
+
+                            self.yourTypeId = PFUser.current()?["user_type"] as! Int                            
+                            
+                            self.imagePickerViewController.setType(type: ProfileImagesTypes.You)
+                            self.present(self.imagePickerViewController, animated: true, completion: nil)                            
+                                                        
+                        }
                     } 
                 } 
 
@@ -1041,19 +1097,23 @@ class LoginViewController: UIViewController
         })
     }
 
+   
+
     func showMessage(title: String, message: String) {
 
         self.message = message 
 
-        self.isMessage=true
+        self.isMessage = true
 
         self.loginRegisterButton.setTitle(title, for: UIControlState())
 
         self.handleLoginRegisterChange()
 
-        self.emailTextField.becomeFirstResponder()    
+        //self.emailTextField.becomeFirstResponder()    
 
-        self.activityIndicatorView?.stopAnimating()                   
+        self.activityIndicatorView?.stopAnimating()      
+
+        self.isError = true
 
     }
     
@@ -1139,5 +1199,175 @@ class LoginViewController: UIViewController
     {
         
     }
+
+
+    // Image Picker
+
+     func saveYou(phone:String) {
+
+        if (!phone.isEmpty) {
+
+            self.phoneNumber = phone  
+
+            self.saveYou(completionHandler: { ( resutl ) -> () in
+                                
+                print("YOU SAVED")
+                                
+                if resutl {
+                    
+                    let title = "Congratulations Registration Completed!"
+                    var message = "\n\nThanks very much for registering to Gamves. Enjoy the educative videos and add your family! \n\n"                                                            
+                    
+                    let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                    
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                        
+                        self.activityIndicatorView?.stopAnimating()
+                        self.navigationController?.popViewController(animated: true)                        
+
+                        UserDefaults.standard.setHasPhoneAndImage(value: true)
+
+                        self.hideShowTabBar(status:false)                        
+                        
+                    }))
+                    
+                    self.present(alert, animated: true) 
+
+                }
+
+            })
+
+
+        } else {
+
+
+            let title = "Phone number is empty"
+            var message = "\n\nPlease fill in your phone number and try agaiin! \n\n"                                                            
+            
+            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+            
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in             
+
+                self.imagePickerViewController.phoneTextField.becomeFirstResponder()
+                
+            }))
+            
+            self.present(alert, animated: true) 
+
+        }
+
+    }   
+    
+    func didpickImage(type: ProfileImagesTypes, smallImage: UIImage, croppedImage: UIImage) {
+        
+        self.yourPhotoImageView.image   = croppedImage
+        self.yourPhotoImage             = croppedImage
+        self.yourPhotoImageSmall        = smallImage
+        self.makeRounded(imageView:self.yourPhotoImageView)
+    }    
+
+    func hideShowTabBar(status: Bool)
+    {
+        self.tabBarController?.tabBar.isHidden = status
+        
+        if status
+        {
+            navigationController?.navigationBar.tintColor = UIColor.white
+        } 
+    }
+    
+
+    func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
+    {   
+        
+        let your_email = Global.defaults.string(forKey: "\(self.puserId)_your_email")
+        let your_password = Global.defaults.string(forKey: "\(self.puserId)_your_password")
+        
+        var reusername = self.you["firstName"] as! String
+        reusername = reusername.lowercased()
+        
+        //self.you["email"] = your_email
+        //self.you.email = your_email
+        
+        let yourimage = PFFileObject(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
+        self.you.setObject(yourimage!, forKey: "picture")
+        
+        let yourImgName = "\(reusername)_small"              
+        
+        print("--------------")
+        print(yourImgName)
+        print("--------------")
+        
+        let yourimageSmall = PFFileObject(name: yourImgName, data: UIImageJPEGRepresentation(self.yourPhotoImageSmall, 1.0)!)
+        self.you.setObject(yourimageSmall!, forKey: "pictureSmall")
+        
+        let profileRelation = self.you.relation(forKey: "profile")
+        let profileQuery = profileRelation.query()
+        profileQuery.getFirstObjectInBackground { (profilePF, error) in
+            
+            if error == nil {
+                
+                var relation = String()
+                
+                if self.yourTypeId == Global.REGISTER_FATHER {
+                    relation = "father"
+                } else if self.yourTypeId == Global.SPOUSE_MOTHER {
+                    relation = "mother"
+                }
+                
+                let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
+                
+                profilePF?["bio"] = "\(son_name) \(relation)"
+                
+                profilePF?.saveEventually()
+                
+            }
+        }
+        
+    
+        let levelRel:PFRelation = self.you.relation(forKey: "level")
+        
+        //I add the level of all sons
+        let levleId = Global.gamvesFamily.sonsUsers[0].levelId as String
+        
+        for sons in Global.gamvesFamily.sonsUsers {
+            let levelId = sons.levelId
+            let levelObj = Global.levels[levelId]?.levelObj
+            levelRel.add(levelObj!)
+        }
+
+        self.you["phone"]  = self.phoneNumber
+        
+        self.you.saveInBackground(block: { (resutl, error) in
+            
+            if error != nil
+            {
+                print(error)
+                completionHandler(false)
+            } else
+            {
+                
+                Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in                
+                    
+                    
+                    completionHandler(true)
+                    
+                })
+            }
+        })
+        
+    }
+
+
+    func makeRounded(imageView:UIImageView)
+    {
+        imageView.contentMode = UIViewContentMode.scaleToFill
+        imageView.layer.cornerRadius = imageView.frame.size.width / 2            
+        imageView.clipsToBounds = true         
+        imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
+        imageView.layer.borderWidth = 3
+    } 
+
+
     
 }

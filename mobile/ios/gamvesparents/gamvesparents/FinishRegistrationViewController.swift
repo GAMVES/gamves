@@ -22,8 +22,7 @@ ProfileImagesPickerProtocol {
     var yourPhotoImageSmall:UIImage!
 
     var yourType:PFObject!
-    var yourTypeId = Int()
-    
+    var yourTypeId = Int()    
     var phoneNumber = String()
 
     var eventViewController:EventViewController!
@@ -36,20 +35,16 @@ ProfileImagesPickerProtocol {
 
         self.you = PFUser.current()
 
-        if let userId = PFUser.current()?.objectId
-        {
+        if let userId = PFUser.current()?.objectId {
             self.puserId = userId
         }
 
         self.yourTypeId = PFUser.current()?["user_type"] as! Int
 
         imagePickerViewController.setType(type: ProfileImagesTypes.You)
-        
-        //print(FinishRegistrationViewController)
-
-        imagePickerViewController.profileImagesPickerProtocol = self       
-        
+        imagePickerViewController.profileImagesPickerProtocol = self               
         self.navigationController?.pushViewController(imagePickerViewController, animated: true)   
+        
     }  
 
     func saveYou(phone:String) {

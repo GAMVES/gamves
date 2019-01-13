@@ -12,8 +12,7 @@ import Parse
 class EventViewController: UIViewController {
     
     var tabBarViewController:TabBarViewController?
-
-    var finishRegistrationViewController:FinishRegistrationViewController!   
+    
 
     var puserId = String()
 
@@ -27,25 +26,13 @@ class EventViewController: UIViewController {
 
         if !UserDefaults.standard.isHasPhoneAndImage() {  
 
-            openFinishRegistration()
+            
         }
         
 
     }
 
-    func openFinishRegistration() {
-        
-        finishRegistrationViewController = FinishRegistrationViewController()
-        finishRegistrationViewController.eventViewController = self
-        finishRegistrationViewController.tabBarController?.tabBar.isHidden = true                
-        navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
-        navigationController?.pushViewController(finishRegistrationViewController, animated: true, completion: { (reult) in
-            
-            self.finishRegistrationViewController.hideShowTabBar(status:true)
-        })        
-        
-    }  
+     
 
 
 }
