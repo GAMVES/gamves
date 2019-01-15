@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(mi);
         } else {
 
-            DataSingleton.getInstance().getSchools();
+            DataSingleton.getInstance().querySchools();
             DataSingleton.getInstance().setOnDataCallback(new DataSingleton.OnDataCallback() {
                 @Override
                 public void getSchools(List<School> schools) {

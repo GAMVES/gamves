@@ -33,7 +33,8 @@ public class DataSingleton
 
     private List<FeedItem> feedList;
 
-    private List<School> schools;
+    public List<School> schools;
+
     private int countSchools = 0;
 
  	private static DataSingleton instance = null;
@@ -51,7 +52,6 @@ public class DataSingleton
 
       	return instance;
    }
-
 
     public List<CategoryItem> getCategoryList()
     {
@@ -119,7 +119,7 @@ public class DataSingleton
     //-
     //  SCHOOL
 
-    public void getSchools() {
+    public void querySchools() {
 
         ParseQuery<ParseObject> querySchools = ParseQuery.getQuery("Schools");
 
@@ -128,27 +128,21 @@ public class DataSingleton
             @Override
             public void done(List<ParseObject> schoolList, ParseException e) {
 
-                if (e == null) {
 
-                    Log.d("score", "Retrieved " + schoolList.size() + " scores");
+                if (e == null) {
 
                     final List<School> schoolz = new ArrayList<School>();
 
                     final int shoolsAmount = schoolList.size();
 
-                    for (ParseObject pObject : schoolList) {
+                    for (int i = 0; i < schoolList.size(); i++) {
 
-                        ParseObject schoolOBj = pObject;
-                        String objectId =  pObject.getString("objectId");
-                        String schoolName =  pObject.getString("schoolName");
-                        String shortName =  pObject.getString("shortName");
+                        final ParseObject schoolOBj = schoolList.get(i);
+                        final String objectId =  schoolList.get(i).getObjectId();
+                        final String schoolName =  schoolList.get(i).getString("name");
+                        final String shortName =  schoolList.get(i).getString("short");
 
-                        ParseFile parseFile = pObject.getParseFile("thumbnail");
-
-                        final School school = new School();
-                        school.setObjectId(objectId);
-                        school.setSchoolName(schoolName);
-                        school.setShortName(shortName);
+                        ParseFile parseFile = schoolList.get(i).getParseFile("thumbnail");
 
                         parseFile.getDataInBackground(new GetDataCallback() {
 
@@ -162,6 +156,11 @@ public class DataSingleton
                                     ImageView image = new ImageView(ParentsApplication.getInstance().getContext());
                                     image.setImageBitmap(bitmapImage);
 
+                                    final School school = new School();
+                                    school.setSchoolOBj(schoolOBj);
+                                    school.setObjectId(objectId);
+                                    school.setSchoolName(schoolName);
+                                    school.setShortName(shortName);
                                     school.setImageView(image);
                                     school.setThumbnail(bitmapImage);
 
@@ -180,15 +179,21 @@ public class DataSingleton
                                 }
                             }
                         });
+
                     }
 
 
                 } else {
-                    Log.d("score", "Error: " + e.getMessage());
+                    //there was a problem
+
                 }
             }
         });
     };
+
+    public List<School> getSchools() {
+        return schools;
+    }
 
     private OnDataCallback dataCallback;
     public interface OnDataCallback

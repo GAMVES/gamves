@@ -40,6 +40,8 @@
     <!--SUSCRIPTION-->
     <string name="hint_password">Password</string>
     <string name="hint_user">User name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_school">School</string>
     <string name="btn_login">Login</string>
 
     <string name="register_message">Please ask your parents for registration credentials and come back. They should register first in order to give you access.</string>
