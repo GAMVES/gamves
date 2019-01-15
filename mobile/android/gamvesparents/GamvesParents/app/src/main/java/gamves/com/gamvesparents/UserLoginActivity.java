@@ -35,14 +35,14 @@ public class UserLoginActivity extends AppCompatActivity {
     HttpParse httpParse = new HttpParse();
     public static final String UserEmail = "";
 
-    private GamvesParentsApplication app;
+    private ParentsApplication app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
-        app = GamvesParentsApplication.getInstance();
+        app = ParentsApplication.getInstance();
 
         Email = (EditText)findViewById(R.id.email);
         Password = (EditText)findViewById(R.id.password);

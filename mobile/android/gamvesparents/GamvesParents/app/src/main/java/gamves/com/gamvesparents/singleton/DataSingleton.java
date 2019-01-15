@@ -1,24 +1,22 @@
 package gamves.com.gamvesparents.singleton;
 
-import android.app.AlertDialog;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.parse.FindCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.ProgressCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import gamves.com.gamvesparents.GamvesParentsApplication;
-import gamves.com.gamvesparents.UserLoginActivity;
+import gamves.com.gamvesparents.ParentsApplication;
 import gamves.com.gamvesparents.model.CategoryItem;
-import gamves.com.gamvesparents.model.Classes;
 import gamves.com.gamvesparents.model.FanPageListItem;
 import gamves.com.gamvesparents.model.FeedItem;
 import gamves.com.gamvesparents.model.School;
@@ -36,8 +34,10 @@ public class DataSingleton
     private List<FeedItem> feedList;
 
     private List<School> schools;
+    private int countSchools = 0;
 
  	private static DataSingleton instance = null;
+
    	protected DataSingleton() {
     	// Exists only to defeat instantiation.
         categoryList = new ArrayList<>();
@@ -51,6 +51,7 @@ public class DataSingleton
 
       	return instance;
    }
+
 
     public List<CategoryItem> getCategoryList()
     {
@@ -117,19 +118,23 @@ public class DataSingleton
 
     //-
     //  SCHOOL
-    // private Bitmap avatarBitmap;
 
     public void getSchools() {
 
         ParseQuery<ParseObject> querySchools = ParseQuery.getQuery("Schools");
 
         querySchools.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
             public void done(List<ParseObject> schoolList, ParseException e) {
+
                 if (e == null) {
 
                     Log.d("score", "Retrieved " + schoolList.size() + " scores");
 
-                    List<School> schoolz = null;
+                    final List<School> schoolz = new ArrayList<School>();
+
+                    final int shoolsAmount = schoolList.size();
 
                     for (ParseObject pObject : schoolList) {
 
@@ -140,34 +145,43 @@ public class DataSingleton
 
                         ParseFile parseFile = pObject.getParseFile("thumbnail");
 
-                        School school = new School();
+                        final School school = new School();
                         school.setObjectId(objectId);
                         school.setSchoolName(schoolName);
                         school.setShortName(shortName);
 
-                        parseFile.getDataInBackground(new ProgressCallback() {
-                            @Override
-                            public void done(Integer percentDone) {
+                        parseFile.getDataInBackground(new GetDataCallback() {
 
-                                
+                            @Override
+                            public void done(byte[] data, ParseException e) {
+
+                                if(e==null){
+
+                                    Bitmap bitmapImage = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+                                    ImageView image = new ImageView(ParentsApplication.getInstance().getContext());
+                                    image.setImageBitmap(bitmapImage);
+
+                                    school.setImageView(image);
+                                    school.setThumbnail(bitmapImage);
+
+                                    schoolz.add(school);
+
+                                    if (countSchools == shoolsAmount-1) {
+
+                                        dataCallback.getSchools(schoolz);
+                                        schools = schoolz;
+                                    }
+
+                                    countSchools++;
+                                }
+                                else{
+                                    Log.i("info", e.getMessage());
+                                }
                             }
                         });
-
-                        schoolz.add(school);
-
-                        /*
-                        private String objectId;
-                        private Bitmap thumbnail;
-                        private String schoolName;
-                        private String shortName;
-                        private ParseObject schoolOBj;
-                         */
-
                     }
 
-                    schools = schoolz;
-
-                    dataCallback.getSchools(schoolz);
 
                 } else {
                     Log.d("score", "Error: " + e.getMessage());

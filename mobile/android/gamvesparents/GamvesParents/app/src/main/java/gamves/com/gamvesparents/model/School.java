@@ -15,6 +15,7 @@ class GamvesSchools
  */
 
 import android.graphics.Bitmap;
+import android.widget.ImageView;
 
 import com.parse.ParseObject;
 
@@ -25,6 +26,8 @@ public class School {
     private String schoolName;
     private String shortName;
     private ParseObject schoolOBj;
+    private ImageView imageView;
+
 
     public String getObjectId() {
         return objectId;
@@ -46,6 +49,10 @@ public class School {
         return schoolOBj;
     }
 
+    public ImageView getImageView() {
+        return imageView;
+    }
+
     public void setObjectId(String objectId) {
         this.objectId = objectId;
     }
@@ -64,5 +71,9 @@ public class School {
 
     public void setSchoolOBj(ParseObject schoolOBj) {
         this.schoolOBj = schoolOBj;
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
     }
 }

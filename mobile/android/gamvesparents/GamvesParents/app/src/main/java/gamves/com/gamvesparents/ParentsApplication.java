@@ -27,16 +27,16 @@ import gamves.com.gamvesparents.utils.KeySaver;
  * Created by jose on 6/12/17.
  */
 
-public class GamvesParentsApplication extends Application
+public class ParentsApplication extends Application
 {
 
-    public static Context CONTEXT;
+    public static Context context;
 
     public String userId;
 
     private static String TAG  = "GamvesApplication";
 
-    private static GamvesParentsApplication sInstance = null;
+    private static ParentsApplication sInstance = null;
 
     List<Integer> gradientArray;
 
@@ -68,7 +68,7 @@ public class GamvesParentsApplication extends Application
     @Override
     public void onCreate () {
         super.onCreate();
-        CONTEXT =  getApplicationContext();
+        context =  getApplicationContext();
 
         sInstance = this;
 
@@ -155,6 +155,22 @@ public class GamvesParentsApplication extends Application
 
     }
 
+    /*public static ParentsApplication getInstance()
+    {
+        if (sInstance== null) {
+            synchronized(ParentsApplication.class) {
+                if (sInstance == null)
+                    sInstance = new ParentsApplication();
+            }
+        }
+        // Return the instance
+        return sInstance;
+    }*/
+
+    public static Context getContext() {
+        return context;
+    }
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -169,7 +185,7 @@ public class GamvesParentsApplication extends Application
         this.userId = userId;
     }
 
-    public static GamvesParentsApplication getInstance()
+    public static ParentsApplication getInstance()
     {
         return sInstance;
     }

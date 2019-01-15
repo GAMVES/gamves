@@ -1,5 +1,7 @@
 package gamves.com.gamvesparents.utils;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -50,7 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import gamves.com.gamvesparents.GamvesParentsApplication;
+import gamves.com.gamvesparents.ParentsApplication;
 import gamves.com.gamvesparents.model.VideosListSD;
 import gamves.com.gamvesparents.utils.snackbar.TSnackbar;
 
@@ -142,9 +144,9 @@ public class Utils {
 
     public static Drawable setDrawable(int imageDrawable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return GamvesParentsApplication.CONTEXT.getDrawable(imageDrawable);
+            return ParentsApplication.getInstance().getContext().getDrawable(imageDrawable);
         } else {
-            return GamvesParentsApplication.CONTEXT.getResources().getDrawable(imageDrawable);
+            return ParentsApplication.getInstance().getContext().getResources().getDrawable(imageDrawable);
         }
     }
 
@@ -253,18 +255,18 @@ public class Utils {
 
     public static void showProgress(final AVLoadingIndicatorView view) {
         view.setVisibility(View.VISIBLE);
-        view.animate().alpha(1).setStartDelay(500).setDuration(400).withEndAction(new Runnable() {
+        view.animate().alpha(1).setStartDelay(500).setDuration(400).setListener(new AnimatorListenerAdapter() {
             @Override
-            public void run() {
+            public void onAnimationEnd(Animator animation) {
                 view.setAlpha(1);
             }
         });
     }
 
     public static void hideProgress(final AVLoadingIndicatorView view) {
-        view.animate().alpha(0).setDuration(200).withEndAction(new Runnable() {
+        view.animate().alpha(0).setDuration(200).setListener(new AnimatorListenerAdapter() {
             @Override
-            public void run() {
+            public void onAnimationEnd(Animator animation) {
                 view.setAlpha(0);
                 view.setVisibility(View.GONE);
             }
@@ -281,7 +283,7 @@ public class Utils {
         snackbarView.setBackgroundColor(Color.parseColor(bgColor));
         TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
         textView.setTextColor(Color.parseColor(textColor));
-        snackbar.setAction(GamvesParentsApplication.CONTEXT.getResources().getString(R.string.snack_close), new View.OnClickListener() {
+        snackbar.setAction(ParentsApplication.getInstance().getContext().getResources().getString(R.string.snack_close), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 snackbar.dismiss();
@@ -299,8 +301,8 @@ public class Utils {
     }
 
     public static void startApplicationIntent(Activity activity) {
-        Intent i = GamvesParentsApplication.CONTEXT.getPackageManager()
-                .getLaunchIntentForPackage(GamvesParentsApplication.CONTEXT.getPackageName());
+        Intent i = ParentsApplication.getInstance().getContext().getPackageManager()
+                .getLaunchIntentForPackage(ParentsApplication.getInstance().getContext().getPackageName());
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -435,7 +437,7 @@ public class Utils {
         if (null == image) return null;
 
         Bitmap outputBitmap = Bitmap.createBitmap(image);
-        final RenderScript renderScript = RenderScript.create(GamvesParentsApplication.CONTEXT);
+        final RenderScript renderScript = RenderScript.create(ParentsApplication.getInstance().getContext());
         Allocation tmpIn = Allocation.createFromBitmap(renderScript, image);
         Allocation tmpOut = Allocation.createFromBitmap(renderScript, outputBitmap);
 
@@ -455,11 +457,11 @@ public class Utils {
     }
 
     public static String getSavedLanguage(int languageId) {
-        if (KeySaver.isExist(GamvesParentsApplication.CONTEXT, "language")) {
+        if (KeySaver.isExist(ParentsApplication.getInstance().getContext(), "language")) {
             if (languageId == 1) {
-                return GamvesParentsApplication.CONTEXT.getResources().getString(R.string.language_1);
+                return ParentsApplication.getInstance().getContext().getResources().getString(R.string.language_1);
             } else if (languageId == 2) {
-                return GamvesParentsApplication.CONTEXT.getResources().getString(R.string.language_2);
+                return ParentsApplication.getInstance().getContext().getResources().getString(R.string.language_2);
             } else {
                 return "none";
             }
@@ -468,11 +470,11 @@ public class Utils {
     }
 
     public static String getSavedLanguageName(int languageId) {
-        if (KeySaver.isExist(GamvesParentsApplication.CONTEXT, "language")) {
+        if (KeySaver.isExist(ParentsApplication.getInstance().getContext(), "language")) {
             if (languageId == 1) {
-                return GamvesParentsApplication.CONTEXT.getResources().getString(R.string.language_name_1);
+                return ParentsApplication.getInstance().getContext().getResources().getString(R.string.language_name_1);
             } else if (languageId == 2) {
-                return GamvesParentsApplication.CONTEXT.getResources().getString(R.string.language_name_2);
+                return ParentsApplication.getInstance().getContext().getResources().getString(R.string.language_name_2);
             } else {
                 return null;
             }
@@ -528,7 +530,7 @@ public class Utils {
         @Override
         protected void onPreExecute() {
             mProgress = new ProgressDialog(context);
-            mProgress.setMessage(GamvesParentsApplication.CONTEXT.getResources().getString(R.string.loading_dialog_capture_description));
+            mProgress.setMessage(ParentsApplication.getInstance().getContext().getResources().getString(R.string.loading_dialog_capture_description));
             mProgress.setCancelable(false);
             mProgress.show();
         }
@@ -545,7 +547,7 @@ public class Utils {
                 Canvas canvas = new Canvas(result);
                 canvas.drawBitmap(originalBitmap, 0, 0, null);
                 canvas.drawBitmap(watermark, originalBitmap.getWidth() - (watermark.getWidth() + 30), originalBitmap.getHeight() - (watermark.getHeight() + 30), null);
-                path = MediaStore.Images.Media.insertImage(GamvesParentsApplication.CONTEXT.getContentResolver(), result, captureTitle, null);
+                path = MediaStore.Images.Media.insertImage(ParentsApplication.getInstance().getContext().getContentResolver(), result, captureTitle, null);
                 finish = true;
             } catch (Exception e) {
                 Snackbar.make(snackView, "Error getting capture. Try again!", Snackbar.LENGTH_SHORT).show();

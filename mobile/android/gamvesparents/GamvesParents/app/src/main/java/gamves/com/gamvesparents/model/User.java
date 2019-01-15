@@ -2,7 +2,7 @@ package gamves.com.gamvesparents.model;
 
 import com.parse.ParseGeoPoint;
 
-import gamves.com.gamvesparents.GamvesParentsApplication;
+import gamves.com.gamvesparents.ParentsApplication;
 
 
 /**
@@ -27,11 +27,11 @@ public class User {
     private double Longitude_Local;
     private ParseGeoPoint geoLocalLocation;
 
-    private GamvesParentsApplication app;
+    private ParentsApplication app;
 
     public User()
     {
-        app = GamvesParentsApplication.getInstance();
+        app = ParentsApplication.getInstance();
     }
 
     public String getFirst_Name() {

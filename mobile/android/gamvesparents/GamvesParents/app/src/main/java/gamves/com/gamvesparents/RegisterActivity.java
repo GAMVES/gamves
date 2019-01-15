@@ -58,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
     HashMap<String,Object> hashMap = new HashMap<>();
     static HashMap<String,Object> hashMapAddress = new HashMap<>();
 
-    private static GamvesParentsApplication app;
+    private static ParentsApplication app;
     HttpParse httpParse = new HttpParse();
 
     private static LatLng goodLatLng = new LatLng(37, -120);
@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        app = GamvesParentsApplication.getInstance();
+        app = ParentsApplication.getInstance();
 
         double lat = app.getLatitude();
 
