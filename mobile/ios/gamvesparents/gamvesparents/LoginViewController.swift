@@ -1087,6 +1087,9 @@ ImagesPickerProtocol {
 
                             let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
                             appDelegate.window?.rootViewController = self.navigationPickerController
+
+                            Global.loadAdminUser()
+                            Global.loadConfigData()
                                                         
                         }
                     } 
@@ -1348,16 +1351,7 @@ ImagesPickerProtocol {
         }
         
     
-        let levelRel:PFRelation = self.you.relation(forKey: "level")
-        
-        //I add the level of all sons
-        /*let levleId = Global.gamvesFamily.sonsUsers[0].levelId as String
-        
-        for sons in Global.gamvesFamily.sonsUsers {
-            let levelId = sons.levelId
-            let levelObj = Global.levels[levelId]?.levelObj
-            levelRel.add(levelObj!)
-        }*/
+        let levelRel:PFRelation = self.you.relation(forKey: "level")  
 
         self.you["phone"]  = self.phoneNumber
         
@@ -1370,11 +1364,28 @@ ImagesPickerProtocol {
             } else
             {
                 
-                Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in                
+                Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in                                    
                     
+                    var youAdmin = [GamvesUser]()
+            
+                    youAdmin.append(gamvesUser)
+                    youAdmin.append(Global.adminUser)
+
+                    let youAdminChatId = Global.getRandomInt()
                     
-                    completionHandler(true)
-                    
+                    ChatMethods.addNewFeedAppendgroup(gamvesUsers: youAdmin, chatId: youAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                        
+                        print("done youAdmin")
+                        print(resutl)
+                        
+                        if (resutl != nil) {
+                            
+
+                            completionHandler(true)
+
+                        }
+                        
+                    })                    
                 })
             }
         })        

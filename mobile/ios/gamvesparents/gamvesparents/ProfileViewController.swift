@@ -71,7 +71,7 @@ class ProfileViewController: UIViewController,
     var sonRegisterChatId       = Int()
     var spouseRegisterChatId    = Int()
     var sonSpouseChatId         = Int()
-    var youAdminChatId          = Int()
+    //var youAdminChatId          = Int()
     var sonAdminChatId          = Int()
     var spouseAdminChatId       = Int()
     
@@ -525,7 +525,7 @@ class ProfileViewController: UIViewController,
         self.spouseRegisterChatId   = Global.getRandomInt()
         self.sonSpouseChatId        = Global.getRandomInt()
 
-        self.youAdminChatId        = Global.getRandomInt()
+        //self.youAdminChatId        = Global.getRandomInt()
         self.sonAdminChatId        = Global.getRandomInt()
         self.spouseAdminChatId        = Global.getRandomInt()        
         
@@ -2086,7 +2086,7 @@ class ProfileViewController: UIViewController,
 
         //SAVE YOU ADMIN
         
-        queue.tasks +=~ { resutl, next in
+        /*queue.tasks +=~ { resutl, next in
             
             var youAdmin = [GamvesUser]()
             
@@ -2102,7 +2102,7 @@ class ProfileViewController: UIViewController,
                 }
                 
             })
-        }
+        }*/
 
         //SAVE SON ADMIN
         

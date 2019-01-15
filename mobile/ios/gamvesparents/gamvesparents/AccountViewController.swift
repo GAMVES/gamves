@@ -251,14 +251,14 @@ class AccountViewController: UIViewController,
             self.collectionView, 
             self.buttonRightView)
         
-        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {
+        /*if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {
         
             if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
                 
                 self.openProfile()                
                 self.loadYourProfileInfo()
             }
-        }
+        }*/
         
         self.buttonsView.backgroundColor = UIColor.gamvesLightLightBlueColor
         self.buttonLeftView.backgroundColor = UIColor.gamvesLightLightBlueColor

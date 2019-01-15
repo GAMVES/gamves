@@ -120,19 +120,21 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         self.accountViewController.title = accountTitle
         
         self.accountViewController.tabBarViewController = self
-        
-        viewControllers = [eventNavController, homeNavController, chatFeedNavController, accountNavController]
 
+        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_family_exist") {
+            
+            viewControllers = [eventNavController, chatFeedNavController, accountNavController]
+            
+        } else {
+
+            viewControllers = [eventNavController, homeNavController, chatFeedNavController, accountNavController]
+        }
 
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
         blurVisualEffectView?.frame = view.bounds
-        self.view.addSubview(blurVisualEffectView!)
-        
-        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed") {
-            self.selectedIndex = 2 //Account
-        }
-
+        self.view.addSubview(blurVisualEffectView!)       
+       
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)      
      
         let array = viewControllers as! [UIViewController]
@@ -141,20 +143,27 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             controller.tabBarItem.imageInsets = UIEdgeInsetsMake(5, 0, -5, 0)
         }
 
+        print(UserDefaults.standard.isHasPhoneAndImage())
+        print(UserDefaults.standard.isRegistered())
+        print(UserDefaults.standard.isHasProfileInfo())
+        print(UserDefaults.standard.isLoggedIn())
+        print(Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_profile_completed"))
+        print(Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_family_exist"))        
+
     }      
     
     override func viewDidAppear(_ animated: Bool) {
         
         if !isHasProfileInfo() && !isHasRegistered()
         {
-            self.selectedIndex = 2           
+            self.selectedIndex = 0
 
             if let userId = PFUser.current()?.objectId
             {
                 self.puserId = userId
             }
             
-            let pid = "\(self.puserId)_registrant_completed"
+            /*let pid = "\(self.puserId)_registrant_completed"
             
             print(pid)
             
@@ -174,7 +183,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
                         Global.defaults.set(true, forKey: "\(self.puserId)_picker_shown")
                     }
                 }
-            }
+            }*/
 
 
         } else
