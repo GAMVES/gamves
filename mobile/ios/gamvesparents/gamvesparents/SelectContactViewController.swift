@@ -106,7 +106,7 @@ class SelectContactViewController: UIViewController, UICollectionViewDataSource,
                 for user in users!
                 {
                     let gamvesUser = GamvesUser()
-                    gamvesUser.name = user["Name"] as! String
+                    gamvesUser.name = user["name"] as! String
                     gamvesUser.userId = user.objectId!
                     gamvesUser.userName = user["username"] as! String
                     

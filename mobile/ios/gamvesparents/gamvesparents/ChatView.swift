@@ -583,7 +583,7 @@
                                                     
                                                     let gamvesUser = GamvesUser()
                                                     let isQuened = gamvesUser.isAvatarQuened
-                                                    gamvesUser.userName = user["Name"] as! String
+                                                    gamvesUser.userName = user["name"] as! String
                                                     
                                                     if !isQuened
                                                     {

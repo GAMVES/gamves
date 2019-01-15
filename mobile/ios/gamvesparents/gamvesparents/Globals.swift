@@ -526,52 +526,28 @@ class Global: NSObject
             
             let installation = PFInstallation.current()
             installation?["user"] = PFUser.current()
-            installation?.saveInBackground(block: { (resutl, error) in
-                
-                PFPush.subscribeToChannel(inBackground: "GamvesChannel")
-                
-                var queryRole = PFRole.query() // You need to get role object
-                queryRole?.whereKey("name", equalTo:"admin")
-                
-                queryRole?.getFirstObjectInBackground(block: { (role, error) in
+            installation?.saveInBackground(block: { (resutl, error) in               
+
+                PFPush.subscribeToChannel(inBackground: "GamvesParents")  
+
+                if let userId = PFUser.current()?.objectId {
+
+                    let params = [
+                        "role" : "admin",
+                        "userId" : userId] as [String : Any]
                     
+                    print(params)
                     
-                    if error == nil
-                    {
-                        
-                        let roleQuery = PFRole.query()
-                        
-                        roleQuery?.whereKey("name", equalTo: "admin")
-                        
-                        roleQuery?.getFirstObjectInBackground(block: { (role, error) in
-                            
-                            if error == nil
-                            {
-                                let admin = role as! PFRole
-                                
-                                let acl = PFACL(user: PFUser.current()!)
-                                
-                                acl.setWriteAccess(true, for: admin)
-                                acl.setReadAccess(true, for: admin)
-                                
-                                admin.users.add(PFUser.current()!)
-                                
-                                admin.saveInBackground(block: { (resutl, error) in
-                                    
-                                    print("")
-                                    
-                                    if error != nil
-                                    {
-                                        completionHandlerRole(false)
-                                    } else {
-                                        completionHandlerRole(true)
-                                    }
-                                    
-                                })
-                            }
-                        })
-                    }
-                })
+                    PFCloud.callFunction(inBackground: "AddUserToRole", withParameters: params) { (result, error) in
+                     
+                        if error != nil
+                        {
+                            completionHandlerRole(false)
+                        } else {
+                            completionHandlerRole(true)
+                        }
+                    }      
+                }                
             })
         }
     }

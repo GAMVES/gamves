@@ -1179,7 +1179,7 @@ class ProfileViewController: UIViewController,
                             self.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
                             self.familyPhotoImageSmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
                             
-                            self.sonNameTextField.text = user["Name"] as! String
+                            self.sonNameTextField.text = user["name"] as! String
                             self.sonUserTextField.text = user["username"] as! String  
 
                             let birthday = user["birthday"] as! String
@@ -1273,7 +1273,7 @@ class ProfileViewController: UIViewController,
             
             self.yourTypeId = PFUser.current()?["user_type"] as! Int
 
-            let name = PFUser.current()?["Name"] as! String
+            let name = PFUser.current()?["name"] as! String
         
             self.yourNameTextField.text = name        
 
@@ -1782,7 +1782,7 @@ class ProfileViewController: UIViewController,
                 
                 Global.addUserToDictionary(user: self.spouse as! PFUser, isFamily: true, completionHandler: { (gamvesUser) in
                     
-                    print(self.spouse["Name"])
+                    print(self.spouse["name"])
                     
                     self.spouseGamves = gamvesUser
                     

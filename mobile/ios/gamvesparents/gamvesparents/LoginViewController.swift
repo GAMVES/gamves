@@ -219,6 +219,8 @@ ImagesPickerProtocol {
     var yourTypeId = Int()    
     var phoneNumber = String()
     var eventViewController:EventViewController!
+
+    var navigationPickerController:UINavigationController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -697,7 +699,7 @@ ImagesPickerProtocol {
             user.username = email
             user.password = password
             user.email = email
-            user["Name"] = name
+            user["name"] = name
             user["isRegister"] = true
 
             let full_name = name?.components(separatedBy: " ")
@@ -1079,10 +1081,12 @@ ImagesPickerProtocol {
 
                             self.imagePickerViewController.setType(type: ProfileImagesTypes.You)
 
-                            let navigationController = UINavigationController(rootViewController: self.imagePickerViewController)
+                            self.navigationPickerController = UINavigationController(rootViewController: self.imagePickerViewController)
+
+                            self.dismiss(animated:true)                       
 
                             let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-                            appDelegate.window?.rootViewController = navigationController                     
+                            appDelegate.window?.rootViewController = self.navigationPickerController
                                                         
                         }
                     } 
@@ -1210,6 +1214,8 @@ ImagesPickerProtocol {
 
         if (!phone.isEmpty) {
 
+            self.activityIndicatorView?.startAnimating()
+
             self.phoneNumber = phone  
 
             self.saveYou(completionHandler: { ( resutl ) -> () in
@@ -1217,6 +1223,8 @@ ImagesPickerProtocol {
                 print("YOU SAVED")
                                 
                 if resutl {
+
+                    self.activityIndicatorView?.stopAnimating()
                     
                     let title = "Congratulations Registration Completed!"
                     var message = "\n\nThanks very much for registering to Gamves. Enjoy the educative videos and add your family! \n\n"                                                            
@@ -1224,17 +1232,22 @@ ImagesPickerProtocol {
                     let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                     
                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
-                        
-                        self.activityIndicatorView?.stopAnimating()
-                        self.navigationController?.popViewController(animated: true)                        
+                                                                     
+                        //self.navigationController?.popViewController(animated: true)                        
 
                         UserDefaults.standard.setHasPhoneAndImage(value: true)
 
-                        self.hideShowTabBar(status:false)                        
+                        //self.dismiss(animated:true)                       
+
+                        let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+                        self.tabBarViewController?.selectedIndex = 0
+                        appDelegate.window?.rootViewController = self.tabBarViewController                     
+
+                        self.hideShowTabBar(status:true)                        
                         
                     }))
                     
-                    self.present(alert, animated: true) 
+                    self.navigationPickerController.present(alert, animated: true) 
 
                 }
 
