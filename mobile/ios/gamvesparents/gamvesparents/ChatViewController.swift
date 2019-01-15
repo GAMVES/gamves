@@ -232,8 +232,6 @@ class ChatViewController: UIViewController, NavBarDelegate, KeyboardDelegate {
     {
         self.chatView.frame.size.height = self.view.frame.height - navHeight
     }
-    
-
 }
 
 

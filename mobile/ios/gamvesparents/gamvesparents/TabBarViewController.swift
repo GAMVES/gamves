@@ -29,7 +29,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         return launcher
     }()
     
-    lazy var chatLauncher: ChatViewController = {
+    lazy var chatViewController: ChatViewController = {
         let launcher = ChatViewController()
         return launcher
     }()
@@ -102,8 +102,8 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         
         let layout = UICollectionViewFlowLayout()
         self.chatFeedViewController = ChatFeedViewController(collectionViewLayout: layout)
-        self.chatFeedViewController.tabBarViewController = self    
-        
+        self.chatFeedViewController.tabBarViewController = self
+        self.chatFeedViewController.uploadData()       
         
         let chatFeedNavController = UINavigationController(rootViewController: chatFeedViewController)
         let groupImage: UIImage = UIImage(named: "group")!.resizedImage(newWidth: 30)
@@ -309,14 +309,14 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
     func openChat(room: String, chatId:Int, users:[GamvesUser])
     {
         
-        self.chatLauncher.chatId = chatId
-        self.chatLauncher.gamvesUsers = users
-        self.chatLauncher.room = room
-        self.chatLauncher.isStandAlone = true
-        self.chatLauncher.view.backgroundColor = UIColor.white
+        self.chatViewController.chatId = chatId
+        self.chatViewController.gamvesUsers = users
+        self.chatViewController.room = room
+        self.chatViewController.isStandAlone = true
+        self.chatViewController.view.backgroundColor = UIColor.white
         
         let appDelegate = UIApplication.shared.delegate
-        appDelegate?.window!?.rootViewController = self.chatLauncher      
+        appDelegate?.window!?.rootViewController = self.chatViewController      
         
     }
     

@@ -7,6 +7,7 @@
 
 import UIKit
 import Parse
+import Floaty
 
 class AccountViewController: UIViewController,
     UICollectionViewDataSource,
@@ -82,12 +83,12 @@ class AccountViewController: UIViewController,
         return view
     }()
 
-    lazy var sonPhotoImageView: UIImageView = {
+    lazy var yourPhotoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "son_photo")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSonPhotoImageView)))
+        //imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleyourPhotoImageView)))
         imageView.isUserInteractionEnabled = true        
         imageView.tag = 1
         return imageView
@@ -122,7 +123,7 @@ class AccountViewController: UIViewController,
     var cellId = String()
 
     var _profile = AccountButton()
-    var _documents = AccountButton()
+    var _family = AccountButton()
     var _account = AccountButton()
     var _tutorial = AccountButton()
     
@@ -135,10 +136,14 @@ class AccountViewController: UIViewController,
         NotificationCenter.default.addObserver(self, selector: #selector(self.levelsLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyLevelsLoaded), object: nil)
     
         NotificationCenter.default.addObserver(self, selector: #selector(self.loadFamilyDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyLoadFamilyDataGromGlobal), object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loadYourDataGromGlobal), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
         
     }
 
     var puserId = String()   
+
+    var floaty = Floaty(size: 80)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -199,9 +204,9 @@ class AccountViewController: UIViewController,
             self.yourLabel,
             metrics: metricsHeader)
         
-        self.photosContainerView.addSubview(self.sonPhotoImageView)
+        self.photosContainerView.addSubview(self.yourPhotoImageView)
         
-        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonPhotoImageView)
+        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.yourPhotoImageView)
         
         var metricsVerBudge = [String:Int]()
         
@@ -209,29 +214,35 @@ class AccountViewController: UIViewController,
         
         self.photosContainerView.addConstraintsWithFormat(
             "H:|-padding-[v0(photoSize)]-padding-|", views:
-            self.sonPhotoImageView,
+            self.yourPhotoImageView,
             metrics: metricsHeader)
         
         self.photoCornerRadius = photoSize / 2
 
-        Global.setRoundedImage(image: self.sonPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesGamvesLightColor)              
+        Global.setRoundedImage(image: self.yourPhotoImageView, cornerRadius: self.photoCornerRadius, boderWidth: 5, boderColor: UIColor.gamvesGamvesLightColor)              
        
-        self.collectionView.register(AccountCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
+        self.collectionView.register(AccountCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)        
+        
 
-        _profile.desc = "Profile"
-        _profile.icon = UIImage(named: "identity")!
-        _profile.id = 0
-        self.accountButton.append(_profile)
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_family_exist") {
 
-        _documents.desc = "Documents"
-        _documents.icon = UIImage(named: "document")!
-        _documents.id = 1
-        self.accountButton.append(_documents)
+            _profile.desc = "Profile"
+            _profile.icon = UIImage(named: "identity")!
+            _profile.id = 0
+            self.accountButton.append(_profile)
 
-        _account.desc = "Other Accounts"
-        _account.icon = UIImage(named: "account")!
-        _account.id = 2
-        self.accountButton.append(_account)
+            _account.desc = "Other Accounts"
+            _account.icon = UIImage(named: "account")!
+            _account.id = 2
+            self.accountButton.append(_account)
+
+        } else {
+
+            _family.desc = "Family"
+            _family.icon = UIImage(named: "family_chat")!
+            _family.id = 1
+            self.accountButton.append(_family)
+        }
 
         _tutorial.desc = "Tutorials"
         _tutorial.icon = UIImage(named: "video")!
@@ -265,6 +276,52 @@ class AccountViewController: UIViewController,
         self.collectionView.backgroundColor = UIColor.gamvesLightLightBlueColor
         self.buttonRightView.backgroundColor = UIColor.gamvesLightLightBlueColor        
         self.headerView.backgroundColor = UIColor.gamvesGamvesLightColor
+
+
+         self.floaty.paddingY = 70
+        self.floaty.paddingX = 25                    
+        self.floaty.itemSpace = 30        
+        
+        self.floaty.hasShadow = true
+        self.floaty.buttonColor = UIColor.gamvesColor
+        
+        var addImage = UIImage(named: "add_symbol")
+        addImage = addImage?.maskWithColor(color: UIColor.white)
+        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
+        self.floaty.buttonImage = addImage
+        self.floaty.sizeToFit()
+
+        let itemNewGroup = FloatyItem()
+        var groupAddImage = UIImage(named: "group_add")
+        groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
+        itemNewGroup.icon = groupAddImage
+        itemNewGroup.buttonColor = UIColor.gamvesColor
+        itemNewGroup.titleLabelPosition = .left
+        itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemNewGroup.title = "ADD FAMILY"
+        itemNewGroup.handler = { item in
+            
+            
+        }
+
+        /*let itemSelectGroup = FloatyItem()
+        var groupContactImage = UIImage(named: "account")
+        groupContactImage = groupContactImage?.maskWithColor(color: UIColor.white)
+        itemSelectGroup.icon = groupContactImage
+        itemSelectGroup.buttonColor = UIColor.gamvesColor
+        itemSelectGroup.titleLabelPosition = .left
+        itemSelectGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+        itemSelectGroup.title = "SELECT CONTACT"
+        itemSelectGroup.handler = { item in
+            
+            self.selectContact(group: false)
+        }*/
+        
+        self.floaty.addItem(item: itemNewGroup)  
+        //self.floaty.addItem(item: itemSelectGroup)               
+        self.view.addSubview(self.floaty)
+
+
     }    
 
      func showControllerForSetting(_ setting: Setting) {
@@ -276,18 +333,17 @@ class AccountViewController: UIViewController,
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
 
+
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.setupNavBarButtons()
-        
+        self.setupNavBarButtons()   
      
     }
 
     func setTabbBarIndex(id: Int) {
 
         self.tabBarViewController?.selectedIndex = id
-
     }
 
     func showImagePicker(type:ProfileImagesTypes) {
@@ -336,8 +392,8 @@ class AccountViewController: UIViewController,
     }
     
     @objc func familyLoaded() {
-        self.sonPhotoImageView.image = Global.gamvesFamily.youUser.avatar
-        self.yourLabel.text = Global.gamvesFamily.youUser.name
+        //self.yourPhotoImageView.image = Global.gamvesFamily.youUser.avatar
+        //self.yourLabel.text = Global.gamvesFamily.youUser.name
         self.loadYourProfileInfo()
     }
     
@@ -353,11 +409,25 @@ class AccountViewController: UIViewController,
         
     }
 
+
+    @objc func loadYourDataGromGlobal() {
+
+        self.loadYourProfileInfo()
+        
+    }
+    
+
     func loadYourProfileInfo() {
         
         let queryUser = PFQuery(className:"Profile")
 
         if let userId = PFUser.current()?.objectId {
+
+            let yourGamvesUser = Global.userDictionary[userId] as! GamvesUser
+
+            self.yourPhotoImageView.image = yourGamvesUser.avatar
+
+            self.yourLabel.text = yourGamvesUser.name
         
             queryUser.whereKey("userId", equalTo: userId)
             

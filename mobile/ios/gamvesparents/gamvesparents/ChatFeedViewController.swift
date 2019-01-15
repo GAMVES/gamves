@@ -8,7 +8,7 @@
 import UIKit
 import Parse
 import ParseLiveQuery
-//import Floaty
+import Floaty
 import NVActivityIndicatorView
 
 
@@ -42,7 +42,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         return groupName
     }()
     
-    //var floaty = Floaty(size: 80)
+    var floaty = Floaty(size: 80)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,12 +54,12 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.registerLiveQuery()
 
-        /*self.floaty.paddingY = 15
+        self.floaty.paddingY = 70
         self.floaty.paddingX = 25                    
         self.floaty.itemSpace = 30        
         
         self.floaty.hasShadow = true
-        self.floaty.buttonColor = UIColor.gamvesGreenColor
+        self.floaty.buttonColor = UIColor.gamvesColor
         var addImage = UIImage(named: "add_symbol")
         addImage = addImage?.maskWithColor(color: UIColor.white)
         addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
@@ -70,7 +70,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         var groupAddImage = UIImage(named: "group_add")
         groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
         itemNewGroup.icon = groupAddImage
-        itemNewGroup.buttonColor = UIColor.gamvesGreenColor
+        itemNewGroup.buttonColor = UIColor.gamvesColor
         itemNewGroup.titleLabelPosition = .left
         itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewGroup.title = "NEW GROUP"
@@ -83,7 +83,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         var groupContactImage = UIImage(named: "account")
         groupContactImage = groupContactImage?.maskWithColor(color: UIColor.white)
         itemSelectGroup.icon = groupContactImage
-        itemSelectGroup.buttonColor = UIColor.gamvesGreenColor
+        itemSelectGroup.buttonColor = UIColor.gamvesColor
         itemSelectGroup.titleLabelPosition = .left
         itemSelectGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemSelectGroup.title = "SELECT CONTACT"
@@ -94,7 +94,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.floaty.addItem(item: itemNewGroup)  
         self.floaty.addItem(item: itemSelectGroup)               
-        self.view.addSubview(floaty)*/
+        self.view.addSubview(floaty)
         
         NotificationCenter.default.addObserver(self, selector: #selector(loadChatFeed), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
 
@@ -226,19 +226,11 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         if indexPath.section == 0 {
             
-            var image  = UIImage(named: "family_chat")?.withRenderingMode(.alwaysTemplate)
-            image = image?.maskWithColor(color: UIColor.white)            
-            sectionHeaderView.iconImageView.image = image
-            
-            sectionHeaderView.nameLabel.text = "Family"   
-
-        }  else if indexPath.section == 1 {
-            
             var image  = UIImage(named: "admin_chat")?.withRenderingMode(.alwaysTemplate)
             image = image?.maskWithColor(color: UIColor.white)            
             sectionHeaderView.iconImageView.image = image
             
-            sectionHeaderView.nameLabel.text = "Admin"
+            sectionHeaderView.nameLabel.text = "Admin"           
 
         } else {
 
@@ -246,13 +238,21 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
             
             if has == 1 {
 
+                var image  = UIImage(named: "family_chat")?.withRenderingMode(.alwaysTemplate)
+                image = image?.maskWithColor(color: UIColor.white)            
+                sectionHeaderView.iconImageView.image = image
+                
+                sectionHeaderView.nameLabel.text = "Family" 
+
+            } else if has == 2 {   
+
                 var image  = UIImage(named: "friends")?.withRenderingMode(.alwaysTemplate)
                 image = image?.maskWithColor(color: UIColor.white)            
                 sectionHeaderView.iconImageView.image = image
                 
                 sectionHeaderView.nameLabel.text = "Friends"
 
-            } else if has == 2 {        
+            } else if has == 3 {        
             
                 var image  = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
                 image = image?.maskWithColor(color: UIColor.white)            
@@ -271,13 +271,17 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     {
         var result = 0
 
-        if index == 2 && ChatFeedMethods.chatFeedFriends.count > 0 {           
+        if index == 1 && ChatFeedMethods.chatFeedFamily.count > 0 {           
 
             result = 1
 
-        } else if index == 3 && ChatFeedMethods.chatFeedVideos.count > 0 {
+        } else if index == 2 && ChatFeedMethods.chatFeedFriends.count > 0 {           
 
             result = 2
+
+        } else if index == 3 && ChatFeedMethods.chatFeedVideos.count > 0 {
+
+            result = 3
         }
 
         return result
@@ -289,21 +293,21 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         if section == 0 {
             
-            countItems = ChatFeedMethods.chatFeedFamily.count
-            
-        } else if section == 1 {
-            
-            countItems = ChatFeedMethods.chatFeedAdmin.count  
+            countItems = ChatFeedMethods.chatFeedAdmin.count           
 
         } else {
 
             let has = hasFriendsAndVideSections(index: section)
-            
+
             if has == 1 {
+
+                countItems = ChatFeedMethods.chatFeedFamily.count
+
+            } else if has == 2 {
 
                 countItems = ChatFeedMethods.chatFeedFriends.count
 
-            } else if has == 2 {      
+            } else if has == 3 {      
 
                 countItems = ChatFeedMethods.chatFeedVideos.count                
             }
@@ -329,13 +333,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
 
          if section == 0 {           
 
-            let key: Int = Array(ChatFeedMethods.chatFeedFamily)[index].key
-            chatfeed = ChatFeedMethods.chatFeedFamily[key]!
-            
-        } else if section == 1 {           
-            
             let key: Int = Array(ChatFeedMethods.chatFeedAdmin)[index].key
-            chatfeed = ChatFeedMethods.chatFeedAdmin[key]!
+            chatfeed = ChatFeedMethods.chatFeedAdmin[key]!            
 
         } else {
 
@@ -343,10 +342,15 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
             
             if has == 1 {
 
+                let key: Int = Array(ChatFeedMethods.chatFeedFamily)[index].key
+                chatfeed = ChatFeedMethods.chatFeedFamily[key]!
+
+            } else if has == 2 {      
+
                 let key: Int = Array(ChatFeedMethods.chatFeedFriends)[index].key
                 chatfeed = ChatFeedMethods.chatFeedFriends[key]!
 
-            } else if has == 2 {      
+            } else if has == 3 {      
 
                 let key: Int = Array(ChatFeedMethods.chatFeedVideos)[index].key
                 chatfeed = ChatFeedMethods.chatFeedVideos[key]!   

@@ -192,7 +192,10 @@ class HomeViewController: UIViewController,
         
         NotificationCenter.default.addObserver(self, selector: #selector(familyLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyFamilyLoaded), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(chatFeedLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
+        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_family_exist") {
+
+            NotificationCenter.default.addObserver(self, selector: #selector(chatFeedLoaded), name: NSNotification.Name(rawValue: Global.notificationKeyChatFeed), object: nil)
+        }
         
     }
 

@@ -779,9 +779,8 @@ class Global: NSObject
     {
         // your email validation here...
         return true
-    }
-    
-    
+    }  
+
     static func getFamilyData(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
         self.keySpouseSmall   = "\(self.keySpouse)Small"

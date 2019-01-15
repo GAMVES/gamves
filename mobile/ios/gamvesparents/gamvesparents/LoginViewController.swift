@@ -1380,9 +1380,11 @@ ImagesPickerProtocol {
                         
                         if (resutl != nil) {
                             
+                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
 
-                            completionHandler(true)
-
+                                completionHandler(true)
+                                
+                            })    
                         }
                         
                     })                    
