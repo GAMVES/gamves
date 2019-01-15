@@ -54,5 +54,7 @@ target 'gamvesparents' do
   pod 'YouTubePlayer'
 
   pod 'UITextView+Placeholder'
+
+  pod 'Atributika'
     
 end

@@ -129,6 +129,9 @@ class Global: NSObject
     static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
     
     static var search_engine = "010975053378915722447:h2ob_fkvam0"
+
+    static var recommendations = [GamvesRecommendation]()
+    static var recommendationsVideo = [GamvesRecommendation]()
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
@@ -779,7 +782,32 @@ class Global: NSObject
     {
         // your email validation here...
         return true
-    }  
+    }
+
+    /*static func getYourData()
+    {
+
+        if userId == PFUser.current()?.objectId {
+         
+            print(PFUser.current()?.username)
+
+            if Global.userDictionary[userId] == nil {
+
+                let yourGamvesUser = Global.userDictionary[userId] as GamvesUser
+
+                yourGamvesUser.userObj["pictureSmall"] as! PFFileObject
+
+                pictureSmall.getDataInBackground(block: { (data, error) in
+            
+                    if error == nil {
+
+
+
+                    }
+                })
+            }
+        }       
+    }*/
 
     static func getFamilyData(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
@@ -1687,16 +1715,7 @@ class Global: NSObject
                 }
             }
         })
-    }
-
-    static var userChatColorArray = [        
-        UIColor.init(netHex: 0xf750da),         
-        UIColor.init(netHex: 0xf75050),         
-        UIColor.init(netHex: 0x5c50f7), 
-        UIColor.init(netHex: 0x2eb33e),
-        UIColor.init(netHex: 0x189ea6),
-        UIColor.init(netHex: 0x97a618)        
-    ]
+    }    
 
 
     static func getCurrentViewController() -> UIViewController? {
@@ -1747,6 +1766,82 @@ class Global: NSObject
         let pred = NSPredicate(format:"SELF MATCHES %@", regEx)
         return pred.evaluate(with: email)
     }
+
+
+    static func getGamvesVideoFromObject(videoPF:PFObject, completionHandler : @escaping (_ video:GamvesVideo) -> ()) {
+        
+        let video = GamvesVideo()      
+        
+        video.title                     = videoPF["title"] as! String
+        video.description               = videoPF["description"] as! String
+
+        var videothum = videoPF["thumbnail"] as! PFFileObject
+
+        video.thumbnail                 = videothum
+        video.categoryName              = videoPF["categoryName"] as! String
+        video.videoId                   = videoPF["videoId"] as! Int
+        video.s3_source                 = videoPF["s3_source"] as! String
+        video.ytb_thumbnail_source      = videoPF["ytb_thumbnail_source"] as! String
+        video.ytb_videoId               = videoPF["ytb_videoId"] as! String
+        
+        let dateStr = videoPF["ytb_upload_date"] as! String
+        let dateDouble = Double(dateStr)
+        let date = NSDate(timeIntervalSince1970: dateDouble!)
+        
+        video.ytb_upload_date           = date as Date
+        video.ytb_view_count            = videoPF["ytb_view_count"] as! Int
+        video.ytb_tags                  = videoPF["ytb_tags"] as! [String]
+        
+        let durStr = videoPF["ytb_upload_date"] as! String
+        let durDouble = Double(durStr)
+        video.ytb_duration              = durDouble!
+        
+        video.ytb_categories            = videoPF["ytb_categories"] as! [String]
+        //video.ytb_like_count            = videoPF["ytb_like_count"] as! Int
+        video.order                     = videoPF["order"] as! Int
+        video.fanpageId                 = videoPF["fanpageId"] as! Int
+        
+        video.posterId                  = videoPF["posterId"] as! String
+        video.posterName                = videoPF["poster_name"] as! String
+        
+        video.published                 = videoPF.createdAt as! Date
+        
+        video.videoObj = videoPF
+                                           
+        videothum.getDataInBackground(block: { (data, error) in
+            
+            if error == nil {
+                
+                video.image = UIImage(data: data!)!
+                
+                completionHandler(video)                    
+            }
+
+        }) 
+    }
+
+    static var pastelColorArray = [        
+        UIColor.init(netHex: 0xf6bbf8),         
+        UIColor.init(netHex: 0xbbbef8),         
+        UIColor.init(netHex: 0xc3f8bb), 
+        UIColor.init(netHex: 0xf8f7bb)        
+    ]
+
+    static var auxiliarColorArray = [        
+        UIColor.gamvesTurquezeColor,         
+        UIColor.gamvesCyanColor,         
+        UIColor.gamvesYellowColor, 
+        UIColor.gamvesGreenColor       
+    ]
+
+    static var userChatColorArray = [        
+        UIColor.init(netHex: 0xf750da),         
+        UIColor.init(netHex: 0xf75050),         
+        UIColor.init(netHex: 0x5c50f7), 
+        UIColor.init(netHex: 0x2eb33e),
+        UIColor.init(netHex: 0x189ea6),
+        UIColor.init(netHex: 0x97a618)        
+    ]
     
 }
 

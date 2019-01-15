@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.8.0)
+  - Atributika (4.6.8)
   - AWSCore (2.6.35)
   - AWSS3 (2.6.35):
     - AWSCore (= 2.6.35)
@@ -136,6 +137,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - Atributika
   - AWSS3 (~> 2.6.32)
   - BEMCheckBox
   - Bolts-Swift (from `https://github.com/BoltsFramework/Bolts-Swift`, commit `e9baa72d04521c3b25ef4fa6fef12b340953ee02`)
@@ -162,6 +164,7 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
+    - Atributika
     - AWSCore
     - AWSS3
     - BEMCheckBox
@@ -207,6 +210,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
+  Atributika: 7510276c8c58194244f1b111f1c9b90350bc37a9
   AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
   AWSS3: 282a590bb47e9cd88de24979fb28954399c41c52
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
@@ -236,6 +240,6 @@ SPEC CHECKSUMS:
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 3297e502a6850661c42eabb8749af09dc96850cc
+PODFILE CHECKSUM: 54c54919c4ec7fcb2862f4719aa39fc808ae62c8
 
 COCOAPODS: 1.5.3

@@ -10,6 +10,26 @@ import Foundation
 import UIKit
 import Parse
 
+
+class GamvesRecommendation {
+
+    var objectId = String()
+    var avatar:UIImage?
+    var cover:UIImage?    
+    var referenceId = Int()
+    var title = String()
+    var description = String()
+    var posterName = String()
+    var date = Date()
+    var video = GamvesVideo()
+    var fanpage = GamvesFanpage()
+    var user = GamvesUser()
+    var type = Int()
+    var posterId = String()
+    var isNew = Bool()    
+}
+
+
 class GamvesTrend {
     
     var objectId = String()

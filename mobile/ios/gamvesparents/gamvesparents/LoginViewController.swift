@@ -218,7 +218,7 @@ ImagesPickerProtocol {
     var yourType:PFObject!
     var yourTypeId = Int()    
     var phoneNumber = String()
-    var eventViewController:EventViewController!
+    var recommendationViewController:RecommendationViewController!
 
     var navigationPickerController:UINavigationController!
     

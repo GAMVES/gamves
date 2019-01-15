@@ -41,8 +41,8 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         return launcher
     }()
 
-    lazy var eventViewController: EventViewController = {
-        let event = EventViewController()
+    lazy var recommendationViewController: RecommendationViewController = {
+        let event = RecommendationViewController()
         event.tabBarViewController = self        
         return event
     }()
@@ -81,15 +81,15 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
         }      
 
-        let eventNavController = UINavigationController(rootViewController: eventViewController)
+        let eventNavController = UINavigationController(rootViewController: recommendationViewController)
 
         let homeImage: UIImage = UIImage(named: "home")!.resizedImage(newWidth: 30)
         
         eventNavController.tabBarItem.image = homeImage //UIImage(named: "home")
-        self.eventViewController.tabBarViewController = self            
+        self.recommendationViewController.tabBarViewController = self
 
         let eventTitle = "Home"
-        self.eventViewController.title = eventTitle
+        self.recommendationViewController.title = eventTitle
        
         let homeNavController = UINavigationController(rootViewController: homeViewController)
         homeViewController.initilizeObservers()
