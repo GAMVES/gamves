@@ -856,7 +856,12 @@
 				    });  
 
 				});
-			} 
+			}
+
+		} else if ( source_type == 3 ) { //YOUTUBE FOR RECOMMENDATION
+
+			
+
 		}
 
 		var posterId = request.object.get("posterId");

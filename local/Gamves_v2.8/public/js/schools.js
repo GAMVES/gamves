@@ -126,6 +126,10 @@
                       //Categories
                       var event = new CustomEvent("LoadCategories", { detail: [schoolId,short] });
                       document.dispatchEvent(event);
+
+                      //Welcomes
+                      var event = new CustomEvent("LoadRecommendations", { detail: [schoolId,short] });
+                      document.dispatchEvent(event);                     
                       
                       //Gifts
                       var event = new CustomEvent("LoadGifts", { detail: [schoolId,short] });

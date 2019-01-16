@@ -16,6 +16,7 @@
   <script src="../dist/parse.min.js"></script>    
   <script src="../dist/jquery.bootgrid.min.js"></script>       
   
+  <script type="text/javascript" src="../js/recommendations.js"></script>
   <script type="text/javascript" src="../js/welcomes.js"></script>
   <script type="text/javascript" src="../js/gifts.js"></script>
   <script type="text/javascript" src="../js/videos.js"></script>
@@ -71,10 +72,12 @@
     <br>
     <div id="videos" style="width:90%; margin:0 auto;"></div>   
     <br>
+    <div id="recommendations" style="width:90%; margin:0 auto;"></div>   
+    <br>
     <div id="gifts" style="width:90%; margin:0 auto;"></div>   
     <br>
     <div id="welcomes" style="width:90%; margin:0 auto;"></div>   
-   
+    
 </body>
 
 </html>
@@ -87,7 +90,8 @@
       $("#fanpages").load("fanpages.html");
       $("#videos").load("videos.html");   
       $("#gifts").load("gifts.html");   
-      $("#welcomes").load("welcomes.html");    
+      $("#welcomes").load("welcomes.html"); 
+      $("#recommendations").load("recommendations.html");       
   });
 
 </script>
