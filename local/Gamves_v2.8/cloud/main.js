@@ -889,7 +889,7 @@
 	            
 	            var fs = require('fs');
 	            var youtubedl = require('youtube-dl');
-	            var video = youtubedl('http://www.youtube.com/watch?v='+ytb_videoId, ['--format=18'], { cwd: __dirname }); 
+	            var video = youtubedl('http://www.youtube.com/watch?v=' + ytb_videoId, ['--format=18','--restrict-filenames'], { cwd: __dirname }); 
 
 	            var fs = require('fs');	            
 

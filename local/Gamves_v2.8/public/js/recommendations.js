@@ -12,197 +12,203 @@ document.addEventListener("LoadRecommendations", function(event){
 
       //var schoolACL = new Parse.ACL();
 
-      var queryVideo = new Parse.Query("Videos");             
-      queryVideo.equalTo("type", 3);
-      queryVideo.find({
-        success: function (videos) {                                   
+      loadRecommendation();
 
-            if (videos) {                                 
+      var recommendationLenght = 0;
 
-              videosLenght = videos.length;
-              var dataJson = [];
+      function loadRecommendation()
+      {
 
-              for (var i = 0; i < videosLenght; ++i) 
-              {
-                  item = {};
-                  item["id"] = i+1;
-                  var objectId = videos[i].id;
-                  dataJson.objectId = objectId;
-                  item["objectId"] = objectId;                  
-                  
-                  if (videos[i].get("thumbnail") != undefined){                
-                    var thumbnail = videos[i].get("thumbnail");
-                    item["thumbnail"] = thumbnail._url;
-                  } else {
-                    item["thumbnail"] = "https://dummyimage.com/60x60/286090/ffffff.png&text=NA";
-                  }
-                  
-                  var title = videos[i].get("title");
-                  item["title"] = title;
+        var queryRecommendation = new Parse.Query("Recommendations");             
+        queryRecommendation.equalTo("type", 2);
+        queryRecommendation.find({
+            success: function (recommendation) {                                   
 
-                  var description = videos[i].get("description");
-                  item["description"] = description;
+                if (recommendation) {                                 
 
-                  if (videos[i].get("ytb_thumbnail_source") != undefined){
-                    var source = videos[i].get("ytb_thumbnail_source");
-                    item["source"] = source;
-                  } else {
-                    item["source"] = "https://dummyimage.com/150x60/286090/ffffff.png&text=Not+Available";
-                  }
-                  dataJson.push(item);
-              }                          
+                    recommendationLenght = recommendation.length;
+                var dataJson = [];
 
-              var rowIds = [];
-              var grid = $("#gridRecommendations").bootgrid({                  
-                  templates: {
-                      header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_recommendation\" class=\"loader\"/></div><button id=\"new_recommendation\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Recommendation </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
-                  }, 
-                  caseSensitive: true,
-                  selection: true,
-                  multiSelect: true,                  
-                  formatters: {              
-                    "thumbnail": function (column, row) {
-                        return "<img src=\"" + row.thumbnail + "\" height=\"30\" width=\"30\"/>";
-                    },
-                    "source": function (column, row) {
-                        return "<video src=\"" + row.source + "\" height=\"60\" width=\"150\" type=\"video/mp4\"/>";
-                    },
-                    "commands": function(column, row) {
-                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>&nbsp;" + 
-                               "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;";
-                               
-                    }                   
-                  }                  
-              }).on("selected.rs.jquery.bootgrid", function(e, rows) {
-
-                  rowIds = [];
-                  for (var i = 0; i < rows.length; i++)
-                  {
-                      rowIds.push(rows[i].id);
-                      rowIds.push(rows[i].id);
-                  }
-                  //alert("Select: " + rowIds.join(","));
-              }).on("deselected.rs.jquery.bootgrid", function(e, rows)
-              {
-                  var rowIds = [];
-                  for (var i = 0; i < rows.length; i++)
-                  {
-                      rowIds.push(rows[i].id);
-                  }
-
-              }).on("loaded.rs.jquery.bootgrid", function() {                        
-
-                      $("#loader_recommendation").hide(); 
+                for (var i = 0; i < recommendationLenght; ++i) 
+                {
+                    item = {};
+                    item["id"] = i+1;
+                    var objectId = recommendation[i].id;
+                    dataJson.objectId = objectId;
+                    item["objectId"] = objectId;                  
                     
-                      $( "#new_recommendation" ).unbind("click").click(function() {
-
-                            $("#recommendation_title").text("New Recommendation"); 
-
-                            $('#edit_modal_recommendation').modal('show');
-
-                            //$('#video_spinner').hide();
-
-                            if (videosLenght==0){
-                                $("#edit_order_recommendation").append(($("<option/>", { html: 0 })));                                     
-                            } else {
-                              videosLenght++;
-                              for (var i = 0; i < videosLenght; i++) {                          
-                                $("#edit_order_recommendation").append(($("<option/>", { html: i })));                                     
-                              }    
-                            } 
-
-                            $('#recommendations_viewed_videos').empty();                          
+                    if (recommendation[i].get("thumbnail") != undefined){                
+                        var thumbnail = recommendation[i].get("thumbnail");
+                        item["thumbnail"] = thumbnail._url;
+                    } else {
+                        item["thumbnail"] = "https://dummyimage.com/60x60/286090/ffffff.png&text=NA";
+                    }
                     
-                            let count = otherSchools.length;                           
+                    var title = recommendation[i].get("title");
+                    item["title"] = title;
 
-                            for (var i=0; i<count; i++) {                       
+                    var description = recommendation[i].get("description");
+                    item["description"] = description;
 
-                                let other = otherSchools[i];
+                    if (recommendation[i].get("ytb_thumbnail_source") != undefined){
+                        var source = recommendation[i].get("ytb_thumbnail_source");
+                        item["source"] = source;
+                    } else {
+                        item["source"] = "https://dummyimage.com/150x60/286090/ffffff.png&text=Not+Available";
+                    }
+                    dataJson.push(item);
+                }                          
 
-                                let short = other.short;
-                                let name = other.name;
+                var rowIds = [];
+                var grid = $("#gridRecommendations").bootgrid({                  
+                    templates: {
+                        header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_recommendation\" class=\"loader\"/></div><button id=\"new_recommendation\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Recommendation </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                    }, 
+                    caseSensitive: true,
+                    selection: true,
+                    multiSelect: true,                  
+                    formatters: {              
+                        "thumbnail": function (column, row) {
+                            return "<img src=\"" + row.thumbnail + "\" height=\"30\" width=\"30\"/>";
+                        },
+                        "source": function (column, row) {
+                            return "<video src=\"" + row.source + "\" height=\"60\" width=\"150\" type=\"video/mp4\"/>";
+                        },
+                        "commands": function(column, row) {
+                            return "<button type=\"button\" class=\"btn btn-xs btn-default command-delete\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-trash\"></span></button>&nbsp;" + 
+                                "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;";
+                                
+                        }                   
+                    }                  
+                }).on("selected.rs.jquery.bootgrid", function(e, rows) {
 
-                                $('#recommendations_viewed_videos').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
+                    rowIds = [];
+                    for (var i = 0; i < rows.length; i++)
+                    {
+                        rowIds.push(rows[i].id);
+                        rowIds.push(rows[i].id);
+                    }
+                    //alert("Select: " + rowIds.join(","));
+                }).on("deselected.rs.jquery.bootgrid", function(e, rows)
+                {
+                    var rowIds = [];
+                    for (var i = 0; i < rows.length; i++)
+                    {
+                        rowIds.push(rows[i].id);
+                    }
 
-                            }
-                            
+                }).on("loaded.rs.jquery.bootgrid", function() {                        
 
-                      });  
-                                 
-                    grid.find(".command-edit").unbind("click").on("click", function(e) {
+                        $("#loader_recommendation").hide(); 
+                        
+                        $( "#new_recommendation" ).unbind("click").click(function() {
 
-                      //alert("You pressed edit on row: " + $(this).data("row-id"));
-                      var ele =$(this).parent();
-                      var g_id = $(this).parent().siblings(':first').html();
-                      var g_name = $(this).parent().siblings(':nth-of-type(2)').html();
+                                $("#recommendation_title").text("New Recommendation"); 
 
-                      console.log(g_id);
-                      console.log(g_name);
+                                $('#edit_modal_recommendation').modal('show');
 
-                      //console.log(grid.data());//
-                      $('#edit_modal_video').modal('show');
+                                //$('#video_spinner').hide();
 
-                      if ($(this).data("row-id") >0) {
+                                if (recommendationLenght==0){
+                                    $("#edit_order_recommendation").append(($("<option/>", { html: 0 })));                                     
+                                } else {
+                                    recommendationLenght++;
+                                for (var i = 0; i < recommendationLenght; i++) {                          
+                                    $("#edit_order_recommendation").append(($("<option/>", { html: i })));                                     
+                                }    
+                                } 
 
-                        var f = ele.siblings(':first').html();                        
-                        var a1 = ele.siblings(':nth-of-type(1)').html();
-                        var a2 = ele.siblings(':nth-of-type(2)').html();
-                        var a3 = ele.siblings(':nth-of-type(3)');
-                        var a4 = ele.siblings(':nth-of-type(4)').html();
-                        var a5 = ele.siblings(':nth-of-type(5)').html();
-                        var a6 = ele.siblings(':nth-of-type(6)').html();
-                        var a7 = ele.siblings(':nth-of-type(7)').html();
+                                $('#recommendations_viewed_videos').empty();                          
+                        
+                                let count = otherSchools.length;                           
 
-                        // collect the data
-                        //$('#edit_id').val(ele.siblings(':first').html());                                                
-                        $("#edit_thumbnail").append(a4);
-                        $('#edit_title').val(a5);
-                        $('#edit_description').val(a6);
-                        $('#edit_source').append(a7); 
+                                for (var i=0; i<count; i++) {                       
 
-                        //$("#fanpage_title").text("Edit video - " + a5);                      
+                                    let other = otherSchools[i];
 
-                      } else {
-                         alert('Now row selected! First select row, then click edit button');
-                      }
+                                    let short = other.short;
+                                    let name = other.name;
 
-                  }).end().find(".command-delete").on("click", function(e) {                           
+                                    $('#recommendations_viewed_videos').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
 
-                  }).end().find(".command-video").on("click", function(e) {                                  
+                                }
+                                
 
-                  });
-              });                     
+                        });  
+                                    
+                        grid.find(".command-edit").unbind("click").on("click", function(e) {
 
-            } else {
-                console.log("Nothing found, please try again");
+                        //alert("You pressed edit on row: " + $(this).data("row-id"));
+                        var ele =$(this).parent();
+                        var g_id = $(this).parent().siblings(':first').html();
+                        var g_name = $(this).parent().siblings(':nth-of-type(2)').html();
+
+                        console.log(g_id);
+                        console.log(g_name);
+
+                        //console.log(grid.data());//
+                        $('#edit_modal_recommendation').modal('show');
+
+                        if ($(this).data("row-id") >0) {
+
+                            var f = ele.siblings(':first').html();                        
+                            var a1 = ele.siblings(':nth-of-type(1)').html();
+                            var a2 = ele.siblings(':nth-of-type(2)').html();
+                            var a3 = ele.siblings(':nth-of-type(3)');
+                            var a4 = ele.siblings(':nth-of-type(4)').html();
+                            var a5 = ele.siblings(':nth-of-type(5)').html();
+                            var a6 = ele.siblings(':nth-of-type(6)').html();
+                            var a7 = ele.siblings(':nth-of-type(7)').html();
+
+                            // collect the data
+                            //$('#edit_id').val(ele.siblings(':first').html());                                                
+                            $("#edit_thumbnail").append(a4);
+                            $('#edit_title').val(a5);
+                            $('#edit_description').val(a6);
+                            $('#edit_source').append(a7); 
+
+                            //$("#fanpage_title").text("Edit video - " + a5);                      
+
+                        } else {
+                            alert('Now row selected! First select row, then click edit button');
+                        }
+
+                    }).end().find(".command-delete").on("click", function(e) {                           
+
+                    }).end().find(".command-video").on("click", function(e) {                                  
+
+                    });
+                });                     
+
+                } else {
+                    console.log("Nothing found, please try again");
+                }
+
+                grid.bootgrid("clear");
+                grid.bootgrid("append", dataJson);
+
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
             }
-
-            grid.bootgrid("clear");
-            grid.bootgrid("append", dataJson);
-
-        },
-        error: function (error) {
-            console.log("Error: " + error.code + " " + error.message);
-        }
-    });   
+        });   
       
-    
+    }
        
-       var videoUrl, vId, title, desc, thumbnailUrl, upload_date, view_count, tags, duration, category, like_count;
-       var parseFileThumb;      
+    var videoUrl, vId, title, desc, thumbnailUrl, upload_date, view_count, tags, duration, category, like_count;
+    var parseFileThumb;      
 
-      $( "#btn_edit_recommendation" ).click(function() {
+    $( "#btn_edit_recommendation" ).click(function() {
 
         saveRecommendation();
 
-      });
+    });
 
-      $( "#edit_youtube_check" ).unbind("click").click(function() {
-           
+    $( "#edit_youtube_check_recommendation" ).unbind("click").click(function() {           
 
-         $('#video_spinner').show();   
+        $('#video_spinner').show();   
 
-         videoUrl = $("#edit_youtube_video_id").val();
+         videoUrl = $("#edit_youtube_video_id_recommendation").val();
 
          vId = videoUrl.split("watch?v=")[1];                                              
 
@@ -265,7 +271,7 @@ document.addEventListener("LoadRecommendations", function(event){
                     video.set("title", title);
                     video.set("description", desc);          
 
-                    video.set("categoryName", categoryName);
+                    //video.set("categoryName", categoryName);
 
                     video.set("posterId", userAdmin.id);          
                     video.set("poster_name", userAdmin.get("Name"));          
@@ -295,10 +301,10 @@ document.addEventListener("LoadRecommendations", function(event){
                     var vrnd = Math.floor(100000 + Math.random() * 900000);
                     video.set("videoId", vrnd);              
 
-                    video.set("fanpageObjId", fanpageObj.id);                     
+                    //video.set("fanpageObjId", fanpageObj.id);                     
                     video.set("poster_name", "Gamves Official");                        
 
-                    video.set("source_type", 2);  //YOUTUBE   
+                    video.set("source_type", 3);  //RECOMMENDATION   
 
                     video.set("approved", true);                 
               
@@ -308,7 +314,7 @@ document.addEventListener("LoadRecommendations", function(event){
 
                             var shortArray = [];
 
-                            window.GetCheckedNames("frm_edit_video", short, function(array) {
+                            window.GetCheckedNames("frm_edit_recommendation", short, function(array) {
 
                               shortArray = array;
 
@@ -316,30 +322,31 @@ document.addEventListener("LoadRecommendations", function(event){
                                   
                                   console.log('Video created successful with name: ' + video.get("title"));                         
 
-                                  var Notification = Parse.Object.extend("Notifications");         
-                                  var notification = new Notification();  
+                                  var Recommendation = Parse.Object.extend("Recommendations");         
+                                  var recommendation = new Recommendation();  
 
-                                  notification.set("posterName", userAdmin.get("Name"));
-                                  notification.set("posterAvatar", userAdmin.get("picture"));
+                                  //recommendation.set("posterName", userAdmin.get("Name"));
+                                  //recommendation.set("posterAvatar", userAdmin.get("picture"));
 
-                                  notification.set("title", video.get("title"));
-                                  notification.set("description", video.get("description"));         
-                                  notification.set("cover", video.get("thumbnail"));
-                                  notification.set("referenceId", video.get("videoId"));
-                                  notification.set("date", video.get("createdAt"));
-                                  notification.set("video", video);
+                                  recommendation.set("title", video.get("title"));
+                                  recommendation.set("description", video.get("description"));         
+                                  recommendation.set("cover", video.get("thumbnail"));
+                                  recommendation.set("referenceId", video.get("videoId"));
+                                  recommendation.set("date", video.get("createdAt"));
+                                  recommendation.set("video", video);
+                                  recommendation.set("ytb_thumbnail_source", thumbnailUrl);
 
-                                  notification.set("type", 1);
+                                  recommendation.set("type", 2); // VIDEO
 
-                                  notification.save(null, {
-                                      success: function (savedNotification) {                                      
+                                  recommendation.save(null, {
+                                      success: function (savedReccomendation) {                                      
 
-                                        Parse.Cloud.run("AddAclToNotification", { "roles": shortArray, "notificationId": savedNotification.id });                                     
+                                        Parse.Cloud.run("AddAclToNotification", { "roles": shortArray, "notificationId": savedReccomendation.id });                                     
 
-                                        $('#edit_modal_video').modal('hide');
+                                        $('#edit_modal_recommendation').modal('hide');
 
                                         clearField();
-                                        loadRecommendation(fanpageObj);
+                                        loadRecommendation();
 
                                       },
                                       error: function (response, error) {
