@@ -9,6 +9,7 @@ document.addEventListener("LoadGifts", function(event){
     var GiftName;
     
     loadGifts();    
+    loadOtherSchools(schoolId);
 
     var parseFileThumbanil; 
 

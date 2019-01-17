@@ -3,7 +3,7 @@ document.addEventListener("LoadVideo", function(event){
 
       var fanpageId = event.detail.fanpageId;
       var categoryName = event.detail.categoryName;
-      var schoolId = event.detail.schoolId;     
+      //var schoolId = event.detail.schoolId;     
       var short = event.detail.short;  
 
       var fanpageObj;

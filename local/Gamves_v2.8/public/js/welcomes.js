@@ -9,6 +9,7 @@ document.addEventListener("LoadWelcomes", function(event){
     var WelcomeName;
     
     loadWelcomes();    
+    loadOtherSchools(schoolId);
 
     var parseFileThumbanil;    
 

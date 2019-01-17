@@ -12,6 +12,7 @@ document.addEventListener("LoadRecommendations", function(event){
 
       //var schoolACL = new Parse.ACL();
 
+      loadOtherSchools(schoolId);
       loadRecommendation();
 
       var recommendationLenght = 0;
@@ -120,11 +121,11 @@ document.addEventListener("LoadRecommendations", function(event){
 
                                 $('#recommendations_viewed_videos').empty();                          
                         
-                                let count = otherSchools.length;                           
+                                let count = window.otherSchools.length;                           
 
                                 for (var i=0; i<count; i++) {                       
 
-                                    let other = otherSchools[i];
+                                    let other = window.otherSchools[i];
 
                                     let short = other.short;
                                     let name = other.name;

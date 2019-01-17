@@ -123,21 +123,26 @@
                       selected = rowIds.join(",");
                       selectedItem.push(selected);   
 
+                      var params =  {                           
+                          schoolId: schoolId, 
+                          short: short
+                      };
+
                       //Categories
-                      var event = new CustomEvent("LoadCategories", { detail: [schoolId,short] });
-                      document.dispatchEvent(event);
+                      var eventCategories = new CustomEvent("LoadCategories", { detail: params });
+                      document.dispatchEvent(eventCategories);
 
                       //Welcomes
-                      var event = new CustomEvent("LoadRecommendations", { detail: [schoolId,short] });
-                      document.dispatchEvent(event);                     
+                      var eventRecommendations = new CustomEvent("LoadRecommendations", { detail: params });
+                      document.dispatchEvent(eventRecommendations);                     
                       
                       //Gifts
-                      var event = new CustomEvent("LoadGifts", { detail: [schoolId,short] });
-                      document.dispatchEvent(event); 
+                      var eventGifts = new CustomEvent("LoadGifts", { detail: params });
+                      document.dispatchEvent(eventGifts); 
                       
                       //Welcomes
-                      var event = new CustomEvent("LoadWelcomes", { detail: [schoolId,short] });
-                      document.dispatchEvent(event);                     
+                      var eventWelcomes = new CustomEvent("LoadWelcomes", { detail: params });
+                      document.dispatchEvent(eventWelcomes);                     
 
                   }).on("deselected.rs.jquery.bootgrid", function(e, rows)
                   {
@@ -644,33 +649,36 @@
 
     window.loadOtherSchools = function(schoolId)
     {  
-        let queryOtherSchools = new Parse.Query("Schools");  
-        queryOtherSchools.notEqualTo("objectId", schoolId);          
-        queryOtherSchools.find({
-            success: function (schools) {
+        if ( window.otherSchools.length == 0 ) {
 
-                if (schools.length>0)
-                {
-                    var count = schools.length;                  
+          let queryOtherSchools = new Parse.Query("Schools");  
+          queryOtherSchools.notEqualTo("objectId", schoolId);          
+          queryOtherSchools.find({
+              success: function (schools) {
 
-                    for (var i=0; i<count; i++) {                       
+                  if (schools.length>0)
+                  {
+                      var count = schools.length;                  
 
-                        var school = schools[i];
+                      for (var i=0; i<count; i++) {                       
 
-                        let shortName = school.get("short");
-                        let schoolName = school.get("name");
+                          var school = schools[i];
 
-                        var other = { short: shortName, name: schoolName };
+                          let shortName = school.get("short");
+                          let schoolName = school.get("name");
 
-                        otherSchools.push(other);                  
+                          var other = { short: shortName, name: schoolName };
 
-                    }
-                }
-            },
-            error: function (error) {
-                console.log("Error: " + error.code + " " + error.message);
-            }
-        });
+                          otherSchools.push(other);                  
+
+                      }
+                  }
+              },
+              error: function (error) {
+                  console.log("Error: " + error.code + " " + error.message);
+              }
+          });
+        }
     }
 
     window.GetCheckedNames = function(formname, short, callback) {        

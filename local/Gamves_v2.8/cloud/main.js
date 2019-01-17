@@ -752,18 +752,17 @@
 		var removed = request.object.get("removed");
 		var source_type = request.object.get("source_type");
 		var folder = request.object.get("folder");
-
+		var videoId = request.object.get("videoId");
 
 		if ( source_type == 1 ) { //LOCAL
 
 			saveFanpage(request, function(){});
 
-		} else if ( source_type == 2 ) { //YOUTUBE
+		} else if ( source_type == 2 || source_type == 3 ) { //YOUTUBE
 
 			if (!removed && downloaded) {
 
-				var ytb_videoId = request.object.get("ytb_videoId");
-				//var videoFile = "download/" + ytb_videoId + ".mp4";
+				var ytb_videoId = request.object.get("ytb_videoId");				
 				var videoFile = ytb_videoId + ".mp4";
 				var fs = require('fs'); 
 			    fs.unlinkSync(videoFile);
@@ -784,85 +783,81 @@
 
 				//-- Save video relation into fanpage
 
-				saveFanpage(request, function() {
+				if (source_type == 2) {
+					saveFanpage(request, function(){});
+				}
 
-					var queryConfig = new Parse.Query("Config");				   
-				    queryConfig.find({
-				        useMasterKey: true,
-				        success: function(results) {
+				var queryConfig = new Parse.Query("Config");				   
+			    queryConfig.find({
+			        useMasterKey: true,
+			        success: function(results) {
 
-				        	if( results.length > 0) 
-				        	{
+			        	if( results.length > 0) 
+			        	{
 
-								var configObject = results[0];
-								
-								var serverUrl = configObject.get("server_url");
-								var _appId = configObject.get("app_id");
-								var _mKey = configObject.get("master_key");
+							var configObject = results[0];
+							
+							var serverUrl = configObject.get("server_url");
+							var _appId = configObject.get("app_id");
+							var _mKey = configObject.get("master_key");
 
-								var vId       = request.object.get("ytb_videoId");
-								var pfVideoId = request.object.id;
+							var vId       = request.object.get("ytb_videoId");
+							var pfVideoId = request.object.id;
 
-								var paramsDownload =  {
-									"ytb_videoId": vId,
-							        "objectId": pfVideoId
+							var paramsDownload =  {
+								"ytb_videoId": vId,
+						        "objectId": pfVideoId
+						    };
+
+							downloadVideo(paramsDownload, function(resutl){
+
+								var videoName = resutl.videoName;
+								var videoObject = resutl.videoObject;
+
+								var thumbSource = videoObject.get("ytb_thumbnail_source");
+
+								var paramsUpload =  {
+									"videoName": videoName,
+							        "folder" : folder 
 							    };
 
-								downloadVideo(paramsDownload, function(resutl){
+								uploadVideo(paramsUpload, function(resutl){
 
-									var videoName = resutl.videoName;
-									var videoObject = resutl.videoObject;
+									var s3bucket = resutl.s3bucket;
+									var s3endpoint = resutl.s3endpoint;
 
-									var thumbSource = videoObject.get("ytb_thumbnail_source");
+									Parse.Cloud.httpRequest({url: thumbSource}).then(function(httpResponse) {
+                  
+				                       var imageBuffer = httpResponse.buffer;
+				                       var base64 = imageBuffer.toString("base64");
+				                       var file = new Parse.File(ytb_videoId+".jpg", { base64: base64 });                    
+				                       var baseUrl = "https://s3.amazonaws.com/" + s3bucket; 
+				                       var uploadedUrl = baseUrl + "/" + videoName; 
 
-									var paramsUpload =  {
-										"videoName": videoName,
-								        "folder" : folder 
-								    };
+				                       videoObject.save({                             
+				                          removed: false, 
+				                          thumbnail: file,
+				                          s3_source: uploadedUrl,
+				                          downloaded: true,
+				                          source_type: source_type
+				                        }, { useMasterKey: true } );                
 
-									uploadVideo(paramsUpload, function(resutl){
 
-										var s3bucket = resutl.s3bucket;
-										var s3endpoint = resutl.s3endpoint;
-
-										Parse.Cloud.httpRequest({url: thumbSource}).then(function(httpResponse) {
-	                  
-					                       var imageBuffer = httpResponse.buffer;
-					                       var base64 = imageBuffer.toString("base64");
-					                       var file = new Parse.File(ytb_videoId+".jpg", { base64: base64 });                    
-					                       var baseUrl = "https://s3.amazonaws.com/" + s3bucket; 
-					                       var uploadedUrl = baseUrl + "/" + videoName; 
-
-					                       videoObject.save({                             
-					                          removed: false, 
-					                          thumbnail: file,
-					                          s3_source: uploadedUrl,
-					                          downloaded: true,
-					                          source_type: 2
-					                        }, { useMasterKey: true } );   
-					                                                            
-					                  	}, function(error) {                    
-					                      console.log("Error downloading thumbnail"); 
-					                  	});
-
-									});
+				                  	}, function(error) {                    
+				                      console.log("Error downloading thumbnail"); 
+				                  	});
 
 								});
-						    } 
-				        },
-				        error: function(error) {						            
-				            console.log(error);
-				        }
-				    });  
 
-				});
+							});
+					    } 
+			        },
+			        error: function(error) {						            
+			            console.log(error);
+			        }
+			    });  				
 			}
-
-		} else if ( source_type == 3 ) { //YOUTUBE FOR RECOMMENDATION
-
-			
-
-		}
+		} 
 
 		var posterId = request.object.get("posterId");
 
@@ -917,17 +912,7 @@
 
 	    });	
 
-	};
-	
-	/*function checkDirectory(directory, fs, callback) {  	  	  
-	  fs.stat(directory, function(err, stats) {	    
-	    if (err && err.errno === 34) {	      
-	      fs.mkdir(directory, callback);
-	    } else {	      
-	      callback(err)
-	    }
-	  });
-	}*/
+	};	
 
 	function uploadVideo(params, callback) {
 
@@ -1004,6 +989,28 @@
 	        }
 	    });
 	}
+
+    // --
+	// Save Recommendations download thumbnail
+
+	Parse.Cloud.afterSave("Recommendations", function(request) {
+
+		var ytb_thumbnail_source = request.object.get("ytb_thumbnail_source");
+
+		Parse.Cloud.httpRequest({url: ytb_thumbnail_source}).then(function(httpResponse) {
+                  
+	    	var imageBuffer = httpResponse.buffer;
+	       	var base64 = imageBuffer.toString("base64");
+	       	var file = new Parse.File(request.object.id+".jpg", { base64: base64 });   
+
+	       	request.object.set("thumbnail", file);            
+	       	request.object.save(null, { useMasterKey: true } );     
+
+
+	  	}, function(error) {                    
+	      console.log("Error downloading thumbnail"); 
+	  	});
+	});
 
 
 	// --
@@ -1606,63 +1613,9 @@
 
 							}
 						}
-					}	  
-					
+					}	  					
 
 				});
-
-
-				/*--
-
-				//- Fanpage Targets // Only when there is data
-
-				let posterFanpageQuery = new Parse.Query("Fanpages");		
-				posterFanpageQuery.equalTo("posterId", posterId);			
-			    posterFanpageQuery.find().then(function(posterFanpagesPF) {
-			    	let count = posterFanpagesPF.length;		
-					for (let i=0; i<count; i++) {
-						let fanpagePF = posterFanpagesPF[i];
-						fanpagePF.get("target").add(friendId);
-						fanpagePF.save(null, {useMasterKey: true});
-					}
-			    });
-
-			    let friendFanpageQuery = new Parse.Query("Fanpages");		
-				friendFanpageQuery.equalTo("posterId", friendId);			
-			    friendFanpageQuery.find().then(function(friendFanpagesPF) {
-			    	let count = friendFanpagesPF.length;		
-					for (let i=0; i<count; i++) {
-						let fanpagePF = friendFanpagesPF[i];
-						fanpagePF.get("target").add(posterId);
-						fanpagePF.save(null, {useMasterKey: true});
-					}
-			    });
-
-			    //- Video Targets
-
-			    let posterVideoQuery = new Parse.Query("Videos");		
-				posterVideoQuery.equalTo("posterId", posterId);			
-			    posterVideoQuery.find().then(function(posterVideosPF) {
-			    	let count = posterVideosPF.length;		
-					for (let i=0; i<count; i++) {
-						let videoPF = posterVideosPF[i];
-						videoPF.get("target").add(friendId);
-						videoPF.save(null, {useMasterKey: true});
-					}
-			    });
-
-			    let friendVideoQuery = new Parse.Query("Videos");		
-				friendVideoQuery.equalTo("posterId", friendId);			
-			    friendVideoQuery.find().then(function(friendVideosPF) {
-			    	let count = friendVideosPF.length;		
-					for (let i=0; i<count; i++) {
-						let videoPF = friendVideosPF[i];
-						videoPF.get("target").add(posterId);
-						videoPF.save(null, {useMasterKey: true});
-					}
-			    });		  
-
-			    --*/  
 			}
 
 		});
