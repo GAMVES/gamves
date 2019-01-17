@@ -1,0 +1,9 @@
+Amazon Gift Card
+Win an amazon gift and choose a product online.
+points: 10000
+price: 10
+
+Fortnite V-Bucks
+Win an amazon gift and choose a product online.
+points: 12000
+price: 12
