@@ -131,7 +131,7 @@ class Global: NSObject
     static var search_engine = "010975053378915722447:h2ob_fkvam0"
 
     static var recommendations = [GamvesRecommendation]()
-    static var recommendationsVideo = [GamvesRecommendation]()
+    static var recommendationsVideo = [GamvesRecommendation]()  
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
@@ -1075,9 +1075,7 @@ class Global: NSObject
                                                     count = count + 1
                                                 }
                                             })
-
-                                        }
-                                        
+                                        }                                        
                                     })
                                     
                                     

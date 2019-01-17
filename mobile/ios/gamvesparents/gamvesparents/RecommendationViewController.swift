@@ -67,32 +67,34 @@ UICollectionViewDelegateFlowLayout {
         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor   
 
         self.registerLiveQuery()
-        self.fetchRecommendations()    
+
+        self.fetchRecommendations(completionHandler: { ( resutl ) -> () in    
+
+            if resutl {
+
+                self.activityView.stopAnimating()
+
+                self.collectionView.reloadData()
+            }
+        })
 
     }
 
     func registerLiveQuery()
     {
-        queryRecommendation = PFQuery(className: "Recommendations")
-        
-        //if let userId = PFUser.current()?.objectId {
-        
-            //let filterTarget = [
-            //    Global.schoolShort,
-            //    Global.levelDescription.lowercased(),
-            //    userId] as [String]
-
-            //queryRecommendation.whereKey("target", containedIn: filterTarget)
-        //}
+        queryRecommendation = PFQuery(className: "Recommendations")   
         
         self.subscription = liveQueryClientFeed.subscribe(queryRecommendation).handle(Event.created) { _, notification in            
             
-            self.fetchRecommendations()
+            self.fetchRecommendations(completionHandler: { ( resutl ) -> () in    
+
+                if resutl {
+
+                    self.activityView.stopAnimating()
+                }
+            })
             
-        }        
-        
-        //self.collectionView.reloadData()
-        
+        }             
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -370,7 +372,7 @@ UICollectionViewDelegateFlowLayout {
         }        
     }
 
-    func fetchRecommendations()
+    func fetchRecommendations(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
     
         self.activityView.startAnimating()
@@ -386,89 +388,89 @@ UICollectionViewDelegateFlowLayout {
 
                     var count = 0
                     
-                    for recommendationPF in recommendationsPF! {
+                    for recPF in recommendationsPF! {
                    
                         let recommendation = GamvesRecommendation()
 
-                        recommendation.objectId = recommendationPF.objectId as! String
-                        recommendation.title = recommendationPF["title"] as! String
+                        recommendation.objectId = recPF.objectId as! String
+                        recommendation.title = recPF["title"] as! String
                         
-                        if recommendationPF["referenceId"] != nil {
-                            recommendation.referenceId = recommendationPF["referenceId"] as! Int
+                        var referenceId = 0
+
+                        if recPF["referenceId"] != nil {
+                            referenceId = recPF["referenceId"] as! Int
+                            recommendation.referenceId = referenceId
                         }
 
-                        recommendation.description = recommendationPF["description"] as! String
-                        ////recommendation.posterName = recommendationPF["posterName"] as! String
-                        recommendation.date = recommendationPF["date"] as! Date
+                        recommendation.description = recPF["description"] as! String
+                        ////recommendation.posterName = recPF["posterName"] as! String
+                        recommendation.date = recPF["date"] as! Date
                         
                         if Calendar.current.isDateInToday(recommendation.date) {
                             recommendation.isNew = true
                         }
                         
-                        recommendation.posterId = recommendationPF["posterId"] as! String
+                        //recommendation.posterId = recPF["posterId"] as! String
 
-                        let type =  recommendationPF["type"] as? Int 
-
-                        if type == 1 { //recommendation
-
-                            
-                            
-                        } else if type == 2 { //Video
-
-                            let videoGamves = GamvesVideo()
-                            let videoObj:PFObject = recommendationPF["video"] as! PFObject
-
-                            do {
-                                try videoObj.fetchIfNeeded()
-                            } catch _ {
-                               print("There was an error fetching video poiner")         
-                            }
-
-                            videoGamves.videoObj = videoObj
-                            recommendation.video = videoGamves
-                            print(videoObj["title"] as! String)
-                        
-                        } 
+                        let type =  recPF["type"] as? Int                         
  
-                        if let objectId:String = recommendationPF.objectId {
+                        if let objectId:String = recPF.objectId {
                             recommendation.objectId = objectId   
                         }               
 
-                        recommendation.type = type!
-                        
-                        var cover:AnyObject!                        
+                        recommendation.type = type!                    
 
-                        if recommendationPF["cover"] != nil {
-                            cover = recommendationPF["cover"] as! PFFileObject
-                        }                        
+                        let thumbnail = recPF["thumbnail"] as! PFFileObject
 
-                        let avatar = recommendationPF["posterAvatar"] as! PFFileObject
-
-                        avatar.getDataInBackground(block: { (imageAvatar, error) in
+                        thumbnail.getDataInBackground(block: { (imageAvatar, error) in
                 
                             if error == nil {
 
                                 if let imageAvatarData = imageAvatar {
 
-                                    recommendation.avatar = UIImage(data:imageAvatarData)  
-
-                                    if cover != nil {
-
-                                        cover!.getDataInBackground(block: { (imageCover, error) in
+                                    recommendation.avatar = UIImage(data:imageAvatarData) 
                     
-                                            if error == nil {
+                                    //GET RELATIONS
 
-                                                if let imageCoverData = imageCover {
+                                    if type == 1 { //recommendation
+            
+            
+                                    } else if type == 2 { //Video
 
-                                                    recommendation.cover = UIImage(data:imageCoverData)                                                    
+                                        //Relation query not working
+                                        let videoRelation = recPF.relation(forKey: "video") as PFRelation                
+                                        let videoMembers = videoRelation.query()                                        
+                                        videoMembers.findObjectsInBackground(block: { (videosPF, error) in
 
-                                                    count = count + 1
-                                                }
+                                            if error == nil
+                                            {     
+
+                                                let countVideos =  videosPF!.count
+
+                                                print(countVideos)
+
+                                                for videoPF in videosPF! {
+
+                                                    Global.getGamvesVideoFromObject(videoPF: videoPF!, completionHandler: { (videoGamves) in
+                
+                                                        let reference = recPF["refernce"] as! Int
+                                                        
+                                                        Global.chatVideos[reference] = videoGamves
+
+                                                        recommendation.video = videoGamves
+
+                                                        if (count == (recosCount! - 1) )  {
+
+                                                            completionHandler(true)
+
+                                                        }
+
+                                                        count = count + 1
+                                                    })      
+                                                }                           
                                             }
-                                        })
-
-                                    } 
-
+                                        })                                                
+                                    }
                                 }
                             }
                         })
