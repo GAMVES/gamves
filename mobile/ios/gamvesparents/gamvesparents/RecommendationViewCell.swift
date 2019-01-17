@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RecommendationViewCell: UICollectionViewCell {
+class RecommendationViewCell: BaseCell {
 
 
     //- Thumbnail view

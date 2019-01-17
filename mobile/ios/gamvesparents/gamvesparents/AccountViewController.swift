@@ -300,8 +300,25 @@ class AccountViewController: UIViewController,
         itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewGroup.title = "ADD FAMILY"
         itemNewGroup.handler = { item in
+                        
+            let title = "Add family members"
+            var message = "\n\nYou are about to add your family members including your son or daughter and partner. Please provide their information accordingly.  \n\n"                                                            
             
+            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
             
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
+
+                DispatchQueue.main.async
+                {
+                    self.showImagePicker(type: ProfileImagesTypes.Son)
+
+                    Global.defaults.set(true, forKey: "\(self.puserId)_picker_shown")
+                }
+                
+            }))
+            
+            self.present(alert, animated: true)             
+
         }
 
         /*let itemSelectGroup = FloatyItem()

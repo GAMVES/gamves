@@ -218,7 +218,38 @@ class GamvesGender
     var female =  Bool()
 }
 
-class GamvesVideo
+
+
+class GamvesVideo {
+
+    var authorized = Bool()
+    var title = String()
+    var description = String()
+    var videoId = Int()
+    var categoryName = String()
+    var thumbnail:PFFileObject?
+    var s3_source = String()        
+    var ytb_thumbnail_source = String()
+    var ytb_videoId = String()
+    var ytb_upload_date = Date()
+    var ytb_view_count = Int()
+    var ytb_tags = [String]()
+    var ytb_duration = Double()
+    var ytb_categories = [String]()
+    //var ytb_like_count = Int()
+    var order = Int()
+    var fanpageId = Int()
+    var image = UIImage()
+    var videoObj:PFObject?
+    var posterId = String()
+    var posterName = String()
+    var posterImage = UIImage()
+    var published = Date()
+    var checked = Bool()
+
+}
+
+/*class GamvesVideo
 {    
     var title = String()
     var description = String()
@@ -250,7 +281,7 @@ class GamvesVideo
 
     var published = Date()
 
-}
+}*/
 
 class GamvesCategory
 {

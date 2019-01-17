@@ -158,7 +158,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     func appendVideoToHistoryAndCount(history: HistoryGamves){
         
-        history.videoGamves.thumbnail.getDataInBackground { (data, error) in
+        history.videoGamves.thumbnail!.getDataInBackground { (data, error) in
             
             if error == nil {
                 

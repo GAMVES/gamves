@@ -1541,14 +1541,14 @@ class Global: NSObject
         
         if videoPF["ytb_source"] != nil {
         
-            videoGamves.ytb_source = videoPF["ytb_source"] as! String
+            videoGamves.s3_source = videoPF["ytb_source"] as! String
             videoGamves.ytb_thumbnail_source = videoPF["ytb_thumbnail_source"] as! String
             
-            videoGamves.ytb_upload_date = videoPF["ytb_upload_date"] as! String     
+            videoGamves.ytb_upload_date = videoPF["ytb_upload_date"] as! Date
             videoGamves.ytb_view_count = videoPF["ytb_view_count"] as! Int 
 
             videoGamves.ytb_tags = videoPF["ytb_tags"] as! [String]
-            videoGamves.ytb_duration = videoPF["ytb_duration"] as! String     
+            videoGamves.ytb_duration = videoPF["ytb_duration"] as! Double
             videoGamves.ytb_categories = videoPF["ytb_categories"] as! [String]
 
             //videoGamves.ytb_like_count = video["ytb_like_count"] as! Int
@@ -1786,7 +1786,7 @@ class Global: NSObject
         
         let dateStr = videoPF["ytb_upload_date"] as! String
         let dateDouble = Double(dateStr)
-        let date = NSDate(timeIntervalSince1970: dateDouble!)
+        let date = NSDate(timeIntervalSince1970: dateDouble!) as Date
         
         video.ytb_upload_date           = date as Date
         video.ytb_view_count            = videoPF["ytb_view_count"] as! Int

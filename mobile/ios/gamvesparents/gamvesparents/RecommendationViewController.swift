@@ -64,13 +64,16 @@ UICollectionViewDelegateFlowLayout {
 
         self.collectionView.register(RecommendationSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
 
-        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor       
+        self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor   
+
+        self.registerLiveQuery()
+        self.fetchRecommendations()    
 
     }
 
     func registerLiveQuery()
     {
-        queryRecommendation = PFQuery(className: "Notifications")
+        queryRecommendation = PFQuery(className: "Recommendations")
         
         //if let userId = PFUser.current()?.objectId {
         
@@ -84,7 +87,7 @@ UICollectionViewDelegateFlowLayout {
         
         self.subscription = liveQueryClientFeed.subscribe(queryRecommendation).handle(Event.created) { _, notification in            
             
-            self.fetchNotification()
+            self.fetchRecommendations()
             
         }        
         
@@ -164,25 +167,25 @@ UICollectionViewDelegateFlowLayout {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! RecommendationViewCell
 
         let index = indexPath.item
-        var notification = GamvesRecommendation()
+        var recommendation = GamvesRecommendation()
         
         print(indexPath.section)
         
         if indexPath.section == 0 {
             
-            notification = Global.recommendations[index]
+            recommendation = Global.recommendations[index]
             
         } else if indexPath.section == 1 {
             
-            notification = Global.recommendationsVideo[index]
+            recommendation = Global.recommendationsVideo[index]
             
         }
 
-        if notification.type == 2 {
+        if recommendation.type == 2 {
             cell.setThumbnailSize()
         }
 
-        var message:String = notification.description
+        var message:String = recommendation.description
 
         let delimitator = Global.admin_delimitator
 
@@ -196,57 +199,30 @@ UICollectionViewDelegateFlowLayout {
 
         cell.descriptionTextView.text = message
         
-        cell.userProfileImageView.image = notification.avatar       
+        cell.userProfileImageView.image = recommendation.avatar       
 
-        if notification.type == 1 { //video
+        if recommendation.type == 1 { //recommendation
 
-            cell.thumbnailImageView.image = notification.cover
+                
+
+        } else if recommendation.type == 2 { //video
+
+            cell.thumbnailImageView.image = recommendation.cover
             cell.iconImageView.image = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
             cell.iconView.backgroundColor = UIColor.blue     
-
-        } else if notification.type == 2 { //fanpage
-
-            cell.thumbnailImageView.isHidden = true
-            cell.iconImageView.image = UIImage(named: "like")?.withRenderingMode(.alwaysTemplate)
-            cell.iconView.backgroundColor = UIColor.red
-
-        } else if notification.type == 3 { //friend
-
-            cell.thumbnailImageView.isHidden = true
-            cell.iconImageView.image = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate)                                    
-            cell.iconView.backgroundColor = UIColor.green
-            
-        } else if notification.type == 4 { //birthday
-
-            cell.thumbnailImageView.isHidden = true           
-            cell.iconImageView.image = UIImage(named: "birthday")?.withRenderingMode(.alwaysTemplate)                                     
-            cell.iconView.backgroundColor = UIColor.magenta
-            
-        } else if notification.type == 5 { //notification
-
-            cell.thumbnailImageView.isHidden = true
-            cell.iconImageView.image = UIImage(named: "notification")?.withRenderingMode(.alwaysTemplate)                                    
-            cell.iconView.backgroundColor = UIColor.gamvesLightBlueColor
-
-        } else if notification.type == 6 { //welcome
-
-            cell.thumbnailImageView.image = notification.cover
-            cell.iconImageView.image = UIImage(named: "smile")?.withRenderingMode(.alwaysTemplate)                                     
-            cell.iconView.backgroundColor = UIColor.gamvesLightBlueColor
-
-        }
+        } 
 
         let b = Style("b").font(.boldSystemFont(ofSize: 18))       
-        cell.posterLabel.attributedText = notification.title.style(tags: b).attributedString
+        cell.posterLabel.attributedText = recommendation.title.style(tags: b).attributedString
         
-        cell.descriptionTextView.text = notification.description
+        cell.descriptionTextView.text = recommendation.description
         
         var image = String()
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mm a"
         
-        let elapsedTimeInSeconds = Date().timeIntervalSince(notification.date)
+        let elapsedTimeInSeconds = Date().timeIntervalSince(recommendation.date)
         
         let secondInDays: TimeInterval = 60 * 60 * 24
         
@@ -256,7 +232,7 @@ UICollectionViewDelegateFlowLayout {
             dateFormatter.dateFormat = "EEE"
         }
 
-        cell.timeLabel.text = notification.date.elapsedTime       
+        cell.timeLabel.text = recommendation.date.elapsedTime       
 
         //GRADIENT
 
@@ -394,49 +370,53 @@ UICollectionViewDelegateFlowLayout {
         }        
     }
 
-    func fetchNotification()
+    func fetchRecommendations()
     {
     
         self.activityView.startAnimating()
         
-        queryRecommendation.findObjectsInBackground(block: { (notifications, error) in
+        queryRecommendation.findObjectsInBackground(block: { (recommendationsPF, error) in
             
             if error == nil
             {
                 
-                let notificationsCount = notifications?.count
-                if notificationsCount! > 0
+                let recosCount = recommendationsPF?.count
+                if recosCount! > 0
                 {
 
                     var count = 0
                     
-                    for notificationPF in notifications! {
+                    for recommendationPF in recommendationsPF! {
                    
-                        let notification = GamvesNotification()
+                        let recommendation = GamvesRecommendation()
 
-                        notification.objectId = notificationPF.objectId as! String
-                        notification.title = notificationPF["title"] as! String
+                        recommendation.objectId = recommendationPF.objectId as! String
+                        recommendation.title = recommendationPF["title"] as! String
                         
-                        if notificationPF["referenceId"] != nil {
-                            notification.referenceId = notificationPF["referenceId"] as! Int
+                        if recommendationPF["referenceId"] != nil {
+                            recommendation.referenceId = recommendationPF["referenceId"] as! Int
                         }
 
-                        notification.description = notificationPF["description"] as! String
-                        notification.posterName = notificationPF["posterName"] as! String
-                        notification.date = notificationPF["date"] as! Date
+                        recommendation.description = recommendationPF["description"] as! String
+                        ////recommendation.posterName = recommendationPF["posterName"] as! String
+                        recommendation.date = recommendationPF["date"] as! Date
                         
-                        if Calendar.current.isDateInToday(notification.date) {
-                            notification.isNew = true
+                        if Calendar.current.isDateInToday(recommendation.date) {
+                            recommendation.isNew = true
                         }
                         
-                        notification.posterId = notificationPF["posterId"] as! String
+                        recommendation.posterId = recommendationPF["posterId"] as! String
 
-                        let type =  notificationPF["type"] as? Int 
+                        let type =  recommendationPF["type"] as? Int 
 
-                        if type == 1 { //video
+                        if type == 1 { //recommendation
+
+                            
+                            
+                        } else if type == 2 { //Video
 
                             let videoGamves = GamvesVideo()
-                            let videoObj:PFObject = notificationPF["video"] as! PFObject
+                            let videoObj:PFObject = recommendationPF["video"] as! PFObject
 
                             do {
                                 try videoObj.fetchIfNeeded()
@@ -445,57 +425,24 @@ UICollectionViewDelegateFlowLayout {
                             }
 
                             videoGamves.videoObj = videoObj
-                            notification.video = videoGamves
+                            recommendation.video = videoGamves
                             print(videoObj["title"] as! String)
-                            
-                        } else if type == 2 { //Fanpage
-                            
-                            let fanpageGamves = GamvesFanpage()
-                            let fanpageObj = notificationPF["fanpage"] as? PFObject
-
-                            do {
-                                try fanpageObj?.fetchIfNeeded()
-                            } catch _ {
-                               print("There was an error fetching fanpage poiner")         
-                            }
-
-                            fanpageGamves.fanpageObj = fanpageObj
-                            notification.fanpage = fanpageGamves
                         
-                        } else if type == 3 { //Friend
-
-                            //Load friends again    
-                            if let userId = PFUser.current()?.objectId {    
-
-                                Global.getFriendsAmount(posterId: userId, completionHandler: { ( countFriends ) -> () in  })
-                            }
-
-                            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: self)
-
-                        } else if notification.type == 4 { //Birthday
-
-
-                        } else if notification.type == 5 { //Notification    
-
-
-                        } else if notification.type == 6 { //Welcome
-
-                        }
-
+                        } 
  
-                        if let objectId:String = notificationPF.objectId {
-                            notification.objectId = objectId   
+                        if let objectId:String = recommendationPF.objectId {
+                            recommendation.objectId = objectId   
                         }               
 
-                        notification.type = type!
+                        recommendation.type = type!
                         
                         var cover:AnyObject!                        
 
-                        if notificationPF["cover"] != nil {
-                            cover = notificationPF["cover"] as! PFFileObject
+                        if recommendationPF["cover"] != nil {
+                            cover = recommendationPF["cover"] as! PFFileObject
                         }                        
 
-                        let avatar = notificationPF["posterAvatar"] as! PFFileObject
+                        let avatar = recommendationPF["posterAvatar"] as! PFFileObject
 
                         avatar.getDataInBackground(block: { (imageAvatar, error) in
                 
@@ -503,7 +450,7 @@ UICollectionViewDelegateFlowLayout {
 
                                 if let imageAvatarData = imageAvatar {
 
-                                    notification.avatar = UIImage(data:imageAvatarData)  
+                                    recommendation.avatar = UIImage(data:imageAvatarData)  
 
                                     if cover != nil {
 
@@ -513,21 +460,14 @@ UICollectionViewDelegateFlowLayout {
 
                                                 if let imageCoverData = imageCover {
 
-                                                    notification.cover = UIImage(data:imageCoverData)
-
-                                                    self.storeNotification(count: count, notificationsCount: notificationsCount!, notification: notification)
+                                                    recommendation.cover = UIImage(data:imageCoverData)                                                    
 
                                                     count = count + 1
                                                 }
                                             }
                                         })
 
-                                    } else {
-
-                                        self.storeNotification(count: count, notificationsCount: notificationsCount!, notification: notification)
-
-                                        count = count + 1
-                                    }
+                                    } 
 
                                 }
                             }
