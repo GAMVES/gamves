@@ -110,8 +110,10 @@
 				adminLogged = userUpdatedPF;
 
 				//GamvesDev
-				var app_id 			= "PJwimi4PtpAKCpt8UAnDA0QBh5FHLhENew6YQLyI";
-				var master_key		= "G8tmbgWc7u2YOZjN1ZhzYPaMHEnoKAAVFHUwn1ot";
+				var app_id 			= "DinPu5dG42HU12QxN50ES4GVjk1NysN4WXUSy2L5";
+				var master_key		= "nfGsBeYvQzd91gN2b7TsBalU63LtFitSDilU5yV0";
+				var rest_api 		= "gHSkASeguRjV6M7wu1UrIeePRssQkF7ejzKpGLc2";
+				
 				var server_url 		= "https://parseapi.back4app.com";											
 				
 				var hasIcon 		= false;
@@ -123,6 +125,7 @@
 				config.set("server_url", server_url); 
 				config.set("app_id", app_id);
 				config.set("master_key", master_key);
+				config.set("rest_api", rest_api);
 				config.set("app_icon_url", app_icon_url);  
 				config.set("iconPicture", iconFile);
 				config.set("hasIcon", hasIcon);   

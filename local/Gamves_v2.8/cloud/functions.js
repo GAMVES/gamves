@@ -1043,9 +1043,7 @@
 		  		'grant_type':'password',
 				'includePerms':'false',
 				'username':'josemanuelvigil@gmail.com',
-				'password':'Clemen1234'
-				//'username':'jose.vigil@roamtouch.com',
-				//'password':'JoseEpicGames2016'
+				'password':'Clemen1234'				
 		    }
 			}).then( function(httpResponse) {
 
@@ -1058,9 +1056,7 @@
             	response.success('hash: ' + hash);
 
 			},function(httpResponse) {				  
-			  	// error
-			  	//console.error('Request failed with response code ' + httpResponse.status);
-
+			  
 			  	console.log("ERROR");			  	
 
 			  	console.log("headers :" + httpResponse.headers); 

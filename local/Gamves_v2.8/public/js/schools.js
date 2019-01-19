@@ -30,7 +30,7 @@
     var schoolIdArray = [];
     var _sId, _schoolId_for_grade;   
 
-    window.shortArray = [];
+    window.shortArray = [];   
 
     function loadschools(callback)
     {

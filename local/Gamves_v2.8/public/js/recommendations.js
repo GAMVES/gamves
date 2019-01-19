@@ -332,9 +332,14 @@ document.addEventListener("LoadRecommendations", function(event){
                                   recommendation.set("title", video.get("title"));
                                   recommendation.set("description", video.get("description"));         
                                   recommendation.set("cover", video.get("thumbnail"));
-                                  recommendation.set("referenceId", video.get("videoId"));
+                                  recommendation.set("referenceId", video.get("videoId"));                                  
                                   recommendation.set("date", video.get("createdAt"));
-                                  recommendation.set("video", video);
+
+                                  var videoRelation = recommendation.relation("video");
+                                  videoRelation.add(video);
+
+                                  //recommendation.set("video", video);
+
                                   recommendation.set("ytb_thumbnail_source", thumbnailUrl);
 
                                   recommendation.set("type", 2); // VIDEO

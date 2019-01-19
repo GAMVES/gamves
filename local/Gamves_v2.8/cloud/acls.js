@@ -63,8 +63,10 @@
 
 			            success: function(userPF) {
 
-			            	var userRelation = rolePF.relation("users");
-							userRelation.add(userPF);
+			            	//var userRelation = rolePF.relation("users");
+							//userRelation.add(userPF);
+
+							rolePF.getUsers().add(userPF);             				
 
 							rolePF.save(null, { useMasterKey: true,	
 
@@ -575,5 +577,74 @@
             }
         });
 	});
+
+
+
+	// --
+  	// Post a Role
+
+	Parse.Cloud.define("AddRoleToObject", function(request, responseRole) {
+
+		var pclassName = request.params.pclassName;		
+		var objectId = request.params.objectId;		
+	    var role = request.params.role;		
+
+		var queryConfig = new Parse.Query("Config");				   
+	    queryConfig.find({
+	        useMasterKey: true,
+	        success: function(results) {
+
+	        	if( results.length > 0) 
+	        	{
+
+					var configObject = results[0];
+					
+					var _serverUrl = configObject.get("server_url");
+					var _appId = configObject.get("app_id");
+					var _restApi = configObject.get("rest_api");
+					var _mKey = configObject.get("master_key");					
+
+					var _url = _serverUrl + "/classes/" + pclassName + "/" + objectId;	
+					console.log(_url);								
+
+					//var _body = { "ACL":{ _acl : { "read": true, "write": true }, "*" : {}}};	
+					//var _body = "{\"name\":\"" + role + "\",\"ACL\":{\"" + roleId + "\":{\"read\":true,\"write\":true},\"*\":{}}}";
+
+					var _body = "{\"ACL\":{ \"role:" + role + "\":{\"read\": true,\"write\": true}}}";
+
+					//var _body = JSON.parse(_bodyString);
+
+					console.log(_body);								
+
+					Parse.Cloud.httpRequest({	
+						method: "PUT",				     
+				        headers: {
+    						'Content-Type': 'application/json',
+    						'X-Parse-Application-Id': _appId,
+    						'X-Parse-REST-API-Key': _restApi,
+    						'X-Parse-Master-Key': _mKey
+       					},	       
+				        url: _url,
+				        body: _body,
+				        success: function (httpResponse) {
+				            console.log(httpResponse.text);
+				            responseRole.success(httpResponse.text);
+				        },
+				        error: function (httpResponse) {
+				            console.error('Request failed with response code ' + httpResponse.status);
+				            responseRole.error('Request failed with response code ' + httpResponse.status);
+				        }
+				    });	
+				}
+
+			},
+	        error: function(error) {	        	
+	            console.log(error);
+	            responseRole.error(error);						            
+	        }
+	    });  	
+
+	});
+
 
 
