@@ -605,36 +605,59 @@
 					var _mKey = configObject.get("master_key");					
 
 					var _url = _serverUrl + "/classes/" + pclassName + "/" + objectId;	
-					console.log(_url);								
+					console.log(_url);
 
-					//var _body = { "ACL":{ _acl : { "read": true, "write": true }, "*" : {}}};	
-					//var _body = "{\"name\":\"" + role + "\",\"ACL\":{\"" + roleId + "\":{\"read\":true,\"write\":true},\"*\":{}}}";
+					Parse.Cloud.run("GetObjectRole", { "pclassName": pclassName, "objectId": objectId }).then(function(resutlAcl) {    
 
-					var _body = "{\"ACL\":{ \"role:" + role + "\":{\"read\": true,\"write\": true}}}";
+						console.log("resutlAcl: " + JSON.stringify(resutlAcl));
+				
+						var resutlArray = []; 
+						var resutl = JSON.parse( JSON.stringify( resutlAcl ) ); 	
+						var keys = Object.keys(resutl);
+						var count = keys.length;		        
 
-					//var _body = JSON.parse(_bodyString);
+				        if (count > 0) {
+				            for(var i=0; i<count; i++) {
+					        	let key = Object.keys(resutl)[i];
+			       				if (key != "*") {			          
+			          				let value = Object.values(resutl)[i];   			        
+							        let sJson = "\"" + key  + "\":" + JSON.stringify(value);
+							        resutlArray.push(sJson);
+							    }			          
+						    }
+						}		    
 
-					console.log(_body);								
+					    var _body = "{\"ACL\":{"; 
+					    for(var i=0; i<resutlArray.length; i++) {							
+							_body += resutlArray[i];
+							if (i < resutlArray.length) {
+								_body += ",";
+							}
+					    }
+					    _body += "\"role:" + role + "\":{\"read\": true,\"write\": true}";
+					    _body += "}}";				
 
-					Parse.Cloud.httpRequest({	
-						method: "PUT",				     
-				        headers: {
-    						'Content-Type': 'application/json',
-    						'X-Parse-Application-Id': _appId,
-    						'X-Parse-REST-API-Key': _restApi,
-    						'X-Parse-Master-Key': _mKey
-       					},	       
-				        url: _url,
-				        body: _body,
-				        success: function (httpResponse) {
-				            console.log(httpResponse.text);
-				            responseRole.success(httpResponse.text);
-				        },
-				        error: function (httpResponse) {
-				            console.error('Request failed with response code ' + httpResponse.status);
-				            responseRole.error('Request failed with response code ' + httpResponse.status);
-				        }
-				    });	
+						Parse.Cloud.httpRequest({	
+							method: "PUT",				     
+					        headers: {
+	    						'Content-Type': 'application/json',
+	    						'X-Parse-Application-Id': _appId,
+	    						'X-Parse-REST-API-Key': _restApi,
+	    						'X-Parse-Master-Key': _mKey
+	       					},	       
+					        url: _url,
+					        body: _body,
+					        success: function (httpResponse) {
+					            console.log(httpResponse.text);
+					            responseRole.success(httpResponse.text);
+					        },
+					        error: function (httpResponse) {
+					            console.error('Request failed with response code ' + httpResponse.status);
+					            responseRole.error('Request failed with response code ' + httpResponse.status);
+					        }
+					    });	
+
+					})					
 				}
 
 			},
@@ -645,6 +668,37 @@
 	    });  	
 
 	});
+
+
+
+	// --
+  	// Get Object Role
+
+	Parse.Cloud.define("GetObjectRole", function(request, responseAcl) {
+
+		var pclassName = request.params.pclassName;		
+		var objectId = request.params.objectId;		
+
+		var objectQuery = new Parse.Query(pclassName);
+		objectQuery.equalTo("objectId", objectId);
+
+		objectQuery.first({
+	        useMasterKey: true,
+	        success: function(objectPF) {           	
+
+	        	var _acl = objectPF.getACL();  
+				responseAcl.success(_acl);  
+
+	        },
+	        error: function(error) {
+
+	        	console.log("error: " +error); 	       	
+
+		        responseAcl.error("error: " +error);   
+	        }      
+		});
+	});
+
 
 
 
