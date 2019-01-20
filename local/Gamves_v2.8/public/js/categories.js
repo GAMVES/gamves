@@ -135,14 +135,14 @@ document.addEventListener("LoadCategories", function(event){
 
                             $('#edit_model_category').modal('show');                               
 
-                            if (categoriesLenght==0){
+                            /*if (categoriesLenght==0){
                                 $("#edit_order_categories").append(($("<option/>", { html: 0 })));                                     
                             } else {
                                 categoriesLenght++;
                                 for (var i = 0; i < categoriesLenght; i++) {                          
                                 $("#edit_order_categories").append(($("<option/>", { html: i })));                                     
                                 }    
-                            }
+                            }*/
                             
                             //Other Schools
 
@@ -195,7 +195,7 @@ document.addEventListener("LoadCategories", function(event){
                                 // collect the data
                                 //$('#edit_id').val(ele.siblings(':first').html());                                                
                                 $("#edit_thumbnail").append(a4);
-                                $('#edit_order_categories').val(a5);
+                                //$('#edit_order_categories').val(a5);
                                 $('#edit_description').val(a6);
                                 $('#edit_backimage').append(a7); 
 
@@ -266,8 +266,9 @@ document.addEventListener("LoadCategories", function(event){
           var name = $("#edit_description").val();
           cat.set("name", name);
 
-          var order = $("#edit_order_categories").val();
-          cat.set("order", parseInt(order));         
+          //var order = $("#edit_order_categories").val();
+          //cat.set("order", parseInt(order));
+                   
           cat.set("backImage", parseFileBackImage);
 
           cat.save(null, {

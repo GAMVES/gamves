@@ -122,14 +122,14 @@ document.addEventListener("LoadWelcomes", function(event){
 
                             $('#edit_modal_welcome').modal('show');                               
 
-                            if (welcomesLenght==0){
+                            /*if (welcomesLenght==0){
                                 $("#edit_order_welcomes").append(($("<option/>", { html: 0 })));                                     
                             } else {
                                 welcomesLenght++;
                                 for (var i = 0; i < welcomesLenght; i++) {                          
                                 $("#edit_order_welcomes").append(($("<option/>", { html: i })));                                     
                                 }    
-                            }
+                            }*/
                             
                             //Other Schools
                             $('#schools_viewed_welcomes').empty();                          

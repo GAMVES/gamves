@@ -107,14 +107,14 @@ document.addEventListener("LoadRecommendations", function(event){
 
                                 //$('#video_spinner').hide();
 
-                                if (recommendationLenght==0){
+                                /*if (recommendationLenght==0){
                                     $("#edit_order_recommendation").append(($("<option/>", { html: 0 })));                                     
                                 } else {
                                     recommendationLenght++;
                                 for (var i = 0; i < recommendationLenght; i++) {                          
                                     $("#edit_order_recommendation").append(($("<option/>", { html: i })));                                     
                                 }    
-                                } 
+                                }*/ 
 
                                 $('#recommendations_viewed_videos').empty();                          
                         
@@ -288,8 +288,8 @@ document.addEventListener("LoadRecommendations", function(event){
                     video.set("ytb_duration", duration);         
                     video.set("ytb_categories", categories);                                          
 
-                    var order = $("#edit_order_video").val();
-                    video.set("order", parseInt(order)); 
+                    //var order = $("#edit_order_video").val();
+                    //video.set("order", parseInt(order)); 
 
                     video.set("public", true); 
 
@@ -379,7 +379,7 @@ document.addEventListener("LoadRecommendations", function(event){
       function clearField(){
         $("#edit_model_fanpage").find("input[type=text], textarea").val("");
         $("#edit_model_fanpage").find("input[type=file], textarea").val("");
-        $("#edit_order_fanpage").empty();
+        //$("#edit_order_fanpage").empty();
         $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
         $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
       }

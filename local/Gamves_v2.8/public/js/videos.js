@@ -116,14 +116,14 @@ document.addEventListener("LoadVideo", function(event){
 
                                     //$('#video_spinner').hide();
 
-                                    if (videosLenght==0){
+                                    /*if (videosLenght==0){
                                         $("#edit_order_video").append(($("<option/>", { html: 0 })));                                     
                                     } else {
                                       videosLenght++;
                                       for (var i = 0; i < videosLenght; i++) {                          
                                         $("#edit_order_video").append(($("<option/>", { html: i })));                                     
                                       }    
-                                    } 
+                                    }*/ 
 
                                     $('#schools_viewed_videos').empty();                          
                             
@@ -303,8 +303,8 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("ytb_categories", categories);         
                     //video.set("ytb_like_count", like_count);                      
 
-                    var order = $("#edit_order_video").val();
-                    video.set("order", parseInt(order)); 
+                    //var order = $("#edit_order_video").val();
+                    //video.set("order", parseInt(order)); 
 
                     video.set("public", true); 
 
@@ -395,7 +395,7 @@ document.addEventListener("LoadVideo", function(event){
       function clearField(){
         $("#edit_model_fanpage").find("input[type=text], textarea").val("");
         $("#edit_model_fanpage").find("input[type=file], textarea").val("");
-        $("#edit_order_fanpage").empty();
+        //$("#edit_order_fanpage").empty();
         $('#img_icon_fanpage').attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
         $("#img_cover_fanpage").attr('src', "https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png");             
       }

@@ -510,7 +510,7 @@
           categoryPersonal.set("thumbnail", personal);
           categoryPersonal.set("backImage", personalBackground);
           categoryPersonal.set("name", pcatn);
-          categoryPersonal.set("order", 1);                                      
+          //categoryPersonal.set("order", 1);                                      
           categoryPersonal.set("description", "Personal pages for each registeres kid to customize");
 
           categoryPersonal.save(null, {
@@ -536,7 +536,7 @@
           categoryTrending.set("thumbnail", trending);
           categoryTrending.set("backImage", trendingBackground);                            
           categoryTrending.set("name", tcatn);  
-          categoryTrending.set("order", 0);                                      
+          //categoryTrending.set("order", 0);                                      
           categoryTrending.set("description", "Most viewed and liked fanpages, trendings in general");   
 
           categoryTrending.save(null, {

@@ -164,14 +164,14 @@ document.addEventListener("LoadFanpage", function(event){
 
                              $('#edit_modal_fanpage').modal('show');       
 
-                                if (fanpagesLenght==0){
+                                /*if (fanpagesLenght==0){
                                     $("#edit_order_fanpage").append(($("<option/>", { html: 0 })));                                     
                                 } else {
                                     fanpagesLenght++;
                                     for (var i = 0; i < fanpagesLenght; i++) {                          
                                     $("#edit_order_fanpage").append(($("<option/>", { html: i })));                                     
                                     }    
-                                } 
+                                }*/ 
                               
                                 $('#schools_viewed_fanpages').empty();                          
                             
@@ -329,8 +329,8 @@ document.addEventListener("LoadFanpage", function(event){
               fanpage.set("pageCover", parseFileCover);
               fanpage.set("categoryName", categoryName);             
 
-              var order = $("#edit_order_fanpage").val();          
-              fanpage.set("order", parseInt(order));  
+              //var order = $("#edit_order_fanpage").val();          
+              //fanpage.set("order", parseInt(order));  
 
               var authorRelation = fanpage.relation("author");
               authorRelation.add(user);             
