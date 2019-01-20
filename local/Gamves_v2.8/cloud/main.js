@@ -13,7 +13,8 @@
 		var t = "user_type";
 		var d = "description";
 
-		var adminLogged, adminRole, universePFile;
+		var adminLogged, universePFile;
+		var adminRole, collegeRole, userRole, parentRole;
 
 		var app_icon_url = "https://s3.amazonaws.com/gamves/config/gamves.png";					
 
@@ -38,20 +39,18 @@
 
 				adminLogged = userLoggedPF;				
 
-				var roleName = "admin";
-				var aRole = new Parse.Role(roleName, new Parse.ACL());			
+				var roleAdminName = "admin";
+				var aRole = new Parse.Role(roleAdminName, new Parse.ACL());			
 
-				var acl = new Parse.ACL();
-				acl.setReadAccess(aRole, true); 
-				acl.setWriteAccess(aRole, true); 
+				var aacl = new Parse.ACL();
+				aacl.setReadAccess(aRole, true); 
+				aacl.setWriteAccess(aRole, true); 
 
-				aRole.setACL(acl);						   
+				aRole.setACL(aacl);						   
 
 				return aRole.save(null, {useMasterKey: true});
 			
-			}).then(function(adminRolePF) {
-
-				console.log("--5--");
+			}).then(function(adminRolePF) {			
 
 				var adminRoleRelation = adminRolePF.relation("users");
 				adminRoleRelation.add(adminLogged);
@@ -59,7 +58,70 @@
 
 			}).then(function(adminRolePF) {
 
-				adminRole = adminRolePF;				
+				adminRole = adminRolePF;	
+
+				var roleCollegesName = "colleges";
+				var cRole = new Parse.Role(roleCollegesName, new Parse.ACL());			
+
+				var cacl = new Parse.ACL();
+				cacl.setReadAccess(cRole, true); 
+				cacl.setWriteAccess(cRole, true); 
+
+				cRole.setACL(cacl);						   
+
+				return cRole.save(null, {useMasterKey: true});
+
+			}).then(function(collegeRolePF) {
+
+				var collegeRoleRelation = collegeRolePF.relation("users");
+				collegeRoleRelation.add(adminLogged);
+				return collegeRolePF.save(null, {useMasterKey: true});	
+
+			}).then(function(collegeRolePF) {
+
+				collegeRole = collegeRolePF;
+
+			    var roleUserName = "users";
+				var uRole = new Parse.Role(roleUserName, new Parse.ACL());			
+
+				var uacl = new Parse.ACL();
+				uacl.setReadAccess(uRole, true); 
+				uacl.setWriteAccess(uRole, true); 
+
+				uRole.setACL(uacl);						   
+
+				return uRole.save(null, {useMasterKey: true});
+
+			}).then(function(userRolePF) {						
+
+				var userRoleRelation = userRolePF.relation("users");
+				userRoleRelation.add(adminLogged);
+				return userRolePF.save(null, {useMasterKey: true});	
+
+			}).then(function(userRolePF) {
+
+				userRole = userRolePF;
+
+			    var roleParentName = "parents";
+				var pRole = new Parse.Role(roleParentName, new Parse.ACL());			
+
+				var pacl = new Parse.ACL();
+				pacl.setReadAccess(pRole, true); 
+				pacl.setWriteAccess(pRole, true); 
+
+				pRole.setACL(pacl);						   
+
+				return pRole.save(null, {useMasterKey: true});
+
+			}).then(function(parentRolePF) {						
+
+				var parentRoleRelation = parentRolePF.relation("users");
+				parentRoleRelation.add(adminLogged);
+				return parentRolePF.save(null, {useMasterKey: true});	
+
+			}).then(function(parentRolePF) {	
+
+				parentRole = parentRolePF;
 
 				var UserTypes = Parse.Object.extend("UserType");					
 
@@ -68,10 +130,10 @@
 				registerMother.set(d, "Register-Mother");
 				registerMother.save(null, {useMasterKey: true});
 
-				var spouseMother = new UserTypes();
-				spouseMother.set(t, 1);
-				spouseMother.set(d, "Spouse-Mother");
-				spouseMother.save(null, {useMasterKey: true});
+				var partnerMother = new UserTypes();
+				partnerMother.set(t, 1);
+				partnerMother.set(d, "Partner-Mother");
+				partnerMother.save(null, {useMasterKey: true});
 
 				var son = new UserTypes();
 				son.set(t, 2);
@@ -83,10 +145,10 @@
 				daughter.set(d, "Daughter");
 				daughter.save(null, {useMasterKey: true});
 
-				var spouseFather = new UserTypes();
-				spouseFather.set(t, 4);
-				spouseFather.set(d, "Spouse-Father");
-				spouseFather.save(null, {useMasterKey: true});
+				var partnerFather = new UserTypes();
+				partnerFather.set(t, 4);
+				partnerFather.set(d, "Partner-Father");
+				partnerFather.save(null, {useMasterKey: true});
 
 				var registerFather = new UserTypes();
 				registerFather.set(t, 5);
@@ -135,6 +197,11 @@
 				return config.save(null, {useMasterKey: true});
 
 			}).then(function(configPF) {
+
+
+				//--
+				// Add admin role to Config and set ACL to a sensitive class
+				Parse.Cloud.run("AddRoleToObject", { "pclassName": "Config" , "objectId": configPF.id, "role" : "admin" });
 
 				loadImagesArray(configPF, function(universeFile){
 
