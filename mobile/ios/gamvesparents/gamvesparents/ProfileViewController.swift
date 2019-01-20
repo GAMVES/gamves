@@ -29,7 +29,7 @@ class ProfileViewController: UIViewController,
     
     var types = Dictionary<Int, PFObject>()
     
-    var adminRole:PFRole!
+    var userRole:PFRole!
    
     var son:PFUser!
     var you:PFUser!
@@ -422,7 +422,7 @@ class ProfileViewController: UIViewController,
 
         self.navigationItem.title = "Profile"
         
-        self.loadAdminRole()
+        self.loadUserRole()
         
         self.you = PFUser.current()
 
@@ -868,11 +868,11 @@ class ProfileViewController: UIViewController,
         } 
     }
 
-    func loadAdminRole() {
+    func loadUserRole() {
         
         let roleQuery = PFRole.query()
         
-        roleQuery?.whereKey("name", equalTo: "admin")
+        roleQuery?.whereKey("name", equalTo: "users")
         
         roleQuery?.getFirstObjectInBackground(block: { (role, error) in
             
@@ -880,7 +880,7 @@ class ProfileViewController: UIViewController,
             
             if error == nil
             {
-                self.adminRole = role as! PFRole
+                self.userRole = role as! PFRole
             
             }
         })

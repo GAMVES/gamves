@@ -30,6 +30,7 @@ ImagesPickerProtocol {
     var activityIndicatorView:NVActivityIndicatorView?
 
    var schoolsArray: NSMutableArray = []
+   var schoolShort = String()
 
    let parents: NSMutableArray = ["Father", "Mother"]  
     
@@ -218,7 +219,7 @@ ImagesPickerProtocol {
     var yourType:PFObject!
     var yourTypeId = Int()    
     var phoneNumber = String()
-    var recommendationViewController:RecommendationViewController!
+    //var eventViewController:EventViewController!
 
     var navigationPickerController:UINavigationController!
     
@@ -385,11 +386,31 @@ ImagesPickerProtocol {
             
             self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
+            self.sonSchoolDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
+
         })      
 
         self.checkVerified()
 
     }
+
+    @objc func handleSchoolPickerChange() {        
+
+        let sKeys = Array(Global.schools.keys)
+        
+        for s in sKeys {
+
+            let schoolId = Global.schools[s]!.objectId
+
+            if self.sonSchoolTextField.text! == Global.schools[schoolId]?.schoolName {
+
+                self.schoolShort = Global.schools[schoolId]!.short
+
+                print(self.schoolShort)
+            }            
+        }                       
+    }
+
 
     func initializeChatSubscription() {
 
@@ -1323,7 +1344,7 @@ ImagesPickerProtocol {
         print("--------------")
         print(yourImgName)
         print("--------------")
-        
+
         let yourimageSmall = PFFileObject(name: yourImgName, data: UIImageJPEGRepresentation(self.yourPhotoImageSmall, 1.0)!)
         self.you.setObject(yourimageSmall!, forKey: "pictureSmall")
         
@@ -1379,14 +1400,23 @@ ImagesPickerProtocol {
                         print(resutl)
                         
                         if (resutl != nil) {
-                            
-                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
 
-                                completionHandler(true)
-                                
-                            })    
-                        }
+                            let params = [
+                            "role" : self.schoolShort,
+                            "userId" : self.puserId,                  
+                            ] as [String : Any]
+
+                            print(params)
                         
+                            PFCloud.callFunction(inBackground: "AddUserToRole", withParameters: params) { (result, error) in
+                            
+                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
+
+                                    completionHandler(true)
+
+                                })
+                            }    
+                        }                        
                     })                    
                 })
             }

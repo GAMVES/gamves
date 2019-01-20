@@ -131,7 +131,7 @@ class Global: NSObject
     static var search_engine = "010975053378915722447:h2ob_fkvam0"
 
     static var recommendations = [GamvesRecommendation]()
-    static var recommendationsVideo = [GamvesRecommendation]()  
+    static var recommendationsVideo = [GamvesRecommendation]()
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
@@ -1776,7 +1776,9 @@ class Global: NSObject
         var videothum = videoPF["thumbnail"] as! PFFileObject
 
         video.thumbnail                 = videothum
-        video.categoryName              = videoPF["categoryName"] as! String
+        if videoPF["categoryName"] != nil {
+            video.categoryName              = videoPF["categoryName"] as! String
+        }
         video.videoId                   = videoPF["videoId"] as! Int
         video.s3_source                 = videoPF["s3_source"] as! String
         video.ytb_thumbnail_source      = videoPF["ytb_thumbnail_source"] as! String
@@ -1796,7 +1798,10 @@ class Global: NSObject
         
         video.ytb_categories            = videoPF["ytb_categories"] as! [String]
         //video.ytb_like_count            = videoPF["ytb_like_count"] as! Int
-        video.order                     = videoPF["order"] as! Int
+        
+        if videoPF["order"] != nil {
+            video.order                     = videoPF["order"] as! Int
+        }
         video.fanpageId                 = videoPF["fanpageId"] as! Int
         
         video.posterId                  = videoPF["posterId"] as! String

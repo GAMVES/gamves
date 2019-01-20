@@ -47,12 +47,7 @@ UICollectionViewDelegateFlowLayout {
      var recommendationLoaded = Bool()
 
     override func viewDidLoad() {
-        super.viewDidLoad()   
-
-        if let userId = PFUser.current()?.objectId
-        {
-            self.puserId = userId
-        }             
+        super.viewDidLoad()                       
 
         self.view.addSubview(collectionView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: collectionView)
@@ -66,35 +61,55 @@ UICollectionViewDelegateFlowLayout {
 
         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor   
 
-        self.registerLiveQuery()
+        self.registerLiveQuery()      
 
-        self.fetchRecommendations(completionHandler: { ( resutl ) -> () in    
+        if let userId = PFUser.current()?.objectId
+        {
+            self.puserId = userId
+            
+            print(userId)
 
-            if resutl {
+            self.fetchRecommendations(completionHandler: { ( resutl ) -> () in    
 
-                self.activityView.stopAnimating()
+                if resutl {
 
-                self.collectionView.reloadData()
-            }
-        })
+                    self.activityView.stopAnimating()
+
+                    self.collectionView.reloadData()
+                }
+            })
+        }         
 
     }
 
     func registerLiveQuery()
     {
         queryRecommendation = PFQuery(className: "Recommendations")   
+
+        //queryRecommendation.whereKey("userId", equalTo: userId)
         
-        self.subscription = liveQueryClientFeed.subscribe(queryRecommendation).handle(Event.created) { _, notification in            
+        self.subscription = liveQueryClientFeed.subscribe(queryRecommendation).handle(Event.created) { _, recommendation in            
             
-            self.fetchRecommendations(completionHandler: { ( resutl ) -> () in    
-
-                if resutl {
-
-                    self.activityView.stopAnimating()
-                }
-            })
+            self.fetch()
             
         }             
+
+        self.subscription = liveQueryClientFeed.subscribe(queryRecommendation).handle(Event.updated) { _, recommendation in            
+            
+            
+            self.fetch()
+        } 
+    }
+
+    func fetch() {
+
+        self.fetchRecommendations(completionHandler: { ( resutl ) -> () in    
+
+            if resutl {
+
+                self.activityView.stopAnimating()
+            }
+        })
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -383,6 +398,7 @@ UICollectionViewDelegateFlowLayout {
             {
                 
                 let recosCount = recommendationsPF?.count
+                print(recosCount)
                 if recosCount! > 0
                 {
 
@@ -435,8 +451,9 @@ UICollectionViewDelegateFlowLayout {
                                     if type == 1 { //recommendation
             
             
-                                    } else if type == 2 { //Video
+                                    } else if type == 2 { //Video                                       
 
+                                        
                                         //Relation query not working
                                         let videoRelation = recPF.relation(forKey: "video") as PFRelation                
                                         let videoMembers = videoRelation.query()                                        
@@ -451,7 +468,7 @@ UICollectionViewDelegateFlowLayout {
 
                                                 for videoPF in videosPF! {
 
-                                                    Global.getGamvesVideoFromObject(videoPF: videoPF!, completionHandler: { (videoGamves) in
+                                                    Global.getGamvesVideoFromObject(videoPF: videoPF, completionHandler: { (videoGamves) in
                 
                                                         let reference = recPF["refernce"] as! Int
                                                         
