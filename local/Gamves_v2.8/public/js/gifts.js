@@ -139,7 +139,7 @@ document.addEventListener("LoadGifts", function(event){
                             //Other Schools
                             $('#schools_viewed_gifts').empty();                          
                             
-                            let count = otherSchools.length;                           
+                            /*let count = otherSchools.length;                           
 
                             for (var i=0; i<count; i++) {                       
 
@@ -150,7 +150,11 @@ document.addEventListener("LoadGifts", function(event){
 
                                 $('#schools_viewed_gifts').append('<input name="accesories" type="checkbox" value="' + shortTarget + '"/> '+ name +'<br/>');
 
-                            }
+                            }*/
+
+                            let name = "Schools";
+
+                            $('#schools_viewed_gifts').append('<input name="accesories" type="checkbox" value=""/> '+ name +'<br/>');
                             
                         }); 
 
@@ -247,14 +251,19 @@ document.addEventListener("LoadGifts", function(event){
           
           gift.save(null, {
               success: function (giftSavedPF) {
+                
 
-                var shortArray = [];
+                window.GetCheckedInclude("frm_edit_gift", function(resutl) {
 
-                window.GetCheckedNames("frm_edit_gift", short, function(array) {
+                  let role;
 
-                  shortArray = array;
+                  if  (result) {
+                      role = "schools";
+                  } else {
+                      role = short;
+                  } 
 
-                  Parse.Cloud.run("AddAclToGift", { "roles": shortArray, "giftId": gift.id }).then(function(result) {                                         
+                  Parse.Cloud.run("AddRoleToObject", { "pclassName": "Gifts", "objectId": giftSavedPF.id, "role" : role }).then(function(result) {                                                     
 
                     console.log('Gift created successful with name: ' + gift.get("title"));
                     $('#edit_modal_gift').modal('hide');

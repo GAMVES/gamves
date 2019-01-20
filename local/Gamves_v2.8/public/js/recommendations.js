@@ -7,10 +7,7 @@ document.addEventListener("LoadRecommendations", function(event){
       var short = event.detail.short;  
 
       var fanpageObj;
-      var appIconFile;
-      //var schoolShort;
-
-      //var schoolACL = new Parse.ACL();
+      var appIconFile;      
 
       loadOtherSchools(schoolId);
       loadRecommendation();
@@ -121,7 +118,7 @@ document.addEventListener("LoadRecommendations", function(event){
 
                                 $('#recommendations_viewed_videos').empty();                          
                         
-                                let count = window.otherSchools.length;                           
+                                /*let count = window.otherSchools.length;                           
 
                                 for (var i=0; i<count; i++) {                       
 
@@ -132,7 +129,11 @@ document.addEventListener("LoadRecommendations", function(event){
 
                                     $('#recommendations_viewed_videos').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
 
-                                }
+                                }*/
+
+                                let name = "Schools";
+
+                                $('#recommendations_viewed_videos').append('<input name="accesories" type="checkbox" value=""/> '+ name +'<br/>');
                                 
 
                         });  
@@ -310,16 +311,19 @@ document.addEventListener("LoadRecommendations", function(event){
                     video.set("approved", true);                 
               
                     video.save(null, {
-                        success: function (savedRecommendation) {     
+                        success: function (savedVideo) {                                 
 
+                            window.GetCheckedInclude("frm_edit_recommendation", function(result) {
 
-                            var shortArray = [];
+                              let role;
 
-                            window.GetCheckedNames("frm_edit_recommendation", short, function(array) {
+                              if  (result) {
+                                  role = "schools";
+                              } else {
+                                  role = short;
+                              }  
 
-                              shortArray = array;
-
-                              Parse.Cloud.run("AddAclToVideo", { "roles": shortArray, "videoId": video.id }).then(function(result) {                                         
+                              Parse.Cloud.run("AddRoleToObject", { "pclassName": "Recommendations", "objectId": savedVideo.id, "role" : role }).then(function(result) {                                                                  
                                   
                                   console.log('Video created successful with name: ' + video.get("title"));                         
 

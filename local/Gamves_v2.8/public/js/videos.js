@@ -2,15 +2,11 @@
 document.addEventListener("LoadVideo", function(event){
 
       var fanpageId = event.detail.fanpageId;
-      var categoryName = event.detail.categoryName;
-      //var schoolId = event.detail.schoolId;     
+      var categoryName = event.detail.categoryName;          
       var short = event.detail.short;  
 
       var fanpageObj;
-      var appIconFile;
-      //var schoolShort;
-
-      //var schoolACL = new Parse.ACL();
+      var appIconFile;   
 
       var queryFanpage = new Parse.Query("Fanpages");             
       queryFanpage.equalTo("objectId", fanpageId);
@@ -131,7 +127,7 @@ document.addEventListener("LoadVideo", function(event){
 
                                     $('#schools_viewed_videos').empty();                          
                             
-                                    let count = otherSchools.length;                           
+                                    /*let count = otherSchools.length;                           
 
                                     for (var i=0; i<count; i++) {                       
 
@@ -142,7 +138,11 @@ document.addEventListener("LoadVideo", function(event){
 
                                         $('#schools_viewed_videos').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
 
-                                    }
+                                    }*/
+
+                                    let name = "Schools";
+
+                                    $('#schools_viewed_videos').append('<input name="accesories" type="checkbox" value=""/> '+ name +'<br/>');
                                     
 
                               });  
@@ -323,16 +323,19 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("approved", true);                 
               
                     video.save(null, {
-                        success: function (savedVideo) {     
+                        success: function (savedVideo) {                                 
 
+                            window.GetCheckedInclude("frm_edit_video", function(result) {                              
 
-                            var shortArray = [];
+                              let role;
 
-                            window.GetCheckedNames("frm_edit_video", short, function(array) {
+                              if  (result) {
+                                  role = "schools";
+                              } else {
+                                  role = short;
+                              }  
 
-                              shortArray = array;
-
-                              Parse.Cloud.run("AddAclToVideo", { "roles": shortArray, "videoId": video.id }).then(function(result) {                                         
+                              Parse.Cloud.run("AddRoleToObject", { "pclassName": "Videos", "objectId": video.id, "role" : role }).then(function(result) {                                    
                                   
                                   console.log('Video created successful with name: ' + video.get("title"));                         
 
@@ -411,31 +414,6 @@ document.addEventListener("LoadVideo", function(event){
           });
       }
 
-      /*function getSchoolShort()
-      {
-
-          console.log(schoolId);
-
-          var querySchool = new Parse.Query("Schools");             
-          querySchool.equalTo("objectId", schoolId);
-          querySchool.first({
-              success: function (school) {
-                  
-                  if (school) { 
-                        schoolShort = school.get("short");                           
-
-                        var queryRole = new Parse.Query(Parse.Role);    
-                        queryRole.equalTo('name', roleName);    
-
-                        queryRole.first({useMasterKey:true}).then(function(rolePF) {
-
-                            schoolACL = rolePF;
-
-                        });
-                  }
-              }
-          });           
-          
-      }*/ 
+   
 });
 

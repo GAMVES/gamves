@@ -169,7 +169,7 @@
 	// --
   	// Add role to Category
 
-	Parse.Cloud.define("AddAclToCategory", function(request, response) {	    
+	/*Parse.Cloud.define("AddAclToCategory", function(request, response) {	    
 	    
 	    var category = request.params.category;
 	    var rolesArray = request.params.roles;	    
@@ -228,13 +228,13 @@
                 response.error("Error: " + error.code + " " + error.message);
             }
         });
-	});
+	});*/
 
 
 	// --
   	// Add role to Fanpage
 
-	Parse.Cloud.define("AddAclToFanpage", function(request, response) {	    
+	/*Parse.Cloud.define("AddAclToFanpage", function(request, response) {	    
 	    
 	    var fanpage = request.params.fanpage;
 	    var rolesArray = request.params.roles;	    
@@ -298,12 +298,12 @@
                 response.error("Error: " + error.code + " " + error.message);
             }
         });
-	});
+	});*/
 
 	// --
   	// Add role to Video
 
-	Parse.Cloud.define("AddAclToVideo", function(request, response) {	    
+	/*Parse.Cloud.define("AddAclToVideo", function(request, response) {	    
 	    
 	    var videoId = request.params.videoId;
 	    var rolesArray = request.params.roles;	    
@@ -367,12 +367,12 @@
                 response.error("Error: " + error.code + " " + error.message);
             }
         });
-	});
+	});*/
 
 	// --
   	// Add role to Notification
 
-	Parse.Cloud.define("AddAclToNotification", function(request, response) {	    
+	/*Parse.Cloud.define("AddAclToNotification", function(request, response) {	    
 	    
 	    var notificationId = request.params.notificationId;
 	    var rolesArray = request.params.roles;	    
@@ -436,13 +436,13 @@
                 response.error("Error: " + error.code + " " + error.message);
             }
         });
-	});
+	});*/
 	
 
 	// --
   	// Add role to Welcome
 
-	Parse.Cloud.define("AddAclToWelcome", function(request, response) {	    
+	/*Parse.Cloud.define("AddAclToWelcome", function(request, response) {	    
 	    
 	    var welcomeId = request.params.welcomeId;
 	    var rolesArray = request.params.roles;	    
@@ -506,13 +506,13 @@
                 response.error("Error: " + error.code + " " + error.message);
             }
         });
-	});
+	});*/
 
 
 	// --
   	// Add role to Gift
 
-	Parse.Cloud.define("AddAclToGift", function(request, response) {	    
+	/*Parse.Cloud.define("AddAclToGift", function(request, response) {	    
 	    
 	    var giftId = request.params.giftId;
 	    var rolesArray = request.params.roles;	    
@@ -576,7 +576,7 @@
                 response.error("Error: " + error.code + " " + error.message);
             }
         });
-	});
+	});*/
 
 
 

@@ -134,7 +134,7 @@ document.addEventListener("LoadWelcomes", function(event){
                             //Other Schools
                             $('#schools_viewed_welcomes').empty();                          
                             
-                            let count = otherSchools.length;                           
+                            /*let count = otherSchools.length;                           
 
                             for (var i=0; i<count; i++) {                       
 
@@ -145,7 +145,11 @@ document.addEventListener("LoadWelcomes", function(event){
 
                                 $('#schools_viewed_welcomes').append('<input name="accesories" type="checkbox" value="' + shortTarget + '"/> '+ name +'<br/>');
 
-                            }
+                            }*/
+
+                            let name = "Schools";
+
+                            $('#schools_viewed_welcomes').append('<input name="accesories" type="checkbox" value=""/> '+ name +'<br/>');
                             
                         }); 
 
@@ -241,13 +245,17 @@ document.addEventListener("LoadWelcomes", function(event){
           welcome.save(null, {
               success: function (savedWelcome) {
 
-                var shortArray = [];
+                window.GetCheckedInclude("frm_edit_welcome", function(resutl) {
 
-                window.GetCheckedNames("frm_edit_welcome", short, function(array) {
+                  let role;
 
-                  shortArray = array;
+                  if  (result) {
+                      role = "schools";
+                  } else {
+                      role = short;
+                  }  
 
-                  Parse.Cloud.run("AddAclToWelcome", { "roles": shortArray, "welcomeId": welcome.id }).then(function(result) {                                         
+                  Parse.Cloud.run("AddRoleToObject", { "pclassName": "Welcomes", "objectId": savedWelcome.id, "role" : role }).then(function(result) {                                                     
 
                       console.log('Welcome created successful with name: ' + welcome.get("title"));
                       

@@ -306,8 +306,9 @@
           school.save(null, {
               success: function (schoolNew) {  
 
-                  console.log( "short : " + short );      
+                  console.log( "short : " + short );
 
+                  //- Add school role
                   Parse.Cloud.run("AddRoleByName", { name: short }).then(function(schoolACLPF) {                    
 
                       schoolACL = schoolACLPF;
@@ -316,17 +317,16 @@
 
                       let name = schoolACL.get("name");
 
+                      //- Add add admin user to school role
                       Parse.Cloud.run("AddUserToRole", { "userId": currentUser.id, "role": name});
 
-                      console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
+                      //console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
 
-                      checkKnownCategoryExistByName(short, function(arrayCategorie) {
-                          
-                            //saveCategoriesForTarget(arrayCategorie, short);  
+                      checkKnownCategoryExistByName(short, function(arrayCategorie) {                                                    
 
                             var length = arrayCategorie.length;         
 
-                            var categoriesArray = [];                                 
+                            var categoriesNamesArray = [];                                 
 
                             for (let i=0; i < length; i++) {
 
@@ -334,20 +334,20 @@
 
                                   let catName = cat.get("name");
 
-                                  categoriesArray.push(catName);
+                                  categoriesNamesArray.push(catName);
                             }      
 
                             loadschools( function(schoolsArray) {
 
                                 var count = 0;
 
-                                var countCategories =  categoriesArray.length;
+                                var countCategories =  categoriesNamesArray.length;
 
                                 for (let i=0; i < countCategories; i++) {                                
 
-                                  let cat = categoriesArray[i];
+                                  let categoriePF = arrayCategorie[i];                                                                    
 
-                                  Parse.Cloud.run("AddAclToCategory", { "roles": schoolsArray, "category": cat }).then(function(result) {    
+                                  Parse.Cloud.run("AddRoleToObject", { "pclassName": "Categories", "objectId": categoriePF.id, "role" : "schools" }).then(function(result) {      
                                      
                                       console.log(result);     
 
@@ -402,11 +402,11 @@
 
       function checkKnownCategoryExistByName(short, callback) {
 
-          var trending = "TRENDING";
-          var personal = "PERSONAL";
+          var trendingName = "TRENDING";
+          var personalName = "PERSONAL";
 
           let queryCategories = new Parse.Query("Categories");  
-          queryCategories.containedIn("name", [trending, personal]);                    
+          queryCategories.containedIn("name", [trendingName, personalName]);                    
           queryCategories.find({
             success: function (categoriesPF) {
 
@@ -422,7 +422,7 @@
 
                         let name = categoryPF.get("name");
 
-                        if ( (name == trending) || (name == personal) ) {
+                        if ( (name == trendingName) || (name == personalName) ) {
 
                             categoriesArray.push(categoryPF);
                         }
@@ -681,7 +681,29 @@
         }
     }
 
-    window.GetCheckedNames = function(formname, short, callback) {        
+    window.GetCheckedInclude = function(formname, callback) {                
+        
+        var numberOfChecked = $('#' + formname + " input:checked" ).length;        
+
+        if ( numberOfChecked > 0 ) {          
+
+            $('#' + formname + " input:checkbox:checked").each(function() {
+                
+                if ($(this).is(":checked")) { 
+
+                    callback(true);                    
+                }
+
+            });
+
+        } else {
+
+          callback(false);
+        }
+        
+     }
+
+     /*window.GetCheckedNames = function(formname, short, callback) {        
         
         var shortArray = [];
         var countChecks = 0;
@@ -715,7 +737,7 @@
           return shortArray;
         }
         
-     }
+     }*/
 
 
      window.loadRole = function(roleName) { 

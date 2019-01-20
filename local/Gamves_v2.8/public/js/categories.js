@@ -146,7 +146,7 @@ document.addEventListener("LoadCategories", function(event){
                             
                             //Other Schools
 
-                            $('#schools_viewed_categories').empty();                          
+                            /*$('#schools_viewed_categories').empty();                          
                             
                             let count = otherSchools.length;                           
 
@@ -159,7 +159,11 @@ document.addEventListener("LoadCategories", function(event){
 
                                 $('#schools_viewed_categories').append('<input name="accesories" type="checkbox" value="' + shortTarget + '"/> '+ name +'<br/>');
 
-                            }
+                            }*/
+
+                            let name = "Schools";
+
+                            $('#schools_viewed_categories').append('<input name="accesories" type="checkbox" value=""/> '+ name +'<br/>');
                             
                         }); 
 
@@ -252,32 +256,38 @@ document.addEventListener("LoadCategories", function(event){
         }
     }
 
-      function saveCategory() {            
+      function saveCategory() { 
           
           var Category = Parse.Object.extend("Categories");         
+          
           var cat = new Category();              
           cat.set("thumbnail", parseFileThumbanil);
+          
           var name = $("#edit_description").val();
           cat.set("name", name);
+
           var order = $("#edit_order_categories").val();
           cat.set("order", parseInt(order));         
-          cat.set("backImage", parseFileBackImage); 
+          cat.set("backImage", parseFileBackImage);
+
           cat.save(null, {
-              success: function (categoryPF) {    
+              success: function (categoryPF) {                      
 
-                  var shortArray = [];
+                  window.GetCheckedInclude("frm_edit_categories", function(result) {
 
-                  window.GetCheckedNames("frm_edit_video", short, function(array) {
+                    let role;
 
-                    shortArray = array;
-
-                    Parse.Cloud.run("AddAclToCategory", { "roles": window.shortArray, "category": name }).then(function(result) {    
+                    if  (result) {
+                        role = "schools";
+                    } else {
+                        role = short;
+                    }
+                    
+                    Parse.Cloud.run("AddRoleToObject", { "pclassName": "Categories", "objectId": categoryPF.id, "role" : role }).then(function(result) {      
                     
                         console.log('Category created successful with name: ' + cat.get("pageName"));
 
-                        $('#edit_model_category').modal('hide');
-
-                        console.log(result);    
+                        $('#edit_model_category').modal('hide');                        
 
                         loadCategories();
                         clearField();   
