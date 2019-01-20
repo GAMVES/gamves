@@ -1136,7 +1136,7 @@ ChooseAvatarProtocol
                     
                     fanpagePF["pageAbout"] = self.aboutTextField.text
                     
-                    fanpagePF["order"] = self.fanpageOrder
+                    //fanpagePF["order"] = self.fanpageOrder
                     
                     let filenameIcon = "icon.png"
                     
@@ -1376,17 +1376,17 @@ ChooseAvatarProtocol
         }
     }
     
-    func queryFanpageOrder() {
+    /*func queryFanpageOrder() {
         
         let queryFanpages = PFQuery(className: "Fanpages")
         print(self.category?.name)
         queryFanpages.whereKey("category", equalTo: self.category?.cateobj)
-        queryFanpages.order(byDescending: "order")
+        //queryFanpages.order(byDescending: "order")
         queryFanpages.getFirstObjectInBackground { (fanpage, error) in
             
             if error == nil
             {
-                let count = fanpage!["order"] as! Int
+                //let count = fanpage!["order"] as! Int
                 
                 self.fanpageOrder = count + 1
                 
@@ -1398,7 +1398,7 @@ ChooseAvatarProtocol
                 
             }
         }
-    }
+    }*/
         
     
     

@@ -732,7 +732,7 @@ SelectorProtocol {
         
         videoPF["categoryName"] = self.category.name
         
-        videoPF["order"] = -1 //LEAVE TO BACKEND
+        //videoPF["order"] = -1 //LEAVE TO BACKEND
         
         videoPF["public"] = true
         

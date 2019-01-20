@@ -1843,7 +1843,7 @@ class ProfileCell: BaseCell,
                             video.ytb_duration              = durDouble!
                             
                             video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]                            
-                            video.order                     = qvideoinfo["order"] as! Int
+                            //video.order                     = qvideoinfo["order"] as! Int
                             video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
                             
                             video.posterId                  = qvideoinfo["posterId"] as! String

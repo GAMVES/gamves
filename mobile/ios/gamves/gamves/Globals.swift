@@ -1331,7 +1331,7 @@ class Global: NSObject
     static func loadLevels(completionHandler : @escaping (_ resutl:Bool) -> ()){
         
         let queryLevel = PFQuery(className:"Level")
-        queryLevel.order(byAscending: "order")
+        //queryLevel.order(byAscending: "order")
         queryLevel.findObjectsInBackground { (levelObjects, error) in
             
             if error != nil {
@@ -1632,7 +1632,7 @@ class Global: NSObject
     static func loadLevelByUserId(userId:String, completionHandler : @escaping (_ resutl:Bool) -> ()){
         
         let queryLevel = PFQuery(className:"Level")
-        queryLevel.order(byAscending: "order")
+        //queryLevel.order(byAscending: "order")
         queryLevel.findObjectsInBackground { (levelObjects, error) in
             
             if error != nil {
@@ -1920,7 +1920,7 @@ class Global: NSObject
         
         video.ytb_categories            = videoPF["ytb_categories"] as! [String]
         //video.ytb_like_count            = videoPF["ytb_like_count"] as! Int
-        video.order                     = videoPF["order"] as! Int
+        //video.order                     = videoPF["order"] as! Int
         video.fanpageId                 = videoPF["fanpageId"] as! Int
         
         video.posterId                  = videoPF["posterId"] as! String

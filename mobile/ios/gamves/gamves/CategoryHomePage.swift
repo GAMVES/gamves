@@ -252,7 +252,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         }
         
         //queryCategories.order(byDescending: "order")
-        queryCategories.order(byAscending: "order")
+        //queryCategories.order(byAscending: "order")
         
         var count = 0
         
@@ -317,7 +317,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                     cat.cover_image = coverImage!
                                                 }
                                                 
-                                                let order = pcategory["order"] as! Int
+                                                //let order = pcategory["order"] as! Int
                                                 
                                                 Global.categories_gamves[order] = cat
 
