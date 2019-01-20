@@ -271,9 +271,7 @@ document.addEventListener("LoadRecommendations", function(event){
                     video.set("authorized", true);
 
                     video.set("title", title);
-                    video.set("description", desc);          
-
-                    //video.set("categoryName", categoryName);
+                    video.set("description", desc);                              
 
                     video.set("posterId", userAdmin.id);          
                     video.set("poster_name", userAdmin.get("Name"));          
@@ -288,8 +286,7 @@ document.addEventListener("LoadRecommendations", function(event){
                     video.set("ytb_view_count", view_count);       
                     video.set("ytb_tags", tags);
                     video.set("ytb_duration", duration);         
-                    video.set("ytb_categories", categories);         
-                    //video.set("ytb_like_count", like_count);                      
+                    video.set("ytb_categories", categories);                                          
 
                     var order = $("#edit_order_video").val();
                     video.set("order", parseInt(order)); 
@@ -303,7 +300,6 @@ document.addEventListener("LoadRecommendations", function(event){
                     var vrnd = Math.floor(100000 + Math.random() * 900000);
                     video.set("videoId", vrnd);              
 
-                    //video.set("fanpageObjId", fanpageObj.id);                     
                     video.set("poster_name", "Gamves Official");                        
 
                     video.set("source_type", 3);  //RECOMMENDATION   
@@ -323,15 +319,12 @@ document.addEventListener("LoadRecommendations", function(event){
                                   role = short;
                               }  
 
-                              Parse.Cloud.run("AddRoleToObject", { "pclassName": "Recommendations", "objectId": savedVideo.id, "role" : role }).then(function(result) {                                                                  
+                              Parse.Cloud.run("AddRoleToObject", { "pclassName": "Videos", "objectId": savedVideo.id, "role" : role }).then(function(result) {                                                                  
                                   
                                   console.log('Video created successful with name: ' + video.get("title"));                         
 
                                   var Recommendation = Parse.Object.extend("Recommendations");         
                                   var recommendation = new Recommendation();  
-
-                                  //recommendation.set("posterName", userAdmin.get("Name"));
-                                  //recommendation.set("posterAvatar", userAdmin.get("picture"));
 
                                   recommendation.set("title", video.get("title"));
                                   recommendation.set("description", video.get("description"));         
@@ -340,33 +333,30 @@ document.addEventListener("LoadRecommendations", function(event){
                                   recommendation.set("date", video.get("createdAt"));
 
                                   var videoRelation = recommendation.relation("video");
-                                  videoRelation.add(video);
-
-                                  //recommendation.set("video", video);
+                                  videoRelation.add(video);                                  
 
                                   recommendation.set("ytb_thumbnail_source", thumbnailUrl);
 
                                   recommendation.set("type", 2); // VIDEO
 
                                   recommendation.save(null, {
-                                      success: function (savedReccomendation) {                                      
+                                      success: function (savedReccomendation) {                                                                           
 
-                                        Parse.Cloud.run("AddAclToNotification", { "roles": shortArray, "notificationId": savedReccomendation.id });                                     
+                                        Parse.Cloud.run("AddRoleToObject", { "pclassName": "Recommendations", "objectId": savedReccomendation.id, "role" : role }).then(function(result) {                                                                  
 
-                                        $('#edit_modal_recommendation').modal('hide');
+                                            $('#edit_modal_recommendation').modal('hide');
 
-                                        clearField();
-                                        loadRecommendation();
+                                            clearField();
+                                            loadRecommendation();
+
+                                        });
 
                                       },
                                       error: function (response, error) {
                                             $('#error_message').html("<p>" + errort + "</p>");
                                             console.log('Error: ' + error.message);
                                       }
-
-                                  }); 
-
-                                  
+                                  });                                   
                                   
                               }, function(error) {
                                   console.log("error :" +errort);                                 

@@ -605,16 +605,16 @@
 					var _mKey = configObject.get("master_key");					
 
 					var _url = _serverUrl + "/classes/" + pclassName + "/" + objectId;	
-					console.log(_url);
+					console.log("_url: " + _url);
 
 					Parse.Cloud.run("GetObjectRole", { "pclassName": pclassName, "objectId": objectId }).then(function(resutlAcl) {    
 
-						console.log("resutlAcl: " + JSON.stringify(resutlAcl));
+						console.log("resutlAcl: " + JSON.stringify(resutlAcl));			
 				
 						var resutlArray = []; 
 						var resutl = JSON.parse( JSON.stringify( resutlAcl ) ); 	
 						var keys = Object.keys(resutl);
-						var count = keys.length;		        
+						var count = keys.length;		        					
 
 				        if (count > 0) {
 				            for(var i=0; i<count; i++) {
@@ -635,7 +635,9 @@
 							}
 					    }
 					    _body += "\"role:" + role + "\":{\"read\": true,\"write\": true}";
-					    _body += "}}";				
+					    _body += "}}";	
+
+					    console.log("_body: " + _body);			
 
 						Parse.Cloud.httpRequest({	
 							method: "PUT",				     
@@ -684,10 +686,19 @@
 
 		objectQuery.first({
 	        useMasterKey: true,
-	        success: function(objectPF) {           	
+	        success: function(objectPF) {           		        	        	
 
-	        	var _acl = objectPF.getACL();  
-				responseAcl.success(_acl);  
+	        	var _acl = objectPF.getACL(); 
+
+	        	let resutl;
+
+	        	if (_acl === null) {
+	        		resutl = {};
+	        	} else {
+	        		resutl = _acl;
+	        	}
+
+	        	responseAcl.success(resutl);  
 
 	        },
 	        error: function(error) {
