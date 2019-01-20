@@ -14,7 +14,7 @@
 		var d = "description";
 
 		var adminLogged, universePFile;
-		var adminRole, collegeRole, userRole, parentRole;
+		var adminRole, schoolRole, userRole, parentRole;
 
 		var app_icon_url = "https://s3.amazonaws.com/gamves/config/gamves.png";					
 
@@ -60,8 +60,8 @@
 
 				adminRole = adminRolePF;	
 
-				var roleCollegesName = "colleges";
-				var cRole = new Parse.Role(roleCollegesName, new Parse.ACL());			
+				var roleSchoolsName = "schools";
+				var cRole = new Parse.Role(roleSchoolsName, new Parse.ACL());			
 
 				var cacl = new Parse.ACL();
 				cacl.setReadAccess(cRole, true); 
@@ -71,15 +71,15 @@
 
 				return cRole.save(null, {useMasterKey: true});
 
-			}).then(function(collegeRolePF) {
+			}).then(function(schoolRolePF) {
 
-				var collegeRoleRelation = collegeRolePF.relation("users");
-				collegeRoleRelation.add(adminLogged);
-				return collegeRolePF.save(null, {useMasterKey: true});	
+				var schoolRoleRelation = schoolRolePF.relation("users");
+				schoolRoleRelation.add(adminLogged);
+				return schoolRolePF.save(null, {useMasterKey: true});	
 
-			}).then(function(collegeRolePF) {
+			}).then(function(schoolRolePF) {
 
-				collegeRole = collegeRolePF;
+				schoolRole = schoolRolePF;
 
 			    var roleUserName = "users";
 				var uRole = new Parse.Role(roleUserName, new Parse.ACL());			
