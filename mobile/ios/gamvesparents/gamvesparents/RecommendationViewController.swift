@@ -470,9 +470,9 @@ UICollectionViewDelegateFlowLayout {
 
                                                     Global.getGamvesVideoFromObject(videoPF: videoPF, completionHandler: { (videoGamves) in
                 
-                                                        let reference = recPF["refernce"] as! Int
+                                                        let referenceId = recPF["referenceId"] as! Int
                                                         
-                                                        Global.chatVideos[reference] = videoGamves
+                                                        Global.chatVideos[referenceId] = videoGamves
 
                                                         recommendation.video = videoGamves
 

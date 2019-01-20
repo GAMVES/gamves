@@ -236,7 +236,7 @@ UITextFieldDelegate  {
         self.scrollView.contentInset = contentInset
     }
 
-    @objc func keyboardWillHide(notification:NSNotification){
+    @objc func keyboardWillHide(notification:NSNotification) {
 
         let contentInset:UIEdgeInsets = UIEdgeInsets.zero
         self.scrollView.contentInset = contentInset
