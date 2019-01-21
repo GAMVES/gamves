@@ -1,4 +1,4 @@
-package gamves.com.gamvesparents;
+package gamves.com.gamvesparents.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -20,6 +20,8 @@ import com.parse.ParseUser;
 import java.util.HashMap;
 import java.util.List;
 
+import gamves.com.gamvesparents.ParentsApplication;
+import gamves.com.gamvesparents.R;
 import gamves.com.gamvesparents.utils.HttpParse;
 
 public class UserLoginActivity extends AppCompatActivity {

@@ -18,6 +18,9 @@
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+
     <application
         android:name=".ParentsApplication"
         android:allowBackup="true"
@@ -28,7 +31,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".activities.SplashActivity"
             android:windowSoftInputMode="adjustPan|stateUnspecified"
             android:keepScreenOn="true"
             android:screenOrientation="portrait">
@@ -40,13 +43,13 @@
 
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/app_name">
 
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name">
 
         </activity>
@@ -54,7 +57,7 @@
 
 
         <activity
-            android:name="gamves.com.gamvesparents.RegisterActivity"
+            android:name="gamves.com.gamvesparents.activities.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_register_actitivy"
             android:theme="@style/FullscreenTheme" />

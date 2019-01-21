@@ -1,9 +1,11 @@
-package gamves.com.gamvesparents;
+package gamves.com.gamvesparents.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
@@ -24,16 +26,16 @@ import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import gamves.com.gamvesparents.R;
 import gamves.com.gamvesparents.model.School;
 import gamves.com.gamvesparents.singleton.DataSingleton;
 import gamves.com.gamvesparents.utils.KeySaver;
 import info.hoang8f.android.segmented.SegmentedGroup;
-
-import gamves.com.gamvesparents.R;
 
 public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCheckedChangeListener,
         View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -41,11 +43,27 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
     private static final String TAG = "LoginActivity";
 
     ProgressDialog progressDialog;
-    private EditText loginInputUserName, loginInputPassword;
-    private Button btnlogin;
-    private TextView register_message;
+
+    private TextInputLayout
+            layoutUsername,
+            layoutEmail,
+            layoutPassword,
+            layoutSpinner;
+
+    private EditText
+            loginInputUserName,
+            loginInputEmail,
+            loginInputPassword;
+
+    private AppCompatSpinner loginSpinner;
+
+
+    private Button btnloginRegister;
+    private TextView registerMessage;
 
     SegmentedGroup segmented_login;
+
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,12 +76,22 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
 
         setupUI(cloginContainerView);
 
+        this.activity = this;
+
+        layoutUsername = (TextInputLayout) findViewById(R.id.login_input_layout_username);
+        layoutEmail = (TextInputLayout) findViewById(R.id.login_input_layout_email);
+        layoutPassword = (TextInputLayout) findViewById(R.id.login_input_layout_password);
+        layoutSpinner = (TextInputLayout) findViewById(R.id.login_input_layout_spinner);
 
         loginInputUserName = (EditText) findViewById(R.id.login_input_username);
         loginInputPassword = (EditText) findViewById(R.id.login_input_password);
-        register_message = (TextView) findViewById(R.id.register_message);
-        btnlogin = (Button) findViewById(R.id.btn_login);
-        btnlogin.setTag(new Integer(0));
+        loginInputEmail = (EditText) findViewById(R.id.login_input_email);
+        loginSpinner = (AppCompatSpinner) findViewById(R.id.login_spinner);
+
+
+        registerMessage = (TextView) findViewById(R.id.register_message);
+        btnloginRegister = (Button) findViewById(R.id.btn_login);
+        btnloginRegister.setTag(new Integer(0));
 
         loginInputUserName.setText("Clemente");
         loginInputPassword.setText("clemen");
@@ -72,34 +100,36 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
 
-        btnlogin.setOnClickListener(new View.OnClickListener()
+        btnloginRegister.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view) {
 
-                int tag = (int) btnlogin.getTag();
+                int tag = (int) btnloginRegister.getTag();
 
                 if (tag==0)
                 {
 
-                    loginUser(loginInputUserName.getText().toString(),
-                            loginInputPassword.getText().toString());
+                    loginUser();
 
                 } else if (tag==1)
                 {
 
-                    loginInputUserName.setVisibility(View.VISIBLE);
+                    registerUser();
+
+
+                    /*loginInputUserName.setVisibility(View.VISIBLE);
                     loginInputPassword.setVisibility(View.VISIBLE);
 
                     String login_text = getResources().getString(R.string.btn_login);
 
-                    btnlogin.setText(login_text);
-                    btnlogin.setTag(new Integer(0));
+                    btnloginRegister.setText(login_text);
+                    btnloginRegister.setTag(new Integer(0));
 
                     String register_message_text = getResources().getString(R.string.register_message);
 
-                    register_message.setText(register_message_text);
-                    register_message.setVisibility(View.GONE);
+                    registerMessage.setText(register_message_text);
+                    registerMessage.setVisibility(View.GONE);*/
                 }
 
             }
@@ -122,15 +152,9 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
 
         segmented_login.setOnCheckedChangeListener(this);
 
-        // Spinner element
-        AppCompatSpinner spinner = (AppCompatSpinner) findViewById(R.id.login_spinner);
+        loginSpinner.setOnItemSelectedListener(this);
 
-        // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
-
-        // Spinner Drop down elements
         List<School> schoolsArray = DataSingleton.getInstance().getSchools();
-
         List<String> schools = new ArrayList<String>();
 
         for (int i=0; i<schoolsArray.size(); i++) {
@@ -139,20 +163,20 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
             schools.add(name);
         }
 
-        // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, schools);
 
-        // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-
+        loginSpinner.setAdapter(dataAdapter);
 
     }
 
-    private void loginUser(final String username, final String password)
+    private void loginUser()
     {
+
+        final String username = loginInputUserName.getText().toString();
+        final String password = loginInputPassword.getText().toString();
+
         String cancel_req_tag = "login";
         progressDialog.setMessage("Logging you in...");
         showDialog();
@@ -168,11 +192,11 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
                 {
                     loginInputUserName.setVisibility(View.GONE);
                     loginInputPassword.setVisibility(View.GONE);
-                    btnlogin.setText("Try again");
-                    btnlogin.setTag(new Integer(1));
-                    register_message.setText("Error loggin in: " + e.getMessage());
-                    register_message.setVisibility(View.VISIBLE);
+                    btnloginRegister.setText("Try again");
+                    btnloginRegister.setTag(new Integer(1));
 
+                    registerMessage.setText("Error loggin in: " + e.getMessage());
+                    registerMessage.setVisibility(View.VISIBLE);
 
                 } else
                 {
@@ -180,6 +204,42 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
                     KeySaver.saveShare(LoginActivity.this, "username", username);
                     KeySaver.saveShare(LoginActivity.this, "password", password);
                     finish();
+                }
+            }
+        });
+    }
+
+    private void registerUser()
+    {
+
+        //https://www.back4app.com/docs/pages/android/android-user-registration
+
+        final String username = loginInputUserName.getText().toString();
+        final String password = loginInputPassword.getText().toString();
+
+        ParseUser user = new ParseUser();
+
+        String usernameRegister = loginInputEmail.getText().toString();
+        user.setUsername(usernameRegister);
+
+        String passwordRegister = loginInputPassword.getText().toString();
+        user.setPassword(passwordRegister);
+
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+
+                    //alertDisplayer("Sucessful Sign Up!","Welcome" + <Insert Username Here> + "!");
+
+                    Intent mA = new Intent(activity, MainActivity.class);
+                    startActivity(mA);
+                    finish();
+
+
+                } else {
+                    ParseUser.logOut();
+                    Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -218,23 +278,41 @@ public class LoginActivity extends AppCompatActivity implements  RadioGroup.OnCh
         switch (checkedId) {
             case R.id.btn_login_segmented:
 
-                //loginInputUserName.setVisibility(View.VISIBLE);
-                //loginInputPassword.setVisibility(View.VISIBLE);
-                //btnlogin.setVisibility(View.VISIBLE);
-                //register_message.setVisibility(View.GONE);
+                layoutUsername.setVisibility(View.VISIBLE);
+                layoutPassword.setVisibility(View.VISIBLE);
+
+                layoutEmail.setVisibility(View.GONE);
+                layoutSpinner.setVisibility(View.GONE);
+
+                btnloginRegister.setText("LOGIN");
+                btnloginRegister.setTag(new Integer(0));
 
                 break;
             case R.id.btn_register_segmented:
 
-                //loginInputUserName.setVisibility(View.GONE);
-                //loginInputPassword.setVisibility(View.GONE);
-                //btnlogin.setVisibility(View.GONE);
-                //register_message.setVisibility(View.VISIBLE);
+                layoutEmail.setVisibility(View.VISIBLE);
+                layoutSpinner.setVisibility(View.VISIBLE);
+
+                btnloginRegister.setText("REGISTER");
+                btnloginRegister.setTag(new Integer(1));
 
                 break;
             default:
 
         }
+
+        /*
+         layoutUsername = (TextInputLayout) findViewById(R.id.login_input_layout_username);
+        layoutEmail = (TextInputLayout) findViewById(R.id.login_input_layout_email);
+        layoutPassword = (TextInputLayout) findViewById(R.id.login_input_layout_password);
+        layoutSpinner = (TextInputLayout) findViewById(R.id.login_input_layout_spinner);
+         */
+        /*
+        loginInputUserName = (EditText) findViewById(R.id.login_input_username);
+        loginInputPassword = (EditText) findViewById(R.id.login_input_password);
+        loginInputEmail = (EditText) findViewById(R.id.login_input_email);
+        loginSpinner = (AppCompatSpinner) findViewById(R.id.login_spinner);
+         */
 
     }
 

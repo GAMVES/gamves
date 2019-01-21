@@ -1,4 +1,4 @@
-package gamves.com.gamvesparents;
+package gamves.com.gamvesparents.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
+import gamves.com.gamvesparents.activities.LoginActivity;
+import gamves.com.gamvesparents.activities.MainActivity;
 import gamves.com.gamvesparents.model.School;
 import gamves.com.gamvesparents.singleton.DataSingleton;
 

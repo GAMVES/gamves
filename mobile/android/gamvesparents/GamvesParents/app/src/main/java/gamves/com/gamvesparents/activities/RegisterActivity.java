@@ -1,4 +1,4 @@
-package gamves.com.gamvesparents;
+package gamves.com.gamvesparents.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -36,6 +36,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import gamves.com.gamvesparents.ParentsApplication;
+import gamves.com.gamvesparents.R;
 import gamves.com.gamvesparents.model.User;
 import gamves.com.gamvesparents.utils.HttpParse;
 

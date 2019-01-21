@@ -1,4 +1,4 @@
-package gamves.com.gamvesparents;
+package gamves.com.gamvesparents.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import gamves.com.gamvesparents.R;
 import gamves.com.gamvesparents.fragment.FragmentFeed;
 import gamves.com.gamvesparents.fragment.FragmentHome;
 import gamves.com.gamvesparents.fragment.FragmentProfile;

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import gamves.com.gamvesparents.R;
-import gamves.com.gamvesparents.RegisterActivity;
+import gamves.com.gamvesparents.activities.RegisterActivity;
 
 /**
  * Created by jose on 9/15/17.

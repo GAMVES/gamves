@@ -4,7 +4,7 @@
     android:id="@+id/activity_user_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="gamves.com.gamvesparents.UserLoginActivity"
+    tools:context="gamves.com.gamvesparents.activities.UserLoginActivity"
     android:background="#FF5722"
     android:padding="20dp">
 
