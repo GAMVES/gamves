@@ -1,7 +1,7 @@
 //
 //  EventViewController.swift
 //  gamvesparents
-//
+//TabBarViewController
 //  Created by Jose Vigil on 25/12/2018.
 //  Copyright © 2018 Gamves Parents. All rights reserved.
 //
@@ -40,13 +40,17 @@ UICollectionViewDelegateFlowLayout {
     }()
 
     let cellId = "cellId"
-    let sectionHeaderId = "recommendationSectionHeader"
+    let sectionHeaderId = "recommendationSectionHeaderId"
+    
+    let recommendationEmptyViewCellId = "recommendationEmptyViewCell"
+    let recommendationVideoCellId = "recommendationVideoCellId"
+    let recommendationViewCellId = "recommendationViewCellId"   
 
-     let rowHeight = CGFloat(130)
+     let rowHeight = CGFloat(100)
 
      var recommendationLoaded = Bool()
 
-    override func viewDidLoad() {
+     override func viewDidLoad() {
         super.viewDidLoad()                       
 
         self.view.addSubview(collectionView)
@@ -55,9 +59,11 @@ UICollectionViewDelegateFlowLayout {
         
         self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
         
-        self.collectionView.register(RecommendationViewCell.self, forCellWithReuseIdentifier: cellId)
-
         self.collectionView.register(RecommendationSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
+
+        self.collectionView.register(RecommendationEmptyViewCell.self, forCellWithReuseIdentifier: self.recommendationEmptyViewCellId)
+        self.collectionView.register(RecommendationVideoCell.self, forCellWithReuseIdentifier: self.recommendationVideoCellId)
+        self.collectionView.register(RecommendationViewCell.self, forCellWithReuseIdentifier: self.recommendationViewCellId)        
 
         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor   
 
@@ -139,7 +145,7 @@ UICollectionViewDelegateFlowLayout {
             //image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
             sectionHeaderView.iconImageView.image = image
             
-            sectionHeaderView.nameLabel.text = "New"
+            sectionHeaderView.nameLabel.text = "Child recommendations"
             
         } else if indexPath.section == 1 {
             
@@ -148,7 +154,7 @@ UICollectionViewDelegateFlowLayout {
             //image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
             sectionHeaderView.iconImageView.image = image
             
-            sectionHeaderView.nameLabel.text = "Earlier"
+            sectionHeaderView.nameLabel.text = "Educational videos"
         }
         
         return sectionHeaderView
@@ -160,12 +166,18 @@ UICollectionViewDelegateFlowLayout {
     {
 
         var countItems = Int()
+        
+        print(section)
 
         if recommendationLoaded {        
         
             if section == 0 {
                 
                 countItems = Global.recommendations.count
+                
+                if countItems == 0 {
+                    countItems = 1
+                }
                 
             } else if section == 1 {
 
@@ -181,101 +193,132 @@ UICollectionViewDelegateFlowLayout {
 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-    {
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! RecommendationViewCell
+    {               
 
         let index = indexPath.item
         var recommendation = GamvesRecommendation()
         
         print(indexPath.section)
+
+        let cell = UICollectionViewCell()
+        
+        print(indexPath.section)
         
         if indexPath.section == 0 {
+
+            if Global.recommendations.count == 0 {
+
+                let cellEmpty = collectionView.dequeueReusableCell(withReuseIdentifier: self.recommendationEmptyViewCellId, for: indexPath) as! RecommendationEmptyViewCell                    
+
+                cellEmpty.messageLabel.text = "Family and child has not been added yet, touch to add"
+
+                return cellEmpty
+
+            } else {
+
+                recommendation = Global.recommendations[index]
+
+                let cellRed = collectionView.dequeueReusableCell(withReuseIdentifier: self.recommendationViewCellId, for: indexPath) as! RecommendationViewCell
+
+                return cellRed
+
+                //HERE RECOMMENDATION
+            }           
             
-            recommendation = Global.recommendations[index]
             
         } else if indexPath.section == 1 {
+
+            let cellvideo = collectionView.dequeueReusableCell(withReuseIdentifier: self.recommendationVideoCellId, for: indexPath) as! RecommendationVideoCell
             
             recommendation = Global.recommendationsVideo[index]
-            
-        }
 
-        if recommendation.type == 2 {
-            cell.setThumbnailSize()
-        }
-
-        var message:String = recommendation.description
-
-        let delimitator = Global.admin_delimitator
-
-        if message.range(of:delimitator) != nil
-        {            
-            if let range = message.range(of: delimitator) 
-            {
-                message.removeSubrange(range)
+            if recommendation.type == 2 {
+                cellvideo.setThumbnailSize()
             }
-        } 
 
-        cell.descriptionTextView.text = message
-        
-        cell.userProfileImageView.image = recommendation.avatar       
+            var message:String = recommendation.description
 
-        if recommendation.type == 1 { //recommendation
+            let delimitator = Global.admin_delimitator
 
-                
+            if message.range(of:delimitator) != nil
+            {            
+                if let range = message.range(of: delimitator) 
+                {
+                    message.removeSubrange(range)
+                }
+            } 
 
-        } else if recommendation.type == 2 { //video
+            cellvideo.descriptionTextView.text = message
+            
+            cellvideo.userProfileImageView.image = recommendation.avatar       
 
-            cell.thumbnailImageView.image = recommendation.cover
-            cell.iconImageView.image = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
-            cell.iconView.backgroundColor = UIColor.blue     
-        } 
+            if recommendation.type == 1 { //recommendation
 
-        let b = Style("b").font(.boldSystemFont(ofSize: 18))       
-        cell.posterLabel.attributedText = recommendation.title.style(tags: b).attributedString
+                    
+
+            } else if recommendation.type == 2 { //video
+
+                cellvideo.thumbnailImageView.image = recommendation.cover
+                cellvideo.iconImageView.image = UIImage(named: "video")?.withRenderingMode(.alwaysTemplate)
+                cellvideo.iconView.backgroundColor = UIColor.blue     
+            } 
+
+            let b = Style("b").font(.boldSystemFont(ofSize: 18))       
+            cellvideo.posterLabel.attributedText = recommendation.title.style(tags: b).attributedString
+            
+            cellvideo.descriptionTextView.text = recommendation.description
+            
+            var image = String()
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "h:mm a"
+            
+            let elapsedTimeInSeconds = Date().timeIntervalSince(recommendation.date)
+            
+            let secondInDays: TimeInterval = 60 * 60 * 24
+            
+            if elapsedTimeInSeconds > 7 * secondInDays {
+                dateFormatter.dateFormat = "MM/dd/yy"
+            } else if elapsedTimeInSeconds > secondInDays {
+                dateFormatter.dateFormat = "EEE"
+            }
+
+            cellvideo.timeLabel.text = recommendation.date.elapsedTime       
+
+            //GRADIENT
+
+            let gr = Gradients()        
+            var gradient : CAGradientLayer = CAGradientLayer()
+            gradient = gr.getPastelGradient()        
+            gradient.frame = CGRect(x: 0, y: 0, width: cellvideo.frame.width, height: cellvideo.frame.height)
+            cellvideo.layer.insertSublayer(gradient, at: 0)
         
-        cell.descriptionTextView.text = recommendation.description
-        
-        var image = String()
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h:mm a"
-        
-        let elapsedTimeInSeconds = Date().timeIntervalSince(recommendation.date)
-        
-        let secondInDays: TimeInterval = 60 * 60 * 24
-        
-        if elapsedTimeInSeconds > 7 * secondInDays {
-            dateFormatter.dateFormat = "MM/dd/yy"
-        } else if elapsedTimeInSeconds > secondInDays {
-            dateFormatter.dateFormat = "EEE"
+            return cellvideo
         }
 
-        cell.timeLabel.text = recommendation.date.elapsedTime       
-
-        //GRADIENT
-
-        let gr = Gradients()        
-        var gradient : CAGradientLayer = CAGradientLayer()
-        gradient = gr.getPastelGradient()        
-        gradient.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
-        cell.layer.insertSublayer(gradient, at: 0)
-    
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
-        var size = CGSize()
-        var height = CGFloat()
+        //var size = CGSize()
+        //var height = CGFloat()
 
-        let index = indexPath.item
+        /*let index = indexPath.item
 
         var recommendation:GamvesRecommendation!
 
         if indexPath.section == 0 {
-                
-            recommendation = Global.recommendations[index]
+                    
+            if Global.recommendations.count == 0 {
+
+                size = CGSize(width: self.view.frame.width, height: height + 16 + 100)
+
+            } else {
+
+                recommendation = Global.recommendations[index]
+            }            
             
         } else if indexPath.section == 1 {
             
@@ -294,14 +337,26 @@ UICollectionViewDelegateFlowLayout {
             
             size = CGSize(width: self.view.frame.width, height: height)
 
+        }*/
+
+        var height = CGFloat()
+
+        if indexPath.section == 0 {
+
+            height = 80
+
+        } else if indexPath.section == 1 {
+
+            height = 120
+
         }
         
-        return size //CGSize(width: self.frame.width, height: rowHeight)
+        return CGSize(width: self.view.frame.width, height: height)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
-        return CGSize(width: collectionView.frame.size.width, height: 50)
+        return CGSize(width: collectionView.frame.size.width, height: 45)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -315,78 +370,38 @@ UICollectionViewDelegateFlowLayout {
         
         if indexPath.section == 0 {
             
-            recommendation = Global.recommendations[index]
+            if Global.recommendations.count == 0 {
+                
+                self.tabBarViewController!.accountViewController.showImagePicker(type: ProfileImagesTypes.Son)
+
+            } else {
+
+                recommendation = Global.recommendations[index]    
+            }            
             
         } else if indexPath.section == 1 {
             
             recommendation = Global.recommendationsVideo[index]
-            
-        }
-        
-        //Everything here is wrong
-        
-        print(recommendation.posterId)
 
-        if recommendation.posterId != PFUser.current()?.objectId {
-
-            if recommendation.type == 0 { //recommendation
-
-                          
-
-            } else if recommendation.type == 2 { //fanpage
-
-                //let fanpage = recommendation.fanpage
-
-                //self.homeController?.switchToMenuIndex(index: 0)        
-        
-                let videoPF:PFObject = recommendation.video.videoObj as! PFObject
+            let videoPF:PFObject = recommendation.video.videoObj as! PFObject
                 
-                print(videoPF.objectId)
-                print(videoPF["title"] as! String)
+            print(videoPF.objectId)
+            print(videoPF["title"] as! String)
 
-                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
 
-                Global.getGamvesVideoFromObject(videoPF: videoPF, completionHandler: { (videoGamves) in          
-                    
-                    let videoId = videoPF["videoId"] as! Int
-
-                    print(videoId)
-
-                    let videoLauncher = VideoLauncher()
-                    videoLauncher.showVideoPlayer(videoGamves: videoGamves)
-
-                })
-
-
-            } 
-
-            /*else if recommendation.type == 3 { //friend
-
-                self.homeController!.showFriendApproval()
-
-            } else if recommendation.type == 4 { //birthday  
-
-                let posterId = recommendation.posterId
-
-                let gamvesUserPoster = Global.userDictionary[posterId] as! GamvesUser
-
-                let profileLauncher = PublicProfileLauncher()
-                profileLauncher.showProfileView(gamvesUser: gamvesUserPoster) 
-
-            } else if recommendation.type == 5 { //recommendation
-
+            Global.getGamvesVideoFromObject(videoPF: videoPF, completionHandler: { (videoGamves) in          
                 
+                let videoId = videoPF["videoId"] as! Int
 
-            } else if recommendation.type == 6 { //welcome
+                print(videoId)
 
-                if self.homeController != nil
-                {
-                    self.homeController?.showWelcomeViewcontroller()
-                }
-            
-            }*/
+                let videoLauncher = VideoLauncher()
+                videoLauncher.showVideoPlayer(videoGamves: videoGamves)
 
-        }        
+            })            
+        }                    
+             
     }
 
     func fetchRecommendations(completionHandler : @escaping (_ resutl:Bool) -> ())

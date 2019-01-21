@@ -2,15 +2,15 @@
 //  RecommendationViewCell.swift
 //  gamvesparents
 //
-//  Created by Jose Vigil on 21/01/2019.
+//  Created by Jose Vigil on 15/01/2019.
 //  Copyright © 2019 Gamves Parents. All rights reserved.
 //
 
 import UIKit
 
-class RecommendationViewCell: BaseCell {
+class RecommendationVideoCell: BaseCell {
 
-	
+
     //- Thumbnail view
 
     let thumbnailImageView: CustomImageView = {
@@ -199,5 +199,7 @@ class RecommendationViewCell: BaseCell {
         self.addConstraintsWithFormat("V:|[v0(100)]-8-[v1(1)]|",
                                  views: self.rowView, self.separatorView)        
     } 
+
+
     
 }

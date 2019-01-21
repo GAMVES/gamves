@@ -145,6 +145,8 @@ class AccountViewController: UIViewController,
 
     var floaty = Floaty(size: 80)
 
+    var navigationPickerController:UINavigationController!
+
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -366,13 +368,22 @@ class AccountViewController: UIViewController,
 
         self.hideShowTabBar(status: true)
         
-        imagePickerViewController.setType(type: type)
+        /*imagePickerViewController.setType(type: type)
         
         print(profileViewController)
 
-        imagePickerViewController.imagesPickerProtocol = profileViewController
+        imagePickerViewController.imagesPickerProtocol = profileViewController        
         
-        self.navigationController?.pushViewController(imagePickerViewController, animated: true)        
+        self.navigationController?.pushViewController(imagePickerViewController, animated: true)        */
+
+        self.imagePickerViewController = ImagePickerViewController()
+        self.imagePickerViewController.imagesPickerProtocol = profileViewController      
+        self.imagePickerViewController.setType(type: ProfileImagesTypes.Son)
+
+        self.navigationPickerController = UINavigationController(rootViewController: self.imagePickerViewController)
+        let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+        appDelegate.window?.rootViewController = self.navigationPickerController
+
       
     }
 

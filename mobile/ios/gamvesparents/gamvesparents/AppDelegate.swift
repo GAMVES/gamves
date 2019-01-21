@@ -10,6 +10,7 @@ import Parse
 import Bolts
 import UserNotifications
 import DeviceKit
+//import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -145,7 +146,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
          
         }
         
-        
+        // Use Firebase library to configure APIs
+        //FirebaseApp.configure()
 
         return true
     }

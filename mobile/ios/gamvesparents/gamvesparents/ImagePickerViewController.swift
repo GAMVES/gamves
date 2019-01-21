@@ -134,7 +134,7 @@ UITextFieldDelegate  {
 
     var smallImage = UIImage()
 
-    var croppedImage = UIImage()
+    var croppedImage = UIImage()   
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -218,6 +218,16 @@ UITextFieldDelegate  {
             let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
             self.scrollView.addGestureRecognizer(tap)
         }
+    }
+    
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        print("fuck dismiss")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        let currentDateTime = Date()
+        print(currentDateTime)
+        print("fuck viewWillDisappear")
     }
 
     func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -402,13 +412,14 @@ UITextFieldDelegate  {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage 
-        {           
+        {            
             self.imageCropVC = RSKImageCropViewController(image: image, cropMode: .circle)
             self.imageCropVC.delegate = self
             self.navigationController?.pushViewController(imageCropVC, animated: true)         
         }
 
         picker.dismiss(animated: true, completion: nil);
+        
     }
     
     func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {

@@ -1100,7 +1100,7 @@ ImagesPickerProtocol {
 
                             self.yourTypeId = PFUser.current()?["user_type"] as! Int                                                  
 
-                            self.imagePickerViewController.setType(type: ProfileImagesTypes.You)
+                            self.imagePickerViewController.setType(type: ProfileImagesTypes.You)                            
 
                             self.navigationPickerController = UINavigationController(rootViewController: self.imagePickerViewController)
 

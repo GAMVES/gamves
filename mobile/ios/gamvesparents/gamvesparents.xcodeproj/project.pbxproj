@@ -21,9 +21,11 @@
 		0939727B21759CC600496571 /* UISearch+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0939727A21759CC500496571 /* UISearch+Extension.swift */; };
 		0959FD092175BF3100711C7A /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959FD082175BF3000711C7A /* UIFont+Extension.swift */; };
 		098A903121D3F1D4001C6FC1 /* UITabbar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098A903021D3F1D4001C6FC1 /* UITabbar+Extension.swift */; };
-		09FFCED021EE5C520086C7EE /* RecommendationViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FFCECF21EE5C520086C7EE /* RecommendationViewCell.swift */; };
+		09FFCED021EE5C520086C7EE /* RecommendationVideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FFCECF21EE5C520086C7EE /* RecommendationVideoCell.swift */; };
 		09FFCED221EE5D090086C7EE /* RecommendationSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FFCED121EE5D090086C7EE /* RecommendationSectionHeader.swift */; };
 		09FFCED421EE78450086C7EE /* Gradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FFCED321EE78440086C7EE /* Gradients.swift */; };
+		09FFCED621F5700C0086C7EE /* RecommendationViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FFCED521F5700B0086C7EE /* RecommendationViewCell.swift */; };
+		09FFCED821F573400086C7EE /* RecommendationEmptyViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FFCED721F5733F0086C7EE /* RecommendationEmptyViewCell.swift */; };
 		19761041B06941D4B4D5BF5F /* Pods_gamvesparents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C54E21136EE63AD18AFFB195 /* Pods_gamvesparents.framework */; };
 		8212D6D81F735F1000F2A121 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8212D6D61F735F1000F2A121 /* Bolts.framework */; };
 		8212D6D91F735F1000F2A121 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8212D6D71F735F1000F2A121 /* Parse.framework */; };
@@ -138,9 +140,11 @@
 		0939727A21759CC500496571 /* UISearch+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISearch+Extension.swift"; sourceTree = "<group>"; };
 		0959FD082175BF3000711C7A /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
 		098A903021D3F1D4001C6FC1 /* UITabbar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabbar+Extension.swift"; sourceTree = "<group>"; };
-		09FFCECF21EE5C520086C7EE /* RecommendationViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationViewCell.swift; sourceTree = "<group>"; };
+		09FFCECF21EE5C520086C7EE /* RecommendationVideoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationVideoCell.swift; sourceTree = "<group>"; };
 		09FFCED121EE5D090086C7EE /* RecommendationSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationSectionHeader.swift; sourceTree = "<group>"; };
 		09FFCED321EE78440086C7EE /* Gradients.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Gradients.swift; path = ../../gamves/gamves/Gradients.swift; sourceTree = "<group>"; };
+		09FFCED521F5700B0086C7EE /* RecommendationViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationViewCell.swift; sourceTree = "<group>"; };
+		09FFCED721F5733F0086C7EE /* RecommendationEmptyViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEmptyViewCell.swift; sourceTree = "<group>"; };
 		0DE98C8C50A63DDAFA10CAD9 /* Pods-gamvesparents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gamvesparents.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gamvesparents/Pods-gamvesparents.debug.xcconfig"; sourceTree = "<group>"; };
 		8212D6D61F735F1000F2A121 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		8212D6D71F735F1000F2A121 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -558,8 +562,10 @@
 				C92DCABC213F03CE00A2C2EE /* OtherAccountViewCell.swift */,
 				C935EBFC213F600500BCB206 /* OtherAccountSectionHeader.swift */,
 				C935EBFE213F91D800BCB206 /* FeedSectionHeader.swift */,
-				09FFCECF21EE5C520086C7EE /* RecommendationViewCell.swift */,
+				09FFCECF21EE5C520086C7EE /* RecommendationVideoCell.swift */,
 				09FFCED121EE5D090086C7EE /* RecommendationSectionHeader.swift */,
+				09FFCED521F5700B0086C7EE /* RecommendationViewCell.swift */,
+				09FFCED721F5733F0086C7EE /* RecommendationEmptyViewCell.swift */,
 			);
 			name = cells;
 			sourceTree = "<group>";
@@ -775,7 +781,8 @@
 				C927D0C120D2B4E7006E217F /* VideoLauncher.swift in Sources */,
 				093784A321D2E33A0093A695 /* RecommendationViewController.swift in Sources */,
 				C935EBFD213F600500BCB206 /* OtherAccountSectionHeader.swift in Sources */,
-				09FFCED021EE5C520086C7EE /* RecommendationViewCell.swift in Sources */,
+				09FFCED821F573400086C7EE /* RecommendationEmptyViewCell.swift in Sources */,
+				09FFCED021EE5C520086C7EE /* RecommendationVideoCell.swift in Sources */,
 				82B7EB7D1FAB6FA700C61A6B /* LoginViewController.swift in Sources */,
 				C93D611E20A3E58A00245CC7 /* SettingCell.swift in Sources */,
 				82557C4F2016CED100752301 /* HistroyCell.swift in Sources */,
@@ -817,6 +824,7 @@
 				09FFCED421EE78450086C7EE /* Gradients.swift in Sources */,
 				82E372461FB16AD9000AD7EB /* VideoApprovalLauncher.swift in Sources */,
 				C94AC05B214A0F490056F6AB /* TutorialVideoViewController.swift in Sources */,
+				09FFCED621F5700C0086C7EE /* RecommendationViewCell.swift in Sources */,
 				C7B401FF1D78C167001D8ED4 /* AppDelegate.swift in Sources */,
 				0959FD092175BF3100711C7A /* UIFont+Extension.swift in Sources */,
 				0939726A21756C7C00496571 /* SearchSingleImageCell.swift in Sources */,
