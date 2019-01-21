@@ -47,7 +47,7 @@
     <string name="child_image">Child Image</string>
     <string name="pick_image_for_child">Pick up an image of your child</string>
     <string name="pick_image_by_add_button">By touching the (+) button add the image</string>
-
+    <string name="select_child_image">Select child image</string>
 
     <string name="register_message">Please ask your parents for registration credentials and come back. They should register first in order to give you access.</string>
 

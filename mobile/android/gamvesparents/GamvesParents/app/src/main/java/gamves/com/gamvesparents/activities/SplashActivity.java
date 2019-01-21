@@ -34,7 +34,8 @@ public class SplashActivity extends AppCompatActivity {
                 @Override
                 public void getSchools(List<School> schools) {
 
-                    Intent i = new Intent(actvity, LoginActivity.class);
+                    //Intent i = new Intent(actvity, LoginActivity.class);
+                    Intent i = new Intent(actvity, ImagePickerActivity.class);
                     startActivity(i);
 
                 }

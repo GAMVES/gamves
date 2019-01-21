@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import gamves.com.gamvesparents.R;
 
 /**
@@ -34,11 +35,13 @@ import gamves.com.gamvesparents.R;
 public class ImagePickerActivity extends Activity {
 
     private Button button;
-    private ImageView imageView;
+    private CircleImageView profileImageView;
 
     public static final int REQUEST_IMAGE = 100;
     public static final int REQUEST_PERMISSION = 200;
     private String imageFilePath = "";
+
+    public Activity activity;
 
     public ImagePickerActivity() {
     }
@@ -46,12 +49,22 @@ public class ImagePickerActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_image_picker);
 
+        this.activity = this;
+
         button = findViewById(R.id.button);
-        imageView = findViewById(R.id.image);
+        profileImageView = findViewById(R.id.profile);
+
+        profileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                openCameraIntent();
+
+            }
+        });
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -68,6 +81,7 @@ public class ImagePickerActivity extends Activity {
     }
 
     private void openCameraIntent() {
+
         Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (pictureIntent.resolveActivity(getPackageManager()) != null) {
 
@@ -79,7 +93,10 @@ public class ImagePickerActivity extends Activity {
                 e.printStackTrace();
                 return;
             }
-            Uri photoUri = FileProvider.getUriForFile(this, getPackageName() +".provider", photoFile);
+
+            String tempImage = "tmp_image_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+
+            Uri photoUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), tempImage));
             pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
             startActivityForResult(pictureIntent, REQUEST_IMAGE);
         }
@@ -102,7 +119,7 @@ public class ImagePickerActivity extends Activity {
 
         if (requestCode == REQUEST_IMAGE) {
             if (resultCode == RESULT_OK) {
-                imageView.setImageURI(Uri.parse(imageFilePath));
+                profileImageView.setImageURI(Uri.parse(imageFilePath));
             }
             else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "You cancelled the operation", Toast.LENGTH_SHORT).show();
