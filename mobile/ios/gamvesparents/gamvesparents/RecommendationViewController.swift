@@ -75,6 +75,8 @@ UICollectionViewDelegateFlowLayout {
 
                     self.activityView.stopAnimating()
 
+                    self.recommendationLoaded = true
+
                     self.collectionView.reloadData()
                 }
             })
@@ -468,13 +470,12 @@ UICollectionViewDelegateFlowLayout {
 
                                                 for videoPF in videosPF! {
 
-                                                    Global.getGamvesVideoFromObject(videoPF: videoPF, completionHandler: { (videoGamves) in
-                
-                                                        let referenceId = recPF["referenceId"] as! Int
+                                                    Global.getGamvesVideoFromObject(videoPF: videoPF, completionHandler: { (videoGamves) in            
                                                         
-                                                        Global.chatVideos[referenceId] = videoGamves
-
+                                                        
                                                         recommendation.video = videoGamves
+
+                                                        Global.recommendationsVideo.append(recommendation)                                                      
 
                                                         if (count == (recosCount! - 1) )  {
 

@@ -277,7 +277,6 @@ class AccountViewController: UIViewController,
         self.buttonRightView.backgroundColor = UIColor.gamvesLightLightBlueColor        
         self.headerView.backgroundColor = UIColor.gamvesGamvesLightColor
 
-
          self.floaty.paddingY = 70
         self.floaty.paddingX = 25                    
         self.floaty.itemSpace = 30        
