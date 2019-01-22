@@ -642,7 +642,7 @@ class ProfileViewController: UIViewController,
                     id = 0               
                 break
 
-             case .Spouse:               
+             case .Partner:
                     id = 2
                 break    
             

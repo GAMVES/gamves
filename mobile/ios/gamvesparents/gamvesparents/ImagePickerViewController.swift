@@ -18,7 +18,7 @@ enum ProfileImagesTypes {
     case Son
     case Family
     case You
-    case Spouse
+    case Partner
 }
 
 class ImagePickerViewController: UIViewController,
@@ -291,12 +291,12 @@ UITextFieldDelegate  {
 
                     break
 
-            case .Spouse?:
+            case .Partner?:
 
-                    title = "spouse Image"
-                    message = "Choose your spouse image"
-                    buttonTitle = "  Select Your Spouse Image"
-                    imageName = "spouse_photo"
+                    title = "partner Image"
+                    message = "Choose your partner image"
+                    buttonTitle = "  Select Your Partner Image"
+                    imageName = "partner_photo"
 
                     break    
                 
@@ -347,7 +347,7 @@ UITextFieldDelegate  {
                 
             case .Family?:
 
-                    self.type = ProfileImagesTypes.You                
+                    self.type = ProfileImagesTypes.Partner                
 
                     self.setScreenByType()
 
@@ -355,7 +355,7 @@ UITextFieldDelegate  {
                     
                     break       
 
-            case .Spouse?:
+            case .Partner?:
 
                     self.navigationController?.popViewController(animated: true)               
 

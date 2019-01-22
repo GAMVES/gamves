@@ -7,10 +7,57 @@ PODS:
   - BEMCheckBox (1.4.1)
   - Bolts-Swift (1.3.0)
   - Bolts/Tasks (1.9.0)
+  - Crashlytics (3.12.0):
+    - Fabric (~> 1.9.0)
   - DeviceKit (1.11.0)
   - DownPicker (0.1.34)
+  - Fabric (1.9.0)
+  - Firebase/Core (5.15.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 5.4.0)
+  - Firebase/CoreOnly (5.15.0):
+    - FirebaseCore (= 5.1.10)
+  - FirebaseAnalytics (5.4.0):
+    - FirebaseCore (~> 5.1)
+    - FirebaseInstanceID (~> 3.3)
+    - GoogleAppMeasurement (= 5.4.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - nanopb (~> 0.3)
+  - FirebaseCore (5.1.10):
+    - GoogleUtilities/Logger (~> 5.2)
+  - FirebaseInstanceID (3.3.0):
+    - FirebaseCore (~> 5.1)
+    - GoogleUtilities/Environment (~> 5.3)
+    - GoogleUtilities/UserDefaults (~> 5.3)
   - Floaty (4.0.1)
   - FXBlurView (1.6.4)
+  - GoogleAppMeasurement (5.4.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
+    - GoogleUtilities/MethodSwizzler (~> 5.2)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - nanopb (~> 0.3)
+  - GoogleUtilities/AppDelegateSwizzler (5.3.7):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (5.3.7)
+  - GoogleUtilities/Logger (5.3.7):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (5.3.7):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (5.3.7):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (5.3.7)"
+  - GoogleUtilities/Reachability (5.3.7):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (5.3.7):
+    - GoogleUtilities/Logger
   - ImageSlideshow (1.7.0):
     - ImageSlideshow/Core (= 1.7.0)
   - ImageSlideshow/Core (1.7.0)
@@ -112,6 +159,11 @@ PODS:
     - MLUI/Helpers
     - MLUI/MLFonts
   - MLUI/StyleSheet (5.2.0)
+  - nanopb (0.3.901):
+    - nanopb/decode (= 0.3.901)
+    - nanopb/encode (= 0.3.901)
+  - nanopb/decode (0.3.901)
+  - nanopb/encode (0.3.901)
   - NVActivityIndicatorView (4.0.1):
     - NVActivityIndicatorView/Presenter (= 4.0.1)
   - NVActivityIndicatorView/Presenter (4.0.1)
@@ -141,8 +193,11 @@ DEPENDENCIES:
   - AWSS3 (~> 2.6.32)
   - BEMCheckBox
   - Bolts-Swift (from `https://github.com/BoltsFramework/Bolts-Swift`, commit `e9baa72d04521c3b25ef4fa6fef12b340953ee02`)
+  - Crashlytics (~> 3.12.0)
   - DeviceKit
   - DownPicker
+  - Fabric (~> 1.9.0)
+  - Firebase/Core
   - Floaty (~> 4.0.1)
   - ImageSlideshow
   - ISEmojiView
@@ -169,15 +224,24 @@ SPEC REPOS:
     - AWSS3
     - BEMCheckBox
     - Bolts
+    - Crashlytics
     - DeviceKit
     - DownPicker
+    - Fabric
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseInstanceID
     - Floaty
     - FXBlurView
+    - GoogleAppMeasurement
+    - GoogleUtilities
     - ImageSlideshow
     - ISEmojiView
     - JRSwizzle
     - MercadoPagoSDK
     - MLUI
+    - nanopb
     - NVActivityIndicatorView
     - Parse
     - ParseLiveQuery
@@ -216,15 +280,24 @@ SPEC CHECKSUMS:
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   Bolts-Swift: fa98d1b59fc1acea9b21a21306dcdca1c85e3737
+  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   DeviceKit: a3a86f8dddbe1317a9a243cdf9646858bf135dce
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
+  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
+  Firebase: 8bb9268bff82374f2cbaaabb143e725743c316ae
+  FirebaseAnalytics: c06f9d70577d79074214700a71fd5d39de5550fb
+  FirebaseCore: 35747502d9e8c6ee217385ad04446c7c2aaf9c5c
+  FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
   Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
   FXBlurView: db786c2561cb49a09ae98407f52460096ab8a44f
+  GoogleAppMeasurement: 98b71f5e04142793729a5ef23e5b96651ff4b70f
+  GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
   ISEmojiView: 5b53bdf057ddf484b92e70064a1cc46b5fedf7ea
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
   MercadoPagoSDK: 7341cb870406fa49ea9dd1bfe6c938bb28219fb3
   MLUI: f2de892289a9914a21d64fc95bbb1296afe6cf89
+  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   NVActivityIndicatorView: 77ed6d7b571643e24899e7858bf9ae2ee4c21f31
   Parse: 3b31a3dd1777b07ee7f0caee32fafbff544483a5
   ParseLiveQuery: 0ea078a12015d64070d0ae07da32fae3d3198c42
@@ -240,6 +313,6 @@ SPEC CHECKSUMS:
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 54c54919c4ec7fcb2862f4719aa39fc808ae62c8
+PODFILE CHECKSUM: 4fb5fe2af126ae9dab39af2d3f91cebe10b3b6db
 
 COCOAPODS: 1.5.3

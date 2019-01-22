@@ -67,6 +67,13 @@ UICollectionViewDelegateFlowLayout {
 
         self.collectionView.backgroundColor = UIColor.gamvesBackgoundColor   
 
+        self.loadRecommendations(completionRecommHandler: { ( resutl ) -> () in })
+
+    }
+
+
+    func loadRecommendations(completionRecommHandler : @escaping (_ resutl:Bool) -> ()) {
+
         self.registerLiveQuery()      
 
         if let userId = PFUser.current()?.objectId
@@ -84,9 +91,11 @@ UICollectionViewDelegateFlowLayout {
                     self.recommendationLoaded = true
 
                     self.collectionView.reloadData()
+
+                    completionRecommHandler(true)
                 }
             })
-        }         
+        }        
 
     }
 

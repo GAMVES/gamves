@@ -931,8 +931,12 @@ ImagesPickerProtocol {
                         isVerified = true
                         
                         UserDefaults.standard.setIsLoggedIn(value: true)
+
+                        if let userId = PFUser.current()?.objectId {
+                            self.puserId = userId
+                        }
                         
-                        if self.isRegistered {
+                        if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_family_exist") { //self.isRegistered {
                             
                             Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
 
@@ -976,11 +980,7 @@ ImagesPickerProtocol {
                                     UserDefaults.standard.setIsLoggedIn(value: true)
                                     UserDefaults.standard.setIsRegistered(value: true)
                                     
-                                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })
-
-                                    if let userId = PFUser.current()?.objectId {
-                                        self.puserId = userId
-                                    }
+                                    ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })                                    
 
                                     let pid = "\(self.puserId)_profile_completed"
 
@@ -1084,30 +1084,52 @@ ImagesPickerProtocol {
                                 self.puserId = userId
                             }
 
-                            Global.defaults.set(true, forKey: "\(self.puserId)_registrant_completed")
-                                                  
                             self.activityIndicatorView?.stopAnimating()
+
+
+                            if  UserDefaults.standard.isHasPhoneAndImage() {
                             
-                            self.tabBarViewController?.selectedIndex = 0 
+                                self.tabBarViewController?.selectedIndex = 0 
 
-                            self.imagePickerViewController = ImagePickerViewController()
-                            self.imagePickerViewController.imagesPickerProtocol = self
-                            self.you = PFUser.current()
+                                self.imagePickerViewController = ImagePickerViewController()
+                                self.imagePickerViewController.imagesPickerProtocol = self
+                                self.you = PFUser.current()
 
-                            if let userId = PFUser.current()?.objectId {
-                                self.puserId = userId
+                                if let userId = PFUser.current()?.objectId {
+                                    self.puserId = userId
+                                }
+
+                                self.yourTypeId = PFUser.current()?["user_type"] as! Int                                                  
+
+                                self.imagePickerViewController.setType(type: ProfileImagesTypes.You)                            
+
+                                self.navigationPickerController = UINavigationController(rootViewController: self.imagePickerViewController)
+
+                                self.dismiss(animated:true)                       
+
+                                let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+                                appDelegate.window?.rootViewController = self.navigationPickerController
+
+                            } else {
+                            self.tabBarViewController!.recommendationViewController.loadRecommendations(completionRecommHandler: { ( resutlRecomm ) -> () in
+
+                                    if resutlRecomm {
+
+                                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
+                                        
+                                            let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+                                            self.tabBarViewController?.selectedIndex = 0
+                                            appDelegate.window?.rootViewController = self.tabBarViewController
+                                            
+                                            self.hideShowTabBar(status:true)
+
+                                            self.dismiss(animated:true)
+
+                                        })
+                                    }
+                                })
+
                             }
-
-                            self.yourTypeId = PFUser.current()?["user_type"] as! Int                                                  
-
-                            self.imagePickerViewController.setType(type: ProfileImagesTypes.You)                            
-
-                            self.navigationPickerController = UINavigationController(rootViewController: self.imagePickerViewController)
-
-                            self.dismiss(animated:true)                       
-
-                            let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-                            appDelegate.window?.rootViewController = self.navigationPickerController
 
                             Global.loadAdminUser()
                             Global.loadConfigData()
@@ -1261,7 +1283,7 @@ ImagesPickerProtocol {
 
                         UserDefaults.standard.setHasPhoneAndImage(value: true)
 
-                        //self.dismiss(animated:true)                       
+                        //self.dismiss(animated:true)                              
 
                         let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
                         self.tabBarViewController?.selectedIndex = 0
