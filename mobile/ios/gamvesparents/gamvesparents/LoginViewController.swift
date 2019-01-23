@@ -1015,22 +1015,22 @@ ImagesPickerProtocol {
                                     
                                     Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youSmallImage!)
                                     
-                                    //SPOUSE
+                                    //PARTNER
                                     
-                                    let spouse_username = Global.gamvesFamily.spouseUser.userName
-                                    Global.defaults.set(spouse_username, forKey: "\(self.puserId)_your_username")
+                                    let partner_username = Global.gamvesFamily.partnerUser.userName
+                                    Global.defaults.set(partner_username, forKey: "\(self.puserId)_your_username")
                                     
-                                    let spouse_email = Global.gamvesFamily.spouseUser.email
-                                    Global.defaults.set(spouse_email, forKey: "\(self.puserId)_spouse_email")
+                                    let partner_email = Global.gamvesFamily.partnerUser.email
+                                    Global.defaults.set(partner_email, forKey: "\(self.puserId)_partner_email")
                                   
-                                    let spouseImage:UIImage = Global.gamvesFamily.spouseUser.avatar
+                                    let partnerImage:UIImage = Global.gamvesFamily.partnerUser.avatar
                                     
-                                    Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: spouseImage)
+                                    Global.storeImgeLocally(imagePath: Global.partnerImageName, imageToStore: partnerImage)
                                     
-                                    let spouseImageLow = spouseImage.lowestQualityJPEGNSData as Data
-                                    var spouseSmallImage = UIImage(data: spouseImageLow)
+                                    let partnerImageLow = partnerImage.lowestQualityJPEGNSData as Data
+                                    var partnerSmallImage = UIImage(data: partnerImageLow)
                                     
-                                    Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: spouseSmallImage!)
+                                    Global.storeImgeLocally(imagePath: Global.partnerImageNameSmall, imageToStore: partnerSmallImage!)
                                     
                                     //SON                            
                                     
@@ -1101,8 +1101,7 @@ ImagesPickerProtocol {
 
                                 self.yourTypeId = PFUser.current()?["user_type"] as! Int                                                  
 
-                                self.imagePickerViewController.setType(type: ProfileImagesTypes.You)                            
-
+                                self.imagePickerViewController.setType(type: ProfileImagesTypes.You)     
                                 self.navigationPickerController = UINavigationController(rootViewController: self.imagePickerViewController)
 
                                 self.dismiss(animated:true)                       
@@ -1111,7 +1110,8 @@ ImagesPickerProtocol {
                                 appDelegate.window?.rootViewController = self.navigationPickerController
 
                             } else {
-                            self.tabBarViewController!.recommendationViewController.loadRecommendations(completionRecommHandler: { ( resutlRecomm ) -> () in
+
+                                self.tabBarViewController!.recommendationViewController.loadRecommendations(completionRecommHandler: { ( resutlRecomm ) -> () in
 
                                     if resutlRecomm {
 
@@ -1302,7 +1302,6 @@ ImagesPickerProtocol {
 
         } else {
 
-
             let title = "Phone number is empty"
             var message = "\n\nPlease fill in your phone number and try agaiin! \n\n"                                                            
             
@@ -1320,17 +1319,21 @@ ImagesPickerProtocol {
 
     }   
     
-    func didpickImage(type: ProfileImagesTypes, smallImage: UIImage, croppedImage: UIImage) {
-        
-        self.yourPhotoImageView = UIImageView()
-        self.yourPhotoImageView.image   = croppedImage
-        
-        self.yourPhotoImage = UIImage()
-        self.yourPhotoImage = croppedImage
+    func didpickImage(type: ProfileImagesTypes) {
 
-        self.yourPhotoImageSmall = UIImage()
-        self.yourPhotoImageSmall = smallImage
-        self.makeRounded(imageView:self.yourPhotoImageView)
+        if type == .You {
+
+            self.yourPhotoImageView = UIImageView()
+            self.yourPhotoImageView.image   = Global.yourPhotoImage
+            
+            self.yourPhotoImage = UIImage()
+            self.yourPhotoImage = Global.yourPhotoImage
+
+            self.yourPhotoImageSmall = UIImage()
+            self.yourPhotoImageSmall = Global.yourPhotoImageSmall
+            self.makeRounded(imageView:self.yourPhotoImageView)
+
+        }
     }    
 
     func hideShowTabBar(status: Bool)
@@ -1380,7 +1383,7 @@ ImagesPickerProtocol {
                 
                 if self.yourTypeId == Global.REGISTER_FATHER {
                     relation = "father"
-                } else if self.yourTypeId == Global.SPOUSE_MOTHER {
+                } else if self.yourTypeId == Global.PARTNER_MOTHER {
                     relation = "mother"
                 }
                 

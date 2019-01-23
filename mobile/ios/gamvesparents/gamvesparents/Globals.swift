@@ -63,8 +63,8 @@ class Global: NSObject
     static var youImageNameSmall = "youImageSmall"
     static var sonImageName = "sonImage"
     static var sonImageNameSmall = "sonImageSmall"
-    static var spouseImageName = "spouseImage"
-    static var spouseImageNameSmall = "spouseImageSmall"
+    static var partnerImageName = "partnerImage"
+    static var partnerImageNameSmall = "partnerImageSmall"
     static var familyImageName = "familyImage"
     static var familyImageNameSmall = "familyImageSmall"
     
@@ -74,10 +74,10 @@ class Global: NSObject
     }
     
     static var REGISTER_MOTHER  = 0
-    static var SPOUSE_MOTHER    = 1
+    static var PARTNER_MOTHER    = 1
     static var SON              = 2
     static var DAUGHTER         = 3
-    static var SPOUSE_FATHER    = 4
+    static var PARTNER_FATHER    = 4
     static var REGISTER_FATHER  = 5       
     
     static var approvals = Dictionary<Int, Approvals>()
@@ -91,20 +91,20 @@ class Global: NSObject
 
     static var defaults = UserDefaults.standard
     
-    static var keySpouse = "spousePhotoImage"
+    static var keyPartner = "partnerPhotoImage"
     static var keyYour = "yourPhotoImage"
     static var keySon = "sonPhotoImage"
 
-    static var key_you_spouse_chat_id = "you_spouse_chat_id"
+    static var key_you_partner_chat_id = "you_partner_chat_id"
     static var key_you_son_chat_id = "you_son_chat_id"
-    static var key_you_spouse_son_chat_id = "you_spouse_son_chat_id"
+    static var key_you_partner_son_chat_id = "you_partner_son_chat_id"
     
-    static var keySpouseSmall   = String() 
+    static var keyPartnerSmall   = String() 
     static var keyYourSmall     = String() 
     static var keySonSmall      = String() 
     
     //Notifications
-    static var notificationKeyFriendApprovalLoaded              = "com.gamves.gamvesparent.friendApprovalLoaded"
+    static var notificationKeyFriendApprovalLoaded      = "com.gamves.gamvesparent.friendApprovalLoaded"
     static var notificationKeyFamilyLoaded              = "com.gamves.gamvesparent.familyLoaded"
     static var notificationKeyLevelsLoaded              = "com.gamves.gamvesparent.levelsLoaded"
     static var notificationKeyLoadDataAfterLogin        = "com.gamves.gamvesparent.loadDataAfterLogin"
@@ -112,7 +112,7 @@ class Global: NSObject
     static var notificationYourAccountInfoLoaded        = "com.gamves.gamvesparent.notificationYourAccountInfoLoaded"
     static var notificationKeyLoadFamilyDataGromGlobal  = "com.gamves.gamvesparent.loadfamilydatagromglobal"
     static var notificationKeyLogOut                    = "com.gamves.gamvesparent.notificationLogOut"
-    static var notificationKeyCloseVideo    = "com.gamves.gamves.closeVideo"
+    static var notificationKeyCloseVideo                = "com.gamves.gamves.closeVideo"
     
     static var badgeNumber = Bool()
     
@@ -132,6 +132,16 @@ class Global: NSObject
 
     static var recommendations = [GamvesRecommendation]()
     static var recommendationsVideo = [GamvesRecommendation]()
+
+    //Profile
+    static var yourPhotoImage:UIImage!
+    static var sonPhotoImage:UIImage!
+    static var partnerPhotoImage:UIImage!
+    static var familyPhotoImage:UIImage!
+    static var yourPhotoImageSmall:UIImage!
+    static var sonPhotoImageSmall:UIImage!
+    static var partnerPhotoImageSmall:UIImage!
+    static var familyPhotoImageSmall:UIImage!
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
@@ -244,12 +254,12 @@ class Global: NSObject
                             
                             var gender = GamvesGender()
                             
-                            if typeNumber == Global.REGISTER_MOTHER || typeNumber == Global.SPOUSE_FATHER
+                            if typeNumber == Global.REGISTER_MOTHER || typeNumber == Global.PARTNER_FATHER
                             {
                                 if typeNumber == Global.REGISTER_MOTHER {
                                     
                                     gender.female = true
-                                } else if typeNumber == Global.SPOUSE_FATHER {
+                                } else if typeNumber == Global.PARTNER_FATHER {
                                     
                                     gender.male = true
                                 }
@@ -259,9 +269,9 @@ class Global: NSObject
                                 adduserToFamilyFromGlobal(gamvesUser: userGamves)
                                 
                                 
-                            } else if typeNumber == Global.SPOUSE_MOTHER || typeNumber == Global.REGISTER_FATHER
+                            } else if typeNumber == Global.PARTNER_MOTHER || typeNumber == Global.REGISTER_FATHER
                             {
-                                if typeNumber == Global.SPOUSE_MOTHER {
+                                if typeNumber == Global.PARTNER_MOTHER {
                                     
                                     gender.female = true
                                 } else if typeNumber == Global.REGISTER_FATHER {
@@ -350,7 +360,7 @@ class Global: NSObject
                 
             } else {
                 
-                Global.gamvesFamily.spouseUser = gamvesUser
+                Global.gamvesFamily.partnerUser = gamvesUser
             }
             
         }
@@ -811,7 +821,7 @@ class Global: NSObject
 
     static func getFamilyData(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
-        self.keySpouseSmall   = "\(self.keySpouse)Small"
+        self.keyPartnerSmall   = "\(self.keyPartner)Small"
         self.keyYourSmall     = "\(self.keyYour)Small"
         self.keySonSmall      = "\(self.keySon)Small"
         
@@ -830,7 +840,7 @@ class Global: NSObject
                         self.gamvesFamily.familyChatId = family["familyChatId"] as! Int
                         
                         self.gamvesFamily.sonRegisterChatId = family["sonRegisterChatId"] as! Int
-                        self.gamvesFamily.spouseRegisterChatId = family["spouseRegisterChatId"] as! Int
+                        self.gamvesFamily.partnerRegisterChatId = family["partnerRegisterChatId"] as! Int
                         self.gamvesFamily.objectId = family.objectId!                
                         
                         let picture = family["picture"] as! PFFileObject
@@ -1845,6 +1855,16 @@ class Global: NSObject
         UIColor.init(netHex: 0x189ea6),
         UIColor.init(netHex: 0x97a618)        
     ]
+
+
+    static func makeRounded(imageView:UIImageView)
+    {
+        imageView.contentMode = UIViewContentMode.scaleToFill
+        imageView.layer.cornerRadius = imageView.frame.size.width / 2            
+        imageView.clipsToBounds = true         
+        imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
+        imageView.layer.borderWidth = 3
+    }
     
 }
 

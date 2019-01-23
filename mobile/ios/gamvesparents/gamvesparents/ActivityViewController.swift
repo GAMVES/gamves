@@ -99,7 +99,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
         
         let queryChatFeed = PFQuery(className: "ChatFeed")
         
-        if let spouseId = Global.gamvesFamily.spouseUser.userObj.objectId {
+        if let spouseId = Global.gamvesFamily.partnerUser.userObj.objectId {
             
             if let userId = PFUser.current()?.objectId {
                 

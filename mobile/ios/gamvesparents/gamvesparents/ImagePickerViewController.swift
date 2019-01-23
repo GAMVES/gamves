@@ -10,7 +10,7 @@ import UIKit
 import RSKImageCropper
 
 protocol ImagesPickerProtocol {
-   func didpickImage(type:ProfileImagesTypes, smallImage:UIImage, croppedImage:UIImage)  
+   func didpickImage(type:ProfileImagesTypes) 
    func saveYouImageAndPhone(phone:String)
 }
 
@@ -111,12 +111,13 @@ UITextFieldDelegate  {
     
     lazy var finishButton: UIButton = {
         let button = UIButton(type: .system)
-        let image = UIImage(named: "add_image")
-        button.setImage(image, for: UIControlState())
+        //let image = UIImage(named: "add_image")
+        //button.setImage(image, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.gambesDarkColor
         button.tintColor = .white
-        button.layer.cornerRadius = 5
+        button.layer.cornerRadius = 5        
+        button.titleLabel!.font =  UIFont.boldSystemFont(ofSize: 18)
         button.isEnabled = false
         button.addTarget(self, action: #selector(handleFinish), for: .touchUpInside)
         return button
@@ -261,24 +262,6 @@ UITextFieldDelegate  {
 
         switch self.type {
             
-            case .Son?: 
-
-                    title = "Child Image"
-                    message = "Pick up an image for your son by touching the (+) add image"
-                    buttonTitle = "  Select child Image"
-                    imageName = "son_photo"
-
-                    break
-                
-            case .Family?:
-
-                    title = "Family Image"
-                    message = "Choose a family image where the three of you are present"
-                    buttonTitle = "  Select Family Image"
-                    imageName = "family_photo"
-
-                    break
-
             case .You?:
 
                     title = "Your Image"
@@ -291,11 +274,29 @@ UITextFieldDelegate  {
 
                     break
 
+            case .Son?: 
+
+                    title = "Child Image"
+                    message = "Pick up an image for your son by touching the (+) add image"
+                    buttonTitle = " Next family image"
+                    imageName = "son_photo"
+                    
+                    break
+                
+            case .Family?:
+
+                    title = "Family Image"
+                    message = "Choose a family image where the three of you are present"
+                    buttonTitle = " Next partner Image"
+                    imageName = "family_photo"
+
+                    break           
+
             case .Partner?:
 
-                    title = "partner Image"
+                    title = "Partner Image"
                     message = "Choose your partner image"
-                    buttonTitle = "  Select Your Partner Image"
+                    buttonTitle = " Next complete forms"
                     imageName = "partner_photo"
 
                     break    
@@ -308,7 +309,7 @@ UITextFieldDelegate  {
         self.pictureImageView.image = UIImage(named: imageName)
         self.messageLabel.text = message
         self.finishButton.setTitle(buttonTitle, for: .normal)
-
+        self.finishButton.isEnabled = false
 
     }
     
@@ -327,39 +328,55 @@ UITextFieldDelegate  {
         switch self.type {                
 
             case .You?:               
+
+                Global.yourPhotoImage                = croppedImage
+                Global.yourPhotoImageSmall           = smallImage        
                 
-                self.imagesPickerProtocol.didpickImage(type: self.type,
-                        smallImage: self.smallImage,
-                        croppedImage:self.croppedImage)
+                self.imagesPickerProtocol.didpickImage(type: self.type)
                 
                 let phoneNumber = phoneTextField.text
                 self.imagesPickerProtocol.saveYouImageAndPhone(phone: phoneNumber!)
+
+                self.navigationController?.popViewController(animated: true)
                
                 break
                 
             case .Son?:              
 
-                    self.type = ProfileImagesTypes.Family                
+                self.type = ProfileImagesTypes.Family       
 
-                    self.setScreenByType()
+                Global.sonPhotoImage              = croppedImage
+                Global.sonPhotoImageSmall         = smallImage        
 
-                    break
+                self.setScreenByType()
+
+                break
                 
             case .Family?:
 
-                    self.type = ProfileImagesTypes.Partner                
+                self.type = ProfileImagesTypes.Partner                
 
-                    self.setScreenByType()
+                self.setScreenByType()
 
-                    self.navigationController?.popViewController(animated: true)
+                Global.familyPhotoImage             = croppedImage
+                Global.familyPhotoImageSmall        = smallImage
+
+                self.setScreenByType()                    
+                
+                break       
+
+            case .Partner?:                   
                     
-                    break       
+                Global.partnerPhotoImage              = croppedImage
+                Global.partnerPhotoImageSmall         = smallImage
 
-            case .Partner?:
+                self.imagesPickerProtocol.didpickImage(type: self.type)
 
-                    self.navigationController?.popViewController(animated: true)               
+                //self.navigationController?.popViewController(animated: true)
 
-                    break    
+                //self.dismiss(animated:true)
+                
+                break    
                 
             default: break                
         }
@@ -436,21 +453,13 @@ UITextFieldDelegate  {
 
         self.pictureImageView.image = croppedImage
 
-        self.makeRounded(imageView:self.pictureImageView)
+        Global.makeRounded(imageView:self.pictureImageView)
 
         self.finishButton.isEnabled = true
         
         navigationController?.popViewController(animated: true)
     }
-
-    func makeRounded(imageView:UIImageView)
-    {
-        imageView.contentMode = UIViewContentMode.scaleToFill
-        imageView.layer.cornerRadius = imageView.frame.size.width / 2            
-        imageView.clipsToBounds = true         
-        imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
-        imageView.layer.borderWidth = 3
-    } 
+    
 
     @objc func dismissKeyboard() {
         self.scrollView.endEditing(true)

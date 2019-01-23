@@ -33,11 +33,11 @@ class ProfileViewController: UIViewController,
    
     var son:PFUser!
     var you:PFUser!
-    var spouse:PFUser!
+    var partner:PFUser!
     
     var youGamves = GamvesUser()
     var sonGamves = GamvesUser()
-    var spouseGamves = GamvesUser()
+    var partnerGamves = GamvesUser()
     
     var sonType:PFObject!
     var sonTypeId = Int()
@@ -45,8 +45,8 @@ class ProfileViewController: UIViewController,
     var yourType:PFObject!
     var yourTypeId = Int()
 
-    var spouseType:PFObject!
-    var spouseTypeId = Int()
+    var partnerType:PFObject!
+    var partnerTypeId = Int()
 
     let validator = Validator()
 
@@ -54,26 +54,16 @@ class ProfileViewController: UIViewController,
     var selectedImageView = UIImageView()
 
     var metricsProfile = [String:Int]()
-
-    var yourPhotoImage:UIImage!
-    var sonPhotoImage:UIImage!
-    var spousePhotoImage:UIImage!
-    var familyPhotoImage:UIImage!
-
-    var yourPhotoImageSmall:UIImage!
-    var sonPhotoImageSmall:UIImage!
-    var spousePhotoImageSmall:UIImage!
-    var familyPhotoImageSmall:UIImage!
-
+    
     var schoolsArray: NSMutableArray = []
  
     var familyChatId            = Int()
     var sonRegisterChatId       = Int()
-    var spouseRegisterChatId    = Int()
-    var sonSpouseChatId         = Int()
+    var partnerRegisterChatId    = Int()
+    var sonPartnerChatId         = Int()
     //var youAdminChatId          = Int()
     var sonAdminChatId          = Int()
-    var spouseAdminChatId       = Int()
+    var partnerAdminChatId       = Int()
     
     let scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -112,9 +102,9 @@ class ProfileViewController: UIViewController,
         return imageView
     }()   
 
-    lazy var spousePhotoImageView: UIImageView = {
+    lazy var partnerPhotoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "spouse_photo")
+        imageView.image = UIImage(named: "partner_photo")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handlePhotoImageView)))        
@@ -328,7 +318,7 @@ class ProfileViewController: UIViewController,
     // SPOUSE //
     ////////////
 
-    let spouseContainerView: UIView = {
+    let partnerContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -337,40 +327,40 @@ class ProfileViewController: UIViewController,
         return view
     }()   
 
-    let spouseNameTextField: UITextField = {
+    let partnerNameTextField: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "Spouse name"
+        tf.placeholder = "Partner name"
         tf.translatesAutoresizingMaskIntoConstraints = false        
         tf.tag = 3
         return tf
     }()
 
-    let spouseNameSeparatorView: UIView = {
+    let partnerNameSeparatorView: UIView = {
         let view = UIView()        
         view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    let spouseEmailTextField: UITextField = {
+    let partnerEmailTextField: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "Spouse email"
+        tf.placeholder = "Partner email"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.translatesAutoresizingMaskIntoConstraints = false        
         tf.tag = 4
         return tf
     }()  
 
-    let spouseEmailSeparatorView: UIView = {
+    let partnerEmailSeparatorView: UIView = {
         let view = UIView()        
         view.backgroundColor = UIColor.gamvesColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    let spousePasswordTextField: UITextField = {
+    let partnerPasswordTextField: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "Spouse password"
+        tf.placeholder = "Partner password"
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.translatesAutoresizingMaskIntoConstraints = false
         //tf.text = "LedaOlano"
@@ -449,7 +439,7 @@ class ProfileViewController: UIViewController,
         self.photosContainerView.addSubview(self.familyPhotoImageView) 
 
         self.photosContainerView.addSubview(self.yourPhotoImageView)
-        self.photosContainerView.addSubview(self.spousePhotoImageView)
+        self.photosContainerView.addSubview(self.partnerPhotoImageView)
         
         self.sonNameContainerView.addSubview(self.sonNameTextField)
         self.sonNameContainerView.addSubview(self.sonNameSeparatorView)
@@ -472,7 +462,7 @@ class ProfileViewController: UIViewController,
         self.sonSchoolContainerView.addSubview(self.sonGradeTextField)        
         
         self.scrollView.addSubview(self.yourNameContainerView)
-        self.scrollView.addSubview(self.spouseContainerView) 
+        self.scrollView.addSubview(self.partnerContainerView) 
 
         self.yourNameContainerView.addSubview(self.yourNameTextField)
         self.yourNameContainerView.addSubview(self.yourNameSeparatorView)
@@ -480,11 +470,11 @@ class ProfileViewController: UIViewController,
         self.yourNameContainerView.addSubview(self.yourUserSeparatorView)  
         self.yourNameContainerView.addSubview(self.yourFamilyTextField)  
 
-        self.spouseContainerView.addSubview(self.spouseNameTextField)
-        self.spouseContainerView.addSubview(self.spouseNameSeparatorView)   
-        self.spouseContainerView.addSubview(self.spouseEmailTextField)
-        self.spouseContainerView.addSubview(self.spouseEmailSeparatorView)        
-        self.spouseContainerView.addSubview(self.spousePasswordTextField)
+        self.partnerContainerView.addSubview(self.partnerNameTextField)
+        self.partnerContainerView.addSubview(self.partnerNameSeparatorView)   
+        self.partnerContainerView.addSubview(self.partnerEmailTextField)
+        self.partnerContainerView.addSubview(self.partnerEmailSeparatorView)        
+        self.partnerContainerView.addSubview(self.partnerPasswordTextField)
 
         self.view.backgroundColor = UIColor.gamvesColor
 
@@ -522,12 +512,12 @@ class ProfileViewController: UIViewController,
        
         self.familyChatId           = Global.getRandomInt()
         self.sonRegisterChatId      = Global.getRandomInt()
-        self.spouseRegisterChatId   = Global.getRandomInt()
-        self.sonSpouseChatId        = Global.getRandomInt()
+        self.partnerRegisterChatId   = Global.getRandomInt()
+        self.sonPartnerChatId        = Global.getRandomInt()
 
         //self.youAdminChatId        = Global.getRandomInt()
         self.sonAdminChatId        = Global.getRandomInt()
-        self.spouseAdminChatId        = Global.getRandomInt()        
+        self.partnerAdminChatId        = Global.getRandomInt()        
         
         if PFUser.current() != nil {
             self.son = PFUser.current()
@@ -574,11 +564,27 @@ class ProfileViewController: UIViewController,
                 self.sonSchoolContainerView.isUserInteractionEnabled = false
 
                 self.yourNameContainerView.isUserInteractionEnabled = false
-                self.spouseContainerView.isUserInteractionEnabled = false
+                self.partnerContainerView.isUserInteractionEnabled = false
 
                 self.saveButton.isUserInteractionEnabled = false
             }
         }
+    }
+
+    func loadImages() {
+
+       self.yourPhotoImageView.image    = Global.yourPhotoImage  
+       Global.makeRounded(imageView:self.yourPhotoImageView)
+
+       self.sonPhotoImageView.image     = Global.sonPhotoImage
+       Global.makeRounded(imageView:self.sonPhotoImageView)
+
+       self.partnerPhotoImageView.image = Global.partnerPhotoImage
+       Global.makeRounded(imageView:self.partnerPhotoImageView)
+
+       self.familyPhotoImageView.image  = Global.familyPhotoImage
+       Global.makeRounded(imageView:self.familyPhotoImageView)
+       
     }
 
     @objc func backButton(sender: UIBarButtonItem) {
@@ -624,26 +630,37 @@ class ProfileViewController: UIViewController,
     }
 
     
-    func didpickImage(type:ProfileImagesTypes, smallImage:UIImage, croppedImage:UIImage)  {
+    func didpickImage(type:ProfileImagesTypes)  {
      
         var id = Int()
+
+        let croppedImage:UIImage!
+        let smallImage:UIImage!
 
         switch type {
             
             case .Son: 
                     id = 1
+                    croppedImage = Global.sonPhotoImage     
+                    smallImage   = Global.sonPhotoImageSmall
                 break
             
             case .Family:
-                    id = 3                
+                    id = 3
+                    croppedImage = Global.familyPhotoImage
+                    smallImage   = Global.familyPhotoImageSmall
                 break
 
             case .You:
                     id = 0               
+                    croppedImage = Global.yourPhotoImage     
+                    smallImage   = Global.yourPhotoImageSmall
                 break
 
              case .Partner:
                     id = 2
+                    croppedImage = Global.partnerPhotoImage
+                    smallImage   = Global.partnerPhotoImageSmall
                 break    
             
             default: break
@@ -672,7 +689,7 @@ class ProfileViewController: UIViewController,
             
             if Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_son_userId") {
                 
-                self.loadSonSpouseDataIfFamilyDontExist()
+                self.loadSonPartnerDataIfFamilyDontExist()
                 
                 self.segmentedControl.setEnabled(true, forSegmentAt: 1)
                 
@@ -689,7 +706,7 @@ class ProfileViewController: UIViewController,
 
                 self.makeRounded(imageView:self.yourPhotoImageView)
                 self.makeRounded(imageView:self.sonPhotoImageView)
-                self.makeRounded(imageView:self.spousePhotoImageView)
+                self.makeRounded(imageView:self.partnerPhotoImageView)
                 self.makeRounded(imageView:self.familyPhotoImageView)
 
             }
@@ -701,9 +718,9 @@ class ProfileViewController: UIViewController,
 
             if self.yourTypeId == Global.REGISTER_FATHER || self.yourTypeId == Global.REGISTER_MOTHER {
 
-                self.spousePasswordTextField.isEnabled = false
-                self.spouseNameTextField.isEnabled = false
-                self.spouseEmailTextField.isEnabled = false
+                self.partnerPasswordTextField.isEnabled = false
+                self.partnerNameTextField.isEnabled = false
+                self.partnerEmailTextField.isEnabled = false
 
             } 
 
@@ -812,8 +829,8 @@ class ProfileViewController: UIViewController,
             self.sonPhotoImageView.image      = Global.gamvesFamily.sonsUsers[0].avatar
             self.makeRounded(imageView:self.sonPhotoImageView)
             
-            self.spousePhotoImageView.image   = Global.gamvesFamily.spouseUser.avatar
-            self.makeRounded(imageView:self.spousePhotoImageView)
+            self.partnerPhotoImageView.image   = Global.gamvesFamily.partnerUser.avatar
+            self.makeRounded(imageView:self.partnerPhotoImageView)
             
             self.familyPhotoImageView.image   = Global.gamvesFamily.familyImage
             self.makeRounded(imageView:self.familyPhotoImageView)
@@ -834,10 +851,10 @@ class ProfileViewController: UIViewController,
             
             self.yourFamilyTextField.text = Global.gamvesFamily.familyName
             
-            self.spouseNameTextField.text = Global.gamvesFamily.spouseUser.name
-            let spousemeail = Global.gamvesFamily.spouseUser.email       
+            self.partnerNameTextField.text = Global.gamvesFamily.partnerUser.name
+            let partnermeail = Global.gamvesFamily.partnerUser.email
             
-            self.spouseEmailTextField.text = spousemeail
+            self.partnerEmailTextField.text = partnermeail
             
             let type = Global.gamvesFamily.sonsUsers[0].typeNumber
             
@@ -927,7 +944,7 @@ class ProfileViewController: UIViewController,
         self.familyPhotoImageView.isHidden = false
 
         self.yourPhotoImageView.isHidden    = true
-        self.spousePhotoImageView.isHidden  = true
+        self.partnerPhotoImageView.isHidden  = true
         
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonPhotoImageView)
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.familyPhotoImageView)
@@ -1000,23 +1017,23 @@ class ProfileViewController: UIViewController,
         ///////
         
         self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.yourPhotoImageView)
-        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.spousePhotoImageView)
+        self.photosContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.partnerPhotoImageView)
         
         self.photosContainerView.addConstraintsWithFormat(
             "H:|-padding-[v0(photoSize)]-padding-[v1(photoSize)]-padding-|", views:
             self.yourPhotoImageView,
-            self.spousePhotoImageView,
+            self.partnerPhotoImageView,
             metrics: metricsProfile)
         
         self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.yourNameContainerView)
-        self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.spouseContainerView)
+        self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.partnerContainerView)
         
         self.scrollView.addConstraintsWithFormat(
             "V:|-topPadding-[v0(photoSize)]-topPadding-[v1(40)]-20-[v2(photoContainerHeight)]-20-[v3(schoolContainerHeight)]-20-[v4(saveButtonHeight)][v5(50)]|", views:
             self.photosContainerView,
             self.segmentedControl,
             self.yourNameContainerView,
-            self.spouseContainerView,
+            self.partnerContainerView,
             self.saveButton,
             self.bottomView,
             metrics: metricsProfile)
@@ -1037,20 +1054,20 @@ class ProfileViewController: UIViewController,
             self.yourFamilyTextField,
             metrics: metricsProfile)
         
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseNameTextField)
-        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseNameSeparatorView)
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spouseEmailTextField)
-        self.spouseContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.spouseEmailSeparatorView)
-        self.spouseContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.spousePasswordTextField)
+        self.partnerContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.partnerNameTextField)
+        self.partnerContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.partnerNameSeparatorView)
+        self.partnerContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.partnerEmailTextField)
+        self.partnerContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.partnerEmailSeparatorView)
+        self.partnerContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.partnerPasswordTextField)
         
-        self.spouseContainerView.addConstraintsWithFormat(
+        self.partnerContainerView.addConstraintsWithFormat(
             "V:|[v0(schoolEditTextHeight)][v1(2)][v2(schoolEditTextHeight)][v3(2)][v4(schoolEditTextHeight)]|",
             views:
-            self.spouseNameTextField,
-            self.spouseNameSeparatorView,
-            self.spouseEmailTextField,
-            self.spouseEmailSeparatorView,
-            self.spousePasswordTextField,
+            self.partnerNameTextField,
+            self.partnerNameSeparatorView,
+            self.partnerEmailTextField,
+            self.partnerEmailSeparatorView,
+            self.partnerPasswordTextField,
             metrics: metricsProfile)
 
         self.segmentedControl.selectedSegmentIndex = 0
@@ -1068,31 +1085,31 @@ class ProfileViewController: UIViewController,
             self.sonSchoolContainerView.isHidden = false
 
             self.yourNameContainerView.isHidden = true
-            self.spouseContainerView.isHidden = true    
+            self.partnerContainerView.isHidden = true    
 
             self.sonPhotoImageView.isHidden       = false
             self.familyPhotoImageView.isHidden    = false
 
             self.yourPhotoImageView.isHidden    = true
-            self.spousePhotoImageView.isHidden  = true            
+            self.partnerPhotoImageView.isHidden  = true            
 
             self.saveButton.setTitle("Save son or doughter", for: UIControlState())
 
         } else if self.segmentedControl.selectedSegmentIndex == 1 {
             
-            self.prepTextFields(inView: [self.yourNameContainerView,self.spouseContainerView])
+            self.prepTextFields(inView: [self.yourNameContainerView,self.partnerContainerView])
 
             self.sonNameContainerView.isHidden = true
             self.sonSchoolContainerView.isHidden = true
 
             self.yourNameContainerView.isHidden = false
-            self.spouseContainerView.isHidden = false    
+            self.partnerContainerView.isHidden = false    
 
             self.sonPhotoImageView.isHidden       = true
             self.familyPhotoImageView.isHidden    = true
 
             self.yourPhotoImageView.isHidden    = false
-            self.spousePhotoImageView.isHidden  = false                        
+            self.partnerPhotoImageView.isHidden  = false                        
             
             self.saveButton.setTitle("Save family", for: UIControlState())
             
@@ -1103,14 +1120,14 @@ class ProfileViewController: UIViewController,
 
         DispatchQueue.main.async() {
 
-            self.loadSonSpouseDataIfFamilyDontExist()
+            self.loadSonPartnerDataIfFamilyDontExist()
 
         }
 
     }
 
 
-    func loadSonSpouseDataIfFamilyDontExist() {
+    func loadSonPartnerDataIfFamilyDontExist() {
 
         if let userId = PFUser.current()?.objectId
         {
@@ -1166,18 +1183,18 @@ class ProfileViewController: UIViewController,
                             
                             self.son = user as! PFUser
                            
-                            self.sonPhotoImage = self.loadImageFromDisc(imageName: Global.sonImageName)
-                            self.sonPhotoImageView.image = self.sonPhotoImage
+                            Global.sonPhotoImage = self.loadImageFromDisc(imageName: Global.sonImageName)
+                            self.sonPhotoImageView.image = Global.sonPhotoImage
                             self.makeRounded(imageView:self.sonPhotoImageView)
                             
-                            self.sonPhotoImageSmall = self.loadImageFromDisc(imageName: Global.sonImageNameSmall)
+                            Global.sonPhotoImageSmall = self.loadImageFromDisc(imageName: Global.sonImageNameSmall)
                             
-                            self.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
-                            self.familyPhotoImageView.image = self.familyPhotoImage
+                            Global.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
+                            self.familyPhotoImageView.image = Global.familyPhotoImage
                             self.makeRounded(imageView:self.familyPhotoImageView)
                             
-                            self.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
-                            self.familyPhotoImageSmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
+                            Global.familyPhotoImage = self.loadImageFromDisc(imageName: Global.familyImageName)
+                            Global.familyPhotoImageSmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
                             
                             self.sonNameTextField.text = user["name"] as! String
                             self.sonUserTextField.text = user["username"] as! String  
@@ -1341,13 +1358,13 @@ class ProfileViewController: UIViewController,
                 Global.defaults.set(self.yourUserTextField.text!, forKey: "\(self.puserId)_your_username")
                 Global.defaults.set(self.yourFamilyTextField.text!, forKey: "\(self.puserId)_your_family_name")
 
-                Global.defaults.set(self.spouseNameTextField.text!, forKey: "\(self.puserId)_spouse_username")
-                Global.defaults.set(self.spouseEmailTextField.text!, forKey: "\(self.puserId)_spouse_email")
-                Global.defaults.set(self.spousePasswordTextField.text!, forKey: "\(self.puserId)_spouse_password")
+                Global.defaults.set(self.partnerNameTextField.text!, forKey: "\(self.puserId)_partner_username")
+                Global.defaults.set(self.partnerEmailTextField.text!, forKey: "\(self.puserId)_partner_email")
+                Global.defaults.set(self.partnerPasswordTextField.text!, forKey: "\(self.puserId)_partner_password")
                 
                 Global.defaults.synchronize()
 
-                self.saveSpouse(completionHandler: { ( resutl ) -> () in
+                self.savePartner(completionHandler: { ( resutl ) -> () in
 
                     if resutl {
                         
@@ -1429,13 +1446,13 @@ class ProfileViewController: UIViewController,
         let title = "Error"
         var message = ""
 
-        if self.sonPhotoImage == nil
+        if Global.sonPhotoImage == nil
         {
             errors = true
             message += "Son image is empty please add a picture with the + button"
             Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
 
-        } else if self.familyPhotoImage == nil
+        } else if Global.familyPhotoImage == nil
         { 
             errors = true
             message += "Family image is empty please add a picture with the + button"
@@ -1509,7 +1526,7 @@ class ProfileViewController: UIViewController,
         let title = "Error"
         var message = ""
 
-        if self.yourPhotoImage == nil
+        if Global.yourPhotoImage == nil
         {
             errors = true
             message += "Your image is empty please add a picture with the + button"
@@ -1535,48 +1552,48 @@ class ProfileViewController: UIViewController,
             
         }
 
-        var hasSpouse = Bool()
+        var hasPartner = Bool()
 
-        if (!(self.spouseNameTextField.text?.isEmpty)!) {
-            hasSpouse = true
+        if (!(self.partnerNameTextField.text?.isEmpty)!) {
+            hasPartner = true
         }
 
 
-        if hasSpouse
+        if hasPartner
         {
             
-            if self.spousePhotoImage == nil
+            if Global.partnerPhotoImage == nil
             {
                 errors = true
-                message += "Your spouse image is empty please add a picture with the + button"
+                message += "Your partner image is empty please add a picture with the + button"
                 Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: nil)
                 
-            } else if (spouseEmailTextField.text?.isEmpty)!
+            } else if (partnerEmailTextField.text?.isEmpty)!
             {
                 errors = true  
                 message += "Email is empty"
-                Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.spouseEmailTextField)
+                Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.partnerEmailTextField)
                 
-                self.spouseEmailTextField.becomeFirstResponder()
+                self.partnerEmailTextField.becomeFirstResponder()
             }
-            else if !Global.isValidEmail(test: self.spouseEmailTextField.text!)
+            else if !Global.isValidEmail(test: self.partnerEmailTextField.text!)
             {
                 errors = true
                 message += "Invalid Email Address"
-                Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.spouseEmailTextField)
+                Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.partnerEmailTextField)
                 
-            } else if (self.spousePasswordTextField.text?.isEmpty)!
+            } else if (self.partnerPasswordTextField.text?.isEmpty)!
             {
                 errors = true
-                message += "Spouse password is empty"
-                Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.spousePasswordTextField)
+                message += "Partner password is empty"
+                Global.alertWithTitle(viewController: self, title: title, message: message, toFocus: self.partnerPasswordTextField)
                 
             }
-            else if (self.spousePasswordTextField.text?.characters.count)! < 8
+            else if (self.partnerPasswordTextField.text?.characters.count)! < 8
             {
                 errors = true
-                message += "Spouse password must be at least 8 characters"
-                Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.spousePasswordTextField)
+                message += "Partner password must be at least 8 characters"
+                Global.alertWithTitle(viewController: self, title: title, message: message, toFocus:self.partnerPasswordTextField)
             }
             
         }
@@ -1628,14 +1645,14 @@ class ProfileViewController: UIViewController,
             }
         }
         
-        Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: self.sonPhotoImage)
-        Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: self.sonPhotoImageSmall)
+        Global.storeImgeLocally(imagePath: Global.sonImageName, imageToStore: Global.sonPhotoImage)
+        Global.storeImgeLocally(imagePath: Global.sonImageNameSmall, imageToStore: Global.sonPhotoImageSmall)
         
-        Global.storeImgeLocally(imagePath: Global.familyImageName, imageToStore: self.familyPhotoImage)
-        Global.storeImgeLocally(imagePath: Global.familyImageNameSmall, imageToStore: self.familyPhotoImageSmall)
+        Global.storeImgeLocally(imagePath: Global.familyImageName, imageToStore: Global.familyPhotoImage)
+        Global.storeImgeLocally(imagePath: Global.familyImageNameSmall, imageToStore: Global.familyPhotoImageSmall)
         
-        let dataPhotoImage = self.sonPhotoImage.highQualityJPEGNSData
-        let dataPhotoImageSmall = self.sonPhotoImageSmall.highQualityJPEGNSData
+        let dataPhotoImage = Global.sonPhotoImage.highQualityJPEGNSData
+        let dataPhotoImageSmall = Global.sonPhotoImageSmall.highQualityJPEGNSData
         
         let imageUniverse = UIImage(named: "universe")
         let dataPhotoUniverse = imageUniverse?.highQualityJPEGNSData
@@ -1708,13 +1725,13 @@ class ProfileViewController: UIViewController,
         }
     }
     
-    func saveSpouse(completionHandler : @escaping (_ resutl:Bool) -> ()) {
+    func savePartner(completionHandler : @escaping (_ resutl:Bool) -> ()) {
         
-        let spouse_username = Global.defaults.string(forKey: "\(self.puserId)_spouse_username")
-        let spouse_password = Global.defaults.string(forKey: "\(self.puserId)_spouse_password")
-        let spouse_email = Global.defaults.string(forKey: "\(self.puserId)_spouse_email")
+        let partner_username = Global.defaults.string(forKey: "\(self.puserId)_partner_username")
+        let partner_password = Global.defaults.string(forKey: "\(self.puserId)_partner_password")
+        let partner_email = Global.defaults.string(forKey: "\(self.puserId)_partner_email")
         
-        let full_name = spouse_username?.components(separatedBy: " ")
+        let full_name = partner_username?.components(separatedBy: " ")
         let firstName = full_name?[0]
         let lastName = full_name?[1]
         
@@ -1724,12 +1741,12 @@ class ProfileViewController: UIViewController,
 
         if self.yourTypeId == Global.REGISTER_FATHER { //"Father" {
         
-            type = Global.SPOUSE_MOTHER
+            type = Global.PARTNER_MOTHER
             print(type)
 
         } else if self.yourTypeId == Global.REGISTER_MOTHER { //"Mother" {
 
-            type = Global.SPOUSE_FATHER
+            type = Global.PARTNER_FATHER
             print(type)            
                 
         } 
@@ -1747,19 +1764,19 @@ class ProfileViewController: UIViewController,
             levelObj = Global.levels[levelId]?.levelObj
         }
         
-        Global.storeImgeLocally(imagePath: Global.spouseImageName, imageToStore: self.spousePhotoImage)
-        Global.storeImgeLocally(imagePath: Global.spouseImageNameSmall, imageToStore: self.spousePhotoImageSmall)
+        Global.storeImgeLocally(imagePath: Global.partnerImageName, imageToStore: Global.partnerPhotoImage)
+        Global.storeImgeLocally(imagePath: Global.partnerImageNameSmall, imageToStore: Global.partnerPhotoImageSmall)
         
-        let dataPhotoImage = self.spousePhotoImage.highQualityJPEGNSData
-        let dataPhotoImageSmall = self.spousePhotoImageSmall.highQualityJPEGNSData
+        let dataPhotoImage = Global.partnerPhotoImage.highQualityJPEGNSData
+        let dataPhotoImageSmall = Global.partnerPhotoImageSmall.highQualityJPEGNSData
         
         let imageUniverse = UIImage(named: "universe")
         let dataPhotoUniverse = imageUniverse?.highQualityJPEGNSData
         
         let momParams = [
-            "user_name" : spouse_email,
-            "user_password" : spouse_password,
-            "user_email" : spouse_email,
+            "user_name" : partner_email,
+            "user_password" : partner_password,
+            "user_email" : partner_email,
             "firstName" : firstName,
             "lastName" : lastName,
             "user_type" : type,
@@ -1778,16 +1795,16 @@ class ProfileViewController: UIViewController,
                 
                 print(result)
                 
-                self.spouse = result as! PFUser
+                self.partner = result as! PFUser
                 
-                Global.addUserToDictionary(user: self.spouse as! PFUser, isFamily: true, completionHandler: { (gamvesUser) in
+                Global.addUserToDictionary(user: self.partner as! PFUser, isFamily: true, completionHandler: { (gamvesUser) in
                     
-                    print(self.spouse["name"])
+                    print(self.partner["name"])
                     
-                    self.spouseGamves = gamvesUser
+                    self.partnerGamves = gamvesUser
                     
-                    Global.defaults.set(true, forKey: "spouse_exist")
-                    Global.defaults.set(self.spouse.objectId, forKey: "spouse_object_id")
+                    Global.defaults.set(true, forKey: "partner_exist")
+                    Global.defaults.set(self.partner.objectId, forKey: "partner_object_id")
                     
                     Global.defaults.synchronize()
 
@@ -1816,90 +1833,8 @@ class ProfileViewController: UIViewController,
             
         }
         
-    }
-
+    } 
   
-    /*func saveYou(completionHandler : @escaping (_ resutl:Bool) -> ())
-    {	
-        
-        let your_email = Global.defaults.string(forKey: "\(self.puserId)_your_email")
-        let your_password = Global.defaults.string(forKey: "\(self.puserId)_your_password")
-        
-        var reusername = self.you["firstName"] as! String
-        reusername = reusername.lowercased()
-        
-        //self.you["email"] = your_email
-        //self.you.email = your_email
-        
-        let yourimage = PFFileObject(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
-        self.you.setObject(yourimage!, forKey: "picture")
-        
-        let yourImgName = "\(reusername)_small"
-        
-        
-        
-        print("--------------")
-        print(yourImgName)
-        print("--------------")
-        
-        let yourimageSmall = PFFileObject(name: yourImgName, data: UIImageJPEGRepresentation(self.yourPhotoImageSmall, 1.0)!)
-        self.you.setObject(yourimageSmall!, forKey: "pictureSmall")
-        
-        let profileRelation = self.you.relation(forKey: "profile")
-        let profileQuery = profileRelation.query()
-        profileQuery.getFirstObjectInBackground { (profilePF, error) in
-            
-            if error == nil {
-                
-                var relation = String()
-                
-                if self.yourTypeId == Global.REGISTER_FATHER {
-                    relation = "father"
-                } else if self.yourTypeId == Global.SPOUSE_MOTHER {
-                    relation = "mother"
-                }
-                
-                let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
-                
-                profilePF?["bio"] = "\(son_name) \(relation)"
-                
-                profilePF?.saveEventually()
-                
-            }
-        }
-        
-    
-        let levelRel:PFRelation = self.you.relation(forKey: "level")
-        
-        //I add the level of all sons
-        let levleId = Global.gamvesFamily.sonsUsers[0].levelId as String
-        
-        for sons in Global.gamvesFamily.sonsUsers {
-            let levelId = sons.levelId
-            let levelObj = Global.levels[levelId]?.levelObj
-            levelRel.add(levelObj!)
-        }
-        
-        self.you.saveInBackground(block: { (resutl, error) in
-            
-            if error != nil
-            {
-                print(error)
-                completionHandler(false)
-            } else
-            {
-                
-                Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in
-                    
-                    self.youGamves = gamvesUser
-                    
-                    completionHandler(true)
-                    
-                })
-            }
-        })
-        
-    }*/
 
     func saveFamily(completionHandler : @escaping (_ resutl:Bool) -> ())
     {
@@ -1911,19 +1846,19 @@ class ProfileViewController: UIViewController,
         let userRel:PFRelation = family.relation(forKey: "members")
         
         print("*************")
-        print(self.spouse.username)
+        print(self.partner.username)
         print(self.son.username)
         print(self.you.username)
         print("*************")
         
-        userRel.add(self.spouse!)
+        userRel.add(self.partner!)
         userRel.add(self.son!)
         userRel.add(self.you!)
 
         family["familyChatId"]  = self.familyChatId
         family["sonRegisterChatId"]  = self.sonRegisterChatId
-        family["spouseRegisterChatId"]  = self.spouseRegisterChatId
-        family["sonSpouseChatId"]  = self.sonSpouseChatId
+        family["partnerRegisterChatId"]  = self.partnerRegisterChatId
+        family["sonPartnerChatId"]  = self.sonPartnerChatId
         
         let imageFamily = self.loadImageFromDisc(imageName: Global.familyImageName)
 
@@ -1980,10 +1915,10 @@ class ProfileViewController: UIViewController,
                 Global.gamvesFamily.familyName = your_family_name!
                
                 Global.gamvesFamily.sonRegisterChatId = self.sonRegisterChatId
-                Global.gamvesFamily.spouseRegisterChatId = self.spouseRegisterChatId
+                Global.gamvesFamily.partnerRegisterChatId = self.partnerRegisterChatId
                 Global.gamvesFamily.familyChatId = self.familyChatId
 
-                Global.gamvesFamily.familyImage = self.familyPhotoImageSmall
+                Global.gamvesFamily.familyImage = Global.familyPhotoImageSmall
                 
                 Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")  
 
@@ -2024,14 +1959,14 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var youSpouse = [GamvesUser]()
+            var youPartner = [GamvesUser]()
             
-            youSpouse.append(self.youGamves)
-            youSpouse.append(self.spouseGamves)
+            youPartner.append(self.youGamves)
+            youPartner.append(self.partnerGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouse, chatId: self.spouseRegisterChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youPartner, chatId: self.partnerRegisterChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
-                print("done youSpouse")
+                print("done youPartner")
                 print(resutl)
                 if (resutl != nil) {
                     next(nil)
@@ -2045,14 +1980,14 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var sonSpouse = [GamvesUser]()
+            var sonPartner = [GamvesUser]()
             
-            sonSpouse.append(self.sonGamves)
-            sonSpouse.append(self.spouseGamves)
+            sonPartner.append(self.sonGamves)
+            sonPartner.append(self.partnerGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonSpouse, chatId: self.sonSpouseChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonPartner, chatId: self.sonPartnerChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
-                print("done sonSpouse")
+                print("done sonPartner")
                 print(resutl)
                 if (resutl != nil) {
                     next(nil)
@@ -2066,15 +2001,15 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in
             
-            var youSpouseSon = [GamvesUser]()
+            var youPartnerSon = [GamvesUser]()
             
-            youSpouseSon.append(self.youGamves)
-            youSpouseSon.append(self.spouseGamves)
-            youSpouseSon.append(self.sonGamves)
+            youPartnerSon.append(self.youGamves)
+            youPartnerSon.append(self.partnerGamves)
+            youPartnerSon.append(self.sonGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSpouseSon, chatId: self.familyChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youPartnerSon, chatId: self.familyChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
-                print("done youSpouseSon")
+                print("done youPartnerSon")
                 print(resutl)
                 if (resutl != nil) {
                     next(nil)
@@ -2083,27 +2018,7 @@ class ProfileViewController: UIViewController,
             })
             
         }
-
-        //SAVE YOU ADMIN
-        
-        /*queue.tasks +=~ { resutl, next in
-            
-            var youAdmin = [GamvesUser]()
-            
-            youAdmin.append(self.youGamves)
-            youAdmin.append(Global.adminUser)
-            
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youAdmin, chatId: self.youAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
-                
-                print("done youAdmin")
-                print(resutl)
-                if (resutl != nil) {
-                    next(nil)
-                }
-                
-            })
-        }*/
-
+      
         //SAVE SON ADMIN
         
         queue.tasks +=~ { resutl, next in
@@ -2128,14 +2043,14 @@ class ProfileViewController: UIViewController,
         
         queue.tasks +=~ { resutl, next in          
             
-            var spouseAdmin = [GamvesUser]()
+            var partnerAdmin = [GamvesUser]()
             
-            spouseAdmin.append(self.spouseGamves)
-            spouseAdmin.append(Global.adminUser)
+            partnerAdmin.append(self.partnerGamves)
+            partnerAdmin.append(Global.adminUser)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: spouseAdmin, chatId: self.spouseAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: partnerAdmin, chatId: self.partnerAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
-                print("done spouseAdmin")
+                print("done partnerAdmin")
                 print(resutl)
                 if (resutl != nil) {
                     next(nil)
@@ -2151,7 +2066,7 @@ class ProfileViewController: UIViewController,
             print("FINISH")                     
 
             let userVerifiedQuery = PFQuery(className:"UserVerified")  
-            let contained = [self.youGamves.userId, self.sonGamves.userId, self.spouseGamves.userId] 
+            let contained = [self.youGamves.userId, self.sonGamves.userId, self.partnerGamves.userId] 
             userVerifiedQuery.whereKey("userId", containedIn: contained)      
             userVerifiedQuery.findObjectsInBackground { (userVerifiedsPF, error) in
             
@@ -2248,29 +2163,29 @@ class ProfileViewController: UIViewController,
         if id == 0 
         {             
             self.yourPhotoImageView.image   = croppedImage
-            self.yourPhotoImage             = croppedImage
-            self.yourPhotoImageSmall        = smallImage
+            Global.yourPhotoImage             = croppedImage
+            Global.yourPhotoImageSmall        = smallImage
             self.makeRounded(imageView:self.yourPhotoImageView)
 
         } else if id == 1
         {
             self.sonPhotoImageView.image    = croppedImage
-            self.sonPhotoImage              = croppedImage
-            self.sonPhotoImageSmall         = smallImage
+            Global.sonPhotoImage              = croppedImage
+            Global.sonPhotoImageSmall         = smallImage
             self.makeRounded(imageView:self.sonPhotoImageView)                
 
         } else if id == 2
         {
-            self.spousePhotoImageView.image    = croppedImage
-            self.spousePhotoImage              = croppedImage
-            self.spousePhotoImageSmall         = smallImage
-            self.makeRounded(imageView:self.spousePhotoImageView)                
+            self.partnerPhotoImageView.image    = croppedImage
+            Global.partnerPhotoImage              = croppedImage
+            Global.partnerPhotoImageSmall         = smallImage
+            self.makeRounded(imageView:self.partnerPhotoImageView)                
         
         } else if id == 3
         {
             self.familyPhotoImageView.image    = croppedImage
-            self.familyPhotoImage              = croppedImage
-            self.familyPhotoImageSmall         = smallImage
+            Global.familyPhotoImage              = croppedImage
+            Global.familyPhotoImageSmall         = smallImage
             self.makeRounded(imageView:self.familyPhotoImageView)                
         }
 

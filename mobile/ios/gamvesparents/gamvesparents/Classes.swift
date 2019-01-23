@@ -342,7 +342,7 @@ class GamvesFamily
     var levels:[GamvesLevel]!
     
     var youUser:GamvesUser!
-    var spouseUser:GamvesUser!
+    var partnerUser:GamvesUser!
     
     var familyName = String()
     var objectId = String()
@@ -350,7 +350,7 @@ class GamvesFamily
     var schoolShort = String()
     
     var sonRegisterChatId = Int()
-    var spouseRegisterChatId = Int()
+    var partnerRegisterChatId = Int()
     var familyChatId = Int()
     
     var familyImage = UIImage()
@@ -369,9 +369,9 @@ class GamvesFamily
         {
             return youUser
        
-        } else if spouseUser.userId == userId
+        } else if partnerUser.userId == userId
         {
-            return spouseUser
+            return partnerUser
         }
         
         var sonwithId = GamvesUser()

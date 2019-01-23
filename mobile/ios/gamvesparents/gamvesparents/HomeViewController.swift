@@ -768,14 +768,14 @@ class HomeViewController: UIViewController,
     @objc func handleSpousePhotoImageView(sender: UITapGestureRecognizer)
     {
         
-        let spouseRegisterChatId:Int = Global.gamvesFamily.spouseRegisterChatId
+        let spouseRegisterChatId:Int = Global.gamvesFamily.partnerRegisterChatId
         
         if ChatFeedMethods.chatFeeds[spouseRegisterChatId]! != nil
         {
             let chatfeed:ChatFeed = ChatFeedMethods.chatFeeds[spouseRegisterChatId]!
             
             var users = [GamvesUser]()
-            users.append(Global.gamvesFamily.spouseUser)
+            users.append(Global.gamvesFamily.partnerUser)
             users.append(Global.gamvesFamily.youUser)
             
             self.chatViewController.chatId = spouseRegisterChatId
@@ -800,7 +800,7 @@ class HomeViewController: UIViewController,
             
             var users = [GamvesUser]()
             users.append(Global.gamvesFamily.sonsUsers[0])
-            users.append(Global.gamvesFamily.spouseUser)
+            users.append(Global.gamvesFamily.partnerUser)
             users.append(Global.gamvesFamily.youUser)
             
             self.chatViewController.chatId = familyChatId

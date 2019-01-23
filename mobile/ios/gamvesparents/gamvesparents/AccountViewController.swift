@@ -12,7 +12,8 @@ import Floaty
 class AccountViewController: UIViewController,
     UICollectionViewDataSource,
     UICollectionViewDelegate, 
-    UICollectionViewDelegateFlowLayout {
+    UICollectionViewDelegateFlowLayout,
+ImagesPickerProtocol {
 
     var imagePickerViewController = ImagePickerViewController()
     
@@ -311,6 +312,9 @@ class AccountViewController: UIViewController,
 
                 DispatchQueue.main.async
                 {
+
+                    //self.openProfile()
+
                     self.showImagePicker(type: ProfileImagesTypes.Son)
 
                     Global.defaults.set(true, forKey: "\(self.puserId)_picker_shown")
@@ -366,25 +370,15 @@ class AccountViewController: UIViewController,
 
     func showImagePicker(type:ProfileImagesTypes) {
 
-        self.hideShowTabBar(status: true)
-        
-        /*imagePickerViewController.setType(type: type)
-        
-        print(profileViewController)
-
-        imagePickerViewController.imagesPickerProtocol = profileViewController        
-        
-        self.navigationController?.pushViewController(imagePickerViewController, animated: true)        */
+        self.hideShowTabBar(status: true)   
 
         self.imagePickerViewController = ImagePickerViewController()
-        self.imagePickerViewController.imagesPickerProtocol = profileViewController      
+        self.imagePickerViewController.imagesPickerProtocol = self      
         self.imagePickerViewController.setType(type: ProfileImagesTypes.Son)
 
         self.navigationPickerController = UINavigationController(rootViewController: self.imagePickerViewController)
         let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-        appDelegate.window?.rootViewController = self.navigationPickerController
-
-      
+        appDelegate.window?.rootViewController = self.navigationPickerController      
     }
 
     func hideShowTabBar(status: Bool)
@@ -541,10 +535,31 @@ class AccountViewController: UIViewController,
         }
         
     }
+
+    func didpickImage(type: ProfileImagesTypes) {
+
+        if type == .Partner {
+
+            self.openProfile()            
+        }        
+    }
     
-    func openProfile() {
+    func saveYouImageAndPhone(phone: String) {}
+    
+    func openProfile() {     
+
+        self.hideShowTabBar(status: true)   
+
+        self.profileViewController = ProfileViewController()            
         
-        profileViewController = ProfileViewController()
+        self.profileViewController.loadImages()
+
+        //self.navigationPickerController = UINavigationController(rootViewController: self.profileViewController)
+
+        let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+        appDelegate.window?.rootViewController = self.profileViewController
+        
+        /*profileViewController = ProfileViewController()
         profileViewController.accountViewController = self
         profileViewController.tabBarController?.tabBar.isHidden = true                
         navigationController?.navigationBar.tintColor = UIColor.white
@@ -552,8 +567,7 @@ class AccountViewController: UIViewController,
         navigationController?.pushViewController(profileViewController, animated: true, completion: { (reult) in
             
             self.profileViewController.hideShowTabBar(hidden:true)
-        })        
-        
+        })*/        
     }
 
     func openAccounts() {
