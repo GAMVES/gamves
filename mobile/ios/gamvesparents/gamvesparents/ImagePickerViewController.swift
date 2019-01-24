@@ -329,8 +329,8 @@ UITextFieldDelegate  {
 
             case .You?:               
 
-                Global.yourPhotoImage                = croppedImage
-                Global.yourPhotoImageSmall           = smallImage        
+                Global.yourPhotoImage                = self.croppedImage
+                Global.yourPhotoImageSmall           = self.smallImage        
                 
                 self.imagesPickerProtocol.didpickImage(type: self.type)
                 
@@ -345,8 +345,8 @@ UITextFieldDelegate  {
 
                 self.type = ProfileImagesTypes.Family       
 
-                Global.sonPhotoImage              = croppedImage
-                Global.sonPhotoImageSmall         = smallImage        
+                Global.sonPhotoImage              = self.croppedImage
+                Global.sonPhotoImageSmall         = self.smallImage        
 
                 self.setScreenByType()
 
@@ -358,8 +358,8 @@ UITextFieldDelegate  {
 
                 self.setScreenByType()
 
-                Global.familyPhotoImage             = croppedImage
-                Global.familyPhotoImageSmall        = smallImage
+                Global.familyPhotoImage             = self.croppedImage
+                Global.familyPhotoImageSmall        = self.smallImage
 
                 self.setScreenByType()                    
                 
@@ -367,8 +367,8 @@ UITextFieldDelegate  {
 
             case .Partner?:                   
                     
-                Global.partnerPhotoImage              = croppedImage
-                Global.partnerPhotoImageSmall         = smallImage
+                Global.partnerPhotoImage              = self.croppedImage
+                Global.partnerPhotoImageSmall         = self.smallImage
 
                 self.imagesPickerProtocol.didpickImage(type: self.type)
 
@@ -453,7 +453,7 @@ UITextFieldDelegate  {
 
         self.pictureImageView.image = croppedImage
 
-        Global.makeRounded(imageView:self.pictureImageView)
+        self.makeRounded(imageView:self.pictureImageView)
 
         self.finishButton.isEnabled = true
         
@@ -463,6 +463,15 @@ UITextFieldDelegate  {
 
     @objc func dismissKeyboard() {
         self.scrollView.endEditing(true)
+    }
+
+    func makeRounded(imageView:UIImageView)
+    {
+        imageView.contentMode = UIViewContentMode.scaleToFill
+        imageView.layer.cornerRadius = imageView.frame.size.width / 2            
+        imageView.clipsToBounds = true         
+        imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
+        imageView.layer.borderWidth = 3
     }
 
 

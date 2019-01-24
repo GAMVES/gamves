@@ -343,6 +343,8 @@ ImagesPickerProtocol {
         //self.floaty.addItem(item: itemSelectGroup)               
         self.view.addSubview(self.floaty)
 
+        //self.openProfile() 
+
 
     }    
 

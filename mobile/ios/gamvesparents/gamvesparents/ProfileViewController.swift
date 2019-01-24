@@ -209,9 +209,18 @@ class ProfileViewController: UIViewController,
         tf.placeholder = "Birthday"
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
-        tf.addTarget(self, action: #selector(showDatePicker), for: UIControlEvents.touchDown)        
+        //tf.isUserInteractionEnabled = false
+        //tf.addTarget(self, action: #selector(showDatePicker), for: UIControlEvents.touchDown)        
         tf.tag = 2
         return tf
+    }()
+
+    lazy var sonBirthdayView: UIButton = {
+        let button = UIButton()
+        //button.backgroundColor = UIColor.cyan
+        button.translatesAutoresizingMaskIntoConstraints = false        
+        button.addTarget(self, action: #selector(showDatePicker), for: UIControlEvents.touchDown)
+        return button
     }()
 
     let datePicker = UIDatePicker()
@@ -233,7 +242,6 @@ class ProfileViewController: UIViewController,
         tf.translatesAutoresizingMaskIntoConstraints = false        
         return tf
     }()
-
 
     let sonUserTypeSeparatorView: UIView = {
         let view = UIView()        
@@ -401,6 +409,8 @@ class ProfileViewController: UIViewController,
     var puserId = String()
 
     var photoEditTextHeight = Int()
+
+    var short = String() //school short
     
     override func viewDidLoad() {        
         super.viewDidLoad()      
@@ -421,7 +431,7 @@ class ProfileViewController: UIViewController,
         self.view.addSubview(self.scrollView)
 
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)   
-        self.view.addConstraintsWithFormat("V:|[v0]|", views: self.scrollView)          
+        self.view.addConstraintsWithFormat("V:|-20-[v0]|", views: self.scrollView)          
 
         let attr = NSDictionary(object: UIFont(name: "Arial", size: 16.0)!, forKey: NSAttributedStringKey.font as NSCopying)
         self.segmentedControl.setTitleTextAttributes(attr as [NSObject : AnyObject] , for: .normal)
@@ -449,7 +459,9 @@ class ProfileViewController: UIViewController,
 
         self.sonPassBirthContainerView.addSubview(self.sonPasswordTextField)   
         self.sonPassBirthContainerView.addSubview(self.sonUserVerticalSeparatorView)   
-        self.sonPassBirthContainerView.addSubview(self.sonBirthdayTextField)            
+        self.sonPassBirthContainerView.addSubview(self.sonBirthdayTextField) 
+        //Button on top
+        self.sonPassBirthContainerView.addSubview(self.sonBirthdayView)
 
         let sons: NSMutableArray = ["Son", "Daughter"]
         self.sonUserTypeDownPicker = DownPicker(textField: sonUserTypeTextField, withData:sons as! [Any])
@@ -566,25 +578,48 @@ class ProfileViewController: UIViewController,
                 self.yourNameContainerView.isUserInteractionEnabled = false
                 self.partnerContainerView.isUserInteractionEnabled = false
 
-                self.saveButton.isUserInteractionEnabled = false
+                //self.saveButton.isUserInteractionEnabled = false
             }
         }
+    }
+    
+    override func viewDidLayoutSubviews() {
+
+        /*self.sonPassBirthContainerView.addSubview(self.sonBirthdayView)            
+
+        let _frame:CGRect = CGRect(
+            x:self.sonBirthdayTextField.frame.minX,
+            y:self.sonBirthdayTextField.frame.minY,
+            width:self.sonBirthdayTextField.frame.width,
+            height:self.sonBirthdayTextField.frame.height)
+        
+        print(_frame)
+        
+        self.sonBirthdayView.frame =  _frame
+
+        self.sonBirthdayView.layer.zPosition = 1
+
+        self.sonPassBirthContainerView.bringSubview(toFront: sonBirthdayView)*/
+        
     }
 
     func loadImages() {
 
-       self.yourPhotoImageView.image    = Global.yourPhotoImage  
-       Global.makeRounded(imageView:self.yourPhotoImageView)
+        DispatchQueue.main.async() {
 
-       self.sonPhotoImageView.image     = Global.sonPhotoImage
-       Global.makeRounded(imageView:self.sonPhotoImageView)
+            self.yourPhotoImageView.image    = Global.yourPhotoImage  
+            self.makeRounded(imageView:self.yourPhotoImageView)
 
-       self.partnerPhotoImageView.image = Global.partnerPhotoImage
-       Global.makeRounded(imageView:self.partnerPhotoImageView)
+            self.sonPhotoImageView.image     = Global.sonPhotoImage
+            self.makeRounded(imageView:self.sonPhotoImageView)
 
-       self.familyPhotoImageView.image  = Global.familyPhotoImage
-       Global.makeRounded(imageView:self.familyPhotoImageView)
-       
+            self.partnerPhotoImageView.image = Global.partnerPhotoImage
+            self.makeRounded(imageView:self.partnerPhotoImageView)
+
+            self.familyPhotoImageView.image  = Global.familyPhotoImage
+            self.makeRounded(imageView:self.familyPhotoImageView)
+        }
+
     }
 
     @objc func backButton(sender: UIBarButtonItem) {
@@ -594,23 +629,28 @@ class ProfileViewController: UIViewController,
         self.navigationController?.popViewController(animated: true)
     }
 
-    @objc func showDatePicker(){
+    @objc func showDatePicker() {
        
         datePicker.datePickerMode = .date       
-        let toolbar = UIToolbar();
+        let toolbar = UIToolbar()
+        toolbar.barStyle = .default
+        toolbar .isTranslucent = true
         toolbar.sizeToFit()
        
-        //let doneButton = UIBarButtonItem(title: "Select", style: UIBarButtonItemStyle.bordered, target: self, action: "donedatePicker")
-        //let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-        //let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.bordered, target: self, action: "cancelDatePicker")
-        //toolbar.setItems([doneButton,spaceButton,cancelButton], animated: false)        
-        //self.sonBirthdayTextField.inputAccessoryView = toolbar         
+        let doneButton = UIBarButtonItem(title: "Select", style: UIBarButtonItemStyle.bordered, target: self, action: "donedatePicker")
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.bordered, target: self, action: "cancelDatePicker")
+        toolbar.setItems([doneButton,spaceButton,cancelButton], animated: false)        
+        self.sonBirthdayTextField.inputAccessoryView = toolbar         
 
         self.sonBirthdayTextField.inputView = datePicker
+        
+        self.sonBirthdayTextField.becomeFirstResponder()      
+        
 
     }
 
-    @objc func donedatePicker(){
+    @objc func donedatePicker() {
     
        let formatter = DateFormatter()
        formatter.dateFormat = "dd/MM/yyyy"
@@ -984,19 +1024,29 @@ class ProfileViewController: UIViewController,
             metrics: metricsProfile)     
 
         let width = self.view.frame.width
-        let moduleWidth = Int((width / 2) + 40)
+        let moduleWidth = Int((width / 2) - 10)
         let moduleheight = photoEditTextHeight - 5
         let moduleMetrics = ["moduleWidth":moduleWidth, "moduleheight":moduleheight]
 
         self.sonPassBirthContainerView.addConstraintsWithFormat("V:|[v0(moduleheight)]|", views: self.sonPasswordTextField, metrics: moduleMetrics)
         self.sonPassBirthContainerView.addConstraintsWithFormat("V:|[v0]|", views: self.sonUserVerticalSeparatorView, metrics: moduleMetrics)
         self.sonPassBirthContainerView.addConstraintsWithFormat("V:|[v0(moduleheight)]|", views: self.sonBirthdayTextField, metrics: moduleMetrics)
+        self.sonPassBirthContainerView.addConstraintsWithFormat("V:|[v0(moduleheight)]|", views: self.sonBirthdayView, metrics: moduleMetrics)
         
         self.sonPassBirthContainerView.addConstraintsWithFormat("H:|[v0(moduleWidth)]-2-[v1(2)]-10-[v2]|", views: 
             self.sonPasswordTextField, 
             self.sonUserVerticalSeparatorView,
             self.sonBirthdayTextField,
             metrics: moduleMetrics)
+
+        let leftSonBirthday = moduleWidth + 14
+
+        let leftSonBirthdayMetrics = ["leftSonBirthday":leftSonBirthday]
+
+        self.sonPassBirthContainerView.addConstraintsWithFormat("H:|-leftSonBirthday-[v0]|", views: self.sonBirthdayView,
+            metrics: leftSonBirthdayMetrics)  
+
+        self.sonBirthdayView.layer.zPosition = 1        
 
         self.sonSchoolContainerView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.sonUserTypeTextField)
         self.sonSchoolContainerView.addConstraintsWithFormat("H:|[v0]|", views: self.sonUserTypeSeparatorView)        
@@ -1659,16 +1709,14 @@ class ProfileViewController: UIViewController,
         
         let full_name = son_name?.components(separatedBy: " ")
         let firstName = full_name?[0]
-        let lastName = full_name?[1]
-        
-        var short = String()
+        let lastName = full_name?[1]       
 
         let skeys = Array(Global.schools.keys)
         for s in skeys {
             let school = Global.schools[s]
             if self.sonSchoolTextField.text == school?.schoolName {
                 Global.gamvesFamily.school = school!
-                short = (school?.short)!
+                self.short = (school?.short)!
             }
         }
         
@@ -1683,7 +1731,7 @@ class ProfileViewController: UIViewController,
             "user_type" : type,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
-            "short": short,
+            "short": self.short,
             "dataPhotoImage": dataPhotoImage,
             "dataPhotoImageSmall": dataPhotoImageSmall,
             "dataPhotoBackground": dataPhotoUniverse
@@ -1783,6 +1831,7 @@ class ProfileViewController: UIViewController,
             "levelObj": levelObj.objectId,
             "userTypeObj": userTypeObj.objectId,
             "dataPhotoImage": dataPhotoImage,
+            "short": self.short,
             "dataPhotoImageSmall": dataPhotoImageSmall,
             "dataPhotoBackground": dataPhotoUniverse
             ] as [String : Any]
@@ -1922,11 +1971,10 @@ class ProfileViewController: UIViewController,
                 
                 Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")  
 
-                completionHandler(true)  
-                
+                completionHandler(true)                
             }                 
         }   
-    }   
+    }      
     
     func createChatGroups(completionHandlerChatGroups : @escaping (_ resutl:Bool) -> ())
     {
@@ -1951,8 +1999,7 @@ class ProfileViewController: UIViewController,
                 if resutl {
                     next(nil)
                 }
-            })
-            
+            })            
         }
         
         //SAVE SPOUSE

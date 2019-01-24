@@ -1855,16 +1855,6 @@ class Global: NSObject
         UIColor.init(netHex: 0x189ea6),
         UIColor.init(netHex: 0x97a618)        
     ]
-
-
-    static func makeRounded(imageView:UIImageView)
-    {
-        imageView.contentMode = UIViewContentMode.scaleToFill
-        imageView.layer.cornerRadius = imageView.frame.size.width / 2            
-        imageView.clipsToBounds = true         
-        imageView.layer.borderColor = UIColor.gamvesBlackColor.cgColor
-        imageView.layer.borderWidth = 3
-    }
     
 }
 
