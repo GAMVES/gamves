@@ -69,8 +69,20 @@ UICollectionViewDelegateFlowLayout {
 
         self.loadRecommendations(completionRecommHandler: { ( resutl ) -> () in })
 
+        NotificationCenter.default.addObserver(self, selector: #selector(self.loadRecommendationsFromObserver), name: NSNotification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: nil)
+
     }
 
+
+    @objc func loadRecommendationsFromObserver() {        
+
+        self.loadRecommendations(completionRecommHandler: { ( resutlRecomm ) -> () in
+
+            if resutlRecomm {
+
+            }
+        })        
+    }
 
     func loadRecommendations(completionRecommHandler : @escaping (_ resutl:Bool) -> ()) {
 
@@ -98,6 +110,7 @@ UICollectionViewDelegateFlowLayout {
         }        
 
     }
+
 
     func registerLiveQuery()
     {

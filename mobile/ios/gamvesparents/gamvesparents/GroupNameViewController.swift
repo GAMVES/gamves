@@ -238,7 +238,7 @@ class GroupNameViewController: UIViewController,
             if error == nil
             {
                 
-                Global.addChannels(userIds: self.arrayIds, channel: self.chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
+                ChatMethods.addChannels(userIds: self.arrayIds, channel: self.chatIdStr, chatObjectId:self.chatFeed.objectId!, completionHandlerChannel: { ( resutl ) -> () in
                     
                     
                     if var username = Global.userDictionary[(PFUser.current()?.objectId)!]?.name

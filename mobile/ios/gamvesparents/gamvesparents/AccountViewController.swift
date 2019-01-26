@@ -357,7 +357,6 @@ ImagesPickerProtocol {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationController?.pushViewController(dummySettingsViewController, animated: true)
 
-
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -552,24 +551,13 @@ ImagesPickerProtocol {
 
         self.hideShowTabBar(status: true)   
 
-        self.profileViewController = ProfileViewController()            
+        self.profileViewController = ProfileViewController()                  
         
+        self.profileViewController.accountViewController = self
         self.profileViewController.loadImages()
 
-        //self.navigationPickerController = UINavigationController(rootViewController: self.profileViewController)
-
         let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-        appDelegate.window?.rootViewController = self.profileViewController
-        
-        /*profileViewController = ProfileViewController()
-        profileViewController.accountViewController = self
-        profileViewController.tabBarController?.tabBar.isHidden = true                
-        navigationController?.navigationBar.tintColor = UIColor.white
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
-        navigationController?.pushViewController(profileViewController, animated: true, completion: { (reult) in
-            
-            self.profileViewController.hideShowTabBar(hidden:true)
-        })*/        
+        appDelegate.window?.rootViewController = self.profileViewController        
     }
 
     func openAccounts() {

@@ -104,6 +104,7 @@ class Global: NSObject
     static var keySonSmall      = String() 
     
     //Notifications
+    static var notificationKeyRecommendationLoaded      = "com.gamves.gamvesparent.recommendationLoaded"
     static var notificationKeyFriendApprovalLoaded      = "com.gamves.gamvesparent.friendApprovalLoaded"
     static var notificationKeyFamilyLoaded              = "com.gamves.gamvesparent.familyLoaded"
     static var notificationKeyLevelsLoaded              = "com.gamves.gamvesparent.levelsLoaded"
@@ -142,6 +143,7 @@ class Global: NSObject
     static var sonPhotoImageSmall:UIImage!
     static var partnerPhotoImageSmall:UIImage!
     static var familyPhotoImageSmall:UIImage!
+    static var schoolShort = String()
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
@@ -495,26 +497,26 @@ class Global: NSObject
         return feed.components(separatedBy:",")
     }
     
-    static func addChannels(userIds:[String], channel:String, completionHandlerChannel : @escaping (_ resutl:Bool) -> ())
+    /*static func addChannels(userIds:[String], channel:String, chatObjectId:String, completionHandlerChannel : @escaping (_ resutl:Bool) -> ())
     {
         
-        var method = String()
+        //var method = String()
         
         let users:AnyObject
         
         if userIds.count > 1
         {
-            method = "subscribeUsersToChannel"
+            //method = "subscribeUsersToChannel"
             users = userIds as AnyObject
         } else
         {
-            method = "subscribeUserToChannel"
+            //method = "subscribeUserToChannel"
             users = userIds[0] as String as AnyObject
         }
         
-        let params = ["userIds":users, "channel":channel] as [String : Any]
+        let params = ["userIds":users, "channel":channel, "chatObjectId": chatObjectId] as [String : Any]
         
-        PFCloud.callFunction(inBackground: method, withParameters: params) { (resutls, error) in
+        PFCloud.callFunction(inBackground: "subscribeUsersToChannel", withParameters: params) { (resutls, error) in
             
             if error != nil
             {
@@ -530,7 +532,7 @@ class Global: NSObject
                 completionHandlerChannel(true)
             }
         }
-    }
+    }*/
     
     static func registerInstallationAndRole(completionHandlerRole : @escaping (_ resutl:Bool) -> ())
     {

@@ -578,9 +578,11 @@ class ProfileViewController: UIViewController,
                 self.yourNameContainerView.isUserInteractionEnabled = false
                 self.partnerContainerView.isUserInteractionEnabled = false
 
-                //self.saveButton.isUserInteractionEnabled = false
+                self.saveButton.isUserInteractionEnabled = false
             }
         }
+
+        self.activityIndicatorView!.stopAnimating()
     }
     
     override func viewDidLayoutSubviews() {
@@ -610,7 +612,7 @@ class ProfileViewController: UIViewController,
             self.yourPhotoImageView.image    = Global.yourPhotoImage  
             self.makeRounded(imageView:self.yourPhotoImageView)
 
-            self.sonPhotoImageView.image     = Global.sonPhotoImage
+            self.sonPhotoImageView.image = Global.sonPhotoImage
             self.makeRounded(imageView:self.sonPhotoImageView)
 
             self.partnerPhotoImageView.image = Global.partnerPhotoImage
@@ -1121,7 +1123,8 @@ class ProfileViewController: UIViewController,
             metrics: metricsProfile)
 
         self.segmentedControl.selectedSegmentIndex = 0
-        self.handleSegmentedChange()
+        self.handleSegmentedChange()      
+
     }
 
    
@@ -1348,7 +1351,7 @@ class ProfileViewController: UIViewController,
             
             self.yourUserTextField.text = trimmedName.lowercased()
 
-            if !checkForSonErrors() {
+            if !checkForSonErrors(button: sender) {
                 
                 Global.defaults.set(self.sonNameTextField.text!, forKey: "\(self.puserId)_son_name")
                 Global.defaults.set(self.sonUserTextField.text!, forKey: "\(self.puserId)_son_username")
@@ -1375,6 +1378,7 @@ class ProfileViewController: UIViewController,
                             
                             self.sonSaving = false
 
+                            
                             sender.isUserInteractionEnabled = true
 
                             //aca
@@ -1387,7 +1391,7 @@ class ProfileViewController: UIViewController,
                                 
                                 print(self.accountViewController)
 
-                                self.accountViewController.showImagePicker(type: ProfileImagesTypes.You)
+                                //self.accountViewController.showImagePicker(type: ProfileImagesTypes.You)
 
                             }
 
@@ -1403,7 +1407,7 @@ class ProfileViewController: UIViewController,
             
             self.you = PFUser.current()
        
-            if !checkForFamilyErrors() {
+            if !checkForFamilyErrors(button: sender) {
                 
                 Global.defaults.set(self.yourUserTextField.text!, forKey: "\(self.puserId)_your_username")
                 Global.defaults.set(self.yourFamilyTextField.text!, forKey: "\(self.puserId)_your_family_name")
@@ -1490,7 +1494,7 @@ class ProfileViewController: UIViewController,
     }
     
 
-    func checkForSonErrors() -> Bool {
+    func checkForSonErrors(button: UIButton) -> Bool {
         
         var errors = false
         let title = "Error"
@@ -1566,11 +1570,13 @@ class ProfileViewController: UIViewController,
                 self.activityIndicatorView?.stopAnimating()
             }
         }
+
+        button.isUserInteractionEnabled = false
         
         return errors
     }
 
-    func checkForFamilyErrors() -> Bool
+    func checkForFamilyErrors(button: UIButton) -> Bool
     {
         var errors = false
         let title = "Error"
@@ -1654,6 +1660,8 @@ class ProfileViewController: UIViewController,
             }
         }
 
+        button.isUserInteractionEnabled = false
+
         return errors
         
     }
@@ -1667,8 +1675,7 @@ class ProfileViewController: UIViewController,
         
         let son_name        = Global.defaults.string(forKey: "\(self.puserId)_son_name")
         let son_user_name   = Global.defaults.string(forKey: "\(self.puserId)_son_username")
-        let son_password    = Global.defaults.string(forKey: "\(self.puserId)_son_password")
-        //let son_birthday  = Global.defaults.string(forKey: "\(self.puserId)_son_birthday")
+        let son_password    = Global.defaults.string(forKey: "\(self.puserId)_son_password")        
         let son_type        = Global.defaults.string(forKey: "\(self.puserId)_son_type")
         
         var type = Int()
@@ -1878,10 +1885,8 @@ class ProfileViewController: UIViewController,
                 print(errorCode)
                 
                 completionHandler(false)
-            }
-            
-        }
-        
+            }            
+        }        
     } 
   
 

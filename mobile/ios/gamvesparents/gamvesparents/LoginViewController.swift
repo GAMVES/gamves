@@ -29,8 +29,7 @@ ImagesPickerProtocol {
 
     var activityIndicatorView:NVActivityIndicatorView?
 
-   var schoolsArray: NSMutableArray = []
-   var schoolShort = String()
+   var schoolsArray: NSMutableArray = []   
 
    let parents: NSMutableArray = ["Father", "Mother"]  
     
@@ -386,7 +385,7 @@ ImagesPickerProtocol {
             
             self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
             self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
-            self.sonSchoolDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
+            self.sonSchoolDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange(sender:)), for: .valueChanged)
 
         })      
 
@@ -394,7 +393,10 @@ ImagesPickerProtocol {
 
     }
 
-    @objc func handleSchoolPickerChange() {        
+    //--
+    // Change picker when school is selected
+
+    @objc func handleSchoolPickerChange(sender: AnyObject) {
 
         let sKeys = Array(Global.schools.keys)
         
@@ -404,13 +406,15 @@ ImagesPickerProtocol {
 
             if self.sonSchoolTextField.text! == Global.schools[schoolId]?.schoolName {
 
-                self.schoolShort = Global.schools[schoolId]!.short
+                Global.schoolShort = Global.schools[schoolId]!.short
 
-                print(self.schoolShort)
+                print(Global.schoolShort)
             }            
         }                       
     }
 
+    //--
+    // Initilize Live Query for Verification change
 
     func initializeChatSubscription() {
 
@@ -1087,7 +1091,7 @@ ImagesPickerProtocol {
                             self.activityIndicatorView?.stopAnimating()
 
 
-                            if  UserDefaults.standard.isHasPhoneAndImage() {
+                            if  !UserDefaults.standard.isHasPhoneAndImage() {
                             
                                 self.tabBarViewController?.selectedIndex = 0 
 
@@ -1277,28 +1281,25 @@ ImagesPickerProtocol {
                     
                     let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                     
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
-                                                                     
-                        //self.navigationController?.popViewController(animated: true)                        
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in  
 
                         UserDefaults.standard.setHasPhoneAndImage(value: true)
-
-                        //self.dismiss(animated:true)                              
 
                         let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
                         self.tabBarViewController?.selectedIndex = 0
                         appDelegate.window?.rootViewController = self.tabBarViewController                     
 
-                        self.hideShowTabBar(status:true)                        
+                        self.hideShowTabBar(status:true)    
+
+                        //self.tabBarViewController!.recommendationViewController.loadRecommendations(completionRecommHandler: { ( resutlRecomm ) -> () in })                    
+
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: self)
                         
                     }))
                     
                     self.navigationPickerController.present(alert, animated: true) 
-
                 }
-
             })
-
 
         } else {
 
@@ -1424,23 +1425,14 @@ ImagesPickerProtocol {
                         print("done youAdmin")
                         print(resutl)
                         
-                        if (resutl != nil) {
+                        if (resutl != nil) {                          
 
-                            let params = [
-                            "role" : self.schoolShort,
-                            "userId" : self.puserId,                  
-                            ] as [String : Any]
+                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
 
-                            print(params)
-                        
-                            PFCloud.callFunction(inBackground: "AddUserToRole", withParameters: params) { (result, error) in
-                            
-                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
+                                completionHandler(true)
 
-                                    completionHandler(true)
-
-                                })
-                            }    
+                                
+                            })    
                         }                        
                     })                    
                 })

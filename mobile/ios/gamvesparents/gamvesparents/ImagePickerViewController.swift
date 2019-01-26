@@ -8,6 +8,7 @@
 
 import UIKit
 import RSKImageCropper
+import NVActivityIndicatorView
 
 protocol ImagesPickerProtocol {
    func didpickImage(type:ProfileImagesTypes) 
@@ -33,6 +34,8 @@ UITextFieldDelegate  {
         v.backgroundColor = UIColor.gamvesColor
         return v
     }()
+
+    var activityIndicatorView:NVActivityIndicatorView?
     
     var imageCropVC = RSKImageCropViewController()
     
@@ -219,6 +222,8 @@ UITextFieldDelegate  {
             let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
             self.scrollView.addGestureRecognizer(tap)
         }
+
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
     }
     
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
@@ -267,7 +272,7 @@ UITextFieldDelegate  {
                     title = "Your Image"
                     message = "Choose your image"
                     buttonTitle = "  Select Your Image"
-                    buttonTitle = "  Save image and phone"
+                    buttonTitle = "  Save image phone"
                     imageName = "your_photo"    
                     let phoneTitle = "  Your phone number"    
                     self.phoneLabel.text = phoneTitle            
@@ -375,6 +380,8 @@ UITextFieldDelegate  {
                 //self.navigationController?.popViewController(animated: true)
 
                 //self.dismiss(animated:true)
+
+                self.activityIndicatorView?.startAnimating()
                 
                 break    
                 

@@ -111,7 +111,7 @@ class ChatMethods: NSObject
 
         chatFeed["senderColor"] = colorString
         
-        chatFeed.saveInBackground(block: { (saved, error) in
+        chatFeed.saveInBackground(block: { (resutl, error) in
             
             if error == nil
             {                
@@ -129,7 +129,7 @@ class ChatMethods: NSObject
 
                 var chatIdStr = String(chatId) as String             
                 
-                self.addChannels(userIds:userIdArray, channel: chatIdStr, completionHandlerChannel: { ( resutl ) -> () in
+                self.addChannels(userIds:userIdArray, channel: chatIdStr, chatObjectId: chatFeed.objectId!, completionHandlerChannel: { ( resutl ) -> () in
                     
                     if resutl {                        
                         
@@ -153,26 +153,12 @@ class ChatMethods: NSObject
 
     }
 
-    static func addChannels(userIds:[String], channel:String, completionHandlerChannel : @escaping (_ resutl:Bool) -> ())
+    static func addChannels(userIds:[String], channel:String, chatObjectId:String, completionHandlerChannel : @escaping (_ resutl:Bool) -> ())
     {
         
-        var method = String()
+        let params = ["userIds":userIds, "channel":channel, "chatObjectId":chatObjectId] as [String : Any]
         
-        let users:AnyObject
-        
-        if userIds.count > 1
-        {
-            method = "subscribeUsersToChannel"
-            users = userIds as AnyObject
-        } else
-        {
-            method = "subscribeUserToChannel"
-            users = userIds[0] as String as AnyObject
-        }
-        
-        let params = ["userIds":users, "channel":channel] as [String : Any]
-        
-        PFCloud.callFunction(inBackground: method, withParameters: params) { (resutls, error) in
+        PFCloud.callFunction(inBackground: "subscribeUsersToChannel", withParameters: params) { (resutls, error) in
             
             if error != nil
             {
