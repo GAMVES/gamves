@@ -8,6 +8,8 @@
 import UIKit
 import Parse
 import Floaty
+import DownPicker
+import PopupDialog
 
 class AccountViewController: UIViewController,
     UICollectionViewDataSource,
@@ -147,6 +149,16 @@ ImagesPickerProtocol {
     var floaty = Floaty(size: 80)
 
     var navigationPickerController:UINavigationController!
+
+    //--
+    // Schools
+    var schoolsArray: NSMutableArray = []
+    var schoolsDownPicker: DownPicker!
+    var schoolTextField: UITextField = {
+        let tf = UITextField()        
+        tf.translatesAutoresizingMaskIntoConstraints = false        
+        return tf
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -303,26 +315,81 @@ ImagesPickerProtocol {
         itemNewGroup.title = "ADD FAMILY"
         itemNewGroup.handler = { item in
                         
-            let title = "Add family members"
-            var message = "\n\nYou are about to add your family members including your son or daughter and partner. Please provide their information accordingly.  \n\n"                                                            
+            let title = "Add family members request"
+            var message = "\n\nYou want to add your family members including your son or daughter and partner. \n\n Choose the scholl they go to. \n\n You will be answered back in a moment. Thanks for using Gamves"                                                            
             
-            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+            var alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+
+            let margin:CGFloat = 10.0
+            let rect = CGRect(x: margin, y: 150.0, width: 250, height: 60)
+            let customView = UIView(frame: rect)
             
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
+            customView.backgroundColor = UIColor.cyan
+            
+            self.schoolTextField.placeholder = "Select your school"
+            self.schoolTextField.keyboardType = UIKeyboardType.default
+
+            self.schoolTextField.frame = rect
+
+            customView.addSubview(self.schoolTextField)
+            alert.view.addSubview(customView)
+            
+            self.schoolsDownPicker = DownPicker(textField: self.schoolTextField, withData:self.schoolsArray as! [Any])
+            self.schoolsDownPicker.setPlaceholder("Tap to choose school...")
+            self.schoolsDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
+            
+            alert.addAction(UIAlertAction(title: "ACCEPT FAMILY INTEGRATION", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
 
                 DispatchQueue.main.async
                 {
-
-                    //self.openProfile()
-
                     self.showImagePicker(type: ProfileImagesTypes.Son)
 
                     Global.defaults.set(true, forKey: "\(self.puserId)_picker_shown")
                 }
                 
             }))
+
+            alert.addAction(UIAlertAction(title: "DECIDE LATER", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
+
+                self.dismiss(animated: true, completion: nil)               
+                
+            }))
             
-            self.present(alert, animated: true)             
+            var height:NSLayoutConstraint = NSLayoutConstraint(item: alert.view, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: self.view.frame.height * 0.60)
+            alert.view.addConstraint(height);
+            
+            self.present(alert, animated: true) 
+    
+
+            // Prepare the popup assets
+            /*let title = "THIS IS THE DIALOG TITLE"
+            let message = "This is the message section of the popup dialog default view"
+            let image = UIImage(named: "pexels-photo-103290")
+
+            // Create the dialog
+            let popup = PopupDialog(title: title, message: message, image: image)
+
+            // Create buttons
+            let buttonOne = CancelButton(title: "CANCEL") {
+                print("You canceled the car dialog.")
+            }
+
+            // This button will not the dismiss the dialog
+            let buttonTwo = DefaultButton(title: "ADMIRE CAR", dismissOnTap: false) {
+                print("What a beauty!")
+            }
+
+            let buttonThree = DefaultButton(title: "BUY CAR", height: 60) {
+                print("Ah, maybe next time :)")
+            }
+
+            // Add buttons to dialog
+            // Alternatively, you can use popup.addButton(buttonOne)
+            // to add a single button
+            popup.addButtons([buttonOne, buttonTwo, buttonThree])
+
+            // Present dialog
+            self.present(popup, animated: true, completion: nil) */           
 
         }
 
@@ -343,10 +410,37 @@ ImagesPickerProtocol {
         //self.floaty.addItem(item: itemSelectGroup)               
         self.view.addSubview(self.floaty)
 
-        //self.openProfile() 
+        //self.openProfile() ate
+
+        Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
+
+            self.schoolsArray = schoolsArray           
+            
+        })     
 
 
     }    
+
+    @objc func handleSchoolPickerChange() {
+
+        let grades: NSMutableArray = [] 
+        
+        let lkeys = Array(Global.levels.keys)
+        
+        for l in lkeys {
+
+            let schoolId = Global.levels[l]?.schoolId
+
+            if self.schoolTextField.text! == Global.schools[schoolId!]?.schoolName {
+
+                grades.add(Global.levels[l]?.fullDesc)
+            }            
+        }
+        
+        
+    }
+    
+
 
      func showControllerForSetting(_ setting: Setting) {
 

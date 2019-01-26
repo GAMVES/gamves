@@ -1129,44 +1129,52 @@ class ProfileViewController: UIViewController,
 
    
     @objc func handleSegmentedChange() {
+
+        DispatchQueue.main.async() {
         
-        if self.segmentedControl.selectedSegmentIndex == 0
-        {
-            self.prepTextFields(inView: [self.sonNameContainerView])
-           
-            self.sonNameContainerView.isHidden = false
-            self.sonSchoolContainerView.isHidden = false
+            if self.segmentedControl.selectedSegmentIndex == 0
+            {
+                self.prepTextFields(inView: [self.sonNameContainerView])
+               
+                self.sonNameContainerView.isHidden = false
+                self.sonSchoolContainerView.isHidden = false
 
-            self.yourNameContainerView.isHidden = true
-            self.partnerContainerView.isHidden = true    
+                self.yourNameContainerView.isHidden = true
+                self.partnerContainerView.isHidden = true    
 
-            self.sonPhotoImageView.isHidden       = false
-            self.familyPhotoImageView.isHidden    = false
+                self.sonPhotoImageView.isHidden       = false
+                self.familyPhotoImageView.isHidden    = false
+                self.yourPhotoImageView.isHidden    = true
+                self.partnerPhotoImageView.isHidden  = true                   
 
-            self.yourPhotoImageView.isHidden    = true
-            self.partnerPhotoImageView.isHidden  = true            
+                self.saveButton.setTitle("Save son or doughter", for: UIControlState())
 
-            self.saveButton.setTitle("Save son or doughter", for: UIControlState())
+            } else if self.segmentedControl.selectedSegmentIndex == 1 {
+                
+                self.prepTextFields(inView: [self.yourNameContainerView,self.partnerContainerView])
 
-        } else if self.segmentedControl.selectedSegmentIndex == 1 {
-            
-            self.prepTextFields(inView: [self.yourNameContainerView,self.partnerContainerView])
+                self.sonNameContainerView.isHidden = true
+                self.sonSchoolContainerView.isHidden = true
 
-            self.sonNameContainerView.isHidden = true
-            self.sonSchoolContainerView.isHidden = true
+                self.yourNameContainerView.isHidden = false
+                self.partnerContainerView.isHidden = false    
 
-            self.yourNameContainerView.isHidden = false
-            self.partnerContainerView.isHidden = false    
+                self.sonPhotoImageView.isHidden       = true
+                self.familyPhotoImageView.isHidden    = true
 
-            self.sonPhotoImageView.isHidden       = true
-            self.familyPhotoImageView.isHidden    = true
+                self.yourPhotoImageView.isHidden    = false
+                self.partnerPhotoImageView.isHidden  = false                        
+                
+                self.saveButton.setTitle("Save family", for: UIControlState())
+                
+            }  
 
-            self.yourPhotoImageView.isHidden    = false
-            self.partnerPhotoImageView.isHidden  = false                        
-            
-            self.saveButton.setTitle("Save family", for: UIControlState())
-            
-        }    
+            self.sonPhotoImageView.image = Global.sonPhotoImage 
+            self.familyPhotoImageView.image = Global.familyPhotoImage 
+            self.yourPhotoImageView.image  = Global.yourPhotoImage
+            self.partnerPhotoImageView.image  = Global.partnerPhotoImage                   
+
+        }
     }
 
     @objc func loadDataAfterLogin() {
@@ -2212,33 +2220,36 @@ class ProfileViewController: UIViewController,
 
     func applyImageById(id:Int, croppedImage:UIImage, smallImage:UIImage) {
 
-        if id == 0 
-        {             
-            self.yourPhotoImageView.image   = croppedImage
-            Global.yourPhotoImage             = croppedImage
-            Global.yourPhotoImageSmall        = smallImage
-            self.makeRounded(imageView:self.yourPhotoImageView)
+        DispatchQueue.main.async() {
 
-        } else if id == 1
-        {
-            self.sonPhotoImageView.image    = croppedImage
-            Global.sonPhotoImage              = croppedImage
-            Global.sonPhotoImageSmall         = smallImage
-            self.makeRounded(imageView:self.sonPhotoImageView)                
+            if id == 0 
+            {             
+                self.yourPhotoImageView.image   = croppedImage
+                Global.yourPhotoImage             = croppedImage
+                Global.yourPhotoImageSmall        = smallImage
+                self.makeRounded(imageView:self.yourPhotoImageView)
 
-        } else if id == 2
-        {
-            self.partnerPhotoImageView.image    = croppedImage
-            Global.partnerPhotoImage              = croppedImage
-            Global.partnerPhotoImageSmall         = smallImage
-            self.makeRounded(imageView:self.partnerPhotoImageView)                
-        
-        } else if id == 3
-        {
-            self.familyPhotoImageView.image    = croppedImage
-            Global.familyPhotoImage              = croppedImage
-            Global.familyPhotoImageSmall         = smallImage
-            self.makeRounded(imageView:self.familyPhotoImageView)                
+            } else if id == 1
+            {
+                self.sonPhotoImageView.image    = croppedImage
+                Global.sonPhotoImage              = croppedImage
+                Global.sonPhotoImageSmall         = smallImage
+                self.makeRounded(imageView:self.sonPhotoImageView)                
+
+            } else if id == 2
+            {
+                self.partnerPhotoImageView.image    = croppedImage
+                Global.partnerPhotoImage              = croppedImage
+                Global.partnerPhotoImageSmall         = smallImage
+                self.makeRounded(imageView:self.partnerPhotoImageView)                
+            
+            } else if id == 3
+            {
+                self.familyPhotoImageView.image    = croppedImage
+                Global.familyPhotoImage              = croppedImage
+                Global.familyPhotoImageSmall         = smallImage
+                self.makeRounded(imageView:self.familyPhotoImageView)                
+            }
         }
 
     }
