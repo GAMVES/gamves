@@ -74,54 +74,48 @@
 
 
 	// --
-	// Subscribe users array to channels for new chat. 
-
-	var _ = require("underscore");
+	// Subscribe users array to channels for new chat. 	
 
 	Parse.Cloud.define("subscribeUsersToChannel", function( request, response ) {
 		
 		var userIds = request.params.userIds;
 		var channelName = request.params.channel;
+		var chatObjectId = request.params.chatObjectId;		
 
-		_.each(userIds, function(userId) {
+		var chatOfRole = "chatOf___" + chatObjectId;
 
-			subscribeSingleUserToChannel(userId, channelName, response);
+		Parse.Cloud.run("AddRoleByName", { "name": chatOfRole}).then(function(chatRolePF) {	
 
-		});
-	  
-	});
+			for (var i=0; i<userIds.length; i++) {
+	                
+	            var userId = userIds[i];													
 
+				Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": chatOfRole}).then(function(result) {      
 
-	// --
-	// SubscribeMeToChannel
+					Parse.Cloud.run("AddRoleToObject", { "pclassName": "ChatFeed", "objectId": chatObjectId, "role" : chatOfRole });
 
-	Parse.Cloud.define("subscribeUserToChannel", function( request, response ) {
-		
-		var userId = request.params.userIds;
-		var channelName = request.params.channel;	
-	  
-		subscribeSingleUserToChannel(userId, channelName, response);
-		
+					subscribeSingleUserToChannel(userId, channelName, function(callback){
+
+						if (callback) {
+
+							response.success(true);
+
+						} else {
+
+							response.error(callback);
+						}
+					});
+				});
+			}
+		});	
 	});
 
 
 	// --
 	// Generic Method for User Subscription
 
-	function subscribeSingleUserToChannel(userId, channelName, response)
-	{
-	  
-		if (!channelName) 
-		{
-			response.error("Missing parameter: channel")
-			return;
-		}
-
-		if (!userId) 
-		{
-			response.error("Missing parameter: userId")
-			return;
-		}
+	function subscribeSingleUserToChannel(userId, channelName, callback)
+	{	  
 
 		var userQuery = new Parse.Query(Parse.User);
 		userQuery.equalTo("objectId",  userId);
@@ -145,18 +139,18 @@
 				  Parse.Object.saveAll(installations, {
 				    success: function(installations) {
 				      // All the installations were saved.
-				      response.success(true);
+				      callback(true);
 				    },
 				    error: function(error) {
 				      // An error occurred while saving one of the objects.
 				      console.error(error);
-				      response.error("An error occurred while updating this user's installations.")
+				      callback("An error occurred while updating this user's installations.")
 				    },
 				  });
 
 			}, error:function(error)
 	        {
-	        	response.error(error);
+	        	callback(error);
 	            console.error("pushQuery find failed. error = " + error.message);
 	        }
 		});

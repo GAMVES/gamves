@@ -201,7 +201,13 @@
 
 				//--
 				// Add admin role to Config and set ACL to a sensitive class
+
 				Parse.Cloud.run("AddRoleToObject", { "pclassName": "Config" , "objectId": configPF.id, "role" : "admin" });
+
+				//--
+				// Adding public role for parents 
+
+				Parse.Cloud.run("AddRoleByName", { name: "parent_user" });                  
 
 				loadImagesArray(configPF, function(universeFile){
 
@@ -543,65 +549,74 @@
 	Parse.Cloud.afterSave("_User", function(request, response) {
 
 		var userId = request.object.id;
-
+		var iDUserType = request.object.get("user_type"); // request.params.user_type;
 		var username = request.object.get("username");
 
 		console.log("username : " + username + " _admuser: " + _admuser ); 	
 
 		console.log("user: " + JSON.stringify(request.object));
 
-		if ( username != _admuser ) {
+		if ( username != _admuser ) {			
 
-			var friendOfRole = "friendOf___" + userId;
+			var emailVerified = request.object.get("emailVerified");
 
-			Parse.Cloud.run("AddRoleByName", { "name": friendOfRole}).then(function(familyRolePF) {				
+			console.log("_User : " + userId); 		
 
-				Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": friendOfRole});		
+			var userVerifiedQuery = new Parse.Query("UserVerified");
+			userVerifiedQuery.equalTo("userId", userId);		
 
-				var emailVerified = request.object.get("emailVerified");
+			userVerifiedQuery.find({
+		        useMasterKey: true,
+		        success: function(results) {
 
-				console.log("_User : " + userId); 		
+		        	console.log("success"); 
 
-				var userVerifiedQuery = new Parse.Query("UserVerified");
-				userVerifiedQuery.equalTo("userId", userId);		
+		        	console.log("results.length: " + results.length); 	
+		        	       	
+		        	if( results.length == 0) {
 
-				userVerifiedQuery.find({
-			        useMasterKey: true,
-			        success: function(results) {
+						setUserVerified(userId, false);					
 
-			        	console.log("success"); 
+				    } else { 										
 
-			        	console.log("results.length: " + results.length); 	
-			        	       	
-			        	if( results.length == 0) {
+				    	var verifiedObject = results[0]; 					
 
-							setUserVerified(userId, false);					
+						verifiedObject.set("emailVerified", emailVerified);		
 
-					    } else { 										
+						verifiedObject.save(null, { useMasterKey: true } );
 
-					    	var verifiedObject = results[0]; 					
+						//Add roles 
 
-							verifiedObject.set("emailVerified", emailVerified);		
+						var friendOfRole = "friendOf___" + userId;
 
-							verifiedObject.save(null, { useMasterKey: true } );
-							
-						} 
+						Parse.Cloud.run("AddRoleByName", { "name": friendOfRole}).then(function(familyRolePF) {	
 
-						response.success(true);  
+							Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": friendOfRole});							
 
-			        },
-			        error: function(error) {
+							Parse.Cloud.run("AddUserToRole", { "userId": userId, "role" : "schools" });	
 
-			        	console.log("error: " +error); 	
-			         
-			         	setUserVerified(userId, false);
+							if (iDUserType!=2 || iDUserType!=3) { // only parents add this permission			
 
-				        response.success(true);   
-			        }      
+								Parse.Cloud.run("AddUserToRole", { "userId": userId, "role" : "parent_user" });							
+							}
 
-				});
+						});						
+						
+					} 
 
-			});	
+					response.success(true);  
+
+		        },
+		        error: function(error) {
+
+		        	console.log("error: " +error); 	
+		         
+		         	setUserVerified(userId, false);
+
+			        response.success(true);   
+		        }      
+
+			});
 
 		} else {
 

@@ -314,7 +314,7 @@ document.addEventListener("LoadRecommendations", function(event){
                               let role;
 
                               if  (result) {
-                                  role = "schools";
+                                  role = "parent_user";
                               } else {
                                   role = short;
                               }  
