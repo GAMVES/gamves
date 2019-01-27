@@ -609,7 +609,11 @@ class ProfileViewController: UIViewController,
 
         DispatchQueue.main.async() {
 
-            self.yourPhotoImageView.image    = Global.yourPhotoImage  
+            //Initial load of yourImage from disk to complete register, Fix Me.
+
+            Global.yourPhotoImage = self.loadImageFromDisc(imageName: Global.youImageName)
+
+            self.yourPhotoImageView.image = Global.yourPhotoImage  
             self.makeRounded(imageView:self.yourPhotoImageView)
 
             self.sonPhotoImageView.image = Global.sonPhotoImage
@@ -1144,6 +1148,7 @@ class ProfileViewController: UIViewController,
 
                 self.sonPhotoImageView.isHidden       = false
                 self.familyPhotoImageView.isHidden    = false
+
                 self.yourPhotoImageView.isHidden    = true
                 self.partnerPhotoImageView.isHidden  = true                   
 
@@ -1469,10 +1474,20 @@ class ProfileViewController: UIViewController,
                                                             
                                                             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
                                                                 
-                                                                self.activityIndicatorView?.stopAnimating()
-                                                                self.navigationController?.popViewController(animated: true)
-                                                                self.accountViewController.hideShowTabBar(status:false)
-                                                                self.accountViewController.setTabbBarIndex(id:0)
+                                                                self.activityIndicatorView?.stopAnimating()                                                                
+                                                                
+                                                                self.accountViewController.hideShowTabBar(status:false)                                                                                                                                
+
+                                                                self.tabBarViewController = TabBarViewController()                         
+                                                                let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+                                                                appDelegate.window?.rootViewController = self.tabBarViewController 
+
+                                                                //-- Reloads
+                                                                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadTabBar), object: self)                
+                                                                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: self)                
+
+                                                                self.dismiss(animated:true)                                                   
+
                                                                 
                                                             }))
                                                             

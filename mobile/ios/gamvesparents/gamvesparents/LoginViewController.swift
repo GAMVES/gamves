@@ -1364,7 +1364,7 @@ ImagesPickerProtocol {
         
         let yourimage = PFFileObject(name: reusername, data: UIImageJPEGRepresentation(self.yourPhotoImage, 1.0)!)
         self.you.setObject(yourimage!, forKey: "picture")
-        
+
         let yourImgName = "\(reusername)_small"              
         
         print("--------------")
@@ -1410,7 +1410,16 @@ ImagesPickerProtocol {
                 completionHandler(false)
             } else
             {
+
+                //HERE SAVE THOSE IMAGES HERE AND LOAD THEM ON POFILE
+                                
+                //- Store Images Local
+                let youImage:UIImage = Global.yourPhotoImage                                           
+                Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore: youImage)
                 
+                let youImageLow = Global.yourPhotoImageSmall
+                Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youImageLow!)
+
                 Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in                                    
                     
                     var youAdmin = [GamvesUser]()

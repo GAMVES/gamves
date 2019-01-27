@@ -81,59 +81,45 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             perform(#selector(showTutorialController), with: nil, afterDelay: 0.01)
         }      
 
-        let eventNavController = UINavigationController(rootViewController: recommendationViewController)
-
-        let homeImage: UIImage = UIImage(named: "home")!.resizedImage(newWidth: 30)
-        
-        eventNavController.tabBarItem.image = homeImage //UIImage(named: "home")
         self.recommendationViewController.tabBarViewController = self
 
         let eventTitle = "Home"
         self.recommendationViewController.title = eventTitle
        
-        let homeNavController = UINavigationController(rootViewController: homeViewController)
-        homeViewController.initilizeObservers()
+        
 
         let activityTitle = "Activity"
         self.homeViewController.title = activityTitle
 
-        let starImage: UIImage = UIImage(named: "star")!.resizedImage(newWidth: 30)
-        homeNavController.tabBarItem.image = starImage
+        
         
         let layout = UICollectionViewFlowLayout()
         self.chatFeedViewController = ChatFeedViewController(collectionViewLayout: layout)
         self.chatFeedViewController.tabBarViewController = self
         self.chatFeedViewController.uploadData()       
         
-        let chatFeedNavController = UINavigationController(rootViewController: chatFeedViewController)
+        
         let groupImage: UIImage = UIImage(named: "group")!.resizedImage(newWidth: 30)
         self.chatFeedViewController.tabBarItem.image = groupImage
         
         let chatsTitle = "Chats"
-        self.chatFeedViewController.title = chatsTitle
+        self.chatFeedViewController.title = chatsTitle        
         
-        let accountNavController = UINavigationController(rootViewController: accountViewController)
         let friendImage: UIImage = UIImage(named: "friend")!.resizedImage(newWidth: 30)
         self.accountViewController.tabBarItem.image = friendImage
         
         let accountTitle = "Account"
         self.accountViewController.title = accountTitle
         
-        self.accountViewController.tabBarViewController = self
-
-        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_family_exist") {
-            
-            viewControllers = [eventNavController, chatFeedNavController, accountNavController]
-            
-        } else {
-
-            viewControllers = [eventNavController, homeNavController, chatFeedNavController, accountNavController]
-        }
+        self.accountViewController.tabBarViewController = self     
 
         let blurEffect = UIBlurEffect(style: .light)
         blurVisualEffectView = UIVisualEffectView(effect: blurEffect)
         blurVisualEffectView?.frame = view.bounds
         self.view.addSubview(blurVisualEffectView!)       
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadTabbar), name: NSNotification.Name(rawValue: Global.notificationKeyReloadTabBar), object: nil)
+        self.reloadTabbar()
        
         NotificationCenter.default.addObserver(self, selector: #selector(self.loggedOut), name: NSNotification.Name(rawValue: Global.notificationKeyLogOut), object: nil)      
      
@@ -151,6 +137,32 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
         print(Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_family_exist"))        
 
     }      
+
+    @objc func reloadTabbar()  {
+
+        let eventNavController = UINavigationController(rootViewController: self.recommendationViewController)
+        
+        let homeImage: UIImage = UIImage(named: "home")!.resizedImage(newWidth: 30)
+        eventNavController.tabBarItem.image = homeImage //UIImage(named: "home")
+        
+        let chatFeedNavController = UINavigationController(rootViewController: self.chatFeedViewController)
+        let accountNavController = UINavigationController(rootViewController: self.accountViewController)
+        
+        let homeNavController = UINavigationController(rootViewController: homeViewController)
+        let starImage: UIImage = UIImage(named: "star")!.resizedImage(newWidth: 30)
+        homeNavController.tabBarItem.image = starImage
+        homeViewController.initilizeObservers()
+
+        if !Global.isKeyPresentInUserDefaults(key: "\(self.puserId)_family_exist") {
+            
+            self.viewControllers = [eventNavController, chatFeedNavController, accountNavController]
+            
+        } else {
+
+            self.viewControllers = [eventNavController, homeNavController, chatFeedNavController, accountNavController]
+        }
+
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         

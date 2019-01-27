@@ -104,6 +104,7 @@ class Global: NSObject
     static var keySonSmall      = String() 
     
     //Notifications
+    static var notificationKeyReloadTabBar              = "com.gamves.gamvesparent.notificationKeyReloadTabBar"
     static var notificationKeyRecommendationLoaded      = "com.gamves.gamvesparent.recommendationLoaded"
     static var notificationKeyFriendApprovalLoaded      = "com.gamves.gamvesparent.friendApprovalLoaded"
     static var notificationKeyFamilyLoaded              = "com.gamves.gamvesparent.familyLoaded"
