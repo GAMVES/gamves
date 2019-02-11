@@ -150,24 +150,8 @@ UICollectionViewDelegateFlowLayout {
 
         var count = 0
         
-        if notificationLoaded {
-            
-            /*var countNewst = Global.notificationsNew.count
-
-            var countNot = Global.notifications.count
-
-            if countNewst > 0 {
-
-                count = count + 1
-            }
-            
-            if countNot > 0 {
-
-                count = count + 1
-            }
-            
-            print(count)*/
-            
+        if notificationLoaded {            
+          
             count = 2
         }
         
@@ -182,20 +166,14 @@ UICollectionViewDelegateFlowLayout {
         
         if indexPath.section == 0 {
             
-            var image  = UIImage(named: "add_notification_white")?.withRenderingMode(.alwaysTemplate)
-            //image = image?.maskWithColor(color: UIColor.white)
-            //image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
-            sectionHeaderView.iconImageView.image = image
-            
+            var image  = UIImage(named: "add_notification_white")?.withRenderingMode(.alwaysTemplate)            
+            sectionHeaderView.iconImageView.image = image            
             sectionHeaderView.nameLabel.text = "New"
             
         } else if indexPath.section == 1 {
             
-            var image  = UIImage(named: "time_earlier_white")?.withRenderingMode(.alwaysTemplate)
-            //image = image?.maskWithColor(color: UIColor.white)
-            //image = Global.resizeImage(image: image!, targetSize: CGSize(width:40, height:40))
-            sectionHeaderView.iconImageView.image = image
-            
+            var image  = UIImage(named: "time_earlier_white")?.withRenderingMode(.alwaysTemplate)            
+            sectionHeaderView.iconImageView.image = image            
             sectionHeaderView.nameLabel.text = "Earlier"
         }
         

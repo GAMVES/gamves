@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (4.8.0)
+  - Alamofire (4.8.1)
   - Atributika (4.6.8)
   - AWSCore (2.6.35)
   - AWSS3 (2.6.35):
@@ -109,7 +109,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/BoltsFramework/Bolts-Swift
 
 SPEC CHECKSUMS:
-  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
+  Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
   Atributika: 7510276c8c58194244f1b111f1c9b90350bc37a9
   AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
   AWSS3: 282a590bb47e9cd88de24979fb28954399c41c52
