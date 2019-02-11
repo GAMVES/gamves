@@ -46,6 +46,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
         
         self.collectionView?.backgroundColor = UIColor.gamvesBackgoundColor
         
@@ -130,10 +132,9 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         queryChatFeed = PFQuery(className: "ChatFeed")
         
-        if let userId = PFUser.current()?.objectId
-        {
-            queryChatFeed.whereKey("members", contains: userId)
-        }
+        //if let userId = PFUser.current()?.objectId {
+        //    queryChatFeed.whereKey("members", contains: userId)
+        //}
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.created) { _, chatFeed in
             
@@ -155,7 +156,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
             
         }
         
-        //self.fetchFeed()
+        self.fetchFeed()
         
         self.collectionView?.reloadData()
         
@@ -173,6 +174,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
                 
                 let chatFeddsCount = chatfeeds?.count
                 
+                print(chatFeddsCount)
+                
                 if chatFeddsCount! > 0
                 {
                     let chatfeedsCount =  chatfeeds?.count
@@ -188,6 +191,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
                 {
                     self.activityView.stopAnimating()
                 }
+            } else {
+                print(error)
             }
         })
     }

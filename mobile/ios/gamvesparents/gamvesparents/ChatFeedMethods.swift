@@ -284,52 +284,139 @@ class ChatFeedMethods: NSObject {
     
     static func getParticipants(chatFeedObj : PFObject, chatfeed : ChatFeed, isVideoChat: Bool, chatId : Int, completionHandler : @escaping (_ resutl:ChatFeed) -> ())
     {
+
+        let usersParams = [
+            "pclassName" : "ChatFeed",
+            "objectId" : chatFeedObj.objectId            
+            ] as [String : Any]
         
-        var members = chatFeedObj["members"] as! String
+        PFCloud.callFunction(inBackground: "GetObjectRole", withParameters: usersParams) { (result, error) in
         
-        let participantQuery = PFQuery(className:"_User")
-        participantQuery.whereKey("objectId", containedIn: Global.parseUsersStringToArray(separated: members))
-        participantQuery.findObjectsInBackground(block: { (users, error) in
+            let acl = result as! AnyObject
+
+            let sacl = String(describing: acl)
+
+            let chatOf = "chatOf___"
+
+            let sepArr : [String] = sacl.components(separatedBy: chatOf)
             
-            if error == nil
-            {
-                
-                let countUsers = users?.count
-                var count = 0
-                var usersArray = [GamvesUser]()
-                
-                for user in users!
+            let sep0 = sepArr[1] as String
+
+            //let id = sep0.index(sep0.endIndex, offsetBy: -10) 
+
+            let mySubstring = sep0.prefix(	10) // Hello
+            
+            let role = chatOf + mySubstring
+
+            print(role)    
+
+            let roleQuery = PFRole.query()
+            roleQuery!.whereKey("name", equalTo: role)
+            roleQuery!.findObjectsInBackground { (rolesPF, error) in
+            
+                if error != nil
                 {
-                    //Add single chat flag, avoided query users alone participant
+                    print("error")
                     
-                    if users?.count == 2 && user.objectId != PFUser.current()?.objectId && !isVideoChat
+                } else {
+                    
+                    if let rolesPF = rolesPF
                     {
-                        user.add(chatId, forKey: "chatId")
                         
-                        if Global.userDictionary[user.objectId!] != nil
-                        {
-                            Global.userDictionary[user.objectId!]?.chatId = chatId
+                        let rolesAmount = rolesPF.count
+                        
+                        if rolesAmount > 0 {
+                            
+                            var count = Int()
+                            
+                            for rolePF in rolesPF {                                            
+
+                                let rolesRelation = rolePF.relation(forKey: "users") as PFRelation
+                                
+                                let queryRoles = rolesRelation.query()
+                                
+                                queryRoles.findObjectsInBackground(block: { (usersPF, error) in
+                                    
+                                    if error != nil
+                                    {
+                                        print("error")
+                                        
+                                    } else {
+                                        
+                                        if let userPF = usersPF
+                                        {
+                                            
+                                            let usersAmount = usersPF!.count
+                                            
+                                            if usersAmount > 0 {
+
+                                                //var members = chatFeedObj["members"] as! String
+
+                                                var members = [String]()
+
+                                                for userPF in usersPF! {
+
+                                                    members.append(userPF.objectId!)
+                                                }
+                                                
+                                                print(members)
+
+                                                if members.count > 0 {
+        
+                                                    let participantQuery = PFQuery(className:"_User")
+                                                    participantQuery.whereKey("objectId", containedIn: Global.parseUsersStringToArray(separated: members.description))
+                                                    participantQuery.findObjectsInBackground(block: { (users, error) in
+                                                        
+                                                        if error == nil
+                                                        {
+                                                            
+                                                            let countUsers = users?.count
+                                                            var count = 0
+                                                            var usersArray = [GamvesUser]()
+                                                            
+                                                            for user in users!
+                                                            {
+                                                                //Add single chat flag, avoided query users alone participant
+                                                                
+                                                                if users?.count == 2 && user.objectId != PFUser.current()?.objectId && !isVideoChat
+                                                                {
+                                                                    user.add(chatId, forKey: "chatId")
+                                                                    
+                                                                    if Global.userDictionary[user.objectId!] != nil
+                                                                    {
+                                                                        Global.userDictionary[user.objectId!]?.chatId = chatId
+                                                                    }
+                                                                }
+                                                                
+                                                                Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
+                                                                    
+                                                                    if user.objectId != PFUser.current()?.objectId
+                                                                    {
+                                                                        usersArray.append(gamvesUser)
+                                                                    }
+                                                                    
+                                                                    if (countUsers!-1) == count
+                                                                    {
+                                                                        chatfeed.users = usersArray
+                                                                        completionHandler(chatfeed)
+                                                                    }
+                                                                    
+                                                                    count = count + 1
+                                                                })
+                                                            }
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+                            }
                         }
                     }
-                    
-                    Global.addUserToDictionary(user: user as! PFUser, isFamily: false, completionHandler: { ( gamvesUser ) -> () in
-                        
-                        if user.objectId != PFUser.current()?.objectId
-                        {
-                            usersArray.append(gamvesUser)
-                        }
-                        
-                        if (countUsers!-1) == count
-                        {
-                            chatfeed.users = usersArray
-                            completionHandler(chatfeed)
-                        }
-                        
-                        count = count + 1
-                    })
                 }
             }
-        })
+        }         
     }
     
    
