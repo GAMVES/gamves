@@ -154,6 +154,8 @@ class ChatFeedMethods: NSObject {
             
             var room = chatFeedObj["room"] as? String
             
+            chatfeed.objectPF = chatFeedObj
+
             chatfeed.room = room
             
             chatfeed.date = chatFeedObj.updatedAt
@@ -348,23 +350,25 @@ class ChatFeedMethods: NSObject {
                                             
                                             let usersAmount = usersPF!.count
                                             
-                                            if usersAmount > 0 {
+                                            if usersAmount > 0 {                                                
 
-                                                //var members = chatFeedObj["members"] as! String
-
-                                                var members = [String]()
+                                                var membersArray = [String]()
 
                                                 for userPF in usersPF! {
 
-                                                    members.append(userPF.objectId!)
+                                                    membersArray.append(userPF.objectId!)
                                                 }
                                                 
-                                                print(members)
+                                                print(membersArray)
 
-                                                if members.count > 0 {
+                                                //var members = Global.parseUsersArrayToString(members: membersArray)
+
+                                                chatfeed.members = membersArray
+
+                                                if membersArray.count > 0 {
         
                                                     let participantQuery = PFQuery(className:"_User")
-                                                    participantQuery.whereKey("objectId", containedIn: Global.parseUsersStringToArray(separated: members.description))
+                                                    participantQuery.whereKey("objectId", containedIn: membersArray)
                                                     participantQuery.findObjectsInBackground(block: { (users, error) in
                                                         
                                                         if error == nil

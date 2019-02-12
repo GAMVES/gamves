@@ -130,6 +130,7 @@
         var usersColors = Dictionary<String, UIColor>()
         
         var chatFeed:PFObject!
+        var chatFeedObj = ChatFeed()
         var keyboardDelegate:KeyboardDelegate!
         var delegateNavBar:NavBarDelegate!
         var isVideo = Bool()
@@ -506,165 +507,57 @@
                     
                 self.activityView.startAnimating()     
             }
-            
-            print(self.chatId)
-            let queryChatFeed = PFQuery(className:"ChatFeed")
-            
-            print(self.chatId)
-            
-            queryChatFeed.whereKey("chatId", equalTo: self.chatId)
-            
-            queryChatFeed.findObjectsInBackground { (chatFeeds, error) in
-                
-                if error != nil {
-                    
-                    print("error")
 
-                } else {
-                    
-                    if let chatFeeds = chatFeeds
-                    {
-                        
-                        let chatsAmount = chatFeeds.count
-                        
-                        print(chatsAmount)
-                        
-                        if chatsAmount > 0
-                        {
-                            var total = Int()
-                            total = chatsAmount - 1
-                            var i = 0
-                            
-                            for chatFeed in chatFeeds {
-                                
-                                self.chatFeed = chatFeed
-                                
-                                var members = chatFeed["members"] as! String
-                                
-                                let participantQuery = PFQuery(className:"_User")
+            if ChatFeedMethods.chatFeeds[self.chatId] != nil {
 
-                                var senderColor = chatFeed["senderColor"] as! String
+                self.chatFeedObj = ChatFeedMethods.chatFeeds[self.chatId] as! ChatFeed
+                self.chatFeed = self.chatFeedObj.objectPF
 
-                                print(senderColor)
-                                
-                                self.senderColor = UIColor.init(hex: "0x\(senderColor)")
-                                
-                                self.gamvesUsersArray = Global.parseUsersStringToArray(separated: members)
-                                
-                                participantQuery.whereKey("objectId", containedIn: self.gamvesUsersArray)
-                                
-                                participantQuery.findObjectsInBackground(block: { (users, error) in
-                                    
-                                    if error != nil
-                                    {
-                                        print("error")
+            }
+
+            let count = self.chatFeedObj.users!.count
+
+            if count > 0 {
+
+                self.loadChatsVideos(chatFeed: self.chatFeed, userCount: count, completionHandler: { ( messagesHandeled ) -> () in
                                         
-                                    } else {
-                                        
-                                        if let users = users
-                                        {
-                                            
-                                            var usersAmount = users.count
-                                            
-                                            print(chatsAmount)
-                                            
-                                            var total = Int()
-                                            total = chatsAmount - 1
-                                            var i = 0
-                                            
-                                            for user in users
-                                            {
-                                                self.gamvesUsersPFuser.append(user as! PFUser)
-                                                
-                                                let userId = user.objectId as! String
-                                                
-                                                if Global.userDictionary[userId] == nil
-                                                {
-                                                    
-                                                    let gamvesUser = GamvesUser()
-                                                    let isQuened = gamvesUser.isAvatarQuened
-                                                    gamvesUser.userName = user["name"] as! String
-                                                    
-                                                    if !isQuened
-                                                    {
-                                                        
-                                                        let picture = user["pictureSmall"] as! PFFileObject
-                                                        
-                                                        picture.getDataInBackground(block: { (data, error) in
-                                                            
-                                                            let image = UIImage(data: data!)
-                                                            gamvesUser.avatar = image!
-                                                            gamvesUser.isAvatarDownloaded = true
-                                                            gamvesUser.isAvatarQuened = false
-                                                            
-                                                            if PFUser.current()?.objectId == userId
-                                                            {
-                                                                gamvesUser.isSender = true
-                                                            }
-                                                            
-                                                            Global.userDictionary[userId] = gamvesUser as GamvesUser
-                                                            
-                                                        })
-                                                    }
-                                                }
-                                                
-                                                if i == (usersAmount-1)
-                                                {
-                                                    self.loadChatsVideos(chatFeed: chatFeed, userCount: usersAmount, completionHandler: { ( messagesHandeled ) -> () in
-                                                        
-                                                        var sortedMessages = messagesHandeled.sorted(by: {
-                                                            $0.date.compare($1.date) == .orderedAscending
-                                                        })
-                                                        
-                                                        self.messages = sortedMessages                                                        
+                    var sortedMessages = messagesHandeled.sorted(by: {
+                        $0.date.compare($1.date) == .orderedAscending
+                    })
+                    
+                    self.messages = sortedMessages                                                        
 
-                                                        DispatchQueue.global(qos: .background).async {                           
+                    DispatchQueue.global(qos: .background).async {                           
 
-                                                            self.loadUserColors()                                                            
+                        self.loadUserColors()                                                            
 
-                                                            DispatchQueue.main.async {                                                                
+                        DispatchQueue.main.async {                                                                
 
-                                                                self.activityView.stopAnimating()
-                                                         
-                                                                self.collectionView.reloadData()
-                                                            
-                                                                self.scrollToLast()      
-
-                                                            }
-                                                        }            
-                                                        
-                                                    })
-                                                    
-                                                    if self.isSingleUser() && !self.isVideo
-                                                    {
-                                                        self.initializeOnlineSubcritpion()
-                                                    }
-                                                }
-                                                
-                                                i = i + 1
-                                                
-                                            }
-                                        }
-                                    }
-                                })
-                            }
-
-                        } else {
-                            
                             self.activityView.stopAnimating()
-                            
-                            if !self.isVideo {
-                                
-                                self.isNewChat = true                                
-                            }
+                     
+                            self.collectionView.reloadData()
+                        
+                            self.scrollToLast()      
+
                         }
-                    }
+                    }            
+                    
+                })
+
+             } else {
+                            
+                self.activityView.stopAnimating()
+                
+                if !self.isVideo {
+                    
+                    self.isNewChat = true                                
                 }
             }
-            
+
             self.initializeChatSubscription()
-            
-        }
+
+        }                   
+      
 
         func loadUserColors() {
 

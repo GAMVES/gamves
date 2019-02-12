@@ -497,6 +497,32 @@ class Global: NSObject
         
         return feed.components(separatedBy:",")
     }
+
+    static func parseUsersArrayToString(members: [String]) -> String
+    {
+        
+        var result = String()
+
+        var count = 0
+        var countMembers = members.count
+
+        if countMembers > 0 {
+            result = "["
+        }
+
+        for member in members {
+
+            result = result + "\"\(member)\"" 
+
+            if count != (countMembers-1) {
+                result = result + "," 
+            } 
+
+            count = count + 1
+        }
+
+        return result
+    }
     
     /*static func addChannels(userIds:[String], channel:String, chatObjectId:String, completionHandlerChannel : @escaping (_ resutl:Bool) -> ())
     {

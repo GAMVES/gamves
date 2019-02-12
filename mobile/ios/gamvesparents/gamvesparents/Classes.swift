@@ -131,6 +131,8 @@ class HistoryGamves
 class ChatFeed
 {
     // Insert code here to add functionality to your managed object subclass
+    var objectId:String?
+    var objectPF:PFObject?
     var date: Date?
     var room: String?
     var text: String?
@@ -146,6 +148,7 @@ class ChatFeed
     var badgeNumber:Int?
     var key:Int?
     var type:Int?
+    var members:[String]?
 }
 
 class Approvals
