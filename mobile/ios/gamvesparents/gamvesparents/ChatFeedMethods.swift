@@ -37,8 +37,25 @@ class ChatFeedMethods: NSObject {
                     self.chatFeedFamily[chatId!] = chatFeed
                     break
 
-                case 2:
-                    self.chatFeedAdmin[chatId!] = chatFeed
+                case 2:            
+                    if let userId = PFUser.current()?.objectId
+                    {
+                        print(userId)
+                        
+                        //print(chatFeed.users![0].userId)
+                        print(chatFeed.users!.count)
+
+                        var roomRaw = chatFeed.roomRaw
+                        
+                        print(roomRaw)
+
+                        if roomRaw!.contains(userId) && roomRaw!.contains(Global.adminUser.userId)  {                                                          
+                            
+                            print("userId \(userId)")
+
+                            self.chatFeedAdmin[chatId!] = chatFeed                                
+                        }
+                    }                    
                     break
 
                 case 3:
@@ -154,9 +171,12 @@ class ChatFeedMethods: NSObject {
             
             var room = chatFeedObj["room"] as? String
             
+            print(room)
+            
             chatfeed.objectPF = chatFeedObj
 
             chatfeed.room = room
+            chatfeed.roomRaw = room
             
             chatfeed.date = chatFeedObj.updatedAt
             chatfeed.lasPoster = chatFeedObj["lastPoster"] as? String

@@ -33,7 +33,6 @@ PODS:
     - GoogleUtilities/Environment (~> 5.3)
     - GoogleUtilities/UserDefaults (~> 5.3)
   - Floaty (4.0.1)
-  - FXBlurView (1.6.4)
   - GoogleAppMeasurement (5.4.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
     - GoogleUtilities/MethodSwizzler (~> 5.2)
@@ -62,103 +61,6 @@ PODS:
     - ImageSlideshow/Core (= 1.7.0)
   - ImageSlideshow/Core (1.7.0)
   - ISEmojiView (0.1.2)
-  - JRSwizzle (1.0)
-  - MercadoPagoSDK (4.0.12):
-    - MercadoPagoSDK/Default (= 4.0.12)
-  - MercadoPagoSDK/Default (4.0.12):
-    - MLUI (~> 5.0)
-  - MLUI (5.2.0):
-    - MLUI/ActionButton (= 5.2.0)
-    - MLUI/Core (= 5.2.0)
-    - MLUI/Helpers (= 5.2.0)
-    - MLUI/MLButton (= 5.2.0)
-    - MLUI/MLCheckBox (= 5.2.0)
-    - MLUI/MLColorPalette (= 5.2.0)
-    - MLUI/MLContextualMenu (= 5.2.0)
-    - MLUI/MLFonts (= 5.2.0)
-    - MLUI/MLGenericErrorView (= 5.2.0)
-    - MLUI/MLHtml (= 5.2.0)
-    - MLUI/MLModal (= 5.2.0)
-    - MLUI/MLRadioButton (= 5.2.0)
-    - MLUI/MLSnackBar (= 5.2.0)
-    - MLUI/MLSpacing (= 5.2.0)
-    - MLUI/MLSpinner (= 5.2.0)
-    - MLUI/MLSwitch (= 5.2.0)
-    - MLUI/MLTextView (= 5.2.0)
-    - MLUI/MLTitledMultiLineTextField (= 5.2.0)
-    - MLUI/MLTitledSingleLineTextField (= 5.2.0)
-    - MLUI/PriceView (= 5.2.0)
-    - MLUI/SnackBarView (= 5.2.0)
-    - MLUI/StyleSheet (= 5.2.0)
-  - MLUI/ActionButton (5.2.0):
-    - MLUI/Core
-  - MLUI/Core (5.2.0):
-    - MLUI/MLFonts
-  - MLUI/Helpers (5.2.0)
-  - MLUI/MLButton (5.2.0):
-    - MLUI/MLColorPalette
-    - MLUI/MLFonts
-    - MLUI/MLSpinner
-    - MLUI/StyleSheet
-  - MLUI/MLCheckBox (5.2.0):
-    - MLUI/MLColorPalette
-  - MLUI/MLColorPalette (5.2.0)
-  - MLUI/MLContextualMenu (5.2.0):
-    - MLUI/MLColorPalette
-    - MLUI/MLFonts
-  - MLUI/MLFonts (5.2.0):
-    - JRSwizzle (= 1.0)
-    - MLUI/Helpers
-    - MLUI/StyleSheet
-  - MLUI/MLGenericErrorView (5.2.0):
-    - MLUI/MLButton
-    - MLUI/MLColorPalette
-    - MLUI/MLSpacing
-  - MLUI/MLHtml (5.2.0):
-    - MLUI/MLFonts
-  - MLUI/MLModal (5.2.0):
-    - FXBlurView (~> 1.6)
-    - MLUI/Core
-    - MLUI/MLButton
-    - MLUI/MLColorPalette
-    - MLUI/MLFonts
-    - MLUI/StyleSheet
-  - MLUI/MLRadioButton (5.2.0):
-    - MLUI/MLColorPalette
-  - MLUI/MLSnackBar (5.2.0):
-    - MLUI/Helpers
-    - MLUI/MLButton
-    - MLUI/MLColorPalette
-    - MLUI/MLFonts
-  - MLUI/MLSpacing (5.2.0):
-    - JRSwizzle (= 1.0)
-    - MLUI/MLFonts
-  - MLUI/MLSpinner (5.2.0):
-    - MLUI/MLColorPalette
-    - MLUI/MLFonts
-    - MLUI/StyleSheet
-  - MLUI/MLSwitch (5.2.0):
-    - MLUI/Helpers
-    - MLUI/MLColorPalette
-  - MLUI/MLTextView (5.2.0):
-    - MLUI/MLColorPalette
-    - MLUI/MLFonts
-  - MLUI/MLTitledMultiLineTextField (5.2.0):
-    - MLUI/MLColorPalette
-    - MLUI/MLFonts
-    - MLUI/MLTitledSingleLineTextField
-    - MLUI/StyleSheet
-  - MLUI/MLTitledSingleLineTextField (5.2.0):
-    - MLUI/MLColorPalette
-    - MLUI/MLFonts
-    - MLUI/StyleSheet
-  - MLUI/PriceView (5.2.0):
-    - MLUI/Core
-    - MLUI/MLFonts
-  - MLUI/SnackBarView (5.2.0):
-    - MLUI/Helpers
-    - MLUI/MLFonts
-  - MLUI/StyleSheet (5.2.0)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -201,7 +103,6 @@ DEPENDENCIES:
   - Floaty (~> 4.0.1)
   - ImageSlideshow
   - ISEmojiView
-  - MercadoPagoSDK
   - NVActivityIndicatorView (~> 4.0.1)
   - Parse
   - ParseLiveQuery
@@ -233,14 +134,10 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseInstanceID
     - Floaty
-    - FXBlurView
     - GoogleAppMeasurement
     - GoogleUtilities
     - ImageSlideshow
     - ISEmojiView
-    - JRSwizzle
-    - MercadoPagoSDK
-    - MLUI
     - nanopb
     - NVActivityIndicatorView
     - Parse
@@ -289,14 +186,10 @@ SPEC CHECKSUMS:
   FirebaseCore: 35747502d9e8c6ee217385ad04446c7c2aaf9c5c
   FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
   Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
-  FXBlurView: db786c2561cb49a09ae98407f52460096ab8a44f
   GoogleAppMeasurement: 98b71f5e04142793729a5ef23e5b96651ff4b70f
   GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
   ISEmojiView: 5b53bdf057ddf484b92e70064a1cc46b5fedf7ea
-  JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
-  MercadoPagoSDK: 7341cb870406fa49ea9dd1bfe6c938bb28219fb3
-  MLUI: f2de892289a9914a21d64fc95bbb1296afe6cf89
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   NVActivityIndicatorView: 77ed6d7b571643e24899e7858bf9ae2ee4c21f31
   Parse: 3b31a3dd1777b07ee7f0caee32fafbff544483a5
@@ -313,6 +206,6 @@ SPEC CHECKSUMS:
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 4fb5fe2af126ae9dab39af2d3f91cebe10b3b6db
+PODFILE CHECKSUM: acda42ffa416f26eefba24e82556cf616d212771
 
 COCOAPODS: 1.5.3

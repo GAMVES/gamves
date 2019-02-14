@@ -135,6 +135,7 @@ class ChatFeed
     var objectPF:PFObject?
     var date: Date?
     var room: String?
+    var roomRaw: String?
     var text: String?
     var isVideoChat: Bool?
     var chatThumbnail:UIImage?
