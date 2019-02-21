@@ -102,7 +102,7 @@
 
 				userRole = userRolePF;
 
-			    var roleParentName = "parents";
+			    /*var roleParentName = "parents";
 				var pRole = new Parse.Role(roleParentName, new Parse.ACL());			
 
 				var pacl = new Parse.ACL();
@@ -119,9 +119,9 @@
 				parentRoleRelation.add(adminLogged);
 				return parentRolePF.save(null, {useMasterKey: true});	
 
-			}).then(function(parentRolePF) {	
+			}).then(function(parentRolePF) {*/	
 
-				parentRole = parentRolePF;
+				//parentRole = parentRolePF;
 
 				var UserTypes = Parse.Object.extend("UserType");					
 
