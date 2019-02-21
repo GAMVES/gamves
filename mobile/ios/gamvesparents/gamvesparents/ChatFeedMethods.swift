@@ -33,7 +33,10 @@ class ChatFeedMethods: NSObject {
             let type = chatFeed.type as! Int
             
             switch type {
-                case 1:
+                
+                case 1:                                    
+                    var roomRaw = chatFeed.roomRaw                        
+                    print(roomRaw)
                     self.chatFeedFamily[chatId!] = chatFeed
                     break
 

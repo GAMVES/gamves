@@ -53,7 +53,7 @@ class Global: NSObject
 
     static var serverUrl = "https://parseapi.back4app.com/"
     
-    static var localWs = "wss://gamvesbackend.back4app.io"
+    static var localWs = "wss://admingamves.back4app.io"
 
     static var locationPF = PFGeoPoint()       
    
@@ -145,6 +145,7 @@ class Global: NSObject
     static var partnerPhotoImageSmall:UIImage!
     static var familyPhotoImageSmall:UIImage!
     static var schoolShort = String()
+    static var schoolId = String()    
     
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {

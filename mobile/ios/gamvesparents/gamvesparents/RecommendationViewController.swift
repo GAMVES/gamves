@@ -79,6 +79,12 @@ UICollectionViewDelegateFlowLayout {
         self.loadRecommendations(completionRecommHandler: { ( resutlRecomm ) -> () in
 
             if resutlRecomm {
+                
+                self.activityView.stopAnimating()
+                
+                self.recommendationLoaded = true
+                
+                self.collectionView.reloadData()          
 
             }
         })        
@@ -107,8 +113,7 @@ UICollectionViewDelegateFlowLayout {
                     completionRecommHandler(true)
                 }
             })
-        }        
-
+        }
     }
 
 

@@ -100,6 +100,24 @@ UITextFieldDelegate  {
         return label
     }()
 
+    let schoolLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false        
+        label.textColor = .white
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.textAlignment = .center
+        label.numberOfLines = 3        
+        return label
+    }()
+
+    var sonSchoolDownPicker: DownPicker!
+    let sonSchoolTextField: UITextField = {
+        let tf = UITextField()        
+        tf.backgroundColor = UIColor.white
+        tf.translatesAutoresizingMaskIntoConstraints = false        
+        return tf
+    }()
+
     let phoneTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "    Cellphone number"
@@ -160,6 +178,12 @@ UITextFieldDelegate  {
         self.scrollView.addSubview(self.messageLabel)
         self.scrollView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.messageLabel)
         
+        self.scrollView.addSubview(self.schoolLabel)
+        self.scrollView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.schoolLabel)
+
+        self.scrollView.addSubview(self.sonSchoolTextField)
+        self.scrollView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.sonSchoolTextField)  
+
         self.scrollView.addSubview(self.phoneLabel)
         self.scrollView.addConstraintsWithFormat("H:|-50-[v0]-50-|", views: self.phoneLabel)
 
@@ -189,10 +213,12 @@ UITextFieldDelegate  {
         }           
 
         self.scrollView.addConstraintsWithFormat(
-            "V:|-20-[v0(100)]-20-[v1(photoSize)][v2(40)][v3(phoneHeight)][v4(phoneHeight)]-phoneGap-[v5(60)][v6]|", views: 
+            "V:|-10-[v0(100)]-10-[v1(photoSize)][v2(40)][v3(phoneHeight)]-5-[v4(phoneHeight)]-5-[v5(phoneHeight)]-5-[v6(phoneHeight)]-phoneGap-[v7(60)][v8]|", views: 
             self.topView,
             self.photoContainerView,
             self.messageLabel,
+            self.schoolLabel,            
+            self.sonSchoolTextField,
             self.phoneLabel,
             self.phoneTextField,
             self.finishButton,
@@ -224,6 +250,34 @@ UITextFieldDelegate  {
         }
 
         self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
+
+        Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in           
+
+            self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:schoolsArray as! [Any])
+            self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")                        
+            self.sonSchoolDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
+
+        })
+
+    }
+
+    @objc func handleSchoolPickerChange() {
+
+        let sKeys = Array(Global.schools.keys)
+        
+        for s in sKeys {
+
+            let schoolId = Global.schools[s]!.objectId
+
+            if self.sonSchoolTextField.text! == Global.schools[schoolId]?.schoolName {
+
+                Global.schoolShort = Global.schools[schoolId]!.short
+
+                Global.schoolId = schoolId
+
+                print(Global.schoolShort)
+            }            
+        }                       
     }
     
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
@@ -241,15 +295,39 @@ UITextFieldDelegate  {
         return true
     }
 
-    @objc func keyboardWillShow(notification:NSNotification){
+
+
+    @objc func keyboardWillShow(notification:NSNotification) {
 
         var userInfo = notification.userInfo!
         var keyboardFrame:CGRect = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
         keyboardFrame = self.view.convert(keyboardFrame, from: nil)
 
         var contentInset:UIEdgeInsets = self.scrollView.contentInset
-        contentInset.bottom = keyboardFrame.size.height
+        contentInset.bottom = keyboardFrame.size.height + 100
         self.scrollView.contentInset = contentInset
+
+        
+        let toolbarDone = UIToolbar.init()
+        toolbarDone.sizeToFit()
+        let barBtnDone = UIBarButtonItem.init(barButtonSystemItem: UIBarButtonSystemItem.done,
+                 target: self, action: #selector(doneButton_Clicked))
+
+         toolbarDone.items = [barBtnDone] 
+
+         toolbarDone.sizeToFit()
+
+        DispatchQueue.main.async
+        {
+            self.phoneTextField.inputAccessoryView = toolbarDone
+        }
+    }
+
+    @objc func doneButton_Clicked() {
+
+        print("clicked")        
+
+        self.view.endEditing(true)
     }
 
     @objc func keyboardWillHide(notification:NSNotification) {
@@ -266,16 +344,20 @@ UITextFieldDelegate  {
         var imageName = String()
 
         switch self.type {
-            
+             
             case .You?:
 
                     title = "Your Image"
                     message = "Choose your image"
                     buttonTitle = "  Select Your Image"
                     buttonTitle = "  Save image phone"
-                    imageName = "your_photo"    
+                    imageName = "your_photo" 
+
                     let phoneTitle = "  Your phone number"    
                     self.phoneLabel.text = phoneTitle            
+
+                    let schoolTitle = "  Choose your school"    
+                    self.schoolLabel.text = schoolTitle            
 
                     break
 
@@ -323,7 +405,11 @@ UITextFieldDelegate  {
         super.didReceiveMemoryWarning()        
     }
 
-    @objc func handleFinish() {
+    @objc func handleFinish(sender: UIButton) {
+
+        self.activityIndicatorView?.startAnimating()
+
+        sender.isUserInteractionEnabled = false
         
         print(self.type)
         print(self.croppedImage)

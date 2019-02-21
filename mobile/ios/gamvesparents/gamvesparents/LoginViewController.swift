@@ -384,8 +384,8 @@ ImagesPickerProtocol {
             self.schoolsArray = schoolsArray
             
             self.sonSchoolDownPicker = DownPicker(textField: self.sonSchoolTextField, withData:self.schoolsArray as! [Any])
-            self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")
-            self.sonSchoolDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange(sender:)), for: .valueChanged)
+            self.sonSchoolDownPicker.setPlaceholder("Tap to choose school...")                        
+            self.sonSchoolDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
 
         })      
 
@@ -396,7 +396,9 @@ ImagesPickerProtocol {
     //--
     // Change picker when school is selected
 
-    @objc func handleSchoolPickerChange(sender: AnyObject) {
+    //@objc func handleSchoolPickerChange(sender: AnyObject) {
+
+    @objc func handleSchoolPickerChange() {
 
         let sKeys = Array(Global.schools.keys)
         
@@ -407,6 +409,8 @@ ImagesPickerProtocol {
             if self.sonSchoolTextField.text! == Global.schools[schoolId]?.schoolName {
 
                 Global.schoolShort = Global.schools[schoolId]!.short
+
+                Global.schoolId = schoolId
 
                 print(Global.schoolShort)
             }            
@@ -1289,13 +1293,11 @@ ImagesPickerProtocol {
                         self.tabBarViewController?.selectedIndex = 0
                         appDelegate.window?.rootViewController = self.tabBarViewController                     
 
-                        self.hideShowTabBar(status:true)    
-
-                        //self.tabBarViewController!.recommendationViewController.loadRecommendations(completionRecommHandler: { ( resutlRecomm ) -> () in })                    
-
-                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: self)
+                        self.hideShowTabBar(status:true)                         
                         
                     }))
+
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: self)
                     
                     self.navigationPickerController.present(alert, animated: true) 
                 }
@@ -1401,6 +1403,12 @@ ImagesPickerProtocol {
         let levelRel:PFRelation = self.you.relation(forKey: "level")  
 
         self.you["phone"]  = self.phoneNumber
+        
+        print(Global.schoolShort)
+ 
+        self.you["schoolShort"]  = Global.schoolShort  
+
+        self.you["schoolId"]  = Global.schoolId        
         
         self.you.saveInBackground(block: { (resutl, error) in
             
