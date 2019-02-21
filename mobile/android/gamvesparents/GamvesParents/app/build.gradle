@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         applicationId "gamves.com.gamvesparents"
         minSdkVersion 15
@@ -55,6 +55,7 @@ dependencies {
     compile 'info.hoang8f:android-segmented:1.0.6'
 
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+
 
     //compile 'com.framgia.library.calendardayview:library:1.0.4'
 

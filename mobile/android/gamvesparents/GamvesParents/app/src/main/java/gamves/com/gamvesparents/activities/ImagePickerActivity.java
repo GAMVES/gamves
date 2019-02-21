@@ -17,6 +17,7 @@ import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -26,13 +27,15 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import gamves.com.gamvesparents.R;
+//import gamves.com.gamvesparents.R;
 
 /**
  * Created by jose on 21/01/2019.
  */
 
 public class ImagePickerActivity extends Activity {
+
+    //https://androidwave.com/capture-image-from-camera-gallery/
 
     private Button button;
     private CircleImageView profileImageView;
@@ -49,14 +52,22 @@ public class ImagePickerActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_picker);
+
+        //setContentView(R.layout.activity_image_picker);
 
         this.activity = this;
 
-        button = findViewById(R.id.button);
-        profileImageView = findViewById(R.id.profile);
+        //button = findViewById(R.id.button);
+        //profileImageView = findViewById(R.id.profile);
 
-        profileImageView.setOnClickListener(new View.OnClickListener() {
+        //@BindView(R.id.title) TextView title;
+
+
+
+        //openCameraIntent();
+
+
+        /*profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -75,12 +86,12 @@ public class ImagePickerActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openCameraIntent();
+                //openCameraIntent();
             }
-        });
+        });*/
     }
 
-    private void openCameraIntent() {
+    /*private void openCameraIntent() {
 
         Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (pictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -136,7 +147,7 @@ public class ImagePickerActivity extends Activity {
         imageFilePath = image.getAbsolutePath();
 
         return image;
-    }
+    }*/
 
 
 }
