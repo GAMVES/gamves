@@ -551,6 +551,7 @@
 		var userId = request.object.id;
 		var iDUserType = request.object.get("user_type"); // request.params.user_type;
 		var username = request.object.get("username");
+		var schoolShort = request.object.get("schoolShort");
 
 		console.log("username : " + username + " _admuser: " + _admuser ); 	
 
@@ -577,31 +578,44 @@
 
 						setUserVerified(userId, false);					
 
-				    } else { 										
+				    } else {
 
-				    	var verifiedObject = results[0]; 					
+				    	console.log("schoolShort : " + schoolShort ); 	
 
-						verifiedObject.set("emailVerified", emailVerified);		
+				    	if (schoolShort == undefined) { 	
 
-						verifiedObject.save(null, { useMasterKey: true } );
+				    		console.log( "schoolShort undefined" ); 				
 
-						//Add roles 
+					    	var verifiedObject = results[0]; 					
 
-						var friendOfRole = "friendOf___" + userId;
+							verifiedObject.set("emailVerified", emailVerified);		
 
-						Parse.Cloud.run("AddRoleByName", { "name": friendOfRole}).then(function(familyRolePF) {	
+							verifiedObject.save(null, { useMasterKey: true } );
 
-							Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": friendOfRole});							
+							//Add roles 														
 
-							Parse.Cloud.run("AddUserToRole", { "userId": userId, "role" : "schools" });	
+							var friendOfRole = "friendOf___" + userId;
 
-							if (iDUserType!=2 || iDUserType!=3) { // only parents add this permission			
+							console.log("friendOf___ : " + friendOfRole ); 	
 
-								Parse.Cloud.run("AddUserToRole", { "userId": userId, "role" : "parent_user" });							
-							}
+							Parse.Cloud.run("AddRoleByName", { "name": friendOfRole}).then(function(familyRolePF) {	
 
-						});						
+								Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": friendOfRole});									
+
+								Parse.Cloud.run("AddUserToRole", { "userId": userId, "role" : "schools" });	
+
+								if (iDUserType!=2 || iDUserType!=3) { // only parents add this permission			
+
+									Parse.Cloud.run("AddUserToRole", { "userId": userId, "role" : "parent_user" });							
+								}
+
+							});						
 						
+						} else {
+							
+							Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": schoolShort});							
+
+						}	
 					} 
 
 					response.success(true);  
@@ -1411,7 +1425,7 @@
 				notificationFriendRequest.set("description", descNotification);	
 				notificationFriendRequest.set("posterName", posterName);
 
-				notificationFriendRequest.add("target", friendId);	
+				//notificationFriendRequest.add("target", friendId);	
 				notificationFriendRequest.set("date", request.object.get("createdAt"));								
 
 				//notificationFriendRequest.set("cover", coverPoster);
@@ -1541,12 +1555,12 @@
 
 			    	let notiPoster = restulNotificationsPF[0];
 
-			    	notiPoster.add("target", posterId);				
+			    	//notiPoster.add("target", posterId);				
 					notiPoster.set("date", request.object.get("createdAt"));					
 
 					let notiFriend = restulNotificationsPF[1];
 
-					notiFriend.add("target", friendId);	
+					//notiFriend.add("target", friendId);	
 					notiFriend.set("date", request.object.get("createdAt"));				
 
 					return Parse.Object.saveAll([notiPoster, notiFriend]);
@@ -1572,13 +1586,18 @@
 
 							for (let i=0; i<coun+tPFPF; i++) {							
 
-								let fanpagePPF = posterFanpagesPF[i];					
+								let fanpagePPF = posterFanpagesPF[i];		
+
+
+								//--
+								//-- HERE TO BE FIXED WHEN BECOMING FRIENDS, ASAP			
+								//-- 
 
 								let targetArray = fanpagePPF.get("target");
 
 								let has = false;
 
-								if (!targetArray.includes(friendId)) {
+								/*if (!targetArray.includes(friendId)) {
 
 									fanpagePPF.add("target", friendId);								
 									hast = true;
@@ -1588,7 +1607,7 @@
 
 									fanpagePPF.add("target", posterId);
 									hast = true;							
-								}
+								}*/
 
 								if (has) {
 

@@ -176,7 +176,7 @@
 
 	    	profile.set("userId", resutlUser.id);
 
-	    	Parse.Cloud.run("AddUserToRole", { "userId": resutlUser.id, "role": request.params.short});		
+	    	//Parse.Cloud.run("AddUserToRole", { "userId": resutlUser.id, "role": request.params.short});		
 
 	    	return profile.save(null, {useMasterKey: true});
 		
