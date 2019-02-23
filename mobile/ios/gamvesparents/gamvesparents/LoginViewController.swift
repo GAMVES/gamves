@@ -14,6 +14,7 @@ import ParseLiveQuery
 
 class LoginViewController: UIViewController, 
 ImagesPickerProtocol {
+    
 
     let userClient: Client = ParseLiveQuery.Client(server: Global.localWs) // .lremoteWs)
 
@@ -1320,7 +1321,12 @@ ImagesPickerProtocol {
 
         }
 
-    }   
+    }
+    
+    
+    func closeImagesPicker() {
+        
+    }
     
     func didpickImage(type: ProfileImagesTypes) {
 

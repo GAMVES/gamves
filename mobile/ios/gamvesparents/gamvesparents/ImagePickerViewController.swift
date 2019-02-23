@@ -13,6 +13,7 @@ import NVActivityIndicatorView
 protocol ImagesPickerProtocol {
    func didpickImage(type:ProfileImagesTypes) 
    func saveYouImageAndPhone(phone:String)
+   func closeImagesPicker()
 }
 
 enum ProfileImagesTypes {
@@ -259,6 +260,42 @@ UITextFieldDelegate  {
 
         })
 
+        self.setNavBar()
+    }
+
+    func setNavBar()
+    {            
+
+        var title = String()
+
+        if self.type == .You {
+
+            title = "Personal Information"            
+
+            let buttonIcon = UIImage(named: "arrow_back_white")        
+            let leftBarButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.done, target: self, action: #selector(cancelButton(sender:)))
+            leftBarButton.image = buttonIcon        
+
+            self.navigationItem.leftBarButtonItem = leftBarButton         
+
+        
+        } else {
+
+            title = "Add family"
+
+            let rightBarButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.done, target: self, action: #selector(cancelButton(sender:)))
+        
+            self.navigationItem.rightBarButtonItem = rightBarButton   
+
+        }
+
+        self.navigationItem.title = title   
+       
+    }
+
+    @objc func cancelButton(sender: UIButton) {
+
+        self.imagesPickerProtocol.closeImagesPicker()
     }
 
     @objc func handleSchoolPickerChange() {
@@ -294,7 +331,6 @@ UITextFieldDelegate  {
         textField.resignFirstResponder()
         return true
     }
-
 
 
     @objc func keyboardWillShow(notification:NSNotification) {
@@ -336,7 +372,9 @@ UITextFieldDelegate  {
         self.scrollView.contentInset = contentInset
     }
 
-    func setScreenByType() {
+    func setScreenByType() {        
+
+        self.activityIndicatorView?.stopAnimating()
 
         var title = String()
         var message = String()

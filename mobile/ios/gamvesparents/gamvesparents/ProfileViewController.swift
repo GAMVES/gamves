@@ -20,6 +20,7 @@ class ProfileViewController: UIViewController,
     RSKImageCropViewControllerDelegate,
     ImagesPickerProtocol  
 {
+    
 
     var accountViewController:AccountViewController!
   
@@ -673,6 +674,10 @@ class ProfileViewController: UIViewController,
     @objc func cancelDatePicker(){
    
         self.view.endEditing(true)          
+    }
+    
+    func closeImagesPicker() {
+        
     }
 
     

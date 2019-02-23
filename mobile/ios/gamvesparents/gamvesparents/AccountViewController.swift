@@ -152,13 +152,13 @@ ImagesPickerProtocol {
 
     //--
     // Schools
-    var schoolsArray: NSMutableArray = []
+    /*var schoolsArray: NSMutableArray = []
     var schoolsDownPicker: DownPicker!
     var schoolTextField: UITextField = {
         let tf = UITextField()        
         tf.translatesAutoresizingMaskIntoConstraints = false        
         return tf
-    }()
+    }()*/
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -320,23 +320,23 @@ ImagesPickerProtocol {
             
             var alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
 
-            let margin:CGFloat = 10.0
-            let rect = CGRect(x: margin, y: 150.0, width: 250, height: 60)
-            let customView = UIView(frame: rect)
+            //let margin:CGFloat = 10.0
+            //let rect = CGRect(x: margin, y: 150.0, width: 250, height: 60)
+            //let customView = UIView(frame: rect)
             
-            customView.backgroundColor = UIColor.cyan
+            //customView.backgroundColor = UIColor.cyan
             
-            self.schoolTextField.placeholder = "Select your school"
-            self.schoolTextField.keyboardType = UIKeyboardType.default
+            //self.schoolTextField.placeholder = "Select your school"
+            //self.schoolTextField.keyboardType = UIKeyboardType.default
 
-            self.schoolTextField.frame = rect
+            //self.schoolTextField.frame = rect
 
-            customView.addSubview(self.schoolTextField)
-            alert.view.addSubview(customView)
+            //customView.addSubview(self.schoolTextField)
+            //alert.view.addSubview(customView)
             
-            self.schoolsDownPicker = DownPicker(textField: self.schoolTextField, withData:self.schoolsArray as! [Any])
-            self.schoolsDownPicker.setPlaceholder("Tap to choose school...")
-            self.schoolsDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
+            //self.schoolsDownPicker = DownPicker(textField: self.schoolTextField, withData:self.schoolsArray as! [Any])
+            //self.schoolsDownPicker.setPlaceholder("Tap to choose school...")
+            //self.schoolsDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
             
             alert.addAction(UIAlertAction(title: "ACCEPT FAMILY INTEGRATION", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
 
@@ -412,16 +412,15 @@ ImagesPickerProtocol {
 
         //self.openProfile() ate
 
-        Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
+        //Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in
 
-            self.schoolsArray = schoolsArray           
+            //self.schoolsArray = schoolsArray
             
-        })     
-
+        //})   
 
     }    
 
-    @objc func handleSchoolPickerChange() {
+    /*@objc func handleSchoolPickerChange() {
 
         let grades: NSMutableArray = [] 
         
@@ -435,10 +434,9 @@ ImagesPickerProtocol {
 
                 grades.add(Global.levels[l]?.fullDesc)
             }            
-        }
+        }        
         
-        
-    }
+    }*/
     
 
 
@@ -629,6 +627,17 @@ ImagesPickerProtocol {
             
         }
         
+    }
+    
+    func closeImagesPicker() {
+        
+        let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+        self.tabBarViewController?.selectedIndex = 0
+        appDelegate.window?.rootViewController = self.tabBarViewController
+        
+        self.hideShowTabBar(status:false)
+
+
     }
 
     func didpickImage(type: ProfileImagesTypes) {
