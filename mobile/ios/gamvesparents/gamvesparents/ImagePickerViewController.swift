@@ -447,7 +447,7 @@ UITextFieldDelegate  {
 
         self.activityIndicatorView?.startAnimating()
 
-        sender.isUserInteractionEnabled = false
+        sender.isUserInteractionEnabled = false         
         
         print(self.type)
         print(self.croppedImage)
@@ -456,7 +456,7 @@ UITextFieldDelegate  {
 
         switch self.type {                
 
-            case .You?:               
+            case .You?:                            
 
                 Global.yourPhotoImage                = self.croppedImage
                 Global.yourPhotoImageSmall           = self.smallImage        
@@ -470,7 +470,9 @@ UITextFieldDelegate  {
                
                 break
                 
-            case .Son?:              
+            case .Son?: 
+
+                //sender.isUserInteractionEnabled = true                             
 
                 self.type = ProfileImagesTypes.Family       
 
@@ -481,7 +483,8 @@ UITextFieldDelegate  {
 
                 break
                 
-            case .Family?:
+            case .Family?:                
+                
 
                 self.type = ProfileImagesTypes.Partner                
 
@@ -494,7 +497,7 @@ UITextFieldDelegate  {
                 
                 break       
 
-            case .Partner?:                   
+            case .Partner?:                
                     
                 Global.partnerPhotoImage              = self.croppedImage
                 Global.partnerPhotoImageSmall         = self.smallImage
@@ -587,6 +590,8 @@ UITextFieldDelegate  {
         self.makeRounded(imageView:self.pictureImageView)
 
         self.finishButton.isEnabled = true
+
+        self.finishButton.isUserInteractionEnabled = true  
         
         navigationController?.popViewController(animated: true)
     }
