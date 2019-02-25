@@ -104,6 +104,7 @@ class ActivityViewController: UIViewController, UICollectionViewDataSource, UICo
             if let userId = PFUser.current()?.objectId {
                 
                 let userId = Global.gamvesFamily.sonsUsers[0].userId
+                
                 queryChatFeed.whereKey("members", contains: userId)
                 
                 queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in

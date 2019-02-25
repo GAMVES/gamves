@@ -66,6 +66,7 @@ class ChatMethods: NSObject
                 print(userObjectId)
                 array.append(userObjectId)
             }
+            
             let members = String(describing: array)
             chatFeed["members"] = members
 
@@ -104,32 +105,34 @@ class ChatMethods: NSObject
         
         chatFeed["lastMessage"] = message
 
-
         let randomColorIndex = Int(arc4random_uniform(UInt32(Global.listOfChatColors.count))) 
 
         let colorString = Global.listOfChatColors[randomColorIndex]
 
         chatFeed["senderColor"] = colorString
         
-        chatFeed.saveInBackground(block: { (resutl, error) in
+        chatFeed.saveInBackground(block: { (chatFeedPF, error) in
             
             if error == nil
             {                
                 //CREATE CHANNELS
                 
-                let userId = (PFUser.current()?.objectId)! as String
+                //let userId = (PFUser.current()?.objectId)! as String                
+                //var userIdArray = [String]()
+                //userIdArray.append(userId)                
                 
-                var userIdArray = [String]()
-                userIdArray.append(userId)                
-                
-                for user in gamvesUsers
-                {
-                    userIdArray.append(user.userId)
-                }         
+                //for user in gamvesUsers
+                //{
+                //    userIdArray.append(user.userId)
+                //}         
 
-                var chatIdStr = String(chatId) as String             
+                var chatIdStr = String(chatId) as String
                 
-                self.addChannels(userIds:userIdArray, channel: chatIdStr, chatObjectId: chatFeed.objectId!, completionHandlerChannel: { ( resutl ) -> () in
+                let members = chatFeed["members"] as! String
+                
+                let usersArray = Global.parseUsersStringToArray(separated: members)
+                
+                self.addChannels(userIds:usersArray, channel: chatIdStr, chatObjectId: chatFeed.objectId!, completionHandlerChannel: { ( resutl ) -> () in
                     
                     if resutl {                        
                         

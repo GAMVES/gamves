@@ -654,8 +654,13 @@ ImagesPickerProtocol {
 
         self.hideShowTabBar(status: true)   
 
-        self.profileViewController = ProfileViewController()                  
-        
+        self.profileViewController = ProfileViewController()      
+
+        if let userId = PFUser.current()?.objectId
+        {
+            self.profileViewController.youGamves = Global.userDictionary[userId]!
+        } 
+
         self.profileViewController.accountViewController = self
         self.profileViewController.loadImages()
 

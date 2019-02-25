@@ -452,7 +452,7 @@ UITextFieldDelegate  {
         print(self.type)
         print(self.croppedImage)
         print(self.smallImage)
-        print(self.imagesPickerProtocol)      
+        print(self.imagesPickerProtocol)
 
         switch self.type {                
 

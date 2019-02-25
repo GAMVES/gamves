@@ -1396,9 +1396,11 @@ ImagesPickerProtocol {
                     relation = "mother"
                 }
                 
-                let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
+                //let son_name = Global.defaults.string(forKey: "\(self.puserId)_son_name")
                 
-                profilePF?["bio"] = "\(son_name) \(relation)"
+                //profilePF?["bio"] = "\(son_name) \(relation)"
+
+                profilePF?["bio"] = "Your phrase here"
                 
                 profilePF?.saveEventually()
                 
@@ -1454,7 +1456,6 @@ ImagesPickerProtocol {
 
                                 completionHandler(true)
 
-                                
                             })    
                         }                        
                     })                    

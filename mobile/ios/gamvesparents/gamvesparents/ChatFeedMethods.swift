@@ -34,14 +34,26 @@ class ChatFeedMethods: NSObject {
             
             switch type {
                 
+                //family
                 case 1:                                    
                     var roomRaw = chatFeed.roomRaw                        
                     print(roomRaw)
-                    self.chatFeedFamily[chatId!] = chatFeed
+
+                    //if userAndAdminContanedInRoom(feed: chatFeed, type: type) {
+
+                        self.chatFeedFamily[chatId!] = chatFeed
+                    //}
                     break
 
-                case 2:            
-                    if let userId = PFUser.current()?.objectId
+                //admin
+                case 2:     
+ 
+                    //if userAndAdminContanedInRoom(feed: chatFeed, type: type) {
+
+                        self.chatFeedAdmin[chatId!] = chatFeed
+                    //}
+
+                    /*if let userId = PFUser.current()?.objectId
                     {
                         print(userId)
                         
@@ -58,13 +70,15 @@ class ChatFeedMethods: NSObject {
 
                             self.chatFeedAdmin[chatId!] = chatFeed                                
                         }
-                    }                    
+                    }*/                    
                     break
 
+                //friends
                 case 3:
                     self.chatFeedFriends[chatId!] = chatFeed
                     break
 
+                //videos
                 case 4:
                     self.chatFeedVideos[chatId!] = chatFeed
                     break
@@ -73,6 +87,41 @@ class ChatFeedMethods: NSObject {
             }
         }
         self.sortAllFeeds()   
+    }
+
+    static func userAndAdminContanedInRoom(feed:ChatFeed, type:Int) -> Bool
+    {
+
+        if let userId = PFUser.current()?.objectId
+        {
+            print(userId)
+            
+            //print(chatFeed.users![0].userId)
+            print(feed.users!.count)
+
+            var roomRaw = feed.roomRaw
+            
+            print(roomRaw)
+
+            if type == 1 {
+
+                if roomRaw!.contains(userId) {                                                          
+                    
+                    return true                            
+
+                }
+
+            } else if type == 2 {
+
+                if roomRaw!.contains(userId) && roomRaw!.contains(Global.adminUser.userId)  {                                                          
+                    
+                    return true                            
+
+                }
+
+            } 
+        }
+        return false   
     }
 
    static func sortAllFeeds() {

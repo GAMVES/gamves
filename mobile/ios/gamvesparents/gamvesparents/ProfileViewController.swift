@@ -1473,13 +1473,17 @@ class ProfileViewController: UIViewController,
                                                             // REGISTRATION COMPLETED                                                          
 
                                                             let title = "Congratulations Family Registration Completed!"
-                                                            var message = "\n\nThanks very much for registering your family to Gamves. You can share the app with your family! \n\n"                                                            
+                                                            var message = "\n\nThanks very much for registering your family to Gamves. You can share the app with your family! \n\n The application will be restarted, please open back again."                                                            
                                                             
                                                             let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                                                             
                                                             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
-                                                                
-                                                                self.activityIndicatorView?.stopAnimating()                                                                
+                                                                    
+                                                                //Close app    
+
+                                                                exit(0)
+
+                                                                /*self.activityIndicatorView?.stopAnimating()                                                                
                                                                 
                                                                 self.accountViewController.hideShowTabBar(status:false)                                                                                                                                
 
@@ -1491,7 +1495,7 @@ class ProfileViewController: UIViewController,
                                                                 NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadTabBar), object: self)                
                                                                 NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: self)                
 
-                                                                self.dismiss(animated:true)                                                   
+                                                                self.dismiss(animated:true)*/                                                   
 
                                                                 
                                                             }))
@@ -2098,7 +2102,7 @@ class ProfileViewController: UIViewController,
             })
             
         }
-      
+             
         //SAVE SON ADMIN
         
         queue.tasks +=~ { resutl, next in
@@ -2139,7 +2143,7 @@ class ProfileViewController: UIViewController,
             })
         }
 
-        //Remove User
+        //Remove UserVerified
         
         queue.tasks +=~ {
 
