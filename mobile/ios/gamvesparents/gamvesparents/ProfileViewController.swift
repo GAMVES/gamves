@@ -2008,7 +2008,25 @@ class ProfileViewController: UIViewController,
                 
                 Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")  
 
-                completionHandler(true)                
+                let schoolId = self.youSon.schoolId
+
+                sonGamves.userObj["schoolId"] = schoolId
+
+                sonGamves.userObj.saveInBackground { (success, error) in
+
+                    print(success)
+                    print(error)
+                    
+                    if error != nil
+                    {
+                        print(error)
+                        completionHandler(false)
+                    }
+                    else
+                    { 
+                        completionHandler(true)                
+                    }
+                }                         
             }                 
         }   
     }      
