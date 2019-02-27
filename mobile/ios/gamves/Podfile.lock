@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.8.1)
-  - Atributika (4.6.8)
+  - Atributika (4.6.9)
   - AWSCore (2.6.35)
   - AWSS3 (2.6.35):
     - AWSCore (= 2.6.35)
@@ -31,9 +31,9 @@ PODS:
   - PopupDialog (0.6.2)
   - PulsingHalo (0.2.8)
   - RSKImageCropper (2.2.1)
-  - SDWebImage (4.4.3):
-    - SDWebImage/Core (= 4.4.3)
-  - SDWebImage/Core (4.4.3)
+  - SDWebImage (4.4.6):
+    - SDWebImage/Core (= 4.4.6)
+  - SDWebImage/Core (4.4.6)
   - SKPhotoBrowser (5.1.0)
   - Starscream (3.0.6)
   - SwiftHash (2.0.2)
@@ -110,7 +110,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
-  Atributika: 7510276c8c58194244f1b111f1c9b90350bc37a9
+  Atributika: 06480d85c28097ca73241d8bd0b96d7787f5fe06
   AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
   AWSS3: 282a590bb47e9cd88de24979fb28954399c41c52
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
@@ -129,7 +129,7 @@ SPEC CHECKSUMS:
   PopupDialog: d4336d7274a6aa3af4cb26d8b6691510eba90cc3
   PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
   RSKImageCropper: 98296ad26b41753f796b6898d015509598f13d97
-  SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
+  SDWebImage: 3f3f0c02f09798048c47a5ed0a13f17b063572d8
   SKPhotoBrowser: c20c1da34d737b4e3e101feead6c8dd92ebf860a
   Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
   SwiftHash: 6d312abe61c8359bdef8d0093642f3a70b1c17ba

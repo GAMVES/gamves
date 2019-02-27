@@ -14,6 +14,7 @@
 		09260B6A21B38B5B00B17B27 /* FriendApprovalLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B6921B38B5B00B17B27 /* FriendApprovalLauncher.swift */; };
 		09260B6C21B38B7400B17B27 /* FriendApprovalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B6B21B38B7400B17B27 /* FriendApprovalViewController.swift */; };
 		09260B7221B39EE900B17B27 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09260B7121B39EE800B17B27 /* Util.swift */; };
+		092691682225FB5900BABFB3 /* InfoApprovalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 092691672225FB5900BABFB3 /* InfoApprovalView.swift */; };
 		0926CEB021C80D50008EF48D /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0926CEAF21C80D50008EF48D /* UIViewController+Extension.swift */; };
 		09550F6B2178F5FF00FA7F3D /* UserDefaults+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */; };
 		09687E95217C49D6001F7578 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09687E94217C49D6001F7578 /* ShareViewController.swift */; };
@@ -182,6 +183,7 @@
 		09260B6921B38B5B00B17B27 /* FriendApprovalLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendApprovalLauncher.swift; sourceTree = "<group>"; };
 		09260B6B21B38B7400B17B27 /* FriendApprovalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendApprovalViewController.swift; sourceTree = "<group>"; };
 		09260B7121B39EE800B17B27 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Util.swift; path = ../../gamvesparents/gamvesparents/Util.swift; sourceTree = "<group>"; };
+		092691672225FB5900BABFB3 /* InfoApprovalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoApprovalView.swift; sourceTree = "<group>"; };
 		0926CEAF21C80D50008EF48D /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		0938B84E2182E1FA001E3A34 /* shared.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = shared.entitlements; sourceTree = "<group>"; };
 		09550F6A2178F5FD00FA7F3D /* UserDefaults+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+helpers.swift"; sourceTree = "<group>"; };
@@ -675,6 +677,7 @@
 		C77B55531D02346C00FF375C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				092691672225FB5900BABFB3 /* InfoApprovalView.swift */,
 				09260B6B21B38B7400B17B27 /* FriendApprovalViewController.swift */,
 				C92D8A47211CEF140051F414 /* cells */,
 				82FFF5282022CF12005F45AA /* Components */,
@@ -991,6 +994,7 @@
 				82B0343D1FDFC35F009CD1A7 /* YouTubePlayerController.swift in Sources */,
 				824E67BF1F544DDD0025096D /* LoginController.swift in Sources */,
 				C766D2491D09F1D9005921EC /* Video.swift in Sources */,
+				092691682225FB5900BABFB3 /* InfoApprovalView.swift in Sources */,
 				826844581FF058F3008BA13B /* NoConnectionController.swift in Sources */,
 				82F3F7CB202B38AC001E3DA5 /* Formatter+Extensions.swift in Sources */,
 				822D620D1FD62FBD0025481E /* SearchVideoCell.swift in Sources */,

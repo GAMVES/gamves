@@ -47,7 +47,9 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         self.width = self.view.frame.width
         self.height = self.view.frame.height
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorView.ballSpinFadeLoader.rawValue, color: UIColor.gray)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray)
+        
+        //self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorView.spin, color: UIColor.gray)
 
         self.activityIndicatorView?.startAnimating()
                         
@@ -319,7 +321,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                 
                                                 //let order = pcategory["order"] as! Int
                                                 
-                                                Global.categories_gamves[order] = cat
+                                                //Global.categories_gamves[order] = cat
 
                                                 var last = Bool()
                                                 

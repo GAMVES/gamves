@@ -16,6 +16,7 @@ class NoConnectionController: UIViewController {
         let imageView = UIImageView()
         let image = UIImage(named: "icon")
         imageView.image = image
+        
         imageView.contentMode = .scaleAspectFill        
         imageView.layer.masksToBounds = true
         return imageView
