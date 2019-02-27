@@ -767,7 +767,7 @@ CLLocationManagerDelegate {
                         gamvesPet.objectId = petPF.objectId!
                         gamvesPet.name = petPF["name"] as! String
 
-                        let thumnail = petPF["thumbnail"] as! PFFileObject
+                        let thumnail = petPF["image"] as! PFFileObject
                         
                         thumnail.getDataInBackground(block: { (data_thumbnail, error) in
                                             
