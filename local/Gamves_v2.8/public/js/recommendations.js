@@ -274,7 +274,7 @@ document.addEventListener("LoadRecommendations", function(event){
                     video.set("description", desc);                              
 
                     video.set("posterId", userAdmin.id);          
-                    video.set("poster_name", userAdmin.get("Name"));          
+                    video.set("poster_name", userAdmin.get("name"));          
 
                     video.set("s3_source", "");
                     video.set("ytb_source", videoUrl);

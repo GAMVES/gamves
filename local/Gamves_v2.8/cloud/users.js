@@ -348,10 +348,10 @@
     		var Notification = Parse.Object.extend("Notifications");         
 	        var notification = new Notification();		        						
 
-		    notification.set("posterName", resutlUser.get("Name"));
+		    notification.set("posterName", resutlUser.get("name"));
 		    notification.set("posterAvatar", resutlUser.get("picture"));		    		    	    	
 
-			var ftitle = "<b>Welcome </b>" + resutlUser.get("Name") + " !!";
+			var ftitle = "<b>Welcome </b>" + resutlUser.get("name") + " !!";
 		    notification.set("title", ftitle);
 
 		    let description = "Welcome to Gamves check out the amazing thins you can do"; 

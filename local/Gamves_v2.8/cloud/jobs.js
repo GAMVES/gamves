@@ -383,7 +383,7 @@
 
 				let Notifications = Parse.Object.extend("Notifications");	    				
 		    	
-		    	let userName = userPF.get("Name");
+		    	let userName = userPF.get("name");
 
 				//- Poster notification											
 				
@@ -398,7 +398,7 @@
 				notificationBirthday.set("title", titlePoster);	
 				notificationBirthday.set("description", descUser);	
 
-				let posterName = adminUser.get("Name");				
+				let posterName = adminUser.get("name");				
 				notificationBirthday.set("posterName", posterName);				
 				notificationBirthday.set("posterId", userPF.id);
 

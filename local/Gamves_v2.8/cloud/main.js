@@ -1166,13 +1166,13 @@
 
 		    	userPF = user;
 
-		    	notification.set("posterName", user.get("Name"));
+		    	notification.set("posterName", user.get("name"));
 		    	notification.set("posterAvatar", user.get("picture"));
 		    	notification.set("posterId", posterId);
 
 		    	if (type == 1) {
 
-		    		var vtitle = "New video from " + user.get("Name");
+		    		var vtitle = "New video from " + user.get("name");
 		    		dataPush.push(vtitle);
 
 			        var videoQuery = new Parse.Query("Videos");
@@ -1181,7 +1181,7 @@
 
 			    } else if (type == 2) {
 
-			    	var ftitle = "New fanpage from " + user.get("Name");
+			    	var ftitle = "New fanpage from " + user.get("name");
 			    	dataPush.push(ftitle);
 
 			    	var fanpagelQuery = new Parse.Query("Fanpages");
@@ -1191,7 +1191,7 @@
 
 		    }).then(function(object) {
 
-		    	var name = userPF.get("Name");
+		    	var name = userPF.get("name");
 		    	var title = "<b>" + name + "</b> has shared a ";
 
 		    	if (type == 1) { //Video
@@ -1402,8 +1402,8 @@
 
 		 	console.log(ver);
 
-			let posterName = posterPF.get("Name");				
-			let friendName = friendPF.get("Name");	 		
+			let posterName = posterPF.get("name");				
+			let friendName = friendPF.get("name");	 		
 
 			console.log("type: " + type + " approved: " + approved);		
 

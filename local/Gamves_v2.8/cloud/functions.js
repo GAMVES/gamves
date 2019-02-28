@@ -90,7 +90,7 @@
 	                
 	            var userId = userIds[i];													
 
-				Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": chatOfRole}).then(function(result) {      
+				Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": chatOfRole}).then(function(result) {      							
 
 					Parse.Cloud.run("AddRoleToObject", { "pclassName": "ChatFeed", "objectId": chatObjectId, "role" : chatOfRole });
 

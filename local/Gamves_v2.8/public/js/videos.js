@@ -288,7 +288,7 @@ document.addEventListener("LoadVideo", function(event){
                     video.set("categoryName", categoryName);
 
                     video.set("posterId", userAdmin.id);          
-                    video.set("poster_name", userAdmin.get("Name"));          
+                    video.set("poster_name", userAdmin.get("name"));          
 
                     video.set("s3_source", "");
                     video.set("ytb_source", videoUrl);
@@ -342,7 +342,7 @@ document.addEventListener("LoadVideo", function(event){
                                   var Notification = Parse.Object.extend("Notifications");         
                                   var notification = new Notification();  
 
-                                  notification.set("posterName", userAdmin.get("Name"));
+                                  notification.set("posterName", userAdmin.get("name"));
                                   notification.set("posterAvatar", userAdmin.get("picture"));
 
                                   notification.set("title", video.get("title"));
