@@ -290,8 +290,7 @@
 		    
 			if ( iDUserType==2 || iDUserType==3 ) {	
 
-				let count = images.length;		
-	        		
+				let count = images.length;			        		
 
 		    	for (var j=0; j <images.length; j++) {
 			        					                
@@ -311,6 +310,8 @@
 
 		    		album.set("referenceId", fanpageId);
 		    		album.set("name", name);
+
+		    		album.set("posterId", resutlUser.id);
 
 		    		albumsArray.push(album);
 

@@ -1,6 +1,6 @@
-	require('./functions');
-	require('./acls');
 	require('./jobs');	
+	require('./functions');
+	require('./acls');	
 	require('./users');
 
 	var _admuser = "gamvesadmin";
