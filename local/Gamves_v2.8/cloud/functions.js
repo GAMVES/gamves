@@ -84,7 +84,7 @@
 
 		var chatOfRole = "chatOf___" + chatObjectId;
 
-		Parse.Cloud.run("AddRoleByName", { "name": chatOfRole}).then(function(chatRolePF) {	
+		Parse.Cloud.run("AddRoleByName", { "name": chatOfRole, "removeId": chatObjectId}).then(function(chatRolePF) {	
 
 			for (var i=0; i<userIds.length; i++) {
 	                
@@ -1063,6 +1063,423 @@
 	})	
 
 	// --
+  	// Remove Family and Dependencied by objectId
+
+	Parse.Cloud.define("RemoveFamilyById", function(request, response) {	
+
+		var familyId = request.params.familyId;
+
+		var userQuery = new Parse.Query("Family");
+		userQuery.equalTo("familyId", familyId);		        
+       
+        userQuery.first({
+        	useMasterKey: true,
+            success: function(familyPF) 
+            {
+
+        		let userRelation = familyPF.relation("members");
+        		let userQuery = userRelation.query();
+
+        		userQuery.find({
+        			useMasterKey: true,
+					success: function(members) {					
+
+						for (var i = 0; i < members.length; ++i) 
+						{
+							let userId = members[i].id;
+
+							Parse.Cloud.run("RemoveUserById", { "userId": userId});
+
+						}
+
+						//Remove family chat	
+
+						//remove the family
+
+						response.succes(true);
+
+					}, error:function(error)
+		    		{          		
+		    			response.error(error.message);
+		        		console.error("Members query. error = " + error.message);
+		    		}
+		    	})       
+	          	
+
+            }, error:function(error)
+	        {	     
+	        	console.error("userQuery find failed. error = " + error.message);   
+	        }
+        });	
+	})
+
+	// --
   	// Remove User and Dependencied by objectId
 
-	
+	Parse.Cloud.define("RemoveUserById", function(request, response) {	
+
+		var userId = request.params.userId;
+
+		var userQuery = new Parse.Query(Parse.User);
+		userQuery.equalTo("objectId", userId);		        
+       
+        userQuery.first({
+        	useMasterKey: true,
+            success: function(userPF) 
+            {
+            	var userQuery = new Parse.Query(Parse.User);
+				userQuery.equalTo("username", "gamvesadmin");
+				userQuery.first().then(function(userAdmin) {    
+
+					let adminUserId = userAdmin.get("objectId");
+
+	          		removeInstallationsByUserPF(userPF);   
+	          		console.log("__1__");
+	          		removeSessionsByUserPF(userPF);   
+	          		console.log("__2__");
+	          		removeAlbumByUserId(userPF.id);
+	          		console.log("__3__");
+	          		removeFanpageByUserId(userPF.id);
+	          		console.log("__4__");
+	          		removeChatFeedByUserId(userPF.id);
+	          		console.log("__5__");
+	          		removeHistoryByUserId(userPF.id);
+	          		console.log("__6__");
+					removeLocationByUserId(userPF.id);
+					console.log("__7__");
+					removeProfileByUserId(userPF.id);
+					console.log("__8__");
+					removeTimeOnlineByUserId(userPF.id);
+					console.log("__9__");
+					removeBadgesByUserId(userPF.id);
+					console.log("__10__");
+					removeUserStatusByUserId(userPF.id);
+					console.log("__11__");
+					userPF.destroy();
+
+					console.log("__12__");
+
+					response.success(true);
+
+	          	});	
+
+            }, error:function(error)
+	        {	     
+	        	response.error(error.message);
+	        	console.error("userQuery find failed. error = " + error.message);   
+	        }
+        });		
+    });    
+
+    function removeInstallationsByUserPF(userPF) {
+
+    	var installationQuery = new Parse.Query(Parse.Installation);
+		installationQuery.containedIn('user', userPF);			
+
+		installationQuery.find({
+			useMasterKey: true,
+			success: function(installations) {					
+
+				for (var i = 0; i < installations.length; ++i) 
+				{
+					installations[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("Installation query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeSessionsByUserPF(userPF) {
+    	
+    	let sessionQuery = new Parse.Query(Parse.Session);	
+		sessionQuery.containedIn('user', userPF);			
+
+		sessionQuery.find({
+			useMasterKey: true,
+			success: function(sessions) {					
+
+				for (var i = 0; i < sessions.length; ++i) 
+				{
+					sessions[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("Sessions query. error = " + error.message);
+    		}
+    	});
+    }
+
+    function removeAlbumByUserId(userId) {
+    	
+    	let albumsQuery = new Parse.Query("Albums");	
+		albumsQuery.containedIn('posterId', userId);			
+
+		albumsQuery.find({
+			useMasterKey: true,
+			success: function(albums) {					
+
+				for (var i = 0; i < albums.length; ++i) 
+				{
+					albums[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("Albums query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeFanpageByUserId(userId) {
+    	
+    	let fanpagesQuery = new Parse.Query("Fanpages");	
+		fanpagesQuery.containedIn('posterId', userId);			
+
+		fanpagesQuery.find({
+			useMasterKey: true,
+			success: function(fanpages) {					
+
+				for (var i = 0; i < fanpages.length; ++i) 
+				{
+					fanpages[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("Fanpages query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeChatFeedByUserId(userId) {	
+
+    	let chatfeedQuery = new Parse.Query("ChatFeed");	    
+    	chatfeedQuery.equalTo('remove', userId);
+    	chatfeedQuery.find({
+			useMasterKey: true,
+			success: function(chatfeeds) {					
+
+				for (var i = 0; i < chatfeeds.length; ++i) 
+				{
+					let members = chatfeeds.get("members");
+
+					let membersArray = SON.parse(members);
+
+					if (membersArray.length==2) {
+
+						var chatQuery = chatfeeds[i].object.relation("chats").query();					
+						chatQuery.first({useMasterKey:true}).then(function(chatsPF){
+
+							for (var j = 0; j < chatsPF.length; ++j) 
+							{
+								chatsPF[j].destroy();
+							}
+
+							chatfeeds[i].destroy();	
+
+						});						
+					}
+				}
+
+			}, error:function(error)
+    		{          		
+        		console.error("Fanpages query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeHistoryByUserId(userId) {
+    	
+    	let historyQuery = new Parse.Query("History");	
+		historyQuery.containedIn('userId', userId);			
+
+		historyQuery.find({
+			useMasterKey: true,
+			success: function(histories) {					
+
+				for (var i = 0; i < histories.length; ++i) 
+				{
+					histories[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("History query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeLocationByUserId(userId) {
+    	
+    	let locationQuery = new Parse.Query("Location");	
+		locationQuery.containedIn('userId', userId);			
+
+		locationQuery.find({
+			useMasterKey: true,
+			success: function(locations) {					
+
+				for (var i = 0; i < locations.length; ++i) 
+				{
+					locations[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("Location query. error = " + error.message);
+    		}
+    	})
+    }
+
+
+    function removeNotificationByPosterId(userId) {
+    	
+    	let locationQuery = new Parse.Query("Location");	
+		locationQuery.containedIn('userId', userId);			
+
+		locationQuery.find({
+			useMasterKey: true,
+			success: function(locations) {					
+
+				for (var i = 0; i < locations.length; ++i) 
+				{
+					locations[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("Location query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeProfileByUserId(userId) {
+    	
+    	let profileQuery = new Parse.Query("Profile");	
+		profileQuery.containedIn('userId', userId);			
+
+		profileQuery.first({
+			useMasterKey: true,
+			success: function(profilePF) {					
+				
+				profilePF.destroy();
+				
+			}, error:function(error)
+    		{          		
+        		console.error("Profile query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeTimeOnlineByUserId(userId) {
+    	
+    	let timeOnlineQuery = new Parse.Query("TimeOnline");	
+		timeOnlineQuery.containedIn('userId', userId);			
+
+		timeOnlineQuery.find({
+			useMasterKey: true,
+			success: function(timeOnlines) {					
+
+				for (var i = 0; i < timeOnlines.length; ++i) 
+				{
+					timeOnlines[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("TimeOnline query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeBadgesByUserId(userId) {
+    	
+    	let badgesQuery = new Parse.Query("Badges");	
+		badgesQuery.containedIn('userId', userId);			
+
+		badgesQuery.find({
+			useMasterKey: true,
+			success: function(badges) {					
+
+				for (var i = 0; i < badges.length; ++i) 
+				{
+					badges[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("Badges query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeUserStatusByUserId(userId) {
+    	
+    	let userStatusQuery = new Parse.Query("UserStatus");	
+		userStatusQuery.containedIn('userId', userId);			
+
+		userStatusQuery.find({
+			useMasterKey: true,
+			success: function(userStatus) {					
+
+				for (var i = 0; i < userStatus.length; ++i) 
+				{
+					userStatus[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("UserStatus query. error = " + error.message);
+    		}
+    	})
+    }
+
+    function removeUserVerifiedByUserId(userId) {
+    	
+    	let userVerifiedQuery = new Parse.Query("UserVerified");	
+		userVerifiedQuery.containedIn('userId', userId);			
+
+		userVerifiedQuery.find({
+			useMasterKey: true,
+			success: function(userVerified) {					
+
+				for (var i = 0; i < userVerified.length; ++i) 
+				{
+					userVerified[i].destroy();
+				}
+			}, error:function(error)
+    		{          		
+        		console.error("UserVerified query. error = " + error.message);
+    		}
+    	})
+    }
+
+
+    /*Parse.Cloud.define("TestChatFeedQWuery", function(request, response) {	
+
+    	var userId = request.params.userId;    	
+
+    	let chatfeedQuery = new Parse.Query("ChatFeed");    	    	
+
+    	chatfeedQuery.containedIn('participants', myArray);	
+
+		chatfeedQuery.find({
+			useMasterKey: true,
+			success: function(chatfeeds) {					
+
+				response.success(chatfeeds.length);
+
+				if (chatfeeds) {
+
+					response.success(chatfeeds);
+					//response.success(JSON.stringify(chatfeeds));
+
+				} else {
+
+					response.error(false);
+
+				}
+
+			}, error:function(error)
+    		{          		
+        		console.error("ChatFeed query. error = " + error.message);
+
+        		response.error(error.message);
+    		}
+    	});
+
+    })*/
+		

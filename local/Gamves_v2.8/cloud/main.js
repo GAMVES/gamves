@@ -598,7 +598,7 @@
 
 							console.log("friendOf___ : " + friendOfRole ); 	
 
-							Parse.Cloud.run("AddRoleByName", { "name": friendOfRole}).then(function(familyRolePF) {	
+							Parse.Cloud.run("AddRoleByName", { "name": friendOfRole, "removeId": userId}).then(function(familyRolePF) {	
 
 								Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": friendOfRole});									
 
@@ -1840,13 +1840,11 @@
 
 		var short = object.get("short");
 
-		//console.log("entra family");
-
 		var familyRole, schoolRole;
 
-		var familyRoleName = "family_" + familyId;
+		var familyRoleName = "familyOf___" + familyId;
 
-		Parse.Cloud.run("AddRoleByName", { "name": familyRoleName}).then(function(familyRolePF) {  
+		Parse.Cloud.run("AddRoleByName", { "name": familyRoleName, "removeId":familyId}).then(function(familyRolePF) {  
 
 			familyRole = familyRolePF;
 
