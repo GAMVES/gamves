@@ -494,6 +494,5 @@ class ChatFeedMethods: NSObject {
             }
         }         
     }
-    
    
 }

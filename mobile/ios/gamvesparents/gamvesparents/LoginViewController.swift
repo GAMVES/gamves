@@ -87,8 +87,7 @@ ImagesPickerProtocol {
 
     let nameTextField: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "Full name"
-        tf.text = "Jose Vigil"
+        tf.placeholder = "Full name"        
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.tag = 0
         return tf
@@ -103,8 +102,7 @@ ImagesPickerProtocol {
     
     let emailTextField: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "Email"
-        tf.text = "josemanuelvigil@gmail.com"
+        tf.placeholder = "Email"        
         tf.translatesAutoresizingMaskIntoConstraints = false
         tf.autocapitalizationType = UITextAutocapitalizationType.none
         tf.tag = 1
@@ -122,8 +120,7 @@ ImagesPickerProtocol {
         let tf = UITextField()
         tf.placeholder = "Password"
         tf.translatesAutoresizingMaskIntoConstraints = false
-        tf.isSecureTextEntry = true
-        tf.text = "JoseVigil2016"
+        tf.isSecureTextEntry = true        
         tf.tag = 2
         return tf
     }()
@@ -391,6 +388,14 @@ ImagesPickerProtocol {
         })      
 
         self.checkVerified()
+
+        self.nameTextField.text = "Jose Vigil"
+        self.emailTextField.text = "josemanuelvigil@gmail.com"
+        self.passwordTextField.text = "JoseVigil2016"
+        
+        //self.nameTextField.text = "Charles Peters"
+        //self.emailTextField.text = "charlespeters@gmail.com"
+        //self.passwordTextField.text = "Charles2016"
 
     }
 
@@ -1286,21 +1291,30 @@ ImagesPickerProtocol {
                     
                     let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
                     
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in  
-
-                        UserDefaults.standard.setHasPhoneAndImage(value: true)
-
-                        let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-                        self.tabBarViewController?.selectedIndex = 0
-                        appDelegate.window?.rootViewController = self.tabBarViewController                     
-
-                        self.hideShowTabBar(status:true)                         
+                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                        
+                        self.activityIndicatorView?.startAnimating()
+                        
+                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
+                        
+                            UserDefaults.standard.setHasPhoneAndImage(value: true)
+                            
+                            let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+                            self.tabBarViewController?.selectedIndex = 0
+                            appDelegate.window?.rootViewController = self.tabBarViewController
+                            
+                            self.hideShowTabBar(status:true)
+                            
+                            self.activityIndicatorView?.stopAnimating()
+                            
+                        })
                         
                     }))
 
                     NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: self)
                     
-                    self.navigationPickerController.present(alert, animated: true) 
+                    self.navigationPickerController.present(alert, animated: true)
+                    
                 }
             })
 
@@ -1361,6 +1375,79 @@ ImagesPickerProtocol {
 
         self.you = PFUser.current()
         
+        self.saveYouProfile(completionHandler: { ( resutlProfile ) -> () in  
+
+            if resutlProfile {      
+    
+                let levelRel:PFRelation = self.you.relation(forKey: "level")  
+
+                self.you["phone"]  = self.phoneNumber
+                
+                print(Global.schoolShort)
+         
+                self.you["schoolShort"]  = Global.schoolShort  
+
+                self.you["schoolId"]  = Global.schoolId        
+                
+                self.you.saveInBackground(block: { (resutl, error) in
+                    
+                    if error != nil
+                    {
+                        print(error)
+                        completionHandler(false)
+                    } else
+                    {
+
+                        //HERE SAVE THOSE IMAGES HERE AND LOAD THEM ON POFILE
+                                        
+                        //- Store Images Local
+                        let youImage:UIImage = Global.yourPhotoImage                                           
+                        Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore: youImage)
+                        
+                        let youImageLow = Global.yourPhotoImageSmall
+                        Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youImageLow!)
+
+                        Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in                                    
+                            
+                            var youAdmin = [GamvesUser]()
+                    
+                            youAdmin.append(gamvesUser)
+                            youAdmin.append(Global.adminUser)
+
+                            let youAdminChtoratId = Global.getRandomInt()
+
+                            let removeId = gamvesUser.userId
+                            
+                            print(removeId)
+                            
+                            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youAdmin, chatId: youAdminChtoratId, type: 2, isFamily: true, removeId: removeId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+                                
+                                print("done youAdmin")
+                                print(resutl)
+                                
+                                if (resutl != nil) {                          
+
+                                    completionHandler(true)
+
+                                }  else {
+
+                                    completionHandler(false)                                    
+                                }                      
+                            })                    
+                        })
+                    }
+                })
+            } else {
+
+                completionHandler(false)
+
+            }
+        })  
+    }
+
+    func saveYouProfile(completionHandler : @escaping (_ resutl:Bool) -> ())
+    {
+
         let your_email = Global.defaults.string(forKey: "\(self.puserId)_your_email")
         let your_password = Global.defaults.string(forKey: "\(self.puserId)_your_password")
         
@@ -1403,65 +1490,15 @@ ImagesPickerProtocol {
                 profilePF?["bio"] = "Your phrase here"
                 
                 profilePF?.saveEventually()
+
+                completionHandler(true)
                 
+            } else {
+
+                completionHandler(false)
+
             }
         }
-        
-    
-        let levelRel:PFRelation = self.you.relation(forKey: "level")  
-
-        self.you["phone"]  = self.phoneNumber
-        
-        print(Global.schoolShort)
- 
-        self.you["schoolShort"]  = Global.schoolShort  
-
-        self.you["schoolId"]  = Global.schoolId        
-        
-        self.you.saveInBackground(block: { (resutl, error) in
-            
-            if error != nil
-            {
-                print(error)
-                completionHandler(false)
-            } else
-            {
-
-                //HERE SAVE THOSE IMAGES HERE AND LOAD THEM ON POFILE
-                                
-                //- Store Images Local
-                let youImage:UIImage = Global.yourPhotoImage                                           
-                Global.storeImgeLocally(imagePath: Global.youImageName, imageToStore: youImage)
-                
-                let youImageLow = Global.yourPhotoImageSmall
-                Global.storeImgeLocally(imagePath: Global.youImageNameSmall, imageToStore: youImageLow!)
-
-                Global.addUserToDictionary(user: self.you as! PFUser, isFamily: true, completionHandler: { ( gamvesUser ) -> () in                                    
-                    
-                    var youAdmin = [GamvesUser]()
-            
-                    youAdmin.append(gamvesUser)
-                    youAdmin.append(Global.adminUser)
-
-                    let youAdminChatId = Global.getRandomInt()
-                    
-                    ChatMethods.addNewFeedAppendgroup(gamvesUsers: youAdmin, chatId: youAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
-                        
-                        print("done youAdmin")
-                        print(resutl)
-                        
-                        if (resutl != nil) {                          
-
-                            ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in
-
-                                completionHandler(true)
-
-                            })    
-                        }                        
-                    })                    
-                })
-            }
-        })        
     }
 
 

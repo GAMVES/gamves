@@ -584,6 +584,19 @@ class ProfileViewController: UIViewController,
         }
 
         self.activityIndicatorView!.stopAnimating()
+
+        self.sonNameTextField.text = "Clemente Vigil"
+        self.sonUserTextField.text = "clementevigil"
+        self.sonPasswordTextField.text = "Clemente2016"
+
+        //self.yourNameTextField.text = "Jose Vigil"
+        //self.yourUserTextField.text= "josevigil"
+        //self.yourFamilyTextField.text = "Vigil family"
+
+        //self.partnerNameTextField.text = "Leda Olano"
+        //self.partnerEmailTextField.text = "ledaola@gmail.com"
+        //self.partnerPasswordTextField.text = "Leda2016"
+
     }
     
     override func viewDidLayoutSubviews() {
@@ -1442,74 +1455,67 @@ class ProfileViewController: UIViewController,
                         
                         print("SPOUSE SAVED")
                         
-                        DispatchQueue.main.async() {
-                    
-                            //self.saveYou(completionHandler: { ( resutl ) -> () in
-                                
-                                //print("YOU SAVED")
-                                
-                                //if resutl {
+                        DispatchQueue.main.async() {                    
                                     
-                                    self.saveFamily(completionHandler: { ( resutl ) -> () in
+                            self.saveFamily(completionHandler: { ( resutl ) -> () in
+                                
+                                if resutl {
+                                    
+                                    self.createChatGroups(completionHandlerChatGroups: { ( resutl ) -> () in
                                         
                                         if resutl {
+                                        
+                                            print("GROUPS CREATED")
                                             
-                                            self.createChatGroups(completionHandlerChatGroups: { ( resutl ) -> () in
-                                                
-                                                if resutl {
-                                                
-                                                    print("GROUPS CREATED")
-                                                    
-                                                    self.hideShowTabBar(hidden:true)
+                                            self.hideShowTabBar(hidden:true)
 
-                                                    self.tabBarViewController?.selectedIndex = 0
+                                            self.tabBarViewController?.selectedIndex = 0
+                                            
+                                            //Global.defaults.set(true, forKey: "\(self.puserId)_profile_completed")  
+                                            
+                                            Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                                                
+                                                ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in                                                 
                                                     
-                                                    //Global.defaults.set(true, forKey: "\(self.puserId)_profile_completed")  
+                                                    // REGISTRATION COMPLETED                                                          
+
+                                                    let title = "Congratulations Family Registration Completed!"
+                                                    var message = "\n\nThanks very much for registering your family to Gamves. You can share the app with your family! \n\n The application will be restarted, please open back again."                                                            
                                                     
-                                                    Global.getFamilyData(completionHandler: { ( result:Bool ) -> () in
+                                                    let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                                                    
+                                                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                                                            
+                                                        //Close app    
+
+                                                        exit(0)
+
+                                                        /*self.activityIndicatorView?.stopAnimating()                                                                
                                                         
-                                                        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in                                                 
-                                                            
-                                                            // REGISTRATION COMPLETED                                                          
+                                                        self.accountViewController.hideShowTabBar(status:false)                                                                                                                                
 
-                                                            let title = "Congratulations Family Registration Completed!"
-                                                            var message = "\n\nThanks very much for registering your family to Gamves. You can share the app with your family! \n\n The application will be restarted, please open back again."                                                            
-                                                            
-                                                            let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
-                                                            
-                                                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
-                                                                    
-                                                                //Close app    
+                                                        self.tabBarViewController = TabBarViewController()                         
+                                                        let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
+                                                        appDelegate.window?.rootViewController = self.tabBarViewController 
 
-                                                                exit(0)
+                                                        //-- Reloads
+                                                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadTabBar), object: self)                
+                                                        NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: self)                
 
-                                                                /*self.activityIndicatorView?.stopAnimating()                                                                
-                                                                
-                                                                self.accountViewController.hideShowTabBar(status:false)                                                                                                                                
+                                                        self.dismiss(animated:true)*/                                                   
 
-                                                                self.tabBarViewController = TabBarViewController()                         
-                                                                let appDelegate: AppDelegate = (UIApplication.shared.delegate as? AppDelegate)!
-                                                                appDelegate.window?.rootViewController = self.tabBarViewController 
-
-                                                                //-- Reloads
-                                                                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyReloadTabBar), object: self)                
-                                                                NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyRecommendationLoaded), object: self)                
-
-                                                                self.dismiss(animated:true)*/                                                   
-
-                                                                
-                                                            }))
-                                                            
-                                                            self.present(alert, animated: true)                                                     
-                                                            
-                                                        })                                                        
-                                                    })
-                                                }
+                                                        
+                                                    }))
+                                                    
+                                                    self.present(alert, animated: true)                                                     
+                                                    
+                                                })                                                        
                                             })
                                         }
                                     })
-                                //}
-                            //})
+                                }
+                            })
+                              
                         }          
                     
                     } else 
@@ -2008,11 +2014,15 @@ class ProfileViewController: UIViewController,
                 
                 Global.defaults.set(true, forKey: "\(self.puserId)_family_exist")  
 
-                let schoolId = self.youSon.schoolId
+                let schoolId = self.you["schoolId"] as! String
 
-                sonGamves.userObj["schoolId"] = schoolId
+                completionHandler(true)
 
-                sonGamves.userObj.saveInBackground { (success, error) in
+                //This block is now been done afterSave on Family object, it was not necesary
+
+                /*self.sonGamves.userObj["schoolId"] = schoolId
+
+                self.sonGamves.userObj.saveInBackground { (success, error) in
 
                     print(success)
                     print(error)
@@ -2026,7 +2036,7 @@ class ProfileViewController: UIViewController,
                     { 
                         completionHandler(true)                
                     }
-                }                         
+                }*/                        
             }                 
         }   
     }      
@@ -2047,7 +2057,7 @@ class ProfileViewController: UIViewController,
             youSon.append(self.youGamves)
             youSon.append(self.sonGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonRegisterChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youSon, chatId: self.sonRegisterChatId, type: 1, isFamily: true, removeId: self.youGamves.userId, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youSon")
                 print(resutl)
@@ -2066,7 +2076,7 @@ class ProfileViewController: UIViewController,
             youPartner.append(self.youGamves)
             youPartner.append(self.partnerGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youPartner, chatId: self.partnerRegisterChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youPartner, chatId: self.partnerRegisterChatId, type: 1, isFamily: true, removeId: self.youGamves.userId, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youPartner")
                 print(resutl)
@@ -2087,7 +2097,7 @@ class ProfileViewController: UIViewController,
             sonPartner.append(self.sonGamves)
             sonPartner.append(self.partnerGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonPartner, chatId: self.sonPartnerChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonPartner, chatId: self.sonPartnerChatId, type: 1, isFamily: true, removeId: self.sonGamves.userId, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done sonPartner")
                 print(resutl)
@@ -2109,7 +2119,7 @@ class ProfileViewController: UIViewController,
             youPartnerSon.append(self.partnerGamves)
             youPartnerSon.append(self.sonGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youPartnerSon, chatId: self.familyChatId, type: 1, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youPartnerSon, chatId: self.familyChatId, type: 1, isFamily: true, removeId: self.youGamves.userId, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youPartnerSon")
                 print(resutl)
@@ -2130,7 +2140,7 @@ class ProfileViewController: UIViewController,
             sonAdmin.append(self.sonGamves)
             sonAdmin.append(Global.adminUser)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonAdmin, chatId: self.sonAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: sonAdmin, chatId: self.sonAdminChatId, type: 2, isFamily: true, removeId: self.sonGamves.userId, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done sonAdmin")
                 print(resutl)
@@ -2150,7 +2160,7 @@ class ProfileViewController: UIViewController,
             partnerAdmin.append(self.partnerGamves)
             partnerAdmin.append(Global.adminUser)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: partnerAdmin, chatId: self.partnerAdminChatId, type: 2, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: partnerAdmin, chatId: self.partnerAdminChatId, type: 2, isFamily: true, removeId: self.partnerGamves.userId, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done partnerAdmin")
                 print(resutl)

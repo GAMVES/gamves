@@ -1015,7 +1015,7 @@
                                 
                                 self.chatIdStr = String(self.chatId) as String
                                 
-                                ChatMethods.addChannels(userIds:[userId], channel: self.chatIdStr, chatObjectId: self.chatFeed.objectId!, completionHandlerChannel: { ( resutl ) -> () in
+                                ChatMethods.addChannels(userIds:[userId], channel: self.chatIdStr, chatObjectId: self.chatFeed.objectId!, removeId: userId, completionHandlerChannel: { ( resutl ) -> () in
                                     
                                     let members = self.chatFeed["members"] as! String
                                     
@@ -1964,7 +1964,7 @@
                         }
                     }
                     
-                    ChatMethods.addChannels(userIds:userIdArray, channel: self.chatIdStr, chatObjectId: self.chatFeed.objectId!, completionHandlerChannel: { ( resutl ) -> () in
+                    ChatMethods.addChannels(userIds:userIdArray, channel: self.chatIdStr, chatObjectId: self.chatFeed.objectId!, removeId: userId, completionHandlerChannel: { ( resutl ) -> () in
                         
                         if resutl && !self.isVideo {
                             

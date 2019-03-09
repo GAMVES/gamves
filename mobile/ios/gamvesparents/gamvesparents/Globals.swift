@@ -569,11 +569,14 @@ class Global: NSObject
             
             let installation = PFInstallation.current()
             installation?["user"] = PFUser.current()
-            installation?.saveInBackground(block: { (resutl, error) in               
 
-                PFPush.subscribeToChannel(inBackground: "GamvesParents")  
+            if let userId = PFUser.current()?.objectId {
 
-                if let userId = PFUser.current()?.objectId {
+                installation?["userId"] = userId
+
+                installation?.saveInBackground(block: { (resutl, error) in               
+
+                    PFPush.subscribeToChannel(inBackground: "GamvesParents")                  
 
                     let params = [
                         "role" : "admin",
@@ -590,8 +593,9 @@ class Global: NSObject
                             completionHandlerRole(true)
                         }
                     }      
-                }                
-            })
+                                
+                })
+            }
         }
     }
 

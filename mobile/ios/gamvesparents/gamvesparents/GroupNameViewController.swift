@@ -237,33 +237,35 @@ class GroupNameViewController: UIViewController,
             
             if error == nil
             {
-                
-                ChatMethods.addChannels(userIds: self.arrayIds, channel: self.chatIdStr, chatObjectId:self.chatFeed.objectId!, completionHandlerChannel: { ( resutl ) -> () in
-                    
-                    
-                    if var username = Global.userDictionary[(PFUser.current()?.objectId)!]?.name
-                    {
+                if let userId = PFUser.current()?.objectId!
+                {
+                    ChatMethods.addChannels(userIds: self.arrayIds, channel: self.chatIdStr, chatObjectId: self.chatFeed.objectId!, removeId: userId, completionHandlerChannel: { ( resutl ) -> () in
                         
-                        if let groupName = self.userTextField.text
+                        
+                        if var username = Global.userDictionary[(PFUser.current()?.objectId)!]?.name
                         {
-                            let params = ["channels": String(self.chatId), "title": "New group", "alert": "\(username) added you to a group \(groupName)"] as [String : Any]
                             
-                            print(params)
-                            
-                            PFCloud.callFunction(inBackground: "push", withParameters: params) { (resutls, error) in
+                            if let groupName = self.userTextField.text
+                            {
+                                let params = ["channels": String(self.chatId), "title": "New group", "alert": "\(username) added you to a group \(groupName)"] as [String : Any]
                                 
+                                print(params)
                                 
-                                self.activityView.stopAnimating()
+                                PFCloud.callFunction(inBackground: "push", withParameters: params) { (resutls, error) in
                                     
-                                self.chatFeedViewController?.openChat(room: groupName, chatId: self.chatId, users: self.gamvesUsers)
+                                    
+                                    self.activityView.stopAnimating()
+                                    
+                                    self.chatFeedViewController?.openChat(room: groupName, chatId: self.chatId, users: self.gamvesUsers)
+                                    
                                 
-                            
-                                print(resutls)
-                                
+                                    print(resutls)
+                                    
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
         })
     }

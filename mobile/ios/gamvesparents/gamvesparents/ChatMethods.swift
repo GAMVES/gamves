@@ -13,8 +13,15 @@ import Parse
 class ChatMethods: NSObject
 {
  
-    static func addNewFeedAppendgroup(gamvesUsers:[GamvesUser], chatId:Int, type:Int,  completionHandlerGroup : @escaping (_ resutl:Bool) -> ())
+    static func addNewFeedAppendgroup(gamvesUsers:[GamvesUser], 
+        chatId:Int, 
+        type:Int, 
+        isFamily:Bool, 
+        removeId:String, 
+        completionHandlerGroup : @escaping (_ resutl:Bool) -> ())
     {
+
+        var removeIdVar = removeId        
         
         let random = Int()
             
@@ -42,7 +49,7 @@ class ChatMethods: NSObject
 
         let groupImageFile:PFFileObject!
 
-        if gamvesUsers.count > 2
+        if gamvesUsers.count > 2 
         {
 
             var imageGroup = UIImage()
@@ -70,7 +77,20 @@ class ChatMethods: NSObject
             let members = String(describing: array)
             chatFeed["members"] = members
 
-            chatFeed["room"] = Global.gamvesFamily.familyName
+            if isFamily {
+
+                chatFeed["room"] = Global.gamvesFamily.familyName
+
+                chatFeed["removeId"] = Global.gamvesFamily.objectId
+
+            } else {
+
+                chatFeed["room"] = "New Group"  
+
+                //Never ending group? Could be
+                //chatFeed["remove"] = Global.gamvesFamily.objectId                              
+
+            }
             
         } else
         {
@@ -80,6 +100,8 @@ class ChatMethods: NSObject
             let member = String(describing: [gamvesUsers[1].userId, gamvesUsers[0].userId])
             chatFeed["members"] = member
             chatFeed["room"] = "\(gamvesUsers[1].userId)____\(gamvesUsers[0].userId)"
+
+            chatFeed["remove"] = gamvesUsers[0].userId
             
         } 
 
@@ -110,6 +132,8 @@ class ChatMethods: NSObject
         let colorString = Global.listOfChatColors[randomColorIndex]
 
         chatFeed["senderColor"] = colorString
+
+        print(removeIdVar)
         
         chatFeed.saveInBackground(block: { (chatFeedPF, error) in
             
@@ -131,8 +155,12 @@ class ChatMethods: NSObject
                 let members = chatFeed["members"] as! String
                 
                 let usersArray = Global.parseUsersStringToArray(separated: members)
+
+                //HERE assign the remove
+
+                print(removeIdVar)
                 
-                self.addChannels(userIds:usersArray, channel: chatIdStr, chatObjectId: chatFeed.objectId!, completionHandlerChannel: { ( resutl ) -> () in
+                self.addChannels(userIds:usersArray, channel: chatIdStr, chatObjectId: chatFeed.objectId!, removeId: removeIdVar, completionHandlerChannel: { ( resutl ) -> () in
                     
                     if resutl {                        
                         
@@ -156,10 +184,14 @@ class ChatMethods: NSObject
 
     }
 
-    static func addChannels(userIds:[String], channel:String, chatObjectId:String, completionHandlerChannel : @escaping (_ resutl:Bool) -> ())
+    static func addChannels(userIds:[String], channel:String, chatObjectId:String, removeId:String, completionHandlerChannel : @escaping (_ resutl:Bool) -> ())
     {
         
-        let params = ["userIds":userIds, "channel":channel, "chatObjectId":chatObjectId] as [String : Any]
+        print(removeId)
+
+        let params = ["userIds":userIds, "channel":channel, "chatObjectId":chatObjectId, "removeId": removeId] as [String : Any]
+
+        print(params)
         
         PFCloud.callFunction(inBackground: "subscribeUsersToChannel", withParameters: params) { (resutls, error) in
             
