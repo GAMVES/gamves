@@ -81,16 +81,19 @@
 		var userIds = request.params.userIds;
 		var channelName = request.params.channel;
 		var chatObjectId = request.params.chatObjectId;		
+		var removeId = request.params.removeId;		
 
 		var chatOfRole = "chatOf___" + chatObjectId;
 
-		Parse.Cloud.run("AddRoleByName", { "name": chatOfRole, "removeId": chatObjectId}).then(function(chatRolePF) {	
+		console.log("chatOfRole: " + chatOfRole );
+
+		Parse.Cloud.run("AddRoleByName", { "name":chatOfRole, "chatObjectId":chatObjectId, "removeId":removeId}).then(function(chatRolePF) {	
 
 			for (var i=0; i<userIds.length; i++) {
 	                
 	            var userId = userIds[i];													
 
-				Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": chatOfRole}).then(function(result) {      							
+				Parse.Cloud.run("AddUserToRole", { "userId": userId, "role": chatOfRole }).then(function(result) {      							
 
 					Parse.Cloud.run("AddRoleToObject", { "pclassName": "ChatFeed", "objectId": chatObjectId, "role" : chatOfRole });
 
@@ -1084,17 +1087,33 @@
         			useMasterKey: true,
 					success: function(members) {					
 
-						for (var i = 0; i < members.length; ++i) 
-						{
+						//Remove family Memebers
+						for (var i = 0; i < members.length; ++i) {
 							let userId = members[i].id;
-
 							Parse.Cloud.run("RemoveUserById", { "userId": userId});
-
 						}
 
-						//Remove family chat	
+						//Remove family ChatFeed							
+						let chatfeedQuery = new Parse.Query("ChatFeed");	    
+		    			chatfeedQuery.equalTo('remove', familyPF.id);
+		    			chatfeedQuery.find({useMasterKey:true}).then(function(chatfeeds) {	    				
+		    				for (var i = 0; i < chatfeeds.length; ++i) {
+								let members = chatfeeds.get("members");
+								let membersArray = SON.parse(members);
+								if (membersArray.length==2) {
+									var chatQuery = chatfeeds[i].object.relation("chats").query();					
+									chatQuery.first({useMasterKey:true}).then(function(chatsPF) {
+										for (var j = 0; j < chatsPF.length; ++j) {
+											chatsPF[j].destroy({useMasterKey:true});
+										}
+										chatfeeds[i].destroy({useMasterKey:true});	
+									});						
+								}
+							}
+		    			});	
 
 						//remove the family
+						familyPF.destroy({useMasterKey: true});
 
 						response.succes(true);
 
@@ -1121,365 +1140,160 @@
 		var userId = request.params.userId;
 
 		var userQuery = new Parse.Query(Parse.User);
-		userQuery.equalTo("objectId", userId);		        
-       
-        userQuery.first({
-        	useMasterKey: true,
-            success: function(userPF) 
-            {
-            	var userQuery = new Parse.Query(Parse.User);
-				userQuery.equalTo("username", "gamvesadmin");
-				userQuery.first().then(function(userAdmin) {    
+		userQuery.equalTo("objectId", userId);		 
+		userQuery.find({useMasterKey: true }).then(function(usersPF) {
+			
+			for (var i = 0; i < usersPF.length; ++i) 
+			{	
+				let userPF = usersPF[i];
 
-					let adminUserId = userAdmin.get("objectId");
+				//Installations
+				var installationQuery = new Parse.Query(Parse.Installation);
+				installationQuery.containedIn('user', [userPF]);
+				installationQuery.find({useMasterKey:true}).then(function(installations) {					
+					for (var i = 0; i < installations.length; ++i) {				
+						installations[i].destroy({useMasterKey:true});
+					}
+				});
 
-	          		removeInstallationsByUserPF(userPF);   
-	          		console.log("__1__");
-	          		removeSessionsByUserPF(userPF);   
-	          		console.log("__2__");
-	          		removeAlbumByUserId(userPF.id);
-	          		console.log("__3__");
-	          		removeFanpageByUserId(userPF.id);
-	          		console.log("__4__");
-	          		removeChatFeedByUserId(userPF.id);
-	          		console.log("__5__");
-	          		removeHistoryByUserId(userPF.id);
-	          		console.log("__6__");
-					removeLocationByUserId(userPF.id);
-					console.log("__7__");
-					removeProfileByUserId(userPF.id);
-					console.log("__8__");
-					removeTimeOnlineByUserId(userPF.id);
-					console.log("__9__");
-					removeBadgesByUserId(userPF.id);
-					console.log("__10__");
-					removeUserStatusByUserId(userPF.id);
-					console.log("__11__");
-					userPF.destroy();
+				//Sessions
+				let sessionQuery = new Parse.Query(Parse.Session);	
+				sessionQuery.containedIn('user', [userPF]);	
+				sessionQuery.find({useMasterKey:true}).then(function(sessions) {		
+					for (var i = 0; i < sessions.length; ++i) {				
+						sessions[i].destroy({useMasterKey:true});
+					}
+				});
 
-					console.log("__12__");
+				//Algums
+				let albumsQuery = new Parse.Query("Albums");	
+				albumsQuery.equalTo('posterId', userPF.id);		
+				sessionQuery.find({useMasterKey:true}).then(function(albums) {		
+					for (var i = 0; i < albums.length; ++i) {
+						albums[i].destroy({useMasterKey:true});
+					}
+				});	
 
-					response.success(true);
+				//Fanpages
+				let fanpagesQuery = new Parse.Query("Fanpages");	
+				fanpagesQuery.equalTo('posterId', userPF.id);			
+				fanpagesQuery.find({useMasterKey:true}).then(function(fanpages) {		
+					for (var i = 0; i < fanpages.length; ++i) {
+						fanpages[i].destroy({useMasterKey:true});
+					}
+				});
 
-	          	});	
+				//ChatFeed
+				let chatfeedQuery = new Parse.Query("ChatFeed");	    
+    			chatfeedQuery.equalTo('remove', userPF.id);
+    			chatfeedQuery.find({useMasterKey:true}).then(function(chatfeeds) {	    				    				
+    				for (var i = 0; i < chatfeeds.length; ++i) {						
+						var chatQuery = chatfeeds[i].relation("chats").query();					
+						chatQuery.find({useMasterKey:true}).then(function(chatsPF) {
+							for (var j = 0; j < chatsPF.length; ++j) {
+								chatsPF[j].destroy({useMasterKey:true});
+							}							
+						});	
+						chatfeeds[i].destroy({useMasterKey:true});												
+					}
+    			});	
 
-            }, error:function(error)
-	        {	     
-	        	response.error(error.message);
-	        	console.error("userQuery find failed. error = " + error.message);   
-	        }
-        });		
+    			//History
+    			let historyQuery = new Parse.Query("History");	
+				historyQuery.equalTo('userId', userPF.id);	
+				historyQuery.find({useMasterKey:true}).then(function(histories) {	    						
+					for (var i = 0; i < histories.length; ++i) {
+						histories[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//Location
+				let locationQuery = new Parse.Query("Location");	
+				locationQuery.equalTo('userId', userPF.id);		
+				locationQuery.find({useMasterKey:true}).then(function(locations) {	    						
+					for (var i = 0; i < locations.length; ++i) {
+						locations[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//Notfication
+				let notificationsQuery = new Parse.Query("Notifications");	
+				notificationsQuery.equalTo('userId', userPF.id);		
+				notificationsQuery.find({useMasterKey:true}).then(function(notifications) {	    							
+					for (var i = 0; i < notifications.length; ++i) {
+						notifications[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//Profile
+				let profileQuery = new Parse.Query("Profile");	
+				profileQuery.equalTo('userId', userPF.id);			
+				profileQuery.find({useMasterKey:true}).then(function(profiles) {	    							
+					for (var i = 0; i < profiles.length; ++i) {
+						profiles[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//TimeOnline
+				let timeOnlineQuery = new Parse.Query("TimeOnline");	
+				timeOnlineQuery.equalTo('userId', userPF.id);	
+				timeOnlineQuery.find({useMasterKey:true}).then(function(timeonlines) {	    							
+					for (var i = 0; i < timeonlines.length; ++i) {
+						timeonlines[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//Badges
+				let badgesQuery = new Parse.Query("Badges");	
+				badgesQuery.equalTo('userId', userPF.id);			
+				badgesQuery.find({useMasterKey:true}).then(function(badges) {	    							
+					for (var i = 0; i < badges.length; ++i) {
+						badges[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//UserStatus
+				let userStatusQuery = new Parse.Query("UserStatus");	
+				userStatusQuery.equalTo('userId', userPF.id);		
+				userStatusQuery.find({useMasterKey:true}).then(function(userstatuses) {	    							
+					for (var i = 0; i < userstatuses.length; ++i) {
+						userstatuses[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//UserVerified
+				let userVerifiedQuery = new Parse.Query("UserVerified");	
+				userVerifiedQuery.equalTo('userId', userPF.id);			
+				userVerifiedQuery.find({useMasterKey:true}).then(function(userverifieds) {	    							
+					for (var i = 0; i < userverifieds.length; ++i) {
+						userverifieds[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//Points
+				let pointsQuery = new Parse.Query("Points");	
+				pointsQuery.equalTo('userId', userPF.id);			
+				pointsQuery.find({useMasterKey:true}).then(function(pointsPF) {	    							
+					for (var i = 0; i < pointsPF.length; ++i) {
+						pointsPF[i].destroy({useMasterKey:true});
+					}
+				});
+
+				//Role
+				var queryRole = new Parse.Query(Parse.Role);						
+				queryRole.equalTo('removeId', userPF.id);		
+				queryRole.find({useMasterKey:true}).then(function(rolesPF) {	    
+					for (var i = 0; i < rolesPF.length; ++i) {
+						rolesPF[i].destroy({useMasterKey:true});
+					}					
+				});
+
+				//User
+				userPF.destroy({useMasterKey:true});
+
+			}
+		});       
     });    
 
-    function removeInstallationsByUserPF(userPF) {
-
-    	var installationQuery = new Parse.Query(Parse.Installation);
-		installationQuery.containedIn('user', userPF);			
-
-		installationQuery.find({
-			useMasterKey: true,
-			success: function(installations) {					
-
-				for (var i = 0; i < installations.length; ++i) 
-				{
-					installations[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("Installation query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeSessionsByUserPF(userPF) {
-    	
-    	let sessionQuery = new Parse.Query(Parse.Session);	
-		sessionQuery.containedIn('user', userPF);			
-
-		sessionQuery.find({
-			useMasterKey: true,
-			success: function(sessions) {					
-
-				for (var i = 0; i < sessions.length; ++i) 
-				{
-					sessions[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("Sessions query. error = " + error.message);
-    		}
-    	});
-    }
-
-    function removeAlbumByUserId(userId) {
-    	
-    	let albumsQuery = new Parse.Query("Albums");	
-		albumsQuery.containedIn('posterId', userId);			
-
-		albumsQuery.find({
-			useMasterKey: true,
-			success: function(albums) {					
-
-				for (var i = 0; i < albums.length; ++i) 
-				{
-					albums[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("Albums query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeFanpageByUserId(userId) {
-    	
-    	let fanpagesQuery = new Parse.Query("Fanpages");	
-		fanpagesQuery.containedIn('posterId', userId);			
-
-		fanpagesQuery.find({
-			useMasterKey: true,
-			success: function(fanpages) {					
-
-				for (var i = 0; i < fanpages.length; ++i) 
-				{
-					fanpages[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("Fanpages query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeChatFeedByUserId(userId) {	
-
-    	let chatfeedQuery = new Parse.Query("ChatFeed");	    
-    	chatfeedQuery.equalTo('remove', userId);
-    	chatfeedQuery.find({
-			useMasterKey: true,
-			success: function(chatfeeds) {					
-
-				for (var i = 0; i < chatfeeds.length; ++i) 
-				{
-					let members = chatfeeds.get("members");
-
-					let membersArray = SON.parse(members);
-
-					if (membersArray.length==2) {
-
-						var chatQuery = chatfeeds[i].object.relation("chats").query();					
-						chatQuery.first({useMasterKey:true}).then(function(chatsPF){
-
-							for (var j = 0; j < chatsPF.length; ++j) 
-							{
-								chatsPF[j].destroy();
-							}
-
-							chatfeeds[i].destroy();	
-
-						});						
-					}
-				}
-
-			}, error:function(error)
-    		{          		
-        		console.error("Fanpages query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeHistoryByUserId(userId) {
-    	
-    	let historyQuery = new Parse.Query("History");	
-		historyQuery.containedIn('userId', userId);			
-
-		historyQuery.find({
-			useMasterKey: true,
-			success: function(histories) {					
-
-				for (var i = 0; i < histories.length; ++i) 
-				{
-					histories[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("History query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeLocationByUserId(userId) {
-    	
-    	let locationQuery = new Parse.Query("Location");	
-		locationQuery.containedIn('userId', userId);			
-
-		locationQuery.find({
-			useMasterKey: true,
-			success: function(locations) {					
-
-				for (var i = 0; i < locations.length; ++i) 
-				{
-					locations[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("Location query. error = " + error.message);
-    		}
-    	})
-    }
 
 
-    function removeNotificationByPosterId(userId) {
-    	
-    	let locationQuery = new Parse.Query("Location");	
-		locationQuery.containedIn('userId', userId);			
-
-		locationQuery.find({
-			useMasterKey: true,
-			success: function(locations) {					
-
-				for (var i = 0; i < locations.length; ++i) 
-				{
-					locations[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("Location query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeProfileByUserId(userId) {
-    	
-    	let profileQuery = new Parse.Query("Profile");	
-		profileQuery.containedIn('userId', userId);			
-
-		profileQuery.first({
-			useMasterKey: true,
-			success: function(profilePF) {					
-				
-				profilePF.destroy();
-				
-			}, error:function(error)
-    		{          		
-        		console.error("Profile query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeTimeOnlineByUserId(userId) {
-    	
-    	let timeOnlineQuery = new Parse.Query("TimeOnline");	
-		timeOnlineQuery.containedIn('userId', userId);			
-
-		timeOnlineQuery.find({
-			useMasterKey: true,
-			success: function(timeOnlines) {					
-
-				for (var i = 0; i < timeOnlines.length; ++i) 
-				{
-					timeOnlines[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("TimeOnline query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeBadgesByUserId(userId) {
-    	
-    	let badgesQuery = new Parse.Query("Badges");	
-		badgesQuery.containedIn('userId', userId);			
-
-		badgesQuery.find({
-			useMasterKey: true,
-			success: function(badges) {					
-
-				for (var i = 0; i < badges.length; ++i) 
-				{
-					badges[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("Badges query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeUserStatusByUserId(userId) {
-    	
-    	let userStatusQuery = new Parse.Query("UserStatus");	
-		userStatusQuery.containedIn('userId', userId);			
-
-		userStatusQuery.find({
-			useMasterKey: true,
-			success: function(userStatus) {					
-
-				for (var i = 0; i < userStatus.length; ++i) 
-				{
-					userStatus[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("UserStatus query. error = " + error.message);
-    		}
-    	})
-    }
-
-    function removeUserVerifiedByUserId(userId) {
-    	
-    	let userVerifiedQuery = new Parse.Query("UserVerified");	
-		userVerifiedQuery.containedIn('userId', userId);			
-
-		userVerifiedQuery.find({
-			useMasterKey: true,
-			success: function(userVerified) {					
-
-				for (var i = 0; i < userVerified.length; ++i) 
-				{
-					userVerified[i].destroy();
-				}
-			}, error:function(error)
-    		{          		
-        		console.error("UserVerified query. error = " + error.message);
-    		}
-    	})
-    }
-
-
-    /*Parse.Cloud.define("TestChatFeedQWuery", function(request, response) {	
-
-    	var userId = request.params.userId;    	
-
-    	let chatfeedQuery = new Parse.Query("ChatFeed");    	    	
-
-    	chatfeedQuery.containedIn('participants', myArray);	
-
-		chatfeedQuery.find({
-			useMasterKey: true,
-			success: function(chatfeeds) {					
-
-				response.success(chatfeeds.length);
-
-				if (chatfeeds) {
-
-					response.success(chatfeeds);
-					//response.success(JSON.stringify(chatfeeds));
-
-				} else {
-
-					response.error(false);
-
-				}
-
-			}, error:function(error)
-    		{          		
-        		console.error("ChatFeed query. error = " + error.message);
-
-        		response.error(error.message);
-    		}
-    	});
-
-    })*/
-		

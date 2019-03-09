@@ -7,14 +7,19 @@
 
 	Parse.Cloud.define("AddRoleByName", function(request, response) {		
 
-		var params = request.params;		
+		var params = request.params;	
 		
    		if (!params.name) {
         	response.error("Missing parameters: name");
         	return response.error("Missing parameters: name"); 
    		}
 
-        var name = request.params.name; 
+   		var name = request.params.name; 
+
+   		if (!params.removeId) {
+        	response.error("Missing parameters: removeId");
+        	return response.error("Missing parameters: removeId"); 
+   		}        
 
         var newRole = new Parse.Role(name, new Parse.ACL());      
         newRole.save(null, {useMasterKey: true}).then(function(newRolePF) {	       		        				
@@ -27,9 +32,9 @@
 
 			newRolePF.setACL(acl); 
 
-			if (request.removeId) {
+			if (request.params.removeId) {
 
-				var removeId = request.removeId;
+				var removeId = request.params.removeId;
 
 				newRolePF.set("removeId", removeId);
 			}
