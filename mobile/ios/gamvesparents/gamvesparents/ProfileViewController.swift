@@ -65,11 +65,16 @@ class ProfileViewController: UIViewController,
     //var youAdminChatId          = Int()
     var sonAdminChatId          = Int()
     var partnerAdminChatId       = Int()
+
+    //var keyboardHeight = Int()
     
+    var activeTextField: UITextField!
+
     let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
         v.backgroundColor = UIColor.gamvesColor
+        v.bounces = false
         return v
     }()
 
@@ -549,7 +554,12 @@ class ProfileViewController: UIViewController,
 
             NotificationCenter.default.addObserver(self, selector: #selector(self.loadDataAfterLogin), name: NSNotification.Name(rawValue: Global.notificationKeyLoadDataAfterLogin), object: nil)                               
             
+            //NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+            
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         if Global.familyLoaded {
             self.familyLoaded()            
@@ -598,6 +608,29 @@ class ProfileViewController: UIViewController,
         //self.partnerPasswordTextField.text = "Leda2016"
 
     }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    @objc func keyboardWillShow(notification:NSNotification){
+        
+        var userInfo = notification.userInfo!
+        var keyboardFrame:CGRect = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+        
+        var contentInset:UIEdgeInsets = self.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height
+        scrollView.contentInset = contentInset
+    }
+    
+    @objc func keyboardWillHide(notification:NSNotification){
+        
+        let contentInset:UIEdgeInsets = UIEdgeInsets.zero
+        scrollView.contentInset = contentInset
+    }
+    
     
     override func viewDidLayoutSubviews() {
 
@@ -966,14 +999,35 @@ class ProfileViewController: UIViewController,
             }
         })
     }
+
+    /*@objc func keyboardWillShow(_ notification: Notification) {
+        if let userInfo = notification.userInfo {
+            
+            let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue
+            
+            self.keyboardHeight = Int(keyboardFrame!.height)
+        }
+    }*/
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        
-        let editTextPosition = textField.frame.maxY
-        
+
+        /*self.activeTextField = textField
+
+        var point = textField.frame.origin
+        point.y = point.y - 50
+        self.scrollView.setContentOffset(CGPoint(x:0, y:point.y), animated: true)*/
+
+        /*var editTextPosition = textField.frame.maxY
+
+        if textField == self.partnerNameTextField {
+
+            editTextPosition =  CGFloat(self.keyboardHeight * -1)  //CGFloat(( Int(editTextPosition) + self.keyboardHeight ) * -1) 
+
+        } 
+
         print(editTextPosition)
         
-        self.scrollView.setContentOffset(CGPoint(x:0, y:editTextPosition), animated: true)
+        self.scrollView.setContentOffset(CGPoint(x:0, y:editTextPosition), animated: true)*/
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -1020,7 +1074,7 @@ class ProfileViewController: UIViewController,
         self.scrollView.addConstraintsWithFormat("H:|-12-[v0]-12-|", views: self.bottomView)                 
 
         self.scrollView.addConstraintsWithFormat(
-            "V:|-topPadding-[v0(photoSize)]-topPadding-[v1(40)]-20-[v2(photoContainerHeight)]-20-[v3(schoolContainerHeight)]-30-[v4(saveButtonHeight)][v5(50)]|", views: 
+            "V:|-topPadding-[v0(photoSize)]-topPadding-[v1(40)]-20-[v2(photoContainerHeight)]-20-[v3(schoolContainerHeight)]-30-[v4(saveButtonHeight)][v5(300)]|", views: 
             self.photosContainerView, 
             self.segmentedControl, 
             self.sonNameContainerView,
@@ -1408,9 +1462,8 @@ class ProfileViewController: UIViewController,
                             self.scrollViewGoTop()
                             
                             self.sonSaving = false
-
                             
-                            sender.isUserInteractionEnabled = true
+                            self.saveButton.isUserInteractionEnabled = true
 
                             //aca
 
@@ -2317,11 +2370,13 @@ class ProfileViewController: UIViewController,
     }  
    
     
-    fileprivate func observeKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardShow), name: .UIKeyboardWillShow, object: nil)
+    /*func observeKeyboardNotifications() {
         
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardShow), name: .UIKeyboardWillShow, object: nil)        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHide), name: .UIKeyboardWillHide, object: nil)
+
     }
+   
     
     @objc func keyboardHide() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
@@ -2338,7 +2393,7 @@ class ProfileViewController: UIViewController,
             self.view.frame = CGRect(x: 0, y: y, width: self.view.frame.width, height: self.view.frame.height)
             
         }, completion: nil)
-    }
+    }*/
 
     func imagePickerControllerDidCancel(picker: UIImagePickerController)
     {
