@@ -9,11 +9,10 @@
 	Parse.Cloud.define("createGamvesUser", function (request, response) {
 
 		var objects = [];
-		var resutlUser;
-		var fanpageSaved;
+		var resutlUser;		
 		var albumsArray = [];
 		var profile;
-		var categorySaved;
+		var categorySaved, fanpageSaved;
 		var adminUser;
 		var notificationSaved;
 		
@@ -260,7 +259,7 @@
 		    	return fanpage.save(null, {useMasterKey: true}); 	
 		    }			    	            		
 
-		}).then(function(fanpagePF) {		
+		}).then(function(fanpagePF) {				
 
 			//console.log("--9--");		
 
@@ -359,14 +358,15 @@
 		    notification.set("description", description);
 
     		//notification.set("description", fanpageReSaved.get("pageAbout"));
-
-    		notification.set("target", [resutlUser.id]);  
-
+    		//notification.set("target", [resutlUser.id]);  
     		//notification.set("cover", fanpageReSaved.get("pageCover"));	    		
+    		
     		notification.set("referenceId", fanpageReSaved.get("fanpageId"));
     		notification.set("date", fanpageReSaved.get("createdAt"));
     		notification.set("fanpage", fanpageReSaved); 
-			notification.set("posterId", adminUser.id); 				
+			notification.set("posterId", adminUser.id); 	
+
+			notification.set("removeId", resutlUser.id);								
 
     		notification.set("type", 6);
 
@@ -374,7 +374,14 @@
 
 		}).then(function(notificationSavedPF) {		
 
-			notificationSaved = notificationSavedPF;        
+			notificationSaved = notificationSavedPF;
+
+			let reoleFriend = "friendOf___" + resutlUser.id;
+
+			Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": notificationSaved.id, "role" : reoleFriend });
+
+			Parse.Cloud.run("AddRoleToObject", { "pclassName": "Fanpages", "objectId": fanpageSaved.id, "role" : reoleFriend });			
+
 
 	        var imagesQuery = new Parse.Query("Images");
 	        imagesQuery.equalTo("name", "welcome");

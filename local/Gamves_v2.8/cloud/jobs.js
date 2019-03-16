@@ -402,6 +402,8 @@
 				notificationBirthday.set("posterName", posterName);				
 				notificationBirthday.set("posterId", userPF.id);
 
+				notificationBirthday.set("removeId", userPF.id);
+
 				notificationBirthday.set("cover", cover);						
 				
 				notificationBirthday.set("type", 4);							
@@ -429,6 +431,20 @@
 								
 				notificationBirthday.set("date", today);	
 				notificationBirthday.save(null, {useMasterKey: true}); 
+
+				notificationBirthday.save(null, { useMasterKey: true,	
+					success: function (notificationSaved) {	
+
+						let reoleFriend = "friendOf___" + friendId;
+
+						Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": notificationBirthday.id, "role" : reoleFriend });
+
+					},
+					error: function (response, error) {											
+					    
+					    console.log("error: " + error);		
+					}
+				});
 
 				callback(true);
 

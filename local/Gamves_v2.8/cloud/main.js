@@ -1215,11 +1215,17 @@
 
 		    	notification.set("type", type);
 
+		    	notification.set("removeId", posterId);
+
 		    	return notification.save(null, {useMasterKey: true});
 
-			}).then(function(saved) {
+			}).then(function(savedNotification) {
 
-				notificationSaved = saved;
+				let reoleFriend = "friendOf___" + posterId;
+
+				Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": savedNotification.id, "role" : reoleFriend });
+
+				notificationSaved = savedNotification;
 
 				var friendslQuery = new Parse.Query("Friends");
 			    friendslQuery.equalTo("userId", posterId);
@@ -1426,14 +1432,31 @@
 				notificationFriendRequest.set("posterName", posterName);
 
 				//notificationFriendRequest.add("target", friendId);	
+
 				notificationFriendRequest.set("date", request.object.get("createdAt"));								
 
 				//notificationFriendRequest.set("cover", coverPoster);
-				notificationFriendRequest.set("posterId", posterPF.id);					
+				notificationFriendRequest.set("posterId", posterPF.id);	
+
+				notificationFriendRequest.set("removeId", posterPF.id);					
 				
 				notificationFriendRequest.set("type", 3);				
 
 				notificationFriendRequest.save(null, {useMasterKey: true});	
+
+				notificationFriendRequest.save(null, { useMasterKey: true,	
+					success: function (notificationSaved) {	
+
+						let reoleFriend = "friendOf___" + friendId;
+
+						Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": notificationFriendRequest.id, "role" : reoleFriend });
+
+					},
+					error: function (response, error) {											
+					    
+					    console.log("error: " + error);		
+					}
+				});
 
 				let objFriend = {
 		    		title:titleNotification,
@@ -1507,7 +1530,8 @@
 					notificationPoster.set("description", descPoster);	
 					notificationPoster.set("posterName", posterName);
 					notificationPoster.set("cover", coverPoster);
-					notificationPoster.set("posterId", friendPF.id);					
+					notificationPoster.set("posterId", friendPF.id);		
+					notificationFriend.set("removeId", posterId);				
 					
 					notificationPoster.set("type", 3);							
 					
@@ -1536,6 +1560,7 @@
 					notificationFriend.set("posterName", friendName);
 					notificationFriend.set("cover", coverFriend);
 					notificationFriend.set("posterId", posterPF.id);	
+					notificationFriend.set("removeId", friendId);	
 					
 					notificationFriend.set("type", 3);	
 					
@@ -1553,19 +1578,25 @@
 
 			    }).then(function(restulNotificationsPF) {   
 
+			    	//Notification Reole 
 			    	let notiPoster = restulNotificationsPF[0];
 
 			    	//notiPoster.add("target", posterId);				
-					notiPoster.set("date", request.object.get("createdAt"));					
+					notiPoster.set("date", request.object.get("createdAt"));			
 
 					let notiFriend = restulNotificationsPF[1];
 
 					//notiFriend.add("target", friendId);	
-					notiFriend.set("date", request.object.get("createdAt"));				
+					notiFriend.set("date", request.object.get("createdAt"));								
 
 					return Parse.Object.saveAll([notiPoster, notiFriend]);
 
-				}).then(function(resutl) {   
+				}).then(function(resutlAll) { 
+
+					let reoleFriend = "friendOf___" + friendId;	  
+
+					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": resutlAll[0].id, "role" : reoleFriend });
+					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": resutlAll[0].id, "role" : reoleFriend });
 
 				    let posterFanpageQuery = new Parse.Query("Fanpages");		
 					posterFanpageQuery.equalTo("posterId", posterId);		
@@ -1838,24 +1869,18 @@
 
 		var familyId = object.id;
 
-		var short = object.get("short");
-
-		var familyRole, schoolRole;
+		var short = object.get("short");		
 
 		var familyRoleName = "familyOf___" + familyId;
 
-		Parse.Cloud.run("AddRoleByName", { "name": familyRoleName, "removeId":familyId}).then(function(familyRolePF) {  
-
-			familyRole = familyRolePF;
+		Parse.Cloud.run("AddRoleByName", { "name": familyRoleName, "removeId":familyId}).then(function(familyRolePF) {  			
 
 			var schoolQuery = request.object.relation("school").query();
 			schoolQuery.first({useMasterKey:true}).then(function(schoolPF){
 
 				var schoolId = schoolPF.id;
 
-				var shortSchool = schoolPF.get("short");				
-
-				Parse.Cloud.run("AddUserToRole", { "parent": schoolRole, "child": familyRole});
+				var shortSchool = schoolPF.get("short");						
 
 				var levelQuery = request.object.relation("level").query();					
 				levelQuery.first({useMasterKey:true}).then(function(levelPF){
@@ -1871,11 +1896,7 @@
 
 						for (var i = 0; i < usersPF.length; ++i) 
 						{
-
-							//var friendOfRole = "friendOf___" + usersPF.id;
-
-							//Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": friendOfRole});
-
+							
 							Parse.Cloud.run("AddUserToRole", { "userId": usersPF.id, "role": familyRoleName});
 
 							usersPF[i].set("schoolId", schoolId);

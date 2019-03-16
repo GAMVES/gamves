@@ -188,6 +188,8 @@
 		var objectId = request.params.objectId;		
 	    var role = request.params.role;		
 
+	    console.log("pclassName:  " + pclassName + " objectId: " + objectId + " role: " + role );
+
 		var queryConfig = new Parse.Query("Config");				   
 	    queryConfig.find({
 	        useMasterKey: true,
@@ -233,6 +235,8 @@
 								_body += ",";
 							}
 					    }
+
+					    _body += "\"role:admin\":{\"read\": true,\"write\": true},";
 					    _body += "\"role:" + role + "\":{\"read\": true,\"write\": true}";
 					    _body += "}}";	
 

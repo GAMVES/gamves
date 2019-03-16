@@ -327,7 +327,7 @@ document.addEventListener("LoadVideo", function(event){
 
                             window.GetCheckedInclude("frm_edit_video", function(result) {                              
 
-                              let role;
+                              var role;
 
                               if  (result) {
                                   role = "schools";
@@ -351,13 +351,14 @@ document.addEventListener("LoadVideo", function(event){
                                   notification.set("referenceId", video.get("videoId"));
                                   notification.set("date", video.get("createdAt"));
                                   notification.set("video", video);
-
                                   notification.set("type", 1);
 
-                                  notification.save(null, {
-                                      success: function (savedNotification) {                                      
+                                  notification.set("removeId", userAdmin.id);
 
-                                        Parse.Cloud.run("AddAclToNotification", { "roles": shortArray, "notificationId": savedNotification.id });                                     
+                                  notification.save(null, {
+                                      success: function (savedNotification) {                                                                              
+
+                                        Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": notification.id, "role" : role });                                        
 
                                         $('#edit_modal_video').modal('hide');
 

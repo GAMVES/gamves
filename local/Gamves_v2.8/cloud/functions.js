@@ -1073,7 +1073,7 @@
 		var familyId = request.params.familyId;
 
 		var userQuery = new Parse.Query("Family");
-		userQuery.equalTo("familyId", familyId);		        
+		userQuery.equalTo("objectId", familyId);		        
        
         userQuery.first({
         	useMasterKey: true,
@@ -1085,32 +1085,38 @@
 
         		userQuery.find({
         			useMasterKey: true,
-					success: function(members) {					
+					success: function(members) {											
 
-						//Remove family Memebers
+						//Remove family ChatFeed							    			
+						let chatfeedQuery = new Parse.Query("ChatFeed");	    
+		    			chatfeedQuery.equalTo('remove', familyPF.id);
+		    			chatfeedQuery.find({useMasterKey:true}).then(function(chatfeeds) {	    				    				
+		    				for (var i = 0; i < chatfeeds.length; ++i) {						
+								var chatQuery = chatfeeds[i].relation("chats").query();					
+								chatQuery.find({useMasterKey:true}).then(function(chatsPF) {
+									for (var j = 0; j < chatsPF.length; ++j) {
+										chatsPF[j].destroy({useMasterKey:true});
+									}							
+								});	
+								chatfeeds[i].destroy({useMasterKey:true});												
+							}
+		    			});
+
+
+		    			//Remove Family Role		    		
+						var queryRole = new Parse.Query(Parse.Role);						
+						queryRole.equalTo('removeId', familyPF.id);		
+						queryRole.find({useMasterKey:true}).then(function(rolesPF) {	    
+							for (var i = 0; i < rolesPF.length; ++i) {
+								rolesPF[i].destroy({useMasterKey:true});
+							}					
+						});		    			
+
+		    			//Remove family Memebers
 						for (var i = 0; i < members.length; ++i) {
 							let userId = members[i].id;
 							Parse.Cloud.run("RemoveUserById", { "userId": userId});
 						}
-
-						//Remove family ChatFeed							
-						let chatfeedQuery = new Parse.Query("ChatFeed");	    
-		    			chatfeedQuery.equalTo('remove', familyPF.id);
-		    			chatfeedQuery.find({useMasterKey:true}).then(function(chatfeeds) {	    				
-		    				for (var i = 0; i < chatfeeds.length; ++i) {
-								let members = chatfeeds.get("members");
-								let membersArray = SON.parse(members);
-								if (membersArray.length==2) {
-									var chatQuery = chatfeeds[i].object.relation("chats").query();					
-									chatQuery.first({useMasterKey:true}).then(function(chatsPF) {
-										for (var j = 0; j < chatsPF.length; ++j) {
-											chatsPF[j].destroy({useMasterKey:true});
-										}
-										chatfeeds[i].destroy({useMasterKey:true});	
-									});						
-								}
-							}
-		    			});	
 
 						//remove the family
 						familyPF.destroy({useMasterKey: true});
@@ -1168,7 +1174,7 @@
 				//Algums
 				let albumsQuery = new Parse.Query("Albums");	
 				albumsQuery.equalTo('posterId', userPF.id);		
-				sessionQuery.find({useMasterKey:true}).then(function(albums) {		
+				albumsQuery.find({useMasterKey:true}).then(function(albums) {		
 					for (var i = 0; i < albums.length; ++i) {
 						albums[i].destroy({useMasterKey:true});
 					}
@@ -1179,6 +1185,12 @@
 				fanpagesQuery.equalTo('posterId', userPF.id);			
 				fanpagesQuery.find({useMasterKey:true}).then(function(fanpages) {		
 					for (var i = 0; i < fanpages.length; ++i) {
+						var albumsQuery = fanpages[i].relation("albums").query();					
+						albumsQuery.find({useMasterKey:true}).then(function(albumsPF) {
+							for (var j = 0; j < albumsPF.length; ++j) {
+								albumsPF[j].destroy({useMasterKey:true});
+							}							
+						});	
 						fanpages[i].destroy({useMasterKey:true});
 					}
 				});
@@ -1218,7 +1230,7 @@
 
 				//Notfication
 				let notificationsQuery = new Parse.Query("Notifications");	
-				notificationsQuery.equalTo('userId', userPF.id);		
+				notificationsQuery.equalTo('removeId', userPF.id);		
 				notificationsQuery.find({useMasterKey:true}).then(function(notifications) {	    							
 					for (var i = 0; i < notifications.length; ++i) {
 						notifications[i].destroy({useMasterKey:true});
