@@ -292,104 +292,114 @@ ImagesPickerProtocol {
         self.buttonRightView.backgroundColor = UIColor.gamvesLightLightBlueColor        
         self.headerView.backgroundColor = UIColor.gamvesGamvesLightColor
 
-         self.floaty.paddingY = 70
-        self.floaty.paddingX = 25                    
-        self.floaty.itemSpace = 30        
+        let family_registered = Global.defaults.bool(forKey: "\(self.puserId)_family_registered")
+            
+        if !family_registered {
+
+            self.floaty.paddingY = 70
+            self.floaty.paddingX = 25                    
+            self.floaty.itemSpace = 30        
+            
+            self.floaty.hasShadow = true
+            self.floaty.buttonColor = UIColor.gamvesColor
+            
+            var addImage = UIImage(named: "add_symbol")
+            addImage = addImage?.maskWithColor(color: UIColor.white)
+            addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
+            self.floaty.buttonImage = addImage
+            self.floaty.sizeToFit()
+
+            let itemNewGroup = FloatyItem()
+            var groupAddImage = UIImage(named: "group_add")
+            groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
+            itemNewGroup.icon = groupAddImage
+            itemNewGroup.buttonColor = UIColor.gamvesColor
+            itemNewGroup.titleLabelPosition = .left
+            itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
+            itemNewGroup.title = "ADD FAMILY"
+            itemNewGroup.handler = { item in
+                            
+                let title = "Add family members request"
+                var message = "\n\nYou want to add your family members including your son or daughter and partner. \n\n Choose the scholl they go to. \n\n You will be answered back in a moment. Thanks for using Gamves"                                                            
+                
+                var alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+
+                //let margin:CGFloat = 10.0
+                //let rect = CGRect(x: margin, y: 150.0, width: 250, height: 60)
+                //let customView = UIView(frame: rect)
+                
+                //customView.backgroundColor = UIColor.cyan
+                
+                //self.schoolTextField.placeholder = "Select your school"
+                //self.schoolTextField.keyboardType = UIKeyboardType.default
+
+                //self.schoolTextField.frame = rect
+
+                //customView.addSubview(self.schoolTextField)
+                //alert.view.addSubview(customView)
+                
+                //self.schoolsDownPicker = DownPicker(textField: self.schoolTextField, withData:self.schoolsArray as! [Any])
+                //self.schoolsDownPicker.setPlaceholder("Tap to choose school...")
+                //self.schoolsDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
+                
+                alert.addAction(UIAlertAction(title: "ACCEPT FAMILY INTEGRATION", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
+
+                    DispatchQueue.main.async
+                    {
+                        self.showImagePicker(type: ProfileImagesTypes.Son)
+
+                        Global.defaults.set(true, forKey: "\(self.puserId)_picker_shown")
+                    }
+                    
+                }))
+
+                alert.addAction(UIAlertAction(title: "DECIDE LATER", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
+
+                    self.dismiss(animated: true, completion: nil)               
+                    
+                }))
+                
+                var height:NSLayoutConstraint = NSLayoutConstraint(item: alert.view, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: self.view.frame.height * 0.60)
+                alert.view.addConstraint(height);
+                
+                self.present(alert, animated: true) 
         
-        self.floaty.hasShadow = true
-        self.floaty.buttonColor = UIColor.gamvesColor
-        
-        var addImage = UIImage(named: "add_symbol")
-        addImage = addImage?.maskWithColor(color: UIColor.white)
-        addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
-        self.floaty.buttonImage = addImage
-        self.floaty.sizeToFit()
 
-        let itemNewGroup = FloatyItem()
-        var groupAddImage = UIImage(named: "group_add")
-        groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
-        itemNewGroup.icon = groupAddImage
-        itemNewGroup.buttonColor = UIColor.gamvesColor
-        itemNewGroup.titleLabelPosition = .left
-        itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
-        itemNewGroup.title = "ADD FAMILY"
-        itemNewGroup.handler = { item in
-                        
-            let title = "Add family members request"
-            var message = "\n\nYou want to add your family members including your son or daughter and partner. \n\n Choose the scholl they go to. \n\n You will be answered back in a moment. Thanks for using Gamves"                                                            
-            
-            var alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                // Prepare the popup assets
+                /*let title = "THIS IS THE DIALOG TITLE"
+                let message = "This is the message section of the popup dialog default view"
+                let image = UIImage(named: "pexels-photo-103290")
 
-            //let margin:CGFloat = 10.0
-            //let rect = CGRect(x: margin, y: 150.0, width: 250, height: 60)
-            //let customView = UIView(frame: rect)
-            
-            //customView.backgroundColor = UIColor.cyan
-            
-            //self.schoolTextField.placeholder = "Select your school"
-            //self.schoolTextField.keyboardType = UIKeyboardType.default
+                // Create the dialog
+                let popup = PopupDialog(title: title, message: message, image: image)
 
-            //self.schoolTextField.frame = rect
-
-            //customView.addSubview(self.schoolTextField)
-            //alert.view.addSubview(customView)
-            
-            //self.schoolsDownPicker = DownPicker(textField: self.schoolTextField, withData:self.schoolsArray as! [Any])
-            //self.schoolsDownPicker.setPlaceholder("Tap to choose school...")
-            //self.schoolsDownPicker.addTarget(self, action: #selector(self.handleSchoolPickerChange), for: .valueChanged)
-            
-            alert.addAction(UIAlertAction(title: "ACCEPT FAMILY INTEGRATION", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
-
-                DispatchQueue.main.async
-                {
-                    self.showImagePicker(type: ProfileImagesTypes.Son)
-
-                    Global.defaults.set(true, forKey: "\(self.puserId)_picker_shown")
+                // Create buttons
+                let buttonOne = CancelButton(title: "CANCEL") {
+                    print("You canceled the car dialog.")
                 }
-                
-            }))
 
-            alert.addAction(UIAlertAction(title: "DECIDE LATER", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in            
+                // This button will not the dismiss the dialog
+                let buttonTwo = DefaultButton(title: "ADMIRE CAR", dismissOnTap: false) {
+                    print("What a beauty!")
+                }
 
-                self.dismiss(animated: true, completion: nil)               
-                
-            }))
-            
-            var height:NSLayoutConstraint = NSLayoutConstraint(item: alert.view, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: self.view.frame.height * 0.60)
-            alert.view.addConstraint(height);
-            
-            self.present(alert, animated: true) 
-    
+                let buttonThree = DefaultButton(title: "BUY CAR", height: 60) {
+                    print("Ah, maybe next time :)")
+                }
 
-            // Prepare the popup assets
-            /*let title = "THIS IS THE DIALOG TITLE"
-            let message = "This is the message section of the popup dialog default view"
-            let image = UIImage(named: "pexels-photo-103290")
+                // Add buttons to dialog
+                // Alternatively, you can use popup.addButton(buttonOne)
+                // to add a single button
+                popup.addButtons([buttonOne, buttonTwo, buttonThree])
 
-            // Create the dialog
-            let popup = PopupDialog(title: title, message: message, image: image)
+                // Present dialog
+                self.present(popup, animated: true, completion: nil) */           
 
-            // Create buttons
-            let buttonOne = CancelButton(title: "CANCEL") {
-                print("You canceled the car dialog.")
             }
 
-            // This button will not the dismiss the dialog
-            let buttonTwo = DefaultButton(title: "ADMIRE CAR", dismissOnTap: false) {
-                print("What a beauty!")
-            }
-
-            let buttonThree = DefaultButton(title: "BUY CAR", height: 60) {
-                print("Ah, maybe next time :)")
-            }
-
-            // Add buttons to dialog
-            // Alternatively, you can use popup.addButton(buttonOne)
-            // to add a single button
-            popup.addButtons([buttonOne, buttonTwo, buttonThree])
-
-            // Present dialog
-            self.present(popup, animated: true, completion: nil) */           
+            self.floaty.addItem(item: itemNewGroup)  
+            //self.floaty.addItem(item: itemSelectGroup)               
+            self.view.addSubview(self.floaty)
 
         }
 
@@ -406,9 +416,7 @@ ImagesPickerProtocol {
             self.selectContact(group: false)
         }*/
         
-        self.floaty.addItem(item: itemNewGroup)  
-        //self.floaty.addItem(item: itemSelectGroup)               
-        self.view.addSubview(self.floaty)
+        
 
         //self.openProfile() ate
 
@@ -434,7 +442,7 @@ ImagesPickerProtocol {
 
                 grades.add(Global.levels[l]?.fullDesc)
             }            
-        }        
+        }    
         
     }*/
     

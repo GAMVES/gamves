@@ -599,13 +599,13 @@ class ProfileViewController: UIViewController,
         self.sonUserTextField.text = "clementevigil"
         self.sonPasswordTextField.text = "Clemente2016"
 
-        //self.yourNameTextField.text = "Jose Vigil"
-        //self.yourUserTextField.text= "josevigil"
-        //self.yourFamilyTextField.text = "Vigil family"
+        self.yourNameTextField.text = "Jose Vigil"
+        self.yourUserTextField.text = "josevigil"
+        self.yourFamilyTextField.text = "Vigil family"
 
-        //self.partnerNameTextField.text = "Leda Olano"
-        //self.partnerEmailTextField.text = "ledaola@gmail.com"
-        //self.partnerPasswordTextField.text = "Leda2016"
+        self.partnerNameTextField.text = "Leda Olano"
+        self.partnerEmailTextField.text = "ledaola@gmail.com"
+        self.partnerPasswordTextField.text = "Leda2016"
 
     }
     
@@ -1540,6 +1540,8 @@ class ProfileViewController: UIViewController,
                                                     alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
                                                             
                                                         //Close app    
+
+                                                        Global.defaults.set(true, forKey: "\(self.puserId)_family_registered")
 
                                                         exit(0)
 
