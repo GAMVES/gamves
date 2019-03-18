@@ -1085,12 +1085,21 @@
 
         		userQuery.find({
         			useMasterKey: true,
-					success: function(members) {											
+					success: function(members) {																	
 
-						//Remove family ChatFeed							    			
-						let chatfeedQuery = new Parse.Query("ChatFeed");	    
-		    			chatfeedQuery.equalTo('remove', familyPF.id);
-		    			chatfeedQuery.find({useMasterKey:true}).then(function(chatfeeds) {	    				    				
+		    			//Remove Family Role		    		
+						var queryRole = new Parse.Query(Parse.Role);						
+						queryRole.equalTo('removeId', familyPF.id);		
+						queryRole.find({useMasterKey:true}).then(function(rolesPF) {	    
+							for (var i = 0; i < rolesPF.length; ++i) {
+								rolesPF[i].destroy({useMasterKey:true});
+							}					
+						});		
+
+						//ChatFeed for family
+						let chatfeedFamilyQuery = new Parse.Query("ChatFeed");	    
+		    			chatfeedFamilyQuery.equalTo('removeId', familyId);
+		    			chatfeedFamilyQuery.find({useMasterKey:true}).then(function(chatfeeds) {	    				    				
 		    				for (var i = 0; i < chatfeeds.length; ++i) {						
 								var chatQuery = chatfeeds[i].relation("chats").query();					
 								chatQuery.find({useMasterKey:true}).then(function(chatsPF) {
@@ -1100,17 +1109,7 @@
 								});	
 								chatfeeds[i].destroy({useMasterKey:true});												
 							}
-		    			});
-
-
-		    			//Remove Family Role		    		
-						var queryRole = new Parse.Query(Parse.Role);						
-						queryRole.equalTo('removeId', familyPF.id);		
-						queryRole.find({useMasterKey:true}).then(function(rolesPF) {	    
-							for (var i = 0; i < rolesPF.length; ++i) {
-								rolesPF[i].destroy({useMasterKey:true});
-							}					
-						});		    			
+		    			});	    			
 
 		    			//Remove family Memebers
 						for (var i = 0; i < members.length; ++i) {
@@ -1195,9 +1194,9 @@
 					}
 				});
 
-				//ChatFeed
+				//ChatFeed for users
 				let chatfeedQuery = new Parse.Query("ChatFeed");	    
-    			chatfeedQuery.equalTo('remove', userPF.id);
+    			chatfeedQuery.equalTo('removeId', userPF.id);
     			chatfeedQuery.find({useMasterKey:true}).then(function(chatfeeds) {	    				    				
     				for (var i = 0; i < chatfeeds.length; ++i) {						
 						var chatQuery = chatfeeds[i].relation("chats").query();					

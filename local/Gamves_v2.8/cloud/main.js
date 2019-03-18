@@ -1865,15 +1865,15 @@
 
 	Parse.Cloud.afterSave("Family", function(request) {			 
 
-		var object = request.object;
+		var object = request.object;		
 
-		var familyId = object.id;
+		var familyId = request.object.id;
 
 		var short = object.get("short");		
 
 		var familyRoleName = "familyOf___" + familyId;
 
-		Parse.Cloud.run("AddRoleByName", { "name": familyRoleName, "removeId":familyId}).then(function(familyRolePF) {  			
+		Parse.Cloud.run("AddRoleByName", { "name": familyRoleName, "removeId": familyId }).then(function(familyRolePF) {  			
 
 			var schoolQuery = request.object.relation("school").query();
 			schoolQuery.first({useMasterKey:true}).then(function(schoolPF){
