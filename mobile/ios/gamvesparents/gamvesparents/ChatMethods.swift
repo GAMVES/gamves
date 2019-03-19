@@ -80,7 +80,6 @@ class ChatMethods: NSObject
             if isFamily {
 
                 chatFeed["room"] = Global.gamvesFamily.familyName
-
                 chatFeed["removeId"] = Global.gamvesFamily.objectId
 
             } else {
@@ -100,8 +99,7 @@ class ChatMethods: NSObject
             let member = String(describing: [gamvesUsers[1].userId, gamvesUsers[0].userId])
             chatFeed["members"] = member
             chatFeed["room"] = "\(gamvesUsers[1].userId)____\(gamvesUsers[0].userId)"
-
-            chatFeed["remove"] = gamvesUsers[0].userId
+            chatFeed["removeId"] = gamvesUsers[0].userId
             
         } 
 

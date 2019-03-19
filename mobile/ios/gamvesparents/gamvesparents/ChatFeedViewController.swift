@@ -106,6 +106,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     @objc func loadChatFeed()
     {
         self.collectionView?.reloadData()
+        self.activityView.stopAnimating()
     }
 
     func reloadCollectionView() {
@@ -138,7 +139,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.created) { _, chatFeed in
             
-            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int ) -> () in
+            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandlerFeed: { ( restul:Int ) -> () in
                 
                 self.collectionView?.reloadData()
                 
@@ -148,7 +149,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.subscription = liveQueryClientFeed.subscribe(queryChatFeed).handle(Event.updated) { _, chatFeed in
             
-            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandler: { ( restul:Int ) -> () in
+            ChatFeedMethods.parseChatFeed(chatFeedObjs: [chatFeed], completionHandlerFeed: { ( restul:Int ) -> () in
                 
                 self.collectionView?.reloadData()
                 
@@ -166,8 +167,10 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     {
         
         self.activityView.startAnimating()
+
+        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })                                                
         
-        queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
+        /*queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
             
             if error == nil
             {
@@ -180,7 +183,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
                 {
                     let chatfeedsCount =  chatfeeds?.count
                     
-                    ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( restul:Int ) -> () in
+                    ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandlerFeed: { ( restul:Int ) -> () in
                         
                         self.collectionView?.reloadData()
                         self.activityView.stopAnimating()
@@ -194,7 +197,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
             } else {
                 print(error)
             }
-        })
+        })*/
     }
     
     

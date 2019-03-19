@@ -781,10 +781,11 @@ class Global: NSObject
         
         let badgesQuery = PFQuery(className:"Badges")
         
-        if let userId = PFUser.current()?.objectId
-        {
-            badgesQuery.whereKey("userId", equalTo: userId)
-        }
+        //if let userId = PFUser.current()?.objectId
+        //{
+        //    badgesQuery.whereKey("userId", equalTo: userId)
+        //}
+
         badgesQuery.whereKey("chatId", equalTo: chatId)
         badgesQuery.findObjectsInBackground(block: { (badges, error) in
             
@@ -869,6 +870,8 @@ class Global: NSObject
                 if error == nil {
                     
                     if let family = familyPF {
+
+                        self.gamvesFamily.objectId = family.objectId!
                         
                         self.gamvesFamily.familyName = family["description"] as! String
                         self.gamvesFamily.familyChatId = family["familyChatId"] as! Int

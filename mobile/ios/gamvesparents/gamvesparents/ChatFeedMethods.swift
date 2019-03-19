@@ -195,7 +195,7 @@ class ChatFeedMethods: NSObject {
             {
                 let chatfeedsCount =  chatfeeds?.count
                 
-                self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandler: { ( chatId:Int ) -> () in
+                self.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandlerFeed: { ( chatId:Int ) -> () in
                 
                         NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyChatFeed), object: self)
 
@@ -208,7 +208,7 @@ class ChatFeedMethods: NSObject {
         })
     }
     
-    static func parseChatFeed(chatFeedObjs: [PFObject], completionHandler : @escaping (_ chatId:Int) -> ()?)
+    static func parseChatFeed(chatFeedObjs: [PFObject], completionHandlerFeed : @escaping (_ chatId:Int) -> ()?)
     {
         var chatfeedsCount = chatFeedObjs.count
         
@@ -297,7 +297,7 @@ class ChatFeedMethods: NSObject {
 
                                     self.splitFeedSection()
                                     
-                                    completionHandler(chatId)
+                                    completionHandlerFeed(chatId)
                                 }
                                 
                                 fcount = fcount + 1

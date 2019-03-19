@@ -127,6 +127,7 @@ UITextFieldDelegate  {
         tf.font = UIFont.boldSystemFont(ofSize: 20)     
         tf.layer.cornerRadius = 10.0
         tf.tag = 0
+        tf.text = "155 181 2085"
         tf.keyboardType = UIKeyboardType.decimalPad
         return tf
     }()

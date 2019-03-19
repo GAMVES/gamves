@@ -66,6 +66,8 @@ class ProfileViewController: UIViewController,
     var sonAdminChatId          = Int()
     var partnerAdminChatId       = Int()
 
+    var family:PFObject!
+
     //var keyboardHeight = Int()
     
     var activeTextField: UITextField!
@@ -1987,10 +1989,10 @@ class ProfileViewController: UIViewController,
     {
         var your_family_name = Global.defaults.string(forKey: "\(self.puserId)_your_family_name")
         
-        var family = PFObject(className: "Family")
-        family.setObject(your_family_name, forKey: "description")
+        self.family = PFObject(className: "Family")
+        self.family.setObject(your_family_name, forKey: "description")
         
-        let userRel:PFRelation = family.relation(forKey: "members")
+        let userRel:PFRelation = self.family.relation(forKey: "members")
         
         print("*************")
         print(self.partner.username)
@@ -2002,26 +2004,26 @@ class ProfileViewController: UIViewController,
         userRel.add(self.son!)
         userRel.add(self.you!)
 
-        family["familyChatId"]  = self.familyChatId
-        family["sonRegisterChatId"]  = self.sonRegisterChatId
-        family["partnerRegisterChatId"]  = self.partnerRegisterChatId
-        family["sonPartnerChatId"]  = self.sonPartnerChatId
+        self.family["familyChatId"]  = self.familyChatId
+        self.family["sonRegisterChatId"]  = self.sonRegisterChatId
+        self.family["partnerRegisterChatId"]  = self.partnerRegisterChatId
+        self.family["sonPartnerChatId"]  = self.sonPartnerChatId
         
         let imageFamily = self.loadImageFromDisc(imageName: Global.familyImageName)
 
         let pfimage = PFFileObject(name: "family", data: UIImageJPEGRepresentation(imageFamily, 1.0)!)
-        family.setObject(pfimage!, forKey: "picture")
+        self.family.setObject(pfimage!, forKey: "picture")
 
         let imageFamilySmall = self.loadImageFromDisc(imageName: Global.familyImageNameSmall)
         
         let pfimageSmall = PFFileObject(name: "familySmall", data: UIImageJPEGRepresentation(imageFamilySmall, 1.0)!)
-        family.setObject(pfimageSmall!, forKey: "pictureSmall")
+        self.family.setObject(pfimageSmall!, forKey: "pictureSmall")
 
         let skeys = Array(Global.schools.keys)
         for s in skeys {
             let school = Global.schools[s]
             if self.sonSchoolTextField.text == school?.schoolName {
-                let schoolRelation = family.relation(forKey: "school")
+                let schoolRelation = self.family.relation(forKey: "school")
                 schoolRelation.add((school?.schoolOBj)!)
             }
         }    
@@ -2030,7 +2032,7 @@ class ProfileViewController: UIViewController,
         
         print(son_grade)
         
-        let levelRel:PFRelation = family.relation(forKey: "level")
+        let levelRel:PFRelation = self.family.relation(forKey: "level")
         
         let lkeys = Array(Global.levels.keys)
         
@@ -2044,7 +2046,7 @@ class ProfileViewController: UIViewController,
             }
         }
 
-        family.saveInBackground { (success, error) in
+        self.family.saveInBackground { (success, error) in
             
             print(success)
             print(error)
@@ -2058,6 +2060,8 @@ class ProfileViewController: UIViewController,
             {           
 
                 print(your_family_name)
+                
+                Global.gamvesFamily.objectId = self.family.objectId!
                 
                 Global.gamvesFamily.familyName = your_family_name!
                
@@ -2174,7 +2178,7 @@ class ProfileViewController: UIViewController,
             youPartnerSon.append(self.partnerGamves)
             youPartnerSon.append(self.sonGamves)
             
-            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youPartnerSon, chatId: self.familyChatId, type: 1, isFamily: true, removeId: self.youGamves.userId, completionHandlerGroup: { ( resutl:Bool ) -> () in
+            ChatMethods.addNewFeedAppendgroup(gamvesUsers: youPartnerSon, chatId: self.familyChatId, type: 1, isFamily: true, removeId: self.family.objectId!, completionHandlerGroup: { ( resutl:Bool ) -> () in
                 
                 print("done youPartnerSon")
                 print(resutl)
