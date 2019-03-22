@@ -671,6 +671,7 @@ class Global: NSObject
 
                                 Global.levelDescription = levelPF!["description"] as! String
 
+
                                 var schoolId = userPF!["schoolId"] as! String
 
                                 let querySchool = PFQuery(className:"Schools")

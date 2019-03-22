@@ -161,6 +161,9 @@ class LoginController: UIViewController {
         self.userTextField.text = "clementevigil"
         self.passwordTextField.text = "Clemente2016"
 
+        //self.userTextField.text = "charlypeters"
+        //self.passwordTextField.text = "Charly2016"
+
     }
     
     @objc func handleLoginRegisterChange()

@@ -31,6 +31,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     var activityIndicatorView:NVActivityIndicatorView?
     
     var refreshControl: UIRefreshControl!
+
+    var categoryOrder = Int()
     
     lazy var tableView: UITableView = {
         let rect = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
@@ -238,15 +240,6 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     {
         
         let queryCategories = PFQuery(className:"Categories")
-
-        let filterTarget = [
-            Global.schoolShort,
-            Global.levelDescription.lowercased(),
-            Global.userId] as [String]
-        
-        print(filterTarget)
-        
-        //queryCategories.whereKey("target", containedIn: filterTarget)
         
         if !Global.hasDateChanged()
         {
@@ -257,6 +250,8 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         //queryCategories.order(byAscending: "order")
         
         var count = 0
+
+        categoryOrder = 1
         
         queryCategories.findObjectsInBackground { (categories, error) in
             
@@ -285,7 +280,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                         
                         //let cover = pcategory["cover"] as! String
                         
-                        let name = pcategory["name"] as! String
+                        var name = pcategory["name"] as! String
                         
                         let thumbnail = pcategory["thumbnail"] as! PFFileObject
                         
@@ -318,10 +313,17 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
                                                 if ((coverImage) != nil) {
                                                     cat.cover_image = coverImage!
                                                 }
-                                                
-                                                //let order = pcategory["order"] as! Int
-                                                
-                                                //Global.categories_gamves[order] = cat
+
+                                                if name == "TRENDING" {
+
+                                                    Global.categories_gamves[0] = cat
+
+                                                } else {                                                    
+
+                                                    Global.categories_gamves[self.categoryOrder] = cat
+
+                                                    self.categoryOrder = self.categoryOrder + 1
+                                                }                                                
 
                                                 var last = Bool()
                                                 
@@ -363,32 +365,25 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
     
         let ids = Array(Global.categories_gamves.keys)
         
+        print(ids)
+        
         for i in ids {
             
             var cat = Global.categories_gamves[i] as! GamvesCategory
             
             var fanpageAmount = 0
             
-            let category = cat.cateobj
+            let category = cat.cateobj	
             
-            let queryFanpage = PFQuery(className:"Fanpages")
+            let queryFanpage = PFQuery(className:"Fanpages")           
             
-            let filterTarget = [
-                Global.schoolShort,
-                Global.levelDescription.lowercased(),
-                Global.userId] as [String]
-            
-            //queryFanpage.whereKey("target", containedIn: filterTarget)
-            
-            queryFanpage.whereKey("category", equalTo: category)
-            
-            print(category)
+            queryFanpage.whereKey("categoryId", equalTo: category!.objectId)          
             
             queryFanpage.whereKey("approved", equalTo: true)
             
-            if !Global.hasDateChanged() {
-                queryFanpage.cachePolicy = .cacheElseNetwork
-            }
+            //if !Global.hasDateChanged() {
+            //    queryFanpage.cachePolicy = .cacheElseNetwork
+            //}
             
             queryFanpage.findObjectsInBackground { (fanpagesArray, error) in
                 
