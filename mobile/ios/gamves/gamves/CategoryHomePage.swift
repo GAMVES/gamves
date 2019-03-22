@@ -377,7 +377,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
             
             let queryFanpage = PFQuery(className:"Fanpages")           
             
-            queryFanpage.whereKey("categoryId", equalTo: category!.objectId)          
+            queryFanpage.whereKey("category", equalTo: category)
             
             queryFanpage.whereKey("approved", equalTo: true)
             

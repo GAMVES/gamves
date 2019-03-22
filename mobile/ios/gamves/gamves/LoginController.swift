@@ -158,11 +158,11 @@ class LoginController: UIViewController {
         
         self.prepTextFields(inView: [self.view])
 
-        self.userTextField.text = "clementevigil"
-        self.passwordTextField.text = "Clemente2016"
+        //self.userTextField.text = "clementevigil"
+        //self.passwordTextField.text = "Clemente2016"
 
-        //self.userTextField.text = "charlypeters"
-        //self.passwordTextField.text = "Charly2016"
+        self.userTextField.text = "charlypeteres"
+        self.passwordTextField.text = "Charly2016"
 
     }
     
