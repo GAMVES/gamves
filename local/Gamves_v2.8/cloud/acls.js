@@ -19,12 +19,25 @@
    		if (!params.removeId) {
         	response.error("Missing parameters: removeId");
         	return response.error("Missing parameters: removeId"); 
-   		}        
+   		}  
+   	
+   		//HERE ADD MORE VIEW ALL USERS
+	    
+	    var adminUser;   
 
-        var newRole = new Parse.Role(name, new Parse.ACL());      
-        newRole.save(null, {useMasterKey: true}).then(function(newRolePF) {	       		        				
+	    var userQuery = new Parse.Query(Parse.User);
+	    userQuery.equalTo("username", "gamvesadmin");
 
-			var acl = new Parse.ACL();
+	    return userQuery.find().then(function(adminPF) {      
+	    
+	    	adminUser = adminPF;
+
+	    	var newRole = new Parse.Role(name, new Parse.ACL());      
+        	return newRole.save(null, {useMasterKey: true}); 
+
+	    }).then(function(newRolePF) {
+
+	    	var acl = new Parse.ACL();
 			
 			acl.setReadAccess(newRolePF, true); 
 
@@ -35,17 +48,24 @@
 			if (request.params.removeId) {
 
 				var removeId = request.params.removeId;
-
 				newRolePF.set("removeId", removeId);
+
 			}
 
 			return newRolePF.save(null, {useMasterKey: true});
+
+		}).then(function(roleNewRolePF) {	 
+			
+			var adminRoleRelation = roleNewRolePF.relation("users");
+			adminRoleRelation.add(adminUser);
+			return roleNewRolePF.save(null, {useMasterKey: true});
 
 		}).then(function(roleFinalPF) {	 
 
 			response.success(roleFinalPF);	
 
 		});
+       
 	});
 
 
@@ -228,17 +248,27 @@
 						    }
 						}		    
 
-					    var _body = "{\"ACL\":{"; 
+						var _body = "{\"ACL\":{"; 
 					    for(var i=0; i<resutlArray.length; i++) {							
 							_body += resutlArray[i];
 							if (i < resutlArray.length) {
 								_body += ",";
 							}
 					    }
-
-					    _body += "\"role:admin\":{\"read\": true,\"write\": true},";
 					    _body += "\"role:" + role + "\":{\"read\": true,\"write\": true}";
 					    _body += "}}";	
+
+					    //var _body = "{\"ACL\":{"; 
+					    //for(var i=0; i<resutlArray.length; i++) {							
+						//	_body += resutlArray[i];
+						//	if (i < resutlArray.length) {
+						//		_body += ",";
+						//	}
+					    //}
+
+					    //_body += "\"role:admin\":{\"read\": true,\"write\": true},";
+					    //_body += "\"role:" + role + "\":{\"read\": true,\"write\": true}";
+					    //_body += "}}";	
 
 					    console.log("_body: " + _body);			
 
