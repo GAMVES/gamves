@@ -597,17 +597,27 @@ class ProfileViewController: UIViewController,
 
         self.activityIndicatorView!.stopAnimating()
 
-        self.sonNameTextField.text = "Clemente Vigil"
-        self.sonUserTextField.text = "clementevigil"
-        self.sonPasswordTextField.text = "Clemente2016"
+        //self.sonNameTextField.text = "Clemente Vigil"
+        //self.sonUserTextField.text = "clementevigil"
+        //self.sonPasswordTextField.text = "Clemente2016"
+        //self.yourNameTextField.text = "Jose Vigil"
+        //self.yourUserTextField.text = "josevigil"
+        //self.yourFamilyTextField.text = "Vigil family"
+        //self.partnerNameTextField.text = "Leda Olano"
+        //self.partnerEmailTextField.text = "ledaola@gmail.com"
+        //self.partnerPasswordTextField.text = "Leda2016"
 
-        self.yourNameTextField.text = "Jose Vigil"
-        self.yourUserTextField.text = "josevigil"
-        self.yourFamilyTextField.text = "Vigil family"
+        ////////////////////////
 
-        self.partnerNameTextField.text = "Leda Olano"
-        self.partnerEmailTextField.text = "ledaola@gmail.com"
-        self.partnerPasswordTextField.text = "Leda2016"
+        self.sonNameTextField.text = "Charly Peteres"
+        self.sonUserTextField.text = "charlypeters"
+        self.sonPasswordTextField.text = "Charly2016"
+        self.yourNameTextField.text = "Lucas Peters"
+        self.yourUserTextField.text = "lucaspeters"
+        self.yourFamilyTextField.text = "Peters family"
+        self.partnerNameTextField.text = "Helen Bolt"
+        self.partnerEmailTextField.text = "helenbolt@gmail.com"
+        self.partnerPasswordTextField.text = "Helen2016"
 
     }
     

@@ -393,9 +393,9 @@ ImagesPickerProtocol {
         self.emailTextField.text = "josemanuelvigil@gmail.com"
         self.passwordTextField.text = "JoseVigil2016"
         
-        //self.nameTextField.text = "Charles Peters"
-        //self.emailTextField.text = "charlespeters@gmail.com"
-        //self.passwordTextField.text = "Charles2016"
+        //self.nameTextField.text = "Lucas Peters"
+        //self.emailTextField.text = "lucaspeters@gmail.com"
+        //self.passwordTextField.text = "Lucas2016"
 
     }
 

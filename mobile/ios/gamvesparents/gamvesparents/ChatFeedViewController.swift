@@ -168,36 +168,9 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         
         self.activityView.startAnimating()
 
-        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })                                                
+        ChatFeedMethods.queryFeed(chatId: nil, completionHandlerChatId: { ( chatId:Int ) -> () in })   
         
-        /*queryChatFeed.findObjectsInBackground(block: { (chatfeeds, error) in
-            
-            if error == nil
-            {
-                
-                let chatFeddsCount = chatfeeds?.count
-                
-                print(chatFeddsCount)
-                
-                if chatFeddsCount! > 0
-                {
-                    let chatfeedsCount =  chatfeeds?.count
-                    
-                    ChatFeedMethods.parseChatFeed(chatFeedObjs: chatfeeds!, completionHandlerFeed: { ( restul:Int ) -> () in
-                        
-                        self.collectionView?.reloadData()
-                        self.activityView.stopAnimating()
-                        
-                    })
-                    
-                } else
-                {
-                    self.activityView.stopAnimating()
-                }
-            } else {
-                print(error)
-            }
-        })*/
+       
     }
     
     
@@ -205,17 +178,8 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
     {
         self.reloadCollectionView()
     }
-    
-    /*func reloadCollectionView() {
-        
-        ChatFeedMethods.splitFeedSection()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-        {
-            self.collectionView?.reloadData()
-        }
-    }*/
-
+   
+  
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         let count = ChatFeedMethods.numChatFeedSections
         print(count)
