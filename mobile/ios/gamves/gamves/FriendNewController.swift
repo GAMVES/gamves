@@ -499,13 +499,13 @@ class FriendNewController: UIViewController,
 
                         friendsApproval["familyFriendId"] = familyFriendId 
                         
-                        friendsApproval["familyPosterId"] = familyPosterId 
-
-                        friendsApproval["approved"] = 0
+                        friendsApproval["familyPosterId"] = familyPosterId                         
                         
                         friendsApproval["friendId"] = user.userId
 
+                        ///////// CREATE TYPE 1 /////////////
                         friendsApproval["type"] = 1          
+                        friendsApproval["approved"] = 0
                         
                         friendsApproval.saveInBackground { (resutl, error) in
                             

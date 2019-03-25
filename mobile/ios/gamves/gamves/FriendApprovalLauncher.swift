@@ -498,9 +498,9 @@ class FriendApprovalView: UIView {
         let friendApprovalPF = self.friendApproval.objectPF
 
         friendApprovalPF?["approved"] = 2
+        friendApprovalPF!["type"] = 2
         
-        friendApprovalPF?.saveInBackground(block: { (resutlFA, error) in                      
-            
+        friendApprovalPF?.saveInBackground(block: { (resutlFA, error) in
 
             self.getFriendIfnotExist(userId: friendId, friendId: posterId, completionHandler: { ( resutl ) -> () in
 
