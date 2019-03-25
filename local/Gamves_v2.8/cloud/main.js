@@ -1392,24 +1392,23 @@
 
 		var friendId = request.object.get("friendId");
 		var type = request.object.get("type");
-		var approved = request.object.get("approved");
-		var friendApprovalId = request.object.get("friendApprovalId");	
+		var approved = request.object.get("approved");		
 
 		console.log("-------------------------------");		
 
-		 getUsersObject(posterId, friendId, function(usersArray) {		 	
+		console.log("posterId: " + posterId + " friendId: " + friendId);					
+
+		getUsersObject(posterId, friendId, function(usersArray) {				
 
 		 	var posterPF, friendPF;	
 
 		 	posterPF = usersArray[0];
-			friendPF = usersArray[1];	
+			friendPF = usersArray[1];					  
 
-			let ver = "id posterId: " + posterPF.id + "id posterId: " + friendPF.id;
+			console.log("posterPF: " + posterPF + " friendPF: " + friendPF);						 			 	
 
-		 	console.log(ver);
-
-			let posterName = posterPF.get("name");				
-			let friendName = friendPF.get("name");	 		
+			var posterName = posterPF.get("name");				
+			var friendName = friendPF.get("name");	 		
 
 			console.log("type: " + type + " approved: " + approved);		
 
@@ -1423,7 +1422,7 @@
 
 				let notificationFriendRequest = new Notifications();
 				
-				let titleNotification = "<b>" + posterName + "</b> set you a friend request"; 
+				let titleNotification = "<b>" + posterName + "</b> sent you a friend request"; 
 				let descNotification  = "Start interacting with " + posterName + " , check out the profile, accept his/her friendship and start chatting!"; 				
 
 				notificationFriendRequest.set("posterAvatar", posterImage);
@@ -1469,35 +1468,23 @@
 
 			} else if ( type == 2 && approved == 2 ) {
 
-				console.log("ENTRA");
+				// Friends Roles				
 
-				var posterPF, friendPF;			
+				let rolePoster = "friendOf___" + posterPF.id;
 
-				//- Save Initial Invite FriendApprovalInvite				
+				Parse.Cloud.run("AddUserToRole", { "role": rolePoster, "userId": friendPF.id });
 
-				var friendApprovalId = request.object.get("friendApprovalId");				
+				let roleFriend = "friendOf___" + friendPF.id;
 
-				var friendApprovalQuery = new Parse.Query("FriendsApproval");					
-				friendApprovalQuery.equalTo("objectId", friendApprovalId);
-				
-			    return friendApprovalQuery.first({useMasterKey:true}).then(function(friendApprovalPF) {		    	
+				Parse.Cloud.run("AddUserToRole", { "role": roleFriend, "userId": posterPF.id });				
 
-			    	//Set approval to approved
+				// Get Fanpages Images to Create notifications						
 
-			    	friendApprovalPF.set("approved", 2);
+				var queryFanpage = new Parse.Query("Fanpages");
+				queryFanpage.equalTo('categoryName', 'PERSONAL');
+				queryFanpage.containedIn("posterId", [posterId, friendId]);    	
 
-			    	return friendApprovalPF.save(null, {useMasterKey: true});
-
-			    }).then(function(obj) {  			    
-
-					//problema, que tengo que hacer para que?
-
-					var queryFanpage = new Parse.Query("Fanpages");
-					queryFanpage.equalTo('categoryName', 'PERSONAL');
-					queryFanpage.containedIn("posterId", [posterId, friendId]);    			
-					return queryFanpage.find({useMasterKey:true});
-
-				}).then(function(restulFanpagesPF) {
+				return queryFanpage.find({useMasterKey:true}).then(function(restulFanpagesPF) {					
 				
 					let count = restulFanpagesPF.length;   				
 
@@ -1512,7 +1499,7 @@
 				        } else if (id == posterId) {
 				        	coverPoster = restulFanpagesPF[i].get("pageCover");
 				        }
-				    }
+				    }			    
 
 			    	let Notifications = Parse.Object.extend("Notifications");				    	
 
@@ -1525,17 +1512,17 @@
 					let titlePoster = "<b>" + friendName + "</b> accepted your freind's request"; 
 					let descPoster  = "Start interacting with " + friendName + " , check out the profile and start chatting!"; 
 
+					
 					notificationPoster.set("posterAvatar", friendImage);
 					notificationPoster.set("title", titlePoster);	
 					notificationPoster.set("description", descPoster);	
 					notificationPoster.set("posterName", posterName);
 					notificationPoster.set("cover", coverPoster);
 					notificationPoster.set("posterId", friendPF.id);		
-					notificationFriend.set("removeId", posterId);				
-					
+					notificationPoster.set("removeId", posterId);								
 					notificationPoster.set("type", 3);							
 					
-					//notificationPoster.save(null, {useMasterKey: true});									
+					//notificationPoster.save(null, {useMasterKey: true});													
 				
 					let objPoster = {
 			    		title:titlePoster,
@@ -1545,14 +1532,14 @@
 			    	};
 			    	sendPushToUser(objPoster);
 
-			    	//- Friend notification		
+			    	//- Friend notification				    	
 			    					
 			    	let posterImage = posterPF.get("pictureSmall");		    	
 
 					let notificationFriend = new Notifications();
 					
 					let titleFriend = "<b>" + posterName + "</b> and you are friends!"; 
-					let descFriend  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 
+					let descFriend  = "Start interacting with " + posterName + " , check out the profile and start chatting!"; 					
 
 					notificationFriend.set("posterAvatar", posterImage);
 					notificationFriend.set("title", titleFriend);			
@@ -1562,7 +1549,7 @@
 					notificationFriend.set("posterId", posterPF.id);	
 					notificationFriend.set("removeId", friendId);	
 					
-					notificationFriend.set("type", 3);	
+					notificationFriend.set("type", 3);						
 					
 					//notificationFriend.save(null, {useMasterKey: true}); 										
 
@@ -1572,183 +1559,34 @@
 			    		user:friendPF,		    		
 			    		data:descFriend
 			    	};
-			    	sendPushToUser(objFriend);	
+			    	sendPushToUser(objFriend);				    	
 
 			    	return Parse.Object.saveAll([notificationPoster, notificationFriend]);
 
 			    }).then(function(restulNotificationsPF) {   
 
-			    	//Notification Reole 
+			    	//Notification Reole 			    	
+			    	
 			    	let notiPoster = restulNotificationsPF[0];
-
-			    	//notiPoster.add("target", posterId);				
+			    	
 					notiPoster.set("date", request.object.get("createdAt"));			
 
 					let notiFriend = restulNotificationsPF[1];
-
-					//notiFriend.add("target", friendId);	
-					notiFriend.set("date", request.object.get("createdAt"));								
+					
+					notiFriend.set("date", request.object.get("createdAt"));													
 
 					return Parse.Object.saveAll([notiPoster, notiFriend]);
 
 				}).then(function(resutlAll) { 
 
+					let reolePoster = "friendOf___" + posterId;	  
+
+					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": resutlAll[0].id, "role" : reolePoster });					
+
 					let reoleFriend = "friendOf___" + friendId;	  
 
-					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": resutlAll[0].id, "role" : reoleFriend });
-					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": resutlAll[0].id, "role" : reoleFriend });
-
-				    let posterFanpageQuery = new Parse.Query("Fanpages");		
-					posterFanpageQuery.equalTo("posterId", posterId);		
-
-					return posterFanpageQuery.find({useMasterKey:true});
-
-				}).then(function(posterFanpagesPF) {  
-
-					console.log("posterFanpagesPF");
-
-					///REPLACE TARGET WITH ROLE
-
-					if ( posterFanpagesPF != undefined ) {
-
-						let countPFPF = posterFanpagesPF.length;							
-
-						if ( countPFPF > 0 ) {  
-
-							for (let i=0; i<coun+tPFPF; i++) {							
-
-								let fanpagePPF = posterFanpagesPF[i];		
-
-
-								//--
-								//-- HERE TO BE FIXED WHEN BECOMING FRIENDS, ASAP			
-								//-- 
-
-								let targetArray = fanpagePPF.get("target");
-
-								let has = false;
-
-								/*if (!targetArray.includes(friendId)) {
-
-									fanpagePPF.add("target", friendId);								
-									hast = true;
-								} 						
-
-								if (!targetArray.includes(posterId)) {
-
-									fanpagePPF.add("target", posterId);
-									hast = true;							
-								}*/
-
-								if (has) {
-
-									fanpagePPF.save(null, {useMasterKey: true});		
-								}
-							}  					
-						}
-					}				 				
-
-				    let friendFanpageQuery = new Parse.Query("Fanpages");		
-					friendFanpageQuery.equalTo("posterId", friendId);			
-				
-					return friendFanpageQuery.find({useMasterKey:true});
-
-				}).then(function(friendFanpagesPF) { 
-
-					console.log("friendFanpagesPF"); 
-
-					///REPLACE TARGET WITH ROLE
-
-					if ( friendFanpagesPF != undefined ) {
-
-						let countFFPF = friendFanpagesPF.length;	
-
-						if ( countFFPF > 0 ) {  
-
-							for (let i=0; i<countFFPF; i++) {
-								
-								let fanpageFPF = friendFanpagesPF[i];													
-								
-								let targetArray = fanpagePPF.get("target");
-
-								let has = false;
-
-								if (!targetArray.includes(friendId)) {
-
-									fanpagePPF.add("target", friendId);								
-									hast = true;
-								} 						
-
-								if (!targetArray.includes(posterId)) {
-
-									fanpagePPF.add("target", posterId);
-									hast = true;							
-								}
-
-								if (has) {
-
-									fanpagePPF.save(null, {useMasterKey: true});		
-								}
-
-								//fanpageFPF.add("target", posterId);
-								//fanpageFPF.save(null, {useMasterKey: true});
-							}
-						}
-					}  
+					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": resutlAll[1].id, "role" : reoleFriend });			     					
 					
-				    let posterVideoQuery = new Parse.Query("Videos");		
-					posterVideoQuery.equalTo("posterId", posterId);
-				
-					return posterVideoQuery.find({useMasterKey:true});	
-
-				}).then(function(posterVideosPF) { 
-
-					console.log("posterVideosPF");
-
-					///REPLACE TARGET WITH ROLE
-
-					if ( posterVideosPF != undefined ) {
-
-						let countPVPF = posterVideosPF.length;	
-
-						if ( countPVPF > 0 ) {			
-
-							for (let i=0; i<countPVPF; i++) {
-
-								let videoPPF = posterVideosPF[i];							
-								videoPPF.add("target", friendId);
-								videoPPF.save(null, {useMasterKey: true});
-
-							}
-						}
-					}  
-					
-					let friendVideoQuery = new Parse.Query("Videos");		
-					friendVideoQuery.equalTo("posterId", friendId);			
-
-					return friendVideoQuery.find({useMasterKey:true});	
-
-				}).then(function(friendVideosPF) {  
-
-					console.log("friendVideosPF"); 
-
-					///REPLACE TARGET WITH ROLE
-
-					if ( friendVideosPF != undefined ) {
-
-						let countFVPF = friendVideosPF.length;	
-
-						if ( countFVPF > 0 ) { 			
-					
-							for (let i=0; i<countFVPF; i++) {
-
-								let videoFPF = friendVideosPF[i];							
-								videoFPF.add("target", posterId);
-								videoFPF.save(null, {useMasterKey: true});
-
-							}
-						}
-					}	  					
 
 				});
 			}

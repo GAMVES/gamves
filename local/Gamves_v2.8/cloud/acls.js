@@ -77,9 +77,7 @@
 		var roleName = request.params.role;	  
 	    var userId = request.params.userId; 
 
-		Parse.Cloud.run("CheckRoleHasUser", { "userId": userId, "role": roleName}).then(function(result) {   
-
-			 
+		Parse.Cloud.run("CheckRoleHasUser", { "userId": userId, "role": roleName}).then(function(result) {   			 
 
             if (!result) {
 
