@@ -1446,7 +1446,7 @@
 				notificationFriendRequest.save(null, { useMasterKey: true,	
 					success: function (notificationSaved) {	
 
-						let reoleFriend = "friendOf___" + friendId;
+						let reoleFriend = "userOf___" + friendId;
 
 						Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": notificationFriendRequest.id, "role" : reoleFriend });
 
@@ -1579,18 +1579,19 @@
 
 				}).then(function(resutlAll) { 
 
-					let reolePoster = "friendOf___" + posterId;	  
+					var posterNotification = resutlAll[0];
+					var friendNotification = resutlAll[1];
 
-					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": resutlAll[0].id, "role" : reolePoster });					
+					let reolePoster = "userOf___" + posterId;	  
 
-					let reoleFriend = "friendOf___" + friendId;	  
+					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": posterNotification.id, "role" : reolePoster });					
 
-					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": resutlAll[1].id, "role" : reoleFriend });			     					
-					
+					let reoleFriend = "userOf___" + friendId;	  
+
+					Parse.Cloud.run("AddRoleToObject", { "pclassName": "Notifications", "objectId": friendNotification.id, "role" : reoleFriend });			     							
 
 				});
 			}
-
 		});
 	});
 

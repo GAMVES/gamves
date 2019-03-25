@@ -149,11 +149,15 @@
 
 		    return user.signUp(null, {useMasterKey: true} );		 
 		
-	    }).then(function(userSaved) {	    	        
-
-	    	//console.log("--6--");
+	    }).then(function(userSaved) {
 
 	    	resutlUser = userSaved;
+
+	    	//All users - Add user Role and assign user
+
+	    	let userRole = "userOf___" + resutlUser.id;
+
+	    	Parse.Cloud.run("AddRoleByName", { "name": userRole, "removeId": resutlUser.id });	    	
 
 	    	if ( iDUserType==2 || iDUserType==3 ) {
 
