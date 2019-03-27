@@ -746,7 +746,7 @@ SelectorProtocol {
             targetArray.append(friend.userId)
         }
         
-        let userId = PFUser.current()?.objectId
+        var userId = PFUser.current()?.objectId
         
         targetArray.append(userId!)
 
@@ -866,38 +866,60 @@ SelectorProtocol {
             
             if error == nil
             {
+
+                //var pclassName = request.params.pclassName;     
+                //var objectId = request.params.objectId;     
+                //var role = request.params.role;     
+
+                //Parse.Cloud.run("AddRoleByName", { "name": familyRoleName, "removeId": familyId })
+
+                let reoleVideo = "friendOf___" + userId!
+
+                let params = [
+                    "pclassName" : "Videos",
+                    "objectId" : videoPF.objectId!,
+                    "role" : reoleVideo                     
+                    ] as [String : Any]
                 
-                let approvals: PFObject = PFObject(className: "Approvals")
+                print(params)
                 
-                approvals["referenceId"] = videoNumericId
-                approvals["posterId"] = PFUser.current()?.objectId
-                let familyId = Global.gamvesFamily.objectId
-                approvals["familyId"] = familyId
-                approvals["approved"] = 0
-                approvals["notified"] = false
-                approvals["title"] = self.videoTitle
-                approvals["type"] = 1
-                
-                approvals.saveInBackground { (resutl, error) in
-                    
-                    if error == nil {
+                PFCloud.callFunction(inBackground: "AddRoleToObject", withParameters: params) { (result, error) in
+
+                    if (error != nil) {
+
+                        let approvals: PFObject = PFObject(className: "Approvals")
                         
-                        self.activityIndicatorView?.startAnimating()
+                        approvals["referenceId"] = videoNumericId
+                        approvals["posterId"] = PFUser.current()?.objectId
+                        let familyId = Global.gamvesFamily.objectId
+                        approvals["familyId"] = familyId
+                        approvals["approved"] = 0
+                        approvals["notified"] = false
+                        approvals["title"] = self.videoTitle
+                        approvals["type"] = 1
                         
-                        let title = "Video Uploaded!"
-                        let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
-                        
-                        let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
-                        
-                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                        approvals.saveInBackground { (resutl, error) in
                             
-                            self.activityIndicatorView?.stopAnimating()
-                            self.navigationController?.popToRootViewController(animated: true)
-                            self.homeController?.clearNewVideo()
-                            
-                        }))
-                        
-                        self.present(alert, animated: true)
+                            if error == nil {
+                                
+                                self.activityIndicatorView?.startAnimating()
+                                
+                                let title = "Video Uploaded!"
+                                let message = "The video \(self.videoTitle) has been uploaded and sent to your parents for appoval. Thanks for submitting!"
+                                
+                                let alert = UIAlertController(title: title, message:message, preferredStyle: UIAlertControllerStyle.alert)
+                                
+                                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: {(alert: UIAlertAction!) in
+                                    
+                                    self.activityIndicatorView?.stopAnimating()
+                                    self.navigationController?.popToRootViewController(animated: true)
+                                    self.homeController?.clearNewVideo()
+                                    
+                                }))
+                                
+                                self.present(alert, animated: true)
+                            }
+                        }
                     }
                 }
             }

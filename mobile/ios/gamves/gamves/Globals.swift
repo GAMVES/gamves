@@ -74,7 +74,7 @@ class Global: NSObject
 
     static var gamves_official_id = String()
     
-    static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
+    static var api_key = "AIzaSyBnaT8GtfwBiXmGM7Dwn7QvEvV1Dy9q9xI"
 
     static var search_engine = "010975053378915722447:h2ob_fkvam0"    
     

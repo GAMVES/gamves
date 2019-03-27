@@ -300,7 +300,6 @@ class SearchController: UIViewController,
         self.buttonAddRemove.addTarget(self, action: #selector(handleRemove), for: .touchUpInside)
         self.buttonView.isHidden = false
 
-
         let w = self.view.frame.width / 3
 
         self.buttonClear = UIButton(frame: CGRect(x: 0, y: 0, width: w, height: 50))
@@ -330,7 +329,7 @@ class SearchController: UIViewController,
 
     func configureCustomSearchController() {
 
-        customSearchController = CustomSearchController(searchResultsController: self, searchBarFrame: CGRect(x:0.0, y:0.0, width:self.tableView.frame.size.width, height:80.0), searchBarFont: UIFont(name: "Futura", size: 26.0)!, searchBarTextColor: UIColor.orange, searchBarTintColor: UIColor.black)
+        customSearchController = CustomSearchController(searchResultsController: self, searchBarFrame: CGRect(x:0.0, y:0.0, width:self.tableView.frame.size.width, height:80.0), searchBarFont: UIFont(name: "Futura", size: 26.0)!, searchBarTextColor: UIColor.gamvesColor, searchBarTintColor: UIColor.black)
         
         self.customSearchController.customSearchBar.placeholder = "  Search video here ..."
 
@@ -1226,6 +1225,8 @@ class SearchController: UIViewController,
 
             urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&fields=items(id,snippet(title,description,channelTitle,thumbnails))&order=viewCount&id=\(videoId)&type=video&maxResults=50&key=\(Global.api_key)"
         }
+        
+        print(urlString)
                  
         let urlwithPercentEscapes = urlString.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         
@@ -1237,7 +1238,8 @@ class SearchController: UIViewController,
                     let json = JSON(response.result.value!)                    
                     if let items = json["items"].array {                    
                         var i = 0                        
-                        var countItems = items.count                        
+                        var countItems = items.count
+                        print(countItems)
                         for item in items {                            
                             var yv = YVideo() 
                             if let idItem = item["id"].dictionary {                                                                                            
