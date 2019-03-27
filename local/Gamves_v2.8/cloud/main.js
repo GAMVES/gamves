@@ -1058,6 +1058,8 @@
 
 	function saveFanpage(request, callback) {
 
+		var posterId = request.object.get("posterId");
+
 		var query = new Parse.Query("Fanpages");
 		var fanpageId = request.object.get("fanpageObjId");
 	    query.equalTo("objectId", fanpageId);	   
