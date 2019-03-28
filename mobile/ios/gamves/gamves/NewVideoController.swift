@@ -685,7 +685,7 @@ SelectorProtocol {
         
         let params = ["videoId":videoId] as [String : Any]
         
-        PFCloud.callFunction(inBackground: "getYoutubeVideoInfo", withParameters: params) { (result, error) in
+        PFCloud.callFunction(inBackground: "GetYoutubeVideoInfo", withParameters: params) { (result, error) in
             
             if error == nil
             {
@@ -885,7 +885,7 @@ SelectorProtocol {
                 
                 PFCloud.callFunction(inBackground: "AddRoleToObject", withParameters: params) { (result, error) in
 
-                    if (error != nil) {
+                    if (error == nil) {
 
                         let approvals: PFObject = PFObject(className: "Approvals")
                         
@@ -922,6 +922,8 @@ SelectorProtocol {
                         }
                     }
                 }
+            } else {
+                print(error)
             }
         }
     }
