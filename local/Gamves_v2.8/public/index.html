@@ -96,6 +96,7 @@ $( document ).ready(function() {
         success: function(user) {            
 
           var queryConfig = new Parse.Query("Config");
+          
             queryConfig.first({         
                 success: function(results) {
 

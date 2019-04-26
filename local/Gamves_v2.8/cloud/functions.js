@@ -216,6 +216,32 @@
 		var videoId = request.params.videoId;
 		var youtubedl = require('youtube-dl');	
 
+		/*var ytb_videoId       = request.object.get("ytb_videoId");
+		var pfVideoId = request.object.id;
+	    
+		Parse.Cloud.httpRequest({			
+			
+			url: "https://gamves-download.herokuapp.com/api/youtube-video-download", 
+			
+			method: "POST",											
+		  	
+		  	body:  {
+				"folder": folder,						        
+		        "ytb_videoId" : ytb_videoId,						        
+		        "objectId" : pfVideoId
+		    }
+
+			}).then( function(httpResponse) {
+
+				console.log("VIDEO DOWNLOADING");
+
+			},function(httpResponse) {				  
+			  
+			  	console.log("ERROR DOWNLOADING");			  	
+		});	*/
+
+
+
 		var video = youtubedl('http://www.youtube.com/watch?v='+videoId,
 		  // Optional arguments passed to youtube-dl.
 		  ['--format=18'],

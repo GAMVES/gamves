@@ -851,7 +851,7 @@
 		var removed = request.object.get("removed");
 		var source_type = request.object.get("source_type");
 		var folder = request.object.get("folder");
-		var videoId = request.object.get("videoId");
+		var videoId = request.object.get("videoId");		
 
 		if ( source_type == 1 ) { //LOCAL
 
@@ -859,9 +859,9 @@
 
 		} else if ( source_type == 2 || source_type == 3 ) { //YOUTUBE
 
-			if (!removed && downloaded) {
+			//if (!removed && downloaded) {
 
-				var ytb_videoId = request.object.get("ytb_videoId");				
+				/*var ytb_videoId = request.object.get("ytb_videoId");				
 				var videoFile = ytb_videoId + ".mp4";
 				var fs = require('fs'); 
 			    fs.unlinkSync(videoFile);
@@ -874,11 +874,14 @@
 				            response.error('Error! ' + error.message);
 				        }
 				    });
+
 			    } else {
 					//DO SOMETHING!! The file has not been removed.
-				}
+				}*/
 
-			} else if (!removed && !downloaded) {
+			//} else 
+
+			if (!removed && !downloaded) {
 
 				//-- Save video relation into fanpage
 
@@ -900,15 +903,33 @@
 							var _appId = configObject.get("app_id");
 							var _mKey = configObject.get("master_key");
 
-							var vId       = request.object.get("ytb_videoId");
+							var ytb_videoId       = request.object.get("ytb_videoId");
 							var pfVideoId = request.object.id;
+						    
+							Parse.Cloud.httpRequest({			
+								
+								url: "https://gamves-download.herokuapp.com/api/youtube-video-download", 
+								
+								method: "POST",											
+							  	
+							  	body:  {
+									"folder": folder,						        
+							        "ytb_videoId" : ytb_videoId,						        
+							        "objectId" : pfVideoId
+							    }
 
-							var paramsDownload =  {
-								"ytb_videoId": vId,
-						        "objectId": pfVideoId
-						    };
+								}).then( function(httpResponse) {
 
-							downloadVideo(paramsDownload, function(resutl){
+									console.log("VIDEO DOWNLOADING");
+
+								},function(httpResponse) {				  
+								  
+								  	console.log("ERROR DOWNLOADING");			  	
+							});
+
+						    ///SENT DO HEROKU
+
+							/*downloadVideo(paramsDownload, function(resutl){
 
 								var videoName = resutl.videoName;
 								var videoObject = resutl.videoObject;
@@ -948,7 +969,7 @@
 
 								});
 
-							});
+							});*/
 					    } 
 			        },
 			        error: function(error) {						            
@@ -965,7 +986,73 @@
 
 	});
 
-	function downloadVideo(params, callback ) {
+
+	// --
+	// Save Downloaded video on Heroku. 
+
+	Parse.Cloud.define("SaveDownloadedVideo", function (request, response) {
+		
+		var objectId = request.params.objectId;
+		var s3bucket = request.params.s3bucket;
+		var videoName = request.params.videoName;
+		var ytb_videoId = request.params.ytb_videoId;
+		var videoRemoved = request.params.videoRemoved;
+
+		console.log("----------------------");
+		console.log("objectId: " + objectId);
+		console.log("s3bucket: " + s3bucket);
+		console.log("videoName: " + videoName);
+		console.log("ytb_videoId: " + ytb_videoId);
+		console.log("videoRemoved: " + videoRemoved);
+
+	    var queryVideos = new Parse.Query("Videos");
+	    queryVideos.equalTo("objectId", objectId);
+
+	    queryVideos.find({useMasterKey:true}).then(function(results) {
+
+	    	console.log("llega: " + results);
+
+	    	if ( results.length > 0) 
+	        {
+	            var videoObject = results[0];
+
+	            //var thumbSource = videoObject.get("ytb_thumbnail_source");
+
+	            //Parse.Cloud.httpRequest({url: thumbSource}).then(function(httpResponse) {
+                  
+                   //var imageBuffer = httpResponse.buffer;
+                   //var base64 = imageBuffer.toString("base64");
+                   //var file = new Parse.File(ytb_videoId+".jpg", { base64: base64 });                    
+                   
+                   var baseUrl = "https://s3.amazonaws.com/" + s3bucket; 
+                   var uploadedUrl = baseUrl + "/" + videoName; 
+
+                   videoObject.save({                 
+                      removed: videoRemoved,                       
+                      s3_source: uploadedUrl,
+                      downloaded: true
+                      //thumbnail: file,
+                      //source_type: source_type                    
+                    }, { useMasterKey: true } ).then(
+				        function() {    
+							response.success(JSON.stringify(videoObject));               
+				        }, 
+				        function(error) {
+				            response.error(error.message);
+				        }
+				    );	   
+
+              	//}, function(error) {                    
+                //  console.log("Error downloading thumbnail"); 
+              	//});
+
+	        }
+
+	    });
+
+	});
+
+	/*function downloadVideo(params, callback ) {		
 
 		var ytb_videoId = params.ytb_videoId;
 		var objectId = params.objectId;
@@ -1011,9 +1098,9 @@
 
 	    });	
 
-	};	
+	};*/	
 
-	function uploadVideo(params, callback) {
+	/*function uploadVideo(params, callback) {
 
 		var folder = params.folder;
 		var videoName = params.videoName;
@@ -1054,7 +1141,7 @@
 			callback({"s3bucket":s3bucket, "s3endpoint":s3endpoint});
 
 		});  
-	};
+	};*/
 
 	function saveFanpage(request, callback) {
 
