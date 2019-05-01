@@ -211,56 +211,32 @@
 	// --
 	// Get Video Info.
 
-	Parse.Cloud.define("GetYoutubeVideoInfo", function( request, response ) {
+	Parse.Cloud.define("GetYoutubeVideoInfo", function( request, response ) {		
 
 		var videoId = request.params.videoId;
-		var youtubedl = require('youtube-dl');	
 
-		/*var ytb_videoId       = request.object.get("ytb_videoId");
-		var pfVideoId = request.object.id;
-	    
-		Parse.Cloud.httpRequest({			
-			
-			url: "https://gamves-download.herokuapp.com/api/youtube-video-download", 
-			
-			method: "POST",											
-		  	
-		  	body:  {
-				"folder": folder,						        
-		        "ytb_videoId" : ytb_videoId,						        
-		        "objectId" : pfVideoId
+		Parse.Cloud.httpRequest({											
+		
+			url: "http://gamves-download.herokuapp.com/api/youtube-video-info", 								
+			method: "POST",						  	
+		  	body:  {								        
+		        "ytb_videoId" : videoId						        		        
 		    }
 
-			}).then( function(httpResponse) {
+		}).then( function(httpResponse) {
 
-				console.log("VIDEO DOWNLOADING");
+			console.log("VIDEO DOWNLOADING " + httpResponse.text);			
 
-			},function(httpResponse) {				  
-			  
-			  	console.log("ERROR DOWNLOADING");			  	
-		});	*/
+			response.success(JSON.parse(httpResponse.text));	
 
 
+		},function(httpResponse) {							  
+		
+			console.log("ERROR DOWNLOADING : " + httpResponse.status);			  	
 
-		var video = youtubedl('http://www.youtube.com/watch?v='+videoId,
-		  // Optional arguments passed to youtube-dl.
-		  ['--format=18'],
-		  // Additional options can be given for calling `child_process.execFile()`.
-		  { cwd: __dirname });
-		 
-		// Will be called when the download starts.
-		video.on('info', function(info) {
-			//console.log('Download started');
-			//console.log('filename: ' + info.filename);
-			//console.log('size: ' + info.size);		
-			// TOMAR SOLO LO NECESARIO
-			response.success(info);		
+			response.error(httpResponse.status);
+		
 		});
-
-		video.on('error', function error(err) {
-	    	console.log('error 2:', err);
-	    	response.error(err);
-	  	});
 
 	});
 

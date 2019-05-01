@@ -1,10 +1,50 @@
-				
+			
+		// --
+		// Calculate Trending
+
+		Parse.Cloud.define("CalculateTrendingFanpages", function(request, response) {	
+
+			calculateTrendingFanpages(function(restulTrending) {			
+
+				if (!restulTrending.error) {					
+					
+					response.success(true);
+
+				} else {
+
+					response.error(restulTrending.message);									
+				}
+			});
+
+		});
+
+		// --
+		// Calculate Birthday
+
+		Parse.Cloud.define("BirthdayDailyCheck", function(request, response) {	
+
+			birthdayDailyCheck(function(restulBirthday) {
+
+				if (!restulBirthday.error) {
+
+					response.success(true);
+
+				} else {
+					
+					response.error(restulBirthday.message);									
+				}
+
+			});
+
+		});
+
+
 		// --
 		// Calculate Trending Fanpages. 
 
 		//Parse.Cloud.job("GamvesJobs", function(request, status) {
 
-		Parse.Cloud.job("GamvesJobs", function(request, status) {	
+		/*Parse.Cloud.job("GamvesJobs", function(request, status) {	
 			
 
 			new Promise(function(resolve, reject) {
@@ -44,7 +84,7 @@
 
 			});	
 
-		}); 
+		});*/ 
 
 		// --
 		// Calculate Trending Fanpages. 	
