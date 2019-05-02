@@ -981,7 +981,10 @@ class SearchController: UIViewController,
                     
                     let videoId = yVideo.videoId
                     
-                    self.delegateSearch.setResultOfsearch(videoId: videoId,
+                    print(videoId)
+                    
+                    self.delegateSearch.setResultOfsearch(
+                        videoId     : yVideo.videoId,
                         title       : yVideo.title,
                         description : yVideo.description,
                         duration    : yVideo.duration,
@@ -1172,7 +1175,7 @@ class SearchController: UIViewController,
 
                                         let trend = GamvesTrend()
                                         trend.name = trendPF["name"] as! String
-                                        trend.description = trendPF["description"] as! String
+                                        //trend.description = trendPF["description"] as! String
                                         trend.objectId = trendPF.objectId!
 
                                         gamvesTrendCategory.trend.append(trend)

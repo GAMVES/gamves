@@ -99,7 +99,7 @@ class GamvesTrend {
 
     var objectId = String()
     var name = String()      
-    var description = String()       
+    //var description = String()       
 
 }
 
@@ -107,7 +107,7 @@ class GamvesTrendCategory {
 
     var objectId = String()
     var name = String()      
-    var description = String()   
+    var description = String()  
 
     var trend = [GamvesTrend]()    
 
@@ -237,14 +237,13 @@ class GamvesVideo {
     var categoryName = String()
     var thumbnail:PFFileObject?
     var s3_source = String()        
-    var ytb_thumbnail_source = String()
-    var ytb_videoId = String()
-    var ytb_upload_date = Date()
-    var ytb_view_count = Int()
-    var ytb_tags = [String]()
-    var ytb_duration = Double()
-    var ytb_categories = [String]()
-    //var ytb_like_count = Int()
+    var thumbnail_source = String()
+    var ytb_video_id = String()
+    var upload_date = Date()
+    var view_count = Int()
+    var tags = [String]()
+    var duration = Double()
+    var categories = [String]()
     var order = Int()
     var fanpageId = Int()
     var image = UIImage()

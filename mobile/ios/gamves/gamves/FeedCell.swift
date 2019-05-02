@@ -553,7 +553,7 @@ FeedDelegate {
                 
             video = Global.chatVideos[chatId]!
             
-            print(video.ytb_videoId)
+            print(video.ytb_video_id)
             
             NotificationCenter.default.post(name: Notification.Name(rawValue: Global.notificationKeyCloseVideo), object: self)
             

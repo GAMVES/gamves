@@ -1904,32 +1904,29 @@ class Global: NSObject
         video.categoryName              = videoPF["categoryName"] as! String
         video.videoId                   = videoPF["videoId"] as! Int
         video.s3_source                 = videoPF["s3_source"] as! String
-        video.ytb_thumbnail_source      = videoPF["ytb_thumbnail_source"] as! String
-        video.ytb_videoId               = videoPF["ytb_videoId"] as! String
+        video.thumbnail_source          = videoPF["thumbnail"] as! String
+        video.ytb_video_id              = videoPF["ytb_video_id"] as! String
         
-        let dateStr = videoPF["ytb_upload_date"] as! String
+        let dateStr = videoPF["upload_date"] as! String
         let dateDouble = Double(dateStr)
         let date = NSDate(timeIntervalSince1970: dateDouble!)
         
-        video.ytb_upload_date           = date as Date
-        video.ytb_view_count            = videoPF["ytb_view_count"] as! Int
-        video.ytb_tags                  = videoPF["ytb_tags"] as! [String]
+        video.upload_date               = date as Date
+        video.view_count                = videoPF["view_count"] as! Int
+        video.tags                      = videoPF["ytb_tags"] as! [String]
         
-        let durStr = videoPF["ytb_upload_date"] as! String
+        let durStr = videoPF["upload_date"] as! String
         let durDouble = Double(durStr)
-        video.ytb_duration              = durDouble!
+        video.duration                  = durDouble!
         
-        video.ytb_categories            = videoPF["ytb_categories"] as! [String]
-        //video.ytb_like_count            = videoPF["ytb_like_count"] as! Int
-        //video.order                     = videoPF["order"] as! Int
+        video.categories                = videoPF["categories"] as! [String]
         video.fanpageId                 = videoPF["fanpageId"] as! Int
         
         video.posterId                  = videoPF["posterId"] as! String
         video.posterName                = videoPF["poster_name"] as! String
         
-        video.published                 = videoPF.createdAt as! Date
-        
-        video.videoObj = videoPF
+        video.published                 = videoPF.createdAt as! Date        
+        video.videoObj                  = videoPF
                                            
         videothum.getDataInBackground(block: { (data, error) in
             

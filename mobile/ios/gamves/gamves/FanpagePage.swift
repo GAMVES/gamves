@@ -549,27 +549,24 @@ class FanpagePage: UIViewController,
                                 video.categoryName              = qvideoinfo["categoryName"] as! String
                                 video.videoId                   = qvideoinfo["videoId"] as! Int
                                 video.s3_source                 = qvideoinfo["s3_source"] as! String
-                                video.ytb_thumbnail_source      = qvideoinfo["ytb_thumbnail_source"] as! String
-                                video.ytb_videoId               = qvideoinfo["ytb_videoId"] as! String
+                                video.thumbnail_source          = qvideoinfo["thumbnail"] as! String
+                                video.ytb_video_id                = qvideoinfo["ytb_video_id"] as! String
                                 
-                                let dateStr = qvideoinfo["ytb_upload_date"] as! String
+                                let dateStr = qvideoinfo["upload_date"] as! String
                                 let dateDouble = Double(dateStr)
                                 let date = NSDate(timeIntervalSince1970: dateDouble!)
                                 
-                                video.ytb_upload_date           = date as Date
-                                video.ytb_view_count            = qvideoinfo["ytb_view_count"] as! Int
-                                video.ytb_tags                  = qvideoinfo["ytb_tags"] as! [String]
+                                video.upload_date  =  date as Date
+                                video.view_count   =  qvideoinfo["view_count"] as! Int
+                                video.tags         =  qvideoinfo["tags"] as! [String]
                                 
-                                let durStr = qvideoinfo["ytb_upload_date"] as! String
+                                let durStr = qvideoinfo["upload_date"] as! String
                                 let durDouble = Double(durStr)
-                                video.ytb_duration              = durDouble!
+                                video.duration              = durDouble!
                                 
-                                video.ytb_categories            = qvideoinfo["ytb_categories"] as! [String]
-                                //video.ytb_like_count            = qvideoinfo["ytb_like_count"] as! Int
-                                //video.order                     = qvideoinfo["order"] as! Int
-                                video.fanpageId                 = qvideoinfo["fanpageId"] as! Int
-                                
-                                video.posterId                  = qvideoinfo["posterId"] as! String
+                                video.categories            = qvideoinfo["categories"] as! [String]
+                                video.fanpageId             = qvideoinfo["fanpageId"] as! Int                                
+                                video.posterId              = qvideoinfo["posterId"] as! String
                                 
                                 print(video.posterId)
                                 
