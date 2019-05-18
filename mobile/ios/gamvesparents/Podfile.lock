@@ -1,66 +1,72 @@
 PODS:
-  - Alamofire (4.8.0)
-  - Atributika (4.6.8)
+  - Alamofire (4.8.2)
+  - Atributika (4.8.2)
   - AWSCore (2.6.35)
   - AWSS3 (2.6.35):
     - AWSCore (= 2.6.35)
   - BEMCheckBox (1.4.1)
-  - Bolts-Swift (1.3.0)
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts-Swift (1.4.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
-  - DeviceKit (1.11.0)
+  - DeviceKit (2.0.0)
   - DownPicker (0.1.34)
   - Fabric (1.9.0)
-  - Firebase/Core (5.15.0):
+  - Firebase/Core (6.0.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 5.4.0)
-  - Firebase/CoreOnly (5.15.0):
-    - FirebaseCore (= 5.1.10)
-  - FirebaseAnalytics (5.4.0):
-    - FirebaseCore (~> 5.1)
-    - FirebaseInstanceID (~> 3.3)
-    - GoogleAppMeasurement (= 5.4.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
-    - GoogleUtilities/MethodSwizzler (~> 5.2)
-    - GoogleUtilities/Network (~> 5.2)
-    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - FirebaseAnalytics (= 6.0.0)
+  - Firebase/CoreOnly (6.0.0):
+    - FirebaseCore (= 6.0.0)
+  - FirebaseAnalytics (6.0.0):
+    - FirebaseCore (~> 6.0)
+    - FirebaseInstanceID (~> 4.0)
+    - GoogleAppMeasurement (= 6.0.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (~> 0.3)
-  - FirebaseCore (5.1.10):
-    - GoogleUtilities/Logger (~> 5.2)
-  - FirebaseInstanceID (3.3.0):
-    - FirebaseCore (~> 5.1)
-    - GoogleUtilities/Environment (~> 5.3)
-    - GoogleUtilities/UserDefaults (~> 5.3)
+  - FirebaseCore (6.0.0):
+    - GoogleUtilities/Environment (~> 6.0)
+    - GoogleUtilities/Logger (~> 6.0)
+  - FirebaseInstanceID (4.0.0):
+    - FirebaseCore (~> 6.0)
+    - GoogleUtilities/Environment (~> 6.0)
+    - GoogleUtilities/UserDefaults (~> 6.0)
   - Floaty (4.0.1)
-  - GoogleAppMeasurement (5.4.0):
-    - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
-    - GoogleUtilities/MethodSwizzler (~> 5.2)
-    - GoogleUtilities/Network (~> 5.2)
-    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+  - GoogleAppMeasurement (6.0.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (~> 0.3)
-  - GoogleUtilities/AppDelegateSwizzler (5.3.7):
+  - GoogleUtilities/AppDelegateSwizzler (6.1.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (5.3.7)
-  - GoogleUtilities/Logger (5.3.7):
+  - GoogleUtilities/Environment (6.1.0)
+  - GoogleUtilities/Logger (6.1.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (5.3.7):
+  - GoogleUtilities/MethodSwizzler (6.1.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/Network (5.3.7):
+  - GoogleUtilities/Network (6.1.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (5.3.7)"
-  - GoogleUtilities/Reachability (5.3.7):
+  - "GoogleUtilities/NSData+zlib (6.1.0)"
+  - GoogleUtilities/Reachability (6.1.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (5.3.7):
+  - GoogleUtilities/UserDefaults (6.1.0):
     - GoogleUtilities/Logger
   - ImageSlideshow (1.7.0):
     - ImageSlideshow/Core (= 1.7.0)
   - ImageSlideshow/Core (1.7.0)
-  - ISEmojiView (0.1.2)
+  - ISEmojiView (0.2.1)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -73,17 +79,18 @@ PODS:
     - Parse/Core (= 1.17.2)
   - Parse/Core (1.17.2):
     - Bolts/Tasks (~> 1.9)
-  - ParseLiveQuery (2.4.0):
-    - Bolts-Swift (~> 1.3.0)
+  - ParseLiveQuery (2.5.0):
+    - Bolts (~> 1.9.0)
+    - Bolts-Swift (~> 1.4.0)
     - Parse (~> 1.17.0)
     - Starscream (~> 3.0.4)
   - PopupDialog (0.6.2)
   - PulsingHalo (0.2.8)
   - RSKImageCropper (2.2.1)
   - Starscream (3.0.6)
-  - Stripe (14.0.0)
+  - Stripe (15.0.1)
   - SwiftValidator (4.0.0)
-  - SwiftyJSON (4.2.0)
+  - SwiftyJSON (5.0.0)
   - TaskQueue (1.1.1)
   - "UITextView+Placeholder (1.2.1)"
   - youtube-ios-player-helper (0.1.6)
@@ -94,7 +101,7 @@ DEPENDENCIES:
   - Atributika
   - AWSS3 (~> 2.6.32)
   - BEMCheckBox
-  - Bolts-Swift (from `https://github.com/BoltsFramework/Bolts-Swift`, commit `e9baa72d04521c3b25ef4fa6fef12b340953ee02`)
+  - Bolts-Swift
   - Crashlytics (~> 3.12.0)
   - DeviceKit
   - DownPicker
@@ -125,6 +132,7 @@ SPEC REPOS:
     - AWSS3
     - BEMCheckBox
     - Bolts
+    - Bolts-Swift
     - Crashlytics
     - DeviceKit
     - DownPicker
@@ -154,58 +162,52 @@ SPEC REPOS:
     - YouTubePlayer
 
 EXTERNAL SOURCES:
-  Bolts-Swift:
-    :commit: e9baa72d04521c3b25ef4fa6fef12b340953ee02
-    :git: https://github.com/BoltsFramework/Bolts-Swift
   SwiftValidator:
     :branch: master
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 CHECKOUT OPTIONS:
-  Bolts-Swift:
-    :commit: e9baa72d04521c3b25ef4fa6fef12b340953ee02
-    :git: https://github.com/BoltsFramework/Bolts-Swift
   SwiftValidator:
-    :commit: c0ee801a2d107eca5f748d07932b449666d8effd
+    :commit: 2d03c5479e611386fbdf523209c64d2dd09ebd26
     :git: https://github.com/jpotts18/SwiftValidator.git
 
 SPEC CHECKSUMS:
-  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
-  Atributika: 7510276c8c58194244f1b111f1c9b90350bc37a9
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  Atributika: 7b3631032cf11f2197b352343e0bd1b783d8ca88
   AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
   AWSS3: 282a590bb47e9cd88de24979fb28954399c41c52
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  Bolts-Swift: fa98d1b59fc1acea9b21a21306dcdca1c85e3737
+  Bolts-Swift: 650d72e8017721b1a6bbe43d542c4578f8e5ba6f
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
-  DeviceKit: a3a86f8dddbe1317a9a243cdf9646858bf135dce
+  DeviceKit: 72d36709552d4b3582abd76a53949148acad9811
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
-  Firebase: 8bb9268bff82374f2cbaaabb143e725743c316ae
-  FirebaseAnalytics: c06f9d70577d79074214700a71fd5d39de5550fb
-  FirebaseCore: 35747502d9e8c6ee217385ad04446c7c2aaf9c5c
-  FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
+  Firebase: fa80b9d987ca014a1ba9357496ef2a0178b28b12
+  FirebaseAnalytics: 1743c5f4de3687d0745709dfdc4b1dea1484f44c
+  FirebaseCore: e38f025287b413255a53acc1945d048a112047f7
+  FirebaseInstanceID: 0e0348a3c00a734fa376a070f5ad4533ad975cb5
   Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
-  GoogleAppMeasurement: 98b71f5e04142793729a5ef23e5b96651ff4b70f
-  GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
+  GoogleAppMeasurement: 7f028ea162b72c8f326daec74afc95d94f7a47d6
+  GoogleUtilities: 84df567c76ca84f67b7bb40e769fdd4acc746a10
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
-  ISEmojiView: 5b53bdf057ddf484b92e70064a1cc46b5fedf7ea
+  ISEmojiView: 0a9f9f84716ef08beed06b58032cde26bcdc9dc1
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   NVActivityIndicatorView: 77ed6d7b571643e24899e7858bf9ae2ee4c21f31
   Parse: 3b31a3dd1777b07ee7f0caee32fafbff544483a5
-  ParseLiveQuery: 0ea078a12015d64070d0ae07da32fae3d3198c42
+  ParseLiveQuery: 84cce90a2ee3af04ed51249bc1734c4a6dbe09ab
   PopupDialog: d4336d7274a6aa3af4cb26d8b6691510eba90cc3
   PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
   RSKImageCropper: 98296ad26b41753f796b6898d015509598f13d97
   Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
-  Stripe: db29ad197c74aca6fb981e4e8355cf7ebd0fca5a
-  SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
-  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  Stripe: 2c4d0a88817361a102886315ff452d90f65e898b
+  SwiftValidator: 58c155c8ae8421ef716a96e52a49984dd54c700c
+  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   TaskQueue: 53a3cdaf817d9ce3cd50837ff6610aeb7b968997
   "UITextView+Placeholder": 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: acda42ffa416f26eefba24e82556cf616d212771
+PODFILE CHECKSUM: 5fea09889688b1774d90952512d5dadf67153910
 
 COCOAPODS: 1.5.3

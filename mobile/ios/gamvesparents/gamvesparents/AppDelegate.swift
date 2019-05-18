@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
       
         var reached = false
 
-        let deviceobj = Device()
+        let deviceobj = Device.current
         let device:String = "\(deviceobj)"
         Global.device = device        
          
@@ -217,7 +217,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             if !installed
             {               
                 
-                let deviceobj = Device()
+                let deviceobj = Device.current
                 let device:String = "\(deviceobj)"
                 currentInstall["device"] = device                
                 currentInstall.saveEventually({ (success, error) in                    
@@ -272,7 +272,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let installation = PFInstallation.current()
         installation?.setDeviceTokenFrom(deviceToken as Data)
         
-        let deviceobj = Device()
+        let deviceobj = Device.current
         let device:String = "\(deviceobj)"
         installation?["device"] = device
         
