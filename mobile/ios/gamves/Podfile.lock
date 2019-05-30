@@ -1,13 +1,18 @@
 PODS:
-  - Alamofire (4.8.1)
-  - Atributika (4.6.9)
+  - Alamofire (4.8.2)
+  - Atributika (4.8.2)
   - AWSCore (2.6.35)
   - AWSS3 (2.6.35):
     - AWSCore (= 2.6.35)
-  - Bolts-Swift (1.3.0)
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts-Swift (1.4.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
   - CalmParametricAnimations (1.0.1)
-  - DeviceKit (1.11.0)
+  - DeviceKit (2.0.0)
   - DownPicker (0.1.34)
   - DRPLoadingSpinner (1.3.1):
     - DRPLoadingSpinner/core (= 1.3.1)
@@ -15,29 +20,30 @@ PODS:
   - Floaty (4.0.1)
   - IGColorPicker (0.4.2):
     - M13Checkbox (~> 3.2.0)
-  - ISEmojiView (0.1.2)
+  - ISEmojiView (0.2.2)
   - M13Checkbox (3.2.2)
-  - NVActivityIndicatorView (4.0.1):
-    - NVActivityIndicatorView/Presenter (= 4.0.1)
-  - NVActivityIndicatorView/Presenter (4.0.1)
+  - NVActivityIndicatorView (4.7.0):
+    - NVActivityIndicatorView/Presenter (= 4.7.0)
+  - NVActivityIndicatorView/Presenter (4.7.0)
   - Parse (1.17.2):
     - Parse/Core (= 1.17.2)
   - Parse/Core (1.17.2):
     - Bolts/Tasks (~> 1.9)
-  - ParseLiveQuery (2.4.0):
-    - Bolts-Swift (~> 1.3.0)
+  - ParseLiveQuery (2.5.0):
+    - Bolts (~> 1.9.0)
+    - Bolts-Swift (~> 1.4.0)
     - Parse (~> 1.17.0)
     - Starscream (~> 3.0.4)
   - PopupDialog (0.6.2)
   - PulsingHalo (0.2.8)
   - RSKImageCropper (2.2.1)
-  - SDWebImage (4.4.6):
-    - SDWebImage/Core (= 4.4.6)
-  - SDWebImage/Core (4.4.6)
+  - SDWebImage (5.0.3):
+    - SDWebImage/Core (= 5.0.3)
+  - SDWebImage/Core (5.0.3)
   - SKPhotoBrowser (5.1.0)
   - Starscream (3.0.6)
   - SwiftHash (2.0.2)
-  - SwiftyJSON (4.2.0)
+  - SwiftyJSON (5.0.0)
   - TaskQueue (1.1.1)
   - "UITextView+Placeholder (1.2.1)"
   - YouTubePlayer (0.4.0)
@@ -46,7 +52,6 @@ DEPENDENCIES:
   - Alamofire
   - Atributika
   - AWSS3 (~> 2.6.32)
-  - Bolts-Swift (from `https://github.com/BoltsFramework/Bolts-Swift`, commit `e9baa72d04521c3b25ef4fa6fef12b340953ee02`)
   - CalmParametricAnimations
   - DeviceKit
   - DownPicker
@@ -54,7 +59,7 @@ DEPENDENCIES:
   - Floaty (~> 4.0.1)
   - IGColorPicker
   - ISEmojiView
-  - NVActivityIndicatorView (~> 4.0.1)
+  - NVActivityIndicatorView
   - Parse
   - ParseLiveQuery
   - PopupDialog (~> 0.6.0)
@@ -75,6 +80,7 @@ SPEC REPOS:
     - AWSCore
     - AWSS3
     - Bolts
+    - Bolts-Swift
     - CalmParametricAnimations
     - DeviceKit
     - DownPicker
@@ -98,46 +104,36 @@ SPEC REPOS:
     - "UITextView+Placeholder"
     - YouTubePlayer
 
-EXTERNAL SOURCES:
-  Bolts-Swift:
-    :commit: e9baa72d04521c3b25ef4fa6fef12b340953ee02
-    :git: https://github.com/BoltsFramework/Bolts-Swift
-
-CHECKOUT OPTIONS:
-  Bolts-Swift:
-    :commit: e9baa72d04521c3b25ef4fa6fef12b340953ee02
-    :git: https://github.com/BoltsFramework/Bolts-Swift
-
 SPEC CHECKSUMS:
-  Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
-  Atributika: 06480d85c28097ca73241d8bd0b96d7787f5fe06
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
+  Atributika: 7b3631032cf11f2197b352343e0bd1b783d8ca88
   AWSCore: 2dab62ef2e5ca5d8c72c6cbdb3a6ea1532c27c2b
   AWSS3: 282a590bb47e9cd88de24979fb28954399c41c52
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  Bolts-Swift: fa98d1b59fc1acea9b21a21306dcdca1c85e3737
+  Bolts-Swift: 650d72e8017721b1a6bbe43d542c4578f8e5ba6f
   CalmParametricAnimations: 8747c67d71e07be5e5b3b9d524560d1fbe74be94
-  DeviceKit: a3a86f8dddbe1317a9a243cdf9646858bf135dce
+  DeviceKit: 72d36709552d4b3582abd76a53949148acad9811
   DownPicker: c00ea63f08ae82116cc93d0eba74e86bf3d4c68e
   DRPLoadingSpinner: 725e530bf4ebe2cc351b1fbc94d24fe8ac3300fd
   Floaty: 82854e1a5ef4fa208281ebd4da2f3d1e51ba67a6
   IGColorPicker: c6d43aa386a9fdc8f958f3bd4e5ab85905242c8a
-  ISEmojiView: 5b53bdf057ddf484b92e70064a1cc46b5fedf7ea
+  ISEmojiView: 3198116ef9f442857c3a69241b15e3ad7856f461
   M13Checkbox: a8c2491cfbbca10797925fd0b9154a782bf40d89
-  NVActivityIndicatorView: 77ed6d7b571643e24899e7858bf9ae2ee4c21f31
+  NVActivityIndicatorView: b19ddab2576f805cbe0fb2306cba3476e09a1dea
   Parse: 3b31a3dd1777b07ee7f0caee32fafbff544483a5
-  ParseLiveQuery: 0ea078a12015d64070d0ae07da32fae3d3198c42
+  ParseLiveQuery: 84cce90a2ee3af04ed51249bc1734c4a6dbe09ab
   PopupDialog: d4336d7274a6aa3af4cb26d8b6691510eba90cc3
   PulsingHalo: 64938e4bd3893b823abdf01478084cd92445af2b
   RSKImageCropper: 98296ad26b41753f796b6898d015509598f13d97
-  SDWebImage: 3f3f0c02f09798048c47a5ed0a13f17b063572d8
+  SDWebImage: d4f87d7d36c8a4d9f9459dc282e0caa057fdf935
   SKPhotoBrowser: c20c1da34d737b4e3e101feead6c8dd92ebf860a
   Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
   SwiftHash: 6d312abe61c8359bdef8d0093642f3a70b1c17ba
-  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   TaskQueue: 53a3cdaf817d9ce3cd50837ff6610aeb7b968997
   "UITextView+Placeholder": 0c3efd97f37ea64bde7f34cc6e90fe02e87b3909
   YouTubePlayer: 028451f6772f372d4759866db99824c676ac1473
 
-PODFILE CHECKSUM: 718d15a2dc828841186cd19e4fcc63b150c97250
+PODFILE CHECKSUM: 9d7a73feb8c7296d76b57108707ed86ac26a7931
 
 COCOAPODS: 1.5.3

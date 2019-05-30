@@ -49,7 +49,7 @@ class CategoryHomePage: UIViewController, UITableViewDataSource, UITableViewDele
         self.width = self.view.frame.width
         self.height = self.view.frame.height
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballSpinFadeLoader.hashValue), color: UIColor.gray)
         
         //self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorView.spin, color: UIColor.gray)
 

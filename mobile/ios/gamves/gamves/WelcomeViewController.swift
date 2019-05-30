@@ -47,7 +47,7 @@ UICollectionViewDelegateFlowLayout {
 
         // Do any additional setup after loading the view.
 
-        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)        
+        self.activityView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)        
 
         self.fetchWelcomes()
     }

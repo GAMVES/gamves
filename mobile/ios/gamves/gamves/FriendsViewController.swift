@@ -80,9 +80,9 @@ FriendProtocol
         
         self.familyId = Global.gamvesFamily.objectId
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)
 
-         self.floaty.paddingY = 35
+        self.floaty.paddingY = 35
         self.floaty.paddingX = 20                    
         self.floaty.itemSpace = 30
         self.floaty.shadowRadius = 20

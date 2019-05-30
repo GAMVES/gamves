@@ -542,8 +542,8 @@ ChooseAvatarProtocol
             let cat = Global.categories_gamves[i]?.name as! String
             categories.append(cat)
         }
-
-		self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//,x: 0, y: 0, width: 80.0, height: 80.0)
+        
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballSpinFadeLoader.hashValue), color: UIColor.gambesDarkColor)
 
         //Looks for single or multiple taps.
         //self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))

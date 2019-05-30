@@ -76,7 +76,7 @@ FriendApprovalProtocol
         
         self.familyId = Global.gamvesFamily.objectId
 
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.refresh), name: NSNotification.Name(rawValue: Global.notificationKeyFriendApprovalLoaded), object: nil)
         

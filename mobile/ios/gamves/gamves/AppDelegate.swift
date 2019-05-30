@@ -48,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         Global.forceFromNetworkCache = true
         
-        let deviceobj = Device()
+        let deviceobj = Device.current
         let device:String = "\(deviceobj)"
         Global.device = device
         
@@ -239,7 +239,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let installation = PFInstallation.current()
         installation?.setDeviceTokenFrom(deviceToken)
         
-        let deviceobj = Device()
+        let deviceobj = Device.current
         let device:String = "\(deviceobj)"
         installation?["device"] = device
         

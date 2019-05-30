@@ -180,7 +180,7 @@ UICollectionViewDelegateFlowLayout   {
 
         self.collectionView.register(GiftViewCell.self, forCellWithReuseIdentifier: self.cellGiftCollectionId)       
 
-        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)        
+        self.activityView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)        
 
         Global.queryPoints(completionHandler: { ( result:Int ) -> () in 
 

@@ -212,7 +212,7 @@ class FanpagePage: UIViewController,
 
         self.tableView.separatorStyle = .none     
 
-        self.activityVideoView = Global.setActivityIndicator(container: self.tableView, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)          
+        self.activityVideoView = Global.setActivityIndicator(container: self.tableView, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)          
 
 
         //HIde Floaty

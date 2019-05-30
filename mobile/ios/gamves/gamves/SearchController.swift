@@ -223,7 +223,7 @@ class SearchController: UIViewController,
         self.tableView.register(SearchSingleImageCell.self, forCellReuseIdentifier: self.cellImageSearch)
         self.tableView.register(SearchGridImageCell.self, forCellReuseIdentifier: self.cellGallerySearch)
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//,x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballSpinFadeLoader.hashValue), color: UIColor.gambesDarkColor)//,x: 0, y: 0, width: 80.0, height: 80.0)
 
         let homeImage = "background_vertical"
         let image = UIImage(named: homeImage)        

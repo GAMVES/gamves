@@ -155,7 +155,7 @@ class FriendNewController: UIViewController,
         self.buttonView.addConstraintsWithFormat("H:|-10-[v0]-10-|", views: self.addButton)    
         self.buttonView.addConstraintsWithFormat("V:|-5-[v0]-10-|", views: self.addButton)
 
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)
 
         self.tableView.register(FriendsTableViewCell.self, forCellReuseIdentifier: self.cellIdTableView)                
         self.collectionView.register(CatFanSelectorViewCell.self, forCellWithReuseIdentifier: cellIdCollectionView)

@@ -627,7 +627,7 @@ class FriendApprovalLauncher: UIView {
 
             view.tag = 1
 
-            self.activityIndicatorView = Global.setActivityIndicator(container: view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)
+            self.activityIndicatorView = Global.setActivityIndicator(container: view, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)
             
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
                 

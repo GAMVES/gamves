@@ -218,7 +218,7 @@ class BugViewController: UIViewController {
 
         self.saveButton.isEnabled = false
 
-        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray)
+        self.activityView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballSpinFadeLoader.hashValue), color: UIColor.gray)
 
       }
     

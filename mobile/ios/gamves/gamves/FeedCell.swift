@@ -58,7 +58,7 @@ FeedDelegate {
         addConstraintsWithFormat("H:|[v0]|", views: collectionView)
         addConstraintsWithFormat("V:|[v0]|", views: collectionView)
         
-        self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityView = Global.setActivityIndicator(container: self, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)//,x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.collectionView.register(MessageCell.self, forCellWithReuseIdentifier: cellId)
         

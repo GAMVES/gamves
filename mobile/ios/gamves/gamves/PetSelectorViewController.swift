@@ -128,7 +128,7 @@ UICollectionViewDelegateFlowLayout   {
 
         self.collectionView.register(PetViewCell.self, forCellWithReuseIdentifier: self.cellPetCollectionId)       
 
-        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballPulse.rawValue, color: UIColor.gray)        
+        self.activityView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballPulse.hashValue), color: UIColor.gray)        
 
         let ids = Array(Global.pets.keys)             
         for i in ids {

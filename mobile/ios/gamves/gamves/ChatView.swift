@@ -377,7 +377,7 @@
             
             self.tabGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))       
 
-            self.activityView = Global.setActivityIndicator(container: self, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray) //,x: 0, y: 0, width: 80.0, height: 80.0)
+            self.activityView = Global.setActivityIndicator(container: self, type: Int(NVActivityIndicatorType.ballSpinFadeLoader.hashValue), color: UIColor.gray) //,x: 0, y: 0, width: 80.0, height: 80.0)
                        
             self.recordingSession = AVAudioSession.sharedInstance()
             
@@ -2995,7 +2995,7 @@
                 
                 if self.type == MessageType.isAudioDownloading {
 
-                    self.progressAudio = Global.setActivityIndicatorForChat(container: self.profileContainerView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
+                    self.progressAudio = Global.setActivityIndicatorForChat(container: self.profileContainerView, type: Int(NVActivityIndicatorType.ballScaleRipple.hashValue), color: UIColor.black,x: 10, y: 10, width: 40.0, height: 40.0)
                     self.profileImageView.isHidden = true
                     self.progressAudio.startAnimating()
 
@@ -3042,7 +3042,7 @@
                 
                 if self.type == MessageType.isPictureDownloading {
 
-                    self.progressPicture = Global.setActivityIndicatorForChat(container: self.bubbleView, type: NVActivityIndicatorType.ballScaleRipple.rawValue, color: UIColor.black,x: 0, y: 0, width: 80.0, height: 80.0)
+                    self.progressPicture = Global.setActivityIndicatorForChat(container: self.bubbleView, type: Int(NVActivityIndicatorType.ballScaleRipple.hashValue), color: UIColor.black,x: 0, y: 0, width: 80.0, height: 80.0)
                     self.progressPicture.startAnimating()
                     
                 }

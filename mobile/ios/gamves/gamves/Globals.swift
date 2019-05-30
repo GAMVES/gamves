@@ -161,8 +161,8 @@ class Global: NSObject
     }
 
     //Bool to foce download and skip chache. 
-    static var forceFromNetworkCache = Bool()    
-    
+    static var forceFromNetworkCache = Bool() 
+
     static func addUserToDictionary(user: PFUser, isFamily:Bool, completionHandler : @escaping (_ resutl:GamvesUser) -> ())
     {
         let userId = user.objectId!
@@ -876,6 +876,116 @@ class Global: NSObject
         }
     }
     
+    
+    static func getActivityIndicatorType(id: Int) -> NVActivityIndicatorType {
+        
+        switch (id) {
+        
+            case NVActivityIndicatorType.ballPulse.hashValue:
+                return .ballPulse
+            
+            case NVActivityIndicatorType.ballClipRotatePulse.hashValue:
+                return .ballClipRotatePulse
+
+            case NVActivityIndicatorType.cubeTransition.hashValue:
+                return .cubeTransition
+
+            case NVActivityIndicatorType.ballScale.hashValue:
+                return .ballScale
+            
+            case NVActivityIndicatorType.ballPulseSync.hashValue:
+                return .ballPulseSync
+
+            case NVActivityIndicatorType.ballScaleRipple.hashValue:
+                return .ballScaleRipple
+
+            case NVActivityIndicatorType.triangleSkewSpin.hashValue:
+                return .triangleSkewSpin
+
+            case NVActivityIndicatorType.ballRotateChase.hashValue:
+                return .ballRotateChase
+
+            case NVActivityIndicatorType.ballGridPulse.hashValue:
+                return .ballGridPulse
+
+            case NVActivityIndicatorType.ballClipRotateMultiple.hashValue:
+                return .ballClipRotateMultiple
+
+            case NVActivityIndicatorType.ballZigZag.hashValue:
+                return .ballZigZag
+
+            case NVActivityIndicatorType.lineScale.hashValue:
+                return .lineScale
+
+            case NVActivityIndicatorType.ballBeat.hashValue:
+                return .ballBeat
+
+            case NVActivityIndicatorType.ballScaleRippleMultiple.hashValue:
+                return .ballScaleRippleMultiple
+
+            case NVActivityIndicatorType.pacman.hashValue:
+                return .pacman
+
+            case NVActivityIndicatorType.orbit.hashValue:
+                return .orbit
+
+            case NVActivityIndicatorType.ballClipRotate.hashValue:
+                return .ballClipRotate
+
+            case NVActivityIndicatorType.ballPulseRise.hashValue:
+                return .ballPulseRise
+
+            case NVActivityIndicatorType.ballZigZagDeflect.hashValue:
+                return .ballZigZagDeflect
+
+            case NVActivityIndicatorType.lineScaleParty.hashValue:
+                return .lineScaleParty
+
+            case NVActivityIndicatorType.lineScalePulseOut.hashValue:
+                return .lineScalePulseOut
+
+            case NVActivityIndicatorType.ballSpinFadeLoader.hashValue:
+                return .ballSpinFadeLoader
+
+            case NVActivityIndicatorType.ballGridBeat.hashValue:
+                return .ballGridBeat
+
+            case NVActivityIndicatorType.audioEqualizer.hashValue:
+                return .audioEqualizer
+
+            case NVActivityIndicatorType.squareSpin.hashValue:
+                return .squareSpin
+
+            case NVActivityIndicatorType.ballRotate.hashValue:
+                return .ballRotate
+
+            case NVActivityIndicatorType.ballTrianglePath.hashValue:
+                return .ballTrianglePath
+
+            case NVActivityIndicatorType.ballScaleMultiple.hashValue:
+                return .ballScaleMultiple
+
+            case NVActivityIndicatorType.lineScalePulseOutRapid.hashValue:
+                return .lineScalePulseOutRapid
+
+            case NVActivityIndicatorType.lineSpinFadeLoader.hashValue:
+                return .lineSpinFadeLoader
+
+            case NVActivityIndicatorType.semiCircleSpin.hashValue:
+                return .semiCircleSpin
+
+
+            case NVActivityIndicatorType.circleStrokeSpin.hashValue:
+               return .circleStrokeSpin
+            
+            default:
+               return NVActivityIndicatorView.DEFAULT_TYPE
+        }
+        
+        return NVActivityIndicatorView.DEFAULT_TYPE
+    }
+
+    
      static func setActivityIndicator(container: UIView, type: Int, color:UIColor) -> NVActivityIndicatorView
     {
         
@@ -883,7 +993,8 @@ class Global: NSObject
         
         if aiView == nil
         {
-            aiView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 60.0, height: 60.0), type: NVActivityIndicatorType(rawValue: type), color: color, padding: 0.0)
+            
+            aiView = NVActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 60.0, height: 60.0), type: getActivityIndicatorType(id: type), color: color, padding: 0.0)
             
             // add subview
             container.addSubview(aiView!)
@@ -904,7 +1015,7 @@ class Global: NSObject
         
         if aiView == nil
         {
-            aiView = NVActivityIndicatorView(frame: CGRect(x: x, y: y, width: width, height: height), type: NVActivityIndicatorType(rawValue: type), color: color, padding: 0.0)
+            aiView = NVActivityIndicatorView(frame: CGRect(x: x, y: y, width: width, height: height), type: getActivityIndicatorType(id: type), color: color, padding: 0.0)
             
             // add subview
             container.addSubview(aiView!)

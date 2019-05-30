@@ -1,15 +1,14 @@
-# Uncomment the next line to define a global platform for your project
 platform :ios, '10.0'
-
 use_frameworks!
 
-target 'gamves' do 
+
+target 'gamves' do   
 
   pod 'DeviceKit'
 
   pod 'Parse'
 
-  pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift', :commit => 'e9baa72d04521c3b25ef4fa6fef12b340953ee02'
+  #pod 'Bolts-Swift'
 
   pod 'ParseLiveQuery'
   
@@ -19,7 +18,7 @@ target 'gamves' do
 
   pod 'PopupDialog', '~> 0.6.0'
 
-  pod 'NVActivityIndicatorView', '~> 4.0.1'
+  pod 'NVActivityIndicatorView'
   
   pod 'DownPicker'
   
@@ -59,8 +58,5 @@ target 'shared' do
 
   pod 'Parse'
 
-  pod 'Bolts-Swift', :git => 'https://github.com/BoltsFramework/Bolts-Swift', :commit => 'e9baa72d04521c3b25ef4fa6fef12b340953ee02'
-
-  pod 'ParseLiveQuery'
-
 end
+

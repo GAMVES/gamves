@@ -78,7 +78,10 @@ UICollectionViewDelegateFlowLayout {
         self.collectionView.register(BugsViewCell.self, forCellWithReuseIdentifier: self.cellId)
         self.collectionView.register(BugsSectionHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader , withReuseIdentifier: sectionHeaderId)
 
-        self.activityView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gray)
+
+        
+
+        self.activityView = Global.setActivityIndicator(container: self.view, type: Int(NVActivityIndicatorType.ballSpinFadeLoader.hashValue), color: UIColor.gray)
         
         self.loadBugs()  
 
