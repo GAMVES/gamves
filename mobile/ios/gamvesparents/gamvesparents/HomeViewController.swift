@@ -305,7 +305,7 @@ class HomeViewController: UIViewController,
             self.collectionView, 
             self.dataRightView)
        
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.cyberChildrenDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
         
         self.collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: self.cellId)
 

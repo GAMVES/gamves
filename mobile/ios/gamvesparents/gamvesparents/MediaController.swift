@@ -190,7 +190,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white
         button.setTitle("Crop Video and save", for: UIControlState())
-        button.backgroundColor = UIColor.gambesDarkColor
+        button.backgroundColor = UIColor.cyberChildrenDarkColor
         button.addTarget(self, action: #selector(handleCrop), for: .touchUpInside)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         return button
@@ -212,7 +212,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .white
         button.setTitle("Save Video without cropping", for: UIControlState())
-        button.backgroundColor = UIColor.gambesDarkColor
+        button.backgroundColor = UIColor.cyberChildrenDarkColor
         button.addTarget(self, action: #selector(handleSave), for: .touchUpInside)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         return button

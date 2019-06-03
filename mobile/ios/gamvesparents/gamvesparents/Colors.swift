@@ -17,7 +17,9 @@ extension UIColor {
 
     static let cyberChildrenColor = UIColor.rgb(245, green: 134, blue: 52)
 
-    static let gambesDarkColor = UIColor.rgb(0, green: 123, blue: 176)
+    //static let gambesDarkColor = UIColor.rgb(0, green: 123, blue: 176)
+
+    static let cyberChildrenDarkColor = UIColor.rgb(193, green: 104, blue: 57)
 
     static let gamvesBlackColor = UIColor.rgb(55, green: 52, blue: 53)
 

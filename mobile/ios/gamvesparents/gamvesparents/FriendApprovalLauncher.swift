@@ -60,7 +60,7 @@ class FriendApprovalView: UIView {
     let userView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false     
-        view.backgroundColor = UIColor.gambesDarkColor           
+        view.backgroundColor = UIColor.cyberChildrenDarkColor           
         return view
     }() 
 

@@ -112,7 +112,7 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
     
     lazy var nextButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor
+        button.backgroundColor = UIColor.cyberChildrenDarkColor
         button.setTitle("CONTINUE", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())

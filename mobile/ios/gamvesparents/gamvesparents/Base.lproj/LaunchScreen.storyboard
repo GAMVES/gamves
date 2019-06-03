@@ -21,18 +21,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="Qtj-6Y-05E">
-                                <rect key="frame" x="67.5" y="269.5" width="240" height="128"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="Qtj-6Y-05E">
+                                <rect key="frame" x="51" y="197" width="272" height="186"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="Rdu-tK-XcC"/>
                                     <constraint firstAttribute="width" constant="240" id="yRC-fD-dpD"/>
-                                </constraints>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="QZG-BM-2ZH">
-                                <rect key="frame" x="117" y="223" width="140" height="75"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="128" id="DYX-JS-GV6"/>
-                                    <constraint firstAttribute="width" constant="240" id="FyX-7Q-IKw"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -40,8 +33,6 @@
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Qtj-6Y-05E" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="7Aa-Qx-Mts"/>
-                            <constraint firstItem="QZG-BM-2ZH" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="avT-JS-fq0"/>
-                            <constraint firstItem="QZG-BM-2ZH" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="220" id="uML-88-JGF"/>
                             <constraint firstItem="Qtj-6Y-05E" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="yIm-ZA-kj7"/>
                         </constraints>
                     </view>
@@ -52,7 +43,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="icon" width="40" height="40"/>
         <image name="logo" width="560.5" height="75.5"/>
     </resources>
 </document>

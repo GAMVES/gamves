@@ -393,7 +393,7 @@ class ProfileViewController: UIViewController,
 
     lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor        
+        button.backgroundColor = UIColor.cyberChildrenDarkColor        
         button.setTitle("Save son or doughter", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
@@ -528,7 +528,7 @@ class ProfileViewController: UIViewController,
         
         self.prepTextFields(inView: [self.sonNameContainerView])
 
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.cyberChildrenDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
        
         self.familyChatId           = Global.getRandomInt()
         self.sonRegisterChatId      = Global.getRandomInt()

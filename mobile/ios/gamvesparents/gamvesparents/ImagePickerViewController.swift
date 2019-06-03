@@ -137,7 +137,7 @@ UITextFieldDelegate  {
         //let image = UIImage(named: "add_image")
         //button.setImage(image, for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor.gambesDarkColor
+        button.backgroundColor = UIColor.cyberChildrenDarkColor
         button.tintColor = .white
         button.layer.cornerRadius = 5        
         button.titleLabel!.font =  UIFont.boldSystemFont(ofSize: 18)
@@ -251,7 +251,7 @@ UITextFieldDelegate  {
             self.scrollView.addGestureRecognizer(tap)
         }
 
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.cyberChildrenDarkColor)
 
         Global.loadSchools(completionHandler: { ( user, schoolsArray ) -> () in           
 

@@ -2748,7 +2748,7 @@
 
                 }
 
-                self.bubbleView.dropShadow(color: UIColor.gambesDarkColor)                
+                self.bubbleView.dropShadow(color: UIColor.cyberChildrenDarkColor)                
             
             }
             
@@ -2866,7 +2866,7 @@
 
                 }
 
-                self.playContainerView.dropShadow(color: UIColor.gambesDarkColor)     
+                self.playContainerView.dropShadow(color: UIColor.cyberChildrenDarkColor)     
 
                 
             } else if Global.isPicture(type: self.type) {
@@ -2917,7 +2917,7 @@
                 self.messageTextView.isHidden = false
             }
 
-            self.bubbleView.dropShadow(color: UIColor.gambesDarkColor) 
+            self.bubbleView.dropShadow(color: UIColor.cyberChildrenDarkColor) 
 
         }
 
@@ -3029,7 +3029,7 @@
 
                 } else {
 
-                    playImage?.maskWithColor(color: UIColor.gambesDarkColor)
+                    playImage?.maskWithColor(color: UIColor.cyberChildrenDarkColor)
                 
                 }
                 

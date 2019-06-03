@@ -162,7 +162,7 @@ ImagesPickerProtocol {
 
     lazy var loginRegisterButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gambesDarkColor
+        button.backgroundColor = UIColor.cyberChildrenDarkColor
         button.setTitle("Register", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())
@@ -355,7 +355,7 @@ ImagesPickerProtocol {
         registerLabel.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
         registerLabel.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
         registerLabelHeightAnchor = registerLabel.heightAnchor.constraint(equalTo: containerView.heightAnchor)
-        registerLabel.backgroundColor = UIColor.gambesDarkColor
+        registerLabel.backgroundColor = UIColor.cyberChildrenDarkColor
         registerLabel.frame.size.width = registerLabel.intrinsicContentSize.width - 40
         registerLabel.textAlignment = .center
         registerLabel.isHidden = true
@@ -365,7 +365,7 @@ ImagesPickerProtocol {
         
         self.prepTextFields(inView: [self.nameTextField, self.emailTextField, self.passwordTextField])
         
-        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.gambesDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
+        self.activityIndicatorView = Global.setActivityIndicator(container: self.view, type: NVActivityIndicatorType.ballSpinFadeLoader.rawValue, color: UIColor.cyberChildrenDarkColor)//, x: 0, y: 0, width: 80.0, height: 80.0)
         
         //let deadlineTime = DispatchTime.now() + 2
         //DispatchQueue.main.asyncAfter(deadline: deadlineTime) {

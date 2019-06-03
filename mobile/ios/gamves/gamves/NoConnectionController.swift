@@ -38,7 +38,7 @@ class NoConnectionController: UIViewController {
         label.textColor = UIColor.white        
         label.font = UIFont.boldSystemFont(ofSize: 80)
         label.textAlignment = .center
-        label.backgroundColor = UIColor.gambesDarkColor              
+        label.backgroundColor = UIColor.cyberChildrenDarkColor              
         return label
     }()
 
