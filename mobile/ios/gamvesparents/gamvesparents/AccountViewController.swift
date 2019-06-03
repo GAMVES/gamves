@@ -301,7 +301,7 @@ ImagesPickerProtocol {
             self.floaty.itemSpace = 30        
             
             self.floaty.hasShadow = true
-            self.floaty.buttonColor = UIColor.gamvesColor
+            self.floaty.buttonColor = UIColor.cyberChildrenColor
             
             var addImage = UIImage(named: "add_symbol")
             addImage = addImage?.maskWithColor(color: UIColor.white)
@@ -313,7 +313,7 @@ ImagesPickerProtocol {
             var groupAddImage = UIImage(named: "group_add")
             groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
             itemNewGroup.icon = groupAddImage
-            itemNewGroup.buttonColor = UIColor.gamvesColor
+            itemNewGroup.buttonColor = UIColor.cyberChildrenColor
             itemNewGroup.titleLabelPosition = .left
             itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
             itemNewGroup.title = "ADD FAMILY"
@@ -407,7 +407,7 @@ ImagesPickerProtocol {
         var groupContactImage = UIImage(named: "account")
         groupContactImage = groupContactImage?.maskWithColor(color: UIColor.white)
         itemSelectGroup.icon = groupContactImage
-        itemSelectGroup.buttonColor = UIColor.gamvesColor
+        itemSelectGroup.buttonColor = UIColor.cyberChildrenColor
         itemSelectGroup.titleLabelPosition = .left
         itemSelectGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemSelectGroup.title = "SELECT CONTACT"

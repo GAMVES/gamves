@@ -61,7 +61,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         self.floaty.itemSpace = 30        
         
         self.floaty.hasShadow = true
-        self.floaty.buttonColor = UIColor.gamvesColor
+        self.floaty.buttonColor = UIColor.cyberChildrenColor
         var addImage = UIImage(named: "add_symbol")
         addImage = addImage?.maskWithColor(color: UIColor.white)
         addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
@@ -72,7 +72,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         var groupAddImage = UIImage(named: "group_add")
         groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
         itemNewGroup.icon = groupAddImage
-        itemNewGroup.buttonColor = UIColor.gamvesColor
+        itemNewGroup.buttonColor = UIColor.cyberChildrenColor
         itemNewGroup.titleLabelPosition = .left
         itemNewGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewGroup.title = "NEW GROUP"
@@ -85,7 +85,7 @@ class ChatFeedViewController: UICollectionViewController, UICollectionViewDelega
         var groupContactImage = UIImage(named: "account")
         groupContactImage = groupContactImage?.maskWithColor(color: UIColor.white)
         itemSelectGroup.icon = groupContactImage
-        itemSelectGroup.buttonColor = UIColor.gamvesColor
+        itemSelectGroup.buttonColor = UIColor.cyberChildrenColor
         itemSelectGroup.titleLabelPosition = .left
         itemSelectGroup.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemSelectGroup.title = "SELECT CONTACT"

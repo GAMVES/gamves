@@ -17,31 +17,31 @@ class CustomHeader: UITableViewHeaderFooterView {
 
     let infoView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
 
     let rowsView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
     
     let upperView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
     
     let bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
 
     let rightView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
     

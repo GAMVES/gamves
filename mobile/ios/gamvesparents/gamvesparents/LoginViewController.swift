@@ -49,7 +49,7 @@ ImagesPickerProtocol {
     
     let backView: UIView = {
         let view = UIView()
-        //view.backgroundColor = UIColor.gamvesColor
+        //view.backgroundColor = UIColor.cyberChildrenColor
         view.backgroundColor = UIColor.white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -95,7 +95,7 @@ ImagesPickerProtocol {
     
     let nameSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -111,7 +111,7 @@ ImagesPickerProtocol {
     
     let emailSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -129,7 +129,7 @@ ImagesPickerProtocol {
 
     let userTypeSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -146,7 +146,7 @@ ImagesPickerProtocol {
 
     let schoolTypeSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()    
@@ -187,7 +187,7 @@ ImagesPickerProtocol {
     
     let bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -228,14 +228,14 @@ ImagesPickerProtocol {
             self.puserId = userId
         }
         
-        self.view.backgroundColor = UIColor.gamvesColor
+        self.view.backgroundColor = UIColor.cyberChildrenColor
         
         self.view.addSubview(self.backView)
         
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.backView)
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.backView)
         
-        self.backView.backgroundColor = UIColor.gamvesColor
+        self.backView.backgroundColor = UIColor.cyberChildrenColor
         
         self.backView.addSubview(explainLabel)
         self.backView.addSubview(loginRegisterSegmentedControl)

@@ -42,7 +42,7 @@ class ButtonsApprovalView: UIView {
     
     lazy var laterButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.gamvesColor
+        button.backgroundColor = UIColor.cyberChildrenColor
         button.setTitle("DECIDE LATER", for: UIControlState())
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: UIControlState())

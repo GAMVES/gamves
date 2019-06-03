@@ -75,14 +75,14 @@ class ProfileViewController: UIViewController,
     let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesColor
+        v.backgroundColor = UIColor.cyberChildrenColor
         v.bounces = false
         return v
     }()
 
     let photosContainerView: UIView = {
         let view = UIView()
-        //view.backgroundColor = UIColor.gamvesColor
+        //view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false        
         view.layer.masksToBounds = true
         return view
@@ -164,7 +164,7 @@ class ProfileViewController: UIViewController,
 
     let sonNameSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -179,7 +179,7 @@ class ProfileViewController: UIViewController,
 
     let sonUserSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -197,7 +197,7 @@ class ProfileViewController: UIViewController,
 
     let sonUserVerticalSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -253,7 +253,7 @@ class ProfileViewController: UIViewController,
 
     let sonUserTypeSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()  
@@ -267,7 +267,7 @@ class ProfileViewController: UIViewController,
 
     let sonSchoolSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -302,7 +302,7 @@ class ProfileViewController: UIViewController,
 
     let yourNameSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -317,7 +317,7 @@ class ProfileViewController: UIViewController,
 
     let yourUserSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()  
@@ -353,7 +353,7 @@ class ProfileViewController: UIViewController,
 
     let partnerNameSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -369,7 +369,7 @@ class ProfileViewController: UIViewController,
 
     let partnerEmailSeparatorView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -405,7 +405,7 @@ class ProfileViewController: UIViewController,
 
     let bottomView: UIView = {
         let view = UIView()        
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -496,7 +496,7 @@ class ProfileViewController: UIViewController,
         self.partnerContainerView.addSubview(self.partnerEmailSeparatorView)        
         self.partnerContainerView.addSubview(self.partnerPasswordTextField)
 
-        self.view.backgroundColor = UIColor.gamvesColor
+        self.view.backgroundColor = UIColor.cyberChildrenColor
 
         let width:Int = Int(view.frame.size.width)
         let height:Int = Int(view.frame.size.height)

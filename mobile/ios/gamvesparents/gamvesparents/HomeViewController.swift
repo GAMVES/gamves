@@ -264,7 +264,7 @@ class HomeViewController: UIViewController,
             self.sonLabel,
             metrics: self.metricsHome)
         
-        self.checkLabelSon =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.gamvesColor)
+        self.checkLabelSon =  Global.createCircularLabel(text: "2", size: 25, fontSize: 18.0, borderWidth: 0.0, color: UIColor.cyberChildrenColor)
         
         self.photosContainerView.addSubview(self.sonPhotoImageView)
         self.photosContainerView.addSubview(self.checkLabelSon)
@@ -865,7 +865,7 @@ class HomeViewController: UIViewController,
             cell.descLabel.textColor = UIColor.white
             cell.dataLabel.textColor = UIColor.white                      
         
-            cell.backView.backgroundColor = UIColor.gamvesColor            
+            cell.backView.backgroundColor = UIColor.cyberChildrenColor            
             
             cell.layer.cornerRadius = 10            
         }      

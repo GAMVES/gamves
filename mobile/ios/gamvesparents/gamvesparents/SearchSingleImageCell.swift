@@ -93,7 +93,7 @@ class SearchSingleImageCell: UITableViewCell {
                 
         self.conteinerView.addSubview(thumbnailImageView)
         
-        checkLabel =  Global.createCircularLabel(text: "✓", size: 60, fontSize: 50.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+        checkLabel =  Global.createCircularLabel(text: "✓", size: 60, fontSize: 50.0, borderWidth: 3.0, color: UIColor.cyberChildrenColor)
         
         addSubview(checkLabel)
         
@@ -118,7 +118,7 @@ class SearchSingleImageCell: UITableViewCell {
         
         if self.actionType == SearchActionType.isCheck {
             
-            checkLabel =  Global.createCircularLabel(text: "✓", size: 60, fontSize: 50.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+            checkLabel =  Global.createCircularLabel(text: "✓", size: 60, fontSize: 50.0, borderWidth: 3.0, color: UIColor.cyberChildrenColor)
             
         } else if self.actionType == SearchActionType.isDelete {
             

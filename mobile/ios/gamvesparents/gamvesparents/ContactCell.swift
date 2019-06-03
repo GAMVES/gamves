@@ -77,7 +77,7 @@ class ContactCell: BaseCell {
         addSubview(profileImageView)
         addSubview(dividerLineView)
         
-        checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 24.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+        checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 24.0, borderWidth: 3.0, color: UIColor.cyberChildrenColor)
         addSubview(checkLabel)
         
         setupContainerView()

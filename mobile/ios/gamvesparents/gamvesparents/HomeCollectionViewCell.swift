@@ -54,7 +54,7 @@ class HomeCollectionViewCell: BaseCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 10
-        view.layer.borderColor = UIColor.gamvesColor.cgColor
+        view.layer.borderColor = UIColor.cyberChildrenColor.cgColor
         view.layer.borderWidth = 1.5
         return view
     }()

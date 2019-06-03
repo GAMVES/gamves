@@ -49,7 +49,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     let backgroundView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesColor
+        v.backgroundColor = UIColor.cyberChildrenColor
         return v
     }()
     
@@ -68,7 +68,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     let bottomView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesColor
+        v.backgroundColor = UIColor.cyberChildrenColor
         return v
     }()
     
@@ -80,7 +80,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     let layoutContainer: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesColor
+        v.backgroundColor = UIColor.cyberChildrenColor
         return v
     }()
     
@@ -179,7 +179,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 5
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
     
@@ -201,7 +201,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 5
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
     
@@ -221,7 +221,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     let trimBottomSeparatorView: UIView = {
         let v = UIView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesColor
+        v.backgroundColor = UIColor.cyberChildrenColor
         return v
     }()
     
@@ -265,7 +265,7 @@ class MediaController: UIViewController, UIImagePickerControllerDelegate, UIAler
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.gamvesColor
+        self.view.backgroundColor = UIColor.cyberChildrenColor
         
         self.view.addSubview(self.backgroundView)
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.backgroundView)

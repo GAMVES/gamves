@@ -223,7 +223,7 @@ class TabBarViewController: UITabBarController, CLLocationManagerDelegate, UITab
             self.blurVisualEffectView?.removeFromSuperview()
         }
         
-        //self.tabBarController!.tabBar.tintColor = UIColor.gamvesColor
+        //self.tabBarController!.tabBar.tintColor = UIColor.cyberChildrenColor
         
     }
 

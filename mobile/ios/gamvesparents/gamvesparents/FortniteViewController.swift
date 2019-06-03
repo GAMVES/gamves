@@ -223,7 +223,7 @@ class FortniteViewController: UIViewController
 
         if self.isMovingFromParentViewController {
 
-            self.navigationController?.navigationBar.barTintColor = UIColor.gamvesColor
+            self.navigationController?.navigationBar.barTintColor = UIColor.cyberChildrenColor
             
         }
     }
@@ -390,7 +390,7 @@ class FortniteViewController: UIViewController
 
     func popController() {
 
-        UINavigationBar.appearance().barTintColor = UIColor.gamvesColor
+        UINavigationBar.appearance().barTintColor = UIColor.cyberChildrenColor
 
         //if self.isRegistering {
                                 

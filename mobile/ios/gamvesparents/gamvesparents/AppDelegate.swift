@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         
-        UINavigationBar.appearance().barTintColor = UIColor.gamvesColor        
+        UINavigationBar.appearance().barTintColor = UIColor.cyberChildrenColor        
       
         var reached = false
 
@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
             window?.rootViewController = tabBarViewController      
             
-            UITabBar.appearance().barTintColor = UIColor.gamvesColor
+            UITabBar.appearance().barTintColor = UIColor.cyberChildrenColor
             UITabBar.appearance().tintColor = UIColor.white
            
             
@@ -141,7 +141,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
             window?.rootViewController = noConnectionViewController      
             
-            UITabBar.appearance().barTintColor = UIColor.gamvesColor
+            UITabBar.appearance().barTintColor = UIColor.cyberChildrenColor
             UITabBar.appearance().tintColor = UIColor.white            
          
         }

@@ -22,7 +22,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.gamvesColor
+        cv.backgroundColor = UIColor.cyberChildrenColor
         cv.dataSource = self
         cv.delegate = self
         cv.isPagingEnabled = true
@@ -47,7 +47,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         pc.pageIndicatorTintColor = .lightGray
         pc.currentPageIndicatorTintColor = UIColor(red: 247/255, green: 154/255, blue: 27/255, alpha: 1)
         pc.numberOfPages = self.pages.count + 1
-        pc.backgroundColor = UIColor.gamvesColor
+        pc.backgroundColor = UIColor.cyberChildrenColor
         return pc
     }()
     
@@ -101,7 +101,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         pageControl.currentPage += 1
 
-        self.view.backgroundColor = UIColor.gamvesColor
+        self.view.backgroundColor = UIColor.cyberChildrenColor
     }
     
     @objc func loginPage() {       
@@ -120,7 +120,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         
         observeKeyboardNotifications()
         
-        collectionView.backgroundColor = UIColor.gamvesColor
+        collectionView.backgroundColor = UIColor.cyberChildrenColor
         
         view.addSubview(collectionView)
         view.addSubview(pageControl)
@@ -222,7 +222,7 @@ class TutorialController: UIViewController, UICollectionViewDataSource, UICollec
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! PageCell
 
-        cell.backgroundColor = UIColor.gamvesColor
+        cell.backgroundColor = UIColor.cyberChildrenColor
 
         let page = pages[(indexPath as NSIndexPath).item]
         

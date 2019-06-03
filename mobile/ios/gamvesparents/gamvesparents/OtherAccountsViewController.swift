@@ -26,7 +26,7 @@ UICollectionViewDelegateFlowLayout {
         let label = PaddingLabel()
         label.text = "Click the + button below and add a new account. If the accout is not availabe contact Gamves official"
         label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = UIColor.gamvesColor
+        label.textColor = UIColor.cyberChildrenColor
         label.numberOfLines = 3
         label.textAlignment = .center     
         //label.backgroundColor = UIColor.green   
@@ -81,7 +81,7 @@ UICollectionViewDelegateFlowLayout {
         self.floaty.itemSpace = 30
         
         self.floaty.hasShadow = true
-        self.floaty.buttonColor = UIColor.gamvesColor
+        self.floaty.buttonColor = UIColor.cyberChildrenColor
         var addImage = UIImage(named: "add_symbol")
         addImage = addImage?.maskWithColor(color: UIColor.white)
         addImage = Global.resizeImage(image: addImage!, targetSize: CGSize(width:40, height:40))
@@ -92,7 +92,7 @@ UICollectionViewDelegateFlowLayout {
         var groupAddImage = UIImage(named: "fortnite_black")
         groupAddImage = groupAddImage?.maskWithColor(color: UIColor.white)
         itemNewFortnite.icon = groupAddImage
-        itemNewFortnite.buttonColor = UIColor.gamvesColor
+        itemNewFortnite.buttonColor = UIColor.cyberChildrenColor
         itemNewFortnite.titleLabelPosition = .left
         itemNewFortnite.titleLabel.font = UIFont(name:"HelveticaNeue-Bold", size: 20)
         itemNewFortnite.title = "Fortnite"

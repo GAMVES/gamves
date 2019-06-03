@@ -41,7 +41,7 @@ class AccountCollectionViewCell: BaseCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.white
         view.layer.cornerRadius = 10
-        view.layer.borderColor = UIColor.gamvesColor.cgColor
+        view.layer.borderColor = UIColor.cyberChildrenColor.cgColor
         view.layer.borderWidth = 2
         return view
     }()

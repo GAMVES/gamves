@@ -32,7 +32,7 @@ UITextFieldDelegate  {
     let scrollView: UIScrollView = {
         let v = UIScrollView()
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = UIColor.gamvesColor
+        v.backgroundColor = UIColor.cyberChildrenColor
         return v
     }()
 
@@ -63,7 +63,7 @@ UITextFieldDelegate  {
 
      let photoContainerView: UIView = {
         let view = UIView()
-        //view.backgroundColor = UIColor.gamvesColor
+        //view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false        
         view.layer.masksToBounds = true
         return view
@@ -169,7 +169,7 @@ UITextFieldDelegate  {
         self.view.addConstraintsWithFormat("H:|[v0]|", views: self.scrollView)        
         self.view.addConstraintsWithFormat("V:|[v0]|", views: self.scrollView)     
 
-        self.view.backgroundColor = UIColor.gamvesColor
+        self.view.backgroundColor = UIColor.cyberChildrenColor
 
         self.scrollView.addSubview(self.topView)
         self.scrollView.addConstraintsWithFormat("H:|[v0]|", views: self.topView)        

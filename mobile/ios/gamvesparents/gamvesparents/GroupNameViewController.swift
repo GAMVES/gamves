@@ -137,7 +137,7 @@ class GroupNameViewController: UIViewController,
         
         self.collectionView.reloadData()
         
-        self.checkLabel =  Global.createCircularLabel(text: "✓", size: 80, fontSize: 40.0, borderWidth: 3.0, color: UIColor.gamvesColor)
+        self.checkLabel =  Global.createCircularLabel(text: "✓", size: 80, fontSize: 40.0, borderWidth: 3.0, color: UIColor.cyberChildrenColor)
         
         self.view.addSubview(self.checkLabel)
         

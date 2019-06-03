@@ -82,7 +82,7 @@ class ApprovalCell: BaseCell {
 
     func setCheckLabel(color:UIColor, symbol:String) {
 
-        checkLabel =  Global.createCircularLabel(text: symbol, size: 30, fontSize: 24.0, borderWidth: 3.0, color:color ) //UIColor.gamvesColor)
+        checkLabel =  Global.createCircularLabel(text: symbol, size: 30, fontSize: 24.0, borderWidth: 3.0, color:color ) //UIColor.cyberChildrenColor)
         addSubview(checkLabel)
 
         addConstraintsWithFormat("H:|-50-[v0(30)]", views: checkLabel)

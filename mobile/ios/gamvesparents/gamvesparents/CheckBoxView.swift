@@ -13,7 +13,7 @@ class CheckBoxView: UIView, BEMCheckBoxDelegate {
     
     let checkboxView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

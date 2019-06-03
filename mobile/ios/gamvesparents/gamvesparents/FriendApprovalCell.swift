@@ -48,7 +48,7 @@ class FriendApprovalCell: BaseCell {
     
     let dividerLineView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
     
@@ -90,7 +90,7 @@ class FriendApprovalCell: BaseCell {
     
     func setCheckLabel(color:UIColor, symbol:String) {
         
-        self.checkLabel =  Global.createCircularLabel(text: symbol, size: 30, fontSize: 24.0, borderWidth: 3.0, color:color ) //UIColor.gamvesColor)
+        self.checkLabel =  Global.createCircularLabel(text: symbol, size: 30, fontSize: 24.0, borderWidth: 3.0, color:color ) //UIColor.cyberChildrenColor)
         self.addSubview(self.checkLabel)
         
         self.addConstraintsWithFormat("H:|-50-[v0(30)]", views: self.checkLabel)

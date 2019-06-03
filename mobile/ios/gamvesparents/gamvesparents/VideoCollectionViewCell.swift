@@ -122,7 +122,7 @@ class VideoCollectionViewCell: BaseCell {
         
         var checkLabel = UILabel()
         
-        checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 20.0, borderWidth: 2.0, color: UIColor.gamvesColor)
+        checkLabel =  Global.createCircularLabel(text: "✓", size: 30, fontSize: 20.0, borderWidth: 2.0, color: UIColor.cyberChildrenColor)
         
         let haloCheck = PulsingHaloLayer()
         haloCheck.position.x = checkLabel.center.x

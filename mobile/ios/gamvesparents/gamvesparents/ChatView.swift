@@ -201,14 +201,14 @@
             textField.backgroundColor = UIColor.white
             textField.layer.cornerRadius = 20
             textField.layer.borderWidth = 1.5
-            textField.layer.borderColor = UIColor.gamvesColor.cgColor
+            textField.layer.borderColor = UIColor.cyberChildrenColor.cgColor
             return textField
         }()
         
         lazy var recSendButton: UIButton = {
             let button = UIButton(type: .system)
             let sendImage = UIImage(named: "rec_off")
-            sendImage?.maskWithColor(color: UIColor.gamvesColor)
+            sendImage?.maskWithColor(color: UIColor.cyberChildrenColor)
             button.setImage(sendImage, for: UIControlState.normal)
             button.addTarget(self, action: #selector(handleSendRec), for: .touchDown)
             button.addTarget(self, action: #selector(handleSendRecUp), for: .touchUpInside)
@@ -223,7 +223,7 @@
         lazy var emojisKeyboardButton: UIButton = {
             let button = UIButton(type: .system)
             let emoticonImage = UIImage(named: "insert_emoticon")
-            emoticonImage?.maskWithColor(color: UIColor.gamvesColor)
+            emoticonImage?.maskWithColor(color: UIColor.cyberChildrenColor)
             button.setImage(emoticonImage, for: UIControlState.normal)
             button.addTarget(self, action: #selector(handleEmoticonsKeyboard), for: .touchUpInside)
             button.layer.cornerRadius = 20
@@ -234,7 +234,7 @@
         lazy var picureButton: UIButton = {
             let button = UIButton(type: .system)
             let cameraImage = UIImage(named: "camera_black")
-            cameraImage?.maskWithColor(color: UIColor.gamvesColor)
+            cameraImage?.maskWithColor(color: UIColor.cyberChildrenColor)
             button.setImage(cameraImage, for: UIControlState.normal)
             button.addTarget(self, action: #selector(handleAddPicture), for: .touchUpInside)
             button.layer.cornerRadius = 20
@@ -437,7 +437,7 @@
             self.messageContainerView.addSubview(self.emojisKeyboardButton)
             self.messageContainerView.addSubview(self.picureButton)
             
-            self.messageContainerView.backgroundColor = UIColor.gamvesColor
+            self.messageContainerView.backgroundColor = UIColor.cyberChildrenColor
             
             self.messageContainerView.addConstraintsWithFormat("H:|-8-[v0]-10-[v1(50)]-8-|", views: self.inputTextField, self.recSendButton)
             
@@ -2156,7 +2156,7 @@
             
             let sendImage = UIImage(named: "send")
             
-            sendImage?.maskWithColor(color: UIColor.gamvesColor)
+            sendImage?.maskWithColor(color: UIColor.cyberChildrenColor)
             
             self.recSendButton.setImage(sendImage, for: .normal)
             
@@ -2167,7 +2167,7 @@
             
             let sendImage = UIImage(named: "rec_off")
             
-            sendImage?.maskWithColor(color: UIColor.gamvesColor)
+            sendImage?.maskWithColor(color: UIColor.cyberChildrenColor)
             
             self.recSendButton.setImage(sendImage, for: .normal)
             
@@ -2184,7 +2184,7 @@
                 
                 let sendImage = UIImage(named: "send")
                 
-                sendImage?.maskWithColor(color: UIColor.gamvesColor)
+                sendImage?.maskWithColor(color: UIColor.cyberChildrenColor)
                 
                 self.recSendButton.setImage(sendImage, for: .normal)
                 
@@ -2594,7 +2594,7 @@
             imageView.contentMode = .scaleAspectFill
             imageView.layer.cornerRadius = 5
             imageView.layer.masksToBounds = true
-            imageView.layer.backgroundColor = UIColor.gamvesColor.cgColor
+            imageView.layer.backgroundColor = UIColor.cyberChildrenColor.cgColor
             return imageView
         }()
         
@@ -2790,7 +2790,7 @@
                     self.audioDurationLabel.textColor = UIColor.white.withAlphaComponent(0.5)
                     self.audioCountabel.textColor = UIColor.white.withAlphaComponent(0.5)
 
-                    //playImage?.maskWithColor(color: UIColor.gamvesColor)
+                    //playImage?.maskWithColor(color: UIColor.cyberChildrenColor)
                     
                 } else {
 
@@ -2807,7 +2807,7 @@
                     self.audioDurationLabel.textColor = UIColor.lightGray
                     self.audioCountabel.textColor = UIColor.lightGray
 
-                    //playImage?.maskWithColor(color: UIColor.gamvesColorLittleDarker)
+                    //playImage?.maskWithColor(color: UIColor.cyberChildrenColorLittleDarker)
 
                 }
                 
@@ -3025,7 +3025,7 @@
 
                 if self.isSender {
 
-                    playImage?.maskWithColor(color: UIColor.gamvesColor)
+                    playImage?.maskWithColor(color: UIColor.cyberChildrenColor)
 
                 } else {
 

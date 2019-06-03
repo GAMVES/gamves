@@ -243,7 +243,7 @@ class FriendApprovalLauncher: UIView {
             }
 
             friendApprovalView = FriendApprovalView(frame: friendFrame, friendApproval: friendApproval, type:type)
-            friendApprovalView.backgroundColor = UIColor.gamvesColor           
+            friendApprovalView.backgroundColor = UIColor.cyberChildrenColor           
            
             view.addSubview(friendApprovalView)
             

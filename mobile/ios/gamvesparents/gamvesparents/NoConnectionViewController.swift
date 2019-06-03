@@ -90,7 +90,7 @@ class NoConnectionViewController: UIViewController {
             self.bottomView,
             metrics: noMetrics)     
         
-        self.view.backgroundColor = UIColor.gamvesColor
+        self.view.backgroundColor = UIColor.cyberChildrenColor
 
         self.runTimer()
 

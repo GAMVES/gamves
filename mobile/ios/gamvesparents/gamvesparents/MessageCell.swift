@@ -124,7 +124,7 @@ class MessageCell: BaseCell {
         
         addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
         
-        badgeLabel =  Global.createCircularLabel(text: "✓", size: 25, fontSize: 13.0, borderWidth: 0.0, color: UIColor.gamvesColor)
+        badgeLabel =  Global.createCircularLabel(text: "✓", size: 25, fontSize: 13.0, borderWidth: 0.0, color: UIColor.cyberChildrenColor)
         
         containerView.addSubview(nameLabel)
         containerView.addSubview(messageLabel)

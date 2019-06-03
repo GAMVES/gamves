@@ -44,7 +44,7 @@ class FanpageApprovalView: UIView,
     let imagesContView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }() 
 
@@ -117,7 +117,7 @@ class FanpageApprovalView: UIView,
         self.titleContView.addConstraintsWithFormat("H:|[v0]|", views: self.titleLabel)
         self.titleContView.addConstraintsWithFormat("V:|-40-[v0]|", views: self.titleLabel)   
 
-        self.imagesContView.backgroundColor = UIColor.gamvesColor
+        self.imagesContView.backgroundColor = UIColor.cyberChildrenColor
         
         self.imagesContView.addSubview(self.avataCoverContView)
         self.imagesContView.addSubview(self.collectionContView)

@@ -18,14 +18,14 @@ class AgreementCell: UICollectionViewCell , BEMCheckBoxDelegate  {
 
     let titleContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
 
 
      let labelsView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.gamvesColor
+        view.backgroundColor = UIColor.cyberChildrenColor
         return view
     }()
 

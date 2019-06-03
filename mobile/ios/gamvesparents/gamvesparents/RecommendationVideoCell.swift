@@ -97,7 +97,7 @@ class RecommendationVideoCell: BaseCell {
     let timeLabel: UILabel = {
         let label = UILabel()        
         label.font = UIFont.systemFont(ofSize: 15)
-        label.textColor = UIColor.gamvesColor
+        label.textColor = UIColor.cyberChildrenColor
         label.textAlignment = .right
         return label
     }()
