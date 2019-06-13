@@ -6,6 +6,8 @@
 
 			calculateTrendingFanpages(function(restulTrending) {			
 
+				console.log("restulTrending: " + JSON.stringify(restulTrending));
+
 				if (!restulTrending.error) {					
 					
 					response.success(true);
@@ -93,18 +95,19 @@
 
 			var categoryTrending;
 			var sortedFavorites = [];
-			var isTrending = false;
+			//var isTrending = false;
 
 			var queryCategory = new Parse.Query("Categories");
 			queryCategory.equalTo("name", "TRENDING");					
 				
-			return queryCategory.first().then(function(category) {
+			return queryCategory.first({useMasterKey:true}).then(function(category) {
 
 				categoryTrending = category;   	
 
 				var queryFavorite = new Parse.Query("Favorites");
 				queryFavorite.equalTo("type", 1);	 
-				return queryFavorite.find();        
+
+				return queryFavorite.find({useMasterKey:true});        
 
 			}).then(function(favorites) {  					
 
@@ -138,9 +141,9 @@
 					    });
 				    }
 
-				    //console.log("----------------------------");
-					//console.log(unsortedFavorites);
-					//console.log("----------------------------");
+				    console.log("----------------------------");
+					console.log(unsortedFavorites);
+					console.log("----------------------------");
 
 					return unsortedFavorites.sort(function(a, b) {return a.count - b.count});	  
 
@@ -155,84 +158,155 @@
 
 			}).then(function(sorted) {							
 
-				sortedFavorites = sorted;			
+				sortedFavorites = sorted;		
 
-				var queryFanpages = new Parse.Query("Fanpages");		 
-			    return queryFanpages.find();
+				console.log("sortedFavorites:  " + JSON.stringify(sortedFavorites));	
 
-			}).then(function(fanpages) {				
+				var count = 0;
 
-				for (var i=0; i < fanpages.length; i++) {
+				var lenght = sortedFavorites.length;
 
-					var fanpage = fanpages[i];	
-					isTrending = getTrending(sortedFavorites, fanpage.id);								
+				for (var i = 0; i < lenght; i++) {
 
-					reletionHasTrending(fanpage, isTrending, function(hasTrending, categoryRelation, fanpageCallback, isTrendingCallback){						
+					var json = sortedFavorites[i];	
 
-						//console.log("----------------------------");
-						//console.log(fanpageCallback.get("pageName"));
-						//console.log(isTrendingCallback);
-						//console.log(hasTrending);						
+					console.log("json:  " + JSON.stringify(json));	
 
-						//add
-						if (isTrendingCallback && !hasTrending) {
+					var queryFanpages = new Parse.Query("Fanpages");
+					queryFanpages.equalTo("objectId", json.objectId);
 
-							categoryRelation.add(categoryTrending);
+					queryFanpages.first({useMasterKey:true}).then(function(fanpagePF) {	 
 
-						//remove
-						} else if (!isTrendingCallback && hasTrending) {
+						console.log("fanpagePF:  " + JSON.stringify(fanpagePF));							
+						
+						var categoryRelation = fanpagePF.relation("category");											
+						var categoryQuery = categoryRelation.query();
 
-							categoryRelation.remove(categoryTrending);
-						}						
+						categoryQuery.find({useMasterKey:true}).then(function(categoriesPF) {	   					
 
-						fanpageCallback.save(null, { useMasterKey: true,										
-							success: function (savedFanpageCallback) {	 
+							var has = false;
 
-								callback({"error":false});								
+							for (var j = 0; j < categoriesPF.length; j++) {
 
-			    			},
-							error: function (response, error) {								
-							    
-							    callback({"error":true, "message":error});
+								var category = categoriesPF[j];			
 
+								if (category.get("name") == "TRENDING") {									
+
+									has = true;										
+									
+								}
 							}
-						});
-					});		
-				}   
+
+							if (!has) {
+
+								categoryRelation.add(categoryTrending);
+								fanpagePF.save(null, {useMasterKey:true});
+							}
+
+
+							if (count == (lenght - 1)) {
+
+								callback({"error":false});	
+
+								count = 0;						
+
+							}	
+
+							count++;				
+
+						});	
+
+					});
+					
+				} 	
+
+				///REMOVE TRAND WHEN NOT APPLYING MISSING
+
+
+						/*var queryFanpages = new Parse.Query("Fanpages");		 
+					    return queryFanpages.find({useMasterKey:true});
+
+					}).then(function(fanpages) {	
+
+						console.log("fanpages.length: " + fanpages.length);			
+
+						for (var i=0; i < fanpages.length; i++) {
+
+							var hasTrending;
+
+							var fanpage = fanpages[i];	
+
+							var isTrending = getTrending(sortedFavorites, fanpage.id);						
+
+							console.log("isTrending_" + i + ": " + isTrending);
+
+							var categoryRelation = fanpage.relation("category");
+							var categoryQuery = categoryRelation.query();
+
+							categoryQuery.find({useMasterKey:true}).then(function(categories) {	   					
+
+								var flag = false;
+
+								for (var j = 0; j < categories.length; j++) {
+
+									var category = categories[j];			
+
+									if (category.get("name") == "TRENDING") {
+									
+										hasTrending = true;
+
+										if (!isTrending) {
+
+											flag = true;
+											categoryRelation.remove(categoryTrending);
+										}
+									}
+								}
+
+								if (isTrending) {
+
+									flag = true;
+									categoryRelation.add(categoryTrending);
+								}
+
+								console.log("fanpage.id: " + fanpage.id);			
+								console.log("isTrending: " + isTrending + " FLAG: " + flag);	
+
+								if (flag) {
+
+									console.log("FLAAAAGGGGGG______");	
+
+									//- Save fanpage
+
+									fanpage.save(null, { useMasterKey: true,										
+										success: function (savedFanpageCallback) {	 
+
+											callback({"error":false});								
+
+						    			},
+										error: function (response, error) {								
+										    
+										    callback({"error":true, "message":error});
+
+										}
+									});
+								
+								} else {
+
+									console.log("No ENTRAAAAAAAAAAA");	
+
+									callback({"error":false});								
+								}
+
+							});				
+			
+						}   */
 
 			}, function(error) {    			    	
 			    callback({"error":true, "message":error});
 			});	
 		} 
-
-
-		function reletionHasTrending(fanpage, isTrending, callback) {
-
-			var categoryRelation = fanpage.relation("category");
-			var categoryQuery = categoryRelation.query();
-
-			categoryQuery.find({
-			    success: function(categories) {		    	
-
-					var hasTrending = false;
-
-					for (var j = 0; j < categories.length; j++) {
-
-						var category = categories[j];			
-						if (category.get("name") == "TRENDING") {
-							hasTrending = true;
-						}
-					}
-					callback(hasTrending, categoryRelation, fanpage, isTrending);
-
-				},
-			    error: function() {
-
-			    }
-
-			});
-
-		};
+	
 
 		function getTrending(sortedFavorites, fanpageId) {
 
@@ -247,9 +321,13 @@
 				trending = sortedFavorites;
 			}     
 
+			console.log("trending:  " + JSON.stringify(trending));	
+
 			for (var i = 0; i < trending.length; i++) {
 
-				var json = sortedFavorites[i];		
+				var json = sortedFavorites[i];	
+
+				console.log("json:  " + JSON.stringify(json) + " fanpageId: " + fanpageId);	
 
 				if (json.objectId == fanpageId) {
 					
@@ -259,8 +337,8 @@
 			} 	
 
 			return false;
-
 		}
+
 
 		function removeAllTrendings(categoryTrending) {			
 

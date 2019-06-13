@@ -887,7 +887,6 @@
 							console.log("[folder]: " + folder + " [ytb_videoId]: " + ytb_videoId + " [objectId]: " + pfVideoId);
 
 							Parse.Cloud.run("DownloadVideoFromHeroku", { "folder": folder, "ytb_videoId": ytb_videoId, "objectId" : pfVideoId  } );
-
 													 
 					    } 
 			        },
