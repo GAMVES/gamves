@@ -555,7 +555,7 @@
 
 	function parseFortniteUpcoming(fanpagePF, json, callbackUpcoming) {	
 
-		let rows = json.rows;			
+		let rows = json.data.length;			
 
 		var count = 0;			
 
@@ -567,9 +567,11 @@
 
 		for (var i = 0; i < rows; i++) {				
 
-			let item = json.items[i];
+			//let item = json.items[i];
+
+			let item = json.data[i].items;
 			let name = item.name;
-			let imageUrl = item.item.image;			
+			let imageUrl = item.images.featured;			
 
 			var fileComplete = imageUrl.substring(imageUrl.lastIndexOf('/')+1);
 			var filenameText = fileComplete.replace(/\.[^/.]+$/, "");				
