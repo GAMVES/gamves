@@ -3,6 +3,7 @@
 	require('./acls');	
 	require('./users');
 	require('./remove');
+	require('./apis');
 
 	var _admuser = "gamvesadmin";
 
