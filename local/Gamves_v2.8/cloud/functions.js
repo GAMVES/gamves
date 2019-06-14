@@ -389,6 +389,8 @@
 				},
 				error: function(error) {
 
+					console.log("getFortniteApi: " + getFortniteApi);
+
 					getFortniteApi(fanpagePF,  function() {
 
 						status.success(true);
@@ -515,6 +517,8 @@
 
   	function getForniteApiUpcoming(fanpagePF, callback) {
 
+  		console.log("getForniteApiUpcoming fanpagePF.id : " + fanpagePF.id);
+
   		var urlApi = "https://fortnite-public-api.theapinetwork.com/prod09/upcoming/get";
 
 		Parse.Cloud.httpRequest({			
@@ -523,11 +527,13 @@
 			path: ["prod09", "upcoming", "get"],
 			headers: {
 		    	"content-type": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-		    	"Authorization": "2042874b0743fbddd6c73065680fa75e"			    	
+		    	"Authorization": "b02d03a37b28a3acdc0c5615c1ec9378"			    	
 		  	}
 			}).then(function(httpResponse) {
 
-            	var json = JSON.parse(httpResponse.text);                 	
+            	var json = JSON.parse(httpResponse.text);       
+
+            	console.log("json: " + JSON.stringify(json));
 
             	parseFortniteUpcoming(fanpagePF, json, function(callbackFornite) {
 
@@ -557,6 +563,8 @@
 
 		var upcoming = "Upcoming";
 
+		console.log("rows: " + rows);
+
 		for (var i = 0; i < rows; i++) {				
 
 			let item = json.items[i];
@@ -568,7 +576,7 @@
 
 			ids.push(filenameText);				
 
-			//console.log("name: " + name + " filenameText: " + filenameText + " imageUrl: " + imageUrl);
+			console.log("name: " + name + " filenameText: " + filenameText + " imageUrl: " + imageUrl);
 
 			var fanpageId = fanpagePF.get("fanpageId");
 			//var albumRelation = fanpagePF.relation("albums");
