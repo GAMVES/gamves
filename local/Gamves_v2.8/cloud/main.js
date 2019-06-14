@@ -2,6 +2,7 @@
 	require('./functions');
 	require('./acls');	
 	require('./users');
+	require('./remove');
 
 	var _admuser = "gamvesadmin";
 
