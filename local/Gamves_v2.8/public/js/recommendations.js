@@ -398,31 +398,5 @@ document.addEventListener("LoadRecommendations", function(event){
           });
       }
 
-      /*function getSchoolShort()
-      {
-
-          console.log(schoolId);
-
-          var querySchool = new Parse.Query("Schools");             
-          querySchool.equalTo("objectId", schoolId);
-          querySchool.first({
-              success: function (school) {
-                  
-                  if (school) { 
-                        schoolShort = school.get("short");                           
-
-                        var queryRole = new Parse.Query(Parse.Role);    
-                        queryRole.equalTo('name', roleName);    
-
-                        queryRole.first({useMasterKey:true}).then(function(rolePF) {
-
-                            schoolACL = rolePF;
-
-                        });
-                  }
-              }
-          });           
-          
-      }*/ 
 });
 

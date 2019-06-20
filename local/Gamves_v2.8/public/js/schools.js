@@ -313,12 +313,12 @@
 
                       schoolACL = schoolACLPF;
 
-                      //var currentUser = Parse.User.current();
+                      var currentUser = Parse.User.current();
 
-                      //let name = schoolACL.get("name");
+                      let name = schoolACL.get("name");
 
                       //- Add admin user to school role
-                      //Parse.Cloud.run("AddUserToRole", { "userId": currentUser.id, "role": name});
+                      Parse.Cloud.run("AddUserToRole", { "userId": currentUser.id, "role": name});
 
                       //console.log('school created successful with name: ' + schoolNew.get("pageName"));                                   
 

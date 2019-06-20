@@ -851,7 +851,7 @@
 		var downloaded = request.object.get("downloaded");
 		var removed = request.object.get("removed");
 		var source_type = request.object.get("source_type");
-		var folder = request.object.get("folder");
+		var s3Folder = request.object.get("folder");
 		var videoId = request.object.get("videoId");		
 
 		if ( source_type == 1 ) { //LOCAL
@@ -882,12 +882,12 @@
 							var _appId = configObject.get("app_id");
 							var _mKey = configObject.get("master_key");
 
-							var ytb_videoId  = request.object.get("ytb_video_id");
+							var ytb_videoId  = request.object.get("ytb_videoId");
 							var pfVideoId = request.object.id;
 
-							console.log("[folder]: " + folder + " [ytb_videoId]: " + ytb_videoId + " [objectId]: " + pfVideoId);
+							console.log("[s3Folder]: " + s3Folder + " [ytb_videoId]: " + ytb_videoId + " [objectId]: " + pfVideoId);
 
-							Parse.Cloud.run("DownloadVideoFromHeroku", { "folder": folder, "ytb_videoId": ytb_videoId, "objectId" : pfVideoId  } );
+							Parse.Cloud.run("DownloadVideoFromHeroku", { "s3Folder": s3Folder, "ytb_videoId": ytb_videoId, "objectId" : pfVideoId  } );
 													 
 					    } 
 			        },
@@ -910,12 +910,12 @@
 
 	Parse.Cloud.define("DownloadVideoFromHeroku", function (request, response) {
 		
-		var folder = request.params.folder;
+		var s3Folder = request.params.s3Folder;
 		var ytb_videoId = request.params.ytb_videoId;
 		var objectId = request.params.objectId;
 
 		var data =  {
-			"folder": folder,						        
+			"s3Folder": s3Folder,						        
 		    "ytb_videoId" : ytb_videoId,						        
 		    "objectId" : objectId
 		};
@@ -923,7 +923,7 @@
 		console.log("DATA : " + JSON.stringify(data));
 	    
 		Parse.Cloud.httpRequest({											
-			url: "https://gamves-download.herokuapp.com/api/youtube-video-download", 								
+			url: "https://gamves-download.herokuapp.com/api/youtube-video-download-upload-s3", 								
 			method: "POST",						  	
 		  	body: data
 		}).then( function(httpResponse) {
@@ -1038,7 +1038,33 @@
 	       	var file = new Parse.File(request.object.id+".jpg", { base64: base64 });   
 
 	       	request.object.set("thumbnail", file);            
-	       	request.object.save(null, { useMasterKey: true } );     
+
+	       	request.object.save(null, { useMasterKey: true,	
+				success: function (recommendationsSaved) {	
+
+					
+					let videoRelation = recommendationsSaved.relation("video");
+					let queryVideo = videoRelation.query();
+
+					queryVideo.first({useMasterKey:true}).then(function(videoPF){
+
+						if (videoPF) {
+
+							videoPF.set("thumbnail", file);
+
+							videoPF.save(null, { useMasterKey: true});
+
+						}
+
+					});
+
+
+				},
+				error: function (response, error) {											
+				    
+				    console.log("error: " + error);		
+				}
+			});  
 
 
 	  	}, function(error) {                    
