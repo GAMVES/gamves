@@ -59,7 +59,7 @@ document.addEventListener("LoadRecommendations", function(event){
 
                 var heaaderGridRecommendation = "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_recommendation\" class=\"loader\"/></div>";
 
-                heaaderGridRecommendation += "<button id=\"new_recommendation\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Suggestion </button>";
+                heaaderGridRecommendation += "<button id=\"new_recommendation\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Suggestion </button>&nbsp;&nbsp;";
 
                 heaaderGridRecommendation += "<button id=\"new_suggestion\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Recommendation </button>";
 
