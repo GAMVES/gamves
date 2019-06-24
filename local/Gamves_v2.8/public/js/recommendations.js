@@ -57,10 +57,18 @@ document.addEventListener("LoadRecommendations", function(event){
                     dataJson.push(item);
                 }                          
 
+                var heaaderGridRecommendation = "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_recommendation\" class=\"loader\"/></div>";
+
+                heaaderGridRecommendation += "<button id=\"new_recommendation\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Suggestion </button>";
+
+                heaaderGridRecommendation += "<button id=\"new_suggestion\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Recommendation </button>";
+
+                heaaderGridRecommendation += " <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>";
+
                 var rowIds = [];
                 var grid = $("#gridRecommendations").bootgrid({                  
                     templates: {
-                        header: "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_recommendation\" class=\"loader\"/></div><button id=\"new_recommendation\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Recommendation </button> <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>"       
+                        header: heaaderGridRecommendation
                     }, 
                     caseSensitive: true,
                     selection: true,
@@ -141,7 +149,7 @@ document.addEventListener("LoadRecommendations", function(event){
                         grid.find(".command-edit").unbind("click").on("click", function(e) {
 
                         //alert("You pressed edit on row: " + $(this).data("row-id"));
-                        var ele =$(this).parent();
+                        var ele = $(this).parent();
                         var g_id = $(this).parent().siblings(':first').html();
                         var g_name = $(this).parent().siblings(':nth-of-type(2)').html();
 
