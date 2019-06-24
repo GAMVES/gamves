@@ -263,50 +263,33 @@ document.addEventListener("LoadRecommendations", function(event){
                   
                   if (userAdmin) { 
                         
-                    var Videos = Parse.Object.extend("Videos");
-                    var video = new Videos();              
+                    var VideosRecommendation = Parse.Object.extend("Videos");
+                    var videoRecommendation = new VideosRecommendation();              
 
-                    video.set("downloaded", false);
-                    video.set("removed", false);
-                    video.set("authorized", true);
+                    videoRecommendation.set("downloaded", false);
+                    videoRecommendation.set("authorized", true);
+                    videoRecommendation.set("title", title);
+                    videoRecommendation.set("description", desc);
+                    videoRecommendation.set("posterId", userAdmin.id);          
+                    videoRecommendation.set("poster_name", userAdmin.get("name"));
+                    videoRecommendation.set("s3_source", "");
+                    videoRecommendation.set("webpage_url", videoUrl);
+                    videoRecommendation.set("thumbnail_source", thumbnailUrl);
+                    videoRecommendation.set("ytb_videoId", vId);
+                    videoRecommendation.set("upload_date", upload_date);
+                    videoRecommendation.set("view_count", view_count);       
+                    videoRecommendation.set("tags", tags);
+                    videoRecommendation.set("duration", duration);         
+                    videoRecommendation.set("categories", categories);
+                    videoRecommendation.set("public", true);                    
+                    videoRecommendation.set("folder", "admvideos");
+                    videoRecommendation.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
+                    videoRecommendation.set("videoId", Math.floor(100000 + Math.random() * 900000));              
+                    videoRecommendation.set("poster_name", "Gamves Official");                        
+                    videoRecommendation.set("source_type", 3);     
+                    videoRecommendation.set("approved", true);  
 
-                    video.set("title", title);
-                    video.set("description", desc);                              
-
-                    video.set("posterId", userAdmin.id);          
-                    video.set("poster_name", userAdmin.get("name"));          
-
-                    video.set("s3_source", "");
-                    video.set("ytb_source", videoUrl);
-                    video.set("ytb_thumbnail_source", thumbnailUrl);
-                    video.set("ytb_videoId", vId);
-
-                    video.set("ytb_upload_date", upload_date);  
-
-                    video.set("ytb_view_count", view_count);       
-                    video.set("ytb_tags", tags);
-                    video.set("ytb_duration", duration);         
-                    video.set("ytb_categories", categories);                                          
-
-                    //var order = $("#edit_order_video").val();
-                    //video.set("order", parseInt(order)); 
-
-                    video.set("public", true); 
-
-                    video.set("folder", "admvideos"); 
-
-                    video.set("fanpageId", Math.floor(100000 + Math.random() * 900000));              
-
-                    var vrnd = Math.floor(100000 + Math.random() * 900000);
-                    video.set("videoId", vrnd);              
-
-                    video.set("poster_name", "Gamves Official");                        
-
-                    video.set("source_type", 3);  //RECOMMENDATION   
-
-                    video.set("approved", true);                 
-              
-                    video.save(null, {
+                    videoRecommendation.save(null, {
                         success: function (savedVideo) {                                 
 
                             window.GetCheckedInclude("frm_edit_recommendation", function(result) {
@@ -321,19 +304,19 @@ document.addEventListener("LoadRecommendations", function(event){
 
                               Parse.Cloud.run("AddRoleToObject", { "pclassName": "Videos", "objectId": savedVideo.id, "role" : role }).then(function(result) {                                                                  
                                   
-                                  console.log('Video created successful with name: ' + video.get("title"));                         
+                                  console.log('Video created successful with name: ' + savedVideo.get("title"));                         
 
                                   var Recommendation = Parse.Object.extend("Recommendations");         
                                   var recommendation = new Recommendation();  
 
-                                  recommendation.set("title", video.get("title"));
-                                  recommendation.set("description", video.get("description"));         
-                                  recommendation.set("cover", video.get("thumbnail"));
-                                  recommendation.set("referenceId", video.get("videoId"));                                  
-                                  recommendation.set("date", video.get("createdAt"));
+                                  recommendation.set("title", savedVideo.get("title"));
+                                  recommendation.set("description", savedVideo.get("description"));         
+                                  recommendation.set("cover", savedVideo.get("thumbnail"));
+                                  recommendation.set("referenceId", savedVideo.get("videoId"));                                  
+                                  recommendation.set("date", savedVideo.get("createdAt"));
 
                                   var videoRelation = recommendation.relation("video");
-                                  videoRelation.add(video);                                  
+                                  videoRelation.add(savedVideo);                                  
 
                                   recommendation.set("ytb_thumbnail_source", thumbnailUrl);
 
