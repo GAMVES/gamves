@@ -59,9 +59,9 @@ document.addEventListener("LoadRecommendations", function(event){
 
                 var heaaderGridRecommendation = "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-12 actionBar\"><div class=\"btn\"><div id=\"loader_recommendation\" class=\"loader\"/></div>";
 
-                heaaderGridRecommendation += "<button id=\"new_recommendation\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Suggestion </button>&nbsp;&nbsp;";
+                heaaderGridRecommendation += "<button id=\"new_suggestion\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Suggestion </button>&nbsp;&nbsp;";
 
-                heaaderGridRecommendation += "<button id=\"new_suggestion\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Recommendation </button>";
+                heaaderGridRecommendation += "<button id=\"new_recommendation\" type=\"button\" class=\"btn btn-primary\"><span class=\"glyphicon glyphicon-plus-sign\">&nbsp;</span> New Recommendation </button>";
 
                 heaaderGridRecommendation += " <p class=\"{{css.search}}\"></p><p class=\"{{css.actions}}\"></p></div></div></div>";
 
@@ -113,31 +113,7 @@ document.addEventListener("LoadRecommendations", function(event){
 
                                 $('#edit_modal_recommendation').modal('show');
 
-                                //$('#video_spinner').hide();
-
-                                /*if (recommendationLenght==0){
-                                    $("#edit_order_recommendation").append(($("<option/>", { html: 0 })));                                     
-                                } else {
-                                    recommendationLenght++;
-                                for (var i = 0; i < recommendationLenght; i++) {                          
-                                    $("#edit_order_recommendation").append(($("<option/>", { html: i })));                                     
-                                }    
-                                }*/ 
-
                                 $('#recommendations_viewed_videos').empty();                          
-                        
-                                /*let count = window.otherSchools.length;                           
-
-                                for (var i=0; i<count; i++) {                       
-
-                                    let other = window.otherSchools[i];
-
-                                    let short = other.short;
-                                    let name = other.name;
-
-                                    $('#recommendations_viewed_videos').append('<input name="accesories" type="checkbox" value="'+short+'"/> '+ name +'<br/>');
-
-                                }*/
 
                                 let name = "Schools";
 
@@ -145,6 +121,21 @@ document.addEventListener("LoadRecommendations", function(event){
                                 
 
                         });  
+
+                        $( "#new_suggestion" ).unbind("click").click(function() {
+
+                                $("#suggestion_title").text("New Suggestion"); 
+
+                                $('#edit_modal_suggestion').modal('show');
+
+                                //$('#recommendations_viewed_videos').empty();                          
+
+                                let name = "Schools";
+
+                                //$('#recommendations_viewed_videos').append('<input name="accesories" type="checkbox" value=""/> '+ name +'<br/>');
+                                
+
+                        });
                                     
                         grid.find(".command-edit").unbind("click").on("click", function(e) {
 
