@@ -261,11 +261,11 @@
 		 "UserVerified"
 		 ];
 
-		for (var i=0; i < newClasses.length; i++) {
+		 for (var i=0; i < newClasses.length; i++) {
 			var NewClass = Parse.Object.extend(newClasses[i]);	
 			var newClass = new NewClass();
 			newClass.save(null, { useMasterKey: true } );
-		}		
+		 }		
 
 	});
 	

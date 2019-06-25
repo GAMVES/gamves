@@ -7,12 +7,78 @@ document.addEventListener("LoadRecommendations", function(event){
       var short = event.detail.short;  
 
       var fanpageObj;
-      var appIconFile;      
+      var appIconFile;   
+
+      var familiesArray = [];   
 
       loadOtherSchools(schoolId);
       loadRecommendation();
+      loadFamilies();
 
       var recommendationLenght = 0;
+
+      function loadFamilies() 
+      {
+
+        var querySchool = new Parse.Query("Schools");    
+        console.log(schoolId);         
+        querySchool.equalTo("objectId", schoolId);
+        querySchool.first({
+
+            success: function (schoolPF) {  
+
+                if (schoolPF) {
+
+                    let levelRelation = schoolPF.relation("levels");
+                    let queryLevel = levelRelation.query();
+
+                    queryLevel.find().then(function(levelsPF) {
+
+                        console.log(levelsPF.length);
+
+                        if (levelsPF.length > 0) {
+
+                            for (var j=0; j < levelsPF.length; j++) {
+
+                                let levelPF = levelsPF[j];
+                                         
+                                let relFamilies = levelPF.relation("families");
+                                let queryFamilies = relFamilies.query();
+                                queryFamilies.find().then(function(familiesPF) {
+
+                                    if (familiesPF.length > 0) {
+
+                                        for (var i=0; i < familiesPF.length; i++) {
+
+                                            let familyPF = familiesPF[i];
+
+                                            let desc = familyPF.get("description");
+
+                                            console.log("desc: " + desc);
+
+                                            let familyJson = {"desc": desc, "object":familyPF}; 
+
+                                            familiesArray.push(familyJson);
+
+                                        }
+                                    }    
+
+                                });
+                            }    
+                        }
+                    });
+
+                }
+            },
+            error: function (error) {
+                console.log("Error: " + error.code + " " + error.message);
+            }    
+
+
+        }); 
+
+
+      }
 
       function loadRecommendation()
       {
@@ -124,17 +190,25 @@ document.addEventListener("LoadRecommendations", function(event){
 
                         $( "#new_suggestion" ).unbind("click").click(function() {
 
-                                $("#suggestion_title").text("New Suggestion"); 
+                            $("#suggestion_title").text("New Suggestion"); 
 
-                                $('#edit_modal_suggestion').modal('show');
+                            $('#edit_modal_suggestion').modal('show');
 
-                                //$('#recommendations_viewed_videos').empty();                          
+                            var selectList = document.getElementById('dynamic_parents_combo');
 
-                                let name = "Schools";
+                            var length = familiesArray.length;
+                            
+                            for (var i=0; i<length; i++) {
 
-                                //$('#recommendations_viewed_videos').append('<input name="accesories" type="checkbox" value=""/> '+ name +'<br/>');
-                                
+                                var option = document.createElement("option");
 
+                                 option.value = familiesArray[i].object;
+                                 option.text = familiesArray[i].desc;
+                                 selectList.appendChild(option);
+
+                     
+                            }
+               
                         });
                                     
                         grid.find(".command-edit").unbind("click").on("click", function(e) {
