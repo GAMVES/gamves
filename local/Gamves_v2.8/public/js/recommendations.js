@@ -11,6 +11,8 @@ document.addEventListener("LoadRecommendations", function(event){
 
       var familiesArray = [];   
 
+      var parseFileThumbanil;
+
       loadOtherSchools(schoolId);
       loadRecommendation();
       loadFamilies();
@@ -151,7 +153,8 @@ document.addEventListener("LoadRecommendations", function(event){
                                 "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"glyphicon glyphicon-edit\"></span></button>&nbsp;";
                                 
                         }                   
-                    }                  
+                    }     
+
                 }).on("selected.rs.jquery.bootgrid", function(e, rows) {
 
                     rowIds = [];
@@ -193,6 +196,10 @@ document.addEventListener("LoadRecommendations", function(event){
                             $("#suggestion_title").text("New Suggestion"); 
 
                             $('#edit_modal_suggestion').modal('show');
+
+                            $("#input_thumb_screenshot").unbind("change").change(function() {
+                                loadThumbImage(this);
+                            });
 
                             var selectList = document.getElementById('dynamic_parents_combo');
 
@@ -279,6 +286,15 @@ document.addEventListener("LoadRecommendations", function(event){
 
     });
 
+
+    $( "#btn_edit_suggestion" ).click(function() {
+
+        saveSuggestion();
+
+    });
+
+    
+
     $( "#edit_youtube_check_recommendation" ).unbind("click").click(function() {           
 
         $('#video_spinner').show();   
@@ -325,7 +341,44 @@ document.addEventListener("LoadRecommendations", function(event){
 
         });  
 
-      });        
+      });    
+
+      function saveSuggestion() {
+
+            var Recommendation = Parse.Object.extend("Recommendations");         
+            var recommendation = new Recommendation();  
+
+            recommendation.set("title", $("#edit_title_suggestion").val());
+            recommendation.set("description", $("#edit_title_suggestion").val());    
+     
+            recommendation.set("thumbnail", parseFileThumbanil);
+     
+            //var videoRelation = recommendation.relation("video");
+            //videoRelation.add(savedVideo);                                  
+
+            recommendation.set("type", 3); // SUGGESTION
+
+            recommendation.save(null, {
+              success: function (savedReccomendation) {                                                                           
+
+                Parse.Cloud.run("AddRoleToObject", { "pclassName": "Recommendations", "objectId": savedReccomendation.id, "role" : role }).then(function(result) {                                                                  
+
+                    $('#edit_modal_suggestion').modal('hide');
+
+                    clearField();
+                    loadRecommendation();
+
+                });
+
+              },
+              error: function (response, error) {
+                    $('#error_message').html("<p>" + errort + "</p>");
+                    console.log('Error: ' + error.message);
+              }
+            }); 
+
+
+      }    
 
       function saveRecommendation() {              
 
@@ -384,7 +437,8 @@ document.addEventListener("LoadRecommendations", function(event){
 
                                   recommendation.set("title", savedVideo.get("title"));
                                   recommendation.set("description", savedVideo.get("description"));         
-                                  recommendation.set("cover", savedVideo.get("thumbnail"));
+                                  recommendation.set("thumbnail", savedVideo.get("thumbnail"));
+                                  //recommendation.set("screenshot", parseFileThumbanil);
                                   recommendation.set("referenceId", savedVideo.get("videoId"));                                  
                                   recommendation.set("date", savedVideo.get("createdAt"));
 
@@ -453,6 +507,23 @@ document.addEventListener("LoadRecommendations", function(event){
               }
           });
       }
+
+      function loadThumbImage(input) {
+        if (input.files && input.files[0]) {         
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#img_thumbnail_screenshot').attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);
+          var desc = $("#edit_name").val();
+          desc = desc.replace(/[^a-zA-Z ]/g, "");
+          desc = desc.replace(" ", "");
+          if (hasWhiteSpace(desc))
+            desc = desc.replace(" ", "");
+          var thunbname = "t_" + desc.toLowerCase() + ".png";
+          parseFileThumbanil = new Parse.File(thunbname, input.files[0], "image/png");                   
+        }
+    }    
 
 });
 

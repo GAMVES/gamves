@@ -17,27 +17,36 @@
     </div>
     
     <div id="edit_modal_recommendation" class="modal fade">
+      
       <div class="modal-dialog" >
+        
         <div class="modal-content">            
+            
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 id="recommendation_title" class="modal-title"></h4>
             </div>
+
             <div class="modal-body">
+               
                 <form method="post" id="frm_edit_recommendation">                  
+                  
                   <div class="form-group">
                     <label class="control-label">Youtube Video url:</label>
                     <input type="text" class="form-control" id="edit_youtube_video_id_recommendation" name="edit_youtube_video_id_recommendation"/>
                     <button type="button" id="edit_youtube_check_recommendation" name="edit_youtube_check_recommendation">Check</button>                    
                   </div> 
+                  
                   <div class="form-group">
                     <label for="title" class="control-label">Title:</label>
                     <input type="text" class="form-control" id="edit_title_recommendation" name="edit_title_recommendation"/>
                   </div>
+                  
                   <div class="form-group">
                     <label for="description" class="control-label">Description:</label>
                     <input type="text" class="form-control" id="edit_description_recommendation" name="edit_description_recommendation"/>
                   </div>
+
                   <!--<div class="form-group">
                     <label for="name" class="control-label">Order:</label>
                     <select name="edit_order_recommendation" id="edit_order_recommendation"></select>                      
@@ -73,10 +82,16 @@
                 <h4 id="suggestion_title" class="modal-title"></h4>
             </div>
             <div class="modal-body">
-                <form method="post" id="frm_edit_recommendation">                  
+                <form method="post" id="frm_edit_recommendation">      
+                
                   <div class="form-group">
+
+                    <label class="control-label">Title:</label>
+                    <input type="text" class="form-control" id="edit_title_suggestion" name="edit_title"/><br>
+
                     <label class="control-label">Select family:</label>
-                    <select id="dynamic_parents_combo"></select>             
+                    <select id="dynamic_parents_combo"></select>       
+
                   </div> 
                   
                   <div class="form-group">
@@ -85,15 +100,15 @@
                       <img id="img_thumbnail_screenshot" height="120" width="120"/>                 
                       <input id="input_thumb_screenshot" type="file"></input><br>
                      
-                      <label class="control-label">Short:</label>
-                      <input type="text" class="form-control" id="edit_short" name="edit_short" height="300" width="600"/>
+                      <label class="control-label">Description:</label><br>
+                      <textarea name="edit_description" id="edit_desc_suggestion" cols="40" rows="5"></textarea>
                       
                     </div>   
 
                   <div class="modal-footer">
                     <label id="error_message"></label>                
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" id="btn_edit_recommendation" class="btn btn-primary">Save</button>           
+                    <button type="button" id="btn_edit_suggestion" class="btn btn-primary">Save</button>           
                   </div>
                 </form>
             </div>
