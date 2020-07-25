@@ -549,8 +549,8 @@ class FanpagePage: UIViewController,
                                 video.categoryName              = qvideoinfo["categoryName"] as! String
                                 video.videoId                   = qvideoinfo["videoId"] as! Int
                                 video.s3_source                 = qvideoinfo["s3_source"] as! String
-                                video.thumbnail_source          = qvideoinfo["thumbnail"] as! String
-                                video.ytb_video_id                = qvideoinfo["ytb_video_id"] as! String
+                                //video.thumbnail_source          = qvideoinfo["thumbnail"] as! String
+                                video.ytb_video_id              = qvideoinfo["ytb_video_id"] as! String
                                 
                                 let dateStr = qvideoinfo["upload_date"] as! String
                                 let dateDouble = Double(dateStr)

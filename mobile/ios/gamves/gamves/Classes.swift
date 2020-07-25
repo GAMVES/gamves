@@ -237,7 +237,7 @@ class GamvesVideo {
     var categoryName = String()
     var thumbnail:PFFileObject?
     var s3_source = String()        
-    var thumbnail_source = String()
+    //var thumbnail_source = String()
     var ytb_video_id = String()
     var upload_date = Date()
     var view_count = Int()

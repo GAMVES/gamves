@@ -161,8 +161,8 @@ class LoginController: UIViewController {
         //self.userTextField.text = "clementevigil"
         //self.passwordTextField.text = "Clemente2016"
 
-        self.userTextField.text = "charlypeteres"
-        self.passwordTextField.text = "Charly2016"
+        self.userTextField.text = "carlatell"
+        self.passwordTextField.text = "Carla2016"
 
     }
     

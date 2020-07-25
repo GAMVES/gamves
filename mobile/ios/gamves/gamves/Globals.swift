@@ -2015,7 +2015,7 @@ class Global: NSObject
         video.categoryName              = videoPF["categoryName"] as! String
         video.videoId                   = videoPF["videoId"] as! Int
         video.s3_source                 = videoPF["s3_source"] as! String
-        video.thumbnail_source          = videoPF["thumbnail"] as! String
+        //video.thumbnail_source          = videoPF["thumbnail"] as! String
         video.ytb_video_id              = videoPF["ytb_video_id"] as! String
         
         let dateStr = videoPF["upload_date"] as! String

@@ -1310,6 +1310,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/gamves",
+					"$(SRCROOT)/**",
 				);
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(inherited)",
