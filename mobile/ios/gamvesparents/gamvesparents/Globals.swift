@@ -126,7 +126,7 @@ class Global: NSObject
     
     static var yourAccountBackImage = UIImage()
     
-    static var api_key = "AIzaSyAMu_C1z2pMYGOgRi3dOiqCTh6pVGS59YU"
+    static var api_key = ""
     
     static var search_engine = "010975053378915722447:h2ob_fkvam0"
 
